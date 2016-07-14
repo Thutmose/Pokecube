@@ -93,6 +93,20 @@ public class PokedexEntryLoader
         String dimensions;
     }
 
+    @XmlRootElement(name = "Drop")
+    public static class Drop
+    {
+        @XmlAnyAttribute
+        Map<QName, String> values;
+    }
+
+    @XmlRootElement(name = "Spawn")
+    public static class SpawnRule
+    {
+        @XmlAnyAttribute
+        Map<QName, String> values;
+    }
+
     @XmlRootElement(name = "MOVES")
     public static class Moves
     {
@@ -133,87 +147,95 @@ public class PokedexEntryLoader
         }
 
         @XmlAttribute
-        public String spawns;
+        public String   spawns;
         // Evolution stuff
         @XmlElement(name = "EVOLUTIONMODE")
-        String        evoModes;
+        String          evoModes;
         @XmlElement(name = "EVOLUTIONANIMATION")
-        String        evolAnims;
+        String          evolAnims;
 
         @XmlElement(name = "EVOLVESTO")
-        String        evoTo;
+        String          evoTo;
         // Species and food
         @XmlElement(name = "SPECIES")
-        String        species;
+        String          species;
         @XmlElement(name = "PREY")
-        String        prey;
+        String          prey;
         @XmlElement(name = "FOODMATERIAL")
-        String        foodMat;
+        String          foodMat;
 
         @XmlElement(name = "SPECIALEGGSPECIESRULES")
-        String        specialEggRules;
+        String          specialEggRules;
         // Drops and items
         @XmlElement(name = "FOODDROP")
-        String        foodDrop;
+        String          foodDrop;
         @XmlElement(name = "COMMONDROP")
-        String        commonDrop;
+        String          commonDrop;
         @XmlElement(name = "RAREDROP")
-        String        rareDrop;
+        String          rareDrop;
+
+        @XmlElement(name = "Drop")
+        List<Drop>      drops          = Lists.newArrayList();
+        @XmlElement(name = "Held")
+        List<Drop>      held           = Lists.newArrayList();
 
         @XmlElement(name = "HELDITEM")
-        String        heldItems;
+        String          heldItems;
         // Spawn Rules
         @XmlElement(name = "BIOMESALLNEEDED")
-        String        biomesNeedAll;
+        String          biomesNeedAll;
         @XmlElement(name = "BIOMESANYACCEPTABLE")
-        String        biomesNeedAny;
+        String          biomesNeedAny;
         @XmlElement(name = "EXCLUDEDBIOMES")
-        String        biomesBlacklist;
+        String          biomesBlacklist;
+
+        @XmlElement(name = "Spawn")
+        List<SpawnRule> spawnRules     = Lists.newArrayList();
 
         @XmlElement(name = "SPECIALCASES")
-        String        spawnCases;
+        String          spawnCases;
         // STATS
         @XmlElement(name = "BASESTATS")
-        Stats         stats;
+        Stats           stats;
         @XmlElement(name = "EVYIELD")
-        Stats         evs;
+        Stats           evs;
         @XmlElement(name = "SIZES")
-        Stats         sizes;
+        Stats           sizes;
         @XmlElement(name = "TYPE")
-        Stats         types;
+        Stats           types;
         @XmlElement(name = "ABILITY")
-        Stats         abilities;
+        Stats           abilities;
         @XmlElement(name = "MASSKG")
-        float         mass           = -1;
+        float           mass           = -1;
         @XmlElement(name = "CAPTURERATE")
-        int           captureRate    = -1;
+        int             captureRate    = -1;
         @XmlElement(name = "EXPYIELD")
-        int           baseExp        = -1;
+        int             baseExp        = -1;
         @XmlElement(name = "BASEFRIENDSHIP")
-        int           baseFriendship = -1;
+        int             baseFriendship = -1;
         @XmlElement(name = "EXPERIENCEMODE")
-        String        expMode;
+        String          expMode;
 
         @XmlElement(name = "GENDERRATIO")
-        int           genderRatio    = -1;
+        int             genderRatio    = -1;
         // MISC
         @XmlElement(name = "LOGIC")
-        Stats         logics;
+        Stats           logics;
         @XmlElement(name = "FORMEITEMS")
-        Stats         formeItems;
+        Stats           formeItems;
         @XmlElement(name = "MEGARULES")
-        Stats         megaRules;
+        Stats           megaRules;
         @XmlElement(name = "MOVEMENTTYPE")
-        String        movementType;
+        String          movementType;
         @XmlElement(name = "INTERACTIONLOGIC")
-        String        interactions;
+        String          interactions;
         @XmlElement(name = "SHADOWREPLACEMENTS")
-        String        shadowReplacements;
+        String          shadowReplacements;
         @XmlElement(name = "HATEDMATERIALRULES")
-        String        hatedMaterials;
+        String          hatedMaterials;
 
         @XmlElement(name = "ACTIVETIMES")
-        String        activeTimes;
+        String          activeTimes;
     }
 
     @XmlRootElement(name = "Document")
@@ -872,23 +894,48 @@ public class PokedexEntryLoader
     {
 
         // Items
-        if (xmlStats.commonDrop != null)
+        if (!xmlStats.drops.isEmpty())
         {
-            entry.commonDrops.clear();
-            entry.addItems(xmlStats.commonDrop, entry.commonDrops);
+            for (Drop d : xmlStats.drops)
+            {
+                ItemStack stack = Tools.getStack(d.values);
+                if (stack != null)
+                {
+                    float chance = 1;
+                    Map<QName, String> values = d.values;
+                    for (QName key : values.keySet())
+                    {
+                        if (key.toString().equals("r"))
+                        {
+                            chance = Float.parseFloat(values.get(key));
+                            break;
+                        }
+                    }
+                    entry.drops.put(stack, chance);
+                }
+            }
         }
-        if (xmlStats.rareDrop != null)
+        if (!xmlStats.held.isEmpty())
         {
-            entry.rareDrops.clear();
-            entry.addItems(xmlStats.rareDrop, entry.rareDrops);
+            for (Drop d : xmlStats.held)
+            {
+                ItemStack stack = Tools.getStack(d.values);
+                if (stack != null)
+                {
+                    float chance = 1;
+                    Map<QName, String> values = d.values;
+                    for (QName key : values.keySet())
+                    {
+                        if (key.toString().equals("r"))
+                        {
+                            chance = Float.parseFloat(values.get(key));
+                            break;
+                        }
+                    }
+                    entry.held.put(stack, chance);
+                }
+            }
         }
-        if (xmlStats.heldItems != null)
-        {
-            entry.heldItems.clear();
-            entry.addItems(xmlStats.heldItems, entry.heldItems);
-        }
-        if (xmlStats.foodDrop != null) entry.foodDrop = entry.parseStack(xmlStats.foodDrop);
-
         // Logics
         if (xmlStats.logics != null)
         {

@@ -66,11 +66,14 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
             return ret;
         }
     }
-    private static BagChecker         checker = new BagChecker(null);
+
+    private static BagChecker checker = new BagChecker(null);
+
     public static BagChecker getChecker()
     {
         return checker;
     }
+
     public static void setChecker(Class<? extends BagChecker> checkerIn)
             throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
             NoSuchMethodException, SecurityException
@@ -78,14 +81,15 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
         BagChecker newchecker = checkerIn.getConstructor(BagChecker.class).newInstance(checker);
         checker = newchecker;
     }
+
     private final RenderLivingBase<?> renderer;
     X3dModel                          model;
 
     X3dModel                          model2;
 
-    private ResourceLocation          BAG_1   = new ResourceLocation("pokecube_adventures:textures/Bag_1.png");
+    private ResourceLocation          BAG_1 = new ResourceLocation("pokecube_adventures:textures/Bag_1.png");
 
-    private ResourceLocation          BAG_2   = new ResourceLocation("pokecube_adventures:textures/Bag_2.png");
+    private ResourceLocation          BAG_2 = new ResourceLocation("pokecube_adventures:textures/Bag_2.png");
 
     public BagRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
@@ -95,8 +99,8 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
     }
 
     @Override
-    public void doRenderLayer(EntityLivingBase entity, float f, float f1, float partialTicks, float f3, float f4, float f5,
-            float scale)
+    public void doRenderLayer(EntityLivingBase entity, float limbSwing, float limbSwingAmount, float partialTicks,
+            float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
         boolean bag = getChecker().isWearingBag(entity);
         if (bag)

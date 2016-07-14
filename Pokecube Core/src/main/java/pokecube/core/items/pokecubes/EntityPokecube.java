@@ -24,7 +24,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -45,6 +44,7 @@ import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
+import pokecube.core.network.packets.PacketSound;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -58,6 +58,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     static final DataParameter<Boolean>                     RELEASING      = EntityDataManager
             .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
+
+    public static boolean                                   SEEKING        = true;
 
     public static final SoundEvent                          CAUGHT_EVENT   = new SoundEvent(
             new ResourceLocation(PokecubeMod.ID + ":pokecube_caught"));
@@ -319,41 +321,28 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (time == 0 && tilt >= 4) // Captured the pokemon
         {
             PokecubeManager.setTilt(getEntityItem(), -1);
-
-            int pokedexNumber = PokecubeManager.getPokedexNb(getEntityItem());
             IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-
             if (mob == null)
             {
                 new NullPointerException("Mob is null").printStackTrace();
                 return;
             }
-
             HappinessType.applyHappiness(mob, HappinessType.TRADE);
             if (shootingEntity != null) mob.setPokemonOwner((shootingEntity));
             ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
             this.setEntityItemStack(mobStack);
-
+            if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
+            {
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
+                        mob.getPokemonDisplayName());
+                ((EntityPlayer) shootingEntity).addChatMessage(mess);
+                this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
+                PacketSound.sendMessage((EntityPlayer) shootingEntity, Vector3.getNewVector().set(shootingEntity),
+                        "pokecube:pokecube_caught");
+            }
             CaptureEvent.Post event = new CaptureEvent.Post(this);
             MinecraftForge.EVENT_BUS.post(event);
-
-            if (!event.isCanceled())
-            {
-                mob = event.caught;
-                mobStack = PokecubeManager.pokemobToItem(mob);
-                if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
-                {
-                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
-                            PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
-                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
-                    worldObj.playSound(null, getPosition(), CAUGHT_EVENT, SoundCategory.PLAYERS, 1, 1);
-                }
-                setDead();
-            }
-            else
-            {
-                setDead();
-            }
+            setDead();
             return;
         }
         else if (time < 0 && tilt >= 4)
@@ -473,12 +462,13 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             target.set(targetLocation);
         }
 
-        if (!target.isEmpty() && target.y >= 0)
+        if (!target.isEmpty() && target.y >= 0 && SEEKING)
         {
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 dir = Vector3.getNewVector().set(target);
             double dist = dir.distanceTo(here);
             if (dist > 1) dist = 1 / dist;
+            else dist = 1;
             dir.subtractFrom(here);
             dir.scalarMultBy(dist);
             dir.setVelocities(this);

@@ -1161,7 +1161,7 @@ public class MovesUtils implements IMoveConstants
         Vector3 source = Vector3.getNewVector().set(attacker, true);
 
         source.y += attacker.height / 4;
-        List<Entity> targets = source.allEntityLocationExcluding(16, 0.1, dest.subtract(source), source,
+        List<Entity> targets = source.allEntityLocationExcluding(16, 0.5, dest.subtract(source), source,
                 attacker.getEntityWorld(), attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
         if (targets != null) for (Entity e : targets)

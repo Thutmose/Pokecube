@@ -57,44 +57,24 @@ public class JERCompat
     private LootDrop[] getDrops(PokedexEntry entry)
     {
         boolean hasDrops = false;
-        ItemStack foodDrop = entry.getFoodDrop(0);
-        hasDrops = foodDrop != null;
-        hasDrops = hasDrops || !entry.rareDrops.isEmpty();
-        hasDrops = hasDrops || !entry.commonDrops.isEmpty();
-        hasDrops = hasDrops || !entry.heldItems.isEmpty();
+        hasDrops = !entry.drops.isEmpty() || !entry.held.isEmpty();
         if (!hasDrops) return null;
 
         ArrayList<LootDrop> drops = new ArrayList<LootDrop>();
         LootDrop drop = null;
-        if (foodDrop != null) drops.add(drop = new LootDrop(foodDrop));
-        if (drop != null) drop.conditionals.add("food");
-        int totalRare = entry.rareDrops.size();
-        int totalCommon = entry.commonDrops.size();
-
-        if (totalCommon > 0)
-        {
-            for (ItemStack stack : entry.commonDrops.keySet())
-            {
-                if (stack == null) continue;
-                float chance = entry.commonDrops.get(stack) / 100f;
-                chance /= totalCommon;
-                drops.add(drop = new LootDrop(stack, chance));
-            }
-        }
-        if (totalRare > 0)
-        {
-            for (ItemStack stack : entry.rareDrops.keySet())
-            {
-                if (stack == null) continue;
-                float chance = (1 / 7f) * entry.rareDrops.get(stack) / 100f;
-                chance /= totalRare;
-                drops.add(drop = new LootDrop(stack, chance));
-            }
-        }
-        for (ItemStack stack : entry.heldItems.keySet())
+        for (ItemStack stack : entry.drops.keySet())
         {
             if (stack == null) continue;
-            float chance = entry.heldItems.get(stack) / 100f;
+            float chance = entry.drops.get(stack);
+            drops.add(drop = new LootDrop(stack, chance));
+            drop.minDrop  = 1;
+            drop.maxDrop = stack.stackSize;
+            drop.conditionals.add("drop");
+        }
+        for (ItemStack stack : entry.held.keySet())
+        {
+            if (stack == null) continue;
+            float chance = entry.held.get(stack);
             drops.add(drop = new LootDrop(stack, chance));
             drop.minDrop = drop.maxDrop;
             drop.conditionals.add("held");

@@ -20,7 +20,9 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
 
     public static void init()
     {
-        TerrainSegment.biomeCheckers.add(new PokecubeTerrainChecker());
+        PokecubeTerrainChecker checker;
+        TerrainSegment.biomeCheckers.add(checker = new PokecubeTerrainChecker());
+        TerrainSegment.defaultChecker = checker;
     }
 
     @Override
@@ -38,27 +40,48 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                     {
                         temp1.set(v).addTo(i, j, k);
                         if (segment.isInTerrainSegment(temp1.x, temp1.y, temp1.z))
-                            sky = sky || temp1.isOnSurfaceIgnoringWater(chunk, world);
+                            sky = sky || temp1.isOnSurfaceIgnoringDecorationAndWater(chunk, world);
                         if (sky) break outer;
                     }
             if (sky) return -1;
             if (count(world, Blocks.WATER, v, 1) > 2) return BiomeType.CAVE_WATER.getType();
-            else if (isCaveFloor(v, world)) return BiomeType.CAVE.getType();
+            else if (isCave(v, world)) return BiomeType.CAVE.getType();
             return INSIDE.getType();
         }
         return -1;
+    }
+
+    public boolean isCave(Vector3 v, World world)
+    {
+        return isCaveFloor(v, world) && isCaveCeiling(v, world);
     }
 
     public boolean isCaveFloor(Vector3 v, World world)
     {
         IBlockState state = v.getBlockState(world);
         Block b = state.getBlock();
-        if (!state.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
+        if (state.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
 
         Vector3 top = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (top == null) return false;
         b = top.getBlock(world);
         return PokecubeMod.core.getConfig().getCaveBlocks().contains(b);
+    }
+
+    public boolean isCaveCeiling(Vector3 v, World world)
+    {
+        IBlockState state = v.getBlockState(world);
+        Block b = state.getBlock();
+        if (state.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
+        Vector3 top = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxis, v.y);
+        if (top == null) return false;
+        b = top.getBlock(world);
+        return PokecubeMod.core.getConfig().getCaveBlocks().contains(b);
+    }
+
+    public boolean isInside(Vector3 v, World world)
+    {
+        return true;
     }
 
 }

@@ -10,7 +10,7 @@
             <MASSKG>6.9</MASSKG>
             <EVOLVESTO>2</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -43,7 +43,7 @@
             <MASSKG>13.0</MASSKG>
             <EVOLVESTO>3</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -73,7 +73,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>100.0</MASSKG>
             <EXPYIELD>236</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -119,7 +119,7 @@
             <MASSKG>8.5</MASSKG>
             <EVOLVESTO>5</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>water</HATEDMATERIALRULES>
@@ -151,7 +151,7 @@
             <MASSKG>19.0</MASSKG>
             <EVOLVESTO>6</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:coal</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>water</HATEDMATERIALRULES>
@@ -180,7 +180,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>90.5</MASSKG>
             <EXPYIELD>240</EXPYIELD>
-            <COMMONDROP>3:coal</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>water</HATEDMATERIALRULES>
@@ -238,7 +238,7 @@
             <MASSKG>9.0</MASSKG>
             <EVOLVESTO>8</EVOLVESTO>
             <EXPYIELD>63</EXPYIELD>
-            <COMMONDROP>1:bowl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bowl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <INTERACTIONLOGIC>bucket`water_bucket</INTERACTIONLOGIC>
@@ -271,7 +271,7 @@
             <MASSKG>22.5</MASSKG>
             <EVOLVESTO>9</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>1:bowl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bowl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <INTERACTIONLOGIC>bucket`water_bucket</INTERACTIONLOGIC>
@@ -301,7 +301,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>85.5</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <COMMONDROP>1:bowl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bowl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
             <INTERACTIONLOGIC>bucket`water_bucket</INTERACTIONLOGIC>
@@ -347,7 +347,7 @@
             <MASSKG>2.9</MASSKG>
             <EVOLVESTO>11</EVOLVESTO>
             <EXPYIELD>39</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -376,7 +376,7 @@
             <MASSKG>9.9</MASSKG>
             <EVOLVESTO>12</EVOLVESTO>
             <EXPYIELD>72</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -401,7 +401,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>32.0</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>2:spider_eye</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -433,7 +433,7 @@
             <MASSKG>3.2</MASSKG>
             <EVOLVESTO>14</EVOLVESTO>
             <EXPYIELD>39</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -462,7 +462,7 @@
             <MASSKG>10.0</MASSKG>
             <EVOLVESTO>15</EVOLVESTO>
             <EXPYIELD>72</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -487,7 +487,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>29.5</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>2:spider_eye</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -528,8 +528,9 @@
             <MASSKG>1.8</MASSKG>
             <EVOLVESTO>17</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -565,8 +566,9 @@
             <MASSKG>30.0</MASSKG>
             <EVOLVESTO>18</EVOLVESTO>
             <EXPYIELD>122</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -598,8 +600,9 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>39.5</MASSKG>
             <EXPYIELD>211</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>3:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="3" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -641,7 +644,9 @@
             <MASSKG>3.5</MASSKG>
             <EVOLVESTO>20</EVOLVESTO>
             <EXPYIELD>51</EXPYIELD>
-            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rotten_flesh"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
@@ -674,7 +679,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>18.5</MASSKG>
             <EXPYIELD>145</EXPYIELD>
-            <COMMONDROP>2:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:rotten_flesh"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -709,8 +716,9 @@
             <MASSKG>2.0</MASSKG>
             <EVOLVESTO>22</EVOLVESTO>
             <EXPYIELD>52</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -741,8 +749,9 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>38.0</MASSKG>
             <EXPYIELD>155</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -773,7 +782,7 @@
             <MASSKG>6.9</MASSKG>
             <EVOLVESTO>24</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:leather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:leather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -806,7 +815,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>65.0</MASSKG>
             <EXPYIELD>153</EXPYIELD>
-            <COMMONDROP>1:leather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:leather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -838,8 +847,9 @@
             <MASSKG>6.0</MASSKG>
             <EVOLVESTO>26</EVOLVESTO>
             <EXPYIELD>105</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>2:redstone 1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -872,8 +882,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>30.0</MASSKG>
             <EXPYIELD>214</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>3:redstone 1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="3" r="1" id="minecraft:redstone"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -899,8 +910,8 @@
             <MASSKG>12.0</MASSKG>
             <EVOLVESTO>28</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -932,8 +943,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>29.5</MASSKG>
             <EXPYIELD>158</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -966,15 +977,15 @@
             <MASSKG>7.0</MASSKG>
             <EVOLVESTO>30</EVOLVESTO>
             <EXPYIELD>55</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.05" id="minecraft:rabbit_foot"/>
+            <Held n="1" r="0.1" id="moonstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:rabbit_foot</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>254</GENDERRATIO>
-            <HELDITEM>1:moonstone:0:10</HELDITEM>
             <BIOMESANYACCEPTABLE>plains 0.25</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>wet cold</EXCLUDEDBIOMES>
             <SPECIALCASES>day night</SPECIALCASES>
@@ -1003,11 +1014,11 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>31</EVOLVESTO>
             <EXPYIELD>128</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.05" id="minecraft:rabbit_foot"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:rabbit_foot</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>254</GENDERRATIO>
@@ -1035,8 +1046,9 @@
             <SPECIALEGGSPECIESRULES>32:32`29;33:32`29;34:32`29</SPECIALEGGSPECIESRULES>
             <MASSKG>60.0</MASSKG>
             <EXPYIELD>223</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.05" id="minecraft:rabbit_foot"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1065,15 +1077,15 @@
             <MASSKG>9.0</MASSKG>
             <EVOLVESTO>33</EVOLVESTO>
             <EXPYIELD>55</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.05" id="minecraft:rabbit_foot"/>
+            <Held n="1" r="0.1" id="moonstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:rabbit_foot</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>0</GENDERRATIO>
-            <HELDITEM>1:moonstone:0:10</HELDITEM>
             <BIOMESANYACCEPTABLE>plains 0.25</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>wet cold</EXCLUDEDBIOMES>
             <SPECIALCASES>day night</SPECIALCASES>
@@ -1102,11 +1114,11 @@
             <MASSKG>19.5</MASSKG>
             <EVOLVESTO>34</EVOLVESTO>
             <EXPYIELD>128</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.05" id="minecraft:rabbit_foot"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:rabbit_foot</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>0</GENDERRATIO>
@@ -1134,8 +1146,10 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>62.0</MASSKG>
             <EXPYIELD>223</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.05" id="minecraft:rabbit_foot"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1165,12 +1179,12 @@
             <EVOLVESTO>36</EVOLVESTO>
             <EXPYIELD>113</EXPYIELD>
             <BASEFRIENDSHIP>140</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Held n="1" r="0.1" id="moonstone"/>
+            <Drop n="1" r="0.05" id="minecraft:moonstone"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <ACTIVETIMES>night</ACTIVETIMES>
             <GENDERRATIO>190</GENDERRATIO>
-            <HELDITEM>1:moonstone:0:10</HELDITEM>
             <BIOMESANYACCEPTABLE>meteor 0.25;cave 0.25</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="45" def="48" hp="70" spatk="60" spd="35" spdef="65"/>
@@ -1202,7 +1216,7 @@
             <MASSKG>40.0</MASSKG>
             <EXPYIELD>213</EXPYIELD>
             <BASEFRIENDSHIP>140</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Drop n="1" r="0.05" id="minecraft:moonstone"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <ACTIVETIMES>night</ACTIVETIMES>
@@ -1228,9 +1242,10 @@
             <MASSKG>9.9</MASSKG>
             <EVOLVESTO>38</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.25" id="minecraft:blaze_powder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:blaze_powder</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>190</GENDERRATIO>
@@ -1263,9 +1278,10 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>19.9</MASSKG>
             <EXPYIELD>177</EXPYIELD>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.25" id="minecraft:blaze_powder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:blaze_powder</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>190</GENDERRATIO>
@@ -1291,7 +1307,8 @@
             <EVOLVESTO>40</EVOLVESTO>
             <EXPYIELD>95</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Held n="1" r="0.1" id="moonstone"/>
+            <Drop n="1" r="0.05" id="minecraft:moonstone"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>190</GENDERRATIO>
@@ -1322,7 +1339,7 @@
             <MASSKG>12.0</MASSKG>
             <EXPYIELD>191</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Drop n="1" r="0.05" id="minecraft:moonstone"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>190</GENDERRATIO>
@@ -1347,7 +1364,7 @@
             <MASSKG>7.5</MASSKG>
             <EVOLVESTO>42</EVOLVESTO>
             <EXPYIELD>49</EXPYIELD>
-            <COMMONDROP>1:spider_eye</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
@@ -1381,7 +1398,7 @@
             <MASSKG>55.0</MASSKG>
             <EVOLVESTO>169</EVOLVESTO>
             <EXPYIELD>159</EXPYIELD>
-            <COMMONDROP>2:spider_eye</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
@@ -1415,7 +1432,7 @@
             <MASSKG>5.4</MASSKG>
             <EVOLVESTO>44</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1451,7 +1468,7 @@
             <MASSKG>8.6</MASSKG>
             <EVOLVESTO>45 182</EVOLVESTO>
             <EXPYIELD>138</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1483,7 +1500,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>18.6</MASSKG>
             <EXPYIELD>216</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1513,7 +1530,8 @@
             <MASSKG>5.4</MASSKG>
             <EVOLVESTO>47</EVOLVESTO>
             <EXPYIELD>57</EXPYIELD>
-            <COMMONDROP>2:brown_mushroom 2:red_mushroom</COMMONDROP>
+            <Drop n="2" r="0.5" id="minecraft:brown_mushroom"/>
+            <Drop n="2" r="0.5" id="minecraft:red_mushroom"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <INTERACTIONLOGIC>shears`brown_mushroom`red_mushroom</INTERACTIONLOGIC>
@@ -1546,7 +1564,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>29.5</MASSKG>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>3:brown_mushroom 3:red_mushroom</COMMONDROP>
+            <Drop n="3" r="0.5" id="minecraft:brown_mushroom"/>
+            <Drop n="3" r="0.5" id="minecraft:red_mushroom"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <INTERACTIONLOGIC>bowl`mushroom_stew</INTERACTIONLOGIC>
@@ -1578,7 +1597,7 @@
             <MASSKG>30.0</MASSKG>
             <EVOLVESTO>49</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <COMMONDROP>1:spider_eye</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -1609,7 +1628,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>12.5</MASSKG>
             <EXPYIELD>158</EXPYIELD>
-            <COMMONDROP>2:spider_eye</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -1641,7 +1660,7 @@
             <MASSKG>0.8</MASSKG>
             <EVOLVESTO>51</EVOLVESTO>
             <EXPYIELD>53</EXPYIELD>
-            <COMMONDROP>1:dirt</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:dirt"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1675,7 +1694,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>33.3</MASSKG>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:dirt</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:dirt"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -1709,14 +1728,15 @@
             <MASSKG>4.2</MASSKG>
             <EVOLVESTO>53</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:gold_nugget 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:gold_nugget"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
+            <Drop n="1" r="0.1" id="minecraft:emerald"/>
+            <Held n="1" r="0.33" id="minecraft:emerald"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:emerald</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <HELDITEM>1:emerald:0:33</HELDITEM>
             <BIOMESALLNEEDED>plains village 0.25</BIOMESALLNEEDED>
             <BIOMESANYACCEPTABLE>village 0.25</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>wet</EXCLUDEDBIOMES>
@@ -1746,10 +1766,12 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.0</MASSKG>
             <EXPYIELD>154</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>3:gold_nugget 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="2" r="1" id="minecraft:gold_nugget"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
+            <Drop n="3" r="0.1" id="minecraft:emerald"/>
+            <Held n="3" r="0.33" id="minecraft:emerald"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>3:emerald</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -1781,7 +1803,7 @@
             <MASSKG>19.6</MASSKG>
             <EVOLVESTO>55</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -1814,7 +1836,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>76.6</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -1846,8 +1868,8 @@
             <MASSKG>28.0</MASSKG>
             <EVOLVESTO>57</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -1879,8 +1901,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.0</MASSKG>
             <EXPYIELD>159</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -1912,8 +1934,9 @@
             <MASSKG>19.0</MASSKG>
             <EVOLVESTO>59</EVOLVESTO>
             <EXPYIELD>70</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="1" r="0.25" id="minecraft:blaze_powder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -1946,8 +1969,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>155.0</MASSKG>
             <EXPYIELD>194</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -1973,7 +1996,7 @@
             <MASSKG>12.4</MASSKG>
             <EVOLVESTO>61</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -2006,7 +2029,7 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>62 186</EVOLVESTO>
             <EXPYIELD>135</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -2035,7 +2058,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>54.0</MASSKG>
             <EXPYIELD>225</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -2063,7 +2086,7 @@
             <MASSKG>19.5</MASSKG>
             <EVOLVESTO>64</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -2091,7 +2114,7 @@
             <MASSKG>56.5</MASSKG>
             <EVOLVESTO>65</EVOLVESTO>
             <EXPYIELD>140</EXPYIELD>
-            <COMMONDROP>2:ender_pearl</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -2121,7 +2144,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>48.0</MASSKG>
             <EXPYIELD>221</EXPYIELD>
-            <COMMONDROP>3:ender_pearl</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -2262,7 +2285,7 @@
             <MASSKG>4.0</MASSKG>
             <EVOLVESTO>70</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2297,7 +2320,7 @@
             <MASSKG>6.4</MASSKG>
             <EVOLVESTO>71</EVOLVESTO>
             <EXPYIELD>137</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2328,7 +2351,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>15.5</MASSKG>
             <EXPYIELD>216</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2359,7 +2382,7 @@
             <MASSKG>45.5</MASSKG>
             <EVOLVESTO>73</EVOLVESTO>
             <EXPYIELD>67</EXPYIELD>
-            <COMMONDROP>1:dye:0</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:dye"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2394,7 +2417,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>55.0</MASSKG>
             <EXPYIELD>180</EXPYIELD>
-            <COMMONDROP>2:dye:0</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:dye"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
@@ -2428,7 +2451,7 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>75</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:cobblestone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:cobblestone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2464,7 +2487,7 @@
             <MASSKG>105.0</MASSKG>
             <EVOLVESTO>76</EVOLVESTO>
             <EXPYIELD>137</EXPYIELD>
-            <COMMONDROP>2:stone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2497,7 +2520,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>300.0</MASSKG>
             <EXPYIELD>218</EXPYIELD>
-            <COMMONDROP>3:stone</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2532,8 +2555,10 @@
             <MASSKG>30.0</MASSKG>
             <EVOLVESTO>78</EVOLVESTO>
             <EXPYIELD>82</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
-            <COMMONDROP>1:coal 1:leather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
+            <Drop n="1" r="1" id="minecraft:coal"/>
+            <Drop n="1" r="1" id="minecraft:leather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2565,8 +2590,10 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>95.0</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <FOODDROP>2:beef</FOODDROP>
-            <COMMONDROP>2:coal 2:leather 2:bone:0:10</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:beef"/>
+            <Drop n="2" r="1" id="minecraft:coal"/>
+            <Drop n="2" r="1" id="minecraft:leather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -2598,13 +2625,13 @@
             <MASSKG>36.0</MASSKG>
             <EVOLVESTO>80 199</EVOLVESTO>
             <EXPYIELD>63</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
+            <Held n="1" r="0.1" id="kingsrock"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <HELDITEM>1:kingsrock:0:10</HELDITEM>
             <BIOMESALLNEEDED>beach cave 0.25; river cave 0.25; lake cave 0.25</BIOMESALLNEEDED>
             <BIOMESANYACCEPTABLE>beach river lake 0.3</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day night water+</SPECIALCASES>
@@ -2632,8 +2659,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>78.5</MASSKG>
             <EXPYIELD>172</EXPYIELD>
-            <FOODDROP>2:porkchop</FOODDROP>
-            <COMMONDROP>2:bone:0:10</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:porkchop"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -2678,10 +2705,10 @@
             <MASSKG>6.0</MASSKG>
             <EVOLVESTO>82</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <COMMONDROP>1:iron_ingot</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
+            <Drop n="10" r="0.1" id="minecraft:redstone"/>
             <FOODMATERIAL>electricity</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>10:redstone</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -2714,10 +2741,10 @@
             <MASSKG>60.0</MASSKG>
             <EVOLVESTO>462</EVOLVESTO>
             <EXPYIELD>163</EXPYIELD>
-            <COMMONDROP>2:iron_ingot</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:iron_ingot"/>
+            <Drop n="20" r="0.1" id="minecraft:redstone"/>
             <FOODMATERIAL>electricity</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>20:redstone</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -2748,8 +2775,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>15.0</MASSKG>
             <EXPYIELD>123</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -2783,8 +2810,9 @@
             <MASSKG>39.2</MASSKG>
             <EVOLVESTO>85</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC fly="FALSE" shoulder="FALSE"/>
@@ -2816,8 +2844,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>85.2</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC fly="FALSE" shoulder="FALSE"/>
@@ -2849,7 +2878,7 @@
             <MASSKG>90.0</MASSKG>
             <EVOLVESTO>87</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -2882,7 +2911,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>120.0</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -2914,7 +2943,7 @@
             <MASSKG>30.0</MASSKG>
             <EVOLVESTO>89</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>zombie:slime</SHADOWREPLACEMENTS>
@@ -2946,7 +2975,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>30.0</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -2979,7 +3008,7 @@
             <EXPYIELD>61</EXPYIELD>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:ender_pearl</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -3011,7 +3040,7 @@
             <EXPYIELD>184</EXPYIELD>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:ender_pearl</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE" stationary="TRUE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -3038,9 +3067,9 @@
             <MASSKG>0.1</MASSKG>
             <EVOLVESTO>93</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
+            <Drop n="1" r="0.1" id="minecraft:ghast_tear"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:ghast_tear</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
             <SHADOWREPLACEMENTS>ghast</SHADOWREPLACEMENTS>
@@ -3074,7 +3103,7 @@
             <MASSKG>0.1</MASSKG>
             <EVOLVESTO>94</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:ender_pearl</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
@@ -3105,7 +3134,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>40.5</MASSKG>
             <EXPYIELD>225</EXPYIELD>
-            <COMMONDROP>3:ender_pearl</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
@@ -3150,7 +3179,7 @@
             <MASSKG>210.0</MASSKG>
             <EVOLVESTO>208</EVOLVESTO>
             <EXPYIELD>77</EXPYIELD>
-            <COMMONDROP>1:stone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3192,7 +3221,7 @@
             <EVOLVESTO>97</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:ender_pearl</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -3224,7 +3253,7 @@
             <MASSKG>75.6</MASSKG>
             <EXPYIELD>169</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:ender_pearl</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -3256,7 +3285,7 @@
             <MASSKG>6.5</MASSKG>
             <EVOLVESTO>99</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3289,7 +3318,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>60.0</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3320,10 +3349,10 @@
             <MASSKG>10.4</MASSKG>
             <EVOLVESTO>101</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
+            <Drop n="10" r="0.1" id="minecraft:gunpowder"/>
             <FOODMATERIAL>electricity</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>10:gunpowder</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>creeper</SHADOWREPLACEMENTS>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -3356,10 +3385,10 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>66.6</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <COMMONDROP>2:redstone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
+            <Drop n="20" r="0.1" id="minecraft:gunpowder"/>
             <FOODMATERIAL>electricity</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>20:gunpowder</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -3391,8 +3420,7 @@
             <MASSKG>2.5</MASSKG>
             <EVOLVESTO>103</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <FOODDROP>1:wheat_seeds</FOODDROP>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3426,8 +3454,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>120.0</MASSKG>
             <EXPYIELD>182</EXPYIELD>
-            <FOODDROP>1:wheat_seeds</FOODDROP>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3455,9 +3482,9 @@
             <MASSKG>6.5</MASSKG>
             <EVOLVESTO>105</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bone"/>
+            <Drop n="1" r="0.05" d="1" id="minecraft:skull"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:skull:1:20</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>skeleton</SHADOWREPLACEMENTS>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -3490,9 +3517,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>45.0</MASSKG>
             <EXPYIELD>149</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
+            <Drop n="2" r="0.05" d="1" id="minecraft:skull"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:skull:1:20</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -3615,7 +3642,7 @@
             <MASSKG>1.0</MASSKG>
             <EVOLVESTO>110</EVOLVESTO>
             <EXPYIELD>68</EXPYIELD>
-            <COMMONDROP>1:gunpowder</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:gunpowder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>blaze</SHADOWREPLACEMENTS>
@@ -3647,7 +3674,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>9.5</MASSKG>
             <EXPYIELD>172</EXPYIELD>
-            <COMMONDROP>2:gunpowder</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:gunpowder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -3677,7 +3704,7 @@
             <MASSKG>115.0</MASSKG>
             <EVOLVESTO>112</EVOLVESTO>
             <EXPYIELD>69</EXPYIELD>
-            <COMMONDROP>1:stone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3710,7 +3737,7 @@
             <MASSKG>120.0</MASSKG>
             <EVOLVESTO>464</EVOLVESTO>
             <EXPYIELD>170</EXPYIELD>
-            <COMMONDROP>2:stone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3747,7 +3774,8 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>254</GENDERRATIO>
-            <HELDITEM>1:ovalstone:0:50 1:luckyegg:0:5</HELDITEM>
+            <Held n="1" r="0.5" id="ovalstone"/>
+            <Held n="1" r="0.05" id="luckyegg"/>
             <BIOMESANYACCEPTABLE>meteor 0.05;cave 0.05</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="5" def="5" hp="250" spatk="35" spd="50" spdef="105"/>
@@ -3776,7 +3804,7 @@
             <MASSKG>35.0</MASSKG>
             <EVOLVESTO>465</EVOLVESTO>
             <EXPYIELD>87</EXPYIELD>
-            <COMMONDROP>1:vine</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:vine"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3855,8 +3883,8 @@
             <MASSKG>8.0</MASSKG>
             <EVOLVESTO>117</EVOLVESTO>
             <EXPYIELD>59</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
-            <COMMONDROP>1:dye:0</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
+            <Drop n="1" r="1" id="minecraft:dye"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3889,8 +3917,8 @@
             <MASSKG>25.0</MASSKG>
             <EVOLVESTO>230</EVOLVESTO>
             <EXPYIELD>154</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
-            <COMMONDROP>2:dye:0</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
+            <Drop n="2" r="1" id="minecraft:dye"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3922,7 +3950,7 @@
             <MASSKG>15.0</MASSKG>
             <EVOLVESTO>119</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3954,7 +3982,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>39.0</MASSKG>
             <EXPYIELD>158</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -3986,7 +4014,7 @@
             <MASSKG>34.5</MASSKG>
             <EVOLVESTO>121</EVOLVESTO>
             <EXPYIELD>68</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4020,7 +4048,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>80.0</MASSKG>
             <EXPYIELD>182</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
@@ -4147,9 +4175,8 @@
             <MASSKG>30.0</MASSKG>
             <EVOLVESTO>466</EVOLVESTO>
             <EXPYIELD>172</EXPYIELD>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="4" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>3:redstone</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>63</GENDERRATIO>
@@ -4181,9 +4208,10 @@
             <MASSKG>44.5</MASSKG>
             <EVOLVESTO>467</EVOLVESTO>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>1:blaze_rod</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:blaze_rod"/>
+            <Drop n="5" r="0.1" id="minecraft:blaze_powder"/>
+            <Drop n="2" r="0.1" id="minecraft:blaze_rod"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>5:blaze_powder 2:blaze_rod</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>water</HATEDMATERIALRULES>
             <SHADOWREPLACEMENTS>blaze</SHADOWREPLACEMENTS>
@@ -4259,8 +4287,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>88.4</MASSKG>
             <EXPYIELD>172</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
-            <COMMONDROP>1:leather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
+            <Drop n="1" r="1" id="minecraft:leather"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4270,7 +4298,7 @@
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="100" def="95" hp="75" spatk="40" spd="110" spdef="70"/>
             <EVYIELD atk="1" spd="1"/>
-            <SIZES height="1.4" length="1.0" width="1.0"/>
+            <SIZES height="1.4" length="1.4" width="1.0"/>
             <TYPE type1="Normal"/>
             <ABILITY hidden="Sheer Force" normal="Intimidate, Anger Point"/>
         </STATS>
@@ -4293,7 +4321,7 @@
             <MASSKG>10.0</MASSKG>
             <EVOLVESTO>130</EVOLVESTO>
             <EXPYIELD>40</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4320,7 +4348,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>235.0</MASSKG>
             <EXPYIELD>189</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" fly="FALSE" shoulder="FALSE"/>
@@ -4362,7 +4390,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>220.0</MASSKG>
             <EXPYIELD>187</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
@@ -4394,7 +4422,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>4.0</MASSKG>
             <EXPYIELD>101</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -4421,10 +4449,10 @@
             <MASSKG>6.5</MASSKG>
             <EVOLVESTO>vaporeon jolteon flareon espeon umbreon leafeon glaceon sylveon</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>2:rabbit_hide</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="2" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:rabbit_foot"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:rabbit_foot</RAREDROP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
@@ -4455,7 +4483,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>29.0</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <COMMONDROP>1:fish</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -4484,7 +4512,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>24.5</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <COMMONDROP>1:glowstone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:glowstone_dust"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -4513,7 +4541,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>25.0</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -4544,7 +4572,7 @@
             <EVOLVESTO>233</EVOLVESTO>
             <EXPYIELD>79</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:ender_pearl</RAREDROP>
+            <Drop n="2" r="0.2" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -4575,7 +4603,7 @@
             <MASSKG>7.5</MASSKG>
             <EVOLVESTO>139</EVOLVESTO>
             <EXPYIELD>71</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4606,7 +4634,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>35.0</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4638,7 +4666,7 @@
             <MASSKG>11.5</MASSKG>
             <EVOLVESTO>141</EVOLVESTO>
             <EXPYIELD>71</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4668,7 +4696,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>40.5</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -4699,8 +4727,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>59.0</MASSKG>
             <EXPYIELD>180</EXPYIELD>
-            <FOODDROP>1:feather</FOODDROP>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:feather"/>
+            <Drop n="1" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -4774,7 +4802,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>55.4</MASSKG>
             <EXPYIELD>261</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -4807,7 +4835,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>52.6</MASSKG>
             <EXPYIELD>261</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -4840,7 +4868,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>60.0</MASSKG>
             <EXPYIELD>261</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <HATEDMATERIALRULES>water</HATEDMATERIALRULES>
@@ -4875,7 +4903,7 @@
             <MASSKG>3.3</MASSKG>
             <EVOLVESTO>148</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -4908,7 +4936,7 @@
             <MASSKG>16.5</MASSKG>
             <EVOLVESTO>149</EVOLVESTO>
             <EXPYIELD>147</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -4937,7 +4965,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>210.0</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <FOODDROP>3:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -5024,7 +5052,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>4.0</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>1:mewHair</COMMONDROP>
+            <Drop n="1" r="1" id="mewHair"/>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5057,7 +5085,7 @@
             <MASSKG>6.4</MASSKG>
             <EVOLVESTO>153</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -5091,7 +5119,7 @@
             <MASSKG>15.8</MASSKG>
             <EVOLVESTO>154</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -5122,7 +5150,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>100.5</MASSKG>
             <EXPYIELD>236</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -5156,7 +5184,7 @@
             <MASSKG>7.9</MASSKG>
             <EVOLVESTO>156</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5189,7 +5217,7 @@
             <MASSKG>19.0</MASSKG>
             <EVOLVESTO>157</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:coal</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5219,7 +5247,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>79.5</MASSKG>
             <EXPYIELD>240</EXPYIELD>
-            <COMMONDROP>3:coal</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5251,7 +5279,7 @@
             <MASSKG>9.5</MASSKG>
             <EVOLVESTO>159</EVOLVESTO>
             <EXPYIELD>63</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5283,7 +5311,7 @@
             <MASSKG>25.0</MASSKG>
             <EVOLVESTO>160</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5312,7 +5340,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>88.8</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <FOODDROP>3:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -5343,12 +5371,14 @@
             <MASSKG>6.0</MASSKG>
             <EVOLVESTO>162</EVOLVESTO>
             <EXPYIELD>43</EXPYIELD>
-            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
+            <Held n="1" r="0.1" id="oranberry"/>
+            <Drop n="1" r="1" id="minecraft:rotten_flesh"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <HELDITEM>1:oranberry:10</HELDITEM>
             <BIOMESANYACCEPTABLE>plains 0.3</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day</SPECIALCASES>
             <BASESTATS atk="46" def="34" hp="35" spatk="35" spd="20" spdef="45"/>
@@ -5375,7 +5405,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.5</MASSKG>
             <EXPYIELD>145</EXPYIELD>
-            <COMMONDROP>2:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:rotten_flesh"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5407,7 +5439,7 @@
             <MASSKG>21.2</MASSKG>
             <EVOLVESTO>164</EVOLVESTO>
             <EXPYIELD>52</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5440,7 +5472,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>40.8</MASSKG>
             <EXPYIELD>155</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5533,7 +5565,7 @@
             <MASSKG>8.5</MASSKG>
             <EVOLVESTO>168</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <SHADOWREPLACEMENTS>spider</SHADOWREPLACEMENTS>
@@ -5568,7 +5600,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>33.5</MASSKG>
             <EXPYIELD>137</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -5600,7 +5632,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>75.0</MASSKG>
             <EXPYIELD>241</EXPYIELD>
-            <COMMONDROP>3:spider_eye</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5632,8 +5664,9 @@
             <MASSKG>12.0</MASSKG>
             <EVOLVESTO>171</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
+            <Drop n="2" r="1" id="minecraft:glowstone_dust"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -5665,8 +5698,9 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>22.5</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
+            <Drop n="2" r="1" id="minecraft:glowstone_dust"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -5727,7 +5761,7 @@
             <EVOLVESTO>35</EVOLVESTO>
             <EXPYIELD>44</EXPYIELD>
             <BASEFRIENDSHIP>140</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Drop n="1" r="1" id="moonstone"/>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>190</GENDERRATIO>
@@ -5754,7 +5788,7 @@
             <EVOLVESTO>39</EVOLVESTO>
             <EXPYIELD>42</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Drop n="1" r="1" id="moonstone"/>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>190</GENDERRATIO>
@@ -5843,7 +5877,7 @@
             <MASSKG>2.0</MASSKG>
             <EVOLVESTO>178</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5876,7 +5910,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>15.0</MASSKG>
             <EXPYIELD>165</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -5908,8 +5942,8 @@
             <MASSKG>7.8</MASSKG>
             <EVOLVESTO>180</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
-            <FOODDROP>1:mutton</FOODDROP>
-            <COMMONDROP>1:wool:4</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:mutton"/>
+            <Drop n="1" r="1" d="4" id="minecraft:wool"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dye="TRUE#11" shoulder="FALSE"/>
@@ -5945,8 +5979,8 @@
             <MASSKG>13.3</MASSKG>
             <EVOLVESTO>181</EVOLVESTO>
             <EXPYIELD>128</EXPYIELD>
-            <FOODDROP>2:mutton</FOODDROP>
-            <COMMONDROP>1:wool</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:mutton"/>
+            <Drop n="1" r="1" id="minecraft:wool"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dye="TRUE#15" shoulder="FALSE"/>
@@ -5977,7 +6011,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>61.5</MASSKG>
             <EXPYIELD>225</EXPYIELD>
-            <FOODDROP>3:mutton</FOODDROP>
+            <Drop n="3" r="1" id="minecraft:mutton"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -6238,7 +6272,7 @@
             <MOVEMENTTYPE>floating:1.5</MOVEMENTTYPE>
             <MASSKG>3.0</MASSKG>
             <EXPYIELD>203</EXPYIELD>
-            <COMMONDROP>1:wool</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wool"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -6273,7 +6307,7 @@
             <MASSKG>11.5</MASSKG>
             <EVOLVESTO>424</EVOLVESTO>
             <EXPYIELD>72</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -6305,10 +6339,10 @@
             <MASSKG>1.8</MASSKG>
             <EVOLVESTO>192</EVOLVESTO>
             <EXPYIELD>36</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:leaves</RAREDROP>
+            <Drop n="2" r="1" id="minecraft:leaves"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -6403,7 +6437,7 @@
             <MASSKG>8.5</MASSKG>
             <EVOLVESTO>195</EVOLVESTO>
             <EXPYIELD>42</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -6434,7 +6468,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>75.0</MASSKG>
             <EXPYIELD>151</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -6462,7 +6496,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>26.5</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -6491,7 +6525,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>27.0</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -6521,7 +6555,7 @@
             <MASSKG>2.1</MASSKG>
             <EVOLVESTO>430</EVOLVESTO>
             <EXPYIELD>81</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -6553,7 +6587,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>79.5</MASSKG>
             <EXPYIELD>172</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -6696,8 +6730,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>41.5</MASSKG>
             <EXPYIELD>159</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -6731,7 +6765,7 @@
             <MASSKG>7.2</MASSKG>
             <EVOLVESTO>205</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>2:gunpowder</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:gunpowder"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -6763,7 +6797,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>125.8</MASSKG>
             <EXPYIELD>163</EXPYIELD>
-            <COMMONDROP>3:gunpowder 2:iron_ore</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:gunpowder"/>
+            <Drop n="2" r="1" id="minecraft:iron_ore"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -6961,7 +6996,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>3.9</MASSKG>
             <EXPYIELD>86</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -7039,13 +7074,13 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>20.5</MASSKG>
             <EXPYIELD>177</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
+            <Held n="1" r="1" id="berryjuice"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <HELDITEM>1:berryjuice</HELDITEM>
             <BIOMESANYACCEPTABLE>wet ocean beach mushroom cave 0.1</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day night</SPECIALCASES>
             <BASESTATS atk="10" def="230" hp="20" spatk="10" spd="5" spdef="230"/>
@@ -7074,7 +7109,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>54.0</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -7214,7 +7249,7 @@
             <MASSKG>35.0</MASSKG>
             <EVOLVESTO>219</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
-            <COMMONDROP>1:magma_cream</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:magma_cream"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>magmacube</SHADOWREPLACEMENTS>
@@ -7248,7 +7283,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>55.0</MASSKG>
             <EXPYIELD>144</EXPYIELD>
-            <COMMONDROP>2:magma_cream</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:magma_cream"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -7279,7 +7314,7 @@
             <MASSKG>6.5</MASSKG>
             <EVOLVESTO>221</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -7313,7 +7348,7 @@
             <MASSKG>55.8</MASSKG>
             <EVOLVESTO>473</EVOLVESTO>
             <EXPYIELD>158</EXPYIELD>
-            <FOODDROP>2:porkchop</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:porkchop"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -7378,7 +7413,7 @@
             <MASSKG>12.0</MASSKG>
             <EVOLVESTO>224</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -7410,7 +7445,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>28.5</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <COMMONDROP>2:dye:0</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:dye"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -7442,7 +7477,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>16.0</MASSKG>
             <EXPYIELD>116</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -7470,7 +7505,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>220.0</MASSKG>
             <EXPYIELD>163</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" fly="FALSE" shoulder="FALSE"/>
@@ -7504,8 +7539,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>50.5</MASSKG>
             <EXPYIELD>163</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:iron_ingot</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -7539,9 +7574,9 @@
             <MASSKG>10.8</MASSKG>
             <EVOLVESTO>229</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>1:blaze_rod</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:blaze_rod"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -7571,9 +7606,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>35.0</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <COMMONDROP>2:coal</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:coal"/>
+            <Drop n="2" r="0.1" id="minecraft:blaze_rod"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>2:blaze_rod</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -7738,8 +7773,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>71.2</MASSKG>
             <EXPYIELD>163</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -7942,8 +7977,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>75.5</MASSKG>
             <EXPYIELD>172</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
-            <COMMONDROP>1:leather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
+            <Drop n="1" r="1" id="minecraft:leather"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -8005,7 +8040,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>178.0</MASSKG>
             <EXPYIELD>261</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -8037,7 +8072,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>198.0</MASSKG>
             <EXPYIELD>261</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -8069,7 +8104,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>187.0</MASSKG>
             <EXPYIELD>261</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -8206,7 +8241,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>216.0</MASSKG>
             <EXPYIELD>306</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -8238,7 +8273,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>199.0</MASSKG>
             <EXPYIELD>306</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -8271,7 +8306,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>5.0</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -8307,7 +8342,7 @@
             <MASSKG>5.0</MASSKG>
             <EVOLVESTO>253</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -8340,7 +8375,7 @@
             <MASSKG>21.6</MASSKG>
             <EVOLVESTO>254</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -8371,7 +8406,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>52.2</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -8419,8 +8454,9 @@
             <MASSKG>2.5</MASSKG>
             <EVOLVESTO>256</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:coal 1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -8451,8 +8487,9 @@
             <MASSKG>19.5</MASSKG>
             <EVOLVESTO>257</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:coal 2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
+            <Drop n="2" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -8481,8 +8518,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>52.0</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>3:coal 3:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="3" r="1" id="minecraft:coal"/>
+            <Drop n="3" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -8690,12 +8728,12 @@
             <MASSKG>17.5</MASSKG>
             <EVOLVESTO>264</EVOLVESTO>
             <EXPYIELD>48</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Held n="1" r="0.1" id="oranberry"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <HELDITEM>1:oranberry:10</HELDITEM>
             <BIOMESANYACCEPTABLE>forest plains 0.3</BIOMESANYACCEPTABLE>
             <EXCLUDEDBIOMES>cold</EXCLUDEDBIOMES>
             <SPECIALCASES>day night</SPECIALCASES>
@@ -8724,7 +8762,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.5</MASSKG>
             <EXPYIELD>147</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -8755,7 +8793,7 @@
             <MASSKG>3.6</MASSKG>
             <EVOLVESTO>Silcoon Cascoon</EVOLVESTO>
             <EXPYIELD>39</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -8785,7 +8823,7 @@
             <MASSKG>10.0</MASSKG>
             <EVOLVESTO>267</EVOLVESTO>
             <EXPYIELD>72</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -8810,7 +8848,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>28.4</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>1:spider_eye</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -8840,7 +8878,7 @@
             <MASSKG>11.5</MASSKG>
             <EVOLVESTO>269</EVOLVESTO>
             <EXPYIELD>41</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -8865,7 +8903,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>31.6</MASSKG>
             <EXPYIELD>135</EXPYIELD>
-            <COMMONDROP>1:spider_eye</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:spider_eye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -8983,10 +9021,12 @@
             <MASSKG>4.0</MASSKG>
             <EVOLVESTO>274</EVOLVESTO>
             <EXPYIELD>44</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
+            <Drop n="1" r="0.25" id="minecraft:pumpkin_seeds"/>
+            <Drop n="1" r="0.25" id="minecraft:melon_seeds"/>
+            <Drop n="1" r="0.25" id="minecraft:beetroot_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:melon_seeds 1:pumpkin_seeds</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>zombie</SHADOWREPLACEMENTS>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -9016,7 +9056,7 @@
             <MASSKG>28.0</MASSKG>
             <EVOLVESTO>275</EVOLVESTO>
             <EXPYIELD>119</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -9045,7 +9085,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>59.6</MASSKG>
             <EXPYIELD>216</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -9073,8 +9113,8 @@
             <MASSKG>2.3</MASSKG>
             <EVOLVESTO>277</EVOLVESTO>
             <EXPYIELD>54</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -9105,8 +9145,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>19.8</MASSKG>
             <EXPYIELD>151</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -9137,8 +9177,8 @@
             <MASSKG>9.5</MASSKG>
             <EVOLVESTO>279</EVOLVESTO>
             <EXPYIELD>54</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -9169,8 +9209,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>28.0</MASSKG>
             <EXPYIELD>151</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -9202,7 +9242,8 @@
             <MASSKG>6.6</MASSKG>
             <EVOLVESTO>281</EVOLVESTO>
             <EXPYIELD>40</EXPYIELD>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
+            <Held n="1" r="0.5" id="dawnstone"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -9236,12 +9277,11 @@
             <MASSKG>20.2</MASSKG>
             <EVOLVESTO>282 475</EVOLVESTO>
             <EXPYIELD>97</EXPYIELD>
-            <COMMONDROP>2:ender_pearl</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <HELDITEM>1:dawnstone:0:50</HELDITEM>
             <BASESTATS atk="35" def="35" hp="38" spatk="65" spd="50" spdef="55"/>
             <EVYIELD spatk="2"/>
             <SIZES height="0.8" length="0.5" width="0.5"/>
@@ -9268,7 +9308,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>48.4</MASSKG>
             <EXPYIELD>233</EXPYIELD>
-            <COMMONDROP>3:ender_pearl</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -9376,7 +9416,8 @@
             <MASSKG>4.5</MASSKG>
             <EVOLVESTO>286</EVOLVESTO>
             <EXPYIELD>59</EXPYIELD>
-            <COMMONDROP>1:brown_mushroom 1:red_mushroom</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:brown_mushroom"/>
+            <Drop n="1" r="1" id="minecraft:red_mushroom"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -9408,7 +9449,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>39.2</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <COMMONDROP>2:brown_mushroom 2:red_mushroom</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:brown_mushroom"/>
+            <Drop n="2" r="1" id="minecraft:red_mushroom"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -9440,7 +9482,7 @@
             <MASSKG>24.0</MASSKG>
             <EVOLVESTO>288</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -9473,7 +9515,7 @@
             <MASSKG>46.5</MASSKG>
             <EVOLVESTO>289</EVOLVESTO>
             <EXPYIELD>154</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -9502,7 +9544,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>130.5</MASSKG>
             <EXPYIELD>252</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -9622,7 +9664,7 @@
             <MASSKG>16.3</MASSKG>
             <EVOLVESTO>294</EVOLVESTO>
             <EXPYIELD>48</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -9654,7 +9696,7 @@
             <MASSKG>40.5</MASSKG>
             <EVOLVESTO>295</EVOLVESTO>
             <EXPYIELD>126</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -9684,7 +9726,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>84.0</MASSKG>
             <EXPYIELD>216</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -9844,7 +9886,7 @@
             <MASSKG>11.0</MASSKG>
             <EVOLVESTO>301</EVOLVESTO>
             <EXPYIELD>52</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -9877,7 +9919,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>32.6</MASSKG>
             <EXPYIELD>133</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -9997,7 +10039,7 @@
             <MASSKG>60.0</MASSKG>
             <EVOLVESTO>305</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <COMMONDROP>1:iron_ingot</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -10034,7 +10076,7 @@
             <MASSKG>120.0</MASSKG>
             <EVOLVESTO>306</EVOLVESTO>
             <EXPYIELD>151</EXPYIELD>
-            <COMMONDROP>2:iron_ingot</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -10067,7 +10109,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>360.0</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <COMMONDROP>3:iron_ingot</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -10192,7 +10234,7 @@
             <MASSKG>15.2</MASSKG>
             <EVOLVESTO>310</EVOLVESTO>
             <EXPYIELD>59</EXPYIELD>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -10224,7 +10266,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>40.2</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <COMMONDROP>2:redstone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -10269,8 +10311,8 @@
             <SPECIALEGGSPECIESRULES>312:311`312</SPECIALEGGSPECIESRULES>
             <MASSKG>4.2</MASSKG>
             <EXPYIELD>142</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
@@ -10306,8 +10348,8 @@
             <SPECIALEGGSPECIESRULES>311:311`312</SPECIALEGGSPECIESRULES>
             <MASSKG>4.2</MASSKG>
             <EXPYIELD>142</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
@@ -10442,7 +10484,7 @@
             <MASSKG>10.3</MASSKG>
             <EVOLVESTO>317</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>slime</SHADOWREPLACEMENTS>
@@ -10475,7 +10517,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>80.0</MASSKG>
             <EXPYIELD>163</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fluctuating</EXPERIENCEMODE>
@@ -10507,7 +10549,7 @@
             <MASSKG>20.8</MASSKG>
             <EVOLVESTO>319</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -10540,7 +10582,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>88.8</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -10581,7 +10623,7 @@
             <MASSKG>130.0</MASSKG>
             <EVOLVESTO>321</EVOLVESTO>
             <EXPYIELD>80</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -10613,7 +10655,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>398.0</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" fly="TRUE" shoulder="FALSE"/>
@@ -10758,8 +10800,8 @@
             <MASSKG>30.6</MASSKG>
             <EVOLVESTO>326</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -10793,8 +10835,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>71.5</MASSKG>
             <EXPYIELD>165</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>2:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="2" r="1" id="minecraft:ender_pearl"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -11017,7 +11059,7 @@
             <MASSKG>1.2</MASSKG>
             <EVOLVESTO>334</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:wool</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wool"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Erratic</EXPERIENCEMODE>
@@ -11049,7 +11091,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>20.6</MASSKG>
             <EXPYIELD>172</EXPYIELD>
-            <COMMONDROP>2:wool</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wool"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Erratic</EXPERIENCEMODE>
@@ -11095,7 +11137,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>40.3</MASSKG>
             <EXPYIELD>160</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Erratic</EXPERIENCEMODE>
@@ -11161,7 +11203,7 @@
             <EXPYIELD>154</EXPYIELD>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:moonstone</RAREDROP>
+            <Drop n="1" r="0.1" id="moonstone"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -11194,7 +11236,7 @@
             <EXPYIELD>154</EXPYIELD>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:sunstone</RAREDROP>
+            <Drop n="1" r="0.1" id="sunstone"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -11225,7 +11267,7 @@
             <MASSKG>1.9</MASSKG>
             <EVOLVESTO>340</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -11258,7 +11300,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>23.6</MASSKG>
             <EXPYIELD>164</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -11292,10 +11334,10 @@
             <MASSKG>11.5</MASSKG>
             <EVOLVESTO>342</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
+            <Drop n="1" r="1" id="minecraft:shears"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:shears</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fluctuating</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -11326,8 +11368,8 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>32.8</MASSKG>
             <EXPYIELD>164</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
-            <COMMONDROP>1:shears</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
+            <Drop n="1" r="1" id="minecraft:shears"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -11481,7 +11523,7 @@
             <MASSKG>12.5</MASSKG>
             <EVOLVESTO>348</EVOLVESTO>
             <EXPYIELD>71</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Erratic</EXPERIENCEMODE>
@@ -11511,7 +11553,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>68.2</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Erratic</EXPERIENCEMODE>
@@ -11542,7 +11584,7 @@
             <MASSKG>7.4</MASSKG>
             <EVOLVESTO>350</EVOLVESTO>
             <EXPYIELD>40</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -11570,7 +11612,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>162.0</MASSKG>
             <EXPYIELD>189</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
@@ -11737,7 +11779,7 @@
             <MASSKG>15.0</MASSKG>
             <EVOLVESTO>356</EVOLVESTO>
             <EXPYIELD>59</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -11769,7 +11811,7 @@
             <MASSKG>30.6</MASSKG>
             <EVOLVESTO>477</EVOLVESTO>
             <EXPYIELD>159</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -11800,8 +11842,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>100.0</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
-            <COMMONDROP>1:apple</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
+            <Drop n="1" r="1" id="minecraft:apple"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -11835,7 +11877,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>1.0</MASSKG>
             <EXPYIELD>149</EXPYIELD>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -11940,9 +11982,9 @@
             <MASSKG>16.8</MASSKG>
             <EVOLVESTO>362 478</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:ice</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ice"/>
+            <Drop n="1" r="0.1" id="minecraft:packed_ice"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:packed_ice</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -11972,9 +12014,9 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>256.5</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <COMMONDROP>2:ice</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ice"/>
+            <Drop n="2" r="0.1" id="minecraft:packed_ice"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:packed_ice</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -12015,7 +12057,7 @@
             <MASSKG>39.5</MASSKG>
             <EVOLVESTO>364</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:ice</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ice"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12048,7 +12090,7 @@
             <MASSKG>87.6</MASSKG>
             <EVOLVESTO>365</EVOLVESTO>
             <EXPYIELD>144</EXPYIELD>
-            <COMMONDROP>2:ice</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ice"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12078,7 +12120,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>150.6</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <COMMONDROP>3:ice</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:ice"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12138,7 +12180,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>27.0</MASSKG>
             <EXPYIELD>170</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12168,7 +12210,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>22.6</MASSKG>
             <EXPYIELD>170</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12198,7 +12240,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>23.4</MASSKG>
             <EXPYIELD>170</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12368,10 +12410,10 @@
             <MASSKG>95.2</MASSKG>
             <EVOLVESTO>375</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:iron_ingot</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>1:ender_pearl</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -12398,10 +12440,10 @@
             <MASSKG>202.5</MASSKG>
             <EVOLVESTO>376</EVOLVESTO>
             <EXPYIELD>147</EXPYIELD>
-            <COMMONDROP>2:iron_ingot</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:iron_ingot"/>
+            <Drop n="2" r="0.1" id="minecraft:ender_pearl"/>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>2:ender_pearl</RAREDROP>
             <LOGIC dive="FALSE" fly="TRUE" shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -12430,10 +12472,10 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>550.0</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>3:iron_ingot</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:iron_ingot"/>
+            <Drop n="3" r="0.1" id="minecraft:ender_pearl"/>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>3:ender_pearl</RAREDROP>
             <LOGIC dive="FALSE" fly="TRUE" shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -12795,7 +12837,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>1.1</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -12828,7 +12870,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>60.8</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -12912,7 +12954,7 @@
             <MASSKG>10.2</MASSKG>
             <EVOLVESTO>388</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12944,7 +12986,7 @@
             <MASSKG>97.0</MASSKG>
             <EVOLVESTO>389</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -12973,7 +13015,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>310.0</MASSKG>
             <EXPYIELD>236</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -13005,7 +13047,7 @@
             <MASSKG>6.2</MASSKG>
             <EVOLVESTO>391</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13036,7 +13078,7 @@
             <MASSKG>22.0</MASSKG>
             <EVOLVESTO>392</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:coal</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13065,7 +13107,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>55.0</MASSKG>
             <EXPYIELD>240</EXPYIELD>
-            <COMMONDROP>3:coal</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13096,7 +13138,7 @@
             <MASSKG>5.2</MASSKG>
             <EVOLVESTO>394</EVOLVESTO>
             <EXPYIELD>63</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13127,7 +13169,7 @@
             <MASSKG>23.0</MASSKG>
             <EVOLVESTO>395</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <FOODDROP>2:chicken</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13156,7 +13198,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>84.5</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <FOODDROP>2:chicken</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13186,8 +13228,8 @@
             <MASSKG>2.0</MASSKG>
             <EVOLVESTO>397</EVOLVESTO>
             <EXPYIELD>49</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13219,8 +13261,8 @@
             <MASSKG>15.5</MASSKG>
             <EVOLVESTO>398</EVOLVESTO>
             <EXPYIELD>119</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13249,8 +13291,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>24.9</MASSKG>
             <EXPYIELD>214</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>3:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="3" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -13280,7 +13322,9 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>400</EVOLVESTO>
             <EXPYIELD>50</EXPYIELD>
-            <COMMONDROP>1:rotten_flesh 1:rabbit_hide 2:bone:0:10</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rotten_flesh"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -13312,6 +13356,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>31.5</MASSKG>
             <EXPYIELD>144</EXPYIELD>
+            <Drop n="1" r="1" id="minecraft:rotten_flesh"/>
+            <Drop n="1" r="1" id="minecraft:rabbit_hide"/>
+            <Drop n="2" r="0.1" id="minecraft:bone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -13398,8 +13445,8 @@
             <MASSKG>9.5</MASSKG>
             <EVOLVESTO>404</EVOLVESTO>
             <EXPYIELD>53</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -13432,8 +13479,8 @@
             <MASSKG>30.5</MASSKG>
             <EVOLVESTO>405</EVOLVESTO>
             <EXPYIELD>127</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>2:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -13462,8 +13509,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>42.0</MASSKG>
             <EXPYIELD>235</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
-            <COMMONDROP>3:redstone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
+            <Drop n="3" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -13833,8 +13880,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>3.9</MASSKG>
             <EXPYIELD>142</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -13867,7 +13914,7 @@
             <MASSKG>29.5</MASSKG>
             <EVOLVESTO>419</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -13900,7 +13947,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>33.5</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -13993,7 +14040,7 @@
             <MASSKG>6.3</MASSKG>
             <EVOLVESTO>423</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -14025,7 +14072,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>29.9</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -14144,7 +14191,7 @@
             <MASSKG>5.5</MASSKG>
             <EVOLVESTO>428</EVOLVESTO>
             <EXPYIELD>70</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -14177,7 +14224,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>33.3</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>140</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -14222,9 +14269,9 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>4.4</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>2:ender_pearl</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ender_pearl"/>
+            <Drop n="1" r="0.1" id="minecraft:ghast_tear"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>1:ghast_tear</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -14248,7 +14295,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>27.3</MASSKG>
             <EXPYIELD>177</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -14277,7 +14324,7 @@
             <MASSKG>3.9</MASSKG>
             <EVOLVESTO>432</EVOLVESTO>
             <EXPYIELD>62</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -14309,7 +14356,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>43.8</MASSKG>
             <EXPYIELD>158</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -14427,7 +14474,7 @@
             <MASSKG>60.5</MASSKG>
             <EVOLVESTO>437</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:iron_ingot</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -14460,7 +14507,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>187.0</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <COMMONDROP>2:iron_ingot</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -14494,7 +14541,7 @@
             <MASSKG>15.0</MASSKG>
             <EVOLVESTO>185</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:cobblestone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:cobblestone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -14581,8 +14628,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>1.9</MASSKG>
             <EXPYIELD>144</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -14851,7 +14898,7 @@
             <MASSKG>49.5</MASSKG>
             <EVOLVESTO>450</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <COMMONDROP>1:sand</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:sand"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -14883,7 +14930,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>300.0</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <COMMONDROP>2:sand</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:sand"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -15071,7 +15118,7 @@
             <MASSKG>7.0</MASSKG>
             <EVOLVESTO>457</EVOLVESTO>
             <EXPYIELD>66</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -15104,7 +15151,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>24.0</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -15136,7 +15183,7 @@
             <MASSKG>65.0</MASSKG>
             <EVOLVESTO>226</EVOLVESTO>
             <EXPYIELD>69</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC fly="FALSE" shoulder="FALSE"/>
@@ -15271,7 +15318,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>180.0</MASSKG>
             <EXPYIELD>241</EXPYIELD>
-            <COMMONDROP>3:iron_ingot</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>electricity</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC dive="FALSE" fly="TRUE" shoulder="FALSE"/>
@@ -15511,7 +15558,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>25.5</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -15542,7 +15589,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>25.9</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -15602,7 +15649,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>291.0</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <FOODDROP>3:beef</FOODDROP>
+            <Drop n="3" r="1" id="minecraft:beef"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -16172,7 +16219,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>3.1</MASSKG>
             <EXPYIELD>216</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -16202,7 +16249,7 @@
             <SPECIALEGGSPECIESRULES>0:489</SPECIALEGGSPECIESRULES>
             <MASSKG>1.4</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -16453,7 +16500,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>4.0</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -16486,7 +16533,7 @@
             <MASSKG>8.1</MASSKG>
             <EVOLVESTO>496</EVOLVESTO>
             <EXPYIELD>28</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -16519,7 +16566,7 @@
             <MASSKG>16.0</MASSKG>
             <EVOLVESTO>497</EVOLVESTO>
             <EXPYIELD>145</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -16549,7 +16596,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>63.0</MASSKG>
             <EXPYIELD>238</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -16580,8 +16627,8 @@
             <MASSKG>9.9</MASSKG>
             <EVOLVESTO>499</EVOLVESTO>
             <EXPYIELD>28</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -16614,8 +16661,8 @@
             <MASSKG>55.5</MASSKG>
             <EVOLVESTO>500</EVOLVESTO>
             <EXPYIELD>146</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>2:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="2" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -16646,8 +16693,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>150.0</MASSKG>
             <EXPYIELD>238</EXPYIELD>
-            <FOODDROP>1:porkchop</FOODDROP>
-            <COMMONDROP>3:coal 3:leather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:porkchop"/>
+            <Drop n="3" r="1" id="minecraft:coal"/>
+            <Drop n="3" r="1" id="minecraft:leather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -17162,7 +17210,7 @@
             <MASSKG>23.3</MASSKG>
             <EVOLVESTO>518</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:ender_pearl</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -17196,7 +17244,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>60.5</MASSKG>
             <EXPYIELD>170</EXPYIELD>
-            <COMMONDROP>2:ender_pearl</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ender_pearl"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
@@ -17222,8 +17270,8 @@
             <MASSKG>2.1</MASSKG>
             <EVOLVESTO>520</EVOLVESTO>
             <EXPYIELD>53</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -17256,8 +17304,8 @@
             <MASSKG>15.0</MASSKG>
             <EVOLVESTO>521</EVOLVESTO>
             <EXPYIELD>125</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -17287,8 +17335,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>29.0</MASSKG>
             <EXPYIELD>215</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>3:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="3" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -17383,7 +17431,7 @@
             <MASSKG>18.0</MASSKG>
             <EVOLVESTO>525</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
-            <COMMONDROP>1:cobblestone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:cobblestone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -17416,7 +17464,7 @@
             <MASSKG>102.0</MASSKG>
             <EVOLVESTO>526</EVOLVESTO>
             <EXPYIELD>137</EXPYIELD>
-            <COMMONDROP>2:stone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -17447,7 +17495,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>260.0</MASSKG>
             <EXPYIELD>227</EXPYIELD>
-            <COMMONDROP>3:stone</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:stone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -17746,7 +17794,7 @@
             <MASSKG>4.5</MASSKG>
             <EVOLVESTO>536</EVOLVESTO>
             <EXPYIELD>59</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -17779,7 +17827,7 @@
             <MASSKG>17.0</MASSKG>
             <EVOLVESTO>537</EVOLVESTO>
             <EXPYIELD>134</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -17808,7 +17856,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>62.0</MASSKG>
             <EXPYIELD>225</EXPYIELD>
-            <COMMONDROP>3:dirt</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:dirt"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -17988,7 +18036,7 @@
             <MASSKG>5.3</MASSKG>
             <EVOLVESTO>544</EVOLVESTO>
             <EXPYIELD>52</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -18081,7 +18129,7 @@
             <MASSKG>0.6</MASSKG>
             <EVOLVESTO>547</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
-            <COMMONDROP>1:wool</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wool"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18115,7 +18163,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>6.6</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <COMMONDROP>2:wool</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wool"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18143,7 +18191,7 @@
             <MASSKG>6.6</MASSKG>
             <EVOLVESTO>549</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18178,7 +18226,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>16.3</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <COMMONDROP>2:leaves</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:leaves"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18206,7 +18254,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>18.0</MASSKG>
             <EXPYIELD>161</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18240,7 +18288,7 @@
             <MASSKG>15.2</MASSKG>
             <EVOLVESTO>552</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:sand</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:sand"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -18273,7 +18321,7 @@
             <MASSKG>33.4</MASSKG>
             <EVOLVESTO>553</EVOLVESTO>
             <EXPYIELD>123</EXPYIELD>
-            <COMMONDROP>2:sand</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:sand"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -18303,7 +18351,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>96.3</MASSKG>
             <EXPYIELD>229</EXPYIELD>
-            <COMMONDROP>3:sand</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:sand"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -18449,7 +18497,7 @@
             <MASSKG>14.5</MASSKG>
             <EVOLVESTO>558</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
-            <COMMONDROP>2:cobblestone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:cobblestone"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18483,7 +18531,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>200.0</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <COMMONDROP>3:dirt</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:dirt"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18669,7 +18717,7 @@
             <MASSKG>16.5</MASSKG>
             <EVOLVESTO>565</EVOLVESTO>
             <EXPYIELD>71</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -18700,7 +18748,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>81.0</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -18731,8 +18779,9 @@
             <MASSKG>9.5</MASSKG>
             <EVOLVESTO>567</EVOLVESTO>
             <EXPYIELD>71</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:bone 1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:bone"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -18763,8 +18812,9 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>32.0</MASSKG>
             <EXPYIELD>177</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:bone 2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:bone"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -18917,7 +18967,7 @@
             <MASSKG>5.8</MASSKG>
             <EVOLVESTO>573</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -18951,7 +19001,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>7.5</MASSKG>
             <EXPYIELD>165</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19070,7 +19120,7 @@
             <MASSKG>1.0</MASSKG>
             <EVOLVESTO>578</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -19104,7 +19154,7 @@
             <MASSKG>8.0</MASSKG>
             <EVOLVESTO>579</EVOLVESTO>
             <EXPYIELD>130</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -19135,7 +19185,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>20.1</MASSKG>
             <EXPYIELD>221</EXPYIELD>
-            <COMMONDROP>3:slime_ball</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -19167,7 +19217,7 @@
             <MASSKG>5.5</MASSKG>
             <EVOLVESTO>581</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -19199,7 +19249,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>24.2</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -19322,7 +19372,7 @@
             <MASSKG>19.5</MASSKG>
             <EVOLVESTO>586</EVOLVESTO>
             <EXPYIELD>67</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19355,7 +19405,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>92.5</MASSKG>
             <EXPYIELD>166</EXPYIELD>
-            <FOODDROP>1:beef</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:beef"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19387,7 +19437,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>5.0</MASSKG>
             <EXPYIELD>150</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
@@ -19484,7 +19534,8 @@
             <MASSKG>1.0</MASSKG>
             <EVOLVESTO>591</EVOLVESTO>
             <EXPYIELD>59</EXPYIELD>
-            <COMMONDROP>1:brown_mushroom 1:red_mushroom</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:red_mushroom"/>
+            <Drop n="1" r="1" id="minecraft:brown_mushroom"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -19517,7 +19568,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>10.5</MASSKG>
             <EXPYIELD>162</EXPYIELD>
-            <COMMONDROP>2:brown_mushroom 2:red_mushroom</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:red_mushroom"/>
+            <Drop n="2" r="1" id="minecraft:brown_mushroom"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -19608,7 +19660,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>31.6</MASSKG>
             <EXPYIELD>165</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19643,9 +19695,9 @@
             <MASSKG>0.6</MASSKG>
             <EVOLVESTO>596</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
+            <Drop n="2" r="0.1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:redstone</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>cavespider</SHADOWREPLACEMENTS>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -19676,9 +19728,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>14.3</MASSKG>
             <EXPYIELD>165</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
+            <Drop n="4" r="0.1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>4:redstone</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -19709,7 +19761,8 @@
             <MASSKG>18.8</MASSKG>
             <EVOLVESTO>598</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <COMMONDROP>1:iron_ingot 1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19742,7 +19795,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>110.0</MASSKG>
             <EXPYIELD>171</EXPYIELD>
-            <COMMONDROP>3:iron_ingot 2:wheat_seeds</COMMONDROP>
+            <Drop n="4" r="1" id="minecraft:iron_ingot"/>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -19866,7 +19920,7 @@
             <MASSKG>0.3</MASSKG>
             <EVOLVESTO>603</EVOLVESTO>
             <EXPYIELD>55</EXPYIELD>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -19894,7 +19948,7 @@
             <MASSKG>22.0</MASSKG>
             <EVOLVESTO>604</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:redstone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -19923,7 +19977,7 @@
             <MOVEMENTTYPE>floating:1.3</MOVEMENTTYPE>
             <MASSKG>80.5</MASSKG>
             <EXPYIELD>232</EXPYIELD>
-            <COMMONDROP>3:redstone</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -20100,7 +20154,7 @@
             <MASSKG>18.0</MASSKG>
             <EVOLVESTO>611</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -20132,7 +20186,7 @@
             <MASSKG>36.0</MASSKG>
             <EVOLVESTO>612</EVOLVESTO>
             <EXPYIELD>144</EXPYIELD>
-            <COMMONDROP>4:bone</COMMONDROP>
+            <Drop n="4" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -20162,9 +20216,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>105.5</MASSKG>
             <EXPYIELD>243</EXPYIELD>
-            <COMMONDROP>4:bone</COMMONDROP>
+            <Drop n="4" r="1" id="minecraft:bone"/>
+            <Drop n="1" r="0.05" id="minecraft:diamond_sword"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <RAREDROP>1:diamond_sword:0:5</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -20382,7 +20436,7 @@
             <MASSKG>20.0</MASSKG>
             <EVOLVESTO>620</EVOLVESTO>
             <EXPYIELD>70</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -20414,7 +20468,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>35.5</MASSKG>
             <EXPYIELD>179</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -20786,7 +20840,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>33.0</MASSKG>
             <EXPYIELD>169</EXPYIELD>
-            <COMMONDROP>1:iron_ingot</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:iron_ingot"/>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -21449,7 +21503,7 @@
             <MASSKG>9.0</MASSKG>
             <EVOLVESTO>651</EVOLVESTO>
             <EXPYIELD>63</EXPYIELD>
-            <COMMONDROP>1:wheat_seeds</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -21482,10 +21536,10 @@
             <MASSKG>29.0</MASSKG>
             <EVOLVESTO>652</EVOLVESTO>
             <EXPYIELD>142</EXPYIELD>
-            <COMMONDROP>2:wheat_seeds</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:wheat_seeds"/>
+            <Drop n="1" r="0.25" id="minecraft:iron_chestplate"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:iron_chestplate</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
@@ -21513,10 +21567,10 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>90.0</MASSKG>
             <EXPYIELD>239</EXPYIELD>
-            <COMMONDROP>3:wheat_seeds</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:wheat_seeds"/>
+            <Drop n="1" r="0.25" id="minecraft:iron_chestplate"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:iron_chestplate</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
@@ -21547,7 +21601,7 @@
             <MASSKG>9.4</MASSKG>
             <EVOLVESTO>654</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <COMMONDROP>1:coal</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:coal"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -21580,9 +21634,10 @@
             <MASSKG>14.5</MASSKG>
             <EVOLVESTO>655</EVOLVESTO>
             <EXPYIELD>143</EXPYIELD>
-            <COMMONDROP>2:coal 1:stick</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:coal"/>
+            <Drop n="1" r="1" id="minecraft:stick"/>
+            <Drop n="1" r="0.25" id="minecraft:blaze_powder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:blaze_powder</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
@@ -21611,9 +21666,11 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>39.0</MASSKG>
             <EXPYIELD>240</EXPYIELD>
-            <COMMONDROP>3:coal 3:stick</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:coal"/>
+            <Drop n="3" r="1" id="minecraft:stick"/>
+            <Drop n="1" r="1" id="minecraft:blaze_rod"/>
+            <Drop n="1" r="1" id="minecraft:blaze_powder"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:blaze_powder 1:blaze_rod</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
@@ -21736,7 +21793,7 @@
             <MASSKG>5.0</MASSKG>
             <EVOLVESTO>660</EVOLVESTO>
             <EXPYIELD>47</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -21769,7 +21826,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>42.4</MASSKG>
             <EXPYIELD>148</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -21801,8 +21858,8 @@
             <MASSKG>1.7</MASSKG>
             <EVOLVESTO>662</EVOLVESTO>
             <EXPYIELD>56</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>1:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="1" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="TRUE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -21835,8 +21892,8 @@
             <MASSKG>16.0</MASSKG>
             <EVOLVESTO>663</EVOLVESTO>
             <EXPYIELD>134</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>2:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="2" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -21865,8 +21922,8 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>24.5</MASSKG>
             <EXPYIELD>175</EXPYIELD>
-            <FOODDROP>1:chicken</FOODDROP>
-            <COMMONDROP>3:feather</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:chicken"/>
+            <Drop n="3" r="1" id="minecraft:feather"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -21897,12 +21954,12 @@
             <MASSKG>2.5</MASSKG>
             <EVOLVESTO>665</EVOLVESTO>
             <EXPYIELD>40</EXPYIELD>
-            <COMMONDROP>1:string</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <BIOMESANYACCEPTABLE>all 0.025</BIOMESANYACCEPTABLE>
+            <BIOMESANYACCEPTABLE>all 0.005</BIOMESANYACCEPTABLE>
             <SPECIALCASES>day</SPECIALCASES>
             <BASESTATS atk="35" def="40" hp="38" spatk="27" spd="35" spdef="25"/>
             <EVYIELD def="1"/>
@@ -21925,7 +21982,7 @@
             <MASSKG>8.4</MASSKG>
             <EVOLVESTO>666</EVOLVESTO>
             <EXPYIELD>75</EXPYIELD>
-            <COMMONDROP>2:string</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:string"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -21981,7 +22038,7 @@
             <MASSKG>13.5</MASSKG>
             <EVOLVESTO>668</EVOLVESTO>
             <EXPYIELD>74</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -22014,7 +22071,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>81.5</MASSKG>
             <EXPYIELD>177</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
@@ -22130,7 +22187,7 @@
             <MASSKG>31.0</MASSKG>
             <EVOLVESTO>673</EVOLVESTO>
             <EXPYIELD>70</EXPYIELD>
-            <FOODDROP>1:mutton</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:mutton"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -22162,7 +22219,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>91.0</MASSKG>
             <EXPYIELD>186</EXPYIELD>
-            <FOODDROP>1:mutton</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:mutton"/>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -22285,7 +22342,7 @@
             <MASSKG>3.5</MASSKG>
             <EVOLVESTO>678</EVOLVESTO>
             <EXPYIELD>71</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22315,7 +22372,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>8.5</MASSKG>
             <EXPYIELD>163</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22573,7 +22630,7 @@
             <MASSKG>3.5</MASSKG>
             <EVOLVESTO>687</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:dye:0</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:dye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22605,7 +22662,7 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>47.0</MASSKG>
             <EXPYIELD>169</EXPYIELD>
-            <COMMONDROP>2:dye:0</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:dye"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22700,7 +22757,7 @@
             <MASSKG>7.3</MASSKG>
             <EVOLVESTO>691</EVOLVESTO>
             <EXPYIELD>64</EXPYIELD>
-            <FOODDROP>1:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -22732,7 +22789,7 @@
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
             <MASSKG>81.5</MASSKG>
             <EXPYIELD>173</EXPYIELD>
-            <FOODDROP>2:fish</FOODDROP>
+            <Drop n="1" r="1" id="minecraft:fish"/>
             <FOODMATERIAL>water</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -22828,7 +22885,7 @@
             <MASSKG>6.0</MASSKG>
             <EVOLVESTO>695</EVOLVESTO>
             <EXPYIELD>58</EXPYIELD>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -22858,7 +22915,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>21.0</MASSKG>
             <EXPYIELD>168</EXPYIELD>
-            <COMMONDROP>2:redstone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:redstone"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
@@ -22885,7 +22942,7 @@
             <MASSKG>26.0</MASSKG>
             <EVOLVESTO>697</EVOLVESTO>
             <EXPYIELD>72</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22914,7 +22971,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>270.0</MASSKG>
             <EXPYIELD>182</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22945,7 +23002,7 @@
             <MASSKG>25.2</MASSKG>
             <EVOLVESTO>699</EVOLVESTO>
             <EXPYIELD>72</EXPYIELD>
-            <COMMONDROP>1:bone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -22975,7 +23032,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>225.0</MASSKG>
             <EXPYIELD>104</EXPYIELD>
-            <COMMONDROP>2:bone</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:bone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -23006,7 +23063,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>23.5</MASSKG>
             <EXPYIELD>184</EXPYIELD>
-            <FOODDROP>2:rabbit</FOODDROP>
+            <Drop n="2" r="1" id="minecraft:rabbit"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -23065,8 +23122,8 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>2.2</MASSKG>
             <EXPYIELD>151</EXPYIELD>
-            <FOODDROP>1:rabbit</FOODDROP>
-            <COMMONDROP>1:redstone</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
+            <Drop n="1" r="1" id="minecraft:redstone"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
@@ -23095,9 +23152,9 @@
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
             <MASSKG>5.7</MASSKG>
             <EXPYIELD>100</EXPYIELD>
-            <COMMONDROP>1:quartz</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:quartz"/>
+            <Drop n="1" r="0.05" id="minecraft:diamond"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:diamond:0.1</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
@@ -23129,7 +23186,7 @@
             <MASSKG>2.8</MASSKG>
             <EVOLVESTO>705</EVOLVESTO>
             <EXPYIELD>60</EXPYIELD>
-            <COMMONDROP>1:slime_ball</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <SHADOWREPLACEMENTS>slime</SHADOWREPLACEMENTS>
@@ -23161,7 +23218,7 @@
             <MASSKG>17.5</MASSKG>
             <EVOLVESTO>706</EVOLVESTO>
             <EXPYIELD>158</EXPYIELD>
-            <COMMONDROP>2:slime_ball</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -23189,7 +23246,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>150.5</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <COMMONDROP>3:slime_ball</COMMONDROP>
+            <Drop n="3" r="1" id="minecraft:slime_ball"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -23219,7 +23276,7 @@
             <MASSKG>3.0</MASSKG>
             <EXPYIELD>165</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:ender_pearl</RAREDROP>
+            <Drop n="1" r="0.1" id="minecraft:ender_pearl"/>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -23452,10 +23509,10 @@
             <MASSKG>99.5</MASSKG>
             <EVOLVESTO>713</EVOLVESTO>
             <EXPYIELD>61</EXPYIELD>
-            <COMMONDROP>1:ice</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:ice"/>
+            <Drop n="1" r="0.1" id="minecraft:packed_ice"/>
             <FOODMATERIAL>none</FOODMATERIAL>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>1:packed_ice</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -23485,9 +23542,9 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>505.0</MASSKG>
             <EXPYIELD>180</EXPYIELD>
-            <COMMONDROP>2:ice</COMMONDROP>
+            <Drop n="2" r="1" id="minecraft:ice"/>
+            <Drop n="2" r="0.1" id="minecraft:packed_ice"/>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
-            <RAREDROP>2:packed_ice</RAREDROP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
@@ -23576,7 +23633,7 @@
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>215.0</MASSKG>
             <EXPYIELD>306</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -23607,7 +23664,7 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>203.0</MASSKG>
             <EXPYIELD>306</EXPYIELD>
-            <COMMONDROP>1:nether_star</COMMONDROP>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -23682,9 +23739,8 @@
             <SIZES height="0.7" length="0.7" width="0.7"/>
             <SPECIES>Crystal</SPECIES>
             <TYPE type1="Rock" type2="Fairy"/>
-            <COMMONDROP>diamond</COMMONDROP>
-            <FOODDROP>nether_star</FOODDROP>
-            <HELDITEM>2:diamond</HELDITEM>
+            <Drop n="5" r="1" id="minecraft:diamond"/>
+            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BIOMESANYACCEPTABLE>cave 0.0001:1:1</BIOMESANYACCEPTABLE>
             <MEGARULES forme="N___:I___"/>
         </STATS>

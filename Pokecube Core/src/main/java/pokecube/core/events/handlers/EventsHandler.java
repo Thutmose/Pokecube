@@ -300,6 +300,7 @@ public class EventsHandler
         float factor = 1.25f;
         if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
         {
+            evt.egg.hatch += 600;
             evt.setCanceled(true);
         }
     }
@@ -425,7 +426,7 @@ public class EventsHandler
         IPokemob killer = evt.killer;
         IPokemob killed = evt.killed;
 
-        if (killer != null)
+        if (killer != null && evt.giveExp)
         {
             EntityLivingBase owner = killer.getPokemonOwner();
 
@@ -433,10 +434,8 @@ public class EventsHandler
             if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
             {
                 int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-
                 killer.setExp(exp, true, false);
             }
-
             if (owner != null)
             {
                 List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(owner);
@@ -449,7 +448,6 @@ public class EventsHandler
                                 .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
                         {
                             int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-
                             poke.setExp(exp, true, false);
                         }
                     }

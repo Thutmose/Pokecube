@@ -380,22 +380,16 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return new ResourceLocation(domain, args + "S.png");
     }
 
-    Vector3             lastCheck     = Vector3.getNewVector();
-    int                 lastTickCheck = 0;
-    List<AxisAlignedBB> aabbs;
+    List<AxisAlignedBB> aabbs = null;
 
-    public List<AxisAlignedBB> getTileCollsionBoxes(Entity entity, float diff)
+    public List<AxisAlignedBB> getTileCollsionBoxes()
     {
-        if (aabbs == null || lastCheck.distToEntity(entity) > 1 + diff || ticksExisted - lastTickCheck > 100)
-        {
-            Vector3 v = lastCheck.set(entity);
-            lastTickCheck = ticksExisted;
-            AxisAlignedBB box = v.getAABB().expand(2 + diff, 2 + diff, 2 + diff);
-            aabbs = new Matrix3().getCollidingBoxes(box, worldObj, worldObj);
-            Matrix3.expandAABBs(aabbs, entity.getEntityBoundingBox());
-            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
-        }
         return aabbs;
+    }
+
+    public void setTileCollsionBoxes(List<AxisAlignedBB> list)
+    {
+        aabbs = list;
     }
 
     @Override
@@ -407,7 +401,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             Matrix3 box = new Matrix3();
             box.set(getEntityBoundingBox());
             float diff = (float) Math.max(width, Math.max(height, length));
-            aabbs = getTileCollsionBoxes(this, diff);
+            AxisAlignedBB aabb = getEntityBoundingBox().expandXyz(diff);
+            List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, worldObj, world);
+            Matrix3.expandAABBs(aabbs, getEntityBoundingBox());
+            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
             diffs.set(box.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
             for (EntityPokemobPart e : partsArray)
             {
@@ -436,7 +433,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
             mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
             Vector3 pos = offset.add(here);
-            diffs.set(mainBox.doTileCollision(world, getTileCollsionBoxes(this, diff), this, pos, diffs, false));
+            AxisAlignedBB aabb = mainBox.getBoundingBox().expandXyz(diff);
+            List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, worldObj, world);
+            Matrix3.expandAABBs(aabbs, aabb);
+            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+            diffs.set(mainBox.doTileCollision(world, aabbs, this, pos, diffs, false));
         }
         return diffs.isEmpty();
     }
@@ -451,7 +452,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             super.moveEntity(x, y, z);
             return;
         }
-        else
+        else if (aabbs != null)
         {
             double x0 = x, y0 = y, z0 = z;
             IBlockAccess world = worldObj;
@@ -462,9 +463,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             {
                 Matrix3 box = new Matrix3();
                 box.set(getEntityBoundingBox());
-                float diff = (float) Math.max(width, Math.max(height, length));
-                aabbs = getTileCollsionBoxes(this, diff);
-                diff = (float) Math.min(width, Math.min(height, length));
+                aabbs = getTileCollsionBoxes();
                 diffs.set(box.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
                 for (EntityPokemobPart e : partsArray)
                 {
@@ -496,8 +495,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
                 mainBox.addOffsetTo(offset).addOffsetTo(here);
                 this.setEntityBoundingBox(mainBox.getBoundingBox());
-                float amount = (float) (Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ));
-                aabbs = getTileCollsionBoxes(this, amount);
+                aabbs = getTileCollsionBoxes();
                 diffs.set(mainBox.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
                 x = diffs.x;
                 y = diffs.y;
@@ -656,7 +654,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             despawnEntity();
             return;
         }
-        if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")))
+        if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")
+                || this.getPokedexEntry() == this.getPokedexEntry().baseForme))
         {
             int num = rand.nextInt(unowns.length);
             changeForme(unowns[num]);

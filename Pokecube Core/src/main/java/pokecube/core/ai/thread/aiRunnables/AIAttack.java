@@ -99,7 +99,6 @@ public class AIAttack extends AIBase implements IAICombat
         if (running)
         {
             running = false;
-            delayTime = -1;
             addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
         }
     }

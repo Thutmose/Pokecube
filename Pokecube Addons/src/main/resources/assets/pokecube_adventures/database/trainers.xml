@@ -35,6 +35,7 @@
         <BIOMES>BTwater'Tbeach'Tlake</BIOMES>
         <RATE>5</RATE>
         <GENDER>Male</GENDER>
+        <HELD id="minecraft:fishing_rod"/>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Cooltrainer</TYPE>

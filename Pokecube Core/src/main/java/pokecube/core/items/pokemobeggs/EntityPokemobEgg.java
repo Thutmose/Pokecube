@@ -30,11 +30,11 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class EntityPokemobEgg extends EntityLiving
 {
-    int     delayBeforeCanPickup = 0;
-    int     age                  = 0;
-    int     lastIncubate         = 0;
-    int     hatch;
-    Vector3 here                 = Vector3.getNewVector();
+    int        delayBeforeCanPickup = 0;
+    int        age                  = 0;
+    int        lastIncubate         = 0;
+    public int hatch                = 0;
+    Vector3    here                 = Vector3.getNewVector();
 
     /** Do not call this, this is here only for vanilla reasons
      * 
@@ -90,9 +90,7 @@ public class EntityPokemobEgg extends EntityLiving
             EntityPlayer player = (EntityPlayer) e;
             if (this.delayBeforeCanPickup <= 0 && (i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
             {
-                // TODO maybe make egg plop sound
                 player.onItemPickup(this, i);
-
                 if (itemstack.stackSize <= 0)
                 {
                     this.setDead();

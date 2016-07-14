@@ -76,6 +76,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public boolean      shiny            = false;
     PokeType            type1, type2;
     private int         personalityValue = 0;
+    private int         killCounter      = 0;
+    private int         resetTick        = 0;
 
     public EntityStatsPokemob(World world)
     {
@@ -533,15 +535,35 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         if (attacked instanceof IPokemob && attacked.getHealth() <= 0)
         {
-            KillEvent event = new KillEvent(attacker, (IPokemob) attacked);
-
+            boolean giveExp = !((IPokemob) attacked).isShadow();
+            if (killCounter == 0)
+            {
+                resetTick = ticksExisted;
+            }
+            killCounter++;
+            if (resetTick < ticksExisted - 100)
+            {
+                killCounter = 0;
+            }
+            giveExp = giveExp && killCounter <= 5;
+            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp)
+                    && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer))
+            {
+                giveExp = false;
+            }
+            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
+                    && !PokecubeMod.core.getConfig().trainerExp))
+            {
+                giveExp = false;
+            }
+            KillEvent event = new KillEvent(attacker, (IPokemob) attacked, giveExp);
             MinecraftForge.EVENT_BUS.post(event);
-            if (event.isCanceled() || ((IPokemob) attacked).isShadow())
+            giveExp = event.giveExp;
+            if (event.isCanceled())
             {
 
             }
-            else if (!(((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
-                    && !PokecubeMod.core.getConfig().pvpExp))
+            else if (giveExp)
             {
                 attacker.setExp(
                         attacker.getExp()

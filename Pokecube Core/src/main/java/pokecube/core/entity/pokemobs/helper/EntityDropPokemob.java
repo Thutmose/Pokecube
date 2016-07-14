@@ -3,13 +3,14 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import java.util.List;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
 
 /** @author sebastien */
@@ -47,40 +48,16 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         }
 
         if (wasEaten || !wasRecentlyHit) return;
-
-        ItemStack food = getPokedexEntry().getFoodDrop(lootingModifier);
-        int j = 0;
-        if (food != null) j = food.stackSize;
-
-        if (!getPokemonAIState(IMoveConstants.TAMED) && food != null)
-        {
-            if (isBurning())
-            {
-                ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(food);
-                if (newDrop != null) food = newDrop.copy();
-            }
-            dropItem(food.getItem(), j);
-        }
-
         if (getPokemonAIState(IMoveConstants.TAMED)) return;
-
-        food = getPokedexEntry().getRandomCommonDrop(lootingModifier);
-        if (food == null && this.getDropItem() != null) food = new ItemStack(this.getDropItem());
-        if (food != null)
+        List<ItemStack> drops = getPokedexEntry().getRandomDrops(lootingModifier);
+        for (ItemStack stack : drops)
         {
-            entityDropItem(food, 0.5f);
-        }
-
-        dropItem();
-        food = getPokedexEntry().getRandomRareDrop(lootingModifier);
-        if (food != null)
-        {
-            if (rand.nextInt(7) == 0) entityDropItem(food, 0.5f);
-        }
-        food = PokecubeItems.getStack("revive");
-        if (food != null)
-        {
-            if (rand.nextInt(15) == 0) entityDropItem(food, 0.5f);
+            if (isBurning() && stack != null)
+            {
+                ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(stack);
+                if (newDrop != null) stack = newDrop.copy();
+            }
+            if (stack != null) entityDropItem(stack, 0.5f);
         }
     }
 

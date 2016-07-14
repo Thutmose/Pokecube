@@ -52,7 +52,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
-import pokecube.core.client.render.entity.RenderHeldPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
@@ -210,7 +209,7 @@ public class EventsHandlerClient
         int j1 = i % 65536;
         int k1 = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 1.5F, false);
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
 
@@ -434,7 +433,7 @@ public class EventsHandlerClient
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.getRenderer())) { return; }
-        event.getRenderer().addLayer(new RenderHeldPokemobs(event.getRenderer()));
+//        event.getRenderer().addLayer(new RenderHeldPokemobs(event.getRenderer()));
         addedLayers.add(event.getRenderer());
     }
 

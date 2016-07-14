@@ -1,8 +1,10 @@
 package pokecube.core.ai.utils;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -77,10 +79,11 @@ public class PokemobMoveHelper extends EntityMoveHelper
             boolean water = entry.swims() && entity.isInWater();
             boolean air = entry.flys() || entry.floats();
             this.update = false;
-            double i = (this.entity.posY + this.entity.stepHeight);
+            double i = (this.entity.posY);
             double d0 = this.posX - this.entity.posX;
             double d1 = this.posZ - this.entity.posZ;
             double d2 = this.posY - i;
+
             double d4 = d0 * d0 + d1 * d1;
             double d3 = d4 + d2 * d2;
             if (d3 >= 2.5E-7D)
@@ -105,10 +108,13 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 }
                 float newSpeed = (float) (this.speed
                         * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-
                 this.entity.setAIMoveSpeed(newSpeed);
-                double d6 = lastPos.distanceTo(pos);
-                if ((d2 > 0.0D || (d6 < speed / 20 && d4 > 0)) && !air )
+
+                BlockPos pos = new BlockPos(posX, posY, posZ);
+                IBlockState stateDown = entity.worldObj.getBlockState(pos.down());
+                IBlockState state = entity.worldObj.getBlockState(pos);
+                boolean jump = stateDown.getMaterial().isSolid() || state.getMaterial().isSolid();
+                if (d2 > 0.25 && jump && !air)
                 {
                     this.entity.getJumpHelper().setJumping();
                 }

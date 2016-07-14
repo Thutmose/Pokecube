@@ -202,6 +202,7 @@ public class TypeTrainer
     private ItemStack[]       loot     = new ItemStack[4];
 
     public String             drops    = "";
+    public ItemStack          held;
 
     public TypeTrainer(String name)
     {

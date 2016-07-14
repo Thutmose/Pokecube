@@ -6,7 +6,6 @@ package pokecube.core.database;
 import static thut.api.terrain.BiomeType.NONE;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -946,14 +945,11 @@ public class PokedexEntry
     protected List<TimePeriod>                 activeTimes      = new ArrayList<TimePeriod>();
 
     public boolean                             isStationary     = false;
-    protected ItemStack                        foodDrop;
-    /** the key is the itemstack, the value is the chance, out of 100, if it is
-     * picked. */
+    /** the key is the itemstack, the value is the chance */
 
-    public Map<ItemStack, Integer>             rareDrops        = new HashMap<ItemStack, Integer>();
-    public Map<ItemStack, Integer>             commonDrops      = new HashMap<ItemStack, Integer>();
+    public Map<ItemStack, Float>               held             = Maps.newHashMap();
+    public Map<ItemStack, Float>               drops            = Maps.newHashMap();
 
-    public Map<ItemStack, Integer>             heldItems        = new HashMap<ItemStack, Integer>();
     /** Map of forms assosciated with this one. */
     public Map<String, PokedexEntry>           forms            = new HashMap<String, PokedexEntry>();
     /** A map of father pokedexnb : child pokedexNbs */
@@ -1134,10 +1130,8 @@ public class PokedexEntry
         if (e.mobType == null) e.mobType = mobType;
         if (e.catchRate == -1) e.catchRate = catchRate;
         if (e.mass == -1) e.mass = mass;
-        if (e.foodDrop == null) e.foodDrop = foodDrop;
-        if (e.commonDrops.isEmpty()) e.commonDrops = commonDrops;
-        if (e.rareDrops.isEmpty()) e.rareDrops = rareDrops;
-        // if (e.modId == null) e.setModId(getModId());
+        if (e.held.isEmpty()) e.held = held;
+        if (e.drops.isEmpty()) e.drops = drops;
 
         e.baseForme = this;
         this.addForm(e);
@@ -1246,22 +1240,6 @@ public class PokedexEntry
         return evs;
     }
 
-    public ItemStack getFoodDrop(int looting)
-    {
-        if (foodDrop == null) return null;
-        ItemStack ret = foodDrop.copy();
-        int j = this.rand.nextInt(ret.stackSize + 1);
-
-        if (looting > 0)
-        {
-            j += this.rand.nextInt(looting + 1);
-        }
-        j = Math.max(1, j);
-        ret.stackSize = j;
-
-        return ret;
-    }
-
     /** @param form
      * @return the forme of the pokemob with the assosciated name. */
     public PokedexEntry getForm(String form)
@@ -1368,65 +1346,48 @@ public class PokedexEntry
         return pokedexNb;
     }
 
-    public ItemStack getRandomCommonDrop(int looting)
+    public List<ItemStack> getRandomDrops(int looting)
     {
-        if (commonDrops.isEmpty()) return null;
-        ItemStack ret = null;
+        if (drops.isEmpty()) return Lists.newArrayList();
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-        items.addAll(commonDrops.keySet());
-        int index = rand.nextInt(items.size());
-        ret = items.get(index);
-        int chance = commonDrops.get(ret);
-        if (ret == null || rand.nextInt(100) > chance) return null;
-        ret = ret.copy();
-        int j = 1 + this.rand.nextInt(ret.stackSize);
-
-        if (looting > 0)
+        ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+        items.addAll(drops.keySet());
+        Random rand = new Random();
+        for (ItemStack stack : items)
         {
-            j += this.rand.nextInt(looting + 1);
+            float chance = drops.get(stack);
+            if (Math.random() < chance)
+            {
+                ItemStack newStack = stack.copy();
+                newStack.stackSize = 1 + rand.nextInt(stack.stackSize + looting);
+                ret.add(newStack);
+            }
         }
-        ret.stackSize = j;
         return ret;
     }
 
     public ItemStack getRandomHeldItem()
     {
-        if (heldItems.size() < 1) return null;
-
+        if (held.isEmpty()) return null;
         ItemStack ret = null;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-        items.addAll(heldItems.keySet());
-        Collections.shuffle(items);
-        for (int index = 0; index < items.size(); index++)
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
+        items.addAll(drops.keySet());
+        Random rand = new Random();
+        for (ItemStack stack : items)
         {
-            ret = items.get(index);
-            int chance = heldItems.get(ret);
-            if (ret == null || rand.nextInt(100) > chance) continue;
-            ret = ret.copy();
-            return ret;
+            float chance = drops.get(stack);
+            if (Math.random() < chance)
+            {
+                ItemStack newStack = stack.copy();
+                newStack.stackSize = 1;
+                list.add(newStack);
+            }
         }
-        return null;
-    }
-
-    public ItemStack getRandomRareDrop(int looting)
-    {
-        if (rareDrops.isEmpty()) return null;
-        ItemStack ret = null;
-        ArrayList<ItemStack> items = new ArrayList<ItemStack>();
-
-        items.addAll(rareDrops.keySet());
-        int index = rand.nextInt(items.size());
-        ret = items.get(index);
-        int chance = rareDrops.get(ret);
-        if (ret == null || rand.nextInt(100) > chance) return null;
-        ret = ret.copy();
-        int j = 1 + this.rand.nextInt(ret.stackSize);
-
-        if (looting > 0)
+        if (!list.isEmpty())
         {
-            j += this.rand.nextInt(looting + 1);
+            ret = list.get(rand.nextInt(list.size()));
         }
-        ret.stackSize = j;
         return ret;
     }
 

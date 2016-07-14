@@ -53,6 +53,7 @@ import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
+import pokecube.core.network.packets.PacketSound;
 import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
@@ -657,8 +658,10 @@ public class PokecubePacketHandler
                 PokecubeCore.getMessageID(), Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketNickname.class, PacketNickname.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
-        
+
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketSound.class, PacketSound.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         
         PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class, PokecubeCore.getMessageID(),

@@ -123,6 +123,7 @@ public class ClientProxy extends CommonProxy
         save.save();
     }
 
+    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public void renderWorldLast(RenderWorldLastEvent event)
     {

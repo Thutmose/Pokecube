@@ -32,7 +32,6 @@ public class ItemLuckyEgg extends Item
             EnumHand hand)
     {
         if (world.isRemote) { return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack); }
-
         if (player.capabilities.isCreativeMode)
         {
             int metadata = itemstack.getItemDamage();

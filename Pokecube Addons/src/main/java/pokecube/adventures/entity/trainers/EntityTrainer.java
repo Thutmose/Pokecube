@@ -231,10 +231,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 setTrainerTarget(entity);
                 if (entity != source.getEntity()) return false;
             }
-            else if(!Config.instance.trainersInvul)
-            {
-                return super.attackEntityFrom(source, amount);
-            }
+            else if (!Config.instance.trainersInvul) { return super.attackEntityFrom(source, amount); }
         }
         if (source == DamageSource.drown) return false;
         if (Config.instance.trainersInvul) return false;
@@ -366,15 +363,17 @@ public class EntityTrainer extends EntityHasPokemobs
             if (item != null && attackCooldown <= 0)
             {
                 this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, item);
-                if (this.getHeldItemOffhand() == null && reward != null && reward.size() > 0)
-                    this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, reward.get(0));
                 break;
             }
             if (i == 5)
             {
                 this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
-                this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, null);
             }
+        }
+
+        if (type.held != null)
+        {
+            this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, type.held);
         }
 
         EntityLivingBase target = getAITarget() != null ? getAITarget()

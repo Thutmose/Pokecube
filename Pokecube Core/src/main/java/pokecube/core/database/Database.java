@@ -999,9 +999,7 @@ public class Database implements IMoveConstants
                     e.mobType = base.mobType;
                     e.catchRate = base.catchRate;
                     e.mass = base.mass;
-                    e.foodDrop = base.foodDrop;
-                    e.commonDrops = base.commonDrops;
-                    e.rareDrops = base.rareDrops;
+                    e.drops = base.drops;
                     System.err.println("Error with " + e);
                 }
                 if (e.species == null)

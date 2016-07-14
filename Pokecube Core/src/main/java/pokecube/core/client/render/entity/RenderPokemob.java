@@ -385,7 +385,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
                     && ((Entity) mob).getRidingEntity() != null)
             {
-                GL11.glTranslated(1 - entry.width / 2, 0, 0);
+                GL11.glTranslated(entry.width, 0, 0);
             }
             else if (mob.getPokemonAIState(IMoveConstants.HELD)
                     && ((Entity) mob).getRidingEntity() instanceof EntityLivingBase)

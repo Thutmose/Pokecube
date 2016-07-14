@@ -198,10 +198,10 @@ public class EntityAITrainer extends EntityAIBase
     {
         if (trainer.getTarget() == null) return;
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
-        if (trainer.cooldown > 0 && trainer.outMob == null && trainer.outID == null
-                && !trainer.getAIState(EntityHasAIStates.THROWING))
+        boolean hasOut = trainer.outMob != null && !((Entity) trainer.outMob).isDead;
+        if (trainer.cooldown > 0 && !hasOut && !trainer.getAIState(EntityHasAIStates.THROWING))
         {
-            if (trainer.cooldown == Config.instance.trainerSendOutDelay - 1)
+            if (trainer.cooldown == Config.instance.trainerSendOutDelay/2)
             {
                 ItemStack nextStack = trainer.getNextPokemob();
                 if (nextStack != null)

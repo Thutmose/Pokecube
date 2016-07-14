@@ -1,7 +1,10 @@
 package pokecube.core.utils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
@@ -12,7 +15,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -594,5 +600,60 @@ public class Tools
     public Tools()
     {
         initTables();
+    }
+
+    public static ItemStack getStack(Map<QName, String> values)
+    {
+        int meta = -1;
+        String id = "";
+        int size = 1;
+        boolean resource = false;
+        String tag = "";
+
+        for (QName key : values.keySet())
+        {
+            if (key.toString().equals("id"))
+            {
+                id = values.get(key);
+            }
+            else if (key.toString().equals("n"))
+            {
+                size = Integer.parseInt(values.get(key));
+            }
+            else if (key.toString().equals("d"))
+            {
+                meta = Integer.parseInt(values.get(key));
+            }
+            else if (key.toString().equals("tag"))
+            {
+                tag = values.get(key);
+            }
+        }
+        if (id.isEmpty()) return null;
+        resource = id.contains(":");
+        ItemStack stack = null;
+        Item item = null;
+        if (resource)
+        {
+            item = Item.REGISTRY.getObject(new ResourceLocation(id));
+        }
+        else stack = PokecubeItems.getStack(id, false);
+        if (stack != null && item == null) item = stack.getItem();
+        if (item == null) return null;
+        if (meta == -1) meta = 0;
+        if (stack == null) stack = new ItemStack(item, 1, meta);
+        stack.stackSize = size;
+        if (!tag.isEmpty())
+        {
+            try
+            {
+                stack.setTagCompound(JsonToNBT.getTagFromJson(tag));
+            }
+            catch (NBTException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return stack;
     }
 }

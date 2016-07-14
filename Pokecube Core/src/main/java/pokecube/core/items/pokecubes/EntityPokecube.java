@@ -44,6 +44,7 @@ import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
+import pokecube.core.network.packets.PacketSound;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -336,7 +337,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                         mob.getPokemonDisplayName());
                 ((EntityPlayer) shootingEntity).addChatMessage(mess);
                 this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
-                playSound(CAUGHT_EVENT, 1, 1);
+                PacketSound.sendMessage((EntityPlayer) shootingEntity, Vector3.getNewVector().set(shootingEntity),
+                        "pokecube:pokecube_caught");
             }
             CaptureEvent.Post event = new CaptureEvent.Post(this);
             MinecraftForge.EVENT_BUS.post(event);

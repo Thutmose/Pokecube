@@ -121,8 +121,8 @@ public class RenderPokemobs extends RenderPokemob
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
                     && ((Entity) mob).getRidingEntity() != null)
             {
-                GlStateManager.popMatrix();
-                return;
+//                GlStateManager.popMatrix();
+//                return;
             }
             if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).getRidingEntity() != null)
             {

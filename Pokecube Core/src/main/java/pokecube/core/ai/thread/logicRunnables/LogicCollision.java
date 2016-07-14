@@ -1,6 +1,7 @@
 package pokecube.core.ai.thread.logicRunnables;
 
 import java.util.List;
+import java.util.Vector;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -14,6 +15,7 @@ public class LogicCollision extends LogicBase
 {
     final EntityPokemobBase collider;
     Vector3                 lastCheck     = Vector3.getNewVector();
+    Vector<AxisAlignedBB>   boxes;
     int                     lastTickCheck = 0;
 
     public LogicCollision(IPokemob pokemob_)
@@ -56,10 +58,12 @@ public class LogicCollision extends LogicBase
         mainBox.set(2, mainBox.rows[2].set(0, 0, (-collider.rotationYaw) * Math.PI / 180));
         mainBox.addOffsetTo(offset).addOffsetTo(vec);
         AxisAlignedBB box = mainBox.getBoundingBox();
-        AxisAlignedBB box1 = box.expand(5 + v + x, 5 + v + y, 5 + v + z);
+        AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
+        box1 = box1.addCoord(collider.motionX, collider.motionY, collider.motionZ);
         aabbs = mainBox.getCollidingBoxes(box1, world, world);
+        // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
         Matrix3.expandAABBs(aabbs, box);
-//        Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+        Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
         collider.setTileCollsionBoxes(aabbs);
     }
 

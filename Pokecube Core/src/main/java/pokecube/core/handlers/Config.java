@@ -71,6 +71,9 @@ public class Config extends ConfigBase
     /** does defeating a tame pokemob give exp */
     public boolean             pvpExp                     = false;
     @Configure(category = misc)
+    /** does defeating a tame pokemob give exp */
+    public boolean             trainerExp                 = true;
+    @Configure(category = misc)
     public boolean             mysterygift                = true;
     @Configure(category = misc, needsMcRestart = true)
     public String              defaultMobs                = "";

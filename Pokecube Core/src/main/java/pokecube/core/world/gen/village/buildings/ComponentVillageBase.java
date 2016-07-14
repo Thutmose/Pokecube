@@ -3,6 +3,7 @@ package pokecube.core.world.gen.village.buildings;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
@@ -79,14 +80,14 @@ public abstract class ComponentVillageBase extends House1
 
     /** Overwrites air and liquids from selected position downwards, stops at
      * hitting anything else. */
-    protected void fillCurrentPositionBlocksDownwards(World par1World, Block par2, int par3, int par4, int par5,
+    protected void fillCurrentPositionBlocksDownwards(World par1World, IBlockState stateIn, int par4, int par5,
             int par6, StructureBoundingBox par7StructureBoundingBox)
     {
         int j1 = this.getXWithOffset(par4, par6);
         int k1 = this.getYWithOffset(par5);
         int l1 = this.getZWithOffset(par4, par6);
 
-        IBlockState oldState = par2.getStateFromMeta(par6);
+        IBlockState oldState = stateIn;
         IBlockState newState = super.getBiomeSpecificBlockState(oldState);
 
         BlockPos pos = new BlockPos(j1, k1, l1);
@@ -102,10 +103,10 @@ public abstract class ComponentVillageBase extends House1
 
     }
 
-    protected void fillDownwards(World world, Block block, int par3, int xx, int par5, int zz,
+    protected void fillDownwards(World world, IBlockState state, int xx, int par5, int zz,
             StructureBoundingBox structBB)
     {
-        fillCurrentPositionBlocksDownwards(world, block, par3, xx, par5, zz, structBB);
+        fillCurrentPositionBlocksDownwards(world, state, xx, par5, zz, structBB);
     }
 
     protected void fillRandomly(World world, StructureBoundingBox structBB, Random rnd, float chance, int minX,
@@ -115,25 +116,17 @@ public abstract class ComponentVillageBase extends House1
         IBlockState state1 = placeBlock.getDefaultState();
         IBlockState state2 = replaceBlock.getDefaultState();
 
-        super.fillWithBlocksRandomly(world, structBB, rnd, chance, minX, minY, minZ, maxX, maxY, maxZ, state1, state2, false);
+        super.fillWithBlocksRandomly(world, structBB, rnd, chance, minX, minY, minZ, maxX, maxY, maxZ, state1, state2,
+                false);
 
     }
 
     protected void fillWithMetaBlocks(World par1World, StructureBoundingBox par2StructureBoundingBox, int minX,
-            int minY, int minZ, int maxX, int maxY, int maxZ, Block placeBlockID, int placeBlockMeta,
-            boolean alwaysReplace)
+            int minY, int minZ, int maxX, int maxY, int maxZ, IBlockState state, boolean alwaysReplace)
     {
-        IBlockState oldState = placeBlockID.getStateFromMeta(placeBlockMeta);
-        IBlockState newState = super.getBiomeSpecificBlockState(oldState);
-
+        IBlockState newState = super.getBiomeSpecificBlockState(state);
         super.fillWithBlocks(par1World, par2StructureBoundingBox, minX, minY, minZ, maxX, maxY, maxZ, newState,
                 newState, alwaysReplace);
-
-        // super.fillWithMetadataBlocks(par1World, par2StructureBoundingBox,
-        // minX, minY, minZ, maxX, maxY, maxZ, i2, j2, k2, l2, alwaysReplace);
-        // super.fillWithMetadataBlocks(par1World, par2StructureBoundingBox,
-        // minX, minY, minZ, maxX, maxY, maxZ, placeBlockID, placeBlockMeta,
-        // placeBlockID, placeBlockMeta, alwaysReplace);
     }
 
     @Override
@@ -198,49 +191,46 @@ public abstract class ComponentVillageBase extends House1
     /** Returns the direction-shifted metadata for blocks that require
      * orientation, e.g. doors, stairs, ladders. Parameters: block ID, original
      * metadata */
-    protected int getMetaWithOffset(Block par1, int par2)
+    protected IBlockState getStateWithOffset(IBlockState stateIn)
     {
-        if (par1 == PokecubeItems.getBlock("tradingtable") || par1 == PokecubeItems.getBlock("pc"))
+        if (stateIn.getBlock() == PokecubeItems.getBlock("tradingtable")
+                || stateIn.getBlock() == PokecubeItems.getBlock("pc"))
         {
-            if (par1 == PokecubeItems.getBlock("pc"))
+            if (stateIn.getBlock() == PokecubeItems.getBlock("pc"))
             {
-                IBlockState state = par1.getStateFromMeta(par2).withProperty(BlockPC.FACING,
-                        coordBaseMode.getOpposite());
-                par2 = par1.getMetaFromState(state);
-                return par2;
+                IBlockState state = stateIn.withProperty(BlockPC.FACING, coordBaseMode.getOpposite());
+                return state;
             }
-            if (par1 == PokecubeItems.getBlock("tradingtable"))
+            if (stateIn.getBlock() == PokecubeItems.getBlock("tradingtable"))
             {
-                IBlockState state = par1.getStateFromMeta(par2);
-                return par1.getMetaFromState(state.withProperty(BlockTradingTable.FACING, coordBaseMode));
+                IBlockState state = stateIn.withProperty(BlockTradingTable.FACING, coordBaseMode);
+                return state;
             }
         }
-        int ret = par2;
-        return ret;
+        return stateIn;
     }
 
     protected void placeAir(World world, int posX, int posY, int posZ, StructureBoundingBox structBB)
     {
-        placeBlockAtCurrentPosition(world, Blocks.AIR, 0, posX, posY, posZ, structBB);
+        placeBlockAtCurrentPosition(world, Blocks.AIR.getDefaultState(), posX, posY, posZ, structBB);
     }
 
-    protected void placeBlock(World world, Block block, int metadata, int posX, int posY, int posZ,
+    protected void placeBlock(World world, IBlockState state, int posX, int posY, int posZ,
             StructureBoundingBox structBB)
     {
-        placeBlockAtCurrentPosition(world, block, metadata, posX, posY, posZ, structBB);
+        placeBlockAtCurrentPosition(world, state, posX, posY, posZ, structBB);
     }
 
     /** current Position depends on currently set Coordinates mode, is computed
      * here */
-    protected void placeBlockAtCurrentPosition(World par1World, Block par2, int par3, int par4, int par5, int par6,
+    protected void placeBlockAtCurrentPosition(World par1World, IBlockState state, int par4, int par5, int par6,
             StructureBoundingBox par7StructureBoundingBox)
     {
         int j1 = this.getXWithOffset(par4, par6);
         int k1 = this.getYWithOffset(par5);
         int l1 = this.getZWithOffset(par4, par6);
 
-        IBlockState oldState = par2.getStateFromMeta(par3);
-        IBlockState newState = super.getBiomeSpecificBlockState(oldState);
+        IBlockState newState = super.getBiomeSpecificBlockState(state);
 
         if (par7StructureBoundingBox.isVecInside(new Vec3i(j1, k1, l1)))
         {
@@ -252,8 +242,9 @@ public abstract class ComponentVillageBase extends House1
     /** Warning: Sets the position *below* this one to air! */
     protected void placeTorch(World world, StructureBoundingBox structBB, int posX, int posY, int posZ, EnumFacing dir)
     {
-        placeBlock(world, Blocks.STONE, 0, posX, posY - 1, posZ, structBB);
-        placeBlock(world, Blocks.TORCH, dir.ordinal(), posX, posY, posZ, structBB);
+        placeBlock(world, Blocks.AIR.getDefaultState(), posX, posY - 1, posZ, structBB);
+        placeBlock(world, Blocks.TORCH.getDefaultState().withProperty(BlockTorch.FACING, dir), posX, posY, posZ,
+                structBB);
         placeAir(world, posX, posY - 1, posZ, structBB);
     }
 

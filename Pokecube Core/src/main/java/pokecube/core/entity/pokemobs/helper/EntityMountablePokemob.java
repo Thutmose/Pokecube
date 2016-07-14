@@ -63,6 +63,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public EntityMountablePokemob(World world)
     {
         super(world);
+        this.stepHeight = 1;
     }
 
     @Override
@@ -295,14 +296,14 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
             if (jumpCounter-- < 0 && jump && !this.isPokemobJumping() && this.onGround)
             {
-                this.motionY = 0.75 + this.jumpPower;
+                this.motionY = 1.75 + this.jumpPower;
 
                 if (this.isPotionActive(Potion.getPotionFromResourceLocation("jump_boost")))
                 {
                     this.motionY += (this.getActivePotionEffect(Potion.getPotionFromResourceLocation("jump_boost"))
                             .getAmplifier() + 1) * 0.1F;
                 }
-                jumpCounter = 20;
+                jumpCounter = 5;
                 this.setPokemobJumping(true);
                 this.isAirBorne = true;
                 if (forward > 0.0F)
@@ -315,8 +316,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
                 this.jumpPower = 0.0F;
             }
-
-            this.stepHeight = 1.0F;
             this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
 
             if (!worldObj.isAreaLoaded(getPosition(), 32, false))
@@ -373,8 +372,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     {
         double d0;
 
-        speedFactor = ((float) this.getPokedexEntry().getStatVIT()) / 75;
-
+        speedFactor = (float) getMovementSpeed();
         if (Math.random() < 0.1 / (this.getLevel()))
         {
             this.setHungerTime(this.getHungerTime() + PokecubeMod.core.getConfig().pokemobLifeSpan / 5);
@@ -433,17 +431,15 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
             if (this.onGround && !isInWater())
             {
-                f4 = this.landSpeedFactor * f3 * 0.15f * this.speedFactor;// this.getAIMoveSpeed()
-                                                                          // *
-                                                                          // f3;
+                f4 = this.landSpeedFactor * f3 * this.speedFactor;
             }
             else if (isInWater())
             {
-                f4 = this.waterSpeedFactor * f3 * 0.15f * this.speedFactor * hungerFactor;
+                f4 = this.waterSpeedFactor * f3 * this.speedFactor * hungerFactor;
             }
             else if (this.canUseFly())
             {
-                f4 = this.airbornSpeedFactor * f3 * 0.15f * this.speedFactor * hungerFactor;// this.jumpMovementFactor;
+                f4 = this.airbornSpeedFactor * f3 * this.speedFactor * hungerFactor;// this.jumpMovementFactor;
             }
             else
             {
@@ -636,7 +632,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         if (getRidingEntity() != null && !getPokemonAIState(SITTING))
         {
             EntityLivingBase entityplayer = getPokemonOwner();
-
             if (entityplayer != null)
             {
                 dismountRidingEntity();

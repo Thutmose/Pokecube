@@ -3,23 +3,28 @@ package pokecube.adventures.utils;
 import java.io.File;
 import java.io.FileReader;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAnyAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.item.ItemStack;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.utils.PokeType;
+import pokecube.core.utils.Tools;
 
 public class TrainerEntryLoader
 {
@@ -50,6 +55,15 @@ public class TrainerEntryLoader
         String  material = "air";
         @XmlElement(name = "BAG")
         boolean bag      = false;
+        @XmlElement(name = "HELD")
+        Held    held;
+    }
+
+    @XmlRootElement(name = "HELD")
+    public static class Held
+    {
+        @XmlAnyAttribute
+        Map<QName, String> values;
     }
 
     public static XMLDatabase loadDatabase(File file) throws Exception
@@ -85,6 +99,11 @@ public class TrainerEntryLoader
                 {
                     type.material = Material.WATER;
                 }
+            }
+            if (entry.held != null)
+            {
+                ItemStack held = Tools.getStack(entry.held.values);
+                type.held = held;
             }
             if (entry.biomes != null) type.matcher = new BiomeMatcher(entry.biomes);
             if (!pokeList[0].startsWith("-"))

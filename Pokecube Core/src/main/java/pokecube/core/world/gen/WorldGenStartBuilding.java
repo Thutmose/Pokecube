@@ -3,8 +3,14 @@ package pokecube.core.world.gen;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockCarpet;
+import net.minecraft.block.BlockColored;
+import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.BlockOldLog;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -13,6 +19,7 @@ import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.pc.BlockPC;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
@@ -20,11 +27,6 @@ public class WorldGenStartBuilding implements IWorldGenerator
 {
 
     public static boolean building = false;
-
-    public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, Block block, int meta)
-    {
-        fillWithBlocks(world, centre, lower, upper, block.getStateFromMeta(meta));
-    }
 
     public static void fillWithBlocks(World world, Vector3 centre, Vector3 lower, Vector3 upper, IBlockState state)
     {
@@ -43,47 +45,53 @@ public class WorldGenStartBuilding implements IWorldGenerator
         Vector3 temp1 = Vector3.getNewVector();
         Vector3 temp2 = Vector3.getNewVector();
 
+        IBlockState spruce = Blocks.PLANKS.getDefaultState().withProperty(BlockPlanks.VARIANT,
+                BlockPlanks.EnumType.SPRUCE);
+        IBlockState clay = Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockColored.COLOR,
+                EnumDyeColor.RED);
+        IBlockState glass = Blocks.GLASS_PANE.getDefaultState();
+        IBlockState logs = Blocks.LOG.getDefaultState().withProperty(BlockOldLog.VARIANT, BlockPlanks.EnumType.SPRUCE);
+        IBlockState redCarpet = Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.RED);
+        IBlockState whiteCarpet = Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.WHITE);
+        IBlockState blackCarpet = Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.BLACK);
+        IBlockState greyCarpet = Blocks.CARPET.getDefaultState().withProperty(BlockCarpet.COLOR, EnumDyeColor.GRAY);
         // Hollow it out
-        fillWithBlocks(world, centre, temp1.set(0, 0, 0), temp2.set(8, 8, 8), Blocks.AIR, 0);
+        fillWithBlocks(world, centre, temp1.set(0, 0, 0), temp2.set(8, 8, 8), Blocks.AIR.getDefaultState());
 
         // Roof
-        fillWithBlocks(world, centre, temp1.set(0, 6, 0), temp2.set(8, 6, 8), Blocks.STAINED_HARDENED_CLAY, 14);
-        fillWithBlocks(world, centre, temp1.set(1, 6, 1), temp2.set(7, 7, 7), Blocks.STAINED_HARDENED_CLAY, 14);
-        fillWithBlocks(world, centre, temp1.set(2, 6, 2), temp2.set(6, 8, 6), Blocks.STAINED_HARDENED_CLAY, 14);
-        fillWithBlocks(world, centre, temp1.set(1, 6, 1), temp2.set(7, 6, 7), Blocks.PLANKS, 1);
+        fillWithBlocks(world, centre, temp1.set(0, 6, 0), temp2.set(8, 6, 8), clay);
+        fillWithBlocks(world, centre, temp1.set(1, 6, 1), temp2.set(7, 7, 7), clay);
+        fillWithBlocks(world, centre, temp1.set(2, 6, 2), temp2.set(6, 8, 6), clay);
+        fillWithBlocks(world, centre, temp1.set(1, 6, 1), temp2.set(7, 6, 7), spruce);
 
         // Floor
-        fillWithBlocks(world, centre, temp1.set(0, 0, 0), temp2.set(8, 2, 8), Blocks.COBBLESTONE, 0);
-        fillWithBlocks(world, centre, temp1.set(1, 2, 1), temp2.set(7, 2, 7), Blocks.PLANKS, 1);
+        fillWithBlocks(world, centre, temp1.set(0, 0, 0), temp2.set(8, 2, 8), Blocks.COBBLESTONE.getDefaultState());
+        fillWithBlocks(world, centre, temp1.set(1, 2, 1), temp2.set(7, 2, 7), spruce);
 
         // Walls
-        fillWithBlocks(world, centre, temp1.set(8, 3, 0), temp2.set(8, 5, 8), Blocks.PLANKS, 1);// RIGHT
-                                                                                                // WALL
-        fillWithBlocks(world, centre, temp1.set(0, 3, 8), temp2.set(8, 5, 8), Blocks.PLANKS, 1);// LEFT
-                                                                                                // WALL
-        fillWithBlocks(world, centre, temp1.set(0, 3, 0), temp2.set(0, 5, 8), Blocks.PLANKS, 1);// BACK
-                                                                                                // WALL
-        fillWithBlocks(world, centre, temp1.set(0, 3, 0), temp2.set(8, 5, 0), Blocks.PLANKS, 1);// FRONT
-                                                                                                // WALL
+        fillWithBlocks(world, centre, temp1.set(8, 3, 0), temp2.set(8, 5, 8), spruce);// RIGHT
+        fillWithBlocks(world, centre, temp1.set(0, 3, 8), temp2.set(8, 5, 8), spruce);// LEFT
+        fillWithBlocks(world, centre, temp1.set(0, 3, 0), temp2.set(0, 5, 8), spruce);// BACK
+        fillWithBlocks(world, centre, temp1.set(0, 3, 0), temp2.set(8, 5, 0), spruce);// FRONT
         // CORNERS
-        fillWithBlocks(world, centre, temp1.set(0, 3, 0), temp2.set(0, 5, 0), Blocks.LOG, 1);
-        fillWithBlocks(world, centre, temp1.set(0, 3, 8), temp2.set(0, 5, 8), Blocks.LOG, 1);
-        fillWithBlocks(world, centre, temp1.set(8, 3, 8), temp2.set(8, 5, 8), Blocks.LOG, 1);
-        fillWithBlocks(world, centre, temp1.set(8, 3, 0), temp2.set(8, 5, 0), Blocks.LOG, 1);
+        fillWithBlocks(world, centre, temp1.set(0, 3, 0), temp2.set(0, 5, 0), logs);
+        fillWithBlocks(world, centre, temp1.set(0, 3, 8), temp2.set(0, 5, 8), logs);
+        fillWithBlocks(world, centre, temp1.set(8, 3, 8), temp2.set(8, 5, 8), logs);
+        fillWithBlocks(world, centre, temp1.set(8, 3, 0), temp2.set(8, 5, 0), logs);
 
         // Windows
-        fillWithBlocks(world, centre, temp1.set(2, 4, 0), temp2.set(2, 4, 0), Blocks.GLASS_PANE, 0);// front
-        fillWithBlocks(world, centre, temp1.set(6, 4, 0), temp2.set(6, 4, 0), Blocks.GLASS_PANE, 0);// front
-        fillWithBlocks(world, centre, temp1.set(8, 4, 2), temp2.set(8, 4, 3), Blocks.GLASS_PANE, 0);// left
-        fillWithBlocks(world, centre, temp1.set(8, 4, 5), temp2.set(8, 4, 6), Blocks.GLASS_PANE, 0);// left
-        fillWithBlocks(world, centre, temp1.set(0, 4, 2), temp2.set(0, 4, 3), Blocks.GLASS_PANE, 0);// right
-        fillWithBlocks(world, centre, temp1.set(0, 4, 5), temp2.set(0, 4, 6), Blocks.GLASS_PANE, 0);// right
+        fillWithBlocks(world, centre, temp1.set(2, 4, 0), temp2.set(2, 4, 0), glass);// front
+        fillWithBlocks(world, centre, temp1.set(6, 4, 0), temp2.set(6, 4, 0), glass);// front
+        fillWithBlocks(world, centre, temp1.set(8, 4, 2), temp2.set(8, 4, 3), glass);// left
+        fillWithBlocks(world, centre, temp1.set(8, 4, 5), temp2.set(8, 4, 6), glass);// left
+        fillWithBlocks(world, centre, temp1.set(0, 4, 2), temp2.set(0, 4, 3), glass);// right
+        fillWithBlocks(world, centre, temp1.set(0, 4, 5), temp2.set(0, 4, 6), glass);// right
 
         // carpet
-        fillWithBlocks(world, centre, temp1.set(3, 3, 2), temp2.set(5, 3, 2), Blocks.CARPET, 0);// white
-        fillWithBlocks(world, centre, temp1.set(3, 3, 3), temp2.set(5, 3, 3), Blocks.CARPET, 15);// black
-        fillWithBlocks(world, centre, temp1.set(3, 3, 4), temp2.set(5, 3, 4), Blocks.CARPET, 14);// red
-        temp1.set(centre).addTo(4, 3, 3).setBlock(world, Blocks.CARPET.getStateFromMeta(7));// grey
+        fillWithBlocks(world, centre, temp1.set(3, 3, 2), temp2.set(5, 3, 2), whiteCarpet);// white
+        fillWithBlocks(world, centre, temp1.set(3, 3, 3), temp2.set(5, 3, 3), blackCarpet);// black
+        fillWithBlocks(world, centre, temp1.set(3, 3, 4), temp2.set(5, 3, 4), redCarpet);// red
+        temp1.set(centre).addTo(4, 3, 3).setBlock(world, greyCarpet);// grey
 
         // Ceiling Light
         temp1.set(centre).addTo(4, 6, 3).setBlock(world, Blocks.LIT_REDSTONE_LAMP.getDefaultState());// lamp
@@ -92,16 +100,19 @@ public class WorldGenStartBuilding implements IWorldGenerator
                                                                                                   // power
                                                                                                   // lamp
 
-        fillWithBlocks(world, centre, temp1.set(3, 3, 5), temp2.set(5, 3, 5), Blocks.DOUBLE_STONE_SLAB, 0);// front
+        fillWithBlocks(world, centre, temp1.set(3, 3, 5), temp2.set(5, 3, 5),
+                Blocks.DOUBLE_STONE_SLAB.getDefaultState());// front
         temp1.set(centre).addTo(6, 3, 6).setBlock(world, Blocks.DOUBLE_STONE_SLAB.getDefaultState());// side
         temp1.set(centre).addTo(2, 3, 6).setBlock(world, Blocks.DOUBLE_STONE_SLAB.getDefaultState());// side
-        fillWithBlocks(world, centre, temp1.set(2, 2, 6), temp2.set(6, 2, 7), Blocks.DOUBLE_STONE_SLAB, 0);// floor
+        fillWithBlocks(world, centre, temp1.set(2, 2, 6), temp2.set(6, 2, 7),
+                Blocks.DOUBLE_STONE_SLAB.getDefaultState());// floor
 
         // accessories
         temp1.set(centre).addTo(6, 3, 5).setBlock(world, PokecubeItems.getBlock("pc").getDefaultState());// PC
                                                                                                          // Base
-        temp1.set(centre).addTo(6, 4, 5).setBlock(world, PokecubeItems.getBlock("pc").getStateFromMeta(8));// PC
-                                                                                                           // Top
+        temp1.set(centre).addTo(6, 4, 5).setBlock(world,
+                PokecubeItems.getBlock("pc").getDefaultState().withProperty(BlockPC.TOP, true));// PC
+                                                                                                // Top
         temp1.set(centre).addTo(2, 3, 5).setBlock(world, PokecubeItems.getBlock("tradingtable").getDefaultState());// trading
                                                                                                                    // table
         temp1.set(centre).addTo(1, 3, 1).setBlock(world, PokecubeItems.getBlock("pokecube_table").getDefaultState());// poke
@@ -144,14 +155,16 @@ public class WorldGenStartBuilding implements IWorldGenerator
         BlockPos pos = new BlockPos(chunkX * 16 + 4, j, chunkZ * 16 - 1);
         if (world.isAirBlock(pos) && !world.isAirBlock(pos.down()))
         {
-            world.setBlockState(pos, Blocks.STONE_STAIRS.getStateFromMeta(2), 7);
+            world.setBlockState(pos,
+                    Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH), 7);
         }
         else while (j > 1)
         {
             pos = new BlockPos(chunkX * 16 + 4, j, chunkZ * 16 - 1);
             if (world.isAirBlock(pos))
             {
-                world.setBlockState(pos, Blocks.LADDER.getStateFromMeta(2));
+                world.setBlockState(pos,
+                        Blocks.LADDER.getDefaultState().withProperty(BlockHorizontal.FACING, EnumFacing.SOUTH));
             }
             else
             {

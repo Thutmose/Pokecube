@@ -6,6 +6,7 @@ package pokecube.core.moves.templates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Explosion;
@@ -105,8 +106,19 @@ public class Move_Explode extends Move_Ongoing
                 mob.onDeath(DamageSource.generic);
                 if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
                 {
-                    if (!(((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
-                            && !PokecubeMod.core.getConfig().pvpExp))
+                    boolean giveExp = true;
+                    if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
+                            && !PokecubeMod.core.getConfig().pvpExp)
+                            && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer))
+                    {
+                        giveExp = false;
+                    }
+                    if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
+                            && !PokecubeMod.core.getConfig().trainerExp))
+                    {
+                        giveExp = false;
+                    }
+                    if (giveExp)
                     {
                         // voltorb's enemy wins XP and EVs even if it didn't
                         // attack

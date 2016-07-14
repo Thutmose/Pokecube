@@ -136,8 +136,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void fall(float distance, float damageMultiplier)
     {
         PokedexEntry entry = getPokedexEntry();
-        boolean canFloat = entry.floats() || entry.flys();
-        distance = distance / 2;
+        boolean canFloat = entry.floats() || entry.flys() || canUseFly();
+        if(distance > 3 + height) distance = 0;
         if (!canFloat) super.fall(distance, damageMultiplier);
     }
 
@@ -304,12 +304,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
         moveSpeed *= speedFactor;
-
         if (entry.flys()) moveSpeed /= 1.25f;
 
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
+        // aiStuff.addAILogic(new LogicCollision(this));
+        // if (true) return;
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
@@ -782,7 +783,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             onGround = true;
         }
         super.onLivingUpdate();
-
         if (ticksExisted % 20 == 0)
         {
             this.isShearable(null, worldObj, here.getPos());
@@ -841,7 +841,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
         dimension = worldObj.provider.getDimension();
         super.onUpdate();
-
         if (worldObj.isRemote)
         {
             int id = dataManager.get(ATTACKTARGETIDDW);

@@ -46,12 +46,13 @@ public class AIIdle extends AIBase
     private void doFlyingIdle()
     {
         boolean sitting = mob.getPokemonAIState(IMoveConstants.SITTING);
+        boolean tamed = mob.getPokemonAIState(IMoveConstants.TAMED) && !mob.getPokemonAIState(IMoveConstants.STAYING);
         boolean up = Math.random() < 0.9;
-        if (sitting && up)
+        if (sitting && up && !tamed)
         {
             mob.setPokemonAIState(IMoveConstants.SITTING, false);
         }
-        else if (Math.random() > 0.95)
+        else if (Math.random() > 0.95 && !tamed)
         {
             mob.setPokemonAIState(IMoveConstants.SITTING, true);
         }
@@ -151,7 +152,9 @@ public class AIIdle extends AIBase
         if (entity.getAttackTarget() != null || !entity.getNavigator().noPath()) return false;
 
         mob.getPokedexEntry().flys();
-        if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)) return false;
+        if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
+                && !mob.getPokemonAIState(IMoveConstants.STAYING))
+            return false;
         if (mob.getPokemonAIState(IMoveConstants.SLEEPING)) return false;
         else if (this.entity.isBeingRidden() || current != null)
         {

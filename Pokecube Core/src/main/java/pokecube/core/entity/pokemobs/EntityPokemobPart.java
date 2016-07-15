@@ -941,4 +941,18 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
         // TODO Auto-generated method stub
         return false;
     }
+
+    @Override
+    public int getAbilityIndex()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setAbilityIndex(int index)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

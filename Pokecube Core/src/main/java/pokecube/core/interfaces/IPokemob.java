@@ -314,6 +314,7 @@ public interface IPokemob extends IMoveConstants
     void executeMove(Entity target, Vector3 targetLocation, float f);
 
     Ability getAbility();
+    int getAbilityIndex();
 
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
@@ -580,6 +581,7 @@ public interface IPokemob extends IMoveConstants
     void returnToPokecube();
 
     void setAbility(Ability ability);
+    void setAbilityIndex(int index);
 
     void setAncient(boolean toSet);
 

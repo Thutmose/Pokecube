@@ -1,15 +1,23 @@
 package pokecube.core.world.terrain;
 
+import static thut.api.terrain.BiomeType.LAKE;
+import static thut.api.terrain.BiomeType.VILLAGE;
 import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 import static thut.api.terrain.TerrainSegment.count;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.village.Village;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.common.BiomeDictionary.Type;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainSegment;
 import thut.api.terrain.TerrainSegment.ISubBiomeChecker;
@@ -48,7 +56,34 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
             else if (isCave(v, world)) return BiomeType.CAVE.getType();
             return INSIDE.getType();
         }
-        return -1;
+        else
+        {
+            int biome = 0;
+            Biome b = v.getBiome(chunk, world.getBiomeProvider());
+            biome = BiomeDatabase.getBiomeType(b);
+            boolean notLake = BiomeDatabase.contains(b, Type.OCEAN) || BiomeDatabase.contains(b, Type.SWAMP)
+                    || BiomeDatabase.contains(b, Type.RIVER) || BiomeDatabase.contains(b, Type.WATER)
+                    || BiomeDatabase.contains(b, Type.BEACH);
+            int water = v.blockCount2(world, Blocks.WATER, 3);
+            if (water > 4)
+            {
+                if (!notLake)
+                {
+                    biome = LAKE.getType();
+                }
+                return biome;
+            }
+            if (world.villageCollectionObj != null)
+            {
+                Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(
+                        MathHelper.floor_double(v.x), MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
+                if (village != null)
+                {
+                    biome = VILLAGE.getType();
+                }
+            }
+            return biome;
+        }
     }
 
     public boolean isCave(Vector3 v, World world)

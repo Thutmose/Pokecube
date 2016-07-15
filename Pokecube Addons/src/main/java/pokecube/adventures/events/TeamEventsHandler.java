@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -144,7 +145,7 @@ public class TeamEventsHandler
                         owner = null;
                     }
                 }
-                if (owner != null) continue;
+                if (owner == null) continue;
                 toRemove.add(pos);
             }
         }
@@ -173,7 +174,38 @@ public class TeamEventsHandler
                 evt.setCanceled(true);
             }
             evt.setUseItem(Result.DENY);
-            evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
+            if (!evt.getWorld().isRemote)
+                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void interactRightClickBlock(PlayerInteractEvent.RightClickItem evt)
+    {
+        ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
+        String owner = TeamManager.getInstance().getLandOwner(c);
+        if (owner == null) return;
+
+        String team = evt.getWorld().getScoreboard().getPlayersTeam(evt.getEntityPlayer().getName())
+                .getRegisteredName();
+
+        if (owner.equals(team))
+        {
+            return;
+        }
+        else if (evt.getItemStack() != null && evt.getItemStack().getItem() instanceof IPokecube) { return; }
+        if (evt.getItemStack() == null) return;
+
+        ChunkCoordinate blockLoc = new ChunkCoordinate(evt.getPos(), evt.getEntityPlayer().dimension);
+        TeamManager.getInstance().isPublic(blockLoc);
+        if (!team.equals(owner))
+        {
+            if (!TeamManager.getInstance().isPublic(blockLoc))
+            {
+                evt.setResult(Result.DENY);
+                evt.setCanceled(true);
+            }
+            evt.setResult(Result.DENY);
         }
     }
 
@@ -205,7 +237,7 @@ public class TeamEventsHandler
                     (float) evt.getHitVec().zCoord);
             if (!b) { return; }
         }
-        if (!b && evt.getEntityPlayer().getHeldItemMainhand() == null) return;
+        if (!b && evt.getItemStack() == null) return;
 
         ChunkCoordinate blockLoc = new ChunkCoordinate(evt.getPos(), evt.getEntityPlayer().dimension);
         TeamManager.getInstance().isPublic(blockLoc);
@@ -217,7 +249,10 @@ public class TeamEventsHandler
                 evt.setCanceled(true);
             }
             evt.setUseItem(Result.DENY);
-            evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
+            if (!evt.getWorld().isRemote && evt.getHand() == EnumHand.MAIN_HAND)
+            {
+                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
+            }
         }
     }
 

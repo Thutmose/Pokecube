@@ -471,6 +471,11 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                     if (!stack.getTagCompound().hasKey("shiny")) throw new Exception("no shinyInfo found");
                     ret.add(stack.getTagCompound().getBoolean("shiny"));
                 }
+                if (j == 6)
+                {
+                    if (!stack.getTagCompound().hasKey("abilityIndex")) throw new Exception("no ability Index found");
+                    ret.add(stack.getTagCompound().getInteger("abilityIndex"));
+                }
             }
             else throw new Exception("the itemstack does not contain the required info");
 

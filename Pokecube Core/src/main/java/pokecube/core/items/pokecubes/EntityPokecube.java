@@ -33,6 +33,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -124,7 +125,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 && ((IPokemob) e).getPokemonOwner() == shootingEntity) { return; }
 
         if (e instanceof EntityLivingBase && e instanceof IPokemob && ((EntityLivingBase) e).getHealth() > 0
-                && tilt == -1 && !((IPokemob) e).getPokemonAIState(IMoveConstants.TAMED))
+                && tilt == -1)
         {
             IPokemob hitten = (IPokemob) e;
             if (hitten.getPokemonOwner() == shootingEntity) { return; }
@@ -132,7 +133,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             int tiltBak = tilt;
             CaptureEvent.Pre capturePre = new Pre(hitten, this);
             MinecraftForge.EVENT_BUS.post(capturePre);
-            if (capturePre.isCanceled())
+            if (capturePre.isCanceled() || capturePre.getResult() == Result.DENY)
             {
                 if (tilt != tiltBak)
                 {
@@ -328,7 +329,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 return;
             }
             HappinessType.applyHappiness(mob, HappinessType.TRADE);
-            if (shootingEntity != null) mob.setPokemonOwner((shootingEntity));
+            if (shootingEntity != null && !mob.getPokemonAIState(IMoveConstants.TAMED))
+                mob.setPokemonOwner((shootingEntity));
             ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
             this.setEntityItemStack(mobStack);
             if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))

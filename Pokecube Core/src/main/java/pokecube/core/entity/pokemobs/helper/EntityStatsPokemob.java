@@ -284,6 +284,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
+    public int getAbilityIndex()
+    {
+        return abilityIndex;
+    }
+
+    @Override
     public int[] getActualStats()
     {
         int[] stats = getBaseStats();
@@ -735,6 +741,13 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
+    public void setAbilityIndex(int ability)
+    {
+        this.abilityIndex = ability;
+        if (abilityIndex > 2 || abilityIndex < 0) abilityIndex = 0;
+    }
+
+    @Override
     public void setAncient(boolean ancient)
     {
         isAncient = ancient;
@@ -930,7 +943,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setToHiddenAbility()
     {
         this.abilityIndex = 2;
-        this.setAbility(getPokedexEntry().getAbility(2, this));
+        this.setAbility(getPokedexEntry().getHiddenAbility(this));
     }
 
     @Override

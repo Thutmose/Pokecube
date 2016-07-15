@@ -141,9 +141,10 @@ public class ItemPokemobEgg extends Item
             n++;
         }
         nbt.setString("moves", moveString);
+        nbt.setInteger("abilityIndex", getAbility(mother.getAbilityIndex(), father.getAbilityIndex()));
     }
 
-    public static byte[] getIVs(byte[] fatherIVs, byte[] motherIVs, byte[] fatherEVs, byte[] motherEVs)
+    private static byte[] getIVs(byte[] fatherIVs, byte[] motherIVs, byte[] fatherEVs, byte[] motherEVs)
     {
         byte[] ret = new byte[6];
         Random rand = new Random();
@@ -165,7 +166,7 @@ public class ItemPokemobEgg extends Item
         return ret;
     }
 
-    public static String[] getMoves(String motherMoves, String fatherMoves)
+    private static String[] getMoves(String motherMoves, String fatherMoves)
     {
         String[] ma = motherMoves.split(":");
         String[] fa = fatherMoves.split(":");
@@ -190,7 +191,7 @@ public class ItemPokemobEgg extends Item
         return ret;
     }
 
-    public static byte getNature(Nature nature, Nature nature2)
+    private static byte getNature(Nature nature, Nature nature2)
     {
         byte ret = 0;
         Random rand = new Random();
@@ -268,6 +269,13 @@ public class ItemPokemobEgg extends Item
 
     }
 
+    private static int getAbility(int motherIndex, int fatherIndex)
+    {
+        if (motherIndex == fatherIndex && Math.random() > 0.1) return motherIndex;
+        int index = Math.random() > 0.5 ? 0 : 1;
+        return Math.random() > 0.1 ? index : 2;
+    }
+
     public static int getNumber(ItemStack stack)
     {
         if (stack == null || stack.getTagCompound() == null
@@ -337,6 +345,18 @@ public class ItemPokemobEgg extends Item
             mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
             mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
+            if (nbt.hasKey("abilityIndex"))
+            {
+                int index = nbt.getInteger("abilityIndex");
+                if (index < 2)
+                {
+                    mob.setAbilityIndex(index);
+                }
+                else
+                {
+                    mob.setToHiddenAbility();
+                }
+            }
         }
 
         if (nbt.hasKey("gender"))

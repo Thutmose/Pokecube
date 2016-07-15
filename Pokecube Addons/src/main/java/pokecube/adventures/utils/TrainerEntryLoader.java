@@ -64,6 +64,8 @@ public class TrainerEntryLoader
     {
         @XmlAnyAttribute
         Map<QName, String> values;
+        @XmlElement(name = "tag")
+        String             tag;
     }
 
     public static XMLDatabase loadDatabase(File file) throws Exception
@@ -102,6 +104,7 @@ public class TrainerEntryLoader
             }
             if (entry.held != null)
             {
+                if (entry.held.tag != null) entry.held.values.put(new QName("tag"), entry.held.tag);
                 ItemStack held = Tools.getStack(entry.held.values);
                 type.held = held;
             }

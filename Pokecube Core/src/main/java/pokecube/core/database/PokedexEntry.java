@@ -967,6 +967,7 @@ public class PokedexEntry
     private int                                childNb          = 0;
     protected boolean                          hasStats         = false;
     protected boolean                          hasEVXP          = false;
+    public boolean                             breeds           = true;
     /** All possible moves */
     private List<String>                       possibleMoves;
     /** Map of Level to Moves learned. */

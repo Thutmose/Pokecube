@@ -98,6 +98,8 @@ public class PokedexEntryLoader
     {
         @XmlAnyAttribute
         Map<QName, String> values;
+        @XmlElement(name = "tag")
+        String             tag;
     }
 
     @XmlRootElement(name = "Spawn")
@@ -255,7 +257,9 @@ public class PokedexEntryLoader
         @XmlAttribute
         public String  special;
         @XmlAttribute
-        public boolean base = false;
+        public boolean base  = false;
+        @XmlAttribute
+        public boolean breed = true;
         @XmlElement(name = "STATS")
         StatsNode      stats;
         @XmlElement(name = "MOVES")
@@ -898,11 +902,16 @@ public class PokedexEntryLoader
         {
             for (Drop d : xmlStats.drops)
             {
+                Map<QName, String> values = d.values;
+                if (d.tag != null)
+                {
+                    QName name = new QName("tag");
+                    values.put(name, d.tag);
+                }
                 ItemStack stack = Tools.getStack(d.values);
                 if (stack != null)
                 {
                     float chance = 1;
-                    Map<QName, String> values = d.values;
                     for (QName key : values.keySet())
                     {
                         if (key.toString().equals("r"))
@@ -919,11 +928,16 @@ public class PokedexEntryLoader
         {
             for (Drop d : xmlStats.held)
             {
+                Map<QName, String> values = d.values;
+                if (d.tag != null)
+                {
+                    QName name = new QName("tag");
+                    values.put(name, d.tag);
+                }
                 ItemStack stack = Tools.getStack(d.values);
                 if (stack != null)
                 {
                     float chance = 1;
-                    Map<QName, String> values = d.values;
                     for (QName key : values.keySet())
                     {
                         if (key.toString().equals("r"))
@@ -1241,6 +1255,7 @@ public class PokedexEntryLoader
             // else
             if (!init)
             {
+                entry.breeds = xmlEntry.breed;
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
                 parseEvols(entry, stats, true);

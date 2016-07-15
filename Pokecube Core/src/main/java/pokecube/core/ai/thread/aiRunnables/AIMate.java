@@ -132,7 +132,7 @@ public class AIMate extends AIBase
         {
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
-        if (pokemob.getSexe() == IPokemob.SEXLEGENDARY && !transforms) return null;
+        if (!pokemob.getPokedexEntry().breeds && !transforms) return null;
         if (pokemob.isType(PokeType.ghost) && !pokemob.getPokemonAIState(IMoveConstants.TAMED)) return null;
         if (!(pokemob.getPokemonOwner() instanceof EntityPlayer)
                 && !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius,
@@ -176,7 +176,7 @@ public class AIMate extends AIBase
                 IPokemob entityanimal = (IPokemob) list.get(i);
                 EntityAnimal animal = (EntityAnimal) list.get(i);
                 if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != pokemob
-                        .getPokemonAIState(IMoveConstants.TAMED))
+                        .getPokemonAIState(IMoveConstants.TAMED) || !entityanimal.getPokedexEntry().breeds)
                     continue;
 
                 boolean validMate = breedingMob.canMate((EntityAnimal) entityanimal);

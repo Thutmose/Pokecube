@@ -4793,7 +4793,7 @@
                 lvl_50="HEAVYSLAM" lvl_57="GIGAIMPACT" lvl_9="AMNESIA"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Articuno" number="144">
+    <Pokemon base="true" name="Articuno" number="144" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -4826,7 +4826,7 @@
                 lvl_85="ROOST" lvl_92="HURRICANE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Zapdos" number="145">
+    <Pokemon base="true" name="Zapdos" number="145" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -4859,7 +4859,7 @@
                 lvl_85="ROOST" lvl_92="ZAPCANNON"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Moltres" number="146">
+    <Pokemon base="true" name="Moltres" number="146" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -5018,7 +5018,7 @@
                 lvl_79="AMNESIA" lvl_8="SWIFT" lvl_86="MIST" lvl_93="MEFIRST"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Mewtwo Mega-X" number="150">
+    <Pokemon name="Mewtwo Mega-X" number="150" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
@@ -5031,7 +5031,7 @@
             <ABILITY normal="Steadfast"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Mewtwo Mega-Y" number="150">
+    <Pokemon name="Mewtwo Mega-Y" number="150" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
@@ -5043,7 +5043,7 @@
             <ABILITY normal="Insomnia"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Mew" number="151">
+    <Pokemon base="true" name="Mew" number="151" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
@@ -8031,7 +8031,7 @@
                 lvl_50="HEALINGWISH" lvl_54="DOUBLEEDGE" lvl_9="REFRESH"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Raikou" number="243">
+    <Pokemon base="true" name="Raikou" number="243" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -8063,7 +8063,7 @@
                 lvl_8="THUNDERSHOCK" lvl_85="THUNDER"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Entei" number="244">
+    <Pokemon base="true" name="Entei" number="244" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -8095,7 +8095,7 @@
                 lvl_71="FIREBLAST" lvl_78="CALMMIND" lvl_8="EMBER" lvl_85="ERUPTION"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Suicune" number="245">
+    <Pokemon base="true" name="Suicune" number="245" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -8232,7 +8232,7 @@
             <ABILITY normal="Sand Stream"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Lugia" number="249">
+    <Pokemon base="true" name="Lugia" number="249" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -8264,7 +8264,7 @@
                 lvl_85="NATURALGIFT" lvl_9="GUST" lvl_93="CALMMIND" lvl_99="SKYATTACK"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Ho-Oh" number="250">
+    <Pokemon base="true" name="Ho-Oh" number="250" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -8297,7 +8297,7 @@
                 lvl_85="NATURALGIFT" lvl_9="GUST" lvl_93="CALMMIND" lvl_99="SKYATTACK"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Celebi" number="251">
+    <Pokemon base="true" name="Celebi" number="251" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
@@ -12510,7 +12510,7 @@
             <ABILITY normal="Tough Claws"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Regirock" number="377">
+    <Pokemon base="true" name="Regirock" number="377" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12544,7 +12544,7 @@
                 lvl_67="HYPERBEAM" lvl_7="ROCKTHROW"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Regice" number="378">
+    <Pokemon base="true" name="Regice" number="378" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12576,7 +12576,7 @@
                 lvl_61="SUPERPOWER" lvl_67="HYPERBEAM" lvl_7="ICYWIND"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Registeel" number="379">
+    <Pokemon base="true" name="Registeel" number="379" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12696,7 +12696,7 @@
             <ABILITY normal="Levitate"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Kyogre" number="382">
+    <Pokemon base="true" name="Kyogre" number="382" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>5</CAPTURERATE>
@@ -12727,7 +12727,7 @@
                 lvl_75="HYDROPUMP" lvl_80="DOUBLEEDGE" lvl_90="WATERSPOUT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Kyogre Primal" number="382">
+    <Pokemon name="Kyogre Primal" number="382" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>5</CAPTURERATE>
@@ -12741,7 +12741,7 @@
             <ABILITY normal="Primordial Sea"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Groudon" number="383">
+    <Pokemon base="true" name="Groudon" number="383" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>5</CAPTURERATE>
@@ -12774,7 +12774,7 @@
                 lvl_75="FIREBLAST" lvl_80="HAMMERARM" lvl_90="ERUPTION"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Groudon Primal" number="383">
+    <Pokemon name="Groudon Primal" number="383" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>5</CAPTURERATE>
@@ -12788,7 +12788,7 @@
             <ABILITY normal="Desolate Land"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Rayquaza" number="384">
+    <Pokemon base="true" name="Rayquaza" number="384" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12819,7 +12819,7 @@
                 lvl_80="OUTRAGE" lvl_90="HYPERBEAM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Rayquaza Mega" number="384">
+    <Pokemon name="Rayquaza Mega" number="384" breed="false">
         <STATS>
             <BASESTATS atk="180" def="100" hp="105" spatk="180"
                 spd="115" spdef="100"/>
@@ -12828,7 +12828,7 @@
             <MASSKG>392</MASSKG>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Jirachi" number="385">
+    <Pokemon base="true" name="Jirachi" number="385" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12861,7 +12861,7 @@
                 lvl_65="LASTRESORT" lvl_70="DOOMDESIRE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Deoxys" number="386">
+    <Pokemon base="true" name="Deoxys" number="386" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12893,7 +12893,7 @@
                 lvl_61="RECOVER" lvl_67="PSYCHOBOOST" lvl_7="NIGHTSHADE" lvl_73="HYPERBEAM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Deoxys Attack" number="386">
+    <Pokemon name="Deoxys Attack" number="386" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12910,7 +12910,7 @@
             <TYPE type1="Psychic"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Deoxys Defense" number="386">
+    <Pokemon name="Deoxys Defense" number="386" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12927,7 +12927,7 @@
             <TYPE type1="Psychic"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Deoxys Speed" number="386">
+    <Pokemon name="Deoxys Speed" number="386" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -15930,7 +15930,7 @@
             <TYPE type1="Electric" type2="Water"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Uxie" number="480">
+    <Pokemon base="true" name="Uxie" number="480" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -15960,7 +15960,7 @@
                 lvl_66="NATURALGIFT" lvl_76="MEMENTO"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Mesprit" number="481">
+    <Pokemon base="true" name="Mesprit" number="481" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -15991,7 +15991,7 @@
                 lvl_66="NATURALGIFT" lvl_76="HEALINGWISH"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Azelf" number="482">
+    <Pokemon base="true" name="Azelf" number="482" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16021,7 +16021,7 @@
                 lvl_61="LASTRESORT" lvl_66="NATURALGIFT" lvl_76="EXPLOSION"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Dialga" number="483">
+    <Pokemon base="true" name="Dialga" number="483" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>30</CAPTURERATE>
@@ -16050,7 +16050,7 @@
                 lvl_46="ROAROFTIME" lvl_50="FLASHCANNON" lvl_6="METALCLAW"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Palkia" number="484">
+    <Pokemon base="true" name="Palkia" number="484" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>30</CAPTURERATE>
@@ -16079,7 +16079,7 @@
                 lvl_46="SPACIALREND" lvl_50="HYDROPUMP" lvl_6="WATERPULSE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Heatran" number="485">
+    <Pokemon base="true" name="Heatran" number="485" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16109,7 +16109,7 @@
                 lvl_88="STONEEDGE" lvl_9="LEER" lvl_96="MAGMASTORM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Regigigas" number="486">
+    <Pokemon base="true" name="Regigigas" number="486" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16137,7 +16137,7 @@
                 lvl_50="ZENHEADBUTT" lvl_65="PAYBACK" lvl_75="CRUSHGRIP" lvl_90="HEAVYSLAM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Giratina" number="487">
+    <Pokemon base="true" name="Giratina" number="487" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16167,7 +16167,7 @@
                 lvl_46="SHADOWFORCE" lvl_50="HEX" lvl_6="OMINOUSWIND"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Giratina Origin" number="487">
+    <Pokemon name="Giratina Origin" number="487" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16180,7 +16180,7 @@
             <ABILITY hidden="Telepathy" normal="Levitate"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Cresselia" number="488">
+    <Pokemon base="true" name="Cresselia" number="488" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16210,7 +16210,7 @@
                 lvl_84="LUNARDANCE" lvl_93="PSYCHIC" lvl_99="MOONBLAST"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Phione" number="489">
+    <Pokemon base="true" name="Phione" number="489" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>30</CAPTURERATE>
@@ -16272,7 +16272,7 @@
                 lvl_69="RAINDANCE" lvl_76="HEARTSWAP" lvl_9="CHARM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Darkrai" number="491">
+    <Pokemon base="true" name="Darkrai" number="491" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16300,7 +16300,7 @@
                 lvl_66="DARKVOID" lvl_75="NASTYPLOT" lvl_84="DREAMEATER" lvl_93="DARKPULSE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Shaymin Land" number="492">
+    <Pokemon base="true" name="Shaymin Land" number="492" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
@@ -16331,7 +16331,7 @@
                 lvl_82="SWEETKISS" lvl_91="HEALINGWISH"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Shaymin Sky" number="492">
+    <Pokemon name="Shaymin Sky" number="492" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
@@ -16358,7 +16358,7 @@
             <MISC moves="TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, PROTECT, SAFEGUARD, FRUSTRATION, SOLARBEAM, RETURN, PSYCHIC, DOUBLETEAM, FACADE, REST, ROUND, ENERGYBALL, GIGAIMPACT, FLASH, SWORDSDANCE, PSYCHUP, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, SECRETPOWER, NATUREPOWER, DAZZLINGGLEAM, CONFIDE, COVET, GIGADRAIN, LASTRESORT, SEEDBOMB, SNORE, SYNTHESIS, WORRYSEED, ZENHEADBUTT, TAILWIND, BULLETSEED, ENDURE, SWIFT, MUDSLAP, HEADBUTT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Arceus" number="493">
+    <Pokemon base="true" name="Arceus" number="493" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -16389,109 +16389,109 @@
                 lvl_80="HYPERBEAM" lvl_90="PERISHSONG"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Arceus Fighting" number="493">
+    <Pokemon name="Arceus Fighting" number="493" breed="false">
         <STATS>
             <TYPE type1="Fighting"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Flying" number="493">
+    <Pokemon name="Arceus Flying" number="493" breed="false">
         <STATS>
             <TYPE type1="Flying"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Poison" number="493">
+    <Pokemon name="Arceus Poison" number="493" breed="false">
         <STATS>
             <TYPE type1="Poison"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Ground" number="493">
+    <Pokemon name="Arceus Ground" number="493" breed="false">
         <STATS>
             <TYPE type1="Gound"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Rock" number="493">
+    <Pokemon name="Arceus Rock" number="493" breed="false">
         <STATS>
             <TYPE type1="Rock"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Bug" number="493">
+    <Pokemon name="Arceus Bug" number="493" breed="false">
         <STATS>
             <TYPE type1="Bug"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Ghost" number="493">
+    <Pokemon name="Arceus Ghost" number="493" breed="false">
         <STATS>
             <TYPE type1="Ghost"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Steel" number="493">
+    <Pokemon name="Arceus Steel" number="493" breed="false">
         <STATS>
             <TYPE type1="Steel"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Fire" number="493">
+    <Pokemon name="Arceus Fire" number="493" breed="false">
         <STATS>
             <TYPE type1="Fire"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Water" number="493">
+    <Pokemon name="Arceus Water" number="493" breed="false">
         <STATS>
             <TYPE type1="Water"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Grass" number="493">
+    <Pokemon name="Arceus Grass" number="493" breed="false">
         <STATS>
             <TYPE type1="Grass"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Electric" number="493">
+    <Pokemon name="Arceus Electric" number="493" breed="false">
         <STATS>
             <TYPE type1="Electric"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Psychic" number="493">
+    <Pokemon name="Arceus Psychic" number="493" breed="false">
         <STATS>
             <TYPE type1="Psychic"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Ice" number="493">
+    <Pokemon name="Arceus Ice" number="493" breed="false">
         <STATS>
             <TYPE type1="Ice"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Dragon" number="493">
+    <Pokemon name="Arceus Dragon" number="493" breed="false">
         <STATS>
             <TYPE type1="Dragon"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Dark" number="493">
+    <Pokemon name="Arceus Dark" number="493" breed="false">
         <STATS>
             <TYPE type1="Dark"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Arceus Fairy" number="493">
+    <Pokemon name="Arceus Fairy" number="493" breed="false">
         <STATS>
             <TYPE type1="Fairy"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Victini" number="494">
+    <Pokemon base="true" name="Victini" number="494" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21016,7 +21016,7 @@
                 lvl_80="RAGEPOWDER" lvl_90="HURRICANE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Cobalion" number="638">
+    <Pokemon base="true" name="Cobalion" number="638" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21048,7 +21048,7 @@
                 lvl_67="METALBURST" lvl_7="DOUBLEKICK" lvl_73="CLOSECOMBAT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Terrakion" number="639">
+    <Pokemon base="true" name="Terrakion" number="639" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21080,7 +21080,7 @@
                 lvl_67="STONEEDGE" lvl_7="DOUBLEKICK" lvl_73="CLOSECOMBAT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Virizion" number="640">
+    <Pokemon base="true" name="Virizion" number="640" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21112,7 +21112,7 @@
                 lvl_67="LEAFBLADE" lvl_7="DOUBLEKICK" lvl_73="CLOSECOMBAT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Tornadus Incarnate" number="641">
+    <Pokemon base="true" name="Tornadus Incarnate" number="641" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21142,7 +21142,7 @@
             <MISC moves="TOXIC, BULKUP, HIDDENPOWER, TAUNT, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, RETURN, PSYCHIC, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, AERIALACE, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FOCUSBLAST, FLING, SKYDROP, INCINERATE, ACROBATICS, EMBARGO, PAYBACK, GIGAIMPACT, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, ROCKSMASH, DARKPULSE, CONFIDE, FLY, STRENGTH, FOULPLAY, HEATWAVE, ICYWIND, IRONTAIL, KNOCKOFF, ROLEPLAY, SNORE, SUPERPOWER"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Tornadus Therian" number="641">
+    <Pokemon name="Tornadus Therian" number="641" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21159,7 +21159,7 @@
             <ABILITY hidden="Defiant" normal="Regenerator"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Thundurus Incarnate" number="642">
+    <Pokemon base="true" name="Thundurus Incarnate" number="642" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21189,7 +21189,7 @@
             <MISC moves="TOXIC, BULKUP, HIDDENPOWER, TAUNT, HYPERBEAM, PROTECT, RAINDANCE, FRUSTRATION, SMACKDOWN, THUNDERBOLT, THUNDER, RETURN, PSYCHIC, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, TORMENT, FACADE, REST, ATTRACT, THIEF, ROUND, FOCUSBLAST, FLING, CHARGEBEAM, SKYDROP, INCINERATE, EMBARGO, PAYBACK, GIGAIMPACT, VOLTSWITCH, THUNDERWAVE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, FLASHCANNON, WILDCHARGE, ROCKSMASH, DARKPULSE, CONFIDE, FLY, STRENGTH, FOULPLAY, IRONTAIL, KNOCKOFF, ROLEPLAY, SNORE, SUPERPOWER, THUNDERPUNCH"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Thundurus Therian" number="642">
+    <Pokemon name="Thundurus Therian" number="642" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21206,7 +21206,7 @@
             <ABILITY hidden="Defiant" normal="Volt Absorb"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Reshiram" number="643">
+    <Pokemon base="true" name="Reshiram" number="643" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
@@ -21236,7 +21236,7 @@
                 lvl_78="FIREBLAST" lvl_8="IMPRISON" lvl_85="OUTRAGE" lvl_92="HYPERVOICE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Zekrom" number="644">
+    <Pokemon base="true" name="Zekrom" number="644" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>45</CAPTURERATE>
@@ -21266,7 +21266,7 @@
                 lvl_78="THUNDER" lvl_8="IMPRISON" lvl_85="OUTRAGE" lvl_92="HYPERVOICE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Landorus Incarnate" number="645">
+    <Pokemon base="true" name="Landorus Incarnate" number="645" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21296,7 +21296,7 @@
             <MISC moves="CALMMIND, TOXIC, BULKUP, HIDDENPOWER, HYPERBEAM, PROTECT, FRUSTRATION, SMACKDOWN, EARTHQUAKE, RETURN, DIG, PSYCHIC, BRICKBREAK, DOUBLETEAM, SLUDGEWAVE, SLUDGEBOMB, SANDSTORM, ROCKTOMB, FACADE, REST, ATTRACT, ROUND, FOCUSBLAST, FLING, EXPLOSION, PAYBACK, GIGAIMPACT, ROCKPOLISH, STONEEDGE, SWORDSDANCE, BULLDOZE, ROCKSLIDE, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, ROCKSMASH, CONFIDE, FLY, STRENGTH, GRAVITY, IRONTAIL, KNOCKOFF, ROLEPLAY, SNORE, STEALTHROCK, SUPERPOWER"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Landorus Therian" number="645">
+    <Pokemon name="Landorus Therian" number="645" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21313,7 +21313,7 @@
             <ABILITY normal="Intimidate"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Kyurem" number="646">
+    <Pokemon base="true" name="Kyurem" number="646" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21342,7 +21342,7 @@
                 lvl_78="BLIZZARD" lvl_8="IMPRISON" lvl_85="OUTRAGE" lvl_92="HYPERVOICE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Kyurem Black" number="646">
+    <Pokemon name="Kyurem Black" number="646" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21359,7 +21359,7 @@
             <ABILITY normal="Teravolt"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Kyurem White" number="646">
+    <Pokemon name="Kyurem White" number="646" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21376,7 +21376,7 @@
             <ABILITY normal="Turboblaze"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Keldeo" number="647">
+    <Pokemon base="true" name="Keldeo" number="647" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21407,8 +21407,8 @@
                 lvl_7="DOUBLEKICK" lvl_73="CLOSECOMBAT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Keldeo Resolute" number="647"/>
-    <Pokemon base="true" name="Meloetta Aria" number="648">
+    <Pokemon name="Keldeo Resolute" number="647" breed="false"/>
+    <Pokemon base="true" name="Meloetta Aria" number="648" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21437,7 +21437,7 @@
             <MISC moves="HONECLAWS, PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, THUNDER, RETURN, PSYCHIC, SHADOWBALL, BRICKBREAK, DOUBLETEAM, FACADE, REST, LOWSWEEP, ROUND, ECHOEDVOICE, FOCUSBLAST, ENERGYBALL, FLING, CHARGEBEAM, ACROBATICS, EMBARGO, SHADOWCLAW, PAYBACK, RETALIATE, GIGAIMPACT, FLASH, STONEEDGE, THUNDERWAVE, PSYCHUP, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, UTURN, SUBSTITUTE, TRICKROOM, ROCKSMASH, POWERUPPUNCH, DAZZLINGGLEAM, CONFIDE, STRENGTH, RELICSONG, TELEKINESIS, WORKUP, COVET, DRAINPUNCH, DUALCHOP, FIREPUNCH, GRAVITY, HEALBELL, HELPINGHAND, ICEPUNCH, KNOCKOFF, LASTRESORT, LOWKICK, MAGICCOAT, MAGICROOM, RECYCLE, SIGNALBEAM, SKILLSWAP, SNATCH, SNORE, THUNDERPUNCH, TRICK, UPROAR, WONDERROOM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Meloetta Pirouette" number="648">
+    <Pokemon name="Meloetta Pirouette" number="648" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21454,7 +21454,7 @@
             <ABILITY normal="Serene Grace"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Genesect" number="649">
+    <Pokemon base="true" name="Genesect" number="649" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -21489,10 +21489,10 @@
                 lvl_7="FURYCUTTER" lvl_73="HYPERBEAM" lvl_77="SELFDESTRUCT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="GenesectBDrive" number="649"/>
-    <Pokemon name="GenesectCDrive" number="649"/>
-    <Pokemon name="GenesectDDrive" number="649"/>
-    <Pokemon name="GenesectSDrive" number="649"/>
+    <Pokemon name="GenesectBDrive" number="649" breed="false"/>
+    <Pokemon name="GenesectCDrive" number="649" breed="false"/>
+    <Pokemon name="GenesectDDrive" number="649" breed="false"/>
+    <Pokemon name="GenesectSDrive" number="649" breed="false"/>
     <Pokemon base="true" name="Chespin" number="650">
         <STATS>
             <EVOLUTIONMODE>L16</EVOLUTIONMODE>
@@ -23624,7 +23624,7 @@
                 lvl_62="HURRICANE" lvl_70="DRAGONPULSE" lvl_75="BOOMBURST"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Xerneas" number="716">
+    <Pokemon base="true" name="Xerneas" number="716" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>70</CAPTURERATE>
@@ -23655,7 +23655,7 @@
                 lvl_80="CLOSECOMBAT" lvl_88="GIGAIMPACT" lvl_93="OUTRAGE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Yveltal" number="717">
+    <Pokemon base="true" name="Yveltal" number="717" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>70</CAPTURERATE>
@@ -23686,7 +23686,7 @@
                 lvl_80="SUCKERPUNCH" lvl_88="HYPERBEAM" lvl_93="SKYATTACK"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Zygarde" number="718">
+    <Pokemon base="true" name="Zygarde" number="718" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -23715,7 +23715,7 @@
                 lvl_88="EXTREMESPEED" lvl_93="OUTRAGE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Diancie" number="719">
+    <Pokemon base="true" name="Diancie" number="719" breed="false">
         <MOVES>
             <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HAIL, HIDDENPOWER, SUNNYDAY, HYPERBEAM, LIGHTSCREEN, PROTECT, SAFEGUARD, FRUSTRATION, SMACKDOWN, RETURN, PSYCHIC, DOUBLETEAM, REFLECT, SANDSTORM, ROCKTOMB, FACADE, REST, ROUND, EXPLOSION, GIGAIMPACT, ROCKPOLISH, FLASH, STONEEDGE, GYROBALL, PSYCHUP, ROCKSLIDE, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, SECRETPOWER, NATUREPOWER, DAZZLINGGLEAM, CONFIDE"/>
             <LVLUP lvl_1="TACKLE, HARDEN" lvl_12="SMACKDOWN"
@@ -23745,7 +23745,7 @@
             <MEGARULES forme="N___:I___"/>
         </STATS>
     </Pokemon>
-    <Pokemon name="Diancie Mega" number="719">
+    <Pokemon name="Diancie Mega" number="719" breed="false">
         <STATS>
             <ABILITY normal="Magic Bounce"/>
             <BASESTATS atk="160" def="110" hp="50" spatk="160" spd="110" spdef="110"/>
@@ -23756,7 +23756,7 @@
             <GENDERRATIO>255</GENDERRATIO>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Hoopa Confined" number="720">
+    <Pokemon base="true" name="Hoopa Confined" number="720" breed="false">
         <STATS>
             <MASSKG>9</MASSKG>
             <SIZES height="0.5"/>
@@ -23782,7 +23782,7 @@
             <MISC moves="PSYSHOCK, CALMMIND, TOXIC, HIDDENPOWER, SUNNYDAY, TAUNT, HYPERBEAM, LIGHTSCREEN, PROTECT, RAINDANCE, SAFEGUARD, FRUSTRATION, THUNDERBOLT, RETURN, PSYCHIC, SHADOWBALL, BRICKBREAK, DOUBLETEAM, REFLECT, SANDSTORM, TORMENT, FACADE, REST, THIEF, ROUND, FOCUSBLAST, ENERGYBALL, FLING, CHARGEBEAM, QUASH, EMBARGO, GIGAIMPACT, FLASH, THUNDERWAVE, PSYCHUP, DREAMEATER, GRASSKNOT, SWAGGER, SLEEPTALK, SUBSTITUTE, TRICKROOM, SECRETPOWER, POWERUPPUNCH, CONFIDE, BLOCK, COVET, DRAINPUNCH, DUALCHOP, FIREPUNCH, FOCUSPUNCH, FOULPLAY, GUNKSHOT, ICEPUNCH, KNOCKOFF, LASTRESORT, MAGICCOAT, MAGICROOM, RECYCLE, ROLEPLAY, SHOCKWAVE, SIGNALBEAM, SKILLSWAP, SNATCH, SNORE, THUNDERPUNCH, TRICK, UPROAR, WONDERROOM, ZENHEADBUTT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Hoopa Unbound" number="720">
+    <Pokemon name="Hoopa Unbound" number="720" breed="false">
         <STATS>
             <TYPE type1="Psychic" type2="Dark"/>
             <BASESTATS atk="160" def="60" hp="80" spatk="170" spd="80" spdef="130"/>
@@ -23803,7 +23803,7 @@
                 lvl_55="DARKPULSE" lvl_6="ASTONISH" lvl_75="PSYCHIC" lvl_85="HYPERSPACEFURY"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Volcanion" number="721">
+    <Pokemon base="true" name="Volcanion" number="721" breed="false">
         <STATS>
             <TYPE type1="Fire" type2="Water"/>
             <SIZES height="1.7"/>

@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -46,7 +45,6 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
             GL11.glColor4f(1, 1, 1, 1f);
             GL11.glRotated(180, 0, 0, 1);
             GL11.glRotated(entity.rotationYaw, 0, 1, 0);
-            RenderHelper.disableStandardItemLighting();
 
             EntityPokecube cube = (EntityPokecube) entity;
 
@@ -56,7 +54,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
                 GL11.glRotatef(rotateY, 0.0F, 0.0F, 1.0F);
             }
             ItemStack renderStack = cube.getEntityItem();
-            if(renderStack == null || !(renderStack.getItem() instanceof IPokecube))
+            if (renderStack == null || !(renderStack.getItem() instanceof IPokecube))
             {
                 renderStack = PokecubeItems.getStack("pokecube");
             }

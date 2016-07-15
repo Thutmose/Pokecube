@@ -4,6 +4,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.world.WorldEvent.Unload;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.stats.ISpecialCaptureCondition;
@@ -13,6 +15,7 @@ import pokecube.core.events.EggEvent;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.TradeEvent;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.PokecubeMod;
@@ -20,11 +23,11 @@ import pokecube.core.items.pokecubes.EntityPokecube;
 
 public class StatsHandler
 {
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void canCapture(CaptureEvent.Pre evt)
     {
         int num = evt.caught.getPokedexNb();
-
+        if (evt.caught.getPokemonAIState(IMoveConstants.TAMED)) evt.setResult(Result.DENY);
         if (ISpecialCaptureCondition.captureMap.containsKey(num))
         {
             Entity catcher = ((EntityPokecube) evt.pokecube).shootingEntity;
@@ -59,7 +62,7 @@ public class StatsHandler
             PokecubeBehavior cube = IPokecube.map.get(id);
             cube.onPostCapture(evt);
         }
-        if (evt.caught.isShadow()) return;
+        if (evt.caught.isShadow() || evt.isCanceled()) return;
         Entity owner = evt.caught.getPokemonOwner();
         EntityPlayer player = null;
         if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;

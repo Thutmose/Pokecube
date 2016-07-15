@@ -760,6 +760,8 @@ public interface IPokemob extends IMoveConstants
 
     /** @param value */
     void setRNGValue(int value);
-    
+
     void setSubParts(EntityPokemobPart[] subParts);
+
+    boolean isPlayerOwned();
 }

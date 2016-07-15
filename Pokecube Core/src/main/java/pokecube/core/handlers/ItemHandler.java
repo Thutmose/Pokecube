@@ -30,6 +30,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
@@ -422,27 +423,31 @@ public class ItemHandler extends Mod_Pokecube_Helper
             public void onPostCapture(Post evt)
             {
                 IPokemob mob = evt.caught;
-                mob.setPokemonOwnerByName("");
-                mob.setPokemonAIState(IMoveConstants.TAMED, false);
-                ((Entity) mob).entityDropItem(PokecubeManager.pokemobToItem(mob), 0.0F);
+                // mob.setPokemonOwnerByName("");
+                // mob.setPokemonAIState(IMoveConstants.TAMED, false);
+                evt.pokecube.entityDropItem(PokecubeManager.pokemobToItem(mob), 1.0F);
+                evt.setCanceled(true);
             }
 
             @Override
             public void onPreCapture(Pre evt)
             {
+                boolean tameSnag = !evt.caught.isPlayerOwned() && evt.caught.getPokemonAIState(IMoveConstants.TAMED);
+
                 if (evt.caught.isShadow())
                 {
                     EntityPokecube cube = (EntityPokecube) evt.pokecube;
 
                     IPokemob mob = (IPokemob) PokecubeCore.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
                             cube.getEntityWorld());
-                    Vector3 v = Vector3.getNewVector();
                     cube.tilt = Tools.computeCatchRate(mob, 1);
                     cube.time = cube.tilt * 20;
-                    evt.caught.setPokecubeId(PokecubeItems.getCubeId(evt.filledCube));
+
+                    if (!tameSnag) evt.caught.setPokecubeId(PokecubeItems.getCubeId(evt.filledCube));
+
                     cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
                     PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
-                    v.set(evt.caught).moveEntity(cube);
+                    Vector3.getNewVector().set(evt.pokecube).moveEntity(cube);
                     ((Entity) evt.caught).setDead();
                     cube.motionX = cube.motionZ = 0;
                     cube.motionY = 0.1;
@@ -464,6 +469,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
             @Override
             public void onPreCapture(Pre evt)
             {
+                if (evt.getResult() == Result.DENY) return;
+
                 EntityPokecube cube = (EntityPokecube) evt.pokecube;
 
                 IPokemob mob = (IPokemob) PokecubeCore.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),

@@ -137,6 +137,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
     boolean                             returning         = false;
     protected int                       abilityIndex      = 0;
+    private boolean                     players           = false;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -268,8 +269,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         if (ownerID == null) return null;
         try
         {
-            EntityLivingBase o;
-            if ((o = worldObj.getPlayerEntityByUUID(ownerID)) != null) return o;
+            EntityPlayer o = worldObj.getPlayerEntityByUUID(ownerID);
+            players = o != null;
+            if (o != null) return o;
         }
         catch (Exception e)
         {
@@ -284,7 +286,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             if (o instanceof EntityLivingBase)
             {
                 EntityLivingBase e = (EntityLivingBase) o;
-
+                players = o instanceof EntityPlayer;
                 if (e.getUniqueID().equals(ownerID)) { return e; }
             }
         }
@@ -557,7 +559,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 e.printStackTrace();
             }
         }
-
+        players = nbttagcompound.getBoolean("playerOwned");
         this.initInventory();
 
         NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
@@ -853,5 +855,12 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         {
             nbttagcompound.setTag("SaddleItem", this.pokeChest.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
         }
+        nbttagcompound.setBoolean("playerOwned", isPlayerOwned());
+    }
+
+    @Override
+    public boolean isPlayerOwned()
+    {
+        return this.getPokemonAIState(IMoveConstants.TAMED) && players;
     }
 }

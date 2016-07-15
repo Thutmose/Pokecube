@@ -4987,7 +4987,7 @@
                 lvl_61="DRAGONDANCE" lvl_67="OUTRAGE" lvl_75="HYPERBEAM" lvl_81="HURRICANE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Mewtwo" number="150">
+    <Pokemon base="true" name="Mewtwo" number="150" breed="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>

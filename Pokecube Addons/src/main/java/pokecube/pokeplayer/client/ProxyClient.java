@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
-import pokecube.core.client.gui.GuiPokedex_redo;
+import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.Proxy;
@@ -50,10 +50,10 @@ public class ProxyClient extends Proxy
     {
         IPokemob pokemob;
         if (event.side == Side.SERVER || (pokemob = getPokemob(event.player)) == null) return;
-        if (Minecraft.getMinecraft().currentScreen instanceof GuiPokedex_redo)
+        if (Minecraft.getMinecraft().currentScreen instanceof GuiPokedex)
         {
-            ((GuiPokedex_redo) Minecraft.getMinecraft().currentScreen).pokemob = pokemob;
-            GuiPokedex_redo.pokedexEntry = pokemob.getPokedexEntry();
+            ((GuiPokedex) Minecraft.getMinecraft().currentScreen).pokemob = pokemob;
+            GuiPokedex.pokedexEntry = pokemob.getPokedexEntry();
         }
     }
 

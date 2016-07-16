@@ -22,7 +22,6 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 
@@ -131,7 +130,7 @@ public class TrainerEntryLoader
                 {
                     for (PokedexEntry s : Database.spawnables)
                     {
-                        if (!s.getSpawnData().types[SpawnData.LEGENDARY] && s.getPokedexNb() != 151 && s != null)
+                        if (!s.legendary && s.getPokedexNb() != 151 && s != null)
                         {
                             type.pokemon.add(s);
                         }
@@ -146,8 +145,7 @@ public class TrainerEntryLoader
                         {
                             for (PokedexEntry s : Database.spawnables)
                             {
-                                if (s.isType(pokeType) && !s.getSpawnData().types[SpawnData.LEGENDARY]
-                                        && s.getPokedexNb() != 151 && s != null)
+                                if (s.isType(pokeType) && !s.legendary && s.getPokedexNb() != 151 && s != null)
                                 {
                                     type.pokemon.add(s);
                                 }

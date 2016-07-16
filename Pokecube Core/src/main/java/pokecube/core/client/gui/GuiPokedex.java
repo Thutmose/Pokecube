@@ -3,8 +3,6 @@
  */
 package pokecube.core.client.gui;
 
-import static pokecube.core.database.PokedexEntry.SpawnData.CAVE;
-import static pokecube.core.database.PokedexEntry.SpawnData.INDUSTRIAL;
 import static pokecube.core.utils.PokeType.flying;
 import static pokecube.core.utils.PokeType.getTranslatedName;
 
@@ -43,12 +41,10 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -68,7 +64,7 @@ import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
-public class GuiPokedex_redo extends GuiScreen
+public class GuiPokedex extends GuiScreen
 {
     public static PokedexEntry                    pokedexEntry       = null;
     public static Vector3                         closestVillage     = Vector3.getNewVector();
@@ -113,7 +109,7 @@ public class GuiPokedex_redo extends GuiScreen
     /**
      *
      */
-    public GuiPokedex_redo(IPokemob pokemob, EntityPlayer entityPlayer)
+    public GuiPokedex(IPokemob pokemob, EntityPlayer entityPlayer)
     {
         xSize = 256;
         ySize = 197;
@@ -378,16 +374,9 @@ public class GuiPokedex_redo extends GuiScreen
             if (index2 < 0) index2 = biomes.size() - 2;
             index2 = Math.max(0, index2 % (biomes.size() - 1));
 
-            String biomeName = BiomeDatabase.getNameFromType(biomes.get(index2));
             ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
 
-            if (SpawnHandler.spawnLists.containsKey(biomes.get(index2)))
-            {
-                for (PokedexEntry dbe : SpawnHandler.spawnLists.get(biomes.get(index2)))
-                {
-                    if (!dbe.getSpawnData().types[SpawnData.LEGENDARY] && dbe.getPokedexNb() != 151) names.add(dbe);
-                }
-            }
+            //TODO names list here.
 
             index = Math.max(0, Math.min(index, names.size() - 6));
             String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
@@ -411,17 +400,6 @@ public class GuiPokedex_redo extends GuiScreen
                 drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
                         0xFF0000);
                 String time = "";
-                boolean cave = dbe.getSpawnData().types[CAVE];
-
-                boolean industrial = dbe.getSpawnData().types[INDUSTRIAL];
-
-                if (dbe.getSpawnData().types[SpawnData.DAY]) time = time + "D";
-                if (dbe.getSpawnData().types[SpawnData.NIGHT]) time = time + "N";
-                if (cave && !biomeName.toLowerCase().contains("cave"))
-                {
-                    time = time + "C";
-                }
-                if (industrial) time = time + "I";
 
                 drawString(fontRendererObj, time, xOffset + 85, yO + n * 10, 0xFF0000);
             }
@@ -442,33 +420,8 @@ public class GuiPokedex_redo extends GuiScreen
                     entry = child;
                 }
             }
-
-            lists:
-            for (Integer i : this.biomes)
-            {
-                if (SpawnHandler.spawnLists.containsKey(i))
-                {
-                    for (PokedexEntry dbe : SpawnHandler.spawnLists.get(i))
-                    {
-                        if (dbe.getPokedexNb() == entry.getPokedexNb())
-                        {
-                            String title = BiomeDatabase.getReadableNameFromType(i);
-                            if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
-                            if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
-                            if (title.contains(" Hills") && title.length() > 16)
-                            {
-                                title = title.replace(" Hills", "Hills");
-                            }
-                            if (title.contains("Mega ") && title.length() > 16)
-                            {
-                                title = title.replace("Mega ", "Mega");
-                            }
-                            biomes.add(title);
-                            continue lists;
-                        }
-                    }
-                }
-            }
+            //TODO find a way to show what biome combination someone spawns in.
+            
             // System.out.println(biomes);
             index = Math.max(0, Math.min(index, biomes.size() - 6));
             for (int n = 0; n < Math.min(biomes.size(), 6); n++)

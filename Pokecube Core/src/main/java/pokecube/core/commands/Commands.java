@@ -2,7 +2,10 @@ package pokecube.core.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
@@ -21,11 +24,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.packets.PacketChoose;
@@ -96,6 +101,7 @@ public class Commands implements ICommand
                             count++;
                         }
                     }
+                    if (o instanceof EntityPokemobEgg) ((Entity) o).setDead();
                 }
                 cSender.addChatMessage(new TextComponentString("Killed " + count));
                 return true;
@@ -116,6 +122,7 @@ public class Commands implements ICommand
                 int count1 = 0;
                 int count2 = 0;
                 String name = "";
+                Map<PokedexEntry, Integer> counts = Maps.newHashMap();
                 if (all)
                 {
                     name = args[1];
@@ -133,11 +140,15 @@ public class Commands implements ICommand
                                     cSender.getPositionVector().zCoord) > PokecubeMod.core.getConfig().maxSpawnRadius)
                                 count2++;
                             else count1++;
+                            Integer i = counts.get(e.getPokedexEntry());
+                            if (i == null) i = 0;
+                            counts.put(e.getPokedexEntry(), i+1);
                         }
                     }
                 }
                 cSender.addChatMessage(
                         CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
+                cSender.addChatMessage(new TextComponentString(counts.toString()));
                 return true;
             }
             else

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.PokecubeItems;
@@ -32,13 +31,12 @@ import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.MegaRule;
 import pokecube.core.database.PokedexEntry.SpawnData;
-import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
+import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.PokedexEntryLoader.StatsNode.Stats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
-import thut.api.terrain.BiomeType;
 
 public class PokedexEntryLoader
 {
@@ -97,16 +95,45 @@ public class PokedexEntryLoader
     public static class Drop
     {
         @XmlAnyAttribute
-        Map<QName, String> values;
+        Map<QName, String> values = Maps.newHashMap();
         @XmlElement(name = "tag")
         String             tag;
+    }
+
+    @XmlRootElement(name = "Interact")
+    public static class Interact
+    {
+        @XmlElement(name = "Key")
+        Key    key;
+        @XmlElement(name = "Action")
+        Action action;
+    }
+
+    @XmlRootElement(name = "Key")
+    public static class Key
+    {
+        @XmlAnyAttribute
+        Map<QName, String> values = Maps.newHashMap();
+        @XmlElement(name = "tag")
+        String             tag;
+    }
+
+    @XmlRootElement(name = "Action")
+    public static class Action
+    {
+        @XmlAnyAttribute
+        Map<QName, String> values = Maps.newHashMap();
+        @XmlElement(name = "tag")
+        String             tag;
+        @XmlElement(name = "Drop")
+        List<Drop>         drops  = Lists.newArrayList();
     }
 
     @XmlRootElement(name = "Spawn")
     public static class SpawnRule
     {
         @XmlAnyAttribute
-        Map<QName, String> values;
+        Map<QName, String> values = Maps.newHashMap();
     }
 
     @XmlRootElement(name = "MOVES")
@@ -184,18 +211,8 @@ public class PokedexEntryLoader
         @XmlElement(name = "HELDITEM")
         String          heldItems;
         // Spawn Rules
-        @XmlElement(name = "BIOMESALLNEEDED")
-        String          biomesNeedAll;
-        @XmlElement(name = "BIOMESANYACCEPTABLE")
-        String          biomesNeedAny;
-        @XmlElement(name = "EXCLUDEDBIOMES")
-        String          biomesBlacklist;
-
         @XmlElement(name = "Spawn")
         List<SpawnRule> spawnRules     = Lists.newArrayList();
-
-        @XmlElement(name = "SPECIALCASES")
-        String          spawnCases;
         // STATS
         @XmlElement(name = "BASESTATS")
         Stats           stats;
@@ -229,8 +246,8 @@ public class PokedexEntryLoader
         Stats           megaRules;
         @XmlElement(name = "MOVEMENTTYPE")
         String          movementType;
-        @XmlElement(name = "INTERACTIONLOGIC")
-        String          interactions;
+        @XmlElement(name = "Interact")
+        List<Interact>  interactions   = Lists.newArrayList();
         @XmlElement(name = "SHADOWREPLACEMENTS")
         String          shadowReplacements;
         @XmlElement(name = "HATEDMATERIALRULES")
@@ -257,9 +274,13 @@ public class PokedexEntryLoader
         @XmlAttribute
         public String  special;
         @XmlAttribute
-        public boolean base  = false;
+        public boolean base    = false;
         @XmlAttribute
-        public boolean breed = true;
+        public boolean breed   = true;
+        @XmlAttribute
+        public boolean starter = false;
+        @XmlAttribute
+        public boolean legend  = false;
         @XmlElement(name = "STATS")
         StatsNode      stats;
         @XmlElement(name = "MOVES")
@@ -698,191 +719,36 @@ public class PokedexEntryLoader
 
     private static void parseSpawns(PokedexEntry entry, StatsNode xmlStats)
     {
-        if (xmlStats.spawnCases == null) return;
-        String anyString = xmlStats.biomesNeedAny;
-        String allString = xmlStats.biomesNeedAll;
-        String excludeString = xmlStats.biomesBlacklist;
+        if (xmlStats.spawnRules.isEmpty()) return;
         boolean overwrite = xmlStats.spawns == null ? false : Boolean.parseBoolean(xmlStats.spawns);
-        if (anyString != null || allString != null)
+        SpawnData spawnData = entry.getSpawnData();
+        if (spawnData == null || overwrite)
         {
-            if (anyString == null) anyString = "";
-            if (allString == null) allString = "";
-            if (excludeString == null) excludeString = "";
-
-            String casesString = xmlStats.spawnCases;
-            /** Column 0: Name Column 1: cases
-             * (day/night/fossil/starter/legend/water+/water) Column 2 any
-             * biomes Column 3 all biomes Column 4 no biomes */
-            String cases[] = casesString.split(" ");
-            String any[] = null;
-            String all[] = null;
-            String no[] = null;
-            SpawnData spawnData = entry.getSpawnData();
-            if (spawnData == null || overwrite)
-            {
-                spawnData = new SpawnData();
-            }
-            for (String s1 : cases)
-            {
-                if (s1.equalsIgnoreCase("day"))
-                {
-                    spawnData.types[SpawnData.DAY] = true;
-                }
-                if (s1.equalsIgnoreCase("night"))
-                {
-                    spawnData.types[SpawnData.NIGHT] = true;
-                }
-                if (s1.equalsIgnoreCase("fossil"))
-                {
-                    spawnData.types[SpawnData.FOSSIL] = true;
-                }
-                if (s1.equalsIgnoreCase("starter"))
-                {
-                    spawnData.types[SpawnData.STARTER] = true;
-                    PokecubeMod.core.starters.add(entry.pokedexNb);
-                    Collections.sort(PokecubeMod.core.starters);
-                }
-                if (s1.equalsIgnoreCase("water"))
-                {
-                    spawnData.types[SpawnData.WATER] = true;
-                }
-                if (s1.equalsIgnoreCase("water+"))
-                {
-                    spawnData.types[SpawnData.WATERPLUS] = true;
-                }
-                if (s1.equalsIgnoreCase("legendary"))
-                {
-                    spawnData.types[SpawnData.LEGENDARY] = true;
-                }
-            }
-            any = anyString.split(";");
-            all = allString.split(";");
-            no = excludeString.split(" ");
-            if (all != null)
-            {
-                for (String al : all)
-                {
-                    String[] vals = al.trim().split(" ");
-                    if (vals.length <= 1)
-                    {
-                        continue;
-                    }
-                    TypeEntry ent = new TypeEntry();
-                    if (!processWeights(vals[vals.length - 1], ent))
-                    {
-                        System.err.println("Error with spawn weights for " + entry + " " + Arrays.toString(vals));
-                        continue;
-                    }
-
-                    for (int i = 0; i < vals.length - 1; i++)
-                    {
-                        if (vals[i] == null || vals[i].isEmpty())
-                        {
-                            continue;
-                        }
-                        Type t = null;
-                        try
-                        {
-                            t = Type.valueOf(vals[i].trim().toUpperCase());
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                        if (t != null) ent.biomes.add(t);
-                        else
-                        {
-                            BiomeType t1 = BiomeType.getBiome(vals[i]);
-                            if (t1 != null)
-                            {
-                                ent.biome2.add(t1);
-                            }
-                            else
-                            {
-                                new Exception().printStackTrace();
-                            }
-                        }
-                    }
-                    spawnData.allTypes.add(ent);
-                }
-            }
-
-            if (any != null)
-            {
-                for (String an : any)
-                {
-                    String[] vals = an.trim().split(" ");
-
-                    if (vals.length <= 1) continue;
-
-                    for (int i = 0; i < vals.length - 1; i++)
-                    {
-                        Type t = null;
-                        if (vals[i] == null || vals[i].isEmpty())
-                        {
-                            continue;
-                        }
-                        TypeEntry ent = new TypeEntry();
-                        if (!processWeights(vals[vals.length - 1], ent))
-                        {
-                            System.err.println("Error with spawn weights for " + entry + " " + Arrays.toString(vals));
-                            continue;
-                        }
-                        try
-                        {
-                            t = Type.valueOf(vals[i].trim().toUpperCase());
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                        if (t != null) ent.biomes.add(t);
-                        else
-                        {
-                            String biome = vals[i];
-                            try
-                            {
-                                Double.parseDouble(biome);
-                                biome = null;
-                            }
-                            catch (Exception e)
-                            {
-                                biome = "none";
-                            }
-                            if (biome != null)
-                            {
-                                BiomeType t1 = BiomeType.getBiome(vals[i]);
-                                ent.biome2.add(t1);
-                            }
-                        }
-                        spawnData.anyTypes.add(ent);
-                    }
-                }
-            }
-
-            if (no != null)
-            {
-                for (String s1 : no)
-                {
-                    Type t = null;
-                    try
-                    {
-                        t = Type.valueOf(s1.trim().toUpperCase());
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
-                    if (t != null) spawnData.noTypes.add(t);
-                }
-            }
-            if (spawnData.isValid(BiomeType.CAVE.getType())) spawnData.types[SpawnData.CAVE] = true;
-            if (spawnData.isValid(BiomeType.VILLAGE.getType())) spawnData.types[SpawnData.VILLAGE] = true;
-            if (spawnData.isValid(BiomeType.INDUSTRIAL.getType())) spawnData.types[SpawnData.INDUSTRIAL] = true;
-
-            entry.setSpawnData(spawnData);
-            if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
+            spawnData = new SpawnData();
         }
+        SpawnEntry spawnEntry;
+        for (SpawnRule rule : xmlStats.spawnRules)
+        {
+            spawnEntry = new SpawnEntry();
+            String val;
+            if ((val = rule.values.get(new QName("min"))) != null)
+            {
+                spawnEntry.min = Integer.parseInt(val);
+            }
+            if ((val = rule.values.get(new QName("max"))) != null)
+            {
+                spawnEntry.max = Integer.parseInt(val);
+            }
+            if ((val = rule.values.get(new QName("rate"))) != null)
+            {
+                spawnEntry.rate = Float.parseFloat(val);
+            }
+            SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
+            spawnData.matchers.put(matcher, spawnEntry);
+        }
+        entry.setSpawnData(spawnData);
+        if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
+
     }
 
     private static void parseSpecial(String special, PokedexEntry entry)
@@ -1050,7 +916,7 @@ public class PokedexEntryLoader
                 }
             }
         }
-        if (xmlStats.interactions != null) InteractionLogic.initForEntry(entry, xmlStats.interactions);
+        if (!xmlStats.interactions.isEmpty()) InteractionLogic.initForEntry(entry, xmlStats.interactions);
 
         if (xmlStats.hatedMaterials != null)
         {
@@ -1187,46 +1053,6 @@ public class PokedexEntryLoader
         PokemobBodies.initBodies();
     }
 
-    private static boolean processWeights(String val, TypeEntry entry)
-    {
-        float weight = 0;
-        int max = 4;
-        int min = 2;
-        String[] vals = val.split(":");
-        try
-        {
-            weight = Float.parseFloat(vals[0]);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-        try
-        {
-            max = Integer.parseInt(vals[1]);
-        }
-        catch (Exception e)
-        {
-
-        }
-        try
-        {
-            min = Integer.parseInt(vals[2]);
-        }
-        catch (Exception e)
-        {
-
-        }
-        if (entry != null)
-        {
-            entry.weight = weight;
-            entry.groupMax = max;
-            entry.groupMin = min;
-        }
-
-        return entry != null;
-    }
-
     public static void preCheckEvolutions(XMLPokedexEntry xmlEntry)
     {
         PokedexEntry entry = Database.getEntry(xmlEntry.name);
@@ -1256,6 +1082,18 @@ public class PokedexEntryLoader
             if (!init)
             {
                 entry.breeds = xmlEntry.breed;
+                entry.isStarter = xmlEntry.starter;
+                entry.legendary = xmlEntry.legend;
+                if (entry.isStarter && !PokecubeMod.core.starters.contains(entry.pokedexNb))
+                {
+                    PokecubeMod.core.starters.add(entry.pokedexNb);
+                    Collections.sort(PokecubeMod.core.starters);
+                }
+                else if (!entry.isStarter)
+                {
+                    for (int i = 0; i < PokecubeMod.core.starters.size(); i++)
+                        if (PokecubeMod.core.starters.get(i) == entry.pokedexNb) PokecubeMod.core.starters.remove(i);
+                }
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
                 parseEvols(entry, stats, true);

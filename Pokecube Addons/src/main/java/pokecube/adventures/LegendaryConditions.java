@@ -117,7 +117,8 @@ public class LegendaryConditions
                 int count = CaptureStats.getTotalNumberOfPokemobCaughtBy(trainer.getCachedUniqueIdString(),
                         Database.getEntry("entei"));
                 if (count > 0) return false;
-                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(), PokeType.fire);
+                int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getCachedUniqueIdString(),
+                        PokeType.fire);
                 int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.fire);
                 if (((double) count1) / ((double) count3) >= 0.5) { return true; }
                 if (pokemon != null && !trainer.getEntityWorld().isRemote)
@@ -244,8 +245,7 @@ public class LegendaryConditions
                             new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
                     return false;
                 }
-                int biomeId = v.getBiomeID(trainer.getEntityWorld());
-                boolean biome = Database.getEntry("hooh").getSpawnData().isValid(biomeId);
+                boolean biome = Database.getEntry("hooh").getSpawnData().isValid(trainer.worldObj, v);
                 if (biome)
                 {
                     boolean here = Tools.countPokemon(v, trainer.getEntityWorld(), 32, Database.getEntry("hooh")) > 0;

@@ -97,12 +97,6 @@ public class Compat
 
     static boolean             TESLALOADED = false;
 
-    static String              header      = "Name,Special Cases,Biomes - any acceptable,Biomes - all needed,Excluded biomes,Replace";
-
-    static String              example1    = "Rattata,day night ,mound 0.6:10:5,,,false";
-
-    static String              example2    = "Spearow,day night ,plains 0.3;hills 0.3,,,true";
-
     public static void setSpawnsFile(FMLPreInitializationEvent evt)
     {
         File file = evt.getSuggestedConfigurationFile();
@@ -110,7 +104,7 @@ public class Compat
 
         String folder = file.getAbsolutePath();
         String name = file.getName();
-        folder = folder.replace(name, "pokecube" + seperator + "compat" + seperator + "spawns.csv");
+        folder = folder.replace(name, "pokecube" + seperator + "compat" + seperator + "spawns.xml");
 
         CUSTOMSPAWNSFILE = folder;
         writeDefaultConfig();
@@ -121,7 +115,7 @@ public class Compat
     {
         try
         {
-            File temp = new File(CUSTOMSPAWNSFILE.replace("spawns.csv", ""));
+            File temp = new File(CUSTOMSPAWNSFILE.replace("spawns.xml", ""));
             if (!temp.exists())
             {
                 temp.mkdirs();
@@ -129,11 +123,24 @@ public class Compat
             File temp1 = new File(CUSTOMSPAWNSFILE);
             if (temp1.exists()) { return; }
 
+            String bulba = "    <Spawn name=\"Bulbasaur\" starter=\"true\" overwrite=\"true\" "
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"forest\"/>";
+            String squirt = "    <Spawn name=\"Squirtle\" starter=\"true\" overwrite=\"true\" "
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"lake\" water=\"true\"/>";
+            String cater1 = "    <Spawn name=\"Caterpie\" overwrite=\"true\" "
+                    + "rate=\"0.2\" min=\"4\" max=\"8\" types=\"forest\" typesBlacklist=\"sparse,cold,dry\"/>//Overwrite to clear original";
+            String cater2 = "    <Spawn name=\"Caterpie\"  rate=\"0.2\" min=\"4\" max=\"8\" types=\"wet\""
+                    + " typesBlacklist=\"sparse,cold,dry\"/>//Don't overwrite to add";
+
             fwriter = new FileWriter(CUSTOMSPAWNSFILE);
             out = new PrintWriter(fwriter);
-            out.println(header);
-            out.println(example1);
-            out.println(example2);
+            out.println("<?xml version=\"1.0\"?>");
+            out.println("<Spawns>");
+            out.println(bulba);
+            out.println(squirt);
+            out.println(cater1);
+            out.println(cater2);
+            out.println("</Spawns>");
 
             out.close();
             fwriter.close();

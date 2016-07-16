@@ -82,8 +82,10 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         {
             player = ctx.getServerHandler().playerEntity;
         }
-        Entity mob = player.getEntityWorld().getEntityByID(message.entityId);
+        Entity mob = PokecubeCore.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
         IPokemob pokemob = (IPokemob) mob;
+        if (pokemob == null) return;
+
         if (ctx.side == Side.CLIENT)
         {
             pokemob.changeForme(message.forme);

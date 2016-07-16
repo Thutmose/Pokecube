@@ -19,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.MoveEntry;
@@ -1901,6 +1902,7 @@ public class MovesAdder implements IMoveConstants
             public boolean doAttack(IPokemob attacker, Entity attacked)
             {
                 if (!super.doAttack(attacker, attacked)) return false;
+                if(PokecubeCore.pokemobsDamageBlocks)
                 attacked.getEntityWorld().setBlockState(
                         new BlockPos((int) attacked.posX, (int) attacked.posY + 1, (int) attacked.posZ),
                         Blocks.FLOWING_WATER.getStateFromMeta(1), 3);

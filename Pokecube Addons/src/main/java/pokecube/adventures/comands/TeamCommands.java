@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.handlers.TeamManager;
+import pokecube.adventures.handlers.TeamManager.PokeTeam;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.utils.ChunkCoordinate;
 
@@ -366,6 +367,14 @@ public class TeamCommands implements ICommand
                     // e.printStackTrace();
                 }
             }
+            if (args.length > 1 && args[1].equalsIgnoreCase("all"))
+            {
+                PokeTeam team1 = TeamManager.getInstance().getTeam(team.getRegisteredName(), false);
+                team1.land.land.clear();
+                sender.addChatMessage(
+                        new TextComponentString("Unclaimed all land for Team" + team.getRegisteredName()));
+                return true;
+            }
             int n = 0;
             for (int i = 0; i < num; i++)
             {
@@ -559,7 +568,8 @@ public class TeamCommands implements ICommand
         {
             boolean all = claimers.get(evt.getEntityLiving());
             ScorePlayerTeam team = null;
-            team = evt.getEntityLiving().getEntityWorld().getScoreboard().getPlayersTeam(evt.getEntityLiving().getName());
+            team = evt.getEntityLiving().getEntityWorld().getScoreboard()
+                    .getPlayersTeam(evt.getEntityLiving().getName());
             int num = all ? 16 : 1;
             int n = 0;
             for (int i = 0; i < num; i++)

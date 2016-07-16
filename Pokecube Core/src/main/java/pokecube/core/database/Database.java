@@ -10,30 +10,56 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.namespace.QName;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import net.minecraftforge.common.BiomeDictionary.Type;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
-import pokecube.core.database.PokedexEntry.SpawnData.TypeEntry;
+import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
+import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
-import thut.api.terrain.BiomeType;
 
 public class Database implements IMoveConstants
 {
+    @XmlRootElement(name = "Spawns")
+    public static class XMLSpawns
+    {
+        @XmlElement(name = "Spawn")
+        private List<XMLSpawnEntry> pokemon = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "Spawn")
+    public static class XMLSpawnEntry extends SpawnRule
+    {
+        static final QName STARTER   = new QName("starter");
+        @XmlAttribute
+        boolean            overwrite = false;
+        @XmlAttribute
+        String             name;
+
+        public Boolean isStarter()
+        {
+            if (!values.containsKey(STARTER)) return null;
+            return Boolean.parseBoolean(values.get(STARTER));
+        }
+    }
 
     /** <br>
      * Index 0 = baseStats<br>
@@ -709,242 +735,52 @@ public class Database implements IMoveConstants
     private static void loadSpawns(String file)
     {
         System.out.println(file);
-
-        ArrayList<ArrayList<String>> rows = getRows(file);
-
-        for (ArrayList<String> s : rows)
+        try
         {
-            if (s == null || s.size() < 2) continue;
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLSpawns.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            XMLSpawns database = (XMLSpawns) unmarshaller.unmarshal(new FileReader(file));
 
-            String name = s.get(0);
-
-            if (!entryExists(name))
+            for (XMLSpawnEntry xmlEntry : database.pokemon)
             {
-                if (PokecubeMod.debug)
-                    System.err.println("'" + name + "' Does not exist in the Database, or is spelt incorrectly");
-                continue;
-            }
-            PokedexEntry dbe = getEntry(name);
-
-            /** Column 0: Name Column 1: cases
-             * (day/night/fossil/starter/legend/water+/water) Column 2 any
-             * biomes Column 3 all biomes Column 4 no biomes */
-            String cases[] = s.get(1).trim().split(" ");
-            String any[] = null;
-            String all[] = null;
-            String no[] = null;
-            SpawnData entry = dbe.getSpawnData();
-            if (entry == null)
-            {
-                entry = new SpawnData();
-            }
-            else
-            {
-                if (s.size() > 5)
+                PokedexEntry entry = Database.getEntry(xmlEntry.name);
+                if (entry == null) throw new NullPointerException(xmlEntry.name + " not found");
+                if (xmlEntry.isStarter() != null) entry.isStarter = xmlEntry.isStarter();
+                SpawnData data = entry.getSpawnData();
+                if (xmlEntry.overwrite || data == null)
                 {
-                    String s1 = s.get(5);
-                    try
-                    {
-                        boolean b = Boolean.parseBoolean(s1);
-                        if (b)
-                        {
-                            System.out.println("Replacing Spawns for " + dbe);
-                            entry = new SpawnData();
-                        }
-                        else
-                        {
-                            System.out.println("Reloading Spawns for " + dbe);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        System.out.println("Reloading Spawns for " + dbe);
-                    }
+                    data = new SpawnData();
+                    entry.setSpawnData(data);
+                    System.out.println("Overwriting spawns for "+entry);
                 }
                 else
                 {
-                    System.out.println("Reloading Spawns for " + dbe);
+                    System.out.println("Editing spawns for "+entry);
                 }
+                SpawnEntry spawnEntry = new SpawnEntry();
+                String val;
+                if ((val = xmlEntry.values.get(new QName("min"))) != null)
+                {
+                    spawnEntry.min = Integer.parseInt(val);
+                }
+                if ((val = xmlEntry.values.get(new QName("max"))) != null)
+                {
+                    spawnEntry.max = Integer.parseInt(val);
+                }
+                if ((val = xmlEntry.values.get(new QName("rate"))) != null)
+                {
+                    spawnEntry.rate = Float.parseFloat(val);
+                }
+                SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(xmlEntry);
+                data.matchers.put(matcher, spawnEntry);
+                if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
             }
-            for (String s1 : cases)
-            {
-                if (s1.equalsIgnoreCase("day"))
-                {
-                    entry.types[SpawnData.DAY] = true;
-                }
-                if (s1.equalsIgnoreCase("night"))
-                {
-                    entry.types[SpawnData.NIGHT] = true;
-                }
-                if (s1.equalsIgnoreCase("fossil"))
-                {
-                    entry.types[SpawnData.FOSSIL] = true;
-                }
-                if (s1.equalsIgnoreCase("starter"))
-                {
-                    entry.types[SpawnData.STARTER] = true;
-                    PokecubeMod.core.starters.add(dbe.pokedexNb);
-                    Collections.sort(PokecubeMod.core.starters);
-                }
-                if (s1.equalsIgnoreCase("water"))
-                {
-                    entry.types[SpawnData.WATER] = true;
-                }
-                if (s1.equalsIgnoreCase("water+"))
-                {
-                    entry.types[SpawnData.WATERPLUS] = true;
-                }
-                if (s1.equalsIgnoreCase("legendary"))
-                {
-                    entry.types[SpawnData.LEGENDARY] = true;
-                }
-            }
-            if (s.size() < 3) continue;
-
-            any = s.get(2).split(";");
-            if (s.size() > 3)
-            {
-                all = s.get(3).split(";");
-            }
-            if (s.size() > 4)
-            {
-                no = s.get(4).trim().split(" ");
-            }
-
-            if (all != null)
-            {
-                for (String al : all)
-                {
-
-                    String[] vals = al.trim().split(" ");
-                    if (vals.length <= 1)
-                    {
-                        continue;
-                    }
-
-                    TypeEntry ent = new TypeEntry();
-                    if (!processWeights(vals[vals.length - 1], ent))
-                    {
-                        System.err.println("Error with spawn weights for " + dbe + " " + Arrays.toString(vals));
-                        continue;
-                    }
-
-                    for (int i = 0; i < vals.length - 1; i++)
-                    {
-                        if (vals[i] == null || vals[i].isEmpty())
-                        {
-                            continue;
-                        }
-                        Type t = null;
-                        try
-                        {
-                            t = Type.valueOf(vals[i].trim().toUpperCase());
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                        if (t != null) ent.biomes.add(t);
-                        else
-                        {
-                            BiomeType t1 = BiomeType.getBiome(vals[i]);
-                            if (t1 != null)
-                            {
-                                ent.biome2.add(t1);
-                            }
-                            else
-                            {
-                                new Exception().printStackTrace();
-                            }
-                        }
-                    }
-                    entry.allTypes.add(ent);
-                }
-            }
-
-            if (any != null)
-            {
-                for (String an : any)
-                {
-                    String[] vals = an.trim().split(" ");
-
-                    if (vals.length <= 1) continue;
-
-                    for (int i = 0; i < vals.length - 1; i++)
-                    {
-                        Type t = null;
-                        if (vals[i] == null || vals[i].isEmpty())
-                        {
-                            continue;
-                        }
-
-                        TypeEntry ent = new TypeEntry();
-                        if (!processWeights(vals[vals.length - 1], ent))
-                        {
-                            System.err.println("Error with spawn weights for " + dbe + " " + Arrays.toString(vals));
-                            continue;
-                        }
-                        try
-                        {
-                            t = Type.valueOf(vals[i].trim().toUpperCase());
-                        }
-                        catch (Exception e)
-                        {
-
-                        }
-                        if (t != null) ent.biomes.add(t);
-                        else
-                        {
-                            String biome = vals[i];
-                            try
-                            {
-                                Double.parseDouble(biome);
-                                biome = null;
-                            }
-                            catch (Exception e)
-                            {
-                                biome = "none";
-                            }
-                            if (biome != null)
-                            {
-                                BiomeType t1 = BiomeType.getBiome(vals[i]);
-                                ent.biome2.add(t1);
-                            }
-                            else
-                            {
-                                // System.out.println("Error with spawndata for
-                                // "+name);
-                            }
-                        }
-                        entry.anyTypes.add(ent);
-                    }
-                }
-            }
-
-            if (no != null)
-            {
-                for (String s1 : no)
-                {
-                    Type t = null;
-                    try
-                    {
-                        t = Type.valueOf(s1.trim().toUpperCase());
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
-                    if (t != null) entry.noTypes.add(t);
-                }
-            }
-            if (entry.isValid(BiomeType.CAVE.getType())) entry.types[SpawnData.CAVE] = true;
-            if (entry.isValid(BiomeType.VILLAGE.getType())) entry.types[SpawnData.VILLAGE] = true;
-            if (entry.isValid(BiomeType.INDUSTRIAL.getType())) entry.types[SpawnData.INDUSTRIAL] = true;
-
-            dbe.setSpawnData(entry);
-            if (!spawnables.contains(dbe)) spawnables.add(dbe);
-
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        // TODO redo this.
     }
 
     public static void postInit()
@@ -1083,47 +919,6 @@ public class Database implements IMoveConstants
                 System.err.println(new NullPointerException(e + " is missing stats or evs " + e.stats + " " + e.evs));
             }
         }
-    }
-
-    private static boolean processWeights(String val, TypeEntry entry)
-    {
-        float weight = 0;
-        int max = 4;
-        int min = 2;
-        String[] vals = val.split(":");
-        // System.out.println(val+" "+Arrays.toString(vals));
-        try
-        {
-            weight = Float.parseFloat(vals[0]);
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
-        try
-        {
-            max = Integer.parseInt(vals[1]);
-        }
-        catch (Exception e)
-        {
-
-        }
-        try
-        {
-            min = Integer.parseInt(vals[2]);
-        }
-        catch (Exception e)
-        {
-
-        }
-        if (entry != null)
-        {
-            entry.weight = weight;
-            entry.groupMax = max;
-            entry.groupMin = min;
-        }
-
-        return entry != null;
     }
 
     private static void writeDefaultConfig()

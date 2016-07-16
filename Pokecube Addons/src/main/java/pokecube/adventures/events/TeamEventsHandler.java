@@ -22,11 +22,12 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TeamManager;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.block.IOwnableTE;
@@ -35,7 +36,6 @@ import thut.api.maths.Vector3;
 public class TeamEventsHandler
 {
     public static boolean shouldRenderVolume = false;
-
     Vector3               v                  = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
     @SubscribeEvent
@@ -92,6 +92,7 @@ public class TeamEventsHandler
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(here, player.dimension);
             ChunkCoordinate c1 = ChunkCoordinate.getChunkCoordFromWorldCoord(old, player.dimension);
             if (c.equals(c1)) return;
+            SpawnHandler.refreshTerrain(v.set(player), player.worldObj);
             if (TeamManager.getInstance().isOwned(c) || TeamManager.getInstance().isOwned(c1))
             {
                 String team = TeamManager.getInstance().getLandOwner(c);
@@ -175,7 +176,7 @@ public class TeamEventsHandler
             }
             evt.setUseItem(Result.DENY);
             if (!evt.getWorld().isRemote)
-                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
+                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", owner));
         }
     }
 
@@ -251,7 +252,7 @@ public class TeamEventsHandler
             evt.setUseItem(Result.DENY);
             if (!evt.getWorld().isRemote && evt.getHand() == EnumHand.MAIN_HAND)
             {
-                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", team));
+                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", owner));
             }
         }
     }

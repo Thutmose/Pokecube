@@ -1,8 +1,6 @@
 package pokecube.core.events.handlers;
 
-import static pokecube.core.database.PokedexEntry.SpawnData.DAY;
-import static pokecube.core.database.PokedexEntry.SpawnData.NIGHT;
-import static pokecube.core.database.PokedexEntry.SpawnData.WATER;
+import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,19 +11,18 @@ import java.util.Random;
 
 import org.nfunk.jep.JEP;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.village.Village;
 import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -36,6 +33,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -43,7 +41,6 @@ import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
-import thut.api.maths.Cruncher;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -58,6 +55,26 @@ public final class SpawnHandler
     public static HashMap<Integer, Integer[]>          subBiomeLevels          = new HashMap<Integer, Integer[]>();
     public static boolean                              doSpawns                = true;
     public static boolean                              onlySubbiomes           = false;
+    public static Predicate<Integer>                   biomeToRefresh          = new Predicate<Integer>()
+                                                                               {
+                                                                                   @Override
+                                                                                   public boolean apply(Integer input)
+                                                                                   {
+                                                                                       if (input < 256) return true;
+                                                                                       return input == BiomeType.SKY
+                                                                                               .getType()
+                                                                                               || input == BiomeType.CAVE
+                                                                                                       .getType()
+                                                                                               || input == BiomeType.VILLAGE
+                                                                                                       .getType()
+                                                                                               || input == BiomeType.ALL
+                                                                                                       .getType()
+                                                                                               || input == PokecubeTerrainChecker.INSIDE
+                                                                                                       .getType()
+                                                                                               || input == BiomeType.NONE
+                                                                                                       .getType();
+                                                                                   }
+                                                                               };
 
     static
     {
@@ -66,30 +83,15 @@ public final class SpawnHandler
         functions.put(2, "(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)");
     }
 
-    // randomized for spawning
-    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawns      = new HashMap<Integer, ArrayList<PokedexEntry>>();
-    // not randomized
-    public static final HashMap<Integer, ArrayList<PokedexEntry>> spawnLists  = new HashMap<Integer, ArrayList<PokedexEntry>>();
-    public static int                                             number      = 0;
-
-    private static Vector3                                        vec1        = Vector3.getNewVector();
-    private static Vector3                                        vec2        = Vector3.getNewVector();
-    private static Vector3                                        temp        = Vector3.getNewVector();
-
-    public static double                                          MAX_DENSITY = 1;
-
-    public static int                                             MAXNUM      = 10;
-    static double                                                 maxtime     = 0;
-
-    public static boolean                                         lvlCap      = false;
-
-    public static boolean                                         expFunction = false;
-
-    public static int                                             capLevel    = 50;
-
-    public static final HashMap<Integer, JEP>                     parsers     = new HashMap<Integer, JEP>();
-
-    public static long                                            time        = 0;
+    private static Vector3                    vec1        = Vector3.getNewVector();
+    private static Vector3                    vec2        = Vector3.getNewVector();
+    private static Vector3                    temp        = Vector3.getNewVector();
+    public static double                      MAX_DENSITY = 1;
+    public static int                         MAXNUM      = 10;
+    public static boolean                     lvlCap      = false;
+    public static boolean                     expFunction = false;
+    public static int                         capLevel    = 50;
+    public static final HashMap<Integer, JEP> parsers     = new HashMap<Integer, JEP>();
 
     public static boolean addForbiddenSpawningCoord(BlockPos pos, int dimensionId, int distance)
     {
@@ -106,55 +108,10 @@ public final class SpawnHandler
 
     public static void addSpawn(PokedexEntry entry)
     {
-        SpawnData spawn = entry.getSpawnData();
-        if (spawn == null) return;
-
-        for (ResourceLocation key : Biome.REGISTRY.getKeys())
-        {
-            Biome b = Biome.REGISTRY.getObject(key);
-            if (b == null) continue;
-            ArrayList<PokedexEntry> entries = spawns.get(Biome.getIdForBiome(b));
-            if (entries == null)
-            {
-                entries = new ArrayList<PokedexEntry>();
-                spawns.put(Biome.getIdForBiome(b), entries);
-            }
-            if (spawn.isValid(Biome.getIdForBiome(b)))
-            {
-                entries.add(entry);
-            }
-        }
-        for (BiomeType b : BiomeType.values())
-        {
-            if (b == null) continue;
-            ArrayList<PokedexEntry> entries = spawns.get(b.getType());
-            if (entries == null)
-            {
-                entries = new ArrayList<PokedexEntry>();
-                spawns.put(b.getType(), entries);
-            }
-            if (spawn.isValid(b.getType()))
-            {
-                entries.add(entry);
-            }
-        }
     }
 
     public static void addSpawn(PokedexEntry entry, Biome b)
     {
-        SpawnData spawn = entry.getSpawnData();
-        if (spawn == null) return;
-        int id = Biome.getIdForBiome(b);
-        ArrayList<PokedexEntry> entries = spawns.get(id);
-        if (entries == null)
-        {
-            entries = new ArrayList<PokedexEntry>();
-            spawns.put(id, entries);
-        }
-        if (spawn.isValid(id))
-        {
-            entries.add(entry);
-        }
     }
 
     public static boolean canPokemonSpawnHere(Vector3 location, World worldObj, PokedexEntry entry)
@@ -165,29 +122,10 @@ public final class SpawnHandler
         if (!temp.set(location).addTo(0, 0, entry.width / 2).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
-
-        SpawnEvent.Pre evt = new SpawnEvent.Pre(entry, location, worldObj);
-        MinecraftForge.EVENT_BUS.post(evt);
-        if (evt.isCanceled()) return false;
-
-        SpawnData dat = entry.getSpawnData();
-        boolean water = dat == null ? false : dat.types[WATER];
-        Material here = location.getBlockMaterial(worldObj);
-        Material up = temp.set(location).addTo(0, entry.height, 0).getBlockMaterial(worldObj);
-        boolean inAir = entry.floats() || entry.flys();
-
-        if (water) { return location.getBlockMaterial(worldObj) == Material.WATER && (!up.blocksMovement()); }
-        if (inAir && !temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj,
-                EnumFacing.UP)) { return !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement()
-                        && !up.isLiquid(); }
-
-        if (!temp.set(location).addTo(0, -1, 0).isSideSolid(worldObj, EnumFacing.UP)) return false;
+        // if (entry.getSpawnData().getMatcher(worldObj, location) == null)
+        // return false;//TODO see if needed
         IBlockState state = temp.set(location).addTo(0, -1, 0).getBlockState(worldObj);
         Block down = state.getBlock();
-
-        boolean validMaterial = !here.blocksMovement() && !here.isLiquid() && !up.blocksMovement() && !up.isLiquid();
-
-        if (!validMaterial) return false;
 
         return down.canCreatureSpawn(state, worldObj, temp.getPos(),
                 net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
@@ -196,28 +134,12 @@ public final class SpawnHandler
     public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world,
             boolean respectDensity)
     {
-        int biome2 = terrain.getBiome(v.intX(), v.intY(), v.intZ());
-
         if (data == null) return false;
-
-        if (biome2 == PokecubeTerrainChecker.INSIDE.getType())
-        {
-            biome2 = BiomeType.VILLAGE.getType();
-        }
-
         int count = Tools.countPokemon(world, v, PokecubeMod.core.getConfig().maxSpawnRadius);
         if (respectDensity && count > PokecubeMod.core.getConfig().mobSpawnNumber
                 * PokecubeMod.core.getConfig().mobDensityMultiplier)
             return false;
-
-        if ((data.getWeight(BiomeType.ALL.getType())) > 0) return true;
-
-        int b = biome2;
-        int b1 = v.getBiomeID(world);
-
-        boolean ret = data.isValid(b1, b);
-
-        return ret;
+        return data.isValid(world, v);
     }
 
     /** Checks there's no spawner in the area
@@ -472,25 +394,7 @@ public final class SpawnHandler
         int i = point.intX();
         int j = point.intY();
         int k = point.intZ();
-
         if (!checkNoSpawnerInArea(world, i, j, k)) { return false; }
-        SpawnData entry = dbe.getSpawnData();
-
-        if (entry.types[DAY] && !entry.types[NIGHT])
-        {
-            int lightBlock = world.getLightFor(EnumSkyBlock.BLOCK, point.getPos());
-            int lightDay = world.getLightFor(EnumSkyBlock.SKY, point.getPos());
-            if (lightBlock == 0 && world.isDaytime()) lightBlock = lightDay;
-            if (lightBlock < 8) { return false; }
-        }
-        if (!entry.types[DAY] && entry.types[NIGHT])
-        {
-            int lightBlock = world.getLightFor(EnumSkyBlock.BLOCK, point.getPos());
-            int lightDay = world.getLightFor(EnumSkyBlock.SKY, point.getPos());
-            if (lightBlock == 0 && world.isDaytime()) lightBlock = lightDay;
-            if (lightBlock > 5) { return false; }
-        }
-
         boolean validLocation = canPokemonSpawnHere(point, world, dbe);
         return validLocation;
     }
@@ -558,30 +462,6 @@ public final class SpawnHandler
         return forbiddenSpawningCoords.remove(coord) != null;
     }
 
-    public static void sortSpawnables()
-    {
-        spawnLists.clear();
-
-        for (int s : spawns.keySet())
-        {
-            ArrayList<Double> occurances = new ArrayList<Double>();
-            ArrayList<Integer> numbers = new ArrayList<Integer>();
-            for (PokedexEntry p : spawns.get(s))
-            {
-                occurances.add((double) p.getSpawnData().getWeight(s));
-                numbers.add(p.getPokedexNb());
-            }
-            spawnLists.put(s, new ArrayList<PokedexEntry>());
-            Double[] oc = occurances.toArray(new Double[0]);
-            Integer[] i = numbers.toArray(new Integer[0]);
-            new Cruncher().sort22(oc, i);
-            for (int j = i.length; j > 0; j--)
-                if (!spawnLists.get(s).contains(Database.getEntry(i[j - 1])))
-                    spawnLists.get(s).add(Database.getEntry(i[j - 1]));
-
-        }
-    }
-
     public JEP parser = new JEP();
     Vector3    v      = Vector3.getNewVector();
     Vector3    v1     = Vector3.getNewVector();
@@ -597,7 +477,7 @@ public final class SpawnHandler
     private int doSpawnForLocation(World world, Vector3 v)
     {
         int ret = 0;
-        if (!v.doChunksExist(world, 10)) return ret;
+        if (!v.doChunksExist(world, 32)) return ret;
         int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
         int num = 0;
         int height = v.getMaxY(world);
@@ -610,93 +490,48 @@ public final class SpawnHandler
         }
         boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
         if (num > MAX_DENSITY * MAXNUM || !player) return ret;
-
         if (v.y < 0 || !checkNoSpawnerInArea(world, v.intX(), v.intY(), v.intZ())) return ret;
-
+        refreshTerrain(v, world);
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
         int b = t.getBiome(v);
         if (onlySubbiomes && b <= 255) { return ret; }
-
-        if (b == BiomeType.CAVE.getType())
+        List<PokedexEntry> entries = Database.spawnables;
+        int index = world.rand.nextInt(entries.size());
+        PokedexEntry dbe = entries.get(index);
+        float weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+        double random = Math.random();
+        Vector3.movePointOutOfBlocks(v, world);
+        int n = 0;
+        int max = entries.size();
+        while (weight <= random && n++ < max)
         {
-            t.checkIndustrial(world);
-            b = t.getBiome(v);
-        }
-        else if (b != BiomeType.VILLAGE.getType())
-        {
-            Village village = world.villageCollectionObj.getNearestVillage(v.getPos(), 2);
-            if (village != null)
-            {
-                b = BiomeType.VILLAGE.getType();
-                if (b <= 255)
-                {
-                    t.setBiome(v, b);
-                }
-            }
-        }
-
-        if (spawns.containsKey(b))
-        {
-            ArrayList<PokedexEntry> entries = spawns.get(b);
-            if (entries.isEmpty())
-            {
-                spawns.remove(b);
-                return ret;
-            }
-            int index = world.rand.nextInt(entries.size());
-            if (index >= entries.size()) return ret;
-            PokedexEntry dbe = entries.get(index);
-            float weight = dbe.getSpawnData().getWeight(b);
-            if (b > 256)
-            {
-                boolean check = false;
-                for (int i = 0; i < 10; i++)
-                {
-                    if (Math.random() <= weight) check = true;
-                }
-                if (!check) return ret;
-            }
-            else
-            {
-                if (Math.random() > weight) return ret;
-            }
-
+            dbe = entries.get((++index) % entries.size());
             if (!dbe.flys())
             {
-                v = Vector3.getNextSurfacePoint2(world, v, v1.set(0, -1, 0), v.y);
+                v = Vector3.getNextSurfacePoint2(world, v, Vector3.secondAxisNeg, v.y);
+                if (v != null) Vector3.movePointOutOfBlocks(v, world);
             }
-            if (v == null) { return ret; }
+            weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+        }
+        if (random > weight) return ret;
+        if (v == null) { return ret; }
+        if (dbe.legendary)
+        {
+            int exp = getSpawnXp(world, v, dbe);
+            int level = Tools.xpToLevel(dbe.getEvolutionMode(), exp);
+            if (level < PokecubeMod.core.getConfig().minLegendLevel) { return ret; }
+        }
+        if (!isPointValidForSpawn(world, v, dbe)) return ret;
+        num = 0;
+        long time = System.nanoTime();
 
-            Vector3.movePointOutOfBlocks(v, world);
+        ret += num = doSpawnForType(world, v, dbe, parser, t);
 
-            if (!canSpawn(t, dbe.getSpawnData(), v, world, true)) return ret;
-
-            if (dbe.getSpawnData().types[SpawnData.LEGENDARY])
-            {
-                int exp = getSpawnXp(world, v, dbe);
-                int level = Tools.xpToLevel(dbe.getEvolutionMode(), exp);
-                if (level < PokecubeMod.core.getConfig().minLegendLevel) { return ret; }
-            }
-
-            if (!isPointValidForSpawn(world, v, dbe)) return ret;
-
-            num = 0;
-
-            long time = System.nanoTime();
-
-            ret += num = doSpawnForType(world, v, dbe, parser, t);
-
-            double dt = (System.nanoTime() - time) / 1000000D;
-            if (dt > 50)
-            {
-                if (dt > maxtime)
-                {
-                    maxtime = dt;
-                    functions.put(-2, dbe.toString());
-                }
-                System.err.println(t.getCentre() + " " + dt + " " + dbe + " " + num + " Maximum was "
-                        + functions.get(-2) + " at " + maxtime);
-            }
+        double dt = (System.nanoTime() - time) / 10e3D;
+        if (dt > 500)
+        {
+            String toLog = "location:" + v + " took:" + dt + "\u00B5" + "s" + " for:" + dbe + " spawned:" + num;
+            PokecubeMod.log(toLog);
         }
         return ret;
     }
@@ -708,13 +543,12 @@ public final class SpawnHandler
         int totalSpawnCount = 0;
         Vector3 offset = v1.clear();
         Vector3 point = v2.clear();
-
-        int biome = t.getBiome(loc);
+        SpawnBiomeMatcher matcher = entry.getMatcher(world, loc);
         byte distGroupZone = 6;
         Random rand = new Random();
 
-        int n = Math.max(entry.getMax(biome) - entry.getMin(biome), 1);
-        int spawnNumber = entry.getMin(biome) + rand.nextInt(n);
+        int n = Math.max(entry.getMax(matcher) - entry.getMin(matcher), 1);
+        int spawnNumber = entry.getMin(matcher) + rand.nextInt(n);
 
         for (int i = 0; i < spawnNumber; i++)
         {
@@ -722,8 +556,8 @@ public final class SpawnHandler
                     rand.nextInt(distGroupZone) - rand.nextInt(distGroupZone));
             v.set(loc);
             point.set(v.addTo(offset));
-
-            if (!isPointValidForSpawn(world, point, dbe)) continue;
+            Vector3.movePointOutOfBlocks(point, world);
+            if (point == null || !isPointValidForSpawn(world, point, dbe)) continue;
 
             float x = (float) point.x + 0.5F;
             float y = (float) point.y;
@@ -738,20 +572,17 @@ public final class SpawnHandler
             float dist = PokecubeMod.core.getConfig().minSpawnRadius;
             boolean player = Tools.isAnyPlayerInRange(dist, dist, world, point);
             if (player) continue;
-            if (distFromSpawnPoint >= 576.0F)
+            if (distFromSpawnPoint >= 256.0F)
             {
                 EntityLiving entityliving = null;
                 try
                 {
-
                     if (dbe.getPokedexNb() > 0)
                     {
                         entityliving = (EntityLiving) PokecubeMod.core.createEntityByPokedexEntry(dbe, world);
                         entityliving.setHealth(entityliving.getMaxHealth());
                         entityliving.setLocationAndAngles((double) x + 0.5F, (double) y + 0.5F, (double) z + 0.5F,
                                 world.rand.nextFloat() * 360.0F, 0.0F);
-
-                        time = System.nanoTime();
                         if (entityliving.getCanSpawnHere())
                         {
                             if ((entityliving = creatureSpecificInit(entityliving, world, x, y, z,
@@ -787,22 +618,53 @@ public final class SpawnHandler
         return totalSpawnCount;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void spawn(World world)
     {
         if (world.getDifficulty() == EnumDifficulty.PEACEFUL || !doSpawns) return;
-        List players = new ArrayList(world.playerEntities);
+        List<EntityPlayer> players = new ArrayList<EntityPlayer>(world.playerEntities);
         if (players.isEmpty()) return;
         Collections.shuffle(players);
         for (int i = 0; i < players.size(); i++)
         {
-            Vector3 v = getRandomSpawningPointNearEntity(world, (Entity) players.get(0),
+            Vector3 v = getRandomSpawningPointNearEntity(world, players.get(0),
                     PokecubeMod.core.getConfig().maxSpawnRadius, 0);
             if (v != null)
             {
-                doSpawnForLocation(world, v);
+                long time = System.nanoTime();
+                int num = doSpawnForLocation(world, v);
+                double dt = (System.nanoTime() - time) / 10e3D;
+                if (dt > 500)
+                {
+                    PokecubeMod.log(dt + "\u00B5" + "s for player " + players.get(0).getDisplayNameString() + " at " + v
+                            + ", spawned " + num);
+                }
             }
         }
+    }
+
+    public static void refreshTerrain(Vector3 location, World world)
+    {
+        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
+        Vector3 temp1 = Vector3.getNewVector();
+        int x0 = t.chunkX * 16, y0 = t.chunkY * 16, z0 = t.chunkZ * 16;
+        int dx = GRIDSIZE / 2;
+        int dy = GRIDSIZE / 2;
+        int dz = GRIDSIZE / 2;
+        int x1 = x0 + dx, y1 = y0 + dy, z1 = z0 + dz;
+        // outer:
+        for (int i = x1; i < x1 + 16; i += GRIDSIZE)
+            for (int j = y1; j < y1 + 16; j += GRIDSIZE)
+                for (int k = z1; k < z1 + 16; k += GRIDSIZE)
+                {
+                    temp1.set(i, j, k);
+                    int biome = t.getBiome(i, j, k);
+                    if (biomeToRefresh.apply(biome))
+                    {
+                        biome = t.adjustedCaveBiome(world, temp1);
+                        if (biome == -1) biome = t.adjustedNonCaveBiome(world, temp1);
+                        t.setBiome(i, j, k, biome);
+                    }
+                }
     }
 
     public void tick(World world)

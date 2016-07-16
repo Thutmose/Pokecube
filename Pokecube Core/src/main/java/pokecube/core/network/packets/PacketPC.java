@@ -146,6 +146,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
             if (container != null)
             {
                 boolean owned = message.data.getBoolean("O");
+                System.out.println(owned+" "+player);
                 if (owned)
                 {
                     container.pcTile.toggleBound();

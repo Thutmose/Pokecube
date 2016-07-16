@@ -53,9 +53,9 @@ public class TeamManager
             return team;
         }
 
-        TeamLand     land   = new TeamLand();
-        final String teamName;
-        Set<String>  admins = Sets.newHashSet();
+        public TeamLand land   = new TeamLand();
+        final String    teamName;
+        Set<String>     admins = Sets.newHashSet();
 
         public PokeTeam(String name)
         {
@@ -79,7 +79,7 @@ public class TeamManager
 
     public static class TeamLand
     {
-        HashSet<ChunkCoordinate> land = Sets.newHashSet();
+        public HashSet<ChunkCoordinate> land = Sets.newHashSet();
 
         public boolean addLand(ChunkCoordinate land)
         {
@@ -246,7 +246,7 @@ public class TeamManager
         return landMap.get(land);
     }
 
-    private PokeTeam getTeam(String name, boolean create)
+    public PokeTeam getTeam(String name, boolean create)
     {
         PokeTeam team = teamMap.get(name);
         if (team == null && create)

@@ -41,7 +41,6 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
@@ -56,7 +55,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.CommonProxyPokecube;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
@@ -70,7 +68,7 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.client.gui.GuiChooseFirstPokemob;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiInfoMessages;
-import pokecube.core.client.gui.GuiPokedex_redo;
+import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.client.gui.GuiPokemob;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.gui.blocks.GuiHealTable;
@@ -105,6 +103,7 @@ import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.animations.EntityMoveUse;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 @SideOnly(Side.CLIENT)
@@ -154,17 +153,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
-        Entity entityHit = null;
-
-        if (PokecubeCore.isOnClientSide())
-        {
-            RayTraceResult objectClicked = ((Minecraft) PokecubeCore.getMinecraftInstance()).objectMouseOver;
-
-            if (objectClicked != null)
-            {
-                entityHit = objectClicked.entityHit;
-            }
-        }
         BlockPos pos = new BlockPos(x, y, z);
 
         if (guiID == Config.GUIPOKECENTER_ID)
@@ -190,8 +178,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
                     if (guiID == Config.GUIPOKEDEX_ID)
                     {
-                        if (entityHit instanceof IPokemob) return new GuiPokedex_redo((IPokemob) entityHit, player);
-                        else return new GuiPokedex_redo(null, player);
+                        Entity entityHit = Tools.getPointedEntity(player, 16);
+                        if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+                        else return new GuiPokedex(null, player);
                     }
                     else
                     {
@@ -503,8 +492,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
 
         map = (new StateMap.Builder())
-                .ignore(new IProperty[] { BerryManager.type, BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE })
-                .build();
+                .ignore(new IProperty[] { BerryManager.type, BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build();
         ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);
 
         MegaStoneTextureHandler.registerItemModels();

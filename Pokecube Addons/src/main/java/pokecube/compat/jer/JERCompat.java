@@ -67,7 +67,7 @@ public class JERCompat
             if (stack == null) continue;
             float chance = entry.drops.get(stack);
             drops.add(drop = new LootDrop(stack, chance));
-            drop.minDrop  = 1;
+            drop.minDrop = 1;
             drop.maxDrop = stack.stackSize;
             drop.conditionals.add("drop");
         }
@@ -98,14 +98,14 @@ public class JERCompat
             for (ResourceLocation key : Biome.REGISTRY.getKeys())
             {
                 Biome biome = Biome.REGISTRY.getObject(key);
-                if (biome != null && biome.getBiomeName() != null && data.isValid(Biome.getIdForBiome(biome)))
+                if (biome != null && biome.getBiomeName() != null && data.isValid(biome))
                 {
                     biomes.add(biome.getBiomeName());
                 }
             }
             for (BiomeType type : BiomeType.values())
             {
-                if (data.isValid(type.getType()))
+                if (data.isValid(type))
                 {
                     biomes.add(type.readableName);
                 }

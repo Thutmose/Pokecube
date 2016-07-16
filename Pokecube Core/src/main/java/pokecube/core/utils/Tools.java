@@ -449,7 +449,11 @@ public class Tools
 
     public static boolean isSameStack(ItemStack a, ItemStack b)
     {
-        return ItemStack.areItemsEqual(a, b) && ItemStack.areItemStackTagsEqual(a, b);
+        if (a == null || b == null) return false;
+        if (a.getItem() != b.getItem()) { return false; } // TODO ore dictionary
+                                                          // check in here.
+        if (!a.isItemStackDamageable() && a.getItemDamage() != b.getItemDamage()) return false;
+        return ItemStack.areItemStackTagsEqual(a, b);
     }
 
     public static int levelToXp(int type, int level)

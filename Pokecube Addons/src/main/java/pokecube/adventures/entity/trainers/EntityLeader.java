@@ -164,11 +164,12 @@ public class EntityLeader extends EntityTrainer
     {
         if (!player.capabilities.isCreativeMode || hand == EnumHand.OFF_HAND) return false;
 
-        if (ItemBadge.isBadge(player.getHeldItemMainhand()))
+        if (ItemBadge.isBadge(player.getHeldItem(hand)))
         {
-            reward.remove(0);
-            reward.set(0, player.getHeldItemMainhand().copy());
-            player.addChatMessage(new TextComponentString("Badge set to " + this.getHeldItemOffhand()));
+            if (!reward.isEmpty()) reward.set(0, player.getHeldItem(hand).copy());
+            else reward.add(player.getHeldItem(hand).copy());
+            if (!worldObj.isRemote) player.addChatMessage(
+                    new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
             this.setHeldItem(EnumHand.OFF_HAND, reward.get(0));
         }
         return super.processInteract(player, hand, stack);

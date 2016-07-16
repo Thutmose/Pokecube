@@ -21,6 +21,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 
 @SideOnly(Side.CLIENT)
@@ -166,12 +167,16 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
 
             FontRenderer fontrenderer = getFontRendererFromRenderManager();
 
-            if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))
+            boolean nametag = ((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED);
+            nametag = nametag || Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(
+                    PokecubeMod.pokemobAchievements.get(((IPokemob) entityliving).getPokedexNb()));
+
+            if (nametag)
             {
                 String n;
+                Entity owner = ((IPokemob) entityliving).getPokemonOwner();
                 // Your pokemob has white name, other's has gray name.
-                int colour = renderManager.renderViewEntity.equals(((IPokemob) entityliving).getPokemonOwner())
-                        ? 0xFFFFFF : 0xAAAAAA;
+                int colour = renderManager.renderViewEntity.equals(owner) ? 0xFFFFFF : owner==null?0x444444 :0xAAAAAA;
                 if ((entityliving.hasCustomName()))
                 {
                     n = entityliving.getCustomNameTag();

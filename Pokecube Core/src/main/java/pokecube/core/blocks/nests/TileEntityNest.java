@@ -1,7 +1,5 @@
 package pokecube.core.blocks.nests;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -20,6 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -27,8 +26,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.maths.Vector3;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 
 public class TileEntityNest extends TileEntity implements ITickable, IInventory
 {
@@ -127,35 +124,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public void init()
     {
-        Vector3 here = Vector3.getNewVector().set(this);
-
-        TerrainSegment t = TerrainManager.getInstance().getTerrian(worldObj, here);
-        t.refresh(worldObj);
-        t.checkIndustrial(worldObj);
-        int b = t.getBiome(here);
-        // System.out.println("init");
-        if (SpawnHandler.spawns.containsKey(b))
-        {
-            ArrayList<PokedexEntry> entries = SpawnHandler.spawns.get(b);
-            if (entries.isEmpty())
-            {
-                SpawnHandler.spawns.remove(b);
-            }
-            Collections.shuffle(entries);
-            int index = 0;
-            while (pokedexNb == 0 && index < 2 * entries.size())
-            {
-                PokedexEntry dbe = entries.get((index++) % entries.size());
-                float weight = dbe.getSpawnData().getWeight(b);
-                if (Math.random() > weight) continue;
-                if (!(!SpawnHandler.canSpawn(t, dbe.getSpawnData(),
-                        here.set(this).offsetBy(EnumFacing.UP).offsetBy(EnumFacing.UP), worldObj, true)))
-                    continue;
-                if (!SpawnHandler.isPointValidForSpawn(worldObj, here, dbe)) continue;
-
-                pokedexNb = dbe.getPokedexNb();
-            }
-        }
+        //TODO init spawn for nest here.
     }
 
     @Override
@@ -267,11 +236,9 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         if (data != null)
         {
             Vector3 here = Vector3.getNewVector().set(this);
-
-            TerrainSegment t = TerrainManager.getInstance().getTerrian(worldObj, here);
-            int b = t.getBiome(here);
-            int min = data.getMin(b);
-            num = min + worldObj.rand.nextInt(data.getMax(b) - min + 1);
+            SpawnBiomeMatcher matcher = data.getMatcher(worldObj, here);
+            int min = data.getMin(matcher);
+            num = min + worldObj.rand.nextInt(data.getMax(matcher) - min + 1);
         }
         // System.out.println("tick");
         if (residents.size() < num && time > 200 + worldObj.rand.nextInt(2000))

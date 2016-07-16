@@ -153,7 +153,7 @@ public class AIMate extends AIBase
                 @Override
                 public boolean apply(Entity input)
                 {
-                    return input instanceof IPokemob;
+                    return input instanceof IPokemob && input instanceof EntityAnimal && input instanceof IBreedingMob;
                 }
             });
             bb = entity.getEntityBoundingBox().expand(5 * searchingLoveDist, 2 * searchingLoveDist,
@@ -163,7 +163,7 @@ public class AIMate extends AIBase
                 @Override
                 public boolean apply(Entity input)
                 {
-                    return input instanceof IPokemob;
+                    return input instanceof IPokemob && input instanceof EntityAnimal && input instanceof IBreedingMob;
                 }
             });
             if (list2.size() >= 30)

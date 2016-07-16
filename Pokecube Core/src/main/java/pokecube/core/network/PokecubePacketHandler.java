@@ -39,7 +39,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IHealer;
 import pokecube.core.interfaces.IMoveConstants;
@@ -641,17 +640,17 @@ public class PokecubePacketHandler
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
-        
+
         PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class, PokecubeCore.getMessageID(),
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketTrade.class, PacketTrade.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
-        
+
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
-        
+
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobGui.class, PacketPokemobGui.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobAttack.class, PacketPokemobAttack.class,
@@ -661,20 +660,19 @@ public class PokecubePacketHandler
 
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketSound.class, PacketSound.class,
+        PokecubeMod.packetPipeline.registerMessage(PacketSound.class, PacketSound.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+
+        PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
-        
-        PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class, PokecubeCore.getMessageID(),
-                Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class, PokecubeCore.getMessageID(),
-                Side.SERVER);
-        
-        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class, PokecubeCore.getMessageID(),
-                Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class, PokecubeCore.getMessageID(),
-                Side.SERVER);
-        
-        
+        PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
+        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)
@@ -706,7 +704,6 @@ public class PokecubePacketHandler
 
                 PokecubeSerializer.getInstance().readFromNBT(nbt);
                 PokecubeCore.registerSpawns();
-                SpawnHandler.sortSpawnables();
             }
             else if (nbt.getBoolean("hasTerrain"))
             {
@@ -714,8 +711,8 @@ public class PokecubePacketHandler
                 TerrainManager.getInstance().getTerrain(tag.getInteger("dimID"))
                         .addTerrain(TerrainSegment.readFromNBT(tag));
                 Vector3 temp = Vector3.readFromNBT(tag, "village");
-                if (temp != null) pokecube.core.client.gui.GuiPokedex_redo.closestVillage.set(temp);
-                else pokecube.core.client.gui.GuiPokedex_redo.closestVillage.clear();
+                if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
+                else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
                 player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
             }
             else if (nbt.getBoolean("toLoadTerrain"))

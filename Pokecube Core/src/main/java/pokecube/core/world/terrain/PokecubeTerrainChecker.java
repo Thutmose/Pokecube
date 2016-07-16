@@ -5,6 +5,8 @@ import static thut.api.terrain.BiomeType.VILLAGE;
 import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 import static thut.api.terrain.TerrainSegment.count;
 
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -28,8 +30,7 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
 
     public static void init()
     {
-        PokecubeTerrainChecker checker;
-        TerrainSegment.biomeCheckers.add(checker = new PokecubeTerrainChecker());
+        PokecubeTerrainChecker checker = new PokecubeTerrainChecker();
         TerrainSegment.defaultChecker = checker;
     }
 
@@ -38,17 +39,25 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
     {
         if (caveAdjusted)
         {
-            if (world.provider.doesWaterVaporize()) return -1;
+            if (world.provider.doesWaterVaporize() || chunk.canSeeSky(v.getPos())) return -1;
             boolean sky = false;
             Vector3 temp1 = Vector3.getNewVector();
+            int x0 = segment.chunkX * 16, y0 = segment.chunkY * 16, z0 = segment.chunkZ * 16;
+            int dx = ((v.intX() - x0) / GRIDSIZE) * GRIDSIZE;
+            int dy = ((v.intY() - y0) / GRIDSIZE) * GRIDSIZE;
+            int dz = ((v.intZ() - z0) / GRIDSIZE) * GRIDSIZE;
+            int x1 = x0 + dx, y1 = y0 + dy, z1 = z0 + dz;
             outer:
-            for (int i = 0; i < GRIDSIZE; i++)
-                for (int j = 0; j < GRIDSIZE; j++)
-                    for (int k = 0; k < GRIDSIZE; k++)
+            for (int i = x1; i < x1 + GRIDSIZE; i++)
+                for (int j = y1; j < y1 + GRIDSIZE; j++)
+                    for (int k = z1; k < z1 + GRIDSIZE; k++)
                     {
-                        temp1.set(v).addTo(i, j, k);
+                        temp1.set(i, j, k);
                         if (segment.isInTerrainSegment(temp1.x, temp1.y, temp1.z))
-                            sky = sky || temp1.isOnSurfaceIgnoringDecorationAndWater(chunk, world);
+                        {
+                            double y = temp1.getMaxY(world);
+                            sky = y <= temp1.y;
+                        }
                         if (sky) break outer;
                     }
             if (sky) return -1;
@@ -73,6 +82,13 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                 }
                 return biome;
             }
+            boolean sky = chunk.canSeeSky(v.getPos());
+            if (sky)
+            {
+                sky = v.findNextSolidBlock(world, Vector3.secondAxisNeg, 16) == null;
+                if (sky) return BiomeType.SKY.getType();
+            }
+
             if (world.villageCollectionObj != null)
             {
                 Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(
@@ -95,22 +111,24 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
     {
         IBlockState state = v.getBlockState(world);
         Block b = state.getBlock();
-        if (state.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
-
-        Vector3 top = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
-        if (top == null) return false;
-        b = top.getBlock(world);
-        return PokecubeMod.core.getConfig().getCaveBlocks().contains(b);
+        List<Block> cave = PokecubeMod.core.getConfig().getCaveBlocks();
+        if (state.getMaterial().isSolid()) { return cave.contains(b); }
+        Vector3 down = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
+        if (down == null) return false;
+        b = down.getBlock(world);
+        return cave.contains(b);
     }
 
     public boolean isCaveCeiling(Vector3 v, World world)
     {
+        double y = v.getMaxY(world);
+        if (y <= v.y) return false;
         IBlockState state = v.getBlockState(world);
         Block b = state.getBlock();
         if (state.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
-        Vector3 top = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxis, v.y);
-        if (top == null) return false;
-        b = top.getBlock(world);
+        Vector3 up = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxis, 255 - v.y);
+        if (up == null) return false;
+        b = up.getBlock(world);
         return PokecubeMod.core.getConfig().getCaveBlocks().contains(b);
     }
 

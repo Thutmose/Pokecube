@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.mojang.authlib.GameProfile;
 
@@ -112,6 +115,8 @@ public abstract class PokecubeMod
     public static Achievement                   get1stPokemob;
     public static HashMap<Integer, Achievement> pokemobAchievements;
     public static final UUID                    fakeUUID                   = new UUID(1234, 4321);
+    public static Logger                        logger                     = Logger.getLogger("Pokecube");
+    protected static FileHandler                logHandler                 = null;
 
     public static FakePlayer getFakePlayer()
     {
@@ -218,4 +223,9 @@ public abstract class PokecubeMod
     public abstract void setEntityProvider(IEntityProvider provider);
 
     public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
+
+    public static void log(String toLog)
+    {
+        logger.log(Level.INFO, toLog);
+    }
 }

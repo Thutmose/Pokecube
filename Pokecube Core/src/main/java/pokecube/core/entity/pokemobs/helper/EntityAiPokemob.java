@@ -18,6 +18,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
@@ -137,7 +138,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         PokedexEntry entry = getPokedexEntry();
         boolean canFloat = entry.floats() || entry.flys() || canUseFly();
-        if(distance > 3 + height) distance = 0;
+        if (distance > 4 + height) distance = 0;
         if (!canFloat) super.fall(distance, damageMultiplier);
     }
 
@@ -309,8 +310,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
-        // aiStuff.addAILogic(new LogicCollision(this));
-        // if (true) return;
+//        aiStuff.addAILogic(new LogicCollision(this));
+//        if (true) return;
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
@@ -398,9 +399,19 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!this.isInWater() && !this.isInLava())
         {
             if (!this.onGround) return;
+
+            boolean pathing = !this.getNavigator().noPath();
+            double factor = 0.1;
+            if (pathing)
+            {
+                Path path = this.getNavigator().getPath();
+                Vector3 point = Vector3.getNewVector().set(path.getPathPointFromIndex(path.getCurrentPathIndex()));
+                factor = 0.05 * point.distTo(here);
+                factor = Math.max(0.2, factor);
+            }
             // The extra factor fixes tiny pokemon being unable to jump up one
             // block.
-            this.motionY += 0.41999998688697815D + 0.1 * 1 / getPokedexEntry().height;
+            this.motionY += 0.5D + factor * 1 / getPokedexEntry().height;
 
             Potion jump = Potion.getPotionFromResourceLocation("jump_boost");
 
@@ -556,6 +567,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 {
                     f4 = this.jumpMovementFactor;
                 }
+
                 this.moveRelative(f, f1, f4);
                 f2 = 0.91F;
 

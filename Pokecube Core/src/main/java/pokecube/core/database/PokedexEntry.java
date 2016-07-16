@@ -3,15 +3,14 @@
  */
 package pokecube.core.database;
 
-import static thut.api.terrain.BiomeType.NONE;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,8 +26,11 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
-import net.minecraftforge.common.BiomeDictionary.Type;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.PokedexEntryLoader.Action;
+import pokecube.core.database.PokedexEntryLoader.Drop;
+import pokecube.core.database.PokedexEntryLoader.Interact;
+import pokecube.core.database.PokedexEntryLoader.Key;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IPokemob;
@@ -40,7 +42,6 @@ import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -379,29 +380,40 @@ public class PokedexEntry
 
     public static class InteractionLogic
     {
-        static HashMap<PokeType, String> defaults = new HashMap<>();
+        static HashMap<PokeType, List<Interact>> defaults = new HashMap<>();
 
         static
         {
-            defaults.put(PokeType.fire, "stick`torch");
-            defaults.put(PokeType.water, "bucket`water_bucket");
+            Interact fire = new Interact();
+            fire.key = new Key();
+            fire.action = new Action();
+            fire.key.values.put(new QName("id"), "minecraft:stick");
+            fire.action.values.put(new QName("type"), "item");
+            Drop firedrop = new Drop();
+            firedrop.values.put(new QName("id"), "minecraft:torch");
+            fire.action.drops.add(firedrop);
+
+            Interact water = new Interact();
+            water.key = new Key();
+            water.action = new Action();
+            water.key.values.put(new QName("id"), "minecraft:bucket");
+            water.action.values.put(new QName("type"), "item");
+            Drop waterdrop = new Drop();
+            waterdrop.values.put(new QName("id"), "minecraft:water_bucket");
+            water.action.drops.add(waterdrop);
+
+            defaults.put(PokeType.fire, Lists.newArrayList(fire));
+            defaults.put(PokeType.water, Lists.newArrayList(water));
         }
 
         protected static void initForEntry(PokedexEntry entry)
         {
-            String val = "";
+            List<Interact> val = Lists.newArrayList();
             for (PokeType t : defaults.keySet())
             {
                 if (entry.isType(t))
                 {
-                    if (val.isEmpty())
-                    {
-                        val = defaults.get(t);
-                    }
-                    else
-                    {
-                        val += " " + defaults.get(t);
-                    }
+                    val.addAll(defaults.get(t));
                 }
             }
             if (!val.isEmpty())
@@ -410,79 +422,47 @@ public class PokedexEntry
             }
         }
 
-        protected static void initForEntry(PokedexEntry entry, String fromDatabase)
+        protected static void initForEntry(PokedexEntry entry, List<Interact> data)
         {
-            if (fromDatabase == null || fromDatabase.isEmpty())
+            if (data == null || data.isEmpty())
             {
                 initForEntry(entry);
                 return;
             }
-            String[] entries = fromDatabase.trim().split(" ");
-            for (String s : entries)
+            for (Interact interact : data)
             {
-                String[] args = s.split("`");
-                String key = args[0];
-
-                if (key.equals("null")) return;
-
-                if (key.startsWith("F:"))
+                Key key = interact.key;
+                Action action = interact.action;
+                boolean isForme = action.values.get(new QName("type")).equals("forme");
+                Map<QName, String> values = key.values;
+                if (key.tag != null)
                 {
-                    ItemStack keyStack = parseStack(key.substring(2));
-                    PokedexEntry forme = Database.getEntry(args[1]);
-                    entry.interactionLogic.formes.put(keyStack, forme);
+                    QName name = new QName("tag");
+                    values.put(name, key.tag);
+                }
+                ItemStack keyStack = Tools.getStack(values);
+                if (isForme)
+                {
+                    PokedexEntry forme = Database.getEntry(action.values.get(new QName("forme")));
+                    if (forme != null) entry.interactionLogic.formes.put(keyStack, forme);
                 }
                 else
                 {
-                    ItemStack keyStack = parseStack(key);
-                    String[] vals = new String[args.length - 1];
-                    for (int i = 0; i < vals.length; i++)
-                    {
-                        vals[i] = args[i + 1];
-                    }
                     List<ItemStack> stacks = Lists.newArrayList();
-                    for (String s1 : vals)
+                    for (Drop d : action.drops)
                     {
-                        ItemStack temp = parseStack(s1);
-                        if (temp != null)
+                        values = d.values;
+                        if (d.tag != null)
                         {
-                            stacks.add(temp);
+                            QName name = new QName("tag");
+                            values.put(name, d.tag);
                         }
+                        ItemStack stack = Tools.getStack(values);
+                        if (stack != null) stacks.add(stack);
                     }
-                    if (keyStack != null && !stacks.isEmpty())
-                    {
-                        InteractionLogic interact = entry.interactionLogic;
-                        interact.stacks.put(keyStack, stacks);
-                    }
+                    entry.interactionLogic.stacks.put(keyStack, stacks);
                 }
             }
-        }
-
-        private static ItemStack parseStack(String info)
-        {
-            ItemStack ret = null;
-
-            String modid;
-            String name;
-            int damage = 0;
-            if (info.contains(":"))
-            {
-                modid = info.split(":")[0];
-                name = info.split(":")[1];
-            }
-            else
-            {
-                modid = "minecraft";
-                name = info;
-            }
-            if (name.contains("#"))
-            {
-                name = info.split("#")[0];
-                damage = Integer.parseInt(info.split("#")[1]);
-            }
-            Item item = Item.REGISTRY.getObject(new ResourceLocation(modid, name));
-            if (item != null) ret = new ItemStack(item, 1, damage);
-            else new NullPointerException("Errored Item for " + info);
-            return ret;
         }
 
         HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
@@ -497,8 +477,7 @@ public class PokedexEntry
         {
             if (held != null) for (ItemStack stack : formes.keySet())
             {
-                System.out.println(stack + " " + held);
-                if (stack.isItemEqual(held)) { return stack; }
+                if (Tools.isSameStack(stack, held)) { return stack; }
             }
             return null;
         }
@@ -507,7 +486,7 @@ public class PokedexEntry
         {
             if (held != null) for (ItemStack stack : stacks.keySet())
             {
-                if (stack.isItemEqual(held)) { return stack; }
+                if (Tools.isSameStack(stack, held)) { return stack; }
             }
             return null;
         }
@@ -516,17 +495,18 @@ public class PokedexEntry
         {
             EntityLiving entity = (EntityLiving) pokemob;
             NBTTagCompound data = entity.getEntityData();
+            ItemStack held = player.getHeldItemMainhand();
             if (data.hasKey("lastInteract"))
             {
                 long time = data.getLong("lastInteract");
                 long diff = entity.worldObj.getTotalWorldTime() - time;
                 if (diff < 100) { return false; }
             }
-            ItemStack stack = getStackKey(player.getHeldItemMainhand());
+            ItemStack stack = getStackKey(held);
 
             if (stack == null)
             {
-                stack = getFormeKey(player.getHeldItemMainhand());
+                stack = getFormeKey(held);
                 if (!doInteract) return stack != null;
                 if (stack != null)
                 {
@@ -543,7 +523,7 @@ public class PokedexEntry
                 List<ItemStack> results = stacks.get(stack);
                 int index = player.getRNG().nextInt(results.size());
                 ItemStack result = results.get(index).copy();
-                if (player.getHeldItemMainhand().stackSize-- == 1)
+                if (held.stackSize-- == 1)
                 {
                     player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
                 }
@@ -572,277 +552,77 @@ public class PokedexEntry
 
     public static class SpawnData
     {
-        public static class TypeEntry
+        public static class SpawnEntry
         {
-            ArrayList<Type>             biomes   = new ArrayList<Type>();
-            ArrayList<Biome>            valid    = new ArrayList<Biome>();
-            HashSet<Integer>            types    = new HashSet<Integer>();
-            public ArrayList<BiomeType> biome2   = new ArrayList<BiomeType>();
-            float                       weight;
-            public int                  groupMax = 4;
-            public int                  groupMin = 2;
-
-            public TypeEntry()
-            {
-            };
-
-            public boolean isValid(Biome b)
-            {
-                boolean ret = biomes.size() > 0;
-
-                if (b == null) return false;
-
-                if (valid.contains(b)) return true;
-
-                for (Type t : biomes)
-                {
-                    ret = ret && BiomeDatabase.contains(b, t);
-                }
-                if (ret) valid.add(b);
-
-                return ret;
-            }
-
-            public boolean isValid(int biome)
-            {
-                if (types.contains(BiomeType.ALL.getType())) return true;
-
-                if (types.contains(biome)) return true;
-                else if (biome < 256 && !biomes.isEmpty()) return isValid(Biome.getBiome(biome));
-
-                for (BiomeType t : biome2)
-                {
-                    if (t.getType() == biome) types.add(biome);
-                }
-                if (types.contains(biome)) return true;
-                if (types.contains(BiomeType.ALL.getType())) return true;
-
-                return false;
-            }
-
-            @Override
-            public String toString()
-            {
-                return biomes + " " + biome2 + " " + weight + " " + groupMin + "-" + groupMax;
-            }
+            float rate = 0.0f;
+            int   min  = 2;
+            int   max  = 4;
         }
 
-        public static final int     DAY        = 0;
-
-        public static final int     NIGHT      = 1;
-
-        public static final int     CAVE       = 2;
-        public static final int     WATER      = 3;
-
-        public static final int     WATERPLUS  = 4;
-        public static final int     INDUSTRIAL = 5;
-
-        public static final int     VILLAGE    = 6;
-        public static final int     FOSSIL     = 7;
-
-        public static final int     STARTER    = 8;
-
-        public static final int     LEGENDARY  = 9;
-        public final boolean[]      types      = new boolean[] { false, false, false, false, false, false, false, false,
-                false, false, false, false, false, false, };
-        /** Any matches in here is a valid location */
-        public List<TypeEntry>      anyTypes   = new ArrayList<TypeEntry>();
-        /** Needs all matches in here to be valid */
-        public List<TypeEntry>      allTypes   = new ArrayList<TypeEntry>();
-        /** Needs no matches in here to be valid */
-        public List<Type>           noTypes    = new ArrayList<Type>();
-        /** The global spawn rate settings */
-
-        ArrayList<Integer>          biomeTypes = new ArrayList<Integer>();
-
-        HashMap<Integer, TypeEntry> biomes     = new HashMap<Integer, PokedexEntry.SpawnData.TypeEntry>();
+        public Map<SpawnBiomeMatcher, SpawnEntry> matchers = Maps.newHashMap();
 
         public SpawnData()
         {
         }
 
-        public TypeEntry addBiome(Biome biome, float weight)
+        public SpawnBiomeMatcher getMatcher(World world, Vector3 location)
         {
-            TypeEntry ent = new TypeEntry();
-            int id = Biome.getIdForBiome(biome);
-            ent.weight = weight;
-            ent.valid.add(biome);
-            ent.types.add(id);
-            biomeTypes.add(id);
-            biomes.put(id, ent);
-            return ent;
+            for (SpawnBiomeMatcher matcher : matchers.keySet())
+            {
+                if (matcher.matches(location, world)) return matcher;
+            }
+            return null;
         }
 
-        private void addBiomeIfValid(Biome biome)
+        public int getMax(SpawnBiomeMatcher matcher)
         {
-            int id = Biome.getIdForBiome(biome);
-            biomeTypes.add(id);
-            for (TypeEntry t : anyTypes)
-            {
-                if (t.isValid(biome))
-                {
-                    biomes.put(id, t);
-                    return;
-                }
-            }
-            for (TypeEntry t : allTypes)
-            {
-                if (t.isValid(biome))
-                {
-                    biomes.put(id, t);
-                    return;
-                }
-            }
-        }
-
-        public int getMax(int biome)
-        {
-            if (biomes.containsKey(biome)) { return biomes.get(biome).groupMax; }
-            if (biomes.containsKey(BiomeType.ALL.getType())) return biomes.get(BiomeType.ALL.getType()).groupMax;
             return 4;
         }
 
-        public int getMin(int biome)
+        public int getMin(SpawnBiomeMatcher matcher)
         {
-
-            if (biomes.containsKey(biome)) { return biomes.get(biome).groupMin; }
-            if (biomes.containsKey(BiomeType.ALL.getType())) return biomes.get(BiomeType.ALL.getType()).groupMin;
-
             return 2;
         }
 
-        public float getWeight(int biome)
+        public float getWeight(SpawnBiomeMatcher matcher)
         {
-            if (biomes.containsKey(biome)) { return biomes.get(biome).weight; }
-            if (biomes.containsKey(BiomeType.ALL.getType())) return biomes.get(BiomeType.ALL.getType()).weight;
-
-            return 0;
+            SpawnEntry entry = matchers.get(matcher);
+            return entry == null ? 0 : entry.rate;
         }
 
         /** Only checks one biome type for vailidity
          * 
          * @param b
          * @return */
-        public boolean isValid(int b)
+        public boolean isValid(World world, Vector3 location)
         {
-            if (biomes.containsKey(BiomeType.ALL.getType())) return true;
-            return biomes.containsKey(b);
+            return getMatcher(world, location) != null;
         }
 
-        /** Checks for cases with biome/subbiome
-         * 
-         * @param b
-         * @param b1
-         * @return */
-        public boolean isValid(int biome, int subbiome)
+        public boolean isValid(Biome biome)
         {
-            if (biome < 0 || subbiome < 0)
+            for (SpawnBiomeMatcher matcher : matchers.keySet())
             {
-                // new Exception().printStackTrace();
-                return false;
-            }
-            if (biomes.containsKey(biome))
-            {
-                if (biomes.containsKey(subbiome)) return true;
-                for (TypeEntry t : anyTypes)
-                {
-                    if (t.isValid(subbiome)) { return true; }
-                }
-                for (TypeEntry ta : allTypes)
-                {
-                    if (ta.isValid(subbiome)) { return true; }
-                }
-                return false;
-            }
-            if (biomes.containsKey(subbiome) || biomeTypes.contains(subbiome))
-            {
-                for (TypeEntry t : anyTypes)
-                {
-                    boolean val = t.types.contains(subbiome) && (t.biomes.isEmpty() || t.types.contains(biome));
-                    if (val) return true;
-                }
-                for (TypeEntry t : allTypes)
-                {
-                    boolean val = t.types.contains(subbiome) && (t.biomes.isEmpty() || t.types.contains(biome));
-                    if (val) return true;
-                }
+                if (matcher.validBiomes.contains(biome)) return true;
             }
             return false;
         }
 
-        private boolean isValidInit(int b)
+        public boolean isValid(BiomeType biome)
         {
-            if (b < 256) for (Type t : noTypes)
+            for (SpawnBiomeMatcher matcher : matchers.keySet())
             {
-                if (BiomeDatabase.contains(Biome.getBiome(b), t)) return false;
+                if (matcher.validSubBiomes.contains(biome)) return true;
             }
-
-            for (TypeEntry t : anyTypes)
-            {
-                if (t.isValid(b)) { return true; }
-            }
-            for (TypeEntry ta : allTypes)
-            {
-                if (ta.isValid(b)) { return true; }
-            }
-
             return false;
         }
 
         public void postInit()
         {
-
-            biomeTypes.clear();
-            biomes.clear();
-
-            for (ResourceLocation key : Biome.REGISTRY.getKeys())
+            for (SpawnBiomeMatcher matcher : matchers.keySet())
             {
-                Biome b = Biome.REGISTRY.getObject(key);
-                if (b == null) continue;
-                int id = Biome.getIdForBiome(b);
-                if (isValidInit(id))
-                {
-                    addBiomeIfValid(b);
-                }
+                matcher.parse();
             }
-            biomes:
-            for (BiomeType b : BiomeType.values())
-            {
-                if (b == null || b == NONE) continue;
-                if (isValidInit(b.getType()))
-                {
-                    biomeTypes.add(b.getType());
-                    for (TypeEntry t : anyTypes)
-                    {
-                        if (t.isValid(b.getType()))
-                        {
-                            biomes.put(b.getType(), t);
-                            continue biomes;
-                        }
-                    }
-                    for (TypeEntry t : allTypes)
-                    {
-                        if (t.isValid(b.getType()))
-                        {
-                            biomes.put(b.getType(), t);
-                            continue biomes;
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        public String toString()
-        {
-            String ret = "";
-            ret += System.getProperty("line.separator");
-            ret += allTypes;
-            ret += System.getProperty("line.separator");
-            ret += anyTypes;
-            ret += System.getProperty("line.separator");
-            ret += noTypes;
-            return ret;
         }
     }
 
@@ -867,6 +647,8 @@ public class PokedexEntry
     }
 
     Random                                     rand             = new Random();
+    protected boolean                          isStarter        = false;
+    public boolean                             legendary        = false;
     protected int                              pokedexNb;
     protected String                           name;
     protected String                           baseName;
@@ -1133,7 +915,8 @@ public class PokedexEntry
         if (e.mass == -1) e.mass = mass;
         if (e.held.isEmpty()) e.held = held;
         if (e.drops.isEmpty()) e.drops = drops;
-
+        e.breeds = breeds;
+        e.legendary = legendary;
         e.baseForme = this;
         this.addForm(e);
     }

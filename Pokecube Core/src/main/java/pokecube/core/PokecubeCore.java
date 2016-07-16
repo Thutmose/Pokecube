@@ -11,6 +11,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
@@ -88,6 +90,7 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.Pokecube
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
+import pokecube.core.utils.LogFormatter;
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -183,15 +186,16 @@ public class PokecubeCore extends PokecubeMod
     {
         int n = 0;
         List<PokedexEntry> spawns = new ArrayList<PokedexEntry>();
-        SpawnHandler.spawns.clear();
+        Database.spawnables.clear();
         for (PokedexEntry dbe : Database.data.values())
         {
             if (dbe.getSpawnData() != null)
             {
                 dbe.getSpawnData().postInit();
+                Database.spawnables.add(dbe);
             }
         }
-
+        System.out.println(Database.spawnables);
         for (PokedexEntry dbe : Database.spawnables)
         {
             if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))
@@ -393,6 +397,23 @@ public class PokecubeCore extends PokecubeMod
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         helper.postInit();
         removeAllMobs();
+        
+        logger.setLevel(Level.ALL);
+
+        try
+        {
+            File logfile = new File(".", "Pokecube.log");
+            if ((logfile.exists() || logfile.createNewFile()) && logfile.canWrite() && logHandler == null)
+            {
+                logHandler = new FileHandler(logfile.getPath());
+                logHandler.setFormatter(new LogFormatter());
+                logger.addHandler(logHandler);
+            }
+        }
+        catch (SecurityException | IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -706,7 +727,6 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new GiftCommand());
         event.registerServerCommand(new TMCommand());
         registerSpawns();
-        SpawnHandler.sortSpawnables();
     }
 
     @EventHandler

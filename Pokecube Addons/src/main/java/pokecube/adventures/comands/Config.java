@@ -118,7 +118,7 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public int                         vitaminCost         = 8;
     @Configure(category = trainers)
-    String[]                           cubeCosts           = { "0:16:4-8:1", "1:8:2-4:1", "2:2:1-2:1", "3:1:1:64" };
+    String[]                           cubeCosts           = { "0:16:2-4:1", "1:8:1-2:1", "2:2:1-1:1", "3:1:1:128" };
 
     @Configure(category = teams)
     private int                        teamLandPerPlayer   = 125;

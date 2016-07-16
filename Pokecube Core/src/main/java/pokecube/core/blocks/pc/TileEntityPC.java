@@ -218,38 +218,21 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
 
     public void setBoundOwner(EntityPlayer player)
     {
+        if (!canEdit(player)) return;
         if (this.worldObj.isRemote)
         {
-            if (!canEdit(player)) return;
-
             PacketPC packet = new PacketPC(PacketPC.BIND);
-            packet.data.setBoolean("O", true);
+            packet.data.setBoolean("O", false);
             PokecubeMod.packetPipeline.sendToServer(packet);
             return;
         }
-
         String uuid = player.getCachedUniqueIdString();
-        UUID id = InventoryPC.defaultId;
-
         TileEntity te = worldObj.getTileEntity(getPos().down());
         if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).setBoundOwner(player);
-
-        boolean canEdit = boundId.isEmpty() || boundId.equals(id.toString());
-        if (!canEdit)
+        boundId = uuid;
+        if (player != null)
         {
-            if (uuid.equals(boundId))
-            {
-                toggleBound();
-            }
-        }
-        else
-        {
-            boundId = uuid;
-            id = UUID.fromString(uuid);
-            if (player != null)
-            {
-                boundName = player.getDisplayNameString();
-            }
+            boundName = player.getDisplayNameString();
         }
         if (!worldObj.isRemote)
         {
@@ -276,7 +259,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         if (this.worldObj.isRemote)
         {
             PacketPC packet = new PacketPC(PacketPC.BIND);
-            packet.data.setBoolean("O", false);
+            packet.data.setBoolean("O", true);
             PokecubeMod.packetPipeline.sendToServer(packet);
             return;
         }

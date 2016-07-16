@@ -62,14 +62,13 @@ public class AIIdle extends AIBase
     private void doGroundIdle()
     {
         v.set(xPosition, yPosition, zPosition);
-        for (int i = (int) yPosition; i > 0; i--)
+        for (int i = 0; i > -yPosition; i--)
         {
             if (!v.addTo(0, i, 0).isAir(world))
             {
                 break;
             }
         }
-
         yPosition = v.y;
     }
 
@@ -194,6 +193,7 @@ public class AIIdle extends AIBase
 
             double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),
                     mob.getPokedexEntry().width * mob.getSize());
+
             diff = Math.max(2, diff);
             if (v == null || this.v.distToSq(v) < diff)
             {

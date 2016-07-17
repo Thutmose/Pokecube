@@ -20,7 +20,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -83,82 +90,195 @@ public class GuiDisplayPokecubeInfo extends Gui
         int h = PokecubeMod.core.getConfig().guiOffset[1];
         w = Math.min(event.getResolution().getScaledWidth() - 105, w);
         h = Math.min(event.getResolution().getScaledHeight() - 13, h);
-
-        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
-        GL11.glPushMatrix();
-
-        minecraft.entityRenderer.setupOverlayRendering();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-
-        GL11.glNormal3f(0.0F, -1.0F, 0.0F);
-
-        IPokemob[] pokemobs = getPokemobsToDisplay();
-        if (indexPokemob < 0)
-        {
-            indexPokemob = 0;
-        }
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-
-        if (indexPokemob > pokemobs.length)
+        int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
+        int nameOffsetX = dir == 1 ? 43 : 43;
+        int nameOffsetY = dir == 1 ? 0 : 23;
+        int movesOffsetX = 42;
+        int movesOffsetY = dir == 1 ? 22 : 10;
+        int mobOffsetX = 0;
+        int mobOffsetY = 0;
+        int hpOffsetX = 42;
+        int hpOffsetY = 13;
+        int xpOffsetX = 42;
+        int xpOffsetY = 20;
+        int statusOffsetX = 0;
+        int statusOffsetY = 27;
+        int confuseOffsetX = 12;
+        int confuseOffsetY = 1;
+        if (indexPokemob > getPokemobsToDisplay().length)
         {
             refreshCounter = 0;
             indexPokemob = 0;
             arrayRet = getPokemobsToDisplay();
         }
-        if (indexPokemob >= pokemobs.length)
+        if (indexPokemob >= getPokemobsToDisplay().length)
         {
             indexPokemob = 0;
         }
-        if (indexPokemob >= pokemobs.length)
-        {
-            GL11.glPopMatrix();
-            return;
-        }
+        if (indexPokemob >= getPokemobsToDisplay().length) { return; }
+        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
+        GL11.glPushMatrix();
+        GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         IPokemob pokemob = getCurrentPokemob();
-        int n = pokemobs.length;
+        // System.out.println(indexPokemob + " " + pokemob);
         if (pokemob != null)
         {
+            // Render Mob
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
+            GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            EntityLiving entity = (EntityLiving) pokemob;
+
+            float scale = 1;
+            float size = 0;
+            int j = w;
+            int k = h;
+
+            size = Math.max(entity.width, entity.height) * scale;
+
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(j + 25, k + 25, 50F);
+            float zoom = (float) (20f / size);
+            GL11.glScalef(-zoom, zoom, zoom);
+            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+            float f5 = ((k + 75) - 50) - 0;
+            RenderHelper.enableStandardItemLighting();
+            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
+            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
+
+            int i = 15728880;
+            int j1 = i % 65536;
+            int k1 = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
+            GL11.glRotated(entity.rotationYaw - 40, 0, 1, 0);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+            GL11.glPopMatrix();
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            // Render HP
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(hpOffsetX + w, hpOffsetY + h, 43, 12, 92, 7);
+            float total = ((EntityLiving) pokemob).getMaxHealth();
+            float ratio = ((EntityLiving) pokemob).getHealth() / total;
+            float f = 0.00390625F;
+            float f1 = 0.00390625F;
+            float x = hpOffsetX + 1 + w;
+            float y = hpOffsetY + 1 + h;
+            float width = 92 * ratio;
+            float height = 5;
+            int u = 0;
+            int v = 85;
+            Tessellator tessellator = Tessellator.getInstance();
+            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            vertexbuffer.pos((double) (x + 0), (double) (y + height), (double) this.zLevel)
+                    .tex((double) ((float) (u) * f), (double) ((float) (v + height) * f1)).endVertex();
+            vertexbuffer.pos((double) (x + width), (double) (y + height), (double) this.zLevel)
+                    .tex((double) ((float) (u + width) * f), (double) ((float) (v + height) * f1)).endVertex();
+            vertexbuffer.pos((double) (x + width), (double) (y + 0), (double) this.zLevel)
+                    .tex((double) ((float) (u + width) * f), (double) ((float) (v) * f1)).endVertex();
+            vertexbuffer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel)
+                    .tex((double) ((float) (u) * f), (double) ((float) (v) * f1)).endVertex();
+            tessellator.draw();
+
+            // Render XP
+            this.drawTexturedModalRect(xpOffsetX + w, xpOffsetY + h, 43, 19, 92, 5);
+
+            int current = pokemob.getExp();
+            int level = pokemob.getLevel();
+            int prev = Tools.levelToXp(pokemob.getExperienceMode(), level);
+            int next = Tools.levelToXp(pokemob.getExperienceMode(), level + 1);
+            int levelDiff = next - prev;
+            int diff = current - prev;
+            ratio = diff / ((float) levelDiff);
+            if (level == 100) ratio = 1;
+            x = xpOffsetX + 1 + w;
+            y = xpOffsetY + h;
+            width = 92 * ratio;
+            height = 2;
+            u = 0;
+            v = 97;
+            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            vertexbuffer.pos((double) (x + 0), (double) (y + height), (double) this.zLevel)
+                    .tex((double) ((float) (u) * f), (double) ((float) (v + height) * f1)).endVertex();
+            vertexbuffer.pos((double) (x + width), (double) (y + height), (double) this.zLevel)
+                    .tex((double) ((float) (u + width) * f), (double) ((float) (v + height) * f1)).endVertex();
+            vertexbuffer.pos((double) (x + width), (double) (y + 0), (double) this.zLevel)
+                    .tex((double) ((float) (u + width) * f), (double) ((float) (v) * f1)).endVertex();
+            vertexbuffer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel)
+                    .tex((double) ((float) (u) * f), (double) ((float) (v) * f1)).endVertex();
+            tessellator.draw();
+
+            // Render Status
+            byte status = pokemob.getStatus();
+            if (status != IMoveConstants.STATUS_NON)
+            {
+                int dv = 0;
+                if ((status & IMoveConstants.STATUS_BRN) != 0)
+                {
+                    dv = 2 * 14;
+                }
+                if ((status & IMoveConstants.STATUS_FRZ) != 0)
+                {
+                    dv = 1 * 14;
+                }
+                if ((status & IMoveConstants.STATUS_PAR) != 0)
+                {
+                    dv = 3 * 14;
+                }
+                if ((status & IMoveConstants.STATUS_PSN) != 0)
+                {
+                    dv = 4 * 14;
+                }
+                this.drawTexturedModalRect(statusOffsetX + w, statusOffsetY + h, 0, 138 + dv, 15, 15);
+            }
+            if ((pokemob.getChanges() & IMoveConstants.CHANGE_CONFUSED) != 0)
+            {
+                GlStateManager.translate(0, 0, 100);
+                this.drawTexturedModalRect(confuseOffsetX + w, confuseOffsetY + h, 0, 211, 24, 16);
+                GlStateManager.translate(0, 0, -100);
+            }
+
+            // Render Name
             if (currentMoveIndex == 5)
             {
                 GL11.glColor4f(0.0F, 1.0F, 0.4F, 1.0F);
             }
-            else
-            {
-                GL11.glColor4f(0.0F, 1.0F, 0.4F, 1.0F);
-            }
-            // bind texture
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-            this.drawTexturedModalRect(0 + w, 0 + h, 0, 0, 91, 13);
+            this.drawTexturedModalRect(nameOffsetX + w, nameOffsetY + h, 44, 0, 90, 13);
             String displayName = pokemob.getPokemonDisplayName().getFormattedText();
             if (fontRenderer.getStringWidth(displayName) > 70)
             {
 
             }
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            fontRenderer.drawString(displayName, 2 + w, 2 + h, lightGrey);
-            int moveIndex = 0;
+            fontRenderer.drawString(displayName, nameOffsetX + 3 + w, nameOffsetY + 3 + h, lightGrey);
+
             // Draw number of pokemon
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            int n = getPokemobsToDisplay().length;
             int num = fontRenderer.getStringWidth("" + n);
-            this.drawTexturedModalRect(90 + w, 0 + h, 0, 0, num, 13);
-            this.drawTexturedModalRect(90 + num + w, 0 + h, 81, 0, 10, 13);
-            fontRenderer.drawString("" + n, 95 + w, 3 + h, lightGrey);
+            this.drawTexturedModalRect(nameOffsetX + 89 + w, nameOffsetY + h, 0, 27, 15, 15);
+            fontRenderer.drawString("" + n, nameOffsetX + 95 - num / 4 + w, nameOffsetY + 4 + h, lightGrey);
 
+            // Render Moves
+            GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            int h1 = 1;
+            int moveIndex = 0;
             int moveCount = 0;
-
             for (moveCount = 0; moveCount < 4; moveCount++)
             {
                 if (pokemob.getMove(moveCount) == null) break;
             }
-
-            int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
-            int h1 = 1;
             if (dir == -1)
             {
-                h -= 25 + 12 * (moveCount - 1);
+                h -= 14 + 12 * (moveCount - 1) - (4 - moveCount) * 2;
             }
-
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
                 int index = moveIndex;
@@ -171,20 +291,17 @@ public class GuiDisplayPokecubeInfo extends Gui
                     else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     // bind texture
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-                    this.drawTexturedModalRect(0 + w, 13 + 12 * index + h, 0, 13 + h1, 91, 12);
+                    this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91, 13);
                     GL11.glPushMatrix();// TODO find out why both needed
                     Color moveColor = new Color(move.getType(pokemob).colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
-                    fontRenderer.drawString(MovesUtils.getLocalizedMove(move.getName()), 5 + 0 + w, index * 12 + 14 + h,
-                            move.getType(pokemob).colour);
+                    fontRenderer.drawString(MovesUtils.getLocalizedMove(move.getName()), 5 + movesOffsetX + w,
+                            index * 13 + movesOffsetY + 3 + h, move.getType(pokemob).colour);
                     GL11.glPopMatrix();
                 }
             }
-
         }
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
         GL11.glPopMatrix();
     }
 
@@ -259,7 +376,6 @@ public class GuiDisplayPokecubeInfo extends Gui
                 return e1.ticksExisted - e2.ticksExisted;
             }
         });
-
         return arrayRet;
     }
 
@@ -320,7 +436,9 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (minecraft.currentScreen == null
                     && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.getType() == ElementType.HOTBAR)
+            {
                 draw(event);
+            }
         }
         catch (Throwable e)
         {

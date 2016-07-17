@@ -38,6 +38,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokemobBodies;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
@@ -385,7 +386,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public List<AxisAlignedBB> getTileCollsionBoxes()
     {
         if (this.worldObj.isRemote && this.isBeingRidden()
-                && (this.getServer() == null || this.getServer().isDedicatedServer()))
+                && (this.getServer() == null || this.getServer().isDedicatedServer())
+                && this.getOwner() == PokecubeCore.proxy.getPlayer(null))
         {
             Vector3 vec = Vector3.getNewVector();
             Vector3 vec2 = Vector3.getNewVector();

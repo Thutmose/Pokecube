@@ -8,6 +8,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.cloner.BlockCloner;
+import pokecube.adventures.blocks.cloner.ItemBlockCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.legendary.BlockLegendSpawner;
 import pokecube.adventures.blocks.siphon.BlockSiphon;
@@ -34,8 +35,10 @@ public class BlockHandler
 
         cloner = new BlockCloner().setUnlocalizedName("cloner");
         cloner.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(cloner, "cloner");
+        PokecubeItems.register(cloner, ItemBlockCloner.class, "cloner");
         GameRegistry.registerTileEntity(TileEntityCloner.class, "cloner");
+        PokecubeItems.addSpecificItemStack("cloner", new ItemStack(cloner, 1, 1));
+        PokecubeItems.addSpecificItemStack("reanimator", new ItemStack(cloner, 1, 0));
 
         afa = new BlockAFA().setUnlocalizedName("afa");
         afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);

@@ -55,6 +55,7 @@ import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
 import pokecube.core.blocks.repel.BlockRepel;
 import pokecube.core.blocks.repel.TileEntityRepel;
 import pokecube.core.blocks.tradingTable.BlockTradingTable;
+import pokecube.core.blocks.tradingTable.ItemBlockTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.events.CaptureEvent.Post;
@@ -292,7 +293,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
         tradingtable = (new BlockTradingTable()).setUnlocalizedName("tradingtable");
         tradingtable.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         GameRegistry.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
-        PokecubeItems.register(tradingtable, "tradingtable");
+        PokecubeItems.register(tradingtable, ItemBlockTradingTable.class, "tradingtable");
+        PokecubeItems.addSpecificItemStack("tmtable", new ItemStack(tradingtable, 1, 8));
 
         pc = (new BlockPC()).setUnlocalizedName("pc");
         GameRegistry.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");

@@ -82,10 +82,10 @@ public class AnimationPowder extends MoveAnimationBase
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 
-        if (reverse)
+        if (!reverse)
         {
             Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
-            GlStateManager.translate(temp.x, temp.y, temp.z);
+            GlStateManager.translate(-temp.x, -temp.y, -temp.z);
         }
 
         initColour(info.currentTick * 300, partialTick, info.move);

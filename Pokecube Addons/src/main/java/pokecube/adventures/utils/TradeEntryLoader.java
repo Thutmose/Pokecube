@@ -24,6 +24,7 @@ import pokecube.adventures.entity.trainers.TypeTrainer.TrainerTrade;
 import pokecube.adventures.entity.trainers.TypeTrainer.TrainerTrades;
 import pokecube.core.PokecubeItems;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.items.ItemHeldItems;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.vitamins.ItemVitamin;
 import pokecube.core.moves.MovesUtils;
@@ -192,6 +193,32 @@ public class TradeEntryLoader
         else if (custom.equals("allVitamins"))
         {
             for (String s : ItemVitamin.vitamins)
+            {
+                ItemStack sell = PokecubeItems.getStack(s);
+                Map<QName, String> values;
+                TrainerTrade recipe;
+                ItemStack buy1;
+                ItemStack buy2 = null;
+                values = trade.buys.get(0).values;
+                if (trade.buys.get(0).tag != null) values.put(new QName("tag"), trade.buys.get(0).tag);
+                buy1 = Tools.getStack(values);
+                if (trade.buys.size() > 1)
+                {
+                    values = trade.buys.get(1).values;
+                    if (trade.buys.get(1).tag != null) values.put(new QName("tag"), trade.buys.get(1).tag);
+                    buy2 = Tools.getStack(values);
+                }
+                recipe = new TrainerTrade(buy1, buy2, sell);
+                values = trade.values;
+                if (values.containsKey(CHANCE)) recipe.chance = Float.parseFloat(values.get(CHANCE));
+                if (values.containsKey(MIN)) recipe.min = Integer.parseInt(values.get(MIN));
+                if (values.containsKey(MAX)) recipe.max = Integer.parseInt(values.get(MAX));
+                trades.tradesList.add(recipe);
+            }
+        }
+        else if (custom.equals("allGenericHeld"))
+        {
+            for (String s : ItemHeldItems.variants)
             {
                 ItemStack sell = PokecubeItems.getStack(s);
                 Map<QName, String> values;

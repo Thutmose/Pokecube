@@ -19,6 +19,9 @@
         <Trade chance="0.05" custom="allMegas">
             <Buy n="16" id="minecraft:emerald"/>
         </Trade>
+        <Trade chance="0.05" custom="allGenericHeld">
+            <Buy n="16" id="minecraft:emerald"/>
+        </Trade>
     </Trades>
     <Trades template="merchant">
         <Trade chance="1">
@@ -58,6 +61,9 @@
         </Trade>
         <Trade chance="0.05" custom="buyRandomBadge">
             <Sell n="16" id="minecraft:emerald"/>
+        </Trade>
+        <Trade chance="0.5" custom="allGenericHeld">
+            <Buy n="16" id="minecraft:emerald"/>
         </Trade>
     </Trades>
 </AllTrades>

@@ -2,9 +2,9 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "#tradingtable": "pokecube:blocks/tmc"
+            "#tradingtable": "pokecube:blocks/tradingtable"
         },
-        "model": "pokecube:tmc.obj"
+        "model": "pokecube:tradingtable.obj"
      },
     "variants": {
         "tmc=true": [{}],

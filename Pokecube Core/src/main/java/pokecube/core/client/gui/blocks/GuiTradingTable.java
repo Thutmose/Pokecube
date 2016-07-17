@@ -8,9 +8,11 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -93,17 +95,14 @@ public class GuiTradingTable extends GuiContainer
     {
         super.drawScreen(i, j, f);
 
-        int x = width / 2 - 73;
-        int y = height / 2 - 71;
-
+        int x = width / 2 - 53;
+        int y = height / 2 - 60;
         boolean red = false, green = false, blue = false;
-
         if (table.player1 != null)
         {
             green = true;
             if (table.player1 == entityPlayer) blue = true;
         }
-
         {
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
@@ -119,7 +118,7 @@ public class GuiTradingTable extends GuiContainer
             green = true;
             if (table.player2 == entityPlayer) blue = true;
         }
-        x += 125;
+        x += 90;
         {
             GL11.glPushMatrix();
             GL11.glEnable(GL11.GL_BLEND);
@@ -129,7 +128,6 @@ public class GuiTradingTable extends GuiContainer
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
         }
-
     }
 
     private EntityLiving getEntityToDisplay(int index)
@@ -144,7 +142,7 @@ public class GuiTradingTable extends GuiContainer
     {
         buttonList.clear();
         String trade = I18n.format("tile.tradingtable.trade");
-        buttonList.add(new GuiButton(1, width / 2 - 30, height / 2 - 40, 60, 20, trade));
+        buttonList.add(new GuiButton(1, width / 2 - 20, height / 2 - 21, 40, 20, trade));
         super.initGui();
     }
 
@@ -166,7 +164,7 @@ public class GuiTradingTable extends GuiContainer
         if (entity == null) return;
 
         float size = 0;
-        int j = index == 0 ? 20 : 150;
+        int j = index == 0 ? 45 : 130;
         int k = -30;
 
         IPokemob pokemob = null;
@@ -175,11 +173,8 @@ public class GuiTradingTable extends GuiContainer
             pokemob = (IPokemob) entity;
         }
 
-        // if (entity instanceof EntityPokemob)
-        // {
-        // ((EntityPokemob) entity).setSizes();//TODO see if needed
-        // }
         size = Math.max(entity.width, entity.height);
+        size = Math.max(pokemob.getPokedexEntry().length * pokemob.getSize(), size);
         pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);
         // }
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -187,8 +182,9 @@ public class GuiTradingTable extends GuiContainer
         GL11.glPushMatrix();
         GL11.glTranslatef(j + 0, k + 90, 50F);
 
-        float zoom = 23F / size;
+        float zoom = 12.5F / size;
         // System.out.println(zoom);
+        GL11.glPushMatrix();
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         float f5 = (float) ((k + 75) - 50) - ySize;
@@ -212,6 +208,24 @@ public class GuiTradingTable extends GuiContainer
         entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
 
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
+
+        GL11.glPopMatrix();
+        EntityLivingBase owner = pokemob.getPokemonOwner();
+        if (owner != null)
+        {
+            GL11.glScalef(-15, 15, 15);
+            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+            GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
+            float shift = index == 0?-1.5f:1.5f;
+            GlStateManager.translate(shift, 0, 1);
+            
+            GlStateManager.rotate(-shift * 20, 0, 1, 0);
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(owner, 0, 0, 0, 0, POKEDEX_RENDER, false);
+            GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+        }
+
         GL11.glPopMatrix();
         RenderHelper.disableStandardItemLighting();
         GL11.glDisable(GL12.GL_RESCALE_NORMAL);

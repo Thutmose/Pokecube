@@ -32,6 +32,14 @@ public class ItemHeldItems extends Item
         variants.add("duskstone");
         variants.add("dawnstone");
         variants.add("kingsrock");
+        variants.add("dubiousdisc");
+        variants.add("electirizer");
+        variants.add("magmarizer");
+        variants.add("reapercloth");
+        variants.add("prismscale");
+        variants.add("protector");
+        variants.add("upgrade");
+        variants.add("metalcoat");
     }
 
     public ItemHeldItems()

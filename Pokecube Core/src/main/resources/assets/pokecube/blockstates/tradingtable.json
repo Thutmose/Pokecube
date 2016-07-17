@@ -13,7 +13,7 @@
         }],
         "tmc":{
             "true": {
-                "model": "pokecube:tradingtable.obj"
+                "model": "pokecube:tmc.obj"
             },
             "false": {
                 "model": "pokecube:tradingtable.obj"

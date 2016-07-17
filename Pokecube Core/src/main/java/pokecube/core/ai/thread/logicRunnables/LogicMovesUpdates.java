@@ -9,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import pokecube.core.commands.CommandTools;
@@ -159,7 +158,7 @@ public class LogicMovesUpdates extends LogicBase
             if (BerryManager.berryEffect(pokemob, held))
             {
                 HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
-                entity.setHeldItem(EnumHand.MAIN_HAND, null);
+                pokemob.setHeldItem(null);
             }
         }
 
@@ -190,10 +189,10 @@ public class LogicMovesUpdates extends LogicBase
         }
         if (entity.ticksExisted % 20 == 0)
         {
-
             if (status == IMoveConstants.STATUS_BRN)
             {
                 entity.setFire(1);
+                entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 16f);
             }
             else if (status == IMoveConstants.STATUS_FRZ)
             {

@@ -469,32 +469,15 @@ public class PokecubeItems extends Items
         addGeneric("mossStone", Blocks.MOSSY_COBBLESTONE);
 
         addGeneric("razorfang", Items.IRON_PICKAXE);
-        addGeneric("protector", Items.IRON_CHESTPLATE);
         addGeneric("razorclaw", Items.IRON_AXE);
 
-        addGeneric("reapercloth", Blocks.CARPET);
         addGeneric("dragonscale", Items.EMERALD);
-        addGeneric("prismscale", Items.DIAMOND);
-
-        addGeneric("metalcoat", Items.IRON_CHESTPLATE);
-
-        addGeneric("electirizer", Items.REDSTONE);
-        addGeneric("magmarizer", Items.FLINT_AND_STEEL);
-
-        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.RECORD_CAT));
-        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.RECORD_11));
-        addToHoldables("dubiousdisc");
-        addToHoldables("upgrade");
 
         addToEvos("ice");
         addToEvos("mossStone");
         addToEvos("razorfang");
-        addToEvos("protector");
         addToEvos("razorclaw");
-        addToEvos("reapercloth");
         addToEvos("dragonscale");
-        addToEvos("prismscale");
-        addToEvos("metalcoat");
     }
 
     public static boolean isValid(ItemStack stack)

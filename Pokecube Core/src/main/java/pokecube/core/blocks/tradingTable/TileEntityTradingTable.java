@@ -30,9 +30,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -57,58 +54,6 @@ import thut.api.maths.Vector3;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
 {
-    private static class TMCConverter
-    {
-        final TileEntityTradingTable toConvert;
-
-        public TMCConverter(TileEntityTradingTable tile)
-        {
-            toConvert = tile;
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        @SubscribeEvent
-        public void convert(WorldTickEvent event)
-        {
-            if (event.world.isRemote)
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                return;
-            }
-
-            if (!event.world.isAreaLoaded(toConvert.getPos(), 5)) return;
-
-            if (event.phase == Phase.END)
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                boolean pc = false;
-                toConvert.pc = null;
-                for (EnumFacing side : EnumFacing.values())
-                {
-                    Vector3 here = Vector3.getNewVector().set(toConvert);
-                    Block id = here.offset(side).getBlock(toConvert.worldObj);
-                    if (id == PokecubeItems.getBlock("pc"))
-                    {
-                        pc = true;
-                        toConvert.pc = (TileEntityPC) here.offset(side).getTileEntity(toConvert.getWorld());
-                        break;
-                    }
-                }
-                toConvert.trade = !pc;
-
-                if (!toConvert.trade)
-                {
-                    IBlockState state = toConvert.worldObj.getBlockState(toConvert.getPos());
-                    if (!(Boolean) state.getValue(BlockTradingTable.TMC))
-                    {
-                        toConvert.worldObj.setBlockState(toConvert.getPos(),
-                                state.withProperty(BlockTradingTable.TMC, true));
-                    }
-                }
-            }
-        }
-    }
-
     public static boolean                     theftEnabled = false;
 
     private ItemStack[]                       inventory    = new ItemStack[2];
@@ -456,6 +401,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     protected boolean hasPC()
     {
         boolean pc = false;
+        IBlockState state = worldObj.getBlockState(getPos());
+        if (!(Boolean) state.getValue(BlockTradingTable.TMC)) { return false; }
         this.pc = null;
         for (EnumFacing side : EnumFacing.values())
         {
@@ -469,15 +416,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             }
         }
         trade = !pc;
-
-        if (!trade)
-        {
-            IBlockState state = worldObj.getBlockState(getPos());
-            if (!(Boolean) state.getValue(BlockTradingTable.TMC))
-            {
-                worldObj.setBlockState(getPos(), state.withProperty(BlockTradingTable.TMC, true));
-            }
-        }
         return pc;
     }
 
@@ -543,7 +481,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public void onLoad()
     {
-        new TMCConverter(this);
     }
 
     public void openGUI(EntityPlayer player)

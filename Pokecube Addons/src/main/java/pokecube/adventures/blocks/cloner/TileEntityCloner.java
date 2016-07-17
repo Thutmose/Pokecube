@@ -31,6 +31,7 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.cloner.BlockCloner.EnumType;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -251,6 +252,23 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
         public boolean valid()
         {
+            if (tile.getWorld() == null) return false;
+            boolean reanimator = tile.getWorld().getBlockState(tile.getPos())
+                    .getValue(BlockCloner.VARIANT) == EnumType.FOSSIL;
+            if (reanimator)
+            {
+                if (!(recipe instanceof RecipeFossilRevive)) return false;
+                RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
+                return !recipe2.pokedexEntry.legendary;
+            }
+            else
+            {
+                if ((recipe instanceof RecipeFossilRevive))
+                {
+                    RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
+                    return recipe2.pokedexEntry.legendary;
+                }
+            }
             return recipe.matches(tile.craftMatrix, tile.getWorld());
         }
 

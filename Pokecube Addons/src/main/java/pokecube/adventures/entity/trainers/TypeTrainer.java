@@ -2,6 +2,7 @@ package pokecube.adventures.entity.trainers;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +20,13 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.village.MerchantRecipe;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.entity.helper.EntityHasTrades;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Pokedex;
@@ -37,6 +40,66 @@ import thut.api.terrain.BiomeType;
 
 public class TypeTrainer
 {
+    public static class TrainerTrades
+    {
+        public List<TrainerTrade> tradesList = Lists.newArrayList();
+
+        public void addTrades(List<MerchantRecipe> ret, EntityHasTrades trader)
+        {
+            for (TrainerTrade trade : tradesList)
+            {
+                if (Math.random() < trade.chance)
+                {
+                    MerchantRecipe toAdd = trade.getRecipe();
+                    if (toAdd != null) ret.add(toAdd);
+                }
+            }
+        }
+    }
+
+    public static class TrainerTrade extends MerchantRecipe
+    {
+        public int   min    = -1;
+        public int   max    = -1;
+        public float chance = 1;
+
+        public TrainerTrade(ItemStack buy1, ItemStack buy2, ItemStack sell)
+        {
+            super(buy1, buy2, sell);
+        }
+
+        public MerchantRecipe getRecipe()
+        {
+            ItemStack buy1 = this.getItemToBuy();
+            ItemStack buy2 = this.getSecondItemToBuy();
+            if (buy1 != null)
+            {
+                buy1 = buy1.copy();
+            }
+            if (buy2 != null)
+            {
+                buy2 = buy2.copy();
+            }
+            ItemStack sell = this.getItemToSell();
+            if (sell != null)
+            {
+                sell = sell.copy();
+            }
+            else
+            {
+                return null;
+            }
+            if (min != -1 && max != -1)
+            {
+                if (max < min) max = min;
+                sell.stackSize = min + new Random().nextInt(1 + max - min);
+            }
+            MerchantRecipe ret = new MerchantRecipe(buy1, buy2, sell);
+            return ret;
+        }
+    }
+
+    public static HashMap<String, TrainerTrades>    tradesMap   = Maps.newHashMap();
     public static HashMap<String, TypeTrainer>      typeMap     = new HashMap<String, TypeTrainer>();
     public static HashMap<Biome, List<TypeTrainer>> biomeMap    = Maps.newHashMap();
     public static ArrayList<String>                 maleNames   = new ArrayList<String>();
@@ -187,21 +250,23 @@ public class TypeTrainer
 
     public final String       name;
     /** 1 = male, 2 = female, 3 = both */
-    public byte               genders  = 1;
+    public byte               genders       = 1;
 
-    public Material           material = Material.AIR;
-    public BiomeMatcher       matcher  = null;
+    public Material           material      = Material.AIR;
+    public BiomeMatcher       matcher       = null;
     public int                weight;
-    public boolean            hasBag   = false;
+    public boolean            hasBag        = false;
     private ResourceLocation  texture;
 
     private ResourceLocation  femaleTexture;
 
-    public List<PokedexEntry> pokemon  = new ArrayList<PokedexEntry>();
+    public String             tradeTemplate = "default";
+    public List<PokedexEntry> pokemon       = Lists.newArrayList();
+    public TrainerTrades      trades;
 
-    private ItemStack[]       loot     = new ItemStack[4];
+    private ItemStack[]       loot          = new ItemStack[4];
 
-    public String             drops    = "";
+    public String             drops         = "";
     public ItemStack          held;
 
     public TypeTrainer(String name)
@@ -330,6 +395,21 @@ public class TypeTrainer
     public String toString()
     {
         return "" + name + " " + pokemon;
+    }
+
+    public Collection<MerchantRecipe> getRecipes(EntityHasTrades trader)
+    {
+        if (trades == null && tradeTemplate != null)
+        {
+            trades = tradesMap.get(tradeTemplate);
+            if (trades == null) tradeTemplate = null;
+        }
+        List<MerchantRecipe> ret = Lists.newArrayList();
+        if (trades != null)
+        {
+            trades.addTrades(ret, trader);
+        }
+        return ret;
     }
 
     public boolean validMaterial(Material m)

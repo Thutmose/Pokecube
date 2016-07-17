@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemFood;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntity;
@@ -185,7 +186,7 @@ public class TeamEventsHandler
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
         String owner = TeamManager.getInstance().getLandOwner(c);
-        if (owner == null) return;
+        if (owner == null || evt.getItemStack().getItem() instanceof ItemFood) return;
 
         String team = evt.getWorld().getScoreboard().getPlayersTeam(evt.getEntityPlayer().getName())
                 .getRegisteredName();

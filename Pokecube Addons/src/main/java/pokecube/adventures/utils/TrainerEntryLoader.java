@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
@@ -40,6 +41,8 @@ public class TrainerEntryLoader
     @XmlRootElement(name = "TYPETRAINER")
     public static class TrainerEntry
     {
+        @XmlAttribute
+        String  tradeTemplate = "default";
         @XmlElement(name = "TYPE")
         String  type;
         @XmlElement(name = "POKEMON")
@@ -51,9 +54,9 @@ public class TrainerEntryLoader
         @XmlElement(name = "GENDER")
         String  gender;
         @XmlElement(name = "MATERIAL")
-        String  material = "air";
+        String  material      = "air";
         @XmlElement(name = "BAG")
-        boolean bag      = false;
+        boolean bag           = false;
         @XmlElement(name = "HELD")
         Held    held;
     }
@@ -89,11 +92,13 @@ public class TrainerEntryLoader
             if (type == null) type = new TypeTrainer(name);
             byte male = 1;
             byte female = 2;
+            type.tradeTemplate = entry.tradeTemplate;
             type.hasBag = entry.bag;
             type.weight = entry.spawnRate;
             type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male
                     : entry.gender.equalsIgnoreCase("female") ? female : male + female);
-            String[] pokeList = entry.pokemon.split(",");
+
+            String[] pokeList = entry.pokemon == null ? new String[] {} : entry.pokemon.split(",");
             if (!entry.material.equalsIgnoreCase("air"))
             {
                 if (entry.material.equalsIgnoreCase("water"))
@@ -108,6 +113,7 @@ public class TrainerEntryLoader
                 type.held = held;
             }
             if (entry.biomes != null) type.matcher = new BiomeMatcher(entry.biomes);
+            if (pokeList.length == 0) continue;
             if (!pokeList[0].startsWith("-"))
             {
                 for (String s : pokeList)

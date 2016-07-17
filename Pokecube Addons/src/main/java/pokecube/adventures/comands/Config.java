@@ -15,8 +15,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
-import pokecube.adventures.entity.helper.EntityHasTrades.CubeTrade;
-import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
@@ -105,20 +103,18 @@ public class Config extends ConfigBase
     public int                         trainerSendOutDelay = 50;
     @Configure(category = trainers)
     public int                         trainerBattleDelay  = 100;
-    @Configure(category = trainers)
+//    @Configure(category = trainers)
     public int                         megaCost            = 16;
-    @Configure(category = trainers)
+//    @Configure(category = trainers)
     public int                         orbCost             = 32;
-    @Configure(category = trainers)
+//    @Configure(category = trainers)
     public int                         shinyCost           = 128;
-    @Configure(category = trainers)
+//    @Configure(category = trainers)
     public int                         tmCost              = 16;
-    @Configure(category = trainers)
+//    @Configure(category = trainers)
     public int                         badgeCost           = 64;
-    @Configure(category = trainers)
+//    @Configure(category = trainers)
     public int                         vitaminCost         = 8;
-    @Configure(category = trainers)
-    String[]                           cubeCosts           = { "0:16:2-4:1", "1:8:1-2:1", "2:2:1-1:1", "3:1:1:128" };
 
     @Configure(category = teams)
     private int                        teamLandPerPlayer   = 125;
@@ -167,23 +163,6 @@ public class Config extends ConfigBase
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;
         DBLoader.FORCECOPY = forceDatabase;
-        EntityTrainer.cubeList.clear();
-        for (String s : cubeCosts)
-        {
-            String[] args = s.split(":");
-            int id = Integer.parseInt(args[0]);
-            int num = Integer.parseInt(args[1]);
-            String[] nums = args[2].split("-");
-            int cost = Integer.parseInt(args[3]);
-            if (cost == -1) continue;
-            int min, max;
-            min = Integer.parseInt(nums[0]);
-            if (nums.length > 1) max = Integer.parseInt(nums[1]);
-            else max = min;
-            CubeTrade trade = new CubeTrade(id, min, max, cost);
-            for (int i = 0; i < num; i++)
-                EntityTrainer.cubeList.add(trade);
-        }
     }
 
     protected FluidStack getFluid(String toParse)

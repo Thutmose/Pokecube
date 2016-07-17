@@ -195,7 +195,6 @@ public class PokecubeCore extends PokecubeMod
                 Database.spawnables.add(dbe);
             }
         }
-        System.out.println(Database.spawnables);
         for (PokedexEntry dbe : Database.spawnables)
         {
             if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))

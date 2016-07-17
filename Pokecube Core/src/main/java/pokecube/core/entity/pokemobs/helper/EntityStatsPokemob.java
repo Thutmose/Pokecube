@@ -789,7 +789,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                     if (!this.isDead && (canEvolve(null) || canEvolve(getHeldItemMainhand())))
                     {
                         levelUp(newLvl);
-                        ret = this.evolve(true, newlySpawned, getHeldItemMainhand());
+                        IPokemob evo = this.evolve(true, newlySpawned, getHeldItemMainhand());
+                        IPokemob temp = evo;
+                        if (newlySpawned) while (temp != null)
+                        {
+                            temp = evo.evolve(true, newlySpawned, getHeldItemMainhand());
+                            if (temp != null) evo = temp;
+                        }
+                        ret = evo;
                     }
                     ret.levelUp(newLvl);
                 }

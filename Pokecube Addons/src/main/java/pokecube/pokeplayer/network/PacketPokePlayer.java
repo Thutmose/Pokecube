@@ -43,6 +43,9 @@ public class PacketPokePlayer
             {
                 this.player = p;
                 this.buffer = b;
+
+                if (player == null || player.worldObj == null) return;
+
                 Runnable toRun = new Runnable()
                 {
                     @Override
@@ -234,7 +237,7 @@ public class PacketPokePlayer
                         if (owner != null)
                         {
                             Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
-                            
+
                             if (closest != null)
                             {
                                 pokemob.executeMove(closest, v.set(closest),

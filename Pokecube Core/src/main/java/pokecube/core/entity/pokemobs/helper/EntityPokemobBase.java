@@ -384,6 +384,34 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
     public List<AxisAlignedBB> getTileCollsionBoxes()
     {
+        if (this.worldObj.isRemote && this.isBeingRidden()
+                && (this.getServer() == null || this.getServer().isDedicatedServer()))
+        {
+            Vector3 vec = Vector3.getNewVector();
+            Vector3 vec2 = Vector3.getNewVector();
+            double x = getPokedexEntry().width * getSize();
+            double z = getPokedexEntry().length * getSize();
+            double y = getPokedexEntry().height * getSize();
+            double v = vec.setToVelocity(this).mag();
+            vec.set(this);
+            vec2.set(x + v, y + v, z + v);
+            Matrix3 mainBox = new Matrix3();
+            Vector3 offset = Vector3.getNewVector();
+            mainBox.boxMin().clear();
+            mainBox.boxMax().x = x;
+            mainBox.boxMax().z = y;
+            mainBox.boxMax().y = z;
+            offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
+            mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+            mainBox.addOffsetTo(offset).addOffsetTo(vec);
+            AxisAlignedBB box = mainBox.getBoundingBox();
+            AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
+            box1 = box1.addCoord(motionX, motionY, motionZ);
+            aabbs = mainBox.getCollidingBoxes(box1, worldObj, worldObj);
+            // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
+            Matrix3.expandAABBs(aabbs, box);
+            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+        }
         return aabbs;
     }
 

@@ -1,12 +1,6 @@
 package pokecube.adventures.entity.trainers;
 
-import java.util.ArrayList;
-import java.util.Set;
-
 import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -48,12 +42,8 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
-import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.items.ItemTM;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.MovesUtils;
-import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -127,89 +117,7 @@ public class EntityTrainer extends EntityHasPokemobs
     protected void addRandomTrades()
     {
         itemList.clear();
-        int num = rand.nextInt(3);
-        Set<Object> added = Sets.newHashSet();
-        for (int i = 0; i < num; i++)
-        {
-            String name = HeldItemHandler.megaVariants.get(rand.nextInt(HeldItemHandler.megaVariants.size()));
-            if (!added.contains(name))
-            {
-                ItemStack output = PokecubeItems.getStack(name);
-                if (output == null) continue;
-                added.add(name);
-                int size = Config.instance.megaCost;
-                if (name.endsWith("orb")) size = Config.instance.orbCost;
-                else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                if (size == -1) continue;
-                ItemStack buy1 = new ItemStack(Items.EMERALD);
-                buy1.stackSize = (size & 63);
-                ItemStack buy2 = null;
-                if (size > 64)
-                {
-                    buy2 = buy1.copy();
-                    buy1.stackSize = 64;
-                    buy2.stackSize = ((size - 64) & 63);
-                    if (size - 64 >= 64) buy2.stackSize = 64;
-                }
-                else if (size == 64)
-                {
-                    buy1.stackSize = 64;
-                }
-                itemList.add(new MerchantRecipe(buy1, buy2, output));
-            }
-        }
-        added.clear();
-        num = rand.nextInt(3);
-        ArrayList<String> moves = Lists.newArrayList(MovesUtils.moves.keySet());
-        int randNum = rand.nextInt(moves.size());
-        for (int i = 0; i < num; i++)
-        {
-            int index = (randNum + i) % moves.size();
-            String name = moves.get(index);
-            if (added.contains(name)) continue;
-            added.add(name);
-            ItemStack tm = PokecubeItems.getStack("tm");
-            ItemStack in = new ItemStack(Items.EMERALD);
-            in.stackSize = Config.instance.tmCost;
-            if (in.stackSize == -1) continue;
-            ItemTM.addMoveToStack(name, tm);
-            itemList.add(new MerchantRecipe(in, tm));
-        }
-        added.clear();
-        num = rand.nextInt(4);
-        if (!cubeList.isEmpty()) for (int i = 0; i < num; i++)
-        {
-            CubeTrade trade = cubeList.get(rand.nextInt(cubeList.size()));
-            if (added.contains(trade)) continue;
-            added.add(trade);
-            itemList.add(trade.getTrade());
-        }
-        if (Math.random() > 0.99)
-        {
-            PokeType type = PokeType.values()[rand.nextInt(PokeType.values().length)];
-            if (type == PokeType.unknown) return;
-            ItemStack badge = PokecubeItems.getStack("badge" + type);
-            if (badge != null)
-            {
-                ItemStack in1 = new ItemStack(Items.EMERALD);
-                int size = Config.instance.badgeCost;
-                if (size == -1) return;
-                in1.stackSize = (size & 63);
-                ItemStack in2 = null;
-                if (size > 64)
-                {
-                    in2 = in1.copy();
-                    in1.stackSize = 64;
-                    in2.stackSize = ((size - 64) & 63);
-                    if (size - 64 >= 64) in2.stackSize = 64;
-                }
-                else if (size == 64)
-                {
-                    in1.stackSize = 64;
-                }
-                itemList.add(new MerchantRecipe(in1, in2, badge));
-            }
-        }
+        itemList.addAll(type.getRecipes(this));
     }
 
     @Override

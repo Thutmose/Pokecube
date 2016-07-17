@@ -46,6 +46,7 @@ public class DBLoader
             temp.mkdirs();
         }
         copyDatabaseFile("trainers.xml");
+        copyDatabaseFile("trades.xml");
         copyDatabaseFile("names.csv");
         DBLOCATION = CONFIGLOC;
         return;
@@ -146,6 +147,8 @@ public class DBLoader
             File file;
             TrainerEntryLoader.loadDatabase(file = new File(DBLOCATION + "trainers.xml"));
             TrainerEntryLoader.makeEntries(file);
+            TradeEntryLoader.loadDatabase(file = new File(DBLOCATION + "trades.xml"));
+            TradeEntryLoader.makeEntries(file);
         }
         catch (Exception e)
         {

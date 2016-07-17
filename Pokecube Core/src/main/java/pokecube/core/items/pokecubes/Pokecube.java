@@ -305,9 +305,16 @@ public class Pokecube extends Item implements IPokecube
             if (used)
             {
                 stack.splitStack(1);
-                if (stack.stackSize <= 0 && player.getActiveItemStack() == stack)
+                if (stack.stackSize <= 0)
                 {
-                    player.setHeldItem(player.getActiveHand(), null);
+                    for (int i = 0; i < player.inventory.getSizeInventory(); i++)
+                    {
+                        if (player.inventory.getStackInSlot(i) == stack)
+                        {
+                            player.inventory.setInventorySlotContents(i, null);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -365,14 +372,6 @@ public class Pokecube extends Item implements IPokecube
             thrower.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
             world.spawnEntityInWorld(entity);
         }
-        if (!PokecubeManager.isFilled(cube)) return true;
-        if (thrower instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) thrower;
-            int current = player.inventory.currentItem;
-            player.inventory.mainInventory[current] = null;
-            player.inventory.markDirty();
-        }
         return true;
     }
 
@@ -416,15 +415,6 @@ public class Pokecube extends Item implements IPokecube
             }
         }
         else if (!rightclick) { return false; }
-
-        if (!PokecubeManager.isFilled(cube)) return true;
-        if (thrower instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) thrower;
-            int current = player.inventory.currentItem;
-            player.inventory.mainInventory[current] = null;
-            player.inventory.markDirty();
-        }
         return true;
     }
 

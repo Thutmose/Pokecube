@@ -14,7 +14,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.core.events.handlers.EventsHandlerClient.RingChecker;
-import pokecube.core.items.megastuff.ItemMegaring;
+import pokecube.core.items.megastuff.IMegaWearable;
 
 public class BaublesEventHandler
 {
@@ -34,7 +34,16 @@ public class BaublesEventHandler
                     if (stack != null)
                     {
                         Item item = stack.getItem();
-                        if (item instanceof ItemMegaring) { return true; }
+                        if (item instanceof IMegaWearable) { return true; }
+                    }
+                }
+                for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                {
+                    ItemStack stack = player.inventory.armorInventory[i];
+                    if (stack != null)
+                    {
+                        Item item = stack.getItem();
+                        if (item instanceof IMegaWearable) { return true; }
                     }
                 }
                 return false;

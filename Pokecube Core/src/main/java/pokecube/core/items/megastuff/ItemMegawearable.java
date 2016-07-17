@@ -1,23 +1,36 @@
 package pokecube.core.items.megastuff;
 
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @net.minecraftforge.fml.common.Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class ItemMegaring extends Item implements IBauble
+public class ItemMegawearable extends Item implements IBauble, IMegaWearable
 {
-    public ItemMegaring()
+    public static Map<String, String> wearables = Maps.newHashMap();
+
+    static
+    {
+        wearables.put("megaring", "RING");
+        wearables.put("megabelt", "BELT");
+    }
+
+    public ItemMegawearable()
     {
         super();
         this.setMaxStackSize(1);
@@ -58,6 +71,9 @@ public class ItemMegaring extends Item implements IBauble
     @Optional.Method(modid = "Baubles")
     public BaubleType getBaubleType(ItemStack itemstack)
     {
+        String name = getUnlocalizedName(itemstack).replace("item.", "");
+        String type = wearables.get(name);
+        if (type != null) { return BaubleType.valueOf(type); }
         return BaubleType.RING;
     }
 
@@ -79,4 +95,37 @@ public class ItemMegaring extends Item implements IBauble
     {
     }
 
+    @Override
+    /** returns a list of items with the same ID, but different meta (eg: dye
+     * returns 16 items) */
+    @SideOnly(Side.CLIENT)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    {
+        ItemStack stack;
+        for (String s : wearables.keySet())
+        {
+            stack = new ItemStack(itemIn);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("type", s);
+            subItems.add(stack);
+        }
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        String name = super.getUnlocalizedName(stack);
+        if (stack.hasTagCompound())
+        {
+            NBTTagCompound tag = stack.getTagCompound();
+            String variant = "megaring";
+            if (tag != null)
+            {
+                String stackname = tag.getString("type");
+                variant = stackname.toLowerCase();
+            }
+            name = "item." + variant;
+        }
+        return name;
+    }
 }

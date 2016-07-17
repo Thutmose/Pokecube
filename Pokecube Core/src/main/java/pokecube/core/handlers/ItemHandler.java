@@ -72,7 +72,7 @@ import pokecube.core.items.ItemPokemobUseableFood;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
-import pokecube.core.items.megastuff.ItemMegaring;
+import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -264,11 +264,16 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) for (int i = 0; i < 10; i++)
             registerItemTexture(pokedex, i, new ModelResourceLocation("pokecube:pokedex", "inventory"));
 
-        megaring = (new ItemMegaring()).setUnlocalizedName("megaring");
+        megaring = (new ItemMegawearable()).setUnlocalizedName("megaring");
         megaring.setCreativeTab(creativeTabPokecube);
         register(megaring, "megaring");
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(megaring, 0, new ModelResourceLocation("pokecube:megaring", "inventory"));
+        for (String s : ItemMegawearable.wearables.keySet())
+        {
+            ItemStack stack = new ItemStack(PokecubeItems.megaring);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("type", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
+        }
 
         megastone = (new ItemMegastone()).setUnlocalizedName("megastone");
         megastone.setCreativeTab(creativeTabPokecube);

@@ -80,6 +80,7 @@ import pokecube.core.client.items.FossilTextureHandler;
 import pokecube.core.client.items.HeldItemTextureHandler;
 import pokecube.core.client.items.MegaStoneTextureHandler;
 import pokecube.core.client.items.VitaminTextureHandler;
+import pokecube.core.client.items.WearableTextureHandler;
 import pokecube.core.client.models.ModelPokemobEgg;
 import pokecube.core.client.render.RenderMoves;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
@@ -500,6 +501,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         VitaminTextureHandler.registerItemModels();
         FossilTextureHandler.registerItemModels();
         HeldItemTextureHandler.registerItemModels();
+        WearableTextureHandler.registerItemModels();
     }
 
     @Override

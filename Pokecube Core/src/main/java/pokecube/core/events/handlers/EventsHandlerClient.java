@@ -59,7 +59,7 @@ import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.megastuff.ItemMegaring;
+import pokecube.core.items.megastuff.IMegaWearable;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketChangeForme;
@@ -140,7 +140,7 @@ public class EventsHandlerClient
                                                                          if (stack != null)
                                                                          {
                                                                              Item item = stack.getItem();
-                                                                             if (item instanceof ItemMegaring) { return true; }
+                                                                             if (item instanceof IMegaWearable) { return true; }
                                                                          }
                                                                      }
                                                                      return false;
@@ -433,7 +433,8 @@ public class EventsHandlerClient
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.getRenderer())) { return; }
-//        event.getRenderer().addLayer(new RenderHeldPokemobs(event.getRenderer()));
+        // event.getRenderer().addLayer(new
+        // RenderHeldPokemobs(event.getRenderer()));
         addedLayers.add(event.getRenderer());
     }
 

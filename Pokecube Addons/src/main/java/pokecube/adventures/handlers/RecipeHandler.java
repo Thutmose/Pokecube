@@ -132,16 +132,10 @@ public class RecipeHandler
         // Warp Linker
         GameRegistry.addRecipe(getStack("warplinker"),
                 new Object[] { " R ", "ROR", " E ", 'R', Items.EMERALD, 'O', Blocks.STONE, 'E', Items.ENDER_EYE });
-
-        // Mega ring
-        GameRegistry.addRecipe(getStack("megaring"),
-                new Object[] { " S ", "I I", " I ", 'S', getStack("megastone"), 'I', Items.IRON_INGOT });
+        
+        //Bag
         GameRegistry.addRecipe(getStack("pokecubebag"),
                 new Object[] { "CCC", "COC", "CCC", 'C', Blocks.WOOL, 'O', getStack("pctop").getItem() });
-
-        // Mega Stone
-        GameRegistry.addRecipe(getStack("megastone"),
-                new Object[] { " D ", "DOD", " D ", 'O', Items.ENDER_EYE, 'D', Items.DIAMOND });
 
         ItemStack shards18 = getStack("emerald_shard");
         ItemStack shards1 = getStack("emerald_shard");

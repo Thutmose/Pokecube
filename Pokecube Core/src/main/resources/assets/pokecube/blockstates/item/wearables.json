@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "megaring": {"textures": {"layer0": "pokecube:items/megaring"}},
+      "megabelt": {"textures": {"layer0": "pokecube:items/megabelt"}}
+    }
+  }
+}

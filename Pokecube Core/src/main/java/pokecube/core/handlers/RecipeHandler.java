@@ -20,7 +20,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.RecipeBrewBerries;
-import pokecube.core.items.megastuff.RecipeRings;
+import pokecube.core.items.megastuff.RecipeWearables;
 import pokecube.core.items.pokecubes.RecipePokeseals;
 import pokecube.core.items.revive.RecipeRevive;
 
@@ -119,11 +119,11 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(repelBlock), new Object[] { "JR", "RJ", 'J',
                 BerryManager.getBerryItem("jaboca"), 'R', BerryManager.getBerryItem("rowap"), });
 
-        RecipeSorter.register("pokecube:rings", RecipeRings.class, Category.SHAPELESS, "after:minecraft:shapeless");
+        RecipeSorter.register("pokecube:rings", RecipeWearables.class, Category.SHAPELESS, "after:minecraft:shapeless");
         RecipeSorter.register("pokecube:pokeseals", RecipePokeseals.class, Category.SHAPELESS,
                 "after:minecraft:shapeless");
         RecipeSorter.register("pokecube:revive", RecipeRevive.class, Category.SHAPELESS, "after:minecraft:shaped");
-        GameRegistry.addRecipe(new RecipeRings());
+        GameRegistry.addRecipe(new RecipeWearables());
         GameRegistry.addRecipe(new RecipePokeseals());
         GameRegistry.addRecipe(new RecipeRevive());
 
@@ -140,6 +140,17 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         // Trading Table
         GameRegistry.addRecipe(getStack("tmtable"), new Object[] { "III", "SRS", "SMS", 'R', Items.REDSTONE, 'S',
                 Blocks.STONE, 'M', getStack("tm"), 'I', Items.IRON_INGOT });
+
+        // Mega ring
+        GameRegistry.addRecipe(getStack("megaring"),
+                new Object[] { " S ", "I I", " I ", 'S', getStack("megastone"), 'I', Items.IRON_INGOT });
+        // Mega Belt
+        GameRegistry.addRecipe(getStack("megabelt"), new Object[] { " S ", "L L", " I ", 'L', Items.LEATHER, 'S',
+                getStack("megastone"), 'I', Items.IRON_INGOT });
+
+        // Mega Stone
+        GameRegistry.addRecipe(getStack("megastone"),
+                new Object[] { " D ", "DOD", " D ", 'O', Items.ENDER_EYE, 'D', Items.DIAMOND });
 
         BrewingRecipeRegistry.addRecipe(new RecipeBrewBerries());
     }

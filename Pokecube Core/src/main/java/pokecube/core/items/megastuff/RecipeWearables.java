@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-public class RecipeRings implements IRecipe
+public class RecipeWearables implements IRecipe
 {
     private ItemStack output;
 
@@ -49,7 +49,7 @@ public class RecipeRings implements IRecipe
             ItemStack stack = inv.getStackInSlot(i);
             if (stack != null)
             {
-                if (stack.getItem() instanceof ItemMegaring)
+                if (stack.getItem() instanceof ItemMegawearable)
                 {
                     ring = true;
                     ringStack = stack;

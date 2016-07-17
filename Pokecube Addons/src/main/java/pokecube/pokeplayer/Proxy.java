@@ -97,6 +97,7 @@ public class Proxy implements IGuiHandler
 
     public IPokemob getPokemob(EntityPlayer player)
     {
+        if (player == null || player.getUniqueID() == null) return null;
         if (getMap().containsKey(player.getUniqueID()))
         {
             PokeInfo info = getMap().get(player.getUniqueID());

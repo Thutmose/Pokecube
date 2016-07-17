@@ -35,7 +35,7 @@ import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
 
-@Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = PokecubeMod.MCVERSIONS)
+@Mod(modid = ModPokecubeML.ID, name = "Pokecube Model Loader", version = "0.1.0", acceptedMinecraftVersions = "*")
 public class ModPokecubeML implements IMobProvider
 {
     /** The id of your mod */

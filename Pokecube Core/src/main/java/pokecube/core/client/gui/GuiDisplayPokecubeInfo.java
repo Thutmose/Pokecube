@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -88,8 +89,8 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         int w = PokecubeMod.core.getConfig().guiOffset[0];
         int h = PokecubeMod.core.getConfig().guiOffset[1];
-        w = Math.min(event.getResolution().getScaledWidth() - 105, w);
-        h = Math.min(event.getResolution().getScaledHeight() - 13, h);
+        w = Math.min(event.getResolution().getScaledWidth() - 147, w);
+        h = Math.min(event.getResolution().getScaledHeight() - 42, h);
         int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
         int nameOffsetX = dir == 1 ? 43 : 43;
         int nameOffsetY = dir == 1 ? 0 : 23;
@@ -118,7 +119,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (indexPokemob >= getPokemobsToDisplay().length) { return; }
         if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
         GL11.glPushMatrix();
-        GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         IPokemob pokemob = getCurrentPokemob();
         // System.out.println(indexPokemob + " " + pokemob);
         if (pokemob != null)
@@ -396,6 +396,16 @@ public class GuiDisplayPokecubeInfo extends Gui
         PokecubeMod.core.getConfig().guiOffset[1] += y;
         if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;
         if (PokecubeMod.core.getConfig().guiOffset[1] < 0) PokecubeMod.core.getConfig().guiOffset[1] = 0;
+
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+
+        PokecubeMod.core.getConfig().guiOffset[0] = Math.min(res.getScaledWidth() - 147,
+                PokecubeMod.core.getConfig().guiOffset[0]);
+        PokecubeMod.core.getConfig().guiOffset[1] = Math.min(res.getScaledHeight() - 42,
+                PokecubeMod.core.getConfig().guiOffset[1]);
+
+        System.out.println(Arrays.toString(PokecubeMod.core.getConfig().guiOffset)+" "+res.getScaledWidth());
+
         saveConfig();
     }
 

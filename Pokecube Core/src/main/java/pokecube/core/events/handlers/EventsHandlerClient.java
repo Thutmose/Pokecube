@@ -249,7 +249,8 @@ public class EventsHandlerClient
             IPokemob[] pokemobs = GuiDisplayPokecubeInfo.instance().getPokemobsToDisplay();
             for (IPokemob mob : pokemobs)
             {
-                if (event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
+                if (((Entity) mob).addedToChunk && event.player
+                        .getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
                 {
                     mob.returnToPokecube();
                 }

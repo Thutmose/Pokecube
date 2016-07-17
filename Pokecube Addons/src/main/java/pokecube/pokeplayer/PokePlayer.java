@@ -32,13 +32,12 @@ import pokecube.pokeplayer.tileentity.TileEntityTransformer;
         dependencies = PokePlayer.DEPSTRING, 
       //  guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", 
       //  updateJSON = PokePlayer.UPDATEURL, 
-        acceptedMinecraftVersions = PokePlayer.MCVERSIONS
+        acceptedMinecraftVersions = "*"
         )// @formatter:on
 public class PokePlayer
 {
     public static final String ID         = "pokeplayer";
     public static final String VERSION    = "@VERSION";
-    public final static String MCVERSIONS = "@MCVERSION";
     public final static String DEPSTRING  = "required-after:pokecube@@POKECUBEVERSION";
     public final static String UPDATEURL  = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/pokeplayer.json";
 

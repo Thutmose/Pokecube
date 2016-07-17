@@ -1,56 +1,46 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
-import static com.mcf.davidee.nbteditpqb.NBTEdit.SECTION_SIGN;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.apache.logging.log4j.Level;
 
 import com.mcf.davidee.nbteditpqb.NBTEdit;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-
-public class TileRequestPacket extends AbstractPacket {
-	
+public class TileRequestPacket implements IMessage {
+	/** The position of the tileEntity requested. */
 	private BlockPos pos;
-	
-	public TileRequestPacket() {
-		
-	}
+
+	/** Required default constructor. */
+	public TileRequestPacket() {}
 	
 	public TileRequestPacket(BlockPos pos) {
 		this.pos = pos;
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		pos = new BlockPos(buffer.readInt(), buffer.readInt(), buffer.readInt());
+	public void fromBytes(ByteBuf buf) {
+		this.pos = BlockPos.fromLong(buf.readLong());
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		buffer.writeInt(pos.getX());
-		buffer.writeInt(pos.getY());
-		buffer.writeInt(pos.getZ());
+	public void toBytes(ByteBuf buf) {
+		buf.writeLong(this.pos.toLong());
 	}
 
-	@Override
-	public void handleClientSide(EntityPlayer player) { 
+	public static class Handler implements IMessageHandler<TileRequestPacket, IMessage> {
 
-	}
-
-	@Override
-	public void handleServerSide(EntityPlayerMP player) {
-		TileEntity te = player.getEntityWorld().getTileEntity(pos);
-		if (te != null) {
-			NBTTagCompound tag = new NBTTagCompound();
-			te.writeToNBT(tag);
-			NBTEdit.DISPATCHER.sendTo(new TileNBTPacket(pos, tag), player);
+		@Override
+		public IMessage onMessage(TileRequestPacket packet, MessageContext ctx) {
+			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			NBTEdit.log(Level.TRACE, player.getName() + " requested tileEntity at "
+					+ packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ());
+			NBTEdit.NETWORK.sendTile(player, packet.pos);
+			return null;
 		}
-		else
-			sendMessageToPlayer(player, SECTION_SIGN + "cError - There is no TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
 	}
 
 }

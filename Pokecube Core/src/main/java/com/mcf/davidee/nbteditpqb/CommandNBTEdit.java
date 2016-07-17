@@ -1,82 +1,65 @@
 package com.mcf.davidee.nbteditpqb;
 
-import java.util.logging.Level;
-
-import com.mcf.davidee.nbteditpqb.packets.EntityRequestPacket;
-import com.mcf.davidee.nbteditpqb.packets.MouseOverPacket;
-import com.mcf.davidee.nbteditpqb.packets.TileRequestPacket;
-
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import org.apache.logging.log4j.Level;
 
-public class CommandNBTEdit extends CommandBase
-{
+import com.mcf.davidee.nbteditpqb.packets.MouseOverPacket;
 
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender s)
-    {
-        return s instanceof EntityPlayer && (super.checkPermission(server, s)
-                || !NBTEdit.opOnly && ((EntityPlayer) s).capabilities.isCreativeMode);
-    }
+public class CommandNBTEdit extends CommandBase {
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] var2)
-            throws NumberInvalidException, WrongUsageException
-    {
-        if (sender instanceof EntityPlayerMP)
-        {
-            EntityPlayerMP player = (EntityPlayerMP) sender;
+	@Override
+	public String getCommandName() {
+		return "pcedit";
+	}
+	@Override
+	public String getCommandUsage(ICommandSender par1ICommandSender) {
+		return "/pcedit OR /pcedit <EntityId> OR /pcedit <TileX> <TileY> <TileZ>";
+	}
 
-            if (var2.length == 3)
-            {
-                int x = parseInt(var2[0]);
-                int y = parseInt(var2[1]);
-                int z = parseInt(var2[2]);
-                NBTEdit.log(Level.FINE,
-                        sender.getName() + " issued command \"/pcedit " + x + " " + y + " " + z + "\"");
-                new TileRequestPacket(new BlockPos(x, y, z)).handleServerSide(player);
-            }
-            else if (var2.length == 1)
-            {
-                int entityID = (var2[0].equalsIgnoreCase("me")) ? player.getEntityId() : parseInt(var2[0], 0);
-                NBTEdit.log(Level.FINE, sender.getName() + " issued command \"/pcedit " + entityID + "\"");
-                new EntityRequestPacket(entityID).handleServerSide(player);
-            }
-            else if (var2.length == 0)
-            {
-                NBTEdit.log(Level.FINE, sender.getName() + " issued command \"/pcedit\"");
-                NBTEdit.DISPATCHER.sendTo(new MouseOverPacket(), player);
-            }
-            else
-            {
-                String s = "";
-                for (int i = 0; i < var2.length; ++i)
-                {
-                    s += var2[i];
-                    if (i != var2.length - 1) s += " ";
-                }
-                NBTEdit.log(Level.FINE, sender.getName() + " issued invalid command \"/pcedit " + s + "\"");
-                throw new WrongUsageException("Pass 0, 1, or 3 integers -- ex. /pcedit");
-            }
-        }
-    }
+	@Override
+	public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+		if (sender instanceof EntityPlayerMP) {
+			EntityPlayerMP player = (EntityPlayerMP)sender;
 
-    @Override
-    public String getCommandName()
-    {
-        return "pcedit";
-    }
+			if (args.length == 3) {
+				int x = parseInt(args[0]);
+				int y = parseInt(args[1]);
+				int z = parseInt(args[2]);
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/pcedit " + x + " " + y + " " + z + "\"");
+				NBTEdit.NETWORK.sendTile(player, new BlockPos(x, y, z));
 
-    @Override
-    public String getCommandUsage(ICommandSender par1ICommandSender)
-    {
-        return "/pcedit OR /pcedit <EntityId> OR /pcedit <TileX> <TileY> <TileZ>";
-    }
+			} else if (args.length == 1) {
+				int entityID = (args[0].equalsIgnoreCase("me")) ? player.getEntityId() : parseInt(args[0], 0);
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/pcedit " + entityID +  "\"");
+				NBTEdit.NETWORK.sendEntity(player, entityID);
+
+			} else if (args.length == 0) {
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued command \"/pcedit\"");
+				NBTEdit.NETWORK.INSTANCE.sendTo(new MouseOverPacket(), player);
+
+			} else {
+				String s = "";
+				for (int i =0; i < args.length; ++i) {
+					s += args[i];
+					if (i != args.length - 1)
+						s += " ";
+				}
+				NBTEdit.log(Level.TRACE, sender.getName() + " issued invalid command \"/pcedit " + s + "\"");
+				throw new WrongUsageException("Pass 0, 1, or 3 integers -- ex. /pcedit");
+			}
+		}
+	}
+
+	@Override
+	public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
+		return sender instanceof EntityPlayer && NBTEdit.proxy.checkPermission((EntityPlayer) sender);
+	}
 
 }

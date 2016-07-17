@@ -50,16 +50,16 @@ public class GuiNBTButton extends Gui{
 		drawRect(mx+4,my+7,mx+5+width,my+17, 0xff000000);
 		mc.fontRendererObj.drawString(s, mx+5, my+8, 0xffffff);
 	}
-	public byte getId(){
-		return id;
-	}
-	public boolean inBounds(int mx, int my){
-		return enabled && mx >= x && my >= y && mx < x + WIDTH && my < y + HEIGHT;
+	public void setEnabled(boolean aFlag){
+		enabled = aFlag;
 	}
 	public boolean isEnabled(){
 		return enabled;
 	}
-	public void setEnabled(boolean aFlag){
-		enabled = aFlag;
+	public boolean inBounds(int mx, int my){
+		return enabled && mx >= x && my >= y && mx < x + WIDTH && my < y + HEIGHT;
+	}
+	public byte getId(){
+		return id;
 	}
 }

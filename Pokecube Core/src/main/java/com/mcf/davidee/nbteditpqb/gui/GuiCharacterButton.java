@@ -1,9 +1,8 @@
 package com.mcf.davidee.nbteditpqb.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiCharacterButton extends Gui{
 
@@ -25,24 +24,24 @@ public class GuiCharacterButton extends Gui{
 		mc.renderEngine.bindTexture(GuiNBTNode.WIDGET_TEXTURE);
 		if(inBounds(mx,my))
 			Gui.drawRect(x, y, x+WIDTH, y+HEIGHT, 0x80ffffff);
-		
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+		if (enabled) {
+			GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		} else GlStateManager.color(0.5F, 0.5F, 0.5F, 1.0F);
+
 		drawTexturedModalRect(x, y, id * WIDTH, 27, WIDTH, HEIGHT);
-		if (!enabled){
-			drawRect(x, y, x+WIDTH, y+HEIGHT, 0xc0222222);
-		}
 	}
 	
-	public byte getId(){
-		return id;
+	public void setEnabled(boolean aFlag){
+		enabled = aFlag;
 	}
 	
 	public boolean inBounds(int mx, int my){
 		return enabled && mx >= x && my >= y && mx < x + WIDTH && my < y + HEIGHT;
 	}
 	
-	public void setEnabled(boolean aFlag){
-		enabled = aFlag;
+	public byte getId(){
+		return id;
 	}
 }
  

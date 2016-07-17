@@ -1,14 +1,14 @@
 package com.mcf.davidee.nbteditpqb.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.util.ResourceLocation;
+
 import org.lwjgl.opengl.GL11;
 
 import com.mcf.davidee.nbteditpqb.NBTStringHelper;
 import com.mcf.davidee.nbteditpqb.nbt.NamedNBT;
 import com.mcf.davidee.nbteditpqb.nbt.Node;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 
 public class GuiNBTNode extends Gui{
 	
@@ -34,8 +34,41 @@ public class GuiNBTNode extends Gui{
 		updateDisplay();
 	}
 	
+	private boolean inBounds(int mx, int my){
+		return mx >= x && my >= y && mx < width+x && my < height+y;
+	}
+	
+	private boolean inHideShowBounds(int mx, int my){
+		return mx >= x-9 && my >= y && mx < x && my < y+height;
+	}
+	
+	public boolean shouldDrawChildren(){
+		return node.shouldDrawChildren();
+	}
+	
 	public boolean clicked(int mx, int my){
 		return inBounds(mx,my);
+	}
+	
+	public boolean hideShowClicked(int mx, int my){
+		if(node.hasChildren() && inHideShowBounds(mx,my)){
+			node.setDrawChildren(!node.shouldDrawChildren());
+			return true;
+		}
+		return false;
+	}
+	
+	public Node<NamedNBT> getNode(){
+		return node;
+	}
+	
+	public void shift(int dy){
+		y += dy;
+	}
+	
+	public void updateDisplay(){
+		displayString = NBTStringHelper.getNBTNameSpecial(node.getObject());
+		width = mc.fontRendererObj.getStringWidth(displayString)+12;
 	}
 	
 	public void draw(int mx, int my)
@@ -61,41 +94,8 @@ public class GuiNBTNode extends Gui{
 		drawString(mc.fontRendererObj, displayString, x+11, y + (this.height - 8) / 2, color);
 	}
 	
-	public Node<NamedNBT> getNode(){
-		return node;
-	}
-	
-	public boolean hideShowClicked(int mx, int my){
-		if(node.hasChildren() && inHideShowBounds(mx,my)){
-			node.setDrawChildren(!node.shouldDrawChildren());
-			return true;
-		}
-		return false;
-	}
-	
-	private boolean inBounds(int mx, int my){
-		return mx >= x && my >= y && mx < width+x && my < height+y;
-	}
-	
-	private boolean inHideShowBounds(int mx, int my){
-		return mx >= x-9 && my >= y && mx < x && my < y+height;
-	}
-	
-	public void shift(int dy){
-		y += dy;
-	}
-	
 	public boolean shouldDraw(int top, int bottom) {
 		return y+height >= top && y <= bottom;
-	}
-	
-	public boolean shouldDrawChildren(){
-		return node.shouldDrawChildren();
-	}
-	
-	public void updateDisplay(){
-		displayString = NBTStringHelper.getNBTNameSpecial(node.getObject());
-		width = mc.fontRendererObj.getStringWidth(displayString)+12;
 	}
 	
 	

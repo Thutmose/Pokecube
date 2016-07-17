@@ -1,82 +1,83 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
-import static com.mcf.davidee.nbteditpqb.NBTEdit.SECTION_SIGN;
-
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.util.logging.Level;
-
-import com.mcf.davidee.nbteditpqb.NBTEdit;
-import com.mcf.davidee.nbteditpqb.NBTHelper;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Level;
 
-public class TileNBTPacket extends AbstractPacket {
-	
+import com.mcf.davidee.nbteditpqb.NBTEdit;
+import com.mcf.davidee.nbteditpqb.NBTHelper;
+
+public class TileNBTPacket implements IMessage {
+	/** The block of the tileEntity. */
 	protected BlockPos pos;
+	/** The nbt data of the tileEntity. */
 	protected NBTTagCompound tag;
-	
-	public TileNBTPacket() {
-		
-	}
-	
+
+	/** Required default constructor. */
+	public TileNBTPacket() {}
+
 	public TileNBTPacket(BlockPos pos, NBTTagCompound tag) {
 		this.pos = pos;
 		this.tag = tag;
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
-		ByteBufInputStream bis = new ByteBufInputStream(buffer);
-		pos = new BlockPos(bis.readInt(), bis.readInt(), bis.readInt());
-		DataInputStream dis = new DataInputStream(bis);
-		tag = NBTHelper.nbtRead(dis);
+	public void fromBytes(ByteBuf buf) {
+		this.pos = BlockPos.fromLong(buf.readLong());
+		this.tag = NBTHelper.readNbtFromBuffer(buf);
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) throws IOException {
-		ByteBufOutputStream bos = new ByteBufOutputStream(buffer);
-		bos.writeInt(pos.getX());
-		bos.writeInt(pos.getY());
-		bos.writeInt(pos.getZ());
-		NBTHelper.nbtWrite(tag, bos);
+	public void toBytes(ByteBuf buf) {
+		buf.writeLong(this.pos.toLong());
+		NBTHelper.writeToBuffer(this.tag, buf);
 	}
 
-	@Override
-	public void handleClientSide(EntityPlayer player) {
-		NBTEdit.proxy.openEditGUI(pos, tag);
-	}
+	public static class Handler implements IMessageHandler<TileNBTPacket, IMessage> {
 
-	@Override
-	public void handleServerSide(EntityPlayerMP player) {
-		TileEntity te = player.getEntityWorld().getTileEntity(pos);
-		if (te != null) {
-			try {
-				te.readFromNBT(tag);
-				NBTEdit.DISPATCHER.sendToDimension(new TileNBTUpdatePacket(pos, tag), player.dimension); //Broadcast changes
-				NBTEdit.log(Level.FINE, player.getName() + " edited a tag -- Tile Entity at " + pos.getX() + "," + pos.getY() + "," + pos.getZ());
-				NBTEdit.logTag(tag);
-				sendMessageToPlayer(player, "Your changes have been saved");
+		@Override
+		public IMessage onMessage(final TileNBTPacket packet, MessageContext ctx) {
+			if (ctx.side == Side.SERVER) {
+				final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+				player.getServerWorld().addScheduledTask(new Runnable() {
+					@Override
+					public void run() {
+						TileEntity te = player.worldObj.getTileEntity(packet.pos);
+						if (te != null && NBTEdit.proxy.checkPermission(player)) {
+							try {
+								te.readFromNBT(packet.tag);
+								te.markDirty();// Ensures changes gets saved to disk later on.
+								if (te.hasWorldObj() && te.getWorld() instanceof WorldServer) {
+									((WorldServer) te.getWorld()).getPlayerChunkMap().markBlockForUpdate(packet.pos);// Broadcast changes.
+								}
+								NBTEdit.log(Level.TRACE, player.getName() + " edited a tag -- Tile Entity at " + packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ());
+								NBTEdit.logTag(packet.tag);
+								NBTEdit.proxy.sendMessage(player, "Your changes have been saved", TextFormatting.WHITE);
+							} catch (Throwable t) {
+								NBTEdit.proxy.sendMessage(player, "Save Failed - Invalid NBT format for Tile Entity", TextFormatting.RED);
+								NBTEdit.log(Level.WARN, player.getName() + " edited a tag and caused an exception");
+								NBTEdit.logTag(packet.tag);
+								NBTEdit.throwing("TileNBTPacket", "Handler.onMessage", t);
+							}
+						} else {
+							NBTEdit.log(Level.WARN, player.getName() + " tried to edit a non-existent TileEntity at " + packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ());
+							NBTEdit.proxy.sendMessage(player, "cSave Failed - There is no TileEntity at " + packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ(), TextFormatting.RED);
+						}
+					}
+				});
+			} else {
+				NBTEdit.proxy.openEditGUI(packet.pos, packet.tag);
 			}
-			catch(Throwable t) {
-				sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - Invalid NBT format for Tile Entity");
-				NBTEdit.log(Level.WARNING, player.getName() + " edited a tag and caused an exception");
-				NBTEdit.logTag(tag);
-				NBTEdit.throwing("TileNBTPacket", "handleServerSide", t);
-			}
-		}
-		else {
-			NBTEdit.log(Level.WARNING, player.getName() + " tried to edit a non-existant TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
-			sendMessageToPlayer(player, SECTION_SIGN + "cSave Failed - There is no TileEntity at "+pos.getX()+","+pos.getY()+","+pos.getZ());
+			return null;
 		}
 	}
-
 }

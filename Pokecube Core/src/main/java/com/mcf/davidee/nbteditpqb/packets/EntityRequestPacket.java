@@ -1,59 +1,43 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
-import static com.mcf.davidee.nbteditpqb.NBTEdit.SECTION_SIGN;
-
-import java.util.logging.Level;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.apache.logging.log4j.Level;
 
 import com.mcf.davidee.nbteditpqb.NBTEdit;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
-
-public class EntityRequestPacket extends AbstractPacket {
-	
+public class EntityRequestPacket implements IMessage {
+	/** The id of the entity being requested. */
 	private int entityID;
-	
-	public EntityRequestPacket() {
-		
-	}
-	
+
+	/** Required default constructor. */
+	public EntityRequestPacket() {}
+
 	public EntityRequestPacket(int entityID) {
 		this.entityID = entityID;
 	}
 
 	@Override
-	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		entityID = buffer.readInt();
+	public void fromBytes(ByteBuf buf) {
+		this.entityID = buf.readInt();
 	}
 
 	@Override
-	public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
-		buffer.writeInt(entityID);
-	}
-	
-	@Override
-	public void handleClientSide(EntityPlayer player) {
-		
+	public void toBytes(ByteBuf buf) {
+		buf.writeInt(this.entityID);
 	}
 
-	@Override
-	public void handleServerSide(EntityPlayerMP player) {
-		Entity e = player.getEntityWorld().getEntityByID(entityID);
-		if (e instanceof EntityPlayer && e != player) {
-			sendMessageToPlayer(player, SECTION_SIGN + "cError - You may not use NBTEdit on other Players");
-			NBTEdit.log(Level.WARNING, player.getName() +  " tried to use NBTEdit on another player, " + e.getName());
+	public static class Handler implements IMessageHandler<EntityRequestPacket, IMessage> {
+
+		@Override
+		public IMessage onMessage(EntityRequestPacket packet, MessageContext ctx) {
+			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			NBTEdit.log(Level.TRACE, player.getName() + " requested entity with Id #" + packet.entityID);
+			NBTEdit.NETWORK.sendEntity(player, packet.entityID);
+			return null;
 		}
-		else if (e != null) {
-			NBTTagCompound tag = new NBTTagCompound();
-			e.writeToNBT(tag);
-			NBTEdit.DISPATCHER.sendTo(new EntityNBTPacket(entityID, tag), player);
-		}
-		else
-			sendMessageToPlayer(player, SECTION_SIGN + "cError - Unknown EntityID #" + entityID );
 	}
-
 }

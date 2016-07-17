@@ -41,8 +41,8 @@ public class ContainerTradingTable extends Container
         clearSlots();
         if (tile.trade)
         {
-            addSlotToContainer(new SlotTrade(tile, 0, 15, 12));
-            addSlotToContainer(new SlotTrade(tile, 1, 140, 12));
+            addSlotToContainer(new SlotTrade(tile, 0, 35, 23));
+            addSlotToContainer(new SlotTrade(tile, 1, 125, 23));
         }
         bindPlayerInventory(playerInv);
     }

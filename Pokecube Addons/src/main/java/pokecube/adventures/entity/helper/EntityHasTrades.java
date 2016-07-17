@@ -1,9 +1,7 @@
 package pokecube.adventures.entity.helper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import com.google.common.collect.Lists;
 
@@ -13,7 +11,6 @@ import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ContainerMerchant;
 import net.minecraft.inventory.InventoryMerchant;
@@ -24,59 +21,17 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import pokecube.core.PokecubeItems;
 
 public abstract class EntityHasTrades extends EntityAgeable implements IMerchant, INpc, IEntityAdditionalSpawnData
 {
-    public static class CubeTrade
-    {
-        final int   cubeId;
-        final int[] amtRange = { 0, 0 };
-        final int   cost;
-
-        public CubeTrade(int cubeId, int min, int max, int cost)
-        {
-            this.cubeId = cubeId;
-            amtRange[0] = min;
-            amtRange[1] = max;
-            this.cost = cost;
-        }
-
-        public MerchantRecipe getTrade()
-        {
-            ItemStack sell = new ItemStack(PokecubeItems.getEmptyCube(cubeId));
-            sell.stackSize = amtRange[0];
-            if (amtRange[0] < amtRange[1])
-            {
-                sell.stackSize += new Random().nextInt(amtRange[1] - amtRange[0] + 1);
-            }
-            ItemStack buy1 = new ItemStack(Items.EMERALD);
-            buy1.stackSize = (cost & 63);
-            ItemStack buy2 = null;
-            if (cost > 64)
-            {
-                buy2 = buy1.copy();
-                buy1.stackSize = 64;
-                buy2.stackSize = ((cost - 64) & 63);
-                if (cost - 64 >= 64) buy2.stackSize = 64;
-            }
-            else if (cost == 64)
-            {
-                buy1.stackSize = 64;
-            }
-            return new MerchantRecipe(buy1, buy2, sell);
-        }
-    }
-
-    public static ArrayList<CubeTrade> cubeList      = Lists.newArrayList();
-    protected boolean                  clear         = false;
-    protected boolean                  shouldrefresh = false;
+    protected boolean            clear         = false;
+    protected boolean            shouldrefresh = false;
     /** This villager's current customer. */
-    protected EntityPlayer             buyingPlayer;
+    protected EntityPlayer       buyingPlayer;
     /** Initialises the MerchantRecipeList.java */
-    protected MerchantRecipeList       tradeList;
+    protected MerchantRecipeList tradeList;
     /** Initialises the MerchantRecipeList.java */
-    protected MerchantRecipeList       itemList;
+    protected MerchantRecipeList itemList;
 
     public EntityHasTrades(World worldIn)
     {
@@ -213,6 +168,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
+        nbt.setInteger("version", 2);
         if (this.itemList != null)
         {
             checkTradeIntegrity();
@@ -224,7 +180,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        if (nbt.hasKey("Offers", 10))
+        if (nbt.hasKey("Offers", 10) && nbt.getInteger("version") == 2)
         {
             NBTTagCompound nbttagcompound = nbt.getCompoundTag("Offers");
             this.itemList = new MerchantRecipeList(nbttagcompound);

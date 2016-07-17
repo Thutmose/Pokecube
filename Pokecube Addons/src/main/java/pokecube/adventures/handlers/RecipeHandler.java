@@ -107,9 +107,12 @@ public class RecipeHandler
         if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.IRON_INGOT,
                 'O', Blocks.GLASS_PANE, 'R', Items.REDSTONE });
 
-        // Cloner
-        GameRegistry.addRecipe(getStack("cloner"), new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"),
-                'S', Blocks.IRON_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 1), 'I', Items.IRON_INGOT });
+        // Fossil Reanimator
+        GameRegistry.addRecipe(getStack("reanimator"), new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"),
+                'S', Blocks.GOLD_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 0), 'I', Items.IRON_INGOT });
+        // Splicing Device
+        GameRegistry.addRecipe(getStack("cloner"), new Object[] { "III", "SRS", "SMS", 'R', getStack("reanimator"),
+                'S', Blocks.DIAMOND_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 1), 'I', Items.NETHER_STAR });
 
         // AFA
         GameRegistry.addRecipe(getStack("afa"), new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"), 'S',

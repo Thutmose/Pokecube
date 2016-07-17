@@ -59,6 +59,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             }
             if (stack != null) entityDropItem(stack, 0.5f);
         }
+        dropItem();
     }
 
     public void dropItem()

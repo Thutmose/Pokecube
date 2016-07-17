@@ -1156,12 +1156,13 @@ public class PokedexEntry
         ItemStack ret = null;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-        items.addAll(drops.keySet());
+        items.addAll(held.keySet());
         Random rand = new Random();
         for (ItemStack stack : items)
         {
-            float chance = drops.get(stack);
-            if (Math.random() < chance)
+            float chance = held.get(stack);
+            float rn = rand.nextFloat();
+            if (rn < chance)
             {
                 ItemStack newStack = stack.copy();
                 newStack.stackSize = 1;
@@ -1172,6 +1173,7 @@ public class PokedexEntry
         {
             ret = list.get(rand.nextInt(list.size()));
         }
+        System.out.println(ret+" "+held);
         return ret;
     }
 

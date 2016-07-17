@@ -139,6 +139,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         PokedexEntry entry = getPokedexEntry();
         boolean canFloat = entry.floats() || entry.flys() || canUseFly();
         if (distance > 4 + height) distance = 0;
+        if (distance < 5) damageMultiplier = 0;
         if (!canFloat) super.fall(distance, damageMultiplier);
     }
 
@@ -310,8 +311,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
-//        aiStuff.addAILogic(new LogicCollision(this));
-//        if (true) return;
+        // aiStuff.addAILogic(new LogicCollision(this));
+        // if (true) return;
         this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));

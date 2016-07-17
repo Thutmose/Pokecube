@@ -376,7 +376,7 @@ public class GuiPokedex extends GuiScreen
 
             ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
 
-            //TODO names list here.
+            // TODO names list here.
 
             index = Math.max(0, Math.min(index, names.size() - 6));
             String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
@@ -420,8 +420,8 @@ public class GuiPokedex extends GuiScreen
                     entry = child;
                 }
             }
-            //TODO find a way to show what biome combination someone spawns in.
-            
+            // TODO find a way to show what biome combination someone spawns in.
+
             // System.out.println(biomes);
             index = Math.max(0, Math.min(index, biomes.size() - 6));
             for (int n = 0; n < Math.min(biomes.size(), 6); n++)
@@ -567,7 +567,7 @@ public class GuiPokedex extends GuiScreen
 
         Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
 
-        minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX_REDO);
+        minecraft.renderEngine.bindTexture(Resources.GUI_POKEDEX);
         int j2 = (width - xSize) / 2;
         int k2 = (height - ySize) / 2;
         drawTexturedModalRect(j2, k2, 0, 0, xSize, ySize);

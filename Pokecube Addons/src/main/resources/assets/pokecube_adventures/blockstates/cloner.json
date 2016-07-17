@@ -1,5 +1,6 @@
 {
    "variants": {
-   "normal": { "model": "pokecube_adventures:cloner" }
+        "variant=splicer": { "model": "pokecube_adventures:splicer" },
+        "variant=reanimator": { "model": "pokecube_adventures:reanimator" }
     }
 }

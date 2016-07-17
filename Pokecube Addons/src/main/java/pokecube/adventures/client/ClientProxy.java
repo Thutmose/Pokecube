@@ -154,8 +154,11 @@ public class ClientProxy extends CommonProxy
         super.preinit();
         OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID.toLowerCase());
 
-        registerItemTexture(Item.getItemFromBlock(cloner), 0,
-                new ModelResourceLocation("pokecube_adventures:cloner", "inventory"));
+        Item item2 = Item.getItemFromBlock(cloner);
+        ModelLoader.setCustomModelResourceLocation(item2, 0,
+                new ModelResourceLocation("pokecube_adventures:reanimator", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item2, 1,
+                new ModelResourceLocation("pokecube_adventures:splicer", "inventory"));
 
         registerItemTexture(Item.getItemFromBlock(afa), 0,
                 new ModelResourceLocation("pokecube_adventures:afa", "inventory"));

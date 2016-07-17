@@ -32,7 +32,8 @@ tile.enigmaLog.name=Enigma Wood
 tile.enigmaWood.name=Enigma Planks
 tile.enigmaLeaves.name=Enigma Leaves
 tile.warppad.name=Warp Pad
-tile.cloner.name=Splicing Device
+tile.cloner.splicer.name=Splicing Device
+tile.cloner.reanimator.name=Fossil Reanimator
 tile.afa.name=Ability Field Amplifier
 tile.pokesiphon.name=Energy Siphon
 

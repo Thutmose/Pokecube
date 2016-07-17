@@ -42,6 +42,7 @@ public class ProxyClient extends Proxy
     public void postInit()
     {
         super.postInit();
+        MinecraftForge.EVENT_BUS.unregister(GuiDisplayPokecubeInfo.instance());
         MinecraftForge.EVENT_BUS.register(new GuiAsPokemob());
     }
 
@@ -65,8 +66,8 @@ public class ProxyClient extends Proxy
         event.setCanceled(true);
         boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity((EntityLivingBase) pokemob, event.getX(), event.getY(),
-                event.getZ(), event.getEntityPlayer().rotationYaw, event.getPartialRenderTick(), false);
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity((EntityLivingBase) pokemob, event.getX(),
+                event.getY(), event.getZ(), event.getEntityPlayer().rotationYaw, event.getPartialRenderTick(), false);
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
     }
 

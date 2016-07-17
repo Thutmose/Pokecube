@@ -130,6 +130,7 @@ public class MakeCommand extends CommandBase
                         int level = -1;
                         String[] moves = new String[4];
                         int mindex = 0;
+                        boolean asWild = false;
 
                         if (index < args.length)
                         {
@@ -189,6 +190,10 @@ public class MakeCommand extends CommandBase
                                     offset.y = Double.parseDouble(vec[1].trim());
                                     offset.z = Double.parseDouble(vec[2].trim());
                                 }
+                                else if (arg.equalsIgnoreCase("w"))
+                                {
+                                    asWild = true;
+                                }
                             }
                         }
 
@@ -215,7 +220,6 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
-                            System.out.println(p + " " + owner);
                             if (p != null) owner = p.getCachedUniqueIdString();
                         }
 
@@ -230,7 +234,7 @@ public class MakeCommand extends CommandBase
                         if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
-                        mob = mob.setExp(exp, false, true);
+                        mob = mob.setExp(exp, asWild, true);
                         level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
                         mob.levelUp(level);
                         if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));

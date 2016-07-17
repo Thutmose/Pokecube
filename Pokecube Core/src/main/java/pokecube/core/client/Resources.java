@@ -20,12 +20,9 @@ public class Resources {
 
     public final static ResourceLocation GUI_POKEDEX = 
         new ResourceLocation(PokecubeMod.ID, TEXTURE_GUI_FOLDER + "pokedexGui.png");
-
-    public final static ResourceLocation GUI_POKEDEX_REDO = 
-        new ResourceLocation(PokecubeMod.ID, TEXTURE_GUI_FOLDER + "pokedexGui_redo.png");
-	
-	public final static ResourceLocation GUI_BATTLE = 
-		new ResourceLocation(PokecubeMod.ID, TEXTURE_GUI_FOLDER + "battleGui.png");
+    
+    public final static ResourceLocation GUI_BATTLE = 
+        new ResourceLocation(PokecubeMod.ID, TEXTURE_GUI_FOLDER + "battleGui.png");
 
 	public final static ResourceLocation GUI_HEAL_TABLE = 
 		new ResourceLocation(PokecubeMod.ID, TEXTURE_GUI_FOLDER + "pokecenterGui.png");

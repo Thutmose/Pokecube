@@ -231,9 +231,9 @@ public class Tools
                         Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
                         {
                             @Override
-                            public boolean apply(Entity p_apply_1_)
+                            public boolean apply(Entity entity)
                             {
-                                return p_apply_1_.canBeCollidedWith();
+                                return entity.canBeCollidedWith();
                             }
                         }));
         double d2 = distance;
@@ -241,7 +241,7 @@ public class Tools
         for (int j = 0; j < list.size(); ++j)
         {
             Entity entity1 = list.get(j);
-            float f1 = entity1.getCollisionBorderSize();
+            float f1 = 1f;
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, f1, f1);
             RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 

@@ -458,12 +458,15 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (targetEntity != null)
         {
             target.set(targetEntity);
+            if (target.distToEntity(this) < 2)
+            {
+                this.collideWithEntity(targetEntity);
+            }
         }
         else
         {
             target.set(targetLocation);
         }
-
         if (!target.isEmpty() && target.y >= 0 && SEEKING)
         {
             Vector3 here = Vector3.getNewVector().set(this);
@@ -557,6 +560,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
             IBlockState state = v.getBlockState(worldObj);
             if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
+            EntityLiving entity = (EntityLiving) entity1;
+            entity.fallDistance = 0;
             v.moveEntity(((Entity) entity1));
             worldObj.spawnEntityInWorld((Entity) entity1);
 

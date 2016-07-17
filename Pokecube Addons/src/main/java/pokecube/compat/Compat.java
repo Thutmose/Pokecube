@@ -45,7 +45,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.core.client.ClientProxy;
 
-@Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS)
+@Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = "*")
 public class Compat
 {
     public static class UpdateNotifier

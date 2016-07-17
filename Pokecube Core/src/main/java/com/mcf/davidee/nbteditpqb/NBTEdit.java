@@ -27,7 +27,7 @@ import com.mcf.davidee.nbteditpqb.packets.PacketHandler;
 
 import java.io.File;
 
-@Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, version = NBTEdit.VERSION, acceptableRemoteVersions = "*")
+@Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, acceptedMinecraftVersions = "*", version = NBTEdit.VERSION, acceptableRemoteVersions = "*")
 public class NBTEdit {
 	public static final String MODID = "NBTEditpqb";
 	public static final String NAME = "In-game NBTEdit - Pokecube Edition";

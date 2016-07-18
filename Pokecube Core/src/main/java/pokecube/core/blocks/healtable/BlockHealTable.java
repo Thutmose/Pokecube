@@ -132,7 +132,7 @@ public class BlockHealTable extends Block implements ITileEntityProvider
 
         if (tile_entity == null || playerIn.isSneaking())
         {
-            if (playerIn.capabilities.isCreativeMode && !worldIn.isRemote)
+            if (playerIn.capabilities.isCreativeMode && !worldIn.isRemote && hand == EnumHand.MAIN_HAND)
             {
                 state = state.cycleProperty(FIXED);
                 playerIn.addChatMessage(new TextComponentString(

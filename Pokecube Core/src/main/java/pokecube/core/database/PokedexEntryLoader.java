@@ -635,6 +635,7 @@ public class PokedexEntryLoader
                 PokedexEntry entry = new PokedexEntry(number, name);
                 if (xmlEntry.base)
                 {
+                    entry.base = xmlEntry.base;
                     Database.baseFormes.put(number, entry);
                     Database.addEntry(entry);
                 }
@@ -756,7 +757,7 @@ public class PokedexEntryLoader
         if (special.equals("shadow"))
         {
             entry.isShadowForme = true;
-            if (entry.baseForme != null) entry.baseForme.shadowForme = entry;
+            if (entry.getBaseForme() != null) entry.getBaseForme().shadowForme = entry;
         }
     }
 

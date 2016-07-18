@@ -26,8 +26,8 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
     private ModelRing                 ring  = new ModelRing();
     X3dModel                          model;
     X3dModel                          model2;
-    ResourceLocation                  BAG_1 = new ResourceLocation("pokecube_compat:textures/items/Belt1.png");
-    ResourceLocation                  BAG_2 = new ResourceLocation("pokecube_compat:textures/items/Belt2.png");
+    ResourceLocation                  belt_1 = new ResourceLocation("pokecube_compat:textures/items/Belt1.png");
+    ResourceLocation                  belt_2 = new ResourceLocation("pokecube_compat:textures/items/Belt2.png");
 
     private final RenderLivingBase<?> livingEntityRenderer;
 
@@ -132,7 +132,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
                 s = 0.465f;
             }
             GL11.glScalef(s, s, s);
-            this.livingEntityRenderer.bindTexture(BAG_1);
+            this.livingEntityRenderer.bindTexture(belt_1);
             model.renderAll();
             GL11.glPopMatrix();
             // Second pass with colour.
@@ -141,7 +141,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
             GL11.glRotated(180, 0, 0, 1);
             GL11.glTranslatef(dx, dy, dz);
             GL11.glScalef(s, s, s);
-            this.livingEntityRenderer.bindTexture(BAG_2);
+            this.livingEntityRenderer.bindTexture(belt_2);
             EnumDyeColor ret = EnumDyeColor.GRAY;
             if (beltStack.hasTagCompound() && beltStack.getTagCompound().hasKey("dyeColour"))
             {

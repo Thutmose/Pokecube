@@ -84,7 +84,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
         if (set == null)
         {
             System.err.println(entry);
-            set = TabulaPackLoader.modelMap.get(entry.baseForme);
+            set = TabulaPackLoader.modelMap.get(entry.getBaseForme());
         }
 
         TabulaModel model = set.model;

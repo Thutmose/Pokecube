@@ -853,7 +853,7 @@ public class Database implements IMoveConstants
             }
             else
             {
-                e.baseForme = e;
+                e.setBaseForme(e);
             }
             if (e.mobType == null)
             {
@@ -864,13 +864,13 @@ public class Database implements IMoveConstants
             if (e.type2 == null) e.type2 = PokeType.unknown;
             if (e.interactionLogic.stacks.isEmpty())
             {
-                if (e.baseForme != null)
+                if (e.getBaseForme() != null)
                 {
-                    if (e.baseForme.interactionLogic.stacks.isEmpty())
+                    if (e.getBaseForme().interactionLogic.stacks.isEmpty())
                     {
                         InteractionLogic.initForEntry(e);
                     }
-                    e.interactionLogic.stacks = e.baseForme.interactionLogic.stacks;
+                    e.interactionLogic.stacks = e.getBaseForme().interactionLogic.stacks;
                 }
                 else
                 {
@@ -879,7 +879,7 @@ public class Database implements IMoveConstants
             }
             if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
             {
-                if (e.baseForme != null && Pokedex.getInstance().getEntries().contains(e.baseForme.getPokedexNb()))
+                if (e.getBaseForme() != null && Pokedex.getInstance().getEntries().contains(e.getBaseForme().getPokedexNb()))
                 {
                     continue;
                 }

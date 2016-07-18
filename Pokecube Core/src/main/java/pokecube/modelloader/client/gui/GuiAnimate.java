@@ -183,7 +183,7 @@ public class GuiAnimate extends GuiScreen
         {
             pokemob.changeForme(form);
         }
-        else if (pokemob.getPokedexEntry().baseForme.hasForm(form))
+        else if (pokemob.getPokedexEntry().getBaseForme().hasForm(form))
         {
             pokemob.changeForme(form);
         }

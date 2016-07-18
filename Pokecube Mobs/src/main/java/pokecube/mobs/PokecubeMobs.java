@@ -101,6 +101,8 @@ public class PokecubeMobs implements IMobProvider
         else
         {
             gen = entry.getGen();
+            PokedexEntry real = entry;
+            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
             for (EvolutionData d : entry.getEvolutions())
             {
                 int gen1 = d.evolution.getGen();
@@ -140,7 +142,7 @@ public class PokecubeMobs implements IMobProvider
                     }
                 }
             }
-            genMap.put(entry, gen);
+            genMap.put(real, gen);
         }
         return gen;
     }

@@ -137,6 +137,7 @@ public class ExtraDatabase
                     entry = new PokedexEntry(number, name);
                     if (fileEntry.base)
                     {
+                        entry.base = fileEntry.base;
                         Database.baseFormes.put(number, entry);
                         Database.addEntry(entry);
                     }

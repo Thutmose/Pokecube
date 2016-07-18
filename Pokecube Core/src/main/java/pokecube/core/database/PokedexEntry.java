@@ -649,6 +649,7 @@ public class PokedexEntry
     Random                                     rand             = new Random();
     protected boolean                          isStarter        = false;
     public boolean                             legendary        = false;
+    public boolean                             base             = false;
     protected int                              pokedexNb;
     protected String                           name;
     protected String                           baseName;
@@ -768,7 +769,7 @@ public class PokedexEntry
 
     public EvolutionData                       evolvesBy        = null;
 
-    public PokedexEntry                        baseForme        = null;
+    private PokedexEntry                       baseForme        = null;
 
     protected HashMap<ItemStack, PokedexEntry> formeItems       = Maps.newHashMap();
 
@@ -815,7 +816,7 @@ public class PokedexEntry
     {
         String key = form.name.toLowerCase().trim().replaceAll("forme", "form").replaceAll(" ", "");
         form.baseName = name.split(" ")[0];
-        form.baseForme = this;
+        form.setBaseForme(this);
         forms.put(key, form);
     }
 
@@ -917,7 +918,7 @@ public class PokedexEntry
         if (e.drops.isEmpty()) e.drops = drops;
         e.breeds = breeds;
         e.legendary = legendary;
-        e.baseForme = this;
+        e.setBaseForme(this);
         this.addForm(e);
     }
 
@@ -1010,7 +1011,7 @@ public class PokedexEntry
     /** @return the evolutionMode */
     public int getEvolutionMode()
     {
-        if (baseForme != null) return baseForme.evolutionMode;
+        if (getBaseForme() != null) return getBaseForme().evolutionMode;
         return evolutionMode;
     }
 
@@ -1073,7 +1074,7 @@ public class PokedexEntry
      * @return the modId */
     public String getModId()
     {
-        if (modId == null && baseForme != null) modId = baseForme.modId;
+        if (modId == null && getBaseForme() != null) modId = getBaseForme().modId;
         return modId;
     }
 
@@ -1174,7 +1175,6 @@ public class PokedexEntry
         {
             ret = list.get(rand.nextInt(list.size()));
         }
-        System.out.println(ret + " " + held);
         return ret;
     }
 
@@ -1193,7 +1193,7 @@ public class PokedexEntry
         }
         if (event == null)
         {
-            if (baseForme != null && baseForme != this) baseForme.getSoundEvent();
+            if (getBaseForme() != null && getBaseForme() != this) getBaseForme().getSoundEvent();
             else SoundEvent.registerSound(getModId() + ":" + sound);
         }
         event = SoundEvent.REGISTRY.getObject(new ResourceLocation(getModId(), sound));
@@ -1418,22 +1418,22 @@ public class PokedexEntry
                     newForme = formeItems.get(stack);
                     break;
                 }
-            if (newForme == null && baseForme != null)
+            if (newForme == null && getBaseForme() != null)
             {
-                for (ItemStack stack : baseForme.formeItems.keySet())
+                for (ItemStack stack : getBaseForme().formeItems.keySet())
                     if (Tools.isSameStack(stack, newStack))
                     {
-                        newForme = baseForme.formeItems.get(stack);
+                        newForme = getBaseForme().formeItems.get(stack);
                         break;
                     }
             }
         }
-        else if (oldStack != null && baseForme != null)
+        else if (oldStack != null && getBaseForme() != null)
         {
-            for (ItemStack stack : baseForme.formeItems.keySet())
+            for (ItemStack stack : getBaseForme().formeItems.keySet())
                 if (Tools.isSameStack(stack, newStack))
                 {
-                    newForme = baseForme.formeItems.get(stack);
+                    newForme = getBaseForme().formeItems.get(stack);
                     break;
                 }
         }
@@ -1528,11 +1528,11 @@ public class PokedexEntry
         if (possibleMoves == null)
         {
             System.out.println(this);
-            possibleMoves = baseForme.possibleMoves;
+            possibleMoves = getBaseForme().possibleMoves;
         }
         if (lvlUpMoves == null)
         {
-            lvlUpMoves = baseForme.lvlUpMoves;
+            lvlUpMoves = getBaseForme().lvlUpMoves;
         }
 
         for (int i = 0; i < possibleMoves.size(); i++)
@@ -1567,5 +1567,19 @@ public class PokedexEntry
         {
             lvlUpMoves.remove(i);
         }
+    }
+
+    public PokedexEntry getBaseForme()
+    {
+        if (baseForme == null && !base)
+        {
+            baseForme = Database.getEntry(getPokedexNb());
+        }
+        return baseForme;
+    }
+
+    public void setBaseForme(PokedexEntry baseForme)
+    {
+        this.baseForme = baseForme;
     }
 }

@@ -57,6 +57,8 @@ public class TrainerEntryLoader
         String  material      = "air";
         @XmlElement(name = "BAG")
         boolean bag           = false;
+        @XmlElement(name = "BELT")
+        boolean belt           = true;
         @XmlElement(name = "HELD")
         Held    held;
     }
@@ -94,6 +96,7 @@ public class TrainerEntryLoader
             byte female = 2;
             type.tradeTemplate = entry.tradeTemplate;
             type.hasBag = entry.bag;
+            type.hasBelt = entry.belt;
             type.weight = entry.spawnRate;
             type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male
                     : entry.gender.equalsIgnoreCase("female") ? female : male + female);

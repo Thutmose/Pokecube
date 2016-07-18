@@ -100,7 +100,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 if (pokemob.getPokedexEntry() == megaEntry)
                 {
                     pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
-                    megaEntry = pokemob.getPokedexEntry().baseForme;
+                    megaEntry = pokemob.getPokedexEntry().getBaseForme();
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }
@@ -119,7 +119,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
                     pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
-                    megaEntry = pokemob.getPokedexEntry().baseForme;
+                    megaEntry = pokemob.getPokedexEntry().getBaseForme();
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }

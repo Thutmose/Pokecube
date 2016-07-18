@@ -79,7 +79,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
             boolean water = entry.swims() && entity.isInWater();
             boolean air = entry.flys() || entry.floats();
             this.update = false;
-            double i = (this.entity.posY);
+            double i = (int) (this.entity.posY);
             double d0 = this.posX - this.entity.posX;
             double d1 = this.posZ - this.entity.posZ;
             double d2 = this.posY - i;
@@ -114,7 +114,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 IBlockState stateDown = entity.worldObj.getBlockState(pos.down());
                 IBlockState state = entity.worldObj.getBlockState(pos);
                 boolean jump = stateDown.getMaterial().isSolid() || state.getMaterial().isSolid();
-                if (d2 > 0.0 && jump && !air)
+                if (d2 > this.entity.stepHeight && jump && !air)
                 {
                     this.entity.getJumpHelper().setJumping();
                 }

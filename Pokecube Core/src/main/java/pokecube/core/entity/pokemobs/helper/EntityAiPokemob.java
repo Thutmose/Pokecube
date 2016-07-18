@@ -50,6 +50,7 @@ import pokecube.core.ai.thread.aiRunnables.AICombatMovement;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIFollowOwner;
 import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
+import pokecube.core.ai.thread.aiRunnables.AIGuardEgg;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
@@ -349,7 +350,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             aiStuff.addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
                     .setPriority(400));
         }
-
+        aiStuff.addAITask(new AIGuardEgg(this).setPriority(250));
         aiStuff.addAITask(new AIMate(this).setPriority(300));
         aiStuff.addAITask(new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);

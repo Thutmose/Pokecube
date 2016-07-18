@@ -116,29 +116,29 @@ public final class SpawnHandler
 
     public static boolean canPokemonSpawnHere(Vector3 location, World worldObj, PokedexEntry entry)
     {
-        if (!location.clearOfBlocks(worldObj)) return false;
+        if (!location.clearOfBlocks(worldObj) || !canSpawn(null, entry.getSpawnData(), location, worldObj, true))
+            return false;
         if (!temp.set(location).addTo(0, entry.height, 0).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(0, 0, entry.width / 2).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(worldObj)) return false;
         if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
-        // if (entry.getSpawnData().getMatcher(worldObj, location) == null)
-        // return false;//TODO see if needed
         IBlockState state = temp.set(location).addTo(0, -1, 0).getBlockState(worldObj);
         Block down = state.getBlock();
-
         return down.canCreatureSpawn(state, worldObj, temp.getPos(),
-                net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);// validSurfaces.contains(down);
+                net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);
     }
 
     public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world,
             boolean respectDensity)
     {
         if (data == null) return false;
-        int count = Tools.countPokemon(world, v, PokecubeMod.core.getConfig().maxSpawnRadius);
-        if (respectDensity && count > PokecubeMod.core.getConfig().mobSpawnNumber
-                * PokecubeMod.core.getConfig().mobDensityMultiplier)
-            return false;
+        if (respectDensity)
+        {
+            int count = Tools.countPokemon(world, v, PokecubeMod.core.getConfig().maxSpawnRadius);
+            if (count > PokecubeMod.core.getConfig().mobSpawnNumber * PokecubeMod.core.getConfig().mobDensityMultiplier)
+                return false;
+        }
         return data.isValid(world, v);
     }
 

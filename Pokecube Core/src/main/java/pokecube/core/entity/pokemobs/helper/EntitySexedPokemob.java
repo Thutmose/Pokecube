@@ -14,11 +14,11 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
@@ -239,32 +239,15 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     }
 
     @Override
-    public void mateWith(IBreedingMob male)
+    public void mateWith(final IBreedingMob male)
     {
-        mate(male);
-    }
-
-    @Override
-    public void onEntityUpdate()
-    {
-        super.onEntityUpdate();
-
-        if (getPokemonAIState(MATING) && ticksExisted % 10 == 0)
+        PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
-            double d0 = this.rand.nextGaussian() * 0.02D;
-            double d1 = this.rand.nextGaussian() * 0.02D;
-            double d2 = this.rand.nextGaussian() * 0.02D;
-            this.worldObj.spawnParticle(EnumParticleTypes.HEART,
-                    this.posX + this.rand.nextFloat() * this.width * 2.0F - this.width,
-                    this.posY + 0.5D + this.rand.nextFloat() * this.height,
-                    this.posZ + this.rand.nextFloat() * this.width * 2.0F - this.width, d0, d1, d2, new int[0]);
-        }
-
-        if (!isServerWorld()) return;
-
-        int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
-        if (getLoveTimer() > 0) diff = 1;
-        setLoveTimer(getLoveTimer() + diff);
+            public void run()
+            {
+                mate(male);
+            }
+        });
     }
 
     @Override

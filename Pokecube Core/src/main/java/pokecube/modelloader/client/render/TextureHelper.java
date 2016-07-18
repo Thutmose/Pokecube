@@ -335,7 +335,7 @@ public class TextureHelper implements IPartTexturer
         if (partNames == null)
         {
             PokedexEntry forme = entry;
-            if (forme.baseForme != null && forme != forme.baseForme)
+            if (forme.getBaseForme() != null && forme != forme.getBaseForme())
             {
                 String name = forme.getName().toLowerCase().replace(" ", "");
                 String tex = formeMap.get(name);

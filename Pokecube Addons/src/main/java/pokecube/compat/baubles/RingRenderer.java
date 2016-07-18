@@ -23,13 +23,19 @@ import thut.core.client.render.x3d.X3dModel;
 
 public class RingRenderer implements LayerRenderer<EntityPlayer>
 {
-    private ModelRing                 ring = new ModelRing();
+    private ModelRing                 ring  = new ModelRing();
+    X3dModel                          model;
+    X3dModel                          model2;
+    ResourceLocation                  BAG_1 = new ResourceLocation("pokecube_compat:textures/items/Belt1.png");
+    ResourceLocation                  BAG_2 = new ResourceLocation("pokecube_compat:textures/items/Belt2.png");
 
     private final RenderLivingBase<?> livingEntityRenderer;
 
     public RingRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
         this.livingEntityRenderer = livingEntityRendererIn;
+        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Belt.x3d"));
+        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Belt.x3d"));
     }
 
     @Override
@@ -104,14 +110,6 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
         if (belt)
         {
 
-            X3dModel model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Belt.x3d"));
-
-            X3dModel model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Belt.x3d"));
-
-            ResourceLocation BAG_1 = new ResourceLocation("pokecube_compat:textures/items/Belt1.png");
-
-            ResourceLocation BAG_2 = new ResourceLocation("pokecube_compat:textures/items/Belt2.png");
-
             int brightness = player.getBrightnessForRender(partialTicks);
             // First pass of render
             GL11.glPushMatrix();
@@ -129,7 +127,7 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
             GL11.glRotated(180, 0, 0, 1);
             GL11.glTranslatef(dx, dy, dz);
             float s = 0.525f;
-            if(player.getItemStackFromSlot(EntityEquipmentSlot.LEGS) == null)
+            if (player.getItemStackFromSlot(EntityEquipmentSlot.LEGS) == null)
             {
                 s = 0.465f;
             }

@@ -1010,6 +1010,7 @@ public class PokedexEntry
     /** @return the evolutionMode */
     public int getEvolutionMode()
     {
+        if (baseForme != null) return baseForme.evolutionMode;
         return evolutionMode;
     }
 
@@ -1173,7 +1174,7 @@ public class PokedexEntry
         {
             ret = list.get(rand.nextInt(list.size()));
         }
-        System.out.println(ret+" "+held);
+        System.out.println(ret + " " + held);
         return ret;
     }
 

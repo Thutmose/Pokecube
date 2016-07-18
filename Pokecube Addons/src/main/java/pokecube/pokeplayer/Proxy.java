@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.EntityTools;
 import pokecube.pokeplayer.inventory.ContainerPokemob;
 
 public class Proxy implements IGuiHandler
@@ -23,30 +24,6 @@ public class Proxy implements IGuiHandler
 
     private Map<UUID, PokeInfo> playerMap       = Maps.newHashMap();
     private Map<UUID, PokeInfo> playerMapClient = Maps.newHashMap();
-
-    void copyTransform(EntityLivingBase to, EntityPlayer from)
-    {
-        to.setEntityId(from.getEntityId());
-        to.posX = from.posX;
-        to.posY = from.posY;
-        to.posZ = from.posZ;
-        to.motionX = from.motionX;
-        to.motionY = from.motionY;
-        to.motionZ = from.motionZ;
-        to.rotationPitch = from.rotationPitch;
-        to.ticksExisted = from.ticksExisted;
-        to.rotationYaw = from.rotationYaw;
-        to.setRotationYawHead(from.getRotationYawHead());
-        to.dimension = from.dimension;
-        to.prevRotationPitch = from.prevRotationPitch;
-        to.prevRotationYaw = from.prevRotationYaw;
-        to.prevRenderYawOffset = from.prevRenderYawOffset;
-        to.prevRotationYawHead = from.prevRotationYawHead;
-        to.onGround = from.onGround;
-        to.prevLimbSwingAmount = from.prevLimbSwingAmount;
-        to.limbSwing = from.limbSwing;
-        to.limbSwingAmount = from.limbSwingAmount;
-    }
 
     public void setPokemob(EntityPlayer player, IPokemob pokemob)
     {
@@ -74,7 +51,7 @@ public class Proxy implements IGuiHandler
     {
         PokeInfo info = new PokeInfo(pokemob, player);
         info.setPlayer(player);
-        copyTransform((EntityLivingBase) info.pokemob, player);
+        EntityTools.copyEntityTransforms((EntityLivingBase) info.pokemob, player);
         getMap().put(player.getUniqueID(), info);
         player.getEntityData().setBoolean("isPokemob", true);
         NBTTagCompound poketag = new NBTTagCompound();

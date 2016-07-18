@@ -72,6 +72,7 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.EggEvent;
+import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -322,7 +323,7 @@ public class EventsHandler
                 && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart))
         {
             evt.getEntity().setDead();
-            //TODO maybe replace stuff here
+            // TODO maybe replace stuff here
             evt.setCanceled(true);
         }
         else if (evt.getEntity() instanceof EntityCreeper)
@@ -638,6 +639,18 @@ public class EventsHandler
                 if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay)
                     mob.returnToPokecube();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void evolveEvent(EvolveEvent.Pre evt)
+    {
+        if (evt.mob.getPokedexEntry() == Database.getEntry("Tyrogue"))
+        {
+            int[] stats = evt.mob.getActualStats();
+            if (stats[1] > stats[2]) evt.forme = "Hitmonlee";
+            else if (stats[2] > stats[1]) evt.forme = "Hitmonchan";
+            else evt.forme = "Hitmontop";
         }
     }
 

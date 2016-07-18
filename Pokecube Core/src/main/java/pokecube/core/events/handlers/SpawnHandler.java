@@ -528,7 +528,7 @@ public final class SpawnHandler
         ret += num = doSpawnForType(world, v, dbe, parser, t);
 
         double dt = (System.nanoTime() - time) / 10e3D;
-        if (dt > 500)
+        if (dt > 2000)
         {
             String toLog = "location:" + v + " took:" + dt + "\u00B5" + "s" + " for:" + dbe + " spawned:" + num;
             PokecubeMod.log(toLog);
@@ -633,7 +633,7 @@ public final class SpawnHandler
                 long time = System.nanoTime();
                 int num = doSpawnForLocation(world, v);
                 double dt = (System.nanoTime() - time) / 10e3D;
-                if (dt > 500)
+                if (dt > 2000)
                 {
                     PokecubeMod.log(dt + "\u00B5" + "s for player " + players.get(0).getDisplayNameString() + " at " + v
                             + ", spawned " + num);

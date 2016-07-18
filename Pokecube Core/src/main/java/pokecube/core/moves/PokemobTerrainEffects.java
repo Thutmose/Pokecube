@@ -12,13 +12,11 @@ import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -27,8 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment.ITerrainEffect;
@@ -214,18 +211,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
         {
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
             {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
-                buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
-                buffer.writeInt(chunkX);
-                buffer.writeInt(chunkY);
-                buffer.writeInt(chunkZ);
-                for (int i = 0; i < 16; i++)
-                {
-                    buffer.writeLong(effects[i]);
-                }
-                PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-                Vector3 v = Vector3.getNewVector().set(e);
-                PokecubePacketHandler.sendToAllNear(packet, v, e.getEntityWorld().provider.getDimension(), 64);
+                PacketSyncTerrain.sendTerrain(e, chunkX, chunkY, chunkZ, this);
             }
         }
     }

@@ -290,8 +290,9 @@ pokecube.missed=You missed the Pokémob!
 pokecube.denied=The Pokémob refuses to enter the cube!
 pokecube.noroom=There is not enough room for the Pokémob here.
 pokecube.badaim=I should probably aim more carefully
+pokecube.mega.noring=§cYou need to be wearing a mega item to initiate Mega Evolution.
 
-pokecube.professor.deny=Professor: You have already recieved a Pokémob
+pokecube.professor.deny=Professor: §cYou have already recieved a Pokémob
 pokedex.setteleport=Pokécenter set as a Teleport Location
 pokedex.locationinfo1=There are %1$s Registered Spawns
 pokedex.locationinfo2=There are %1$s registered Pokémobs

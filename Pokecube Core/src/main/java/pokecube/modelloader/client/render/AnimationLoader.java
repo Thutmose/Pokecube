@@ -235,9 +235,9 @@ public class AnimationLoader
             }
             else
             {
-                if (entry != null && entry.baseForme != null)
+                if (entry != null && entry.getBaseForme() != null)
                 {
-                    Model existing = models.get(entry.baseForme.getName());
+                    Model existing = models.get(entry.getBaseForme().getName());
                     if (existing == null)
                     {
                         toReload.add(s);

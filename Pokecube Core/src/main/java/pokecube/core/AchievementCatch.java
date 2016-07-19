@@ -37,7 +37,7 @@ public class AchievementCatch extends Achievement
         PokedexEntry entry;
         if (pokedexNb > 0 && (entry = Database.getEntry(pokedexNb)) != null)
         {
-            if(entry.baseForme!=null) entry = entry.baseForme;
+            if(entry.getBaseForme()!=null) entry = entry.getBaseForme();
             return entry.getUnlocalizedName();
         }
         else

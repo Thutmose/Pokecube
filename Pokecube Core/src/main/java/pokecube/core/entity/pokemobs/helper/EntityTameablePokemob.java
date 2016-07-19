@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.scoreboard.Team;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -353,6 +354,13 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public int getSpecialInfo()
     {
         return dataManager.get(SPECIALINFO);
+    }
+
+    @Override
+    public Team getTeam()
+    {
+        if (getOwner() == this) { return this.worldObj.getScoreboard().getPlayersTeam(this.getCachedUniqueIdString()); }
+        return super.getTeam();
     }
 
     protected void handleArmourAndSaddle()

@@ -202,8 +202,8 @@ public class TabulaPackLoader extends AnimationLoader
         {
             if (shearableIdents.contains(part))
             {
-                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.SHEARS), entity.getEntityWorld(),
-                        entity.getPosition());
+                boolean shearable = ((IShearable) entity).isShearable(new ItemStack(Items.SHEARS),
+                        entity.getEntityWorld(), entity.getPosition());
                 return !shearable;
             }
             return default_;
@@ -508,18 +508,16 @@ public class TabulaPackLoader extends AnimationLoader
         String[] args2 = args[1].split("/");
         String name = args2[args2.length > 1 ? args2.length - 1 : 0];
         PokedexEntry entry = Database.getEntry(name);
-
         try
         {
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-
-            InputStream stream = res.getInputStream();
-            ZipInputStream zip = new ZipInputStream(stream);
-            Scanner scanner = new Scanner(zip);
-            zip.getNextEntry();
-            String json = scanner.nextLine();
             if (entry != null)
             {
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                InputStream stream = res.getInputStream();
+                ZipInputStream zip = new ZipInputStream(stream);
+                Scanner scanner = new Scanner(zip);
+                zip.getNextEntry();
+                String json = scanner.nextLine();
                 TabulaModelParser parser = new TabulaModelParser();
                 TabulaModel tbl = parser.parse(json);
                 TabulaModelSet set = new TabulaModelSet(tbl, parser, extraData, entry);
@@ -527,16 +525,16 @@ public class TabulaPackLoader extends AnimationLoader
                 if (!modelMaps.containsKey(entry.getName())
                         || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
                     AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
+                scanner.close();
             }
-            scanner.close();
             return entry != null;
         }
         catch (IOException e)
         {
-            if (entry != null && entry.baseForme != null)
+            if (entry != null && entry.getBaseForme() != null)
             {
                 TabulaModelSet set;
-                if ((set = modelMap.get(entry.baseForme)) == null)
+                if ((set = modelMap.get(entry.getBaseForme())) == null)
                 {
                     toReload.add(path);
                 }
@@ -560,7 +558,7 @@ public class TabulaPackLoader extends AnimationLoader
             TabulaModelSet set = modelMap.get(entry);
             if (!set.foundExtra)
             {
-                PokedexEntry base = entry.baseForme;
+                PokedexEntry base = entry.getBaseForme();
                 TabulaModelSet baseSet = modelMap.get(base);
                 if (baseSet != null)
                 {

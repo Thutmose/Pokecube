@@ -28,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -323,6 +324,11 @@ public class EventsHandlerClient
         {
             boolean ring = checker.hasRing(player);
 
+            if(!ring)
+            {
+                player.addChatMessage(new TextComponentTranslation("pokecube.mega.noring"));
+            }
+            
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING)
                     && System.currentTimeMillis() > counter + 500)

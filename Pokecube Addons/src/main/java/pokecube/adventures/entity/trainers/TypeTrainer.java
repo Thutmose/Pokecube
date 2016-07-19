@@ -256,6 +256,7 @@ public class TypeTrainer
     public BiomeMatcher       matcher       = null;
     public int                weight;
     public boolean            hasBag        = false;
+    public boolean            hasBelt       = false;
     private ResourceLocation  texture;
 
     private ResourceLocation  femaleTexture;

@@ -627,7 +627,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             setEVs(PokecubeSerializer.longAsByteArray(nbttagcompound.getLong(PokecubeSerializer.EVS)));
             long ivs = nbttagcompound.getLong(PokecubeSerializer.IVS);
 
-            if (ivs == 0)
+            if (ivs < 0)
             {
                 ivs = PokecubeSerializer.byteArrayAsLong(
                         new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),

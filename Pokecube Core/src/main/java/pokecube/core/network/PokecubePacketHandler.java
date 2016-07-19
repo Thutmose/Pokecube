@@ -47,12 +47,12 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketPC;
 import pokecube.core.network.packets.PacketSound;
+import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
@@ -94,39 +94,9 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            if (channel == TERRAIN)
-                            {
-                                try
-                                {
-                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                                    TerrainSegment t = TerrainSegment.readFromNBT(nbt);
-                                    TerrainManager.getInstance().getTerrain(player.getEntityWorld()).addTerrain(t);
-
-                                }
-                                catch (IOException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                            else if (channel == STATS)
+                            if (channel == STATS)
                             {
                                 handleStatsPacketClient(buffer, player);
-                            }
-                            else if (channel == TERRAINEFFECTS)
-                            {
-                                TerrainSegment t = TerrainManager.getInstance().getTerrain(player.worldObj)
-                                        .getTerrain(buffer.readInt(), buffer.readInt(), buffer.readInt());
-
-                                PokemobTerrainEffects effect = (PokemobTerrainEffects) t
-                                        .geTerrainEffect("pokemobEffects");
-                                if (effect == null)
-                                {
-                                    t.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-                                }
-                                for (int i = 0; i < 16; i++)
-                                {
-                                    effect.effects[i] = buffer.readLong();
-                                }
                             }
                             else if (channel == TELEPORTLIST)
                             {
@@ -213,13 +183,8 @@ public class PokecubePacketHandler
             }
         }
 
-        // public static final byte CHOOSE1ST = 0;
-        // public static final byte MOVEANIMATION = 1;
-        public static final byte TERRAIN        = 5;
         public static final byte STATS          = 6;
-        public static final byte TERRAINEFFECTS = 7;
         public static final byte TELEPORTLIST   = 8;
-        // public static final byte MOVEMESSAGE = 10;
         public static final byte KILLENTITY     = 11;
         public static final byte MOVEENTITY     = 12;
         public static final byte TELEPORTINDEX  = 13;
@@ -661,6 +626,8 @@ public class PokecubePacketHandler
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketSound.class, PacketSound.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketSyncTerrain.class, PacketSyncTerrain.class, PokecubeCore.getMessageID(),
                 Side.CLIENT);
 
         PokecubeMod.packetPipeline.registerMessage(PacketPosSync.class, PacketPosSync.class,

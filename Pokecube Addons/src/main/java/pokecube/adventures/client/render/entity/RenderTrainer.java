@@ -14,6 +14,8 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +25,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.compat.baubles.BetterCustomHeadLayer;
 
 public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {
@@ -39,6 +42,17 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
         male = new ModelPlayer(0, false);
         female = new ModelPlayer(0, true);
         this.addLayer(new BagRenderer(this));
+        this.addLayer(new TrainerBeltRenderer(this));
+        LayerRenderer<?> badHeadRenderer = null;
+        for (Object o : layerRenderers)
+        {
+            if (o instanceof LayerCustomHead && !(o instanceof BetterCustomHeadLayer))
+            {
+                badHeadRenderer = (LayerRenderer<?>) o;
+            }
+        }
+        removeLayer(badHeadRenderer);
+        addLayer(new BetterCustomHeadLayer(male.bipedHead));
     }
 
     @Override

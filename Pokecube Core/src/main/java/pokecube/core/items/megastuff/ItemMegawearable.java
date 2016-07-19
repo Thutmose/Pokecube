@@ -9,8 +9,10 @@ import baubles.api.BaubleType;
 import baubles.api.IBauble;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,6 +30,7 @@ public class ItemMegawearable extends Item implements IBauble, IMegaWearable
     {
         wearables.put("megaring", "RING");
         wearables.put("megabelt", "BELT");
+        wearables.put("megahat", "");
     }
 
     public ItemMegawearable()
@@ -73,7 +76,11 @@ public class ItemMegawearable extends Item implements IBauble, IMegaWearable
     {
         String name = getUnlocalizedName(itemstack).replace("item.", "");
         String type = wearables.get(name);
-        if (type != null) { return BaubleType.valueOf(type); }
+        if (type != null && !type.isEmpty())
+        {
+            return BaubleType.valueOf(type);
+        }
+        else if (type != null && type.isEmpty()) return null;
         return BaubleType.RING;
     }
 
@@ -127,5 +134,23 @@ public class ItemMegawearable extends Item implements IBauble, IMegaWearable
             name = "item." + variant;
         }
         return name;
+    }
+
+    /** Determines if the specific ItemStack can be placed in the specified
+     * armor slot.
+     *
+     * @param stack
+     *            The ItemStack
+     * @param armorType
+     *            Armor slot ID: 0: Helmet, 1: Chest, 2: Legs, 3: Boots
+     * @param entity
+     *            The entity trying to equip the armor
+     * @return True if the given ItemStack can be inserted in the slot */
+    @Override
+    public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
+    {
+        String name = getUnlocalizedName(stack).replace("item.", "");
+        if (name.equals("megahat")) return armorType == EntityEquipmentSlot.HEAD;
+        return false;
     }
 }

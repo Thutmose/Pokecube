@@ -2,16 +2,13 @@ package pokecube.core.moves.templates;
 
 import java.util.Random;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.PokemobTerrainEffects;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketSyncTerrain;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -62,18 +59,7 @@ public class Move_Terrain extends Move_Basic
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(73));
-            buffer.writeByte(PokecubeClientPacket.TERRAINEFFECTS);
-            buffer.writeInt(segment.chunkX);
-            buffer.writeInt(segment.chunkY);
-            buffer.writeInt(segment.chunkZ);
-            for (int i = 0; i < 16; i++)
-            {
-                buffer.writeLong(teffect.effects[i]);
-                System.out.println(teffect.effects[i]);
-            }
-            PokecubeClientPacket packet = new PokecubeClientPacket(buffer);
-            PokecubePacketHandler.sendToAllNear(packet, location, world.provider.getDimension(), 64);
+            PacketSyncTerrain.sendTerrain((Entity) attacker, segment.chunkX, segment.chunkY, segment.chunkZ, teffect);
         }
 
     }

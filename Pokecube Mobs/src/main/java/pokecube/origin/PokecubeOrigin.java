@@ -43,6 +43,8 @@ public class PokecubeOrigin
         PokedexEntry pichu = Database.getEntry("pichu");
         PokedexEntry pikachu = Database.getEntry("pikachu");
         PokedexEntry raichu = Database.getEntry("raichu");
+        if (pichu == null || pikachu == null || raichu == null) return;
+
         pichu.setModId(MODID);
         pikachu.setModId(MODID);
         raichu.setModId(MODID);

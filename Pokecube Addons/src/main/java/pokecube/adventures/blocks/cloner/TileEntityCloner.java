@@ -259,14 +259,14 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             {
                 if (!(recipe instanceof RecipeFossilRevive)) return false;
                 RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                return !recipe2.pokedexEntry.legendary;
+                return !recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
             }
             else
             {
                 if ((recipe instanceof RecipeFossilRevive))
                 {
                     RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                    return recipe2.pokedexEntry.legendary;
+                    return recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
                 }
             }
             return recipe.matches(tile.craftMatrix, tile.getWorld());
@@ -688,8 +688,14 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
+        boolean refresh = false;
+        if (!Tools.isSameStack(stack, inventory[index])) refresh = true;
         if (stack == null || stack.stackSize <= 0) inventory[index] = null;
         else inventory[index] = stack;
+        if (refresh)
+        {
+            checkRecipes();
+        }
     }
 
     @Override

@@ -93,9 +93,9 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
 
         int count = quantityDropped(state, fortune, rand);
-        for (int i = 0; i < count; i++)
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
+        if (tile != null) for (int i = 0; i < count; i++)
         {
-            TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
             ItemStack stack = BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
             if (stack != null)
             {

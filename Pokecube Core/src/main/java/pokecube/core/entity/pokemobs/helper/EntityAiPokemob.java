@@ -50,6 +50,7 @@ import pokecube.core.ai.thread.aiRunnables.AICombatMovement;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.ai.thread.aiRunnables.AIFollowOwner;
 import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
+import pokecube.core.ai.thread.aiRunnables.AIGuardEgg;
 import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
@@ -79,6 +80,7 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -348,7 +350,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             aiStuff.addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
                     .setPriority(400));
         }
-
+        aiStuff.addAITask(new AIGuardEgg(this).setPriority(250));
         aiStuff.addAITask(new AIMate(this).setPriority(300));
         aiStuff.addAITask(new AIHungry(this, new EntityItem(worldObj), 16).setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);
@@ -1005,9 +1007,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         if (hand != player.getActiveHand()) return false;
         ItemStack itemstack = player.getHeldItem(hand);
-        ItemStack key = new ItemStack(Items.SHEARS);
+        ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
         // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && held != null && held.isItemEqual(key)) { return false; }
+        if (getPokedexEntry().interact(key) && held != null && Tools.isSameStack(key, held)) { return false; }
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.TORCH);

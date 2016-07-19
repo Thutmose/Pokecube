@@ -39,7 +39,6 @@ public class WearableTextureHandler
         ModelLoader.setCustomMeshDefinition(PokecubeItems.megaring, new Mesh());
         for (String s : ItemMegawearable.wearables.keySet())
         {
-            System.out.println(s);
             registerItemVariant("type=" + s);
         }
     }

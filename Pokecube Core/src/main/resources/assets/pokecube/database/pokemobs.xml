@@ -7769,7 +7769,7 @@
             <SPECIES>Scuffle</SPECIES>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>21.0</MASSKG>
-            <EVOLVESTO>106 107 237</EVOLVESTO>
+            <EVOLVESTO>Hitmonlee Hitmonchan Hitmontop</EVOLVESTO>
             <EXPYIELD>42</EXPYIELD>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>

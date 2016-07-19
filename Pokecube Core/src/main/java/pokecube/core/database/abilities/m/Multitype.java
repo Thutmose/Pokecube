@@ -45,7 +45,7 @@ public class Multitype extends Ability
                 return;
             }
         }
-        if (entry.baseForme != null && entry.getBaseName().equals("Arceus"))
+        if (entry.getBaseForme() != null && entry.getBaseName().equals("Arceus"))
         {
             mob.changeForme(entry.getBaseName());
             return;

@@ -129,8 +129,8 @@ public class ModPokecubeML implements IMobProvider
         proxy.postInit();
         for (PokedexEntry e : Database.allFormes)
         {
-            if (e.baseForme != null && e.texturePath.equals("textures/entities/"))
-                e.texturePath = e.baseForme.texturePath;
+            if (e.getBaseForme() != null && e.texturePath.equals("textures/entities/"))
+                e.texturePath = e.getBaseForme().texturePath;
         }
         postInit = true;
     }
@@ -229,7 +229,7 @@ public class ModPokecubeML implements IMobProvider
     private void registerMob(String mob)
     {
         PokedexEntry e;
-        if ((e = Database.getEntry(mob)) != null && e.baseForme == null)
+        if ((e = Database.getEntry(mob)) != null && e.getBaseForme() == null)
         {
             if (textureProviders.containsKey(e.getName()))
             {
@@ -239,9 +239,9 @@ public class ModPokecubeML implements IMobProvider
             {
                 e.setModId(ID);
             }
-            if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
+            if (e.getBaseForme() == null) PokecubeMod.core.registerPokemon(true, this, e);
         }
-        else
+        else if (e == null)
         {
             System.err.println("Failed to register " + mob);
         }

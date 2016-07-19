@@ -306,6 +306,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     System.err.println("No Entry for " + newEntry);
                     return this;
                 }
+                if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
                 evolution.setUniqueId(UUID.randomUUID());

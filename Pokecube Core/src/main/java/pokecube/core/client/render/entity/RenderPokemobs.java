@@ -4,17 +4,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.EntityTools;
 
 @SuppressWarnings("rawtypes")
 public class RenderPokemobs extends RenderPokemob
@@ -109,10 +114,30 @@ public class RenderPokemobs extends RenderPokemob
             {
                 mob = (IPokemob) mob.getTransformedTo();
             }
-            else if (mob.getTransformedTo() != null)
+            else if (mob.getTransformedTo() != null && mob.getTransformedTo() instanceof EntityLivingBase)
             {
-                Minecraft.getMinecraft().getRenderManager().doRenderEntity(mob.getTransformedTo(), x, y, z, par8, par9,
-                        false);
+                EntityLivingBase from = (EntityLivingBase) mob.getTransformedTo();
+                try
+                {
+                    Class<? extends EntityLivingBase> claz = from.getClass();
+                    EntityLivingBase to;
+                    if (claz == EntityPlayerSP.class)
+                    {
+                        claz = EntityOtherPlayerMP.class;
+                        to = new EntityOtherPlayerMP(entity.worldObj, (((EntityPlayerSP) from).getGameProfile()));
+                    }
+                    else
+                    {
+                        to = claz.getConstructor(World.class).newInstance(from.worldObj);
+                    }
+                    EntityTools.copyEntityData(to, from);
+                    EntityTools.copyEntityTransforms(to, entity);
+                    Minecraft.getMinecraft().getRenderManager().doRenderEntity(to, x, y, z, par8, par9, false);
+                }
+                catch (Exception e1)
+                {
+                    e1.printStackTrace();
+                }
                 return;
             }
 
@@ -121,8 +146,8 @@ public class RenderPokemobs extends RenderPokemob
             if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
                     && ((Entity) mob).getRidingEntity() != null)
             {
-//                GlStateManager.popMatrix();
-//                return;
+                // GlStateManager.popMatrix();
+                // return;
             }
             if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).getRidingEntity() != null)
             {
@@ -132,7 +157,8 @@ public class RenderPokemobs extends RenderPokemob
 
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());
-//            this.shadowSize = entry.width * mob.getSize()/2;//TODO decide if shadows are needed.
+            // this.shadowSize = entry.width * mob.getSize()/2;//TODO decide if
+            // shadows are needed.
             // System.out.println(nbm+" "+renderMap.get(nbm));
             Render render = getRenderer(mob.getPokedexEntry());
             if (render == instance)

@@ -10,6 +10,7 @@ import net.minecraft.util.math.Vec3d;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 import thut.api.entity.IHungrymob;
@@ -60,8 +61,8 @@ public class PokeInfo
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(poke.getMaxHealth());
         float health = poke.getHealth();
         if (player.capabilities.isCreativeMode) health = poke.getMaxHealth();
+        EntityTools.copyEntityTransforms((EntityLivingBase) pokemob, player);
         player.setHealth(health);
-        PokePlayer.PROXY.copyTransform((EntityLivingBase) pokemob, player);
         int num = ((IHungrymob) poke).getHungerTime();
         int max = PokecubeMod.core.getConfig().pokemobLifeSpan;
         num = Math.round(((max - num) * 20) / (float) max);

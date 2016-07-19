@@ -39,6 +39,17 @@ public class AIMate extends AIBase
     @Override
     public void doMainThreadTick(World world)
     {
+        if (breedingMob.getSexe() != IPokemob.MALE)
+        {
+            int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
+            if (breedingMob.getLoveTimer() > 0) diff = 1;
+            breedingMob.setLoveTimer(breedingMob.getLoveTimer() + diff);
+        }
+        if (pokemob.getPokemonAIState(IMoveConstants.MATING) && (breedingMob.getLover() == null
+                || breedingMob.getLover().isDead || ((IBreedingMob) breedingMob.getLover()).getLover() != breedingMob))
+        {
+            pokemob.setPokemonAIState(IMoveConstants.MATING, false);
+        }
         if (cooldown-- > 0) { return; }
         super.doMainThreadTick(world);
         if (entity.isInLove() && breedingMob.getLover() == null)
@@ -247,7 +258,8 @@ public class AIMate extends AIBase
         }
         if (breedingMob.getLover() instanceof EntityLiving)
         {
-            ((EntityLiving) breedingMob.getLover()).getNavigator().tryMoveToEntityLiving(entity, 1.5);
+            ((EntityLiving) breedingMob.getLover()).getNavigator().tryMoveToEntityLiving(entity,
+                    pokemob.getMovementSpeed());
         }
         if (this.spawnBabyDelay >= 50)
         {

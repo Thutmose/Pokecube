@@ -215,7 +215,6 @@ public class AIFindTarget extends AIBase implements IAICombat
     @Override
     public boolean shouldRun()
     {
-
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
         if (world == null) return false;
 

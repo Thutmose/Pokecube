@@ -7,8 +7,6 @@ import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslated;
 import static org.lwjgl.opengl.GL11.glTranslatef;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -19,7 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.IPokecube;
 
-@SuppressWarnings({ "rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public class RenderTradingTable extends TileEntitySpecialRenderer
 {
     public void renderItem(double x, double y, double z, ItemStack item, int time)
@@ -27,23 +25,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
         if (item.getItem() instanceof IPokecube)
         {
             glPushMatrix();
-            GlStateManager.enableAlpha();
-            GlStateManager.enableBlend();
-            glTranslatef((float) x, (float) y, (float) z);
-            glPushMatrix();
-            glTranslatef(0.5F, 1.0f, 0.5F);
-            // glRotatef(-45, 1.0F, 0.0F, 1.0F);
-            // glRotatef(time * 2, 0.0F, 1.0F, 0.0F);
-            glScalef(0.25f, 0.25f, 0.25f);
-            GL11.glColor4f(1, 1, 1, 0.25f);
-            RenderHelper.disableStandardItemLighting();
-            if (item.getItem() instanceof IPokecube) Minecraft.getMinecraft().getItemRenderer()
-                    .renderItem(Minecraft.getMinecraft().thePlayer, item, TransformType.NONE);
 
-            glPopMatrix();
-            GlStateManager.disableAlpha();
-            GlStateManager.disableBlend();
-            RenderHelper.enableStandardItemLighting();
             glPopMatrix();
         }
     }
@@ -52,10 +34,8 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float f, int i1)
     {
         TileEntityTradingTable table = (TileEntityTradingTable) tileentity;
-        
-        if(table.renderpass==0) return;
-        
-        if (!table.getWorld().isRemote) System.err.println("not remote");
+        // System.out.println("Test");
+        // if(table.renderpass==0) return;
 
         glPushMatrix();
         glTranslated(x, y, z);
@@ -64,7 +44,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
         glTranslated(0.5, 0.375, 0.5);
         float scale = 0.1f;
         glScalef(scale, scale * 0.75f, scale);
-        
+
         glPopMatrix();
 
         int l = 0;
@@ -75,25 +55,51 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
         }
         short short1 = 0;
 
-        if (l == 3 || l == 2)
+        if (l == 5 || l == 4)
         {
             short1 = 180;
             glRotatef((float) short1 + 90, 0.0F, 1.0F, 0.0F);
             glTranslated(0, 0, -1);
         }
 
-        if (l == 5 || l == 4)
+        if (l == 3 || l == 2)
         {
             short1 = -90;
             glRotatef((float) short1 + 90, 0.0F, 1.0F, 0.0F);
         }
         if (table.getStackInSlot(0) != null)
         {
-            renderItem(0.25, 0.2, 0, table.getStackInSlot(0), table.time);
+            glPushMatrix();
+            glTranslatef(-0.375f, 0.2f, 0);
+            glTranslatef(0.5F, 0.8f, 0.5F);
+            glScalef(0.15f, 0.15f, 0.15f);
+            GlStateManager.enableAlpha();
+            GlStateManager.enableBlend();
+            glRotatef(-90, 0, 1, 0);
+            RenderHelper.disableStandardItemLighting();
+            if (table.getStackInSlot(0).getItem() instanceof IPokecube) Minecraft.getMinecraft().getItemRenderer()
+                    .renderItem(Minecraft.getMinecraft().thePlayer, table.getStackInSlot(0), TransformType.NONE);
+            GlStateManager.disableAlpha();
+            GlStateManager.disableBlend();
+            RenderHelper.enableStandardItemLighting();
+            glPopMatrix();
         }
         if (table.getStackInSlot(1) != null)
         {
-            renderItem(-0.25, 0.2, 0, table.getStackInSlot(1), table.time);
+            glPushMatrix();
+            glTranslatef(0.375f, 0.2f, 0);
+            glTranslatef(0.5F, 0.8f, 0.5F);
+            glScalef(0.15f, 0.15f, 0.15f);
+            GlStateManager.enableAlpha();
+            GlStateManager.enableBlend();
+            glRotatef(90, 0, 1, 0);
+            RenderHelper.disableStandardItemLighting();
+            if (table.getStackInSlot(1).getItem() instanceof IPokecube) Minecraft.getMinecraft().getItemRenderer()
+                    .renderItem(Minecraft.getMinecraft().thePlayer, table.getStackInSlot(1), TransformType.NONE);
+            GlStateManager.disableAlpha();
+            GlStateManager.disableBlend();
+            RenderHelper.enableStandardItemLighting();
+            glPopMatrix();
         }
 
         glPopMatrix();

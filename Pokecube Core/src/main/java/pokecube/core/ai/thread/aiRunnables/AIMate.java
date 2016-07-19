@@ -45,8 +45,8 @@ public class AIMate extends AIBase
             if (breedingMob.getLoveTimer() > 0) diff = 1;
             breedingMob.setLoveTimer(breedingMob.getLoveTimer() + diff);
         }
-        if (pokemob.getPokemonAIState(IMoveConstants.MATING)
-                && (breedingMob.getLover() == null || breedingMob.getLover().isDead))
+        if (pokemob.getPokemonAIState(IMoveConstants.MATING) && (breedingMob.getLover() == null
+                || breedingMob.getLover().isDead || ((IBreedingMob) breedingMob.getLover()).getLover() != breedingMob))
         {
             pokemob.setPokemonAIState(IMoveConstants.MATING, false);
         }

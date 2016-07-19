@@ -23,7 +23,7 @@ import thut.core.client.render.x3d.X3dModel;
 
 public class RingRenderer implements LayerRenderer<EntityPlayer>
 {
-    private ModelRing                 ring  = new ModelRing();
+    private ModelRing                 ring   = new ModelRing();
     X3dModel                          model;
     X3dModel                          model2;
     ResourceLocation                  belt_1 = new ResourceLocation("pokecube_compat:textures/items/Belt1.png");

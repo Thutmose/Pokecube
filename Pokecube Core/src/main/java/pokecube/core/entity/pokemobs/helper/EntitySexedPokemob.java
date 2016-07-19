@@ -128,7 +128,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
         }
         if (transforms && !otherTransforms
-                && ((IPokemob) male).getTransformedTo() != this) { return male.getChild(male); }
+                && ((IPokemob) male).getTransformedTo() != this) { return male.getChild(this); }
         return getPokedexEntry().getChildNb(((IPokemob) male).getPokedexNb());
     }
 

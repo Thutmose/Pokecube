@@ -786,16 +786,7 @@ public class MovesAdder implements IMoveConstants
             @Override
             public void doOngoingEffect(EntityLiving mob)
             {
-                Move_Ongoing move = null;
-                for (Move_Ongoing m : ((IPokemob) mob).getOngoingEffects().keySet())
-                {
-                    if (m.name.equals(name))
-                    {
-                        move = m;
-                        break;
-                    }
-                }
-
+                Move_Ongoing move = this;
                 int duration = ((IPokemob) mob).getOngoingEffects().get(move);
 
                 if (duration == 0)
@@ -803,15 +794,46 @@ public class MovesAdder implements IMoveConstants
                     MovesUtils.setStatus(mob, STATUS_SLP);
                 }
             }
-
             @Override
             public int getDuration()
             {
                 return 2;
             }
-
         });
-
+        
+        registerMove(new Move_Ongoing("perishsong")
+        {
+            @Override
+            public void doOngoingEffect(EntityLiving mob)
+            {
+                Move_Ongoing move = this;
+                boolean isPokemob = mob instanceof IPokemob;
+                if(isPokemob==true) 
+                {
+                    int duration = ((IPokemob) mob).getOngoingEffects().get(move);
+                    if (duration == 0)
+                    {
+                        mob.setHealth(0);
+                    }
+                    //TODO perish counter here.
+                }
+                else
+                {
+                    //TODO Insert code for an on-screen message here.
+                }
+            }
+            @Override
+            public int getDuration()
+            {
+                return 3;
+            }
+            @Override
+            public boolean onSource()
+            {
+                return true;
+            }
+        });
+        
         registerMove(new Move_Ongoing(MOVE_FIRESPIN)
         {
             @Override

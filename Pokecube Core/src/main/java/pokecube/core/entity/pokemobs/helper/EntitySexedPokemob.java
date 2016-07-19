@@ -101,7 +101,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
 
         boolean transforms = false;
-        boolean otherTransforms = false;
+        boolean otherTransforms = ((IPokemob) male).getTransformedTo() != null;
         String movesString = dataManager.get(MOVESDW);
         String[] moves = new String[5];
 
@@ -122,8 +122,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         {
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
-
-        for (String s : ((IPokemob) male).getMoves())
+        if (!otherTransforms) for (String s : ((IPokemob) male).getMoves())
         {
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
         }

@@ -249,7 +249,7 @@ public class SpawnBiomeMatcher
         Material m = location.getBlockMaterial(world);
         boolean isWater = m == Material.WATER;
         if (isWater && !water) return false;
-        if (m.isLiquid() && isWater) return false;
+        if (m.isLiquid() && !isWater) return false;
         if (!air && !isWater) return false;
         int lightBlock = world.getLightFor(EnumSkyBlock.BLOCK, location.getPos());
         int lightDay = world.getLightFor(EnumSkyBlock.SKY, location.getPos());

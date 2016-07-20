@@ -82,11 +82,6 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
     @Override
     public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
     {
-        boolean ret = feedToPokemob(stack, mob);
-        if (ret)
-        {
-            stack.splitStack(1);
-        }
         return feedToPokemob(stack, mob);
 
     }

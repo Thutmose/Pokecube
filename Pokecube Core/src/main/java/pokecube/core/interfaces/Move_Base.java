@@ -4,27 +4,22 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import pokecube.core.database.MoveEntry;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
 public abstract class Move_Base
 {
-    public static Move_Base instance;
-
-    public final int        index;
-    public final String     name;
-    private IMoveAnimation  animation;
-    public boolean          aoe              = false;
-
-    public boolean          fixedDamage      = false;
-
-    protected SoundEvent    sound;
-
-    public boolean          hasStatModSelf   = false;
-    public boolean          hasStatModTarget = false;
-
-    public final MoveEntry  move;
+    public final int       index;
+    public final String    name;
+    private IMoveAnimation animation;
+    public boolean         aoe              = false;
+    public boolean         fixedDamage      = false;
+    protected SoundEvent   sound;
+    public boolean         hasStatModSelf   = false;
+    public boolean         hasStatModTarget = false;
+    public final MoveEntry move;
 
     /** Constructor for a Pokemob move. <br/>
      * The attack category defines the way the mob will move in order to make
@@ -65,26 +60,32 @@ public abstract class Move_Base
 
         if (move.attackedStatModProb > 0) hasStatModTarget = true;
         if (move.attackerStatModProb > 0) hasStatModSelf = true;
-
-        if (instance == null) instance = this;
     }
 
+    /** First stage of attack use, this is called when the attack is being
+     * initiated.<br>
+     * This version is called for an attack at a specific entity, should only be
+     * called for not-interceptable attacks.
+     * 
+     * @param attacker
+     * @param attacked */
     public abstract void attack(IPokemob attacker, Entity attacked);
 
+    /** First stage of attack use, this is called when the attack is being
+     * initiated.<br>
+     * This version is called for an attack at a location.
+     * 
+     * @param attacker
+     * @param location */
     public abstract void attack(IPokemob attacker, Vector3 location);
 
-    public abstract boolean doAttack(IPokemob attacker, Entity attacked);
-
-    /** Do anything special for self attacks, usually raising/lowering of stats.
+    /** This is where the move's damage should be applied to the mob.
      * 
-     * @param mob */
-    public abstract void doSelfAttack(IPokemob mob);
+     * @param packet
+     * @return */
+    public abstract void onAttack(MovePacket packet);
 
     public abstract void doWorldAction(IPokemob attacker, Vector3 location);
-
-    protected abstract void finalAttack(IPokemob attacker, Entity attacked);
-
-    protected abstract void finalAttack(IPokemob attacker, Entity attacked, boolean message);
 
     public IMoveAnimation getAnimation()
     {
@@ -160,16 +161,27 @@ public abstract class Move_Base
         return move.type;
     }
 
-    public abstract boolean isMoveImplemented(String s);
+    /** Called after the attack is done for any additional effects needed Both
+     * involved mobs should be notified of the packet here.
+     * 
+     * @param packet */
+    public abstract void postAttack(MovePacket packet);
 
-    /** Called after the attack for special post attack treatment.
+    /** Called before the attack is applied. Both involved mobs should be
+     * notified of the packet here.
+     * 
+     * @param packet */
+    public abstract void preAttack(MovePacket packet);
+
+    /** This is a factor for how long of a cooldown occurs after the attack is
+     * done.
      * 
      * @param attacker
-     * @param attacked
-     * @param f
-     * @param finalAttackStrength
-     *            the number of HPs the attack takes from target */
-    public abstract void postAttack(IPokemob attacker, Entity attacked, int power, int finalAttackStrength);
+     * @return */
+    public float getPostDelayFactor(IPokemob attacker)
+    {
+        return 1;
+    }
 
     public Move_Base setAnimation(IMoveAnimation anim)
     {

@@ -32,8 +32,6 @@ import thut.api.maths.Vector3;
 
 public class AIHungry extends AIBase
 {
-    public static int HUNGERDELAY = 6000;
-
     private static class GenBerries implements IRunnable
     {
         final IPokemob pokemob;
@@ -97,26 +95,48 @@ public class AIHungry extends AIBase
         }
         v.set(entity);
         ChunkCoordinate c = new ChunkCoordinate(v, entity.dimension);
+        int deathTime = PokecubeMod.core.getConfig().pokemobLifeSpan;
         if (!hungrymob.neverHungry() && hungrymob.getHungerCooldown() < 0)
         {
-            if (hungerTime > HUNGERDELAY + entity.getRNG().nextInt((int) (0.5 * HUNGERDELAY))
-                    && !pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+            if (hungerTime > 0 && !pokemob.getPokemonAIState(IMoveConstants.HUNTING))
             {
                 pokemob.setPokemonAIState(IMoveConstants.HUNTING, true);
             }
         }
 
-        double hurtTime = HUNGERDELAY * 1.5 + entity.getRNG().nextInt((int) (0.5 * HUNGERDELAY));
+        double hurtTime = deathTime / 2d;
         if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && entity.getAttackTarget() == null
                 && !hungrymob.neverHungry() && entity.ticksExisted % 100 == 0)
         {
-            entity.setHealth(entity.getHealth() - entity.getMaxHealth() * 0.05f);
-            pokemob.displayMessageToOwner(
-                    new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
+            boolean ate = false;
+            for (int i = 2; i < 7; i++)
+            {
+                ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
+                if (stack != null && stack.getItem() instanceof ItemBerry)
+                {
+                    stack.stackSize--;
+                    if (stack.stackSize <= 0)
+                    {
+                        pokemob.getPokemobInventory().setInventorySlotContents(i, null);
+                    }
+                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    hungrymob.eat(berry);
+                    ate = true;
+                }
+            }
+            if (!ate)
+            {
+                float ratio = (float) ((hungerTime - hurtTime) / deathTime);
+                entity.setHealth(entity.getHealth() - entity.getMaxHealth() * ratio);
+                if (entity.getHealth() > 0) pokemob.displayMessageToOwner(
+                        new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
+                else pokemob.displayMessageToOwner(
+                        new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
+            }
         }
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
-        if (sleepy && hungerTime < 0.85 * PokecubeMod.core.getConfig().pokemobLifeSpan)
+        if (sleepy && hungerTime < 0)
         {
             if (!isGoodSleepingSpot(c))
             {
@@ -145,7 +165,6 @@ public class AIHungry extends AIBase
                 && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
-
             float toHeal = entity.getHealth() + dh;
             entity.setHealth(Math.min(toHeal, entity.getMaxHealth()));
         }
@@ -345,7 +364,7 @@ public class AIHungry extends AIBase
         {
             if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
             {
-                hungrymob.setHungerTime(0);
+                hungrymob.setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 return;
             }
@@ -398,7 +417,7 @@ public class AIHungry extends AIBase
             }
             else
             {
-                hungrymob.setHungerTime(0);
+                hungrymob.setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 return;
             }

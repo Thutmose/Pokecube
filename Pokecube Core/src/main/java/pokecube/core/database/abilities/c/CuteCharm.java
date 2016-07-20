@@ -21,7 +21,7 @@ public class CuteCharm extends Ability
         if (mob != move.attacked || move.pre || move.attacker == move.attacked) return;
         Move_Base attack = move.getMove();
         if (attack == null || (attack.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) == 0) return;
-        move.infatuate[0] = move.infatuate[0] || Math.random() > 0.7;
+        move.infatuateTarget = move.infatuateTarget || Math.random() > 0.7;
     }
 
     @Override

@@ -32,7 +32,8 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
     boolean teleport = false;
     Vector3 targetLocation;
 
-    public static void sendAttackUse(@Nonnull Entity attacker, @Nullable Entity target, @Nullable Vector3 location, boolean teleport)
+    public static void sendAttackUse(@Nonnull Entity attacker, @Nullable Entity target, @Nullable Vector3 location,
+            boolean teleport)
     {
         PacketPokemobAttack packet = new PacketPokemobAttack();
         packet.entityId = attacker.getEntityId();
@@ -92,7 +93,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         Vector3 temp = Vector3.getNewVector().set(user);
         int currentMove = pokemob.getMoveIndex();
 
-        if (currentMove == 5) { return; }
+        if (currentMove == 5 || !MovesUtils.canUseMove(pokemob)) { return; }
 
         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
         boolean teleport = message.teleport;
@@ -115,6 +116,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
             Entity owner = pokemob.getPokemonOwner();
             if (owner != null)
             {
+                if (target == user) target = null;
                 Entity closest = target;
                 if (closest instanceof IPokemob)
                 {
@@ -124,6 +126,8 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                         if (tempMob == closest)
                         {
                             pokemob.executeMove(null, temp, 0);
+                            pokemob.getMoveStats().nextMoveTick = user.ticksExisted
+                                    + PokecubeMod.core.getConfig().attackCooldown;
                         }
                         return;
                     }
@@ -141,8 +145,14 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                     else if (closest == null)
                     {
                         pokemob.executeMove(closest, temp, 0);
+                        pokemob.getMoveStats().nextMoveTick = user.ticksExisted
+                                + PokecubeMod.core.getConfig().attackCooldown;
+                        return;
                     }
-                    else pokemob.executeMove(closest, temp.set(closest), closest.getDistanceToEntity((Entity) pokemob));
+                    else
+                    {
+                        pokemob.executeMove(closest, temp.set(closest), closest.getDistanceToEntity((Entity) pokemob));
+                    }
                 }
                 else if (message.targetLocation != null)
                 {

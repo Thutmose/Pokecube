@@ -1,7 +1,6 @@
 package pokecube.core.blocks.pc;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -57,18 +56,6 @@ public class ContainerPC extends Container
         else inv = temp;
         invPlayer = ivplay;
         pcTile = pc;
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-        {
-            PacketPC packet = new PacketPC(PacketPC.ONOPEN);
-            packet.data.setInteger("N", inv.boxes.length);
-            packet.data.setBoolean("A", inv.autoToPC);
-            packet.data.setBoolean("O", inv.seenOwner);
-            for (int i = 0; i < inv.boxes.length; i++)
-            {
-                packet.data.setString("N" + i, inv.boxes[i]);
-            }
-            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) ivplay.player);
-        }
         bindInventories();
     }
 

@@ -43,7 +43,7 @@ public class Move_Transform extends Move_Basic
         public void spawnClientEntities(MovePacketInfo info)
         {
             // TODO Auto-generated method stub
-            
+
         }
 
     }
@@ -101,8 +101,9 @@ public class Move_Transform extends Move_Basic
             {
                 if (MovesUtils.contactAttack(attacker, attacked))
                 {
-                    if (doAttack(attacker, attacked)) MovesUtils.attack(new MovePacket(attacker, attacked, name,
-                            move.type, 25, 1, IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE));
+                    MovePacket packet = new MovePacket(attacker, attacked, name, move.type, 25, 1,
+                            IMoveConstants.STATUS_NON, IMoveConstants.CHANGE_NONE);
+                    onAttack(packet);
                 }
             }
         }

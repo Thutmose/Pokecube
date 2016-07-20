@@ -17,12 +17,12 @@ import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
-import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -130,7 +130,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     public void eat(Entity e)
     {
         vBak.set(vec);
-        int hungerValue = AIHungry.HUNGERDELAY / 4;
+        int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
 
         if (e instanceof EntityItem)
         {
@@ -157,14 +157,10 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
             }
         }
         vec.set(vBak);
-        hungerValue = Math.min(hungerValue, getHungerTime());
         setHungerTime(getHungerTime() - hungerValue);
         hungerCooldown = 0;
-
         setPokemonAIState(HUNTING, false);
-
         if (this.isDead) return;
-
         float missingHp = this.getMaxHealth() - this.getHealth();
         float toHeal = this.getHealth() + Math.max(1, missingHp * 0.25f);
         this.setHealth(Math.min(toHeal, getMaxHealth()));

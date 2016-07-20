@@ -159,7 +159,6 @@ public class AIAttack extends AIBase implements IAICombat
             addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
             return;
         }
-
         double var1 = (double) (this.attacker.width * 2.0F) * (this.attacker.width * 2.0F);
         boolean distanced = false;
         boolean self = false;
@@ -229,6 +228,7 @@ public class AIAttack extends AIBase implements IAICombat
                 self = true;
             }
         }
+        boolean canUseMove = MovesUtils.canUseMove(pokemob);
 
         boolean inRange = false;
 
@@ -318,7 +318,7 @@ public class AIAttack extends AIBase implements IAICombat
                 if (delayTime <= 0)
                 {
                     applyDelay(pokemob, move.name, distanced);
-                    delay = true;
+                    delay = canUseMove;
                 }
                 shouldPath = false;
                 setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, true);

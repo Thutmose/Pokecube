@@ -155,12 +155,12 @@ public class MovesUtils implements IMoveConstants
             return 0;
         }
 
-        if (packet.infatuate[0] && attacked instanceof IPokemob)
+        if (packet.infatuateTarget && attacked instanceof IPokemob)
         {
             ((IPokemob) attacked).getMoveStats().infatuateTarget = (Entity) attacker;
         }
 
-        if (packet.infatuate[1] && attacker instanceof IPokemob)
+        if (packet.infatuateAttacker && attacker instanceof IPokemob)
         {
             attacker.getMoveStats().infatuateTarget = attacked;
         }
@@ -613,8 +613,7 @@ public class MovesUtils implements IMoveConstants
         }
     }
 
-    protected static void displayStatsMessage(IPokemob attacker, Entity attacked, float efficiency, byte stat,
-            byte amount)
+    public static void displayStatsMessage(IPokemob attacker, Entity attacked, float efficiency, byte stat, byte amount)
     {
         ITextComponent text;
         if (efficiency == -2)
@@ -1217,5 +1216,11 @@ public class MovesUtils implements IMoveConstants
             @Nonnull Vector3 start, @Nonnull Vector3 end)
     {
         useMove(getMoveFromName(move), user, target, start, end);
+    }
+
+    public static boolean canUseMove(IPokemob attacker)
+    {
+        if (attacker.getMoveStats().nextMoveTick <= ((Entity) attacker).ticksExisted) return true;
+        return false;
     }
 }

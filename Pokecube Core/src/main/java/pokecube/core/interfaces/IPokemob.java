@@ -84,23 +84,28 @@ public interface IPokemob extends IMoveConstants
         public int           criticalLevel;
         public byte          statusChange;
         public byte          changeAddition;
-        public float         stabFactor      = 1.5f;
-        public boolean       stab            = false;
-        public boolean       hit             = false;
+        public float         stabFactor        = 1.5f;
+        public boolean       stab              = false;
+        public boolean       hit               = false;
+        public int           damageDealt       = 0;
         /** Is the move packet before of after damage is done */
         public final boolean pre;
         /** Detect, Protect, wonder guard will set this true. */
-        public boolean       canceled        = false;
+        public boolean       canceled          = false;
         /** Did the move crit */
-        public boolean       didCrit         = false;
+        public boolean       didCrit           = false;
         /** False swipe, sturdy ability and focus items would set this true. */
-        public boolean       noFaint         = false;
+        public boolean       noFaint           = false;
         /** Used in the protection moves, accounts their accuracy via this
          * variable */
-        public boolean       failed          = false;
-        /** index 0 is to infatuate the attacked target, index 1 infatuates the
-         * attacker. */
-        public boolean[]     infatuate       = { false, false };
+        public boolean       failed            = false;
+        /** Move has failed for some unspecified reason, will not give failure
+         * message, will not process past preAttack */
+        public boolean       denied            = false;
+        /** does target get infatuated */
+        public boolean       infatuateTarget   = false;
+        /** does attacker get infatuated */
+        public boolean       infatuateAttacker = false;
         /** Stat modifications for target */
         public int[]         attackedStatModification;
         /** Stat modifications for attacker */
@@ -110,9 +115,9 @@ public interface IPokemob extends IMoveConstants
         /** Stat modifications chance for attacker */
         public float         attackerStatModProb;
         /** modifies supereffectiveness */
-        public float         superEffectMult = 1;
+        public float         superEffectMult   = 1;
         /** Stat multpliers */
-        public float[]       statMults       = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+        public float[]       statMults         = { 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 
         public MovePacket(IPokemob attacker, Entity attacked, Move_Base move)
         {
@@ -149,7 +154,7 @@ public interface IPokemob extends IMoveConstants
 
         public Move_Base getMove()
         {
-            return Move_Base.instance.getMove(attack);
+            return MovesUtils.getMoveFromName(attack);
         }
 
     }
@@ -206,6 +211,8 @@ public interface IPokemob extends IMoveConstants
         public int                            fuseTime                   = 30;
         public int                            num                        = 0;
         public int                            newMoves                   = 0;
+        // next tick when a move can be used
+        public int                            nextMoveTick               = 0;
     }
 
     /*
@@ -314,6 +321,7 @@ public interface IPokemob extends IMoveConstants
     void executeMove(Entity target, Vector3 targetLocation, float f);
 
     Ability getAbility();
+
     int getAbilityIndex();
 
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
@@ -581,6 +589,7 @@ public interface IPokemob extends IMoveConstants
     void returnToPokecube();
 
     void setAbility(Ability ability);
+
     void setAbilityIndex(int index);
 
     void setAncient(boolean toSet);

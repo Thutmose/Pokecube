@@ -3406,13 +3406,13 @@
     </Pokemon>
     <Pokemon base="true" name="Exeggcute" number="102">
         <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
+            <EVOLUTIONMODE>Ileafstone</EVOLUTIONMODE>
             <CAPTURERATE>90</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Plant</SPECIES>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <MASSKG>2.5</MASSKG>
-            <EVOLVESTO>103</EVOLVESTO>
+            <EVOLVESTO>Exeggutor</EVOLVESTO>
             <EXPYIELD>65</EXPYIELD>
             <Drop n="1" r="1" id="minecraft:wheat_seeds"/>
             <FOODMATERIAL>light</FOODMATERIAL>

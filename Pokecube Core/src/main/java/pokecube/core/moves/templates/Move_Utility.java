@@ -8,7 +8,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
@@ -21,59 +20,14 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.moves.TreeRemover;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class Move_Utility extends Move_Basic
 {
 
     public static ArrayList<String> moves = new ArrayList<String>();
-
-    public static void consumeBerries(IPokemob mob, int number)
-    {
-        for (int n = 2; n < 7; n++)
-        {
-            ItemStack i = mob.getPokemobInventory().getStackInSlot(n);
-
-            if (i != null && i.getItem() instanceof ItemBerry)
-            {
-                if (i.stackSize >= number)
-                {
-                    i.splitStack(number);
-                    if (i.stackSize <= 0)
-                    {
-                        i = null;
-                        mob.getPokemobInventory().setInventorySlotContents(n, null);
-                    }
-                    return;
-                }
-                else
-                {
-                    number -= i.stackSize;
-                    i = null;
-                }
-            }
-            if (number <= 0) return;
-        }
-    }
-
-    public static int countBerries(IPokemob mob, EntityPlayer player)
-    {
-        int ret = 0;
-
-        if (player.capabilities.isCreativeMode) return Integer.MAX_VALUE;
-
-        for (int i = 2; i < 7; i++)
-        {
-            ItemStack item = mob.getPokemobInventory().getStackInSlot(i);
-            if (item != null && item.getItem() instanceof ItemBerry)
-            {
-                ret += item.stackSize;
-            }
-        }
-        return ret;
-    }
 
     public static boolean isUtilityMove(String move)
     {
@@ -179,35 +133,27 @@ public class Move_Utility extends Move_Basic
             return;
         }
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return;
+        IHungrymob mob = (IHungrymob) user;
+        boolean used = false;
+        int count = 10;
+        int level = user.getLevel();
+        int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
         if (this.name == MOVE_FLASH)
         {
-            IPokemob a = (user);
-            boolean used = false;
-            EntityLivingBase owner = a.getPokemonOwner();
-            int number = countBerries(a, (EntityPlayer) owner);
-            int count = 10;
-            int level = a.getLevel();
-            count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
-            used = count <= number;
+            count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3))) * hungerValue;
+            used = mob.getHungerTime() + count < 0;
+            EntityLivingBase owner = user.getPokemonOwner();
             if (used)
             {
                 owner.addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 5000));
-                consumeBerries(a, count);
-            }
-            else
-            {
-                CommandTools.sendError(owner, "pokemob.action.needsberries");
+                mob.setHungerTime(mob.getHungerTime() + count);
             }
             return;
         }
-        boolean used = false;
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(),
                 location.intY(), location.intZ());
 
         EntityLivingBase owner = user.getPokemonOwner();
-
-        int number = 0;
-
         if (owner != null && owner instanceof EntityPlayer)
         {
             if (!repel)
@@ -215,28 +161,19 @@ public class Move_Utility extends Move_Basic
                 CommandTools.sendError(owner, "pokemob.action.denyrepel");
                 return;
             }
-            number = countBerries(user, (EntityPlayer) owner);
             EntityPlayer player = (EntityPlayer) owner;
-
             BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
                     location.getBlockState(player.getEntityWorld()), player);
-
             MinecraftForge.EVENT_BUS.post(evt);
-
             if (evt.isCanceled()) return;
         }
-        else
-        {
-            number = 10;
-        }
-
-        int count = 1;
-        int level = user.getLevel();
 
         if (this.name == MOVE_DIG)
         {
-            count = (int) Math.max(1, Math.ceil(digHole(user, location, true) * Math.pow((100 - level) / 100d, 3)));
-            if (count <= number && count > 0)
+            count = (int) Math.max(1, Math.ceil(digHole(user, location, true) * Math.pow((100 - level) / 100d, 3)))
+                    * hungerValue;
+            System.out.println(location);
+            if (count > 0)
             {
                 digHole(user, location, false);
                 used = true;
@@ -244,8 +181,9 @@ public class Move_Utility extends Move_Basic
         }
         else if (this.name == MOVE_ROCKSMASH)
         {
-            count = (int) Math.max(1, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)));
-            if (count <= number && count > 0)
+            count = (int) Math.max(1, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)))
+                    * hungerValue;
+            if (count > 0)
             {
                 smashRock(user, location, false);
                 used = true;
@@ -267,8 +205,8 @@ public class Move_Utility extends Move_Basic
                     if (cut != 0) break;
                 }
             }
-            count = (int) Math.max(1, Math.ceil(cut * Math.pow((100 - level) / 100d, 3)));
-            if (count <= number && count > 0)
+            count = (int) Math.max(1, Math.ceil(cut * Math.pow((100 - level) / 100d, 3))) * hungerValue;
+            if (count > 0)
             {
                 remover.cut(false);
                 used = true;
@@ -277,11 +215,7 @@ public class Move_Utility extends Move_Basic
         }
         if (used)
         {
-            consumeBerries(user, count);
-        }
-        else
-        {
-            CommandTools.sendError(owner, "pokemob.action.needsberries");
+            mob.setHungerTime(mob.getHungerTime() + count);
         }
     }
 

@@ -106,7 +106,7 @@ public class EventsHandler
             if (pokemob != null)
             {
                 ((EntityLivingBase) pokemob).setHealth(10);
-                ((IHungrymob) pokemob).setHungerTime(0);
+                ((IHungrymob) pokemob).setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
             }
         }
     }

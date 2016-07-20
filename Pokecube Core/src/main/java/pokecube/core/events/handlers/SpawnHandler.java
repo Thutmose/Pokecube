@@ -628,7 +628,12 @@ public final class SpawnHandler
         {
             Vector3 v = getRandomSpawningPointNearEntity(world, players.get(0),
                     PokecubeMod.core.getConfig().maxSpawnRadius, 0);
-            if (v != null)
+            AxisAlignedBB box = v.getAABB();
+            int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
+            int height = v.getMaxY(world);
+            List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
+                    box.expand(radius, Math.max(height, radius), radius));
+            if (v != null && list.size() < MAXNUM * MAX_DENSITY)
             {
                 long time = System.nanoTime();
                 int num = doSpawnForLocation(world, v);

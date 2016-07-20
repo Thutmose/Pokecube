@@ -1,6 +1,7 @@
 package pokecube.core.ai.thread.aiRunnables;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -196,7 +197,8 @@ public class AIGatherStuff extends AIBase
         if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null) return false;
         if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN || storage.seeking.isEmpty()) return false;
         int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? 20 : 200;
-        if (pokemob.getHome() == null || entity.ticksExisted % rate != 0) return false;
+        Random rand = new Random(pokemob.getRNGValue());
+        if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt()) return false;
 
         if(cooldowns[0] < -2000)
         {

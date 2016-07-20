@@ -1,6 +1,7 @@
 package pokecube.core.ai.thread.aiRunnables;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -67,6 +68,7 @@ public class AIHungry extends AIBase
     double             moveSpeed;
     Vector3            v       = Vector3.getNewVector();
     Vector3            v1      = Vector3.getNewVector();
+    Random             rand;
 
     public AIHungry(final EntityLiving entity, final EntityItem berry_, double distance)
     {
@@ -105,8 +107,10 @@ public class AIHungry extends AIBase
         }
 
         double hurtTime = deathTime / 2d;
+        Random rand = new Random(entity.ticksExisted);
+        int tick = rand.nextInt(100);
         if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && entity.getAttackTarget() == null
-                && !hungrymob.neverHungry() && entity.ticksExisted % 100 == 0)
+                && !hungrymob.neverHungry() && entity.ticksExisted % 100 == tick)
         {
             boolean ate = false;
             for (int i = 2; i < 7; i++)
@@ -161,7 +165,7 @@ public class AIHungry extends AIBase
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
 
-        if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == 0
+        if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == tick
                 && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
@@ -190,7 +194,7 @@ public class AIHungry extends AIBase
             TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.AIR);
             foodLoc.clear();
         }
-        else if (entity.ticksExisted % 20 == 0)
+        else if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
             boolean shouldChangePath = true;
             if (!this.entity.getNavigator().noPath())
@@ -232,7 +236,7 @@ public class AIHungry extends AIBase
             foodLoc.clear();
             addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
         }
-        else if (entity.ticksExisted % 20 == 0)
+        else if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
             boolean shouldChangePath = true;
             block = false;
@@ -306,7 +310,7 @@ public class AIHungry extends AIBase
             foodLoc.clear();
             addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
         }
-        else if (entity.ticksExisted % 20 == 0)
+        else if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
             boolean shouldChangePath = true;
             block = false;
@@ -576,6 +580,7 @@ public class AIHungry extends AIBase
         }
         else
         {
+            rand = new Random(pokemob.getRNGValue());
             // Go find and eat the block
             double d = foodLoc.addTo(0.5, 0.5, 0.5).distToEntity(entity);
             foodLoc.addTo(-0.5, -0.5, -0.5);

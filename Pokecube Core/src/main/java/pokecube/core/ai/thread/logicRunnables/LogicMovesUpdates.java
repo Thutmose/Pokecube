@@ -1,6 +1,7 @@
 package pokecube.core.ai.thread.logicRunnables;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.entity.passive.EntityAnimal;
@@ -30,7 +31,7 @@ public class LogicMovesUpdates extends LogicBase
     final private EntityAnimal entity;
     final IPokemob             pokemob;
     final PokedexEntry         entry;
-    Vector3                    v = Vector3.getNewVector();
+    Vector3                    v       = Vector3.getNewVector();
 
     public LogicMovesUpdates(EntityAnimal entity)
     {
@@ -122,7 +123,8 @@ public class LogicMovesUpdates extends LogicBase
 
     protected void updateOngoingMoves()
     {
-        if (entity.ticksExisted % 40 == 0)
+        Random rand = new Random(entity.getEntityId());
+        if (entity.ticksExisted % 40 == rand.nextInt(40))
         {
             Set<Move_Ongoing> effects = new HashSet<Move_Ongoing>();
             for (Move_Ongoing m : pokemob.getMoveStats().ongoingEffects.keySet())
@@ -148,6 +150,7 @@ public class LogicMovesUpdates extends LogicBase
         int duration = 10;
 
         short timer = pokemob.getStatusTimer();
+        Random rand = new Random(pokemob.getRNGValue());
 
         if (timer > 0) pokemob.setStatusTimer((short) (timer - 1));
         byte status = pokemob.getStatus();
@@ -162,7 +165,7 @@ public class LogicMovesUpdates extends LogicBase
             }
         }
 
-        if (entity.ticksExisted % 20 == 0)
+        if (entity.ticksExisted % 20 == rand.nextInt(40))
         {
             int statusChange = pokemob.getChanges();
 
@@ -187,7 +190,7 @@ public class LogicMovesUpdates extends LogicBase
             }
             return;
         }
-        if (entity.ticksExisted % 20 == 0)
+        if (entity.ticksExisted % 20 == rand.nextInt(40))
         {
             if (status == IMoveConstants.STATUS_BRN)
             {

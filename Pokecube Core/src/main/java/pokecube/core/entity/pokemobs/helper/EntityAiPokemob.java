@@ -55,11 +55,12 @@ import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
-import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
-import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
-import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.thread.logicRunnables.LogicCollision;
+import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
+import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
+import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
+import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
 import pokecube.core.ai.utils.GuardAI;
@@ -93,16 +94,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public PokemobAIUtilityMove utilMoveAI;
     private AIStuff             aiStuff;
 
-    private int                 lastHadTargetTime = 0;
-
     private PokeNavigator       navi;
     private PokemobMoveHelper   mover;
-    boolean                     initAI            = true;
-    boolean                     popped            = false;
+    boolean                     initAI         = true;
+    boolean                     popped         = false;
     private PokemobAI           aiObject;
-    boolean                     isAFish           = false;
+    boolean                     isAFish        = false;
 
-    public TerrainSegment       currentTerrain    = null;
+    public TerrainSegment       currentTerrain = null;
 
     float                       moveF;
 
@@ -364,6 +363,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         aiStuff.addAILogic(new LogicMovesUpdates(this));
         aiStuff.addAILogic(new LogicInMaterials(this));
         aiStuff.addAILogic(new LogicFloatFlySwim(this));
+        aiStuff.addAILogic(new LogicMiscUpdate(this));
 
     }
 
@@ -798,24 +798,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             onGround = true;
         }
         super.onLivingUpdate();
-        if (ticksExisted % 20 == 0)
-        {
-            this.isShearable(null, worldObj, here.getPos());
-        }
-
-        if (getPokemonAIState(IMoveConstants.ANGRY) && getAttackTarget() == null)
-        {
-            this.setPokemonAIState(ANGRY, false);
-        }
-
-        if (!getPokemonAIState(IMoveConstants.ANGRY))
-        {
-            lastHadTargetTime--;
-            if (lastHadTargetTime == 0)
-            {
-                this.setModifiers(PokecubeSerializer.intAsModifierArray(1717986918));
-            }
-        }
 
         if (getPokemonAIState(MATING))
         {
@@ -1224,10 +1206,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setAttackTarget(EntityLivingBase entity)
     {
-        if (entity == null)
-        {
-            lastHadTargetTime = 100;
-        }
         if (entity != null && entity.equals(this.getPokemonOwner())) { return; }
         if (entity != null && entity.equals(this)) { return; }
         if (entity != null) setPokemonAIState(SITTING, false);

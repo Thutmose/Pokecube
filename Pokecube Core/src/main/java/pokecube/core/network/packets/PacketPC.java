@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
 {
@@ -23,8 +25,23 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
     public static final byte TOGGLEAUTO = 4;
     public static final byte BIND       = 5;
 
-    byte                     message;
-    public NBTTagCompound    data       = new NBTTagCompound();
+    public static void sendInitialSyncMessage(EntityPlayer sendTo)
+    {
+        InventoryPC inv = InventoryPC.getPC(sendTo);
+        PacketPC packet = new PacketPC(PacketPC.ONOPEN);
+        packet.data.setInteger("N", inv.boxes.length);
+        packet.data.setBoolean("A", inv.autoToPC);
+        packet.data.setBoolean("O", inv.seenOwner);
+        packet.data.setInteger("C", inv.getPage());
+        for (int i = 0; i < inv.boxes.length; i++)
+        {
+            packet.data.setString("N" + i, inv.boxes[i]);
+        }
+        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) sendTo);
+    }
+
+    byte                  message;
+    public NBTTagCompound data = new NBTTagCompound();
 
     public PacketPC()
     {
@@ -102,16 +119,17 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         if (message.message == ONOPEN)
         {
             InventoryPC.blank = new InventoryPC("blank");
-            InventoryPC bag = InventoryPC.getPC(player);
-            bag.seenOwner = message.data.getBoolean("O");
-            bag.autoToPC = message.data.getBoolean("A");
+            InventoryPC pc = InventoryPC.getPC(player);
+            pc.seenOwner = message.data.getBoolean("O");
+            pc.autoToPC = message.data.getBoolean("A");
+            if (message.data.hasKey("C")) pc.setPage(message.data.getInteger("C"));
             if (message.data.hasKey("N"))
             {
                 int num = message.data.getInteger("N");
-                bag.boxes = new String[num];
-                for (int i = 0; i < bag.boxes.length; i++)
+                pc.boxes = new String[num];
+                for (int i = 0; i < pc.boxes.length; i++)
                 {
-                    bag.boxes[i] = message.data.getString("N" + i);
+                    pc.boxes[i] = message.data.getString("N" + i);
                 }
             }
         }
@@ -146,7 +164,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
             if (container != null)
             {
                 boolean owned = message.data.getBoolean("O");
-                System.out.println(owned+" "+player);
+                System.out.println(owned + " " + player);
                 if (owned)
                 {
                     container.pcTile.toggleBound();

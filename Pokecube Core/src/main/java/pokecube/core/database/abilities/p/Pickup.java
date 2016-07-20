@@ -37,7 +37,8 @@ public class Pickup extends Ability
                 Collections.shuffle(items);
                 ItemStack item = (ItemStack) items.get(0);
 
-                if (item != null) poke.setHeldItem(EnumHand.MAIN_HAND, item);;
+                if (item != null) poke.setHeldItem(EnumHand.MAIN_HAND, item.copy());
+                ;
             }
         }
     }

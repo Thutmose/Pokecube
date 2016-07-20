@@ -34,8 +34,8 @@ import pokecube.core.database.PokedexEntryLoader.Key;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
@@ -1538,7 +1538,7 @@ public class PokedexEntry
         for (int i = 0; i < possibleMoves.size(); i++)
         {
             String s = possibleMoves.get(i);
-            if (Move_Base.instance.isMoveImplemented(s))
+            if (MovesUtils.isMoveImplemented(s))
             {
                 moves.add(s);
             }
@@ -1553,7 +1553,7 @@ public class PokedexEntry
             for (int i = 0; i < lvls.size(); i++)
             {
                 String s = lvls.get(i);
-                if (Move_Base.instance.isMoveImplemented(s))
+                if (MovesUtils.isMoveImplemented(s))
                 {
                     moves.add(s);
                 }

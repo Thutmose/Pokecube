@@ -46,7 +46,6 @@ public class ItemPokemobUseable extends Item implements IPokemobUseable {
 			else
 				return useByPokemob(mob, stack);
 		}
-		
 		return false;
 	}
 	

@@ -176,7 +176,8 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
                 String n;
                 Entity owner = ((IPokemob) entityliving).getPokemonOwner();
                 // Your pokemob has white name, other's has gray name.
-                int colour = renderManager.renderViewEntity.equals(owner) ? 0xFFFFFF : owner==null?0x444444 :0xAAAAAA;
+                int colour = renderManager.renderViewEntity.equals(owner) ? 0xFFFFFF
+                        : owner == null ? 0x444444 : 0xAAAAAA;
                 if ((entityliving.hasCustomName()))
                 {
                     n = entityliving.getCustomNameTag();
@@ -205,6 +206,14 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
 
             String s = "L." + ((IPokemob) entityliving).getLevel();
             fontrenderer.drawString(s, -length, offset + 5, color);
+
+            if (((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED))
+            {
+                color = 0x00FF00;
+                s = ((int) entityliving.getHealth()) + "/" + ((int) entityliving.getMaxHealth());
+                length = fontrenderer.getStringWidth(s);
+                fontrenderer.drawString(s, 40-length, offset + 5, color);
+            }
             GlStateManager.enableDepth();
             GlStateManager.enableLighting();
             GL11.glPopMatrix();

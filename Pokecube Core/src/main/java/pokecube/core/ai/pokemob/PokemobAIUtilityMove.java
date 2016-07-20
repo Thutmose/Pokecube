@@ -89,7 +89,6 @@ public class PokemobAIUtilityMove extends EntityAIBase
         double dist = loc.distToSq(destination);
         double var1 = 16;
         Move_Base move = MovesUtils.getMoveFromName(pokemon.getMove(pokemon.getMoveIndex()));
-
         if (move == null) move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
         if ((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
         {
@@ -97,7 +96,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            MovesUtils.useMove(move, entity, null, v.set(entity), destination);
+            MovesUtils.useMove(move, entity, null, Vector3.getNewVector().set(entity), destination);
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;

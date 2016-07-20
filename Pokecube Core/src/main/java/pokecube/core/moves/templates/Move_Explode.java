@@ -197,11 +197,4 @@ public class Move_Explode extends Move_Ongoing
     {
         return false;
     }
-
-    @Override
-    public void postAttack(IPokemob attacker, Entity attacked, int f, int finalAttackStrength)
-    {
-        EntityLivingBase voltorb = (EntityLivingBase) attacker;
-        voltorb.attackEntityFrom(DamageSource.generic, voltorb.getMaxHealth());
-    }
 }

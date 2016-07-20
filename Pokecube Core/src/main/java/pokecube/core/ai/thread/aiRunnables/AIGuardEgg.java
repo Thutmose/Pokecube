@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.entity.IBreedingMob;
@@ -29,25 +30,12 @@ public class AIGuardEgg extends AIBase
     }
 
     @Override
-    public void reset()
+    public void doMainThreadTick(World world)
     {
-        egg = null;
-    }
-
-    @Override
-    public void run()
-    {
-        breedingMob.setLoveTimer(0);
-        if (entity.getDistanceSqToEntity(egg) < 4) return;
-        Path path = entity.getNavigator().getPathToEntityLiving(egg);
-        this.addEntityPath(entity, path, pokemob.getMovementSpeed());
-    }
-
-    @Override
-    public boolean shouldRun()
-    {
-        if (egg != null) return egg.isDead ? false : true;
-        if (pokemob.getSexe() == IPokemob.MALE) return false;
+        super.doMainThreadTick(world);
+        if (cooldown-- > 0 || egg != null) { return; }
+        if (pokemob.getSexe() == IPokemob.MALE) return;
+        cooldown = 20;
         AxisAlignedBB bb = entity.getEntityBoundingBox().expand(16, 8, 16);
         List<Entity> list2 = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
         {
@@ -61,8 +49,28 @@ public class AIGuardEgg extends AIBase
         if (!list2.isEmpty())
         {
             egg = (EntityPokemobEgg) list2.get(0);
-            return true;
         }
+    }
+
+    @Override
+    public void reset()
+    {
+        egg = null;
+    }
+
+    @Override
+    public void run()
+    {
+        breedingMob.resetLoveStatus();
+        if (entity.getDistanceSqToEntity(egg) < 4) return;
+        Path path = entity.getNavigator().getPathToEntityLiving(egg);
+        this.addEntityPath(entity, path, pokemob.getMovementSpeed());
+    }
+
+    @Override
+    public boolean shouldRun()
+    {
+        if (egg != null) return egg.isDead ? false : true;
         return false;
     }
 

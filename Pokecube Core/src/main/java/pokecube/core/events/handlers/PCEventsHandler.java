@@ -153,11 +153,7 @@ public class PCEventsHandler
             PCSaveHandler.getInstance().seenPCCreator = true;
         }
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-        InventoryPC pc = InventoryPC.getPC(evt.player);
-        PacketPC packet = new PacketPC(PacketPC.ONOPEN);
-        packet.data.setBoolean("O", pc.seenOwner);
-        packet.data.setBoolean("A", pc.autoToPC);
-        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) evt.player);
+        PacketPC.sendInitialSyncMessage(evt.player);
 
     }
 

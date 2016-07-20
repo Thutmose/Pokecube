@@ -94,7 +94,14 @@ public class ExtraDatabase
                 }
                 catch (Exception e)
                 {
-                    System.out.println(old + " " + xml);
+                    try
+                    {
+                        System.out.println(old.name+" "+old.modId + " " + xml.name+" "+xml.modId+" "+e);
+                    }
+                    catch (Exception e1)
+                    {
+                        e1.printStackTrace();
+                    }
                     add = false;
                 }
             }

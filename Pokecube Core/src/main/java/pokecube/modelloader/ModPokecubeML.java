@@ -32,6 +32,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.client.render.AnimationLoader;
+import pokecube.modelloader.common.Config;
 import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
 
@@ -147,10 +148,7 @@ public class ModPokecubeML implements IMobProvider
         configDir = evt.getModConfigurationDirectory();
 
         Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
-        config.load();
-        checkResourcesForModels = config.getBoolean("checkForResourcepacks", "General", true,
-                "Disabling this will prevent Pokecube from checking resource packs for models, it might speed up loading times.");
-        config.save();
+        new Config(config.getConfigFile());
 
         try
         {

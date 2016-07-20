@@ -9,26 +9,12 @@ import thut.core.common.config.Configure;
 
 public class Config extends ConfigBase
 {
-    public static Config instance;
-    
-    @Configure(category = "loading")
-    public String[]           priorityOrder   = { "pokecube_ml", "pokecube_mobs" };
+    public static Config      instance;
 
-    public Comparator<String> modIdComparator = new Comparator<String>()
-                                              {
-                                                  @Override
-                                                  public int compare(String o1, String o2)
-                                                  {
-                                                      int prioro1 = Integer.MAX_VALUE;
-                                                      int prioro2 = Integer.MIN_VALUE;
-                                                      for (int i = 0; i < priorityOrder.length; i++)
-                                                      {
-                                                          if (o1.equals(priorityOrder[i])) prioro1 = i;
-                                                          if (o2.equals(priorityOrder[i])) prioro2 = i;
-                                                      }
-                                                      return prioro1 - prioro2;
-                                                  }
-                                              };
+    @Configure(category = "loading")
+    public String[]           priorityOrder = { "pokecube_ml", "pokecube_mobs" };
+
+    public Comparator<String> modIdComparator;
 
     public Config()
     {
@@ -48,7 +34,23 @@ public class Config extends ConfigBase
     @Override
     protected void applySettings()
     {
-        // TODO Auto-generated method stub
+        modIdComparator = new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                int prioro1 = Integer.MAX_VALUE;
+                int prioro2 = Integer.MIN_VALUE;
+                for (int i = 0; i < priorityOrder.length; i++)
+                {
+                    if (o1.equals(priorityOrder[i])) prioro1 = i;
+                    if (o2.equals(priorityOrder[i])) prioro2 = i;
+                }
+                return prioro1 - prioro2;
+            }
+        };
 
+        // TODO checkResourcesForModels =
+        // config.getBoolean("checkForResourcepacks", "General", true,
     }
 }

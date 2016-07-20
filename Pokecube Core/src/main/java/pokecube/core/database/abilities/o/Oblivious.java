@@ -17,7 +17,7 @@ public class Oblivious extends Ability
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         mob.getMoveStats().infatuateTarget = null;
-        move.infatuate[0] = false;
+        move.infatuateTarget = false;
     }
 
     @Override

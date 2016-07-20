@@ -147,6 +147,7 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         // Mega Belt
         GameRegistry.addRecipe(getStack("megabelt"), new Object[] { " S ", "L L", " I ", 'L', Items.LEATHER, 'S',
                 getStack("megastone"), 'I', Items.IRON_INGOT });
+        GameRegistry.addShapelessRecipe(getStack("megahat"), getStack("megastone"), Items.LEATHER_HELMET);
 
         // Mega Stone
         GameRegistry.addRecipe(getStack("megastone"),

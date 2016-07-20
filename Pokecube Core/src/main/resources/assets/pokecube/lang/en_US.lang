@@ -38,6 +38,7 @@ pokemob.agress=A wild %1$s has appeared
 
 pokemob.hungry.slow=Your Pokémob is too hungry to move quickly
 pokemob.hungry.hurt=%1$s §cis starving!
+pokemob.hungry.dead=%1$s §chas died of starvation!
 
 pokemob.command.attack=You tell %1$s to attack %2$s
 

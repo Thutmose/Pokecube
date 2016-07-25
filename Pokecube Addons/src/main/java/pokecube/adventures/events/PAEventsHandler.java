@@ -45,7 +45,6 @@ public class PAEventsHandler
             EntityTrainer t = (EntityTrainer) owner;
             t.outID = null;
             t.outMob = null;
-            System.out.println("Recalling " + recalled);
             t.addPokemob(PokecubeManager.pokemobToItem(recalled));
         }
     }

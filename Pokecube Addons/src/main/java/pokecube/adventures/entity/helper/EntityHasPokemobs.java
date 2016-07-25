@@ -252,7 +252,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (target == null || getAIState(THROWING) || outMob != null) return;
 
         ItemStack i = getNextPokemob();
-        System.out.println(i);
         if (i != null)
         {
             this.setAIState(INBATTLE, true);

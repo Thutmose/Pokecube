@@ -82,7 +82,7 @@ public class PacketPokemobMessage implements IMessage, IMessageHandler<PacketPok
         {
             ((IPokemob) e).displayMessageToOwner(component);
         }
-        else if (e instanceof EntityPlayer)
+        else if (e instanceof EntityPlayer && e == player)
         {
             pokecube.core.client.gui.GuiInfoMessages.addMessage(component);
         }

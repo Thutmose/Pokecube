@@ -114,7 +114,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 IBlockState stateDown = entity.worldObj.getBlockState(pos.down());
                 IBlockState state = entity.worldObj.getBlockState(pos);
                 boolean jump = stateDown.getMaterial().isSolid() || state.getMaterial().isSolid();
-                if (d2 > this.entity.stepHeight && jump && !air)
+                if (d2 >= this.entity.stepHeight && jump && !air)
                 {
                     this.entity.getJumpHelper().setJumping();
                 }

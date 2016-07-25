@@ -227,7 +227,7 @@ public class Compat
         }
     }
 
-    @Optional.Method(modid = "Tesla")
+    @Optional.Method(modid = "tesla")
     @SubscribeEvent
     public void addTeslaInterferance(EntityJoinWorldEvent evt)
     {
@@ -245,7 +245,7 @@ public class Compat
         if (!TESLALOADED) new SiphonHandler();
     }
 
-    @Optional.Method(modid = "Tesla")
+    @Optional.Method(modid = "tesla")
     @EventHandler
     public void TeslaCompat(FMLPreInitializationEvent evt)
     {

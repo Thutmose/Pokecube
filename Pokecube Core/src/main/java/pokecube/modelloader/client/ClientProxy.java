@@ -72,10 +72,11 @@ public class ClientProxy extends CommonProxy
             for (PokedexEntry p : Database.allFormes)
             {
                 bar2.step(p.getName());
+                String name = p.getName();
+                if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
                 try
                 {
-                    ResourceLocation tex = new ResourceLocation(mod,
-                            provider.getModelDirectory(p) + p.getName() + ".xml");
+                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");
                     IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                     res.getInputStream().close();
                     ArrayList<String> models = modModels.get(mod);
@@ -83,14 +84,13 @@ public class ClientProxy extends CommonProxy
                     {
                         modModels.put(mod, models = new ArrayList<String>());
                     }
-                    if (!models.contains(p.getName())) models.add(p.getName());
+                    if (!models.contains(name)) models.add(name);
                 }
                 catch (Exception e)
                 {
                     try
                     {
-                        ResourceLocation tex = new ResourceLocation(mod,
-                                provider.getModelDirectory(p) + p.getName() + ".tbl");
+                        ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
                         IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                         res.getInputStream().close();
                         ArrayList<String> models = modModels.get(mod);
@@ -98,14 +98,14 @@ public class ClientProxy extends CommonProxy
                         {
                             modModels.put(mod, models = new ArrayList<String>());
                         }
-                        if (!models.contains(p.getName())) models.add(p.getName());
+                        if (!models.contains(name)) models.add(name);
                     }
                     catch (Exception e1)
                     {
                         try
                         {
                             ResourceLocation tex = new ResourceLocation(mod,
-                                    provider.getModelDirectory(p) + p.getName() + ".x3d");
+                                    provider.getModelDirectory(p) + name + ".x3d");
                             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                             res.getInputStream().close();
                             ArrayList<String> models = modModels.get(mod);
@@ -113,7 +113,7 @@ public class ClientProxy extends CommonProxy
                             {
                                 modModels.put(mod, models = new ArrayList<String>());
                             }
-                            if (!models.contains(p.getName())) models.add(p.getName());
+                            if (!models.contains(name)) models.add(name);
                         }
                         catch (Exception e2)
                         {
@@ -208,8 +208,11 @@ public class ClientProxy extends CommonProxy
                     break;
                 }
             }
-            if (mod != null) PokecubeMod.getProxy().registerPokemobRenderer(entry.getName(),
-                    new RenderAdvancedPokemobModel<>(entry.getName(), 1), mod);
+            if (mod != null)
+            {
+                PokecubeMod.getProxy().registerPokemobRenderer(entry.getName(),
+                        new RenderAdvancedPokemobModel<>(entry.getName(), 1), mod);
+            }
         }
     }
 }

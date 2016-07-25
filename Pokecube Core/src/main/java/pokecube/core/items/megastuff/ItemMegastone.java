@@ -48,7 +48,6 @@ public class ItemMegastone extends Item
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
         ItemStack stack;
-        subItems.add(new ItemStack(itemIn));
         for (String s : HeldItemHandler.megaVariants)
         {
             stack = new ItemStack(itemIn);

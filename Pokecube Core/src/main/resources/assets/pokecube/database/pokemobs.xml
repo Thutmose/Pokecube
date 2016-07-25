@@ -13925,6 +13925,7 @@
                 lvl_50="PETALBLIZZARD" lvl_7="GROWTH"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Cherrim Sunny" number="421"/>
     <Pokemon base="true" name="Shellos" number="422">
         <STATS>
             <EVOLUTIONMODE>L30</EVOLUTIONMODE>

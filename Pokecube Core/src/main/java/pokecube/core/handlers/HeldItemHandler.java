@@ -18,6 +18,7 @@ public class HeldItemHandler
         megaVariants.add("shiny_charm");
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
+        megaVariants.add("aerodactylmega");
         megaVariants.add("absolmega");
         megaVariants.add("aggronmega");
         megaVariants.add("alakazammega");
@@ -33,7 +34,10 @@ public class HeldItemHandler
         megaVariants.add("gardevoirmega");
         megaVariants.add("gengarmega");
         megaVariants.add("glaliemega");
+        megaVariants.add("gyaradosmega");
+        megaVariants.add("heracrossmega");
         megaVariants.add("houndoommega");
+        megaVariants.add("kangaskhanmega");
         megaVariants.add("lucariomega");
         megaVariants.add("manectricmega");
         megaVariants.add("mawilemega");

@@ -64,7 +64,7 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
         EntityPlayer player;
         player = ctx.getServerHandler().playerEntity;
         Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, message.entityId, true);
-        if (mob == null) return;
+        if (mob == null || !(mob instanceof IPokemob)) return;
 
         IPokemob pokemob = (IPokemob) mob;
         String name = ChatAllowedCharacters.filterAllowedCharacters(new String(message.name));

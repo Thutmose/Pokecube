@@ -466,6 +466,7 @@ item.revive.name=Revive
 
 item.shiny_charm.name=Shiny Charm
 
+item.aerodactylmega.name=Aerodactylite
 item.absolmega.name=Absolite
 item.aggronmega.name=Aggronite
 item.alakazammega.name=Alakazite
@@ -481,7 +482,10 @@ item.gallademega.name=Galladite
 item.gardevoirmega.name=Gardevoirite
 item.gengarmega.name=Gengarite
 item.glaliemega.name=Glalitite
+item.gyaradosmega.name=Gyaradosite
+item.heracrossmega.name=Heracronite
 item.houndoommega.name=Houndoominite
+item.kangaskhanmega.name=Kangaskhanite
 item.lucariomega.name=Lucarionite
 item.manectricmega.name=Manectite
 item.mawilemega.name=Mawilite

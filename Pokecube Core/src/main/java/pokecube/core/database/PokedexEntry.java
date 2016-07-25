@@ -1254,6 +1254,7 @@ public class PokedexEntry
     public String getTexture(String original, byte gender, long time)
     {
         if (original == null) original = name;
+        if (original.endsWith(".")) original = original.substring(0, original.length() - 1);
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];
         long suffixIndex = ((time % textureSuffixs.length * 3) / textureSuffixs.length);
@@ -1491,7 +1492,7 @@ public class PokedexEntry
     /** @param sound */
     public void setSound(String sound)
     {
-        if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 2);
+        if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
         this.sound = sound;
     }
 

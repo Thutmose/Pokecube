@@ -277,6 +277,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             Thread.dumpStack();
             return;
         }
+        if (here == null) here = Vector3.getNewVector();
         here.set(posX, posY + getEyeHeight(), posZ);
         MovesUtils.useMove(move, this, target, here, targetLocation);
         here.set(this);

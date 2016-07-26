@@ -121,6 +121,10 @@ public class GuiAnimate extends GuiScreen
             shiny = !shiny;
             button.displayString = shiny ? "shiny" : "normal";
         }
+        else if (button.id == 13)
+        {
+            entry = Database.getEntry(pokedexNb);
+        }
         if (entry != null)
         {
             IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
@@ -132,6 +136,19 @@ public class GuiAnimate extends GuiScreen
             }
             forme.setText(pokemob.getPokedexEntry().getName());
             info.setText("" + pokemob.getSpecialInfo());
+            if (button.id == 13)
+            {
+                if (pokemob.getSexe() == IPokemob.MALE)
+                {
+                    pokemob.setSexe(IPokemob.FEMALE);
+                    button.displayString = "sexe:F";
+                }
+                else if (pokemob.getSexe() == IPokemob.FEMALE)
+                {
+                    pokemob.setSexe(IPokemob.MALE);
+                    button.displayString = "sexe:M";
+                }
+            }
         }
     }
 
@@ -198,6 +215,15 @@ public class GuiAnimate extends GuiScreen
                         .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
                 pokemob.specificSpawnInit();
             }
+        }
+        String[] gender = buttonList.get(12).displayString.split(":");
+        if(gender[1].equalsIgnoreCase("m") && pokemob.getSexe() == IPokemob.FEMALE)
+        {
+            pokemob.setSexe(IPokemob.MALE);
+        }
+        else if(gender[1].equalsIgnoreCase("f") &&pokemob.getSexe() == IPokemob.MALE)
+        {
+            pokemob.setSexe(IPokemob.FEMALE);
         }
         entry = pokemob.getPokedexEntry();
         mob = entry.getName();
@@ -337,6 +363,7 @@ public class GuiAnimate extends GuiScreen
         buttonList.add(new GuiButton(10, width / 2 - xOffset + 20, yOffset - 100, 20, 20, "\u25bc"));
         buttonList.add(new GuiButton(11, width / 2 - xOffset, yOffset - 100, 20, 20, "\u25b2"));
         buttonList.add(new GuiButton(12, width / 2 - xOffset, yOffset + 40, 40, 20, "normal"));
+        buttonList.add(new GuiButton(13, width / 2 - xOffset, yOffset + 60, 40, 20, "sexe:M"));
     }
 
     @Override

@@ -361,6 +361,12 @@ public class AnimationLoader
                                 e.printStackTrace();
                             }
                         }
+                        // Texture Animation info
+                        else if (phaseName.equals("textures"))
+                        {
+                            PokedexEntry entry = Database.getEntry(model.name);
+                            setTextureDetails(part, entry);
+                        }
                         else if (!preset)
                         {
                             Animation anim = AnimationBuilder.build(part, null);

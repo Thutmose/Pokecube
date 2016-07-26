@@ -1,2 +1,2 @@
 cd "%~dp0\Pokecube Mobs"
-start cmd /k gradlew setupDecompWorkspace eclipse
+start cmd /k gradlew build

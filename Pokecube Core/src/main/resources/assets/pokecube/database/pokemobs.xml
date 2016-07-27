@@ -19113,8 +19113,8 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <BIOMESALLNEEDED>snowy cave 0.1</BIOMESALLNEEDED>
-            <BIOMESANYACCEPTABLE>snowy 0.05</BIOMESANYACCEPTABLE>
+            <Spawn rate="0.1" types="snowy,cave"/>
+            <Spawn rate="0.05" types="snowy"/>
             <BASESTATS atk="50" def="50" hp="36" spatk="65" spd="44" spdef="60"/>
             <EVYIELD spatk="1"/>
             <SIZES height="0.4" length="0.4" width="0.4"/>

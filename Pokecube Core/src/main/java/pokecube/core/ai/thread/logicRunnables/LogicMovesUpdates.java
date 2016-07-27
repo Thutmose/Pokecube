@@ -165,7 +165,7 @@ public class LogicMovesUpdates extends LogicBase
             }
         }
 
-        if (entity.ticksExisted % 20 == rand.nextInt(40))
+        if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
             int statusChange = pokemob.getChanges();
 
@@ -190,7 +190,7 @@ public class LogicMovesUpdates extends LogicBase
             }
             return;
         }
-        if (entity.ticksExisted % 20 == rand.nextInt(40))
+        if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
             if (status == IMoveConstants.STATUS_BRN)
             {

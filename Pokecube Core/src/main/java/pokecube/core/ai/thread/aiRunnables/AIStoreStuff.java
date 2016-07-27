@@ -225,7 +225,6 @@ public class AIStoreStuff extends AIBase
                 return;
             }
         }
-
         if (seeking.isEmpty()) return;
 
         cooldowns[0]--;

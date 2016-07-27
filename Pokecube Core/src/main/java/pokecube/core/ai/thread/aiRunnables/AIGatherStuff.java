@@ -77,7 +77,6 @@ public class AIGatherStuff extends AIBase
     private void findStuff()
     {
         if (pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonAIState(IMoveConstants.SITTING)) { return; }
-
         block = false;
         v.set(pokemob.getHome()).add(0, entity.height, 0);
 
@@ -144,7 +143,7 @@ public class AIGatherStuff extends AIBase
         }
         else if (!stuffLoc.isEmpty())
         {
-            double diff = 2;
+            double diff = 3;
             diff = Math.max(diff, entity.width);
             double dist = stuffLoc.distToEntity(entity);
             v.set(entity).subtractFrom(stuffLoc);
@@ -194,17 +193,17 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null) return false;
-        if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN || storage.seeking.isEmpty()) return false;
+        boolean wildCheck = !pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokedexEntry().colonyBuilder;
+        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck) return false;
+        if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN) return false;
         int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? 20 : 200;
         Random rand = new Random(pokemob.getRNGValue());
-        if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt()) return false;
-
+        if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt(rate)) return false;
         if(cooldowns[0] < -2000)
         {
             cooldowns[0] = COOLDOWN;
         }
-        
+
         if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
         if (cooldowns[0] > 0) return false;
         IInventory inventory = pokemob.getPokemobInventory();

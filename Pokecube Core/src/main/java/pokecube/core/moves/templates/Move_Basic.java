@@ -192,6 +192,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
         if ((move.attackCategory & CATEGORY_SELF) != 0)
         {
+            targets.clear();
             targets.add((Entity) attacker);
         }
         int n = targets.size();
@@ -697,22 +698,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             ((EntityLiving) attacker).setHealth(
                     Math.min(((EntityLiving) attacker).getMaxHealth(), ((EntityLiving) attacker).getHealth() + toHeal));
         }
-        if (attacked instanceof IPokemob && hasStatModTarget && efficiency > 0)
-        {
-            if ((!MovesUtils.handleStats((IPokemob) attacked, (Entity) attacker, packet, true))) if ((move.power == 0))
-                MovesUtils.displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
-            attacker.getMoveStats().TARGETLOWERCOUNTER = 80;
-        }
-        if (packet.getMove().hasStatModSelf)
-        {
-            boolean goodEffect = false;
-            for (int i = 0; i < move.attackerStatModification.length; i++)
-                if (packet.getMove().move.attackerStatModification[i] > 0) goodEffect = true;
-
-            if ((!MovesUtils.handleStats(attacker, attacked, packet, false)))
-                if (goodEffect) MovesUtils.displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
-            attacker.getMoveStats().SELFRAISECOUNTER = 80;
-        }
 
         healRatio = (move.selfHealRatio) / 100;
         boolean canHeal = ((EntityLiving) attacker).getHealth() < ((EntityLiving) attacker).getMaxHealth();
@@ -729,6 +714,27 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         packet.didCrit = criticalRatio > 1;
         packet.damageDealt = beforeHealth - afterHealth;
         backup.damageDealt = packet.damageDealt;
+        handleStatsChanges(packet);
         postAttack(packet);
+    }
+
+    @Override
+    public void handleStatsChanges(MovePacket packet)
+    {
+        boolean shouldEffect = packet.attackedStatModProb > 0 || packet.attackerStatModProb > 0;
+        if (!shouldEffect) return;
+        boolean effect = false;
+        if (packet.attacked instanceof IPokemob && hasStatModTarget && packet.hit)
+        {
+            effect = MovesUtils.handleStats((IPokemob) packet.attacked, (Entity) packet.attacker, packet, true);
+        }
+        if (packet.getMove().hasStatModSelf)
+        {
+            effect = MovesUtils.handleStats(packet.attacker, (Entity) packet.attacker, packet, false);
+        }
+        if (!effect)
+        {
+            MovesUtils.displayStatsMessage(packet.attacker, (Entity) packet.attacked, -2, (byte) 0, (byte) 0);
+        }
     }
 }

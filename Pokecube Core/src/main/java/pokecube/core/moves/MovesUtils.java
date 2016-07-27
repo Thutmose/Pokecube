@@ -1,7 +1,5 @@
 package pokecube.core.moves;
 
-import static pokecube.core.utils.PokeType.getAttackEfficiency;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,8 +7,6 @@ import java.util.Random;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.reflect.TypeUtils;
 
 import com.google.common.base.Predicate;
 
@@ -20,26 +16,22 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import pokecube.core.commands.CommandTools;
-import pokecube.core.database.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.EntityMoveUse;
-import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
-import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
 @SuppressWarnings("deprecation")
@@ -73,406 +65,13 @@ public class MovesUtils implements IMoveConstants
         }
     }
 
-    public static int attack(MovePacket packet)
-    {
-        return attack(packet, true);
-    }
-
-    /** Computes the statistics. Displays the messages to the owners, Damages
-     * the attacked {@link Entity} by calling
-     * {@link Entity#attackEntityFrom(DamageSource, int)}.
-     *
-     * @param attacker
-     *            the Pokemob which attacks
-     * @param attacked
-     *            the {@link Entity} attacked, can be a Pokemob or not
-     * @param attack
-     *            the {@link String} English name of the attack
-     * @param type
-     *            the type of the attack, see {@link TypeUtils}
-     * @param PWR
-     *            the power of the attack
-     * @param criticalLevel
-     *            It's 1 for most moves. But some can have from to 2 to 5. The
-     *            critical level used to calculate the critical ratio
-     * @param statusChange
-     *            if the status should change, specify here the status or
-     *            STATUS_NON if none
-     * @param changeAddition
-     *            if a change should be added, specify here the change or
-     *            CHANGE_NONE if none
-     * @return the number of HPs the attack takes from target */
-    public static int attack(MovePacket packet, boolean message)
-    {
-        IPokemob attacker = packet.attacker;
-        Entity attacked = packet.attacked;
-
-        if (!(packet.attacked instanceof EntityLivingBase) || packet.getMove() == null) return 0;
-
-        Move_Base atk = packet.getMove();
-        MoveEntry move = atk.move;
-        attacker.onMoveUse(packet);
-        if (attacked instanceof IPokemob)
-        {
-            ((IPokemob) attacked).onMoveUse(packet);
-        }
-        String attack = packet.attack;
-        PokeType type = packet.attackType;
-        int PWR = packet.PWR;
-        int criticalLevel = packet.criticalLevel;
-        byte statusChange = packet.statusChange;
-        byte changeAddition = packet.changeAddition;
-        float stabFactor = packet.stabFactor;
-        if (!packet.stab)
-        {
-            packet.stab = packet.attacker.isType(packet.attackType);
-        }
-        if (!packet.stab)
-        {
-            stabFactor = 1;
-        }
-
-        TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(attacked);
-
-        if (terrain != null)
-        {
-            PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
-            if (effect == null)
-            {
-                terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-            }
-            effect.doEffect((EntityLivingBase) attacker);
-        }
-
-        if (packet.canceled)
-        {
-            displayEfficiencyMessages(attacker, attacked, -2, 0);
-            return 0;
-        }
-        if (packet.failed)
-        {
-            displayEfficiencyMessages(attacker, attacked, -2, 0);
-            return 0;
-        }
-
-        if (packet.infatuateTarget && attacked instanceof IPokemob)
-        {
-            ((IPokemob) attacked).getMoveStats().infatuateTarget = (Entity) attacker;
-        }
-
-        if (packet.infatuateAttacker && attacker instanceof IPokemob)
-        {
-            attacker.getMoveStats().infatuateTarget = attacked;
-        }
-
-        attacker = packet.attacker;
-        attacked = packet.attacked;
-        attack = packet.attack;
-        type = packet.attackType;
-        PWR = packet.PWR;
-        criticalLevel = packet.criticalLevel;
-        statusChange = packet.statusChange;
-        changeAddition = packet.changeAddition;
-        boolean toSurvive = packet.noFaint;
-
-        if (attacked == null) return 0;
-
-        float efficiency = 1;
-
-        if (attacked instanceof IPokemob)
-        {
-            efficiency = getAttackEfficiency(type, ((IPokemob) attacked).getType1(), ((IPokemob) attacked).getType2());
-        }
-
-        float criticalRatio = 1;
-
-        if (attacker.getMoveStats().SPECIALTYPE == IPokemob.TYPE_CRIT)
-        {
-            criticalLevel += 1;
-            attacker.getMoveStats().SPECIALTYPE = 0;
-        }
-
-        int critcalRate = 16;
-
-        if (criticalLevel == 2)
-        {
-            critcalRate = 8;
-        }
-
-        if (criticalLevel == 3)
-        {
-            critcalRate = 4;
-        }
-
-        if (criticalLevel == 4)
-        {
-            critcalRate = 3;
-        }
-
-        if (criticalLevel == 5)
-        {
-            critcalRate = 2;
-        }
-
-        if (criticalLevel > 0 && rand.nextInt(critcalRate) == 0)
-        {
-            criticalRatio = 1.5f;
-        }
-
-        float attackStrength = attacker.getAttackStrength() * PWR / 150;
-
-        if (attacked instanceof IPokemob)
-        {
-            attackStrength = getAttackStrength(attacker, (IPokemob) attacked, move.category, PWR, packet);
-
-            int moveAcc = move.accuracy;
-            if (moveAcc > 0)
-            {
-                double accuracy = Tools.modifierToRatio(attacker.getModifiers()[6], true);
-                double evasion = Tools.modifierToRatio(((IPokemob) attacked).getModifiers()[7], true);
-                double moveAccuracy = (moveAcc) / 100d;
-
-                double hitModifier = moveAccuracy * accuracy / evasion;
-
-                if (hitModifier < Math.random())
-                {
-                    efficiency = -1;
-                }
-
-            }
-            if (moveAcc == -3)
-            {
-                double moveAccuracy = ((attacker.getLevel() - ((IPokemob) attacked).getLevel()) + 30) / 100d;
-
-                double hitModifier = attacker.getLevel() < ((IPokemob) attacked).getLevel() ? -1 : moveAccuracy;
-
-                if (hitModifier < Math.random())
-                {
-                    efficiency = -1;
-                }
-            }
-        }
-
-        if (attacked != attacker && attacked instanceof IPokemob && attacker instanceof EntityLiving)
-        {
-            if (((EntityLiving) attacked).getAttackTarget() != attacker)
-                ((EntityLiving) attacked).setAttackTarget((EntityLivingBase) attacker);
-            ((IPokemob) attacked).setPokemonAIState(IMoveConstants.ANGRY, true);
-        }
-        if (efficiency > 0)
-        {
-            Move_Ongoing ongoing;
-            if (getMoveFromName(attack) instanceof Move_Ongoing && attacked instanceof IPokemob)
-            {
-                ongoing = (Move_Ongoing) getMoveFromName(attack);
-                if (ongoing.onTarget()) ((IPokemob) attacked).addOngoingEffect(ongoing);
-                if (ongoing.onSource()) attacker.addOngoingEffect(ongoing);
-            }
-        }
-
-        float terrainDamageModifier = getTerrainDamageModifier(type, (Entity) attacker, terrain);
-
-        int finalAttackStrength = Math.max(0, Math.round(attackStrength * efficiency * criticalRatio
-                * terrainDamageModifier * stabFactor * packet.superEffectMult));
-
-        float healRatio;
-        float damageRatio;
-
-        int beforeHealth = (int) ((EntityLivingBase) attacked).getHealth();
-
-        if (efficiency > 0 && MoveEntry.oneHitKos.contains(attack))
-        {
-            finalAttackStrength = beforeHealth;
-        }
-
-        if (toSurvive)
-        {
-            finalAttackStrength = Math.min(finalAttackStrength, beforeHealth - 1);
-        }
-
-        boolean wild = !attacker.getPokemonAIState(TAMED);
-
-        if (PokecubeMod.core.getConfig().maxWildPlayerDamage >= 0 && wild && attacked instanceof EntityPlayer)
-        {
-            finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxWildPlayerDamage, finalAttackStrength);
-        }
-        else if (PokecubeMod.core.getConfig().maxOwnedPlayerDamage >= 0 && !wild && attacked instanceof EntityPlayer)
-        {
-            finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxOwnedPlayerDamage, finalAttackStrength);
-        }
-
-        if (wild && attacked instanceof EntityPlayer)
-        {
-            finalAttackStrength *= PokecubeMod.core.getConfig().wildPlayerDamageRatio;
-        }
-        else if (!wild && attacked instanceof EntityPlayer)
-        {
-            finalAttackStrength *= PokecubeMod.core.getConfig().ownedPlayerDamageRatio;
-        }
-
-        if (attacked instanceof IPokemob)
-        {
-            IPokemob mob = (IPokemob) attacked;
-            if (mob.getAbility() != null)
-            {
-                finalAttackStrength = mob.getAbility().beforeDamage(mob, packet, finalAttackStrength);
-            }
-        }
-
-        if (!(move.attackCategory == CATEGORY_SELF && PWR == 0) && finalAttackStrength > 0)
-        {
-            if (attacked instanceof EntityPlayer)
-            {
-                DamageSource source1 = new PokemobDamageSource("mob", (EntityLivingBase) attacker,
-                        getMoveFromName(attack));
-                DamageSource source2 = new PokemobDamageSource("mob", (EntityLivingBase) attacker,
-                        getMoveFromName(attack));
-                source2.setDamageBypassesArmor();
-                source2.setMagicDamage();
-                float d1, d2;
-                if (wild)
-                {
-                    d2 = (float) (finalAttackStrength
-                            * Math.min(1, PokecubeMod.core.getConfig().wildPlayerDamageMagic));
-                    d1 = finalAttackStrength - d2;
-                }
-                else
-                {
-                    d2 = (float) (finalAttackStrength
-                            * Math.min(1, PokecubeMod.core.getConfig().ownedPlayerDamageMagic));
-                    d1 = finalAttackStrength - d2;
-                }
-                attacked.attackEntityFrom(source1, d1);
-                attacked.attackEntityFrom(source2, d2);
-            }
-            else
-            {
-                DamageSource source = new PokemobDamageSource("mob", (EntityLivingBase) attacker,
-                        getMoveFromName(attack));
-                attacked.attackEntityFrom(source, finalAttackStrength);
-            }
-
-            if (attacked instanceof IPokemob)
-            {
-                if (move.category == SPECIAL)
-                    ((IPokemob) attacked).getMoveStats().SPECIALDAMAGETAKENCOUNTER += finalAttackStrength;
-                if (move.category == PHYSICAL)
-                    ((IPokemob) attacked).getMoveStats().PHYSICALDAMAGETAKENCOUNTER += finalAttackStrength;
-            }
-        }
-
-        if ((efficiency > 0 || move.attackCategory == CATEGORY_SELF) && statusChange != STATUS_NON)
-        {
-            setStatus(attacked, statusChange);
-        }
-        if (efficiency > 0 && changeAddition != CHANGE_NONE) addChange(attacked, changeAddition);
-
-        if (message && atk.getPWR(attacker, attacked) > 0)
-            displayEfficiencyMessages(attacker, attacked, efficiency, criticalRatio);
-
-        int afterHealth = (int) Math.max(0, ((EntityLivingBase) attacked).getHealth());
-
-        int damageDealt = beforeHealth - afterHealth;
-
-        healRatio = (move.damageHealRatio) / 100;
-        damageRatio = move.selfDamage;
-
-        if (damageRatio > 0)
-        {
-            if ((move.selfDamageType & MoveEntry.TOTALHP) != 0)
-            {
-                float max = ((EntityLiving) attacker).getMaxHealth();
-                float diff = max * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
-            }
-            if (((move.selfDamageType & MoveEntry.MISS) != 0 && efficiency <= 0))
-            {
-                float max = ((EntityLiving) attacker).getMaxHealth();
-                float diff = max * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
-            }
-            if (((move.selfDamageType & MoveEntry.DAMAGEDEALT) != 0))
-            {
-                float diff = damageDealt * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
-            }
-            if (((move.selfDamageType & MoveEntry.RELATIVEHP) != 0))
-            {
-                float current = ((EntityLiving) attacker).getHealth();
-                float diff = current * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
-            }
-        }
-
-        if (healRatio > 0)
-        {
-            float toHeal = Math.max(1, (damageDealt * healRatio));
-            ((EntityLiving) attacker).setHealth(
-                    Math.min(((EntityLiving) attacker).getMaxHealth(), ((EntityLiving) attacker).getHealth() + toHeal));
-        }
-        if (attacked instanceof IPokemob && atk.hasStatModTarget && efficiency > 0)
-        {
-            if ((!handleStats((IPokemob) attacked, (Entity) attacker, packet, true))) if (message && (move.power == 0))
-                displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
-            attacker.getMoveStats().TARGETLOWERCOUNTER = 80;
-        }
-        if (atk.hasStatModSelf)
-        {
-            boolean goodEffect = false;
-            for (int i = 0; i < atk.move.attackerStatModification.length; i++)
-                if (atk.move.attackerStatModification[i] > 0) goodEffect = true;
-
-            if ((!handleStats(attacker, attacked, packet, false)))
-                if (message && goodEffect) displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
-            attacker.getMoveStats().SELFRAISECOUNTER = 80;
-        }
-
-        healRatio = (move.selfHealRatio) / 100;
-        boolean canHeal = ((EntityLiving) attacker).getHealth() < ((EntityLiving) attacker).getMaxHealth();
-        if (healRatio > 0 && canHeal && attacker.getMoveStats().SELFRAISECOUNTER == 0)
-        {
-            ((EntityLiving) attacker).setHealth(Math.min(((EntityLiving) attacker).getMaxHealth(),
-                    ((EntityLiving) attacker).getHealth() + (((EntityLiving) attacker).getMaxHealth() * healRatio)));
-            attacker.getMoveStats().SELFRAISECOUNTER = 80;
-        }
-
-        packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,
-                false);
-        packet.hit = efficiency >= 0;
-        packet.didCrit = criticalRatio > 1;
-
-        attacker.onMoveUse(packet);
-        if (attacked instanceof IPokemob)
-        {
-            ((IPokemob) attacked).onMoveUse(packet);
-        }
-
-        return beforeHealth - afterHealth;
-    }
-
     /** For contact moves like tackle. The mob gets close to its target and
      * hits.
      *
      * @return whether the mob must attack */
     public static boolean contactAttack(IPokemob attacker, Entity attacked)
     {
-        // EntityLivingBase entityAttacker = (EntityLivingBase) attacker;
         if (attacked == null || attacker == null) return false;
-
-        // if (f < 4 && entityAttacker.onGround ||
-        // attacker.getPokedexEntry().flys()
-        // || attacker.getPokedexEntry().floats())
-        // {
-        // double d0 = attacked.posX - entityAttacker.posX;
-        // double d1 = attacked.posZ - entityAttacker.posZ;
-        // float f1 = MathHelper.sqrt_double(d0 * d0 + d1 * d1);
-        // f1 = Math.max(f1, 0.25f);
-        // entityAttacker.motionX += d0 / f1 * 0.25D * 0.8D +
-        // entityAttacker.motionX * 0.2D;
-        // entityAttacker.motionZ += d1 / f1 * 0.25D * 0.8D +
-        // entityAttacker.motionZ * 0.2D;
-        // entityAttacker.motionY = 0.2d;
-        // }
         return true;
     }
 
@@ -620,6 +219,13 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacked instanceof IPokemob)
             {
+                if ((attacker == null || attacker == attacked) && attacked instanceof EntityLiving)
+                {
+                    if (((EntityLiving) attacked).getAttackTarget() instanceof IPokemob)
+                    {
+                        attacker = (IPokemob) ((EntityLiving) attacked).getAttackTarget();
+                    }
+                }
                 String message = "pokemob.move.stat.fail";
                 text = CommandTools.makeTranslatedMessage(message, "green",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
@@ -642,8 +248,15 @@ public class MovesUtils implements IMoveConstants
             {
                 message += ".rise" + (-amount);
             }
-
             String statName = "pokemob.move.stat" + stat;
+
+            if ((attacker == null || attacker == attacked) && attacked instanceof EntityLiving)
+            {
+                if (((EntityLiving) attacked).getAttackTarget() instanceof IPokemob)
+                {
+                    attacker = (IPokemob) ((EntityLiving) attacked).getAttackTarget();
+                }
+            }
             if (attacked instanceof IPokemob && attacker != null)
             {
                 if (attacker == attacked)
@@ -651,13 +264,18 @@ public class MovesUtils implements IMoveConstants
                     String colour = fell ? "red" : "green";
                     text = CommandTools.makeTranslatedMessage(message, colour,
                             ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
-                    attacker.displayMessageToOwner(text);
+                    ((IPokemob) attacked).displayMessageToOwner(text);
                 }
                 else
                 {
-                    text = CommandTools.makeTranslatedMessage(message, "red",
+                    String colour = fell ? "red" : "green";
+                    text = CommandTools.makeTranslatedMessage(message, colour,
                             ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
                     ((IPokemob) attacked).displayMessageToOwner(text);
+                    colour = fell ? "green" : "red";
+                    text = CommandTools.makeTranslatedMessage(message, colour,
+                            ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
+                    ((IPokemob) attacker).displayMessageToOwner(text);
                 }
             }
             else if (attacker == null && (attacked instanceof IPokemob))
@@ -953,7 +571,6 @@ public class MovesUtils implements IMoveConstants
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
             modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + stats[7]));
         mob.setModifiers(modifiers);
-
         boolean ret = false;
         byte[] diff = new byte[old.length];
         for (int i = 0; i < old.length; i++)

@@ -177,7 +177,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void executeMove(Entity target, Vector3 targetLocation, float f)
     {
-        if (getMove(getMoveIndex()) == MOVE_NONE) { return; }
+        String currentMove = getMove(getMoveIndex());
+        if (currentMove == MOVE_NONE || currentMove == null) { return; }
 
         if (target instanceof EntityLiving)
         {
@@ -357,9 +358,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getMoveIndex()
     {
-        int value = dataManager.get(STATUSMOVEINDEXDW);
-
-        return (value >> 8) & 0xff;
+        int ret = dataManager.get(MOVEINDEXDW);
+        return Math.max(0, ret);
     }
 
     @Override
@@ -404,17 +404,13 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public byte getStatus()
     {
-        int value = dataManager.get(STATUSMOVEINDEXDW);
-
-        return (byte) (value & 0xff);
+        return (byte) Math.max(0, dataManager.get(STATUSDW));
     }
 
     @Override
     public short getStatusTimer()
     {
-        int value = dataManager.get(STATUSMOVEINDEXDW);
-
-        return (short) ((value >> 16) & 0xffff);
+        return dataManager.get(STATUSTIMERDW).shortValue();
     }
 
     @Override
@@ -440,10 +436,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void healStatus()
     {
-        int value = dataManager.get(STATUSMOVEINDEXDW);
-        value = value >> 8;
-        value = (value << 8) | STATUS_NON;
-        dataManager.set(STATUSMOVEINDEXDW, value);
+        dataManager.set(STATUSDW, (byte) 0);
     }
 
     @Override
@@ -716,13 +709,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setMoveIndex(int moveIndex)
     {
+        if (moveIndex == getMoveIndex()) return;
         if (getMove(moveIndex) == null)
         {
             setMoveIndex(5);
         }
-
-        if (moveIndex == getMoveIndex()) return;
-
         moveInfo.ROLLOUTCOUNTER = 0;
         moveInfo.FURYCUTTERCOUNTER = 0;
 
@@ -744,10 +735,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         }
         else
         {
-            int value = dataManager.get(STATUSMOVEINDEXDW);
-            int toSet = moveIndex << 8;
-            value = (value & 0xffff00ff) | toSet;
-            dataManager.set(STATUSMOVEINDEXDW, value);
+            dataManager.set(MOVEINDEXDW, (byte) moveIndex);
         }
     }
 
@@ -782,10 +770,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 || getType2() == PokeType.poison || getType1() == PokeType.steel || getType2() == PokeType.steel))
             return false;
 
-        int value = dataManager.get(STATUSMOVEINDEXDW);
-        value = value >> 8;
-        value = (value << 8) | status;
-        dataManager.set(STATUSMOVEINDEXDW, value);
+        byte value = dataManager.get(STATUSDW);
+        value = (byte) (value | status);
+        dataManager.set(STATUSDW, value);
         setStatusTimer((short) 100);
         return true;
     }
@@ -793,13 +780,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setStatusTimer(short timer)
     {
-        int value = dataManager.get(STATUSMOVEINDEXDW);
-
-        timer = (short) Math.max(0, timer);
-
-        int toSet = (timer) << 16;
-        value = (value & 0x0000ffff) | toSet;
-        dataManager.set(STATUSMOVEINDEXDW, value);
+        dataManager.set(STATUSTIMERDW, (int) timer);
     }
 
     @Override

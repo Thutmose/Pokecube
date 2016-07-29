@@ -33,7 +33,7 @@ public class MoveRollout extends Move_Basic
         {
             rollOut = attacker.getMoveStats().ROLLOUTCOUNTER = 0;
         }
-        return (int) Math.min(this.getPWR(), (rollOut * 1.5) * this.getPWR() * defCurl);
+        return (int) Math.max(this.getPWR(), (rollOut * 1.5) * this.getPWR() * defCurl);
     }
 
 }

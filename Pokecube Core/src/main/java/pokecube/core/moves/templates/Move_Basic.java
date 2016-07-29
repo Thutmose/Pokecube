@@ -30,6 +30,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
@@ -192,6 +194,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
         if ((move.attackCategory & CATEGORY_SELF) != 0)
         {
+            targets.clear();
             targets.add((Entity) attacker);
         }
         int n = targets.size();
@@ -247,6 +250,14 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
         if (!PokecubeMod.pokemobsDamageBlocks) return;
+        if (attacker.getPokemonOwner() instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) attacker.getPokemonOwner();
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
+                    location.getBlockState(player.getEntityWorld()), player);
+            MinecraftForge.EVENT_BUS.post(evt);
+            if (evt.isCanceled()) return;
+        }
         World world = ((Entity) attacker).getEntityWorld();
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();
@@ -697,22 +708,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             ((EntityLiving) attacker).setHealth(
                     Math.min(((EntityLiving) attacker).getMaxHealth(), ((EntityLiving) attacker).getHealth() + toHeal));
         }
-        if (attacked instanceof IPokemob && hasStatModTarget && efficiency > 0)
-        {
-            if ((!MovesUtils.handleStats((IPokemob) attacked, (Entity) attacker, packet, true))) if ((move.power == 0))
-                MovesUtils.displayStatsMessage((IPokemob) attacked, (Entity) attacker, -2, (byte) 0, (byte) 0);
-            attacker.getMoveStats().TARGETLOWERCOUNTER = 80;
-        }
-        if (packet.getMove().hasStatModSelf)
-        {
-            boolean goodEffect = false;
-            for (int i = 0; i < move.attackerStatModification.length; i++)
-                if (packet.getMove().move.attackerStatModification[i] > 0) goodEffect = true;
-
-            if ((!MovesUtils.handleStats(attacker, attacked, packet, false)))
-                if (goodEffect) MovesUtils.displayStatsMessage(attacker, (Entity) attacker, -2, (byte) 0, (byte) 0);
-            attacker.getMoveStats().SELFRAISECOUNTER = 80;
-        }
 
         healRatio = (move.selfHealRatio) / 100;
         boolean canHeal = ((EntityLiving) attacker).getHealth() < ((EntityLiving) attacker).getMaxHealth();
@@ -729,6 +724,27 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         packet.didCrit = criticalRatio > 1;
         packet.damageDealt = beforeHealth - afterHealth;
         backup.damageDealt = packet.damageDealt;
+        handleStatsChanges(packet);
         postAttack(packet);
+    }
+
+    @Override
+    public void handleStatsChanges(MovePacket packet)
+    {
+        boolean shouldEffect = packet.attackedStatModProb > 0 || packet.attackerStatModProb > 0;
+        if (!shouldEffect) return;
+        boolean effect = false;
+        if (packet.attacked instanceof IPokemob && hasStatModTarget && packet.hit)
+        {
+            effect = MovesUtils.handleStats((IPokemob) packet.attacked, (Entity) packet.attacker, packet, true);
+        }
+        if (packet.getMove().hasStatModSelf)
+        {
+            effect = MovesUtils.handleStats(packet.attacker, (Entity) packet.attacker, packet, false);
+        }
+        if (!effect)
+        {
+            MovesUtils.displayStatsMessage(packet.attacker, (Entity) packet.attacked, -2, (byte) 0, (byte) 0);
+        }
     }
 }

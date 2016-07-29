@@ -129,18 +129,18 @@ public class EntityMoveUse extends Entity
     @Override
     public void onUpdate()
     {
-        if (getMove() == null)
+        int age = getAge() - 1;
+        if (getMove() == null || this.isDead || age < 0)
         {
             this.setDead();
             return;
         }
-        int age = getAge() - 1;
-        getDataManager().set(TICK, age);
-        if (age <= 0)
+        if (age == 0)
         {
             this.doMoveUse();
             this.setDead();
         }
+        getDataManager().set(TICK, age);
     }
 
     public MovePacketInfo getMoveInfo()
@@ -153,7 +153,7 @@ public class EntityMoveUse extends Entity
     {
         Move_Base attack = getMove();
         Entity user;
-        if ((user = getUser()) == null) return;
+        if ((user = getUser()) == null || this.isDead) return;
         if (!worldObj.isRemote)
         {
             if (attack.move.notIntercepable)

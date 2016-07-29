@@ -86,7 +86,6 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         }
 
         if (!leaper.onGround && !(pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())) return false;
-
         if (((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)) { return false; }
         if (((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)) { return false; }
         if (this.leapTarget == null)

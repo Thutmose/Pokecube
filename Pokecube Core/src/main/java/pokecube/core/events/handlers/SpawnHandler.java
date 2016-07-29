@@ -517,8 +517,7 @@ public final class SpawnHandler
         if (v == null) { return ret; }
         if (dbe.legendary)
         {
-            int exp = getSpawnXp(world, v, dbe);
-            int level = Tools.xpToLevel(dbe.getEvolutionMode(), exp);
+            int level = getSpawnLevel(world, v, dbe);
             if (level < PokecubeMod.core.getConfig().minLegendLevel) { return ret; }
         }
         if (!isPointValidForSpawn(world, v, dbe)) return ret;

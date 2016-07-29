@@ -60,6 +60,11 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             if (stack != null) entityDropItem(stack, 0.5f);
         }
         dropItem();
+        for (int i = 2; i < this.pokeChest.getSizeInventory(); i++)
+        {
+            ItemStack stack = this.pokeChest.getStackInSlot(i);
+            if (stack != null) entityDropItem(stack, 0.5f);
+        }
     }
 
     public void dropItem()

@@ -430,7 +430,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
         {
             short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
-
+            //TODO see if this is ever called.
             float ratio = 1F;
             if (timer <= 200 && timer > 175)
             {

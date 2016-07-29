@@ -172,6 +172,11 @@ public abstract class Move_Base
      * 
      * @param packet */
     public abstract void preAttack(MovePacket packet);
+    
+    /** Called after the attack is done but before postAttack is called.
+     * 
+     * @param packet */
+    public abstract void handleStatsChanges(MovePacket packet);
 
     /** This is a factor for how long of a cooldown occurs after the attack is
      * done.

@@ -440,8 +440,6 @@ public class EventsHandlerClient
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.getRenderer())) { return; }
-        // event.getRenderer().addLayer(new
-        // RenderHeldPokemobs(event.getRenderer()));
         addedLayers.add(event.getRenderer());
     }
 

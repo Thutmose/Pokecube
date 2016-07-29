@@ -31,11 +31,11 @@ public class BlockTransformer extends BlockPressurePlate implements ITileEntityP
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof TileEntityTransformer)
-        {
-            ((TileEntityTransformer) tile).onInteract(playerIn);
-        }
+//        TileEntity tile = worldIn.getTileEntity(pos);
+//        if (tile instanceof TileEntityTransformer)
+//        {
+//            ((TileEntityTransformer) tile).onInteract(playerIn);
+//        }
         return true;
     }
 
@@ -43,11 +43,11 @@ public class BlockTransformer extends BlockPressurePlate implements ITileEntityP
     @Override
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof TileEntityTransformer && entityIn instanceof EntityPlayer)
-        {
-            ((TileEntityTransformer) tile).onStepped((EntityPlayer) entityIn);
-        }
+//        TileEntity tile = worldIn.getTileEntity(pos);
+//        if (tile instanceof TileEntityTransformer && entityIn instanceof EntityPlayer)
+//        {
+//            ((TileEntityTransformer) tile).onStepped((EntityPlayer) entityIn);
+//        }
         super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
     }
 

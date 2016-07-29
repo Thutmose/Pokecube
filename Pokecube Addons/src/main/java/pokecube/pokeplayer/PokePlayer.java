@@ -10,19 +10,11 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.EntityProvider;
 import pokecube.pokeplayer.block.BlockTransformer;
-import pokecube.pokeplayer.network.EntityProviderPokeplayer;
-import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
-import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient.MessageHandlerClient;
-import pokecube.pokeplayer.network.PacketPokePlayer.MessageServer;
-import pokecube.pokeplayer.network.PacketPokePlayer.MessageServer.MessageHandlerServer;
 import pokecube.pokeplayer.tileentity.TileEntityTransformer;
 
 @Mod( // @formatter:off
@@ -50,21 +42,21 @@ public class PokePlayer
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
-        new EventsHandler(PROXY);
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, PROXY);
-        PROXY.init();
-        PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
+//        new EventsHandler(PROXY);
+//        NetworkRegistry.INSTANCE.registerGuiHandler(this, PROXY);
+//        PROXY.init();
+//        PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
+//                PokecubeCore.getMessageID(), Side.CLIENT);
+//        PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
+//                PokecubeCore.getMessageID(), Side.SERVER);
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent e)
     {
-        PROXY.postInit();
-        PokecubeMod.core
-                .setEntityProvider(new EntityProviderPokeplayer((EntityProvider) PokecubeMod.core.getEntityProvider()));
+//        PROXY.postInit();
+//        PokecubeMod.core
+//                .setEntityProvider(new EntityProviderPokeplayer((EntityProvider) PokecubeMod.core.getEntityProvider()));
     }
 
     @EventHandler

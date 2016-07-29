@@ -30,6 +30,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.database.MoveEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IMoveConstants;
@@ -248,6 +250,14 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
         if (!PokecubeMod.pokemobsDamageBlocks) return;
+        if (attacker.getPokemonOwner() instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) attacker.getPokemonOwner();
+            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
+                    location.getBlockState(player.getEntityWorld()), player);
+            MinecraftForge.EVENT_BUS.post(evt);
+            if (evt.isCanceled()) return;
+        }
         World world = ((Entity) attacker).getEntityWorld();
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();

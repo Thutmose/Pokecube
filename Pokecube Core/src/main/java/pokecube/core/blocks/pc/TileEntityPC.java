@@ -93,7 +93,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         return 0;
     }
 
-    @Callback(doc="Returns the items in the PC")
+    @Callback(doc = "Returns the items in the PC")
     @Optional.Method(modid = "OpenComputers")
     public Object[] getItemList(Context context, Arguments args) throws Exception
     {

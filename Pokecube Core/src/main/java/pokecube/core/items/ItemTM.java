@@ -5,11 +5,9 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -32,7 +30,7 @@ public class ItemTM extends ItemPokemobUseable
             nbt.setString("move", move.trim());
             stack.setTagCompound(nbt);
             stack.setItemDamage(attack.getType(null).ordinal());
-            stack.setStackDisplayName(MovesUtils.getTranslatedMove(move.trim()));
+            stack.setStackDisplayName(MovesUtils.getLocalizedMove(move.trim()));
         }
     }
 
@@ -196,13 +194,6 @@ public class ItemTM extends ItemPokemobUseable
         if (i == 20) return "item.candy";
         if (i == 19) return "item.emerald_shard";
         return super.getUnlocalizedName() + i;
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-    {
-        if (world.isRemote) return itemstack;
-        return itemstack;
     }
 
 }

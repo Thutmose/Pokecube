@@ -6,7 +6,6 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.util.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class PokemobMoveHelper extends EntityMoveHelper
@@ -74,9 +73,8 @@ public class PokemobMoveHelper extends EntityMoveHelper
         {
         	pos.set(entity);
         	PokedexEntry entry = ((IPokemob)entity).getPokedexEntry();
-        	boolean water = entry.mobType == PokecubeMod.Type.WATER && entity.isInWater();
-        	boolean air = entry.mobType == PokecubeMod.Type.FLOATING
-        			|| entry.mobType == PokecubeMod.Type.FLYING;
+        	boolean water = entry.swims() && entity.isInWater();
+        	boolean air = entry.flys() || entry.floats();
         	
             this.update = false;
             double i = (this.entity.posY + this.entity.stepHeight);

@@ -1,7 +1,6 @@
 package pokecube.adventures.entity.trainers;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -24,7 +23,6 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.vitamins.ItemVitamin;
-import pokecube.core.items.vitamins.VitaminManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -40,21 +38,7 @@ public class EntityPokemartSeller extends EntityTrainer
         friendlyCooldown = Integer.MAX_VALUE;
     }
 
-    protected void initAI(Vector3 location, boolean stationary)
-    {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
-        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
-        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
-        this.tasks.addTask(1, guardAI);
-        if (location != null)
-        {
-            location.moveEntity(this);
-            if (stationary) setStationary(location);
-        }
-    }
-
+    @Override
     protected void addRandomTrades()
     {
         itemList.clear();
@@ -68,11 +52,11 @@ public class EntityPokemartSeller extends EntityTrainer
             added.add(trade);
             itemList.add(trade.getTrade());
         }
-        for (Map.Entry<Integer, ItemVitamin> entry : VitaminManager.vitaminItems.entrySet())
+        for (String s: ItemVitamin.vitamins)
         {
             ItemStack in = new ItemStack(Items.emerald);
             in.stackSize = Config.instance.vitaminCost;
-            itemList.add(new MerchantRecipe(in, new ItemStack(entry.getValue())));
+            itemList.add(new MerchantRecipe(in, PokecubeItems.getStack(s)));
         }
         num = HeldItemHandler.megaVariants.size();
         for (int i = 0; i < num; i++)
@@ -83,24 +67,24 @@ public class EntityPokemartSeller extends EntityTrainer
                 ItemStack output = PokecubeItems.getStack(name);
                 if (output == null) continue;
                 added.add(name);
-                ItemStack in1 = new ItemStack(Items.emerald);
                 int size = Config.instance.megaCost;
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                in1.stackSize = (size & 63);
-                ItemStack in2 = null;
+                ItemStack buy1 = new ItemStack(Items.emerald);
+                buy1.stackSize = (size & 63);
+                ItemStack buy2 = null;
                 if (size > 64)
                 {
-                    in2 = in1.copy();
-                    in1.stackSize = 64;
-                    in2.stackSize = ((size - 64) & 63);
-                    if (size - 64 >= 64) in2.stackSize = 64;
+                    buy2 = buy1.copy();
+                    buy1.stackSize = 64;
+                    buy2.stackSize = ((size - 64) & 63);
+                    if (size - 64 >= 64) buy2.stackSize = 64;
                 }
                 else if (size == 64)
                 {
-                    in1.stackSize = 64;
+                    buy1.stackSize = 64;
                 }
-                itemList.add(new MerchantRecipe(in1, in2, output));
+                itemList.add(new MerchantRecipe(buy1, buy2, output));
             }
         }
         added.clear();
@@ -132,6 +116,22 @@ public class EntityPokemartSeller extends EntityTrainer
                 if (size / 2 == 64) in1.stackSize = 64;
                 itemList.add(new MerchantRecipe(badge, in1));
             }
+        }
+    }
+
+    @Override
+    protected void initAI(Vector3 location, boolean stationary)
+    {
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
+        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
+        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.tasks.addTask(1, guardAI);
+        if (location != null)
+        {
+            location.moveEntity(this);
+            if (stationary) setStationary(location);
         }
     }
 }

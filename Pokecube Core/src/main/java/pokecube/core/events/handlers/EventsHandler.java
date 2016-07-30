@@ -32,14 +32,10 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
-import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.common.ForgeVersion.CheckResult;
-import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -47,6 +43,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -58,10 +55,7 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -80,6 +74,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
+import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -121,63 +116,6 @@ public class EventsHandler
                 PokecubeClientPacket packet2 = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.CHOOSE1ST });
                 PokecubePacketHandler.sendToClient(packet2, event.player);
                 MinecraftForge.EVENT_BUS.unregister(this);
-            }
-        }
-    }
-
-    public static class UpdateNotifier
-    {
-        public UpdateNotifier()
-        {
-            MinecraftForge.EVENT_BUS.register(this);
-        }
-
-        private IChatComponent getInfoMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION
-                    + EnumChatFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + EnumChatFormatting.GOLD + "Currently Running " + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
-        }
-
-        @Deprecated // Use one from ThutCore whenever that is updated for a bit.
-        private IChatComponent getOutdatedMessage(CheckResult result, String name)
-        {
-            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + result.target + EnumChatFormatting.WHITE;
-            String link = "" + result.url;
-            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
-                    + link + "\"}}";
-
-            String info = "\"" + EnumChatFormatting.RED
-                    + "New Pokecube Core version available, please update before reporting bugs.\nClick the green link for the page to download.\n"
-                    + "\"";
-            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
-            return IChatComponent.Serializer.jsonToComponent(mess);
-        }
-
-        @SubscribeEvent
-        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
-        {
-            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
-                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
-                if (result.status == Status.OUTDATED)
-                {
-                    IChatComponent mess = getOutdatedMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
-                }
-                else if (PokecubeMod.core.getConfig().loginmessage)
-                {
-                    IChatComponent mess = getInfoMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
-                }
             }
         }
     }
@@ -321,7 +259,6 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new UpdateNotifier();
     }
 
     @SubscribeEvent
@@ -343,6 +280,19 @@ public class EventsHandler
     }
 
     @SubscribeEvent
+    public void checkHatch(EggEvent.PreHatch evt)
+    {
+        Vector3 location = Vector3.getNewVector().set(evt.egg);
+        World world = evt.egg.worldObj;
+        int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
+        float factor = 2f;
+        if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
+        {
+            evt.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void clearNetherBridge(InitMapGenEvent evt)
     {
         if (PokecubeMod.core.getConfig().deactivateMonsters && evt.type == InitMapGenEvent.EventType.NETHER_BRIDGE)
@@ -359,27 +309,30 @@ public class EventsHandler
                 && !(evt.entity instanceof EntityDragon || evt.entity instanceof EntityDragonPart))
         {
             evt.entity.setDead();
-            Vector3 location = Vector3.getNewVector().set(evt.entity);
-            int num = getShadowPokemonNb(evt.entity);
-            Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num, evt.world);
-            if (shadow == null)
-            {
-                System.err.println(num);
-                return;
-            }
-
-            location.moveEntity(shadow);
-            ((IPokemob) shadow).setShadow(true);
-            ((IPokemob) shadow).specificSpawnInit();
-
-            int exp = (int) (SpawnHandler.getSpawnXp(evt.world, location, ((IPokemob) shadow).getPokedexEntry())
-                    * 1.25);
-            exp = Math.max(exp, 8000);
-
-            ((IPokemob) shadow).setExp(exp, false, true);
-
-            ((EntityLiving) shadow).setHealth(((EntityLiving) shadow).getMaxHealth());
-            evt.world.spawnEntityInWorld(shadow);
+            // Vector3 location = Vector3.getNewVector().set(evt.entity);
+            // int num = getShadowPokemonNb(evt.entity);
+            // Entity shadow = PokecubeMod.core.createEntityByPokedexNb(num,
+            // evt.world);
+            // if (shadow == null)
+            // {
+            // System.err.println(num);
+            // return;
+            // }
+            //
+            // location.moveEntity(shadow);
+            // ((IPokemob) shadow).setShadow(true);
+            // ((IPokemob) shadow).specificSpawnInit();
+            //
+            // int exp = (int) (SpawnHandler.getSpawnXp(evt.world, location,
+            // ((IPokemob) shadow).getPokedexEntry())
+            // * 1.25);
+            // exp = Math.max(exp, 8000);
+            //
+            // ((IPokemob) shadow).setExp(exp, false, true);
+            //
+            // ((EntityLiving) shadow).setHealth(((EntityLiving)
+            // shadow).getMaxHealth());
+            // evt.world.spawnEntityInWorld(shadow);
             evt.setCanceled(true);
         }
         else if (evt.entity instanceof EntityCreeper)
@@ -738,6 +691,26 @@ public class EventsHandler
         if (evt.phase == Phase.END && evt.side != Side.CLIENT)
         {
             PokecubeCore.instance.spawner.tick(evt.world);
+        }
+    }
+
+    @SubscribeEvent
+    public void travelToDimension(EntityTravelToDimensionEvent evt)
+    {
+        Entity entity = evt.entity;
+        if (entity.worldObj.isRemote) return;
+
+        ArrayList<?> list = new ArrayList<Object>(entity.worldObj.loadedEntityList);
+        for (Object o : list)
+        {
+            if (o instanceof IPokemob)
+            {
+                IPokemob mob = (IPokemob) o;
+                boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
+                boolean guard = mob.getPokemonAIState(IMoveConstants.GUARDING);
+                if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay && !guard)
+                    mob.returnToPokecube();
+            }
         }
     }
 

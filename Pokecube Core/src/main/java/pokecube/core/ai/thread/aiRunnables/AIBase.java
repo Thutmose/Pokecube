@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.IAIRunnable;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
@@ -69,12 +70,14 @@ public abstract class AIBase implements IAIRunnable
         }
 
     }
+
     public static interface IRunnable
     {
         /** @param world
          * @return task ran sucessfully */
         boolean run(World world);
     }
+
     /** A thread-safe object used to set which move a pokemob is to use.
      * 
      * @author Thutmose */
@@ -92,8 +95,10 @@ public abstract class AIBase implements IAIRunnable
                                                                      WorldServer world = FMLCommonHandler.instance()
                                                                              .getMinecraftServerInstance()
                                                                              .worldServerForDimension(o1.dim);
-                                                                     Entity e1 = world.getEntityByID(o1.attacker);
-                                                                     Entity e2 = world.getEntityByID(o2.attacker);
+                                                                     Entity e1 = PokecubeMod.core.getEntityProvider()
+                                                                             .getEntity(world, o1.attacker, true);
+                                                                     Entity e2 = PokecubeMod.core.getEntityProvider()
+                                                                             .getEntity(world, o2.attacker, true);
                                                                      if (e1 instanceof IPokemob
                                                                              && e2 instanceof IPokemob) { return PokemobAIThread.pokemobComparator
                                                                                      .compare((IPokemob) e1,
@@ -135,6 +140,7 @@ public abstract class AIBase implements IAIRunnable
             return true;
         }
     }
+
     /** A thread-safe object used to set the current path for an entity.
      * 
      * @author Thutmose */

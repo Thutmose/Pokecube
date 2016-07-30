@@ -317,7 +317,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             if (stack == null)
             {
             }
-            else if (stack.isItemEqual(PokecubeItems.getStack("fossilDome")))
+            else if (stack.isItemEqual(PokecubeItems.getStack("kabuto")))
             {
                 domeFossilIndex = i;
             }

@@ -4,9 +4,9 @@
 package pokecube.core.entity.pokemobs.helper;
 
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
@@ -55,17 +55,10 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         {
             if (isBurning())
             {
-                if (food.getItem() == Items.chicken) dropItem(Items.cooked_chicken, j);
-                else if (food.getItem() == Items.potato) dropItem(Items.baked_potato, j);
-                else if (food.getItem() == Items.beef) dropItem(Items.cooked_beef, j);
-                else if (food.getItem() == Items.fish) dropItem(Items.cooked_fish, j);
-                else if (food.getItem() == Items.porkchop) dropItem(Items.cooked_porkchop, j);
-                else dropItem(food.getItem(), j);
+                ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(food);
+                if (newDrop != null) food = newDrop.copy();
             }
-            else
-            {
-                dropItem(food.getItem(), j);
-            }
+            dropItem(food.getItem(), j);
         }
 
         if (getPokemonAIState(IMoveConstants.TAMED)) return;
@@ -103,7 +96,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     @Override
     protected Item getDropItem()
     {
-        return null;// Item.getItemById(itemIdCommonDrop);
+        return null;
     }
 
     @Override

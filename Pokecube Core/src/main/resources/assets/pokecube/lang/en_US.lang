@@ -44,6 +44,9 @@ pokemob.action.faint=%1$s has fainted
 pokemob.action.denydamageblock=pokemobsDamageBlocks is disabled via configs
 pokemob.action.needsberries=Your Pokémob needs to eat more Berries to do that
 pokemob.action.denyrepel=Your Pokémob is too disgusted by repel to do that
+pokemob.areanotloaded=Warning, Unloaded area.
+
+pokemob.info.levelup=%1$s has grown to level %2$s
 
 pokemob.info.happy0=§4Your Pokémob is very unhappy
 pokemob.info.happy1=§cYour Pokémob is unhappy
@@ -53,11 +56,14 @@ pokemob.info.happy4=Your Pokémob is happy
 pokemob.info.happy5=§aYour Pokémob is very happy
 pokemob.info.happy6=§aYour Pokémob is ecstatic
 
+pokemob.evolve.success=%1$s Evolved into %2$s
 pokemob.megaevolve.success=%1$s Mega-evolved into %2$s
 pokemob.megaevolve.revert=%1$s Reverted to %2$s
 pokemob.megaevolve.failed=%1$s failed to Mega Evolve.
 
 pokemob.rename.deny=You cannot rename a traded Pokémob.
+
+pokemob.hatch=%1$s Hatched from the egg
 
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
@@ -252,7 +258,6 @@ ability.wonderguard.name=Wonder Guard
 ability.wonderskin.name=Wonder Skin
 ability.zenmode.name=Zen Mode
 
-
 achievement.catch=Catch a %1$s
 achievement.get1stPokemob=Get 1st Pokémob
 achievement.get1stPokemob.desc=Get your starter
@@ -411,12 +416,13 @@ tile.pc.bound=Private bound
 item.pokecube.bubbles=Droplets
 item.pokecube.flames=Flames
 
-item.HelixFossil.name=Helix Fossil
-item.DomeFossil.name=Dome Fossil
-item.LileepFossil.name=Root Fossil
-item.AnorithFossil.name=Claw Fossil
-item.CranidosFossil.name=Skull Fossil
-item.ShieldonFossil.name=Armor Fossil
+item.omanyte.name=Helix Fossil
+item.kabuto.name=Dome Fossil
+item.aerodactyl.name=Old Amber
+item.lileep.name=Root Fossil
+item.anorith.name=Claw Fossil
+item.cranidos.name=Skull Fossil
+item.shieldon.name=Armor Fossil
 tile.fossilstone.name=Fossil Stone
 
 item.megaring.name=Mega Ring
@@ -424,14 +430,39 @@ item.megastone.name=Mega Stone
 item.revive.name=Revive
 
 item.shiny_charm.name=Shiny Charm
-item.gardevoirmega.name=Gardevoirite
-item.charizardmega-y.name=Charizardite Y
-item.scizormega.name=Scizorite
-item.sceptilemega.name=Sceptilite
-item.salamencemega.name=Salamencite
-item.gallademega.name=Galladite
+
 item.absolmega.name=Absolite
+item.aggronmega.name=Aggronite
+item.alakazammega.name=Alakazite
+item.ampharosmega.name=Ampharosite
+item.banettemega.name=Banettite
+item.beedrillmega.name=Beedrillite
 item.blastoisemega.name=Blastoisinite
+item.blazikenmega.name=Blazikenite
+item.cameruptmega.name=Cameruptite
+item.charizardmega-x.name=Charizardite X
+item.charizardmega-y.name=Charizardite Y
+item.gallademega.name=Galladite
+item.gardevoirmega.name=Gardevoirite
+item.gengarmega.name=Gengarite
+item.glaliemega.name=Glalitite
+item.houndoommega.name=Houndoominite
+item.lucariomega.name=Lucarionite
+item.mawilemega.name=Mawilite
+item.mewtwomega-x.name=Mewtwonite X
+item.mewtwomega-y.name=Mewtwonite Y
+item.pidgeotmega.name=Pidgeotite
+item.pinsirmega.name=Pinsirite
+item.sableyemega.name=Sablenite
+item.salamencemega.name=Salamencite
+item.sceptilemega.name=Sceptilite
+item.scizormega.name=Scizorite
+item.slowbromega.name=Slowbronite
+item.steelixmega.name=Steelixite
+item.swampertmega.name=Swampertite
+item.tyranitarmega.name=Tyranitarite
+item.venusaurmega.name=Venusaurite
+
 item.alphaorb.name=Alpha Orb
 item.omegaorb.name=Omega Orb
 

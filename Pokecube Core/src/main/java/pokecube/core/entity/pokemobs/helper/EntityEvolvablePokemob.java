@@ -9,12 +9,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -32,11 +34,10 @@ import pokecube.core.utils.Tools;
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
-    // private int evolution;
     public boolean traded    = false;
     String         evolution = "";
 
-    boolean evolving = false;
+    boolean        evolving  = false;
 
     public EntityEvolvablePokemob(World world)
     {
@@ -46,7 +47,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean canEvolve(ItemStack itemstack)
     {
-        if (itemstack != null && itemstack.isItemEqual(PokecubeItems.getStack("Everstone"))) return false;
+        if (itemstack != null && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
 
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
@@ -63,7 +64,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (e != null && Pokedex.getInstance().getEntry(e.getPokedexNb()) != null) { return true; }
             }
         }
-
         return false;
     }
 
@@ -123,7 +123,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     {
         if (this.getPokedexEntry().canEvolve() && !isDead)
         {
-            // new Exception().printStackTrace();
             boolean neededItem = false;
             PokedexEntry evol = null;
             if (evolution == null || evolution.isEmpty())
@@ -132,7 +131,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     if (d.shouldEvolve(this, stack))
                     {
-                        evol = Database.getEntry(d.evolutionNb);
+                        evol = d.evolution;
                         if (!d.shouldEvolve(this, null) && stack == getHeldItem()) neededItem = true;
                         break;
                     }
@@ -144,7 +143,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (evol != null)
             {
-
                 EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
                 MinecraftForge.EVENT_BUS.post(evt);
                 if (evt.isCanceled()) return null;
@@ -235,7 +233,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         int num = dataWatcher.getWatchableObjectInt(EVOLNBDW);
         for (EvolutionData d : getPokedexEntry().getEvolutions())
         {
-            if (d.evolutionNb == num) return d.FX;
+            if (d.evolution.getPokedexNb() == num) return d.FX;
         }
 
         return ret;
@@ -271,24 +269,35 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
                 evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
+
+                if (evolution == null)
+                {
+                    System.err.println("No Entry for " + newEntry);
+                    return this;
+                }
+
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
                 ((IPokemob) evolution).changeForme(forme);
-                worldObj.spawnEntityInWorld(evolution);
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
+                if (this.addedToChunk) worldObj.spawnEntityInWorld(evolution);
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
                     ((IPokemob) evolution).setEvolutionTicks(10);
-
                 }
-                this.setDead();
+                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
+                        this.getPokemonDisplayName(), ((IPokemob) evolution).getPokedexEntry().getName());
+                this.displayMessageToOwner(mess);
                 this.setPokemonOwner(null);
+                this.setDead();
             }
             else
             {
                 evolution = this;
                 ((IPokemob) evolution).changeForme(forme);
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {
@@ -334,7 +343,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onUpdate()
     {
         super.onUpdate();
-        if (getHeldItem() != null && getHeldItem().getItem() == PokecubeItems.everstone)
+        if (getHeldItem() != null && Tools.isSameStack(getHeldItem(), PokecubeItems.getStack("everstone")))
         {
             traded = false;
         }

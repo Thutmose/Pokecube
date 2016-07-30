@@ -217,6 +217,14 @@ public class GuiChooseFirstPokemob extends GuiScreen
                     (width / 2), 17, 0xffffff);
             return;
         }
+        pokedexEntry = Database.getEntry(starters[index % starters.length]);
+
+        if (pokedexEntry == null) pokedexEntry = Pokedex.getInstance().getFirstEntry();
+        if (pokedexEntry == null)
+        {
+            mc.thePlayer.closeScreen();
+            return;
+        }
 
         GL11.glPushMatrix();
         int i1 = 15728880;
@@ -226,10 +234,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.pokemob.choose1st"), (width / 2), 17,
                 0xffffff);
-
-        pokedexEntry = Database.getEntry(starters[index % starters.length]);
-
-        if (pokedexEntry == null) pokedexEntry = Pokedex.getInstance().getFirstEntry();
 
         drawCenteredString(fontRendererObj, pokedexEntry.getTranslatedName(), (width / 2), 45, 0xffffff);
 

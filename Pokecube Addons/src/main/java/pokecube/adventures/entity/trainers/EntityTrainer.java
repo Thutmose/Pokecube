@@ -34,11 +34,10 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -49,12 +48,12 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.handlers.HeldItemHandler;
@@ -94,12 +93,14 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 sell.stackSize += new Random().nextInt(amtRange[1] - amtRange[0] + 1);
             }
             ItemStack buy1 = new ItemStack(Items.emerald);
-            ItemStack buy2 = null;
             buy1.stackSize = (cost & 63);
+            ItemStack buy2 = null;
             if (cost > 64)
             {
                 buy2 = buy1.copy();
+                buy1.stackSize = 64;
                 buy2.stackSize = ((cost - 64) & 63);
+                if (cost - 64 >= 64) buy2.stackSize = 64;
             }
             else if (cost == 64)
             {
@@ -136,7 +137,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     private EntityLivingBase           target;
     public TypeTrainer                 type;
     public Vector3                     location         = null;
-    private int                        id;
     public String                      name             = "";
     public UUID                        outID;
     public IPokemob                    outMob;
@@ -158,14 +158,12 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public EntityTrainer(World world, TypeTrainer type, int level)
     {
         this(world);
-        setId(PASaveHandler.getInstance().getNewId());
         initTrainer(type, level);
     }
 
     public EntityTrainer(World world, TypeTrainer type, int level, Vector3 location, boolean stationary)
     {
         this(world, location, true);
-        setId(PASaveHandler.getInstance().getNewId());
         initTrainer(type, level);
     }
 
@@ -177,29 +175,9 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public EntityTrainer(World par1World, Vector3 location, boolean stationary)
     {
         super(par1World);
-
         this.setSize(0.6F, 1.8F);
         this.renderDistanceWeight = 4;
         initAI(location, stationary);
-    }
-
-    protected void initAI(Vector3 location, boolean stationary)
-    {
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
-        this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
-        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
-        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
-        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-        this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
-        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
-        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
-        this.tasks.addTask(1, guardAI);
-        if (location != null)
-        {
-            location.moveEntity(this);
-            if (stationary) setStationary(location);
-        }
     }
 
     private void addMobTrades(ItemStack buy1)
@@ -211,6 +189,9 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
                 IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
+                int stat = getBaseStats(mon);
+                int stat1 = getBaseStats(mon1);
+                if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 String trader1 = mon1.getPokemonOwnerName();
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwnerByName(trader1);
@@ -219,6 +200,13 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 tradeList.add(new MerchantRecipe(buy1, stack));
             }
         }
+    }
+
+    private int getBaseStats(IPokemob mob)
+    {
+        PokedexEntry entry = mob.getPokedexEntry();
+        return entry.getStatHP() + entry.getStatATT() + entry.getStatDEF() + entry.getStatATTSPE()
+                + entry.getStatDEFSPE() + entry.getStatVIT();
     }
 
     public void addPokemob(ItemStack mob)
@@ -247,23 +235,24 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
                 ItemStack output = PokecubeItems.getStack(name);
                 if (output == null) continue;
                 added.add(name);
-                ItemStack in1 = new ItemStack(Items.emerald);
                 int size = Config.instance.megaCost;
                 if (name.endsWith("orb")) size = Config.instance.orbCost;
                 else if (name.endsWith("charm")) size = Config.instance.shinyCost;
-                in1.stackSize = (size & 63);
-                ItemStack in2 = null;
+                ItemStack buy1 = new ItemStack(Items.emerald);
+                buy1.stackSize = (size & 63);
+                ItemStack buy2 = null;
                 if (size > 64)
                 {
-                    in2 = in1.copy();
-                    in2.stackSize = ((size - 64) & 63);
-                    if (size - 64 > 64) in2.stackSize = 64;
+                    buy2 = buy1.copy();
+                    buy1.stackSize = 64;
+                    buy2.stackSize = ((size - 64) & 63);
+                    if (size - 64 >= 64) buy2.stackSize = 64;
                 }
                 else if (size == 64)
                 {
-                    in1.stackSize = 64;
+                    buy1.stackSize = 64;
                 }
-                itemList.add(new MerchantRecipe(in1, in2, output));
+                itemList.add(new MerchantRecipe(buy1, buy2, output));
             }
         }
         added.clear();
@@ -408,11 +397,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         return buyingPlayer;
     }
 
-    public int getId()
-    {
-        return id;
-    }
-
     @Override
     public MerchantRecipeList getRecipes(EntityPlayer player)
     {
@@ -446,6 +430,26 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public TypeTrainer getType()
     {
         return type;
+    }
+
+    protected void initAI(Vector3 location, boolean stationary)
+    {
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
+        this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
+        this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
+        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
+        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
+        this.tasks.addTask(9, new EntityAIWander(this, 0.6D));
+        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        guardAI.capability.setRoamDistance(2);
+        this.tasks.addTask(1, guardAI);
+        if (location != null)
+        {
+            location.moveEntity(this);
+            if (stationary) setStationary(location);
+        }
     }
 
     public void initTrainer(TypeTrainer type, int level)
@@ -510,7 +514,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
             if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTrainer)
             {
-                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getId(), 0, 0);
+                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getEntityId(), 0, 0);
             }
         }
         else
@@ -576,13 +580,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         if (defeater != null)
         {
-            String text = StatCollector.translateToLocal("pokecube.trainer.defeat");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            text = EnumChatFormatting.RED + text;
-            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
-            target.addChatMessage(message);
+            IChatComponent text = new ChatComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
+            target.addChatMessage(text);
         }
     }
 
@@ -641,6 +640,24 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     @Override
     public void onUpdate()
     {
+        if (getNavigator().getPath() != null && getAIState(STATIONARY))
+        {
+            if (guardAI.capability.getPos().distanceSq(0, 0, 0) == 0)
+            {
+                setStationary(false);
+                return;
+            }
+            Vector3 loc = Vector3.getNewVector().set(getNavigator().getPath().getFinalPathPoint());
+            double d = (guardAI.capability.getPos().getX() - loc.x) * (guardAI.capability.getPos().getX() - loc.x)
+                    + (guardAI.capability.getPos().getZ() - loc.z) * (guardAI.capability.getPos().getZ() - loc.z);
+            double d1 = guardAI.capability.getRoamDistance() * guardAI.capability.getRoamDistance();
+            if (d > d1)
+            {
+                getNavigator().clearPathEntity();
+                getNavigator().tryMoveToXYZ(guardAI.capability.getPos().getX() + 0.5,
+                        guardAI.capability.getPos().getY(), guardAI.capability.getPos().getZ() + 0.5, 0.5);
+            }
+        }
         super.onUpdate();
     }
 
@@ -683,7 +700,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         dataWatcher.updateObject(5, nbt.getInteger("aiState"));
         randomize = nbt.getBoolean("randomTeam");
         type = TypeTrainer.getTrainer(nbt.getString("type"));
-        setId(nbt.getInteger("uniqueid"));
         if (nbt.hasKey("outPokemob"))
         {
             outID = UUID.fromString(nbt.getString("outPokemob"));
@@ -698,6 +714,21 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         friendlyCooldown = nbt.getInteger("friendly");
 
         setTypes();
+        checkTradeIntegrity();
+    }
+
+    private void checkTradeIntegrity()
+    {
+        if (itemList == null) return;
+        List<MerchantRecipe> toRemove = Lists.newArrayList();
+        for (MerchantRecipe r : itemList)
+        {
+            if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
+            {
+                toRemove.add(r);
+            }
+        }
+        itemList.removeAll(toRemove);
     }
 
     @Override
@@ -719,7 +750,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         name = new String(string);
         male = buff.readBoolean();
         friendlyCooldown = buff.readInt();
-        setId(buff.readInt());
         for (int i = 0; i < 6; i++)
         {
             pokenumbers[i] = buff.readInt();
@@ -730,7 +760,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     public void setAIState(int state, boolean flag)
     {
         int byte0 = dataWatcher.getWatchableObjectInt(5);
-
         if (flag)
         {
             dataWatcher.updateObject(5, Integer.valueOf((byte0 | state)));
@@ -758,12 +787,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         }
         PCEventsHandler.recallAllPokemobs(this);
         super.setDead();
-    }
-
-    protected void setId(int id)
-    {
-        this.id = id;
-        PASaveHandler.getInstance().trainers.put(id, this);
     }
 
     public void setPokemob(int number, int level, int index)
@@ -802,12 +825,11 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
 
     public void setStationary(boolean stationary)
     {
-
+        this.setStationary(stationary ? Vector3.getNewVector().set(this) : null);
     }
 
     public void setStationary(Vector3 location)
     {
-        System.out.println(location);
         this.location = location;
         if (location == null)
         {
@@ -817,7 +839,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             return;
         }
         guardAI.setTimePeriod(TimePeriod.fullDay);
-        guardAI.setPos(getPosition());
+        guardAI.setPos(location.getPos());
         setAIState(STATIONARY, true);
     }
 
@@ -826,13 +848,8 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         if (target != null && target != this.target)
         {
             cooldown = 100;
-            String text = StatCollector.translateToLocal("pokecube.trainer.agress");
-            IChatComponent message;
-            IChatComponent name = getDisplayName();
-            name.getChatStyle().setColor(EnumChatFormatting.RED);
-            text = EnumChatFormatting.RED + text;
-            message = name.appendSibling(IChatComponent.Serializer.jsonToComponent("[\" " + text + "\"]"));
-            target.addChatMessage(message);
+            IChatComponent text = new ChatComponentTranslation("pokecube.trainer.agress", getDisplayName());
+            target.addChatMessage(text);
         }
         this.target = target;
     }
@@ -846,7 +863,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
     {
         if (name.isEmpty())
         {
-            int index = getId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
+            int index = getEntityId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
             name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
         }
         this.setCustomNameTag(type.name + " " + name);
@@ -879,7 +896,7 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
             }
             if (i != null && attackCooldown[j] < 30) { return; }
         }
-        if (globalCooldown > 0 && outID == null && outMob == null)
+        if (globalCooldown > 0 && outID == null && outMob == null && !getAIState(THROWING))
         {
             globalCooldown = 0;
             onDefeated(target);
@@ -961,7 +978,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
         nbt.setString("type", type.name);
-        nbt.setInteger("uniqueid", getId());
         if (outID != null) nbt.setString("outPokemob", outID.toString());
         nbt.setInteger("aiState", dataWatcher.getWatchableObjectInt(5));
         nbt.setInteger("cooldown", globalCooldown);
@@ -978,7 +994,6 @@ public class EntityTrainer extends EntityAgeable implements IEntityAdditionalSpa
         buffer.writeBytes(name.getBytes());
         buffer.writeBoolean(male);
         buffer.writeInt(friendlyCooldown);
-        buffer.writeInt(getId());
         for (int i = 0; i < 6; i++)
         {
             if (pokecubes[i] != null)

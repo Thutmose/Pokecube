@@ -2,6 +2,7 @@ package pokecube.adventures.client;
 
 import static pokecube.adventures.handlers.BlockHandler.afa;
 import static pokecube.adventures.handlers.BlockHandler.cloner;
+import static pokecube.adventures.handlers.BlockHandler.siphon;
 import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
@@ -42,6 +43,7 @@ import pokecube.adventures.client.gui.GuiTrainerEdit;
 import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
+import pokecube.adventures.client.render.item.BadgeTextureHandler;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
@@ -77,6 +79,7 @@ public class ClientProxy extends CommonProxy
         else if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);
+            cont.gotoInventoryPage(x);
             return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
         }
         else if (guiID == PokecubeAdv.GUICLONER_ID)
@@ -160,6 +163,9 @@ public class ClientProxy extends CommonProxy
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));
 
+        registerItemTexture(Item.getItemFromBlock(siphon), 0,
+                new ModelResourceLocation("pokecube_adventures:pokesiphon", "inventory"));
+
         StateMap map = (new StateMap.Builder()).withName(LegendaryConditions.spawner1.TYPE).withSuffix("_spawner")
                 .build();
         ModelLoader.setCustomStateMapper(LegendaryConditions.spawner1, map);
@@ -198,6 +204,7 @@ public class ClientProxy extends CommonProxy
         });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
+        BadgeTextureHandler.registerItemModels();
     }
 
 }

@@ -53,6 +53,7 @@ public abstract class PokecubeMod
 
     public final static String                  ID                         = "pokecube";
     public final static String                  VERSION                    = "@VERSION";
+    public final static String                  MINVERSION                 = "@MINVERSION";
     public final static String                  MCVERSIONS                 = "@MCVERSION";
     public final static String                  MINFORGEVERSION            = "@FORGEVERSION";
 
@@ -188,6 +189,8 @@ public abstract class PokecubeMod
     @SuppressWarnings("rawtypes")
     public abstract Class getEntityClassFromPokedexNumber(int pokedexNb);
 
+    public abstract IEntityProvider getEntityProvider();
+
     public abstract Configuration getPokecubeConfig(FMLPreInitializationEvent evt);
 
     public abstract Integer[] getStarters();
@@ -215,6 +218,8 @@ public abstract class PokecubeMod
 
     @SuppressWarnings("rawtypes")
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
+
+    public abstract void setEntityProvider(IEntityProvider provider);
 
     public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity);
 }

@@ -61,10 +61,7 @@ public class PokecubeManager
                 }
             }
         }
-
-        return ret;// itemStack.hasTagCompound() &&
-                   // itemStack.getTagCompound().hasKey("Owner") ?
-                   // itemStack.getTagCompound().getString("Owner") : "";
+        return ret;
     }
 
     public static int getPokedexNb(ItemStack itemStack)
@@ -132,7 +129,6 @@ public class PokecubeManager
     {
         ItemStack itemStack = new ItemStack(PokecubeItems.getFilledCube(pokemob.getPokecubeId()), 1,
                 Tools.serialize(((EntityLivingBase) pokemob).getMaxHealth(), ((EntityLivingBase) pokemob).getHealth()));
-        // setUID(itemStack, pokemob.getUid());
         setOwner(itemStack, pokemob.getPokemonOwner());
         setColor(itemStack);
         int status = pokemob.getStatus();
@@ -224,7 +220,6 @@ public class PokecubeManager
             }
             itemStack.getTagCompound().setTag("Pokemob", nbt);
         }
-
     }
 
     public static void setStatus(ItemStack itemStack, byte status)
@@ -233,7 +228,6 @@ public class PokecubeManager
         {
             itemStack.setTagCompound(new NBTTagCompound());
         }
-
         itemStack.getTagCompound().setByte("Status", status);
     }
 
@@ -243,7 +237,6 @@ public class PokecubeManager
         {
             itemStack.setTagCompound(new NBTTagCompound());
         }
-
         itemStack.getTagCompound().setInteger("tilt", number);
     }
 

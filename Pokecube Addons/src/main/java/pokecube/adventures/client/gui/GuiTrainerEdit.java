@@ -3,10 +3,14 @@ package pokecube.adventures.client.gui;
 import static pokecube.core.utils.PokeType.flying;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
@@ -16,11 +20,13 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.StatCollector;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -33,41 +39,44 @@ import thut.api.entity.IMobColourable;
 @SuppressWarnings("deprecation")
 public class GuiTrainerEdit extends GuiScreen
 {
-    public static int x;
-    public static int y;
+    public static int           x;
+    public static int           y;
 
-    static float              lastTime       = 0;
+    static float                lastTime       = 0;
     /** to pass as last parameter when rendering the mob so that the render
      * knows the rendering is asked by the pokedex gui */
-    public final static float POKEDEX_RENDER = 1.5f;
+    public final static float   POKEDEX_RENDER = 1.5f;
 
-    GuiTextField textfieldPokedexNb0;
-    GuiTextField textfieldLevel0;
+    GuiTextField                textfieldPokedexNb0;
+    GuiTextField                textfieldLevel0;
 
-    GuiTextField textfieldPokedexNb1;
-    GuiTextField textfieldLevel1;
+    GuiTextField                textfieldPokedexNb1;
+    GuiTextField                textfieldLevel1;
 
-    GuiTextField textfieldPokedexNb2;
-    GuiTextField textfieldLevel2;
+    GuiTextField                textfieldPokedexNb2;
+    GuiTextField                textfieldLevel2;
 
-    GuiTextField textfieldPokedexNb3;
-    GuiTextField textfieldLevel3;
+    GuiTextField                textfieldPokedexNb3;
+    GuiTextField                textfieldLevel3;
 
-    GuiTextField textfieldPokedexNb4;
-    GuiTextField textfieldLevel4;
+    GuiTextField                textfieldPokedexNb4;
+    GuiTextField                textfieldLevel4;
 
-    GuiTextField textfieldPokedexNb5;
+    GuiTextField                textfieldPokedexNb5;
 
-    GuiTextField textfieldLevel5;
-    GuiTextField textFieldName;
+    GuiTextField                textfieldLevel5;
+    GuiTextField                textFieldName;
 
-    GuiTextField textFieldType;
+    GuiTextField                textFieldType;
 
     private final EntityTrainer trainer;
 
-    String F = "false";
+    String                      F              = "false";
 
-    String T = "true";
+    String                      T              = "true";
+
+    boolean                     stationary     = false;
+    boolean                     resetTeam      = false;
 
     public GuiTrainerEdit(EntityTrainer trainer)
     {
@@ -79,14 +88,79 @@ public class GuiTrainerEdit extends GuiScreen
     {
         if (guibutton.id == 1)
         {
-            trainer.setAIState(EntityTrainer.STATIONARY, !trainer.getAIState(EntityTrainer.STATIONARY));
-            guibutton.displayString = trainer.getAIState(EntityTrainer.STATIONARY) ? T : F;
+            stationary = !stationary;
+            guibutton.displayString = stationary ? F : T;
+            sendChooseToServer();
         }
-        if (guibutton.id == 2)
+        else if (guibutton.id == 2)
         {
             sendChooseToServer();
             mc.thePlayer.addChatComponentMessage(
                     new ChatComponentText(StatCollector.translateToLocal("gui.trainer.saved")));
+        }
+        else if (guibutton.id == 5)
+        {
+            trainer.male = !trainer.male;
+            guibutton.displayString = trainer.male ? "\u2642" : "\u2640";
+            sendChooseToServer();
+        }
+        else if (guibutton.id == 6)
+        {
+            resetTeam = true;
+            sendChooseToServer();
+            resetTeam = false;
+            int[] numbers = trainer.pokenumbers;
+            int[] levels = trainer.pokelevels;
+
+            textfieldPokedexNb0.setText(numbers[0] + "");
+            textfieldLevel0.setText(levels[0] + "");
+            textfieldPokedexNb1.setText(numbers[1] + "");
+            textfieldLevel1.setText(levels[1] + "");
+            textfieldPokedexNb2.setText(numbers[2] + "");
+            textfieldLevel2.setText(levels[2] + "");
+            textfieldPokedexNb3.setText(numbers[3] + "");
+            textfieldLevel3.setText(levels[3] + "");
+            textfieldPokedexNb4.setText(numbers[4] + "");
+            textfieldLevel4.setText(levels[4] + "");
+            textfieldPokedexNb5.setText(numbers[5] + "");
+            textfieldLevel5.setText(levels[5] + "");
+        }
+        else
+        {
+            List<String> types = Lists.newArrayList();
+            types.addAll(TypeTrainer.typeMap.keySet());
+            Collections.sort(types);
+            int index = -1;
+            for (int i = 0; i < types.size(); i++)
+            {
+                if (types.get(i).equalsIgnoreCase(textFieldType.getText()))
+                {
+                    index = i;
+                }
+            }
+            if (guibutton.id == 3)
+            {
+                if (index <= 0)
+                {
+                    index = types.size() - 1;
+                }
+                else
+                {
+                    index--;
+                }
+            }
+            else
+            {
+                if (index >= types.size() - 1)
+                {
+                    index = 0;
+                }
+                else
+                {
+                    index++;
+                }
+            }
+            textFieldType.setText(types.get(index));
         }
     }
 
@@ -105,14 +179,15 @@ public class GuiTrainerEdit extends GuiScreen
         int num = 0;
         if (trainer.getEquipmentInSlot(1) != null)
         {
-                    int i1 = x1 + 50;
-                    int j1 = y1 - 20;
-                    int z = 0;
-                    GL11.glPushMatrix();
-                    GL11.glTranslated(i1,j1, z);
-                    GL11.glScaled(8, 8, 8);
-                    Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, trainer.getEquipmentInSlot(1),TransformType.GUI);
-                    GL11.glPopMatrix();
+            int i1 = x1 + 50;
+            int j1 = y1 - 20;
+            int z = 0;
+            GL11.glPushMatrix();
+            GL11.glTranslated(i1, j1, z);
+            GL11.glScaled(8, 8, 8);
+            Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, trainer.getEquipmentInSlot(1),
+                    TransformType.GUI);
+            GL11.glPopMatrix();
         }
 
         try
@@ -203,10 +278,19 @@ public class GuiTrainerEdit extends GuiScreen
         textFieldName = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 20 + yOffset, 100, 10);
         textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
 
-        String next = trainer.getAIState(EntityTrainer.STATIONARY) ? T : F;
-        ;
+        String next = (stationary = trainer.getAIState(EntityTrainer.STATIONARY)) ? F : T;
+
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
+
+        next = I18n.format("tile.pc.next");
+        String prev = I18n.format("tile.pc.previous");
+        // Cycle Trainer Type buttons
+        buttonList.add(new GuiButton(3, width / 2 - xOffset - 90, height / 2 - yOffset - 70, 50, 20, prev));
+        buttonList.add(new GuiButton(4, width / 2 - xOffset + 80, height / 2 - yOffset - 70, 50, 20, next));
+        String gender = trainer.male ? "\u2642" : "\u2640";
+        buttonList.add(new GuiButton(5, width / 2 - xOffset - 90, height / 2 - yOffset - 90, 20, 20, gender));
+        buttonList.add(new GuiButton(6, width / 2 - xOffset + 80, height / 2 - yOffset - 90, 50, 20, "Reset"));
 
         textfieldPokedexNb0 = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset, height / 4 + 60 + yOffset,
                 30, 10);
@@ -383,6 +467,7 @@ public class GuiTrainerEdit extends GuiScreen
 
         }
     }
+
     @Override
     protected void mouseClicked(int par1, int par2, int par3) throws IOException
     {
@@ -414,7 +499,6 @@ public class GuiTrainerEdit extends GuiScreen
     public void onGuiClosed()
     {
         sendChooseToServer();
-
         super.onGuiClosed();
     }
 
@@ -449,7 +533,7 @@ public class GuiTrainerEdit extends GuiScreen
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 42, k + 36, 50F);
-            float zoom = 25f / size;// (float)(23F / Math.sqrt(size + 0.6));
+            float zoom = 15f / size;// (float)(23F / Math.sqrt(size + 0.6));
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - 100;
@@ -487,6 +571,7 @@ public class GuiTrainerEdit extends GuiScreen
             e.printStackTrace();
         }
     }
+
     private void sendChooseToServer()
     {
         PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
@@ -509,7 +594,10 @@ public class GuiTrainerEdit extends GuiScreen
             buff.writeBytes(textFieldName.getText().getBytes());
             buff.writeInt(textFieldType.getText().length());
             buff.writeBytes(textFieldType.getText().getBytes());
-            buff.writeInt(trainer.getId());
+            buff.writeInt(trainer.getEntityId());
+            buff.writeBoolean(stationary);
+            buff.writeBoolean(trainer.male);
+            buff.writeBoolean(resetTeam);
         }
         catch (NumberFormatException e)
         {

@@ -8,12 +8,12 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -29,15 +29,14 @@ import thut.api.maths.Vector4;
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent, IEnergyReceiver
 {
-    public static double    MAXRANGE    = 64;
-    public static int       COOLDOWN    = 1000;
+    public static double    MAXRANGE = 64;
+    public static int       COOLDOWN = 20;
     public Vector4          link;
     private Vector3         linkPos;
     public Vector3          here;
-    protected long          lastStepped = Long.MIN_VALUE;
-    boolean                 noEnergy    = false;
+    boolean                 noEnergy = false;
 
-    protected EnergyStorage storage     = new EnergyStorage(32000);
+    protected EnergyStorage storage  = new EnergyStorage(32000);
 
     public TileEntityWarpPad()
     {
@@ -116,10 +115,10 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         }
 
         double distSq = 0;
-        long time = System.currentTimeMillis();
+        long time = worldObj.getTotalWorldTime();
+        long lastStepped = stepper.getEntityData().getLong("lastWarpPadUse");
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
-
         if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
             int energy = (int) (distSq);
@@ -128,43 +127,41 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             if (!tele)
             {
                 worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "note.bd", 1.0F, 1.0F);
-                lastStepped = time;
+                stepper.getEntityData().setLong("lastWarpPadUse", time);
             }
         }
 
         if (tele)
         {
-            TileEntity te = linkPos.getTileEntity(getWorld(), EnumFacing.DOWN);
-
             worldObj.playSoundEffect(getPos().getX(), getPos().getY(), getPos().getZ(), "mob.endermen.portal", 1.0F,
                     1.0F);
-
             PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
             buff.writeByte(9);
             here.writeToBuff(buff);
             MessageClient packet = new MessageClient(buff);
             PokecubePacketHandler.sendToAllNear(packet, here, stepper.dimension, 20);
-
-            if (te != null && te instanceof TileEntityWarpPad)
-            {
-                TileEntityWarpPad pad = (TileEntityWarpPad) te;
-                pad.lastStepped = time;
-            }
-
+            stepper.getEntityData().setLong("lastWarpPadUse", time);
             TeleDest d = new TeleDest(link);
-
             Vector3 loc = d.getLoc();
             int dim = d.getDim();
-
-            Transporter.teleportEntity(stepper, loc, dim, false);
-
+            if (stepper instanceof EntityPlayer)
+            {
+                Transporter.teleportEntity(stepper, loc, dim, false);
+            }
+            else if (dim == d.getDim())
+            {
+                stepper.setPositionAndUpdate(loc.x, loc.y, loc.z);
+            }
+            else
+            {
+                return;
+            }
             worldObj.playSoundEffect(loc.x, loc.y, loc.z, "mob.endermen.portal", 1.0F, 1.0F);
             buff = new PacketBuffer(Unpooled.buffer());
             buff.writeByte(9);
             linkPos.writeToBuff(buff);
             packet = new MessageClient(buff);
             PokecubePacketHandler.sendToAllNear(packet, linkPos, stepper.dimension, 20);
-
         }
     }
 

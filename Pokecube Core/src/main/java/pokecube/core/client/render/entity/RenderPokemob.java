@@ -7,37 +7,46 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glDisable;
 import static org.lwjgl.opengl.GL11.glEnable;
 
+import java.awt.Color;
 import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.gui.GuiPokedex;
-import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
+import thut.core.client.render.model.IModelRenderer;
 
 @SideOnly(Side.CLIENT)
 public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 {
+    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
+    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+
     public static void renderEvolution(IPokemob pokemob, float par2)
     {
-        PTezzelator tez = PTezzelator.instance;
         float f1 = 0, f2 = 0;
 
         boolean evolving = pokemob.getEvolutionTicks() > 0;
@@ -46,6 +55,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         {
             f1 = (pokemob.getEvolutionTicks() + par2) / 200.0F;
             f2 = 0.0F;
+            Tessellator tessellator = Tessellator.getInstance();
+            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
             RenderHelper.disableStandardItemLighting();
 
             if (f1 > 0.8F)
@@ -62,32 +73,38 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             GL11.glEnable(GL11.GL_CULL_FACE);
             GL11.glDepthMask(false);
             GL11.glPushMatrix();
-            GL11.glTranslatef(0.0F, 1.0F, 0.0F);
+            GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
 
             int color1 = pokemob.getType1().colour;
             int color2 = pokemob.getType2().colour;
 
+            Color col1 = new Color(color1);
+            Color col2 = new Color(color2);
+
+            float scale = 0.5f * pokemob.getPokedexEntry().length;
             for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
             {
-                GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
-                tez.begin(6);
-                float f3 = random.nextFloat() * 20.0F + 5.0F + f2 * 10.0F;
-                float f4 = random.nextFloat() * 2.0F + 1.0F + f2 * 2.0F;
-                tez.color(color1, (int) (255.0F * (1.0F - f2)));
-                tez.vertex(0.0D, 0.0D, 0.0D);
-                tez.color(color2, 0);
-                tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-                tez.vertex(0.866D * f4, f3, -0.5F * f4);
-                tez.vertex(0.0D, f3, 1.0F * f4);
-                tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-                tez.end();
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
+                float f4 = random.nextFloat() * 20.0F * scale + 5.0F * scale + f2 * 10.0F;
+                float f3 = random.nextFloat() * 2.0F * scale + 1.0F * scale + f2 * 2.0F;
+                worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+                worldrenderer.pos(0.0D, 0.0D, 0.0D)
+                        .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
+                worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(0.0D, (double) f4, (double) (1.0F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                        .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+                tessellator.draw();
             }
-
             GL11.glPopMatrix();
             GL11.glDepthMask(true);
             GL11.glDisable(GL11.GL_CULL_FACE);
@@ -99,8 +116,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             RenderHelper.enableStandardItemLighting();
         }
     }
-//
-//    HashSet<ResourceLocation> mobTextures = new HashSet<ResourceLocation>();
+
     public static void renderExitCube(IPokemob pokemob, float partialTick)
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
@@ -153,12 +169,12 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
         }
         int ticks = ((Entity) pokemob).ticksExisted;
-        if (ticks > 10) return;
+        if (ticks > 20) return;
 
         float f1 = ((float) ticks * 5 + partialTick) / 200.0F;
         float f2 = 0.0F;
-
-        PTezzelator tez = PTezzelator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
         RenderHelper.disableStandardItemLighting();
 
         if (f1 > 0.8F)
@@ -175,30 +191,37 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glDepthMask(false);
         GL11.glPushMatrix();
-        GL11.glTranslatef(0.0F, 1.0F, 0.0F);
+        GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
 
         int color1 = pokemob.getType1().colour;
         int color2 = pokemob.getType2().colour;
 
+        Color col1 = new Color(color1);
+        Color col2 = new Color(color2);
+
+        float scale = 0.5f * pokemob.getPokedexEntry().length;
         for (int i = 0; i < (f1 + f1 * f1) / 2.0F * 60.0F; ++i)
         {
-            GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
-            tez.begin(6);
-            float f3 = random.nextFloat() * 20.0F + 5.0F + f2 * 10.0F;
-            float f4 = random.nextFloat() * 2.0F + 1.0F + f2 * 2.0F;
-            tez.color(color1, (int) (255.0F * (1.0F - f2)));
-            tez.vertex(0.0D, 0.0D, 0.0D);
-            tez.color(color2, 0);
-            tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-            tez.vertex(0.866D * f4, f3, -0.5F * f4);
-            tez.vertex(0.0D, f3, 1.0F * f4);
-            tez.vertex(-0.866D * f4, f3, -0.5F * f4);
-            tez.end();
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(random.nextFloat() * 360.0F + f1 * 90.0F, 0.0F, 0.0F, 1.0F);
+            float f4 = random.nextFloat() * 20.0F * scale + 5.0F * scale + f2 * 10.0F;
+            float f3 = random.nextFloat() * 2.0F * scale + 1.0F * scale + f2 * 2.0F;
+            worldrenderer.begin(6, DefaultVertexFormats.POSITION_COLOR);
+            worldrenderer.pos(0.0D, 0.0D, 0.0D)
+                    .color(col1.getRed(), col1.getGreen(), col1.getBlue(), (int) (255.0F * (1.0F - f1))).endVertex();
+            worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(0.0D, (double) f4, (double) (1.0F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            worldrenderer.pos(-0.866D * (double) f3, (double) f4, (double) (-0.5F * f3))
+                    .color(col2.getRed(), col2.getGreen(), col2.getBlue(), 0).endVertex();
+            tessellator.draw();
         }
 
         GL11.glPopMatrix();
@@ -211,6 +234,57 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glEnable(GL11.GL_ALPHA_TEST);
         RenderHelper.enableStandardItemLighting();
     }
+
+    public static <V extends EntityLiving> void renderStatus(IModelRenderer<V> renderer, V entity, double d, double d1,
+            double d2, float f, float partialTick)
+    {
+        IPokemob pokemob = (IPokemob) entity;
+        byte status;
+        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
+        ResourceLocation texture = null;
+        if (status == IMoveConstants.STATUS_FRZ)
+        {
+            texture = FRZ;
+        }
+        else if (status == IMoveConstants.STATUS_PAR)
+        {
+            texture = PAR;
+        }
+        if (texture == null) return;
+
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+
+        float time = (((Entity) pokemob).ticksExisted + partialTick);
+        GL11.glPushMatrix();
+
+        float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
+
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        float var5 = time * speed;
+        float var6 = time * speed;
+        GL11.glTranslatef(var5, var6, 0.0F);
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
+        GL11.glColor4f(var7, var7, var7, 0.5F);
+        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
+        GL11.glScalef(var7, var7, var7);
+
+        IMobColourable colour = (IMobColourable) entity;
+        int[] col = colour.getRGBA();
+        int[] bak = col.clone();
+        col[3] = 200;
+        colour.setRGBA(col);
+        renderer.doRender(entity, d, d1, d2, f, partialTick);
+        colour.setRGBA(bak);
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glLoadIdentity();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+
+        GL11.glPopMatrix();
+    }
+
     protected float     scale;
 
     protected ModelBase modelStatus;
@@ -266,23 +340,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     {
         if (entity == null) return null;
         ResourceLocation texture = entity.getTexture();
-//        if (!mobTextures.contains(texture))
-//        {
-//            ResourceLocation test = texture;
-//            try
-//            {
-//                Minecraft.getMinecraft().getResourceManager().getResource(test);
-//            }
-//            catch (IOException e)
-//            {
-//                String tex = "textures/FRZ.png";
-//                test = new ResourceLocation("pokecube", tex);
-//                texture = test;
-//                System.err.println("a Texture for " + entity + " Is missing:" + texture);
-//            }
-//            mobTextures.add(texture);
-//        }
-
         return texture;
     }
 
@@ -291,17 +348,10 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         return scale;
     }
 
-    // @Override
-    // protected void renderEquippedItems(EntityLivingBase entity,
-    // float par2) {
-    // super.renderEquippedItems(entity, par2);
-    // }
-
     @Override
     protected void preRenderCallback(T entity, float f)
     {
         preRenderScale(entity, f);
-        updateCreeperScale(entity, f);
         GL11.glEnable(GL11.GL_NORMALIZE);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -316,7 +366,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     protected void renderModel(T entity, float walktime, float walkspeed, float time, float rotationYaw,
             float rotationPitch, float scale)
     {
-
         GL11.glPushMatrix();
 
         glEnable(GL_BLEND);
@@ -343,7 +392,8 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             {
                 GL11.glTranslated(1 - entry.width / 2, 0, 0);
             }
-            else if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).ridingEntity instanceof EntityLivingBase)
+            else if (mob.getPokemonAIState(IMoveConstants.HELD)
+                    && ((Entity) mob).ridingEntity instanceof EntityLivingBase)
             {
                 Vector3 look = v.set(-0.5, 0.5, -0.5);
                 GL11.glTranslated(look.x, ((Entity) mob).height + 1 - look.y, look.z);
@@ -355,13 +405,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 float s = (ticks) / max;
                 GL11.glScalef(s, s, s);
             }
-            boolean shouldColour = (red == blue && blue == green && green == 0);
-            boolean redCheck = mob.getPokedexEntry().hasSpecialTextures[0] && red == 0;
-            boolean blueCheck = mob.getPokedexEntry().hasSpecialTextures[1] && blue == 0;
-            boolean greenCheck = mob.getPokedexEntry().hasSpecialTextures[2] && green == 0;
-            shouldColour = shouldColour || (!redCheck && !blueCheck && !greenCheck);
-
-            if (shouldColour) GL11.glColor4f(red, green, blue, alpha);
+            GL11.glColor4f(red, green, blue, alpha);
         }
         if ((time != GuiPokedex.POKEDEX_RENDER))
         {
@@ -407,29 +451,5 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
             GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
         }
-    }
-
-    /** Updates creeper scale in prerender callback */
-    protected void updateCreeperScale(EntityLiving par1EntityCreeper, float par2)
-    {
-        // float var4 = par1EntityCreeper.getCreeperFlashIntensity(par2);//TODO
-        // findout what this was for
-        // float var5 = 1.0F + MathHelper.sin(var4 * 100.0F) * var4 * 0.01F;
-        //
-        // if (var4 < 0.0F)
-        // {
-        // var4 = 0.0F;
-        // }
-        //
-        // if (var4 > 1.0F)
-        // {
-        // var4 = 1.0F;
-        // }
-        //
-        // var4 *= var4;
-        // var4 *= var4;
-        // float var6 = (1.0F + var4 * 0.4F) * var5;
-        // float var7 = (1.0F + var4 * 0.1F) / var5;
-        // GL11.glScalef(var6, var7, var6);
     }
 }

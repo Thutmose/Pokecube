@@ -20,13 +20,6 @@ repositories {
         url = "http://files.minecraftforge.net/maven"
     }
     ivy {
-        name = "baubles"
-        url = "https://dl.dropboxusercontent.com/u/47135879/"
-        layout "pattern", {
-            artifact "[module]-${version_minecraft}-[revision]-deobf.[ext]"
-        }
-    }
-    ivy {
         name = "thutcore"
         url = "https://github.com/Thutmose/Thut/raw/master/ThutCore/deobf/"
         layout "pattern", {
@@ -43,7 +36,6 @@ repositories {
 }
 
 dependencies {
-    deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
     deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
     deobfCompile name: 'pokecube', version: "${version_pokecube}", ext: 'jar'
 }

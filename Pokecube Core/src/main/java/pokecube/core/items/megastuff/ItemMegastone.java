@@ -8,7 +8,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.handlers.HeldItemHandler;
@@ -18,7 +17,6 @@ public class ItemMegastone extends Item
     public ItemMegastone()
     {
         super();
-        this.setMaxStackSize(1);
         this.setHasSubtypes(true);
     }
 
@@ -71,20 +69,12 @@ public class ItemMegastone extends Item
     {
         ItemStack stack;
         subItems.add(new ItemStack(itemIn));
-        int n = 0;
         for (String s : HeldItemHandler.megaVariants)
         {
-            if (n++ == 0) continue;
             stack = new ItemStack(itemIn);
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("pokemon", s);
             subItems.add(stack);
         }
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
-    {
-        return itemstack;
     }
 }

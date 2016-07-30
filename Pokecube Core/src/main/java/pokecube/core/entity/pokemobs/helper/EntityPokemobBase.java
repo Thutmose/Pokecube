@@ -24,7 +24,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
@@ -38,6 +37,7 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.entity.IMultibox;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
@@ -70,7 +70,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public HashMap<String, Matrix3> boxes             = new HashMap<String, Matrix3>();
     public HashMap<String, Vector3> offsets           = new HashMap<String, Vector3>();
 
-    int                             corruptedSum      = -123586;
     private float                   nextStepDistance;
 
     public EntityPokemobBase(World world)
@@ -112,25 +111,24 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 || getAttackTarget() != null || this.hasCustomName() || isAncient() || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
+        boolean player = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
+        boolean cull = PokecubeMod.core.getConfig().cull && !player;
 
-        boolean cull = PokecubeMod.core.getConfig().cull
-                && worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius) == null;
-
-        if (!cull && !PokecubeMod.core.getConfig().cull)
+        if (!cull && !PokecubeMod.core.getConfig().cull && !worldObj.playerEntities.isEmpty())
         {
-            cull = worldObj.getClosestPlayerToEntity(this, PokecubeMod.core.getConfig().maxSpawnRadius * 3) == null;
-            if (cull && despawntimer < 0)
-            {
-                despawntimer = 80;
-                cull = false;
-            }
-            else if (cull && despawntimer > 0)
-            {
-                cull = false;
-            }
+            cull = !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius * 3, this);
         }
 
-        return canDespawn || cull;
+        if (cull && despawntimer < 0)
+        {
+            despawntimer = 80;
+            cull = false;
+        }
+        else if (cull && despawntimer > 0)
+        {
+            cull = false;
+        }
+        return (canDespawn || cull) && super.canDespawn();
     }
 
     @Override
@@ -144,23 +142,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         // TODO see if I need anything here, of if the LogicCollision will
         // handle it.
-    }
-
-    @Override
-    public int computeCheckSum()
-    {
-        int red = rgba[0];
-        int green = rgba[1];
-        int blue = rgba[2];
-        int checkSum = getExp() * getPokedexNb() + getPokecubeId() + ((int) getSize() * 1000)
-                + (shiny ? 1234 : 4321) * nature.ordinal() + red * green * blue;
-        String movesString = dataWatcher.getWatchableObjectString(30);
-        checkSum += movesString.hashCode();
-        int[] IVs = PokecubeSerializer.byteArrayAsIntArray(ivs);
-        int IVEV = dataWatcher.getWatchableObjectInt(24) + dataWatcher.getWatchableObjectInt(25) + IVs[0] + IVs[1];
-        checkSum += IVEV;
-        // checkSum += getSexe();
-        return checkSum;
     }
 
     /** Makes the entity despawn if requirements are reached */
@@ -285,7 +266,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public float getSize()
     {
-        return scale;
+        return (float) (scale * PokecubeMod.core.getConfig().scalefactor);
     }
 
     @Override
@@ -311,6 +292,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public Entity getTransformedTo()
     {
         return transformedTo;
+    }
+
+    @Override
+    public EntityAIBase getUtilityMoveAI()
+    {
+        return utilMoveAI;
     }
 
     @Override
@@ -344,13 +331,13 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
 
         Random random = new Random();
-        int abilityNumber = random.nextInt(100) % 2;
-        if (getPokedexEntry().getAbility(abilityNumber) == null)
+        abilityIndex = random.nextInt(100) % 2;
+        if (getPokedexEntry().getAbility(abilityIndex, this) == null)
         {
-            if (abilityNumber != 0) abilityNumber = 0;
-            else abilityNumber = 1;
+            if (abilityIndex != 0) abilityIndex = 0;
+            else abilityIndex = 1;
         }
-        setAbility(getPokedexEntry().getAbility(abilityNumber));
+        setAbility(getPokedexEntry().getAbility(abilityIndex, this));
         if (getAbility() != null) getAbility().init(this);
 
         setSize(1 + scaleFactor * (float) (random).nextGaussian());
@@ -387,11 +374,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public boolean interact(EntityPlayer player)
     {
-        if (corruptedSum != -123586)
-        {
-            player.addChatMessage(new ChatComponentText("Corrupt Pokemon"));
-            return false;
-        }
         return super.interact(player);
     }
 
@@ -422,32 +404,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         String domain = texture == null ? getPokedexEntry().getModId() : texture.getResourceDomain();
         String texName = texture == null ? null : texture.getResourcePath();
         texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), this.ticksExisted);
-        int red = rgba[0];
-        int green = rgba[1];
-        int blue = rgba[2];
-        if (this.getPokedexEntry().hasSpecialTextures[0] && red == 0 && green != 0 && blue != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ra.png");
-        }
-        else if (this.getPokedexEntry().hasSpecialTextures[1] && blue == 0 && green != 0 && red != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ga.png");
-        }
-        else if (this.getPokedexEntry().hasSpecialTextures[2] && blue != 0 && green == 0 && red != 0)
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Ba.png");
-        }
-        if (wasShadow && this.getPokedexEntry().hasSpecialTextures[3])
-        {
-            String args = texName.substring(0, texName.length() - 4);
-            return new ResourceLocation(domain, args + "Sh.png");
-        }
         texture = new ResourceLocation(domain, texName);
-        if (!shiny) // || !getPokedexEntry().hasSpecialTextures[3])
-            return texture;
+        if (!shiny) return texture;
         String args = texName.substring(0, texName.length() - 4);
         return new ResourceLocation(domain, args + "S.png");
     }
@@ -457,7 +415,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void moveEntity(double x, double y, double z)
     {
-        if (!multibox)
+        if (!multibox || !this.addedToChunk)
         {
             super.moveEntity(x, y, z);
             return;
@@ -487,7 +445,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
             for (String s : getBoxes().keySet())
             {
-                // diffs.set(x, y, z);
                 Matrix3 box = getBoxes().get(s);
                 Vector3 offset = getOffsets().get(s);
                 if (offset == null) offset = Vector3.empty;
@@ -585,12 +542,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void onLivingUpdate()
     {
-        if (corruptedSum != -123586)
-        {
-            // this.tasks.taskEntries.clear();
-            // this.targetTasks.taskEntries.clear();
-            // return;
-        }
         super.onLivingUpdate();
 
         if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
@@ -627,17 +578,21 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void onUpdate()
     {
         here.set(posX, posY, posZ);
-
+        boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
+        if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING)))
+        {
+            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius, this);
+        }
+        if (!loaded)
+        {
+            despawnEntity();
+            return;
+        }
+        //TODO move this into database somehow.
         if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")))
         {
             int num = rand.nextInt(unowns.length);
             changeForme(unowns[num]);
-        }
-
-        // TODO
-        if (corruptedSum != -123586)
-        {
-            // return;
         }
         Vector3 temp = Vector3.getNewVector().set(here);
         Vector3 temp1 = Vector3.getNewVector().setToVelocity(this);
@@ -684,24 +639,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setSize(nbttagcompound.getFloat("scale"));
         uid = nbttagcompound.getInteger("PokemobUID");
         if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
-
-        int checkSum = nbttagcompound.getInteger("checkSum");
-
-        if (checkSum != computeCheckSum())
-        {
-            if (getPokemonOwner() != null && getPokemonOwner() instanceof EntityPlayer)
-            {
-                // ((EntityPlayer)getPokemonOwner()).addChatMessage(new
-                // ChatComponentText("This Pokemon is Corrupted"));
-
-            }
-            // corruptedSum = checkSum;
-        }
-        else
-        {
-            corruptedSum = -123586;
-        }
-
         this.initRidable();
     }
 
@@ -761,15 +698,23 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void setSize(float size)
     {
-        scale = size;
+        if (isAncient()) scale = 2;
+        else scale = size;
         float a = 1, b = 1, c = 1;
         PokedexEntry entry = getPokedexEntry();
-        if (isAncient()) scale = 2;
         if (entry != null)
         {
-            a = entry.width * scale;
-            b = entry.height * scale;
-            c = entry.length * scale;
+            a = entry.width * getSize();
+            b = entry.height * getSize();
+            c = entry.length * getSize();
+            if (a < 0.01 || b < 0.01 || c < 0.01)
+            {
+                float min = 0.01f / Math.min(a, Math.min(c, b));
+                scale *= min;
+                a = entry.width * getSize();
+                b = entry.height * getSize();
+                c = entry.length * getSize();
+            }
         }
 
         this.width = a;
@@ -823,7 +768,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             particle = getPokedexEntry().particleData[0];
             particleIntensity = Integer.parseInt(getPokedexEntry().particleData[1]);
-            particleIntensity = 100;
         }
 
         Calendar calendar = Calendar.getInstance();
@@ -847,7 +791,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void specificSpawnInit()
     {
-        corruptedSum = -123586;
         super.specificSpawnInit();
         this.setHealth(this.getMaxHealth());
     }
@@ -857,11 +800,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger("PokeballId", getPokecubeId());
-        nbttagcompound.setFloat("scale", getSize());
+        nbttagcompound.setFloat("scale", (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         nbttagcompound.setInteger("PokemobUID", uid);
         nbttagcompound.setIntArray("flavours", flavourAmounts);
-        if (corruptedSum == -123586) nbttagcompound.setInteger("checkSum", computeCheckSum());
-        else nbttagcompound.setInteger("checkSum", corruptedSum);
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -874,7 +815,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
         PokecubeSerializer.getInstance().addPokemob(this);
         data.writeInt(pokedexNb);
-        data.writeFloat(getSize());
+        data.writeFloat((float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         data.writeInt(pokecubeId);
         data.writeInt(uid);
         byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),

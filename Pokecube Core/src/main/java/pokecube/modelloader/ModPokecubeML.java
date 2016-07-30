@@ -13,7 +13,6 @@ import java.util.zip.ZipFile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,6 +31,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
@@ -71,9 +71,7 @@ public class ModPokecubeML
     @EventHandler
     public void init(FMLInitializationEvent evt)
     {
-        System.out.println("startInit");
         proxy.init();
-        System.out.println("endinit");
         if (info)
         {
             for (PokedexEntry e : Database.allFormes)
@@ -81,7 +79,12 @@ public class ModPokecubeML
                 System.out.println(e.getName());
             }
         }
-
+        proxy.providesModels(ID, this, addedPokemon.toArray(new String[0]));
+        for (String s : addedPokemon)
+        {
+            loadMob(s);
+        }
+        ExtraDatabase.apply();
         for (String s : addedPokemon)
         {
             registerMob(s);
@@ -134,7 +137,7 @@ public class ModPokecubeML
         }
 
         GameRegistry.registerItem(
-                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(CreativeTabs.tabTools),
+                new ItemModelReloader().setUnlocalizedName("modelreloader").setCreativeTab(PokecubeCore.creativeTabPokecube),
                 "modelreloader");
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -197,6 +200,30 @@ public class ModPokecubeML
         addedPokemon = toAdd;
     }
 
+    private void loadMob(String mob)
+    {
+        if (textureProviders.containsKey(mob) && !textureProviders.get(mob).equals(ID)) return;
+
+        ArrayList<String> list = Lists.newArrayList();
+        ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
+        try
+        {
+            proxy.fileAsList(this, xml, list);
+            if (!list.isEmpty())
+            {
+                ExtraDatabase.addXMLEntry(ID, mob, list);
+            }
+            else
+            {
+                System.err.println("Failed to aquire XML for " + mob);
+            }
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+        }
+    }
+
     private void registerMob(String mob)
     {
         PokedexEntry e;
@@ -214,37 +241,7 @@ public class ModPokecubeML
         }
         else
         {
-            ArrayList<String> list = Lists.newArrayList();
-            ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, CommonProxy.MODELPATH + mob + ".xml");
-            try
-            {
-                proxy.fileAsList(this, xml, list);
-                if (!list.isEmpty())
-                {
-                    ExtraDatabase.addXML(mob, list);
-                    ExtraDatabase.apply(mob);
-                }
-            }
-            catch (Exception e1)
-            {
-                e1.printStackTrace();
-            }
-            if ((e = Database.getEntry(mob)) != null)
-            {
-                if (textureProviders.containsKey(e.getName()))
-                {
-                    e.setModId(textureProviders.get(e.getName()));
-                }
-                else
-                {
-                    e.setModId(ID);
-                }
-                if (e.baseForme == null) PokecubeMod.core.registerPokemon(true, this, e);
-            }
-            else
-            {
-                System.err.println("Failed to register " + mob);
-            }
+            System.err.println("Failed to register " + mob);
         }
     }
 }

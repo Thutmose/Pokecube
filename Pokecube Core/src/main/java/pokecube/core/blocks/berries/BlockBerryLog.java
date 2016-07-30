@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.BlockLog;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
@@ -12,12 +13,15 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
+import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.interfaces.PokecubeMod;
 
-public class BlockBerryLog extends BlockLog implements IMetaBlock
+public class BlockBerryLog extends BlockLog implements IMetaBlock, ITileEntityProvider
 {
 	static final class SwitchEnumAxis
 	{
@@ -83,7 +87,6 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 	{
 		super();
 		woodType = names;
-		BlockBerryCrop.logs.add(this);
 		shift = logShift;
 
 		IBlockState state = this.blockState.getBaseState();
@@ -101,6 +104,12 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 	}
 
 	@Override
+    public TileEntity createNewTileEntity(World worldIn, int meta)
+    {
+        return new TileEntityBerries(Type.LOG);
+    }
+
+	@Override
     protected ItemStack createStackedBlock(IBlockState state)
 	{
 		return new ItemStack(Item.getItemFromBlock(this), 1,
@@ -113,7 +122,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 	{
 		return state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift;
 	}
-
+	
 	@Override
     public int getMetaFromState(IBlockState state)
 	{
@@ -135,7 +144,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 		return i;
 	}
 	
-	public IBlockState getStateForTree(String berryName)
+    public IBlockState getStateForTree(String berryName)
 	{
 		BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase());
 		
@@ -149,8 +158,8 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 		}
 		return null;
 	}
-	
-    /**
+
+	/**
      * Convert the given metadata into a BlockState for this Block
      */
     @Override
@@ -174,7 +183,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 		}
 	}
 
-	@Override
+    @Override
 	public String getUnlocalizedName(ItemStack stack)
 	{
 		return "tile." + woodType[stack.getItemDamage() % woodType.length] + "Log";

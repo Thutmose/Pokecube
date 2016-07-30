@@ -3,10 +3,12 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -21,10 +23,11 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -36,13 +39,16 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
+import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -58,59 +64,57 @@ import thut.api.pathing.IPathingMob;
 public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInvBasic, IHungrymob,
         IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
 {
-    public static int          EXITCUBEDURATION  = 40;
+    public static int     EXITCUBEDURATION  = 40;
 
-    static final int           AIACTIONSTATESDW  = 5;
-    static final int           DIRECTIONPITCHDW  = 10;
-    static final int           STATSDW           = 11;
-    static final int           ATTACKTARGETIDDW  = 13;
-    static final int           STATMODDW         = 18;
-    static final int           BOOMSTATEDW       = 19;
-    static final int           EXPDW             = 20;
-    static final int           HUNGERDW          = 21;
-    static final int           NICKNAMEDW        = 22;
-    static final int           STATUSMOVEINDEXDW = 23;
+    static final int      AIACTIONSTATESDW  = 5;
+    static final int      DIRECTIONPITCHDW  = 10;
+    static final int      STATSDW           = 11;
+    static final int      ATTACKTARGETIDDW  = 13;
+    static final int      STATMODDW         = 18;
+    static final int      BOOMSTATEDW       = 19;
+    static final int      EXPDW             = 20;
+    static final int      HUNGERDW          = 21;
+    static final int      NICKNAMEDW        = 22;
+    static final int      STATUSMOVEINDEXDW = 23;
 
-    static final int           EVS1DW            = 24;
-    static final int           EVS2DV            = 25;
+    static final int      EVS1DW            = 24;
+    static final int      EVS2DV            = 25;
 
-    static final int           SPECIALINFO       = 26;
-    static final int           EVOLNBDW          = 27;
-    static final int           EVOLTICKDW        = 28;
-    static final int           HAPPYDW           = 29;
-    static final int           MOVESDW           = 30;
+    static final int      SPECIALINFO       = 26;
+    static final int      EVOLNBDW          = 27;
+    static final int      EVOLTICKDW        = 28;
+    static final int      HAPPYDW           = 29;
+    static final int      MOVESDW           = 30;
 
-    protected boolean          looksWithInterest;
+    protected boolean     looksWithInterest;
 
-    protected float            field_25048_b;
+    protected float       field_25048_b;
 
-    protected float            field_25054_c;
-    protected boolean          isPokemonShaking;
+    protected float       field_25054_c;
+    protected boolean     isPokemonShaking;
 
-    protected boolean          field_25052_g;
+    protected boolean     field_25052_g;
 
-    protected float            timePokemonIsShaking;
-    protected float            prevTimePokemonIsShaking;
-    protected Integer          pokedexNb         = 0;
-    public float               length            = 1;
-    // protected int hungerTime;
-    protected EntityLivingBase owner;
-    private String             ownerName         = "";
-    private UUID               original          = new UUID(1234, 4321);
-    protected Vector3          here              = Vector3.getNewVector();
+    protected float       timePokemonIsShaking;
+    protected float       prevTimePokemonIsShaking;
+    protected Integer     pokedexNb         = 0;
+    public float          length            = 1;
+    private UUID          original          = new UUID(1234, 4321);
+    protected Vector3     here              = Vector3.getNewVector();
 
-    protected Vector3          vec               = Vector3.getNewVector();
+    protected Vector3     vec               = Vector3.getNewVector();
 
-    protected Vector3          v1                = Vector3.getNewVector();
-    protected Vector3          v2                = Vector3.getNewVector();
-    protected Vector3          vBak              = Vector3.getNewVector();
-    boolean                    named             = false;
+    protected Vector3     v1                = Vector3.getNewVector();
+    protected Vector3     v2                = Vector3.getNewVector();
+    protected Vector3     vBak              = Vector3.getNewVector();
+    boolean               named             = false;
 
-    boolean                    initHome          = true;
+    boolean               initHome          = true;
 
-    protected AnimalChest      pokeChest;
+    protected AnimalChest pokeChest;
 
-    boolean                    returning         = false;
+    boolean               returning         = false;
+    protected int         abilityIndex      = 0;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -125,7 +129,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     }
 
     @Override
-    public void displayMessageToOwner(String message)
+    public void displayMessageToOwner(IChatComponent message)
     {
         if (!this.isServerWorld())
         {
@@ -139,12 +143,22 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         else
         {
             Entity owner = this.getPokemonOwner();
-            if (owner instanceof EntityPlayer && !this.isDead)
+            MoveMessageEvent event = new MoveMessageEvent(this, message);
+            MinecraftForge.EVENT_BUS.post(event);
+            if (owner instanceof EntityPlayerMP && !this.isDead)
             {
-                NBTTagCompound nbt = new NBTTagCompound();
-                nbt.setInteger("id", owner.getEntityId());
-                nbt.setString("message", message);
-                PokecubeClientPacket mess = new PokecubeClientPacket(PokecubeClientPacket.MOVEMESSAGE, nbt);
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(10));
+                buffer.writeByte(PokecubeClientPacket.MOVEMESSAGE);
+                buffer.writeInt(getEntityId());
+                try
+                {
+                    buffer.writeChatComponent(event.message);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                PokecubeClientPacket mess = new PokecubeClientPacket(buffer);
                 PokecubePacketHandler.sendToClient(mess, (EntityPlayer) owner);
             }
         }
@@ -221,7 +235,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public float getHomeDistance()
     {
-        return super.getMaximumHomeDistance();// func_110174_bM();
+        return super.getMaximumHomeDistance();
     }
 
     @SideOnly(Side.CLIENT)
@@ -240,36 +254,31 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public EntityLivingBase getOwner()
     {
-        if (!this.getPokemonAIState(IMoveConstants.TAMED)) return null;
-        if (owner == null)
+        if (!this.getPokemonAIState(IMoveConstants.TAMED) || super.getOwnerId() == null || super.getOwnerId().isEmpty())
+            return null;
+        List<Object> entities = null;
+        entities = new ArrayList<Object>(worldObj.loadedEntityList);
+        try
         {
-            List<Object> entities = null;
-            entities = new ArrayList<Object>(worldObj.loadedEntityList);
+            UUID uuid = UUID.fromString(super.getOwnerId());
+            EntityLivingBase o;
+            if ((o = worldObj.getPlayerEntityByUUID(uuid)) != null) return o;
+        }
+        catch (Exception e)
+        {
 
-            if (!ownerName.isEmpty())
-            {
-                owner = worldObj.getPlayerEntityByName(ownerName);
-                return owner;
-            }
-
-            for (Object o : entities)
-            {
-                if (o instanceof EntityLivingBase)
-                {
-                    EntityLivingBase e = (EntityLivingBase) o;
-                    String owneruuid = super.getOwnerId();
-
-                    if (e.getUniqueID().toString().equals(owneruuid))
-                    {
-                        owner = e;
-                        ownerName = owner.getName();
-                        return owner;
-                    }
-                }
-            }
         }
 
-        return owner;
+        for (Object o : entities)
+        {
+            if (o instanceof EntityLivingBase)
+            {
+                EntityLivingBase e = (EntityLivingBase) o;
+                String owneruuid = super.getOwnerId();
+                if (e.getUniqueID().toString().equals(owneruuid)) { return e; }
+            }
+        }
+        return null;
     }
 
     @Override
@@ -281,18 +290,15 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public EntityLivingBase getPokemonOwner()
     {
-        if (owner == null) return getOwner();
-        return owner;
+        return getOwner();
     }
 
     @Override
     public String getPokemonOwnerName()
     {
-        if (!ownerName.isEmpty()) { return ownerName; }
-
         try
         {
-            return super.getOwnerId();// .func_152113_b();//super.getOwnerName();
+            return super.getOwnerId();
         }
         catch (Exception e)
         {
@@ -452,7 +458,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 for (ItemStack stack : list)
                 {
                     ItemStack toAdd = stack.copy();
-                    if (getPokedexEntry().hasSpecialTextures[4]) toAdd.setItemDamage(15 - getSpecialInfo() & 15);
+                    if (getPokedexEntry().dyeable) toAdd.setItemDamage(15 - getSpecialInfo() & 15);
                     ret.add(toAdd);
                 }
             }
@@ -482,7 +488,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
         if (!named && getPokedexEntry() != null)
         {
-            this.pokeChest.setCustomName(getName());// .func_110133_a(this.getName());
+            this.pokeChest.setCustomName(getName());
             named = true;
         }
         for (int i = 0; i < this.pokeChest.getSizeInventory(); i++)
@@ -519,6 +525,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         super.readEntityFromNBT(nbttagcompound);
         pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
+        abilityIndex = nbttagcompound.getInteger("abilityIndex");
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
         dataWatcher.updateObject(5, nbttagcompound.getInteger("PokemobActionState"));
@@ -541,19 +548,17 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
 
         this.initInventory();
-        // if (this.isChested())
+
+        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
         {
-            NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound1.getByte("Slot") & 255;
 
-            for (int i = 0; i < nbttaglist.tagCount(); ++i)
+            if (j >= 1 && j < this.pokeChest.getSizeInventory())
             {
-                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-                int j = nbttagcompound1.getByte("Slot") & 255;
-
-                if (j >= 1 && j < this.pokeChest.getSizeInventory())
-                {
-                    this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
-                }
+                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
             }
         }
 
@@ -609,28 +614,45 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             if (owner instanceof EntityPlayer && !isShadow())
             {
                 ItemStack itemstack = PokecubeManager.pokemobToItem(this);
-
-                boolean added = false;
-                if (((EntityPlayer) owner).inventory.getFirstEmptyStack() == -1)
+                EntityPlayer player = (EntityPlayer) owner;
+                boolean noRoom = false;
+                if (player.inventory.getFirstEmptyStack() == -1)
+                {
+                    noRoom = true;
+                }
+                if (noRoom)
                 {
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
+                    noRoom = !toss.isCanceled();
+                    if (noRoom)
+                    {
+                        EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                        Vector3 temp = Vector3.getNewVector().set(this);
+                        temp.moveEntity(entity);
+                        temp.clear().setVelocities(entity);
+                        entity.targetEntity = null;
+                        entity.targetLocation.clear();
+                        worldObj.spawnEntityInWorld(entity);
+                    }
                 }
-                else if (itemstack.getItem() != null && (owner.isDead
-                        || !(added = ((EntityPlayer) owner).inventory.addItemStackToInventory(itemstack))))
+                else
                 {
-                    ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
-                    MinecraftForge.EVENT_BUS.post(toss);
-                }
-
-                if (added && owner instanceof EntityPlayerMP)
-                {
-                    ((EntityPlayerMP) owner).sendContainerToPlayer(((EntityPlayerMP) owner).inventoryContainer);
+                    boolean added = player.inventory.addItemStackToInventory(itemstack);
+                    if (!added)
+                    {
+                        ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F),
+                                PokecubeMod.getFakePlayer());
+                        MinecraftForge.EVENT_BUS.post(toss);
+                        added = toss.isCanceled();
+                    }
                 }
                 if (!owner.isSneaking() && !isDead)
                     ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.return", getPokemonDisplayName());
+                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
+                        getPokemonDisplayName());
                 displayMessageToOwner(mess);
+
             }
             else if (getPokemonOwnerName() != null && !getPokemonOwnerName().isEmpty())
             {
@@ -639,7 +661,16 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
-                    if (!toss.isCanceled()) entityDropItem(itemstack, 0F);
+                    if (!toss.isCanceled())
+                    {
+                        EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                        Vector3 temp = Vector3.getNewVector().set(this);
+                        temp.moveEntity(entity);
+                        temp.clear().setVelocities(entity);
+                        entity.targetEntity = null;
+                        entity.targetLocation.clear();
+                        worldObj.spawnEntityInWorld(entity);
+                    }
                 }
                 else
                 {
@@ -651,8 +682,16 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F),
                                 PokecubeMod.getFakePlayer());
                         MinecraftForge.EVENT_BUS.post(toss);
-                        if (!toss.isCanceled()) entityDropItem(itemstack, 0F).setPickupDelay(1000);
-                        ;
+                        if (!toss.isCanceled())
+                        {
+                            EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                            Vector3 temp = Vector3.getNewVector().set(this);
+                            temp.moveEntity(entity);
+                            temp.clear().setVelocities(entity);
+                            entity.targetEntity = null;
+                            entity.targetLocation.clear();
+                            worldObj.spawnEntityInWorld(entity);
+                        }
                     }
                 }
             }
@@ -665,7 +704,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setDead()
     {
-        if (!this.returning && this.addedToChunk) returnToPokecube();
+        if (!this.returning && this.addedToChunk && !this.worldObj.isRemote) returnToPokecube();
         super.setDead();
     }
 
@@ -688,7 +727,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setHome(int x, int y, int z, int distance)
     {
-        setHomePosAndDistance(new BlockPos(x, y, z), distance);
+        BlockPos pos = new BlockPos(x, y, z);
+        setHomePosAndDistance(pos, distance);
     }
 
     @Override
@@ -709,20 +749,15 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         if (e == null)
         {
             super.setOwnerId("");
-            owner = null;
-            ownerName = "";
             this.setPokemonAIState(IMoveConstants.TAMED, false);
             return;
         }
-
-        owner = e;
 
         boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getUniqueID().toString())
                 || getPokemonOwnerName().equalsIgnoreCase(e.getName());
 
         if (e instanceof EntityPlayer && !uuidorName)
         {
-            ownerName = e.getName();
             this.setPokemonAIState(IMoveConstants.TAMED, true);
             super.setOwnerId(e.getUniqueID().toString());
 
@@ -793,6 +828,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         super.writeEntityToNBT(nbttagcompound);
         nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
+        nbttagcompound.setInteger("abilityIndex", abilityIndex);
         nbttagcompound.setInteger("PokemobActionState", dataWatcher.getWatchableObjectInt(5));
         nbttagcompound.setInteger("hungerTime", getHungerTime());
         nbttagcompound.setInteger("specialInfo", getSpecialInfo());

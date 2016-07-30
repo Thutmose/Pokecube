@@ -17,12 +17,13 @@ import thut.api.maths.Vector3;
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
     public static boolean noSound = false;
-    private ItemStack[] inventory;
+    private ItemStack[]   inventory;
 
-    Vector3             here = Vector3.getNewVector();
+    Vector3               here    = Vector3.getNewVector();
 
     int                   ticks   = 0;
     boolean               stopped = false;
+
     public TileHealTable()
     {
         this.inventory = new ItemStack[9];
@@ -175,7 +176,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         super.readFromNBT(tagCompound);
         NBTTagList tagList = (NBTTagList) tagCompound.getTag("Inventory");
         // ticks = tagCompound.getInteger("time");
-        for (int i = 0; i < tagList.tagCount(); i++)
+        if (tagList != null) for (int i = 0; i < tagList.tagCount(); i++)
         {
             NBTTagCompound tag = tagList.getCompoundTagAt(i);
             byte slot = tag.getByte("Slot");

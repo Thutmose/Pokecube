@@ -64,15 +64,9 @@ public class GuiPC extends GuiContainer
             MessageServer packet = PCPacketHandler.makeServerPacket(MessageServer.PC, message);
             PokecubePacketHandler.sendToServer(packet);
             // }
-            if (guibutton.id == 5)
-            {
-                // cont.pcTile.toggleBound();
-                // mc.thePlayer.closeScreen();
-                return;
-            }
+            if (guibutton.id == 5) { return; }
             if (guibutton.id == 9)
             {
-                // mc.thePlayer.closeScreen();
                 return;
             }
 
@@ -100,7 +94,7 @@ public class GuiPC extends GuiContainer
                     cont.toRelease = new boolean[54];
                     for (int i = 0; i < 54; i++)
                     {
-                        int index = i + 36;
+                        int index = i;
                         SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                         slot.release = false;
                     }
@@ -112,7 +106,7 @@ public class GuiPC extends GuiContainer
                 {
                     for (int i = 0; i < 54; i++)
                     {
-                        int index = i + 36;
+                        int index = i;
                         SlotPC slot = (SlotPC) cont.inventorySlots.get(index);
                         slot.release = true;
                     }
@@ -365,11 +359,6 @@ public class GuiPC extends GuiContainer
         }
 
     }
-
-    // public boolean getReleaseState(){
-
-    // /return release;
-    // }
 
     /** Fired when a key is typed. This is the equivalent of
      * KeyListener.keyTyped(KeyEvent e). */

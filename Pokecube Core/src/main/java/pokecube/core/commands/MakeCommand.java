@@ -169,7 +169,8 @@ public class MakeCommand extends CommandBase
                         }
                         if (entry == null)
                         {
-
+                            CommandTools.sendError(sender, "pokecube.command.makeinvalid");
+                            return;
                         }
 
                         mob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(),
@@ -295,7 +296,7 @@ public class MakeCommand extends CommandBase
                         if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
-                        mob.setExp(exp, true, true);
+                        mob.setExp(exp, false, true);
                         if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
 
                         for (int i1 = 0; i1 < 4; i1++)

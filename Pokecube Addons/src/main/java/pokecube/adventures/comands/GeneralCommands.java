@@ -30,13 +30,13 @@ public class GeneralCommands implements ICommand
         options.add("killtrainers");
     }
 
-    public static boolean TRAINERSDIE = false;
+    public static boolean  TRAINERSDIE = false;
 
-    private List<String>  aliases;
+    private List<String>   aliases;
 
-    ArrayList<String>      fields   = Lists.newArrayList();
+    ArrayList<String>      fields      = Lists.newArrayList();
 
-    HashMap<String, Field> fieldMap = Maps.newHashMap();
+    HashMap<String, Field> fieldMap    = Maps.newHashMap();
 
     public GeneralCommands()
     {
@@ -119,6 +119,7 @@ public class GeneralCommands implements ICommand
     {
         return false;
     }
+
     private void populateFields()
     {
         Class<Config> me = Config.class;
@@ -197,6 +198,13 @@ public class GeneralCommands implements ICommand
                 }
                 else
                 {
+                    if (!isOp)
+                    {
+                        text = EnumChatFormatting.RED + "" + EnumChatFormatting.ITALIC + "Insufficient Permissions";
+                        message = IChatComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                        sender.addChatMessage(message);
+                        return;
+                    }
                     try
                     {
                         Config.instance.updateField(field, args[2]);

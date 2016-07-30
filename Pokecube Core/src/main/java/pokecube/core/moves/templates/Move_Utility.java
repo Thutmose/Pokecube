@@ -1,6 +1,7 @@
 package pokecube.core.moves.templates;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -10,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.commands.CommandTools;
@@ -91,41 +94,6 @@ public class Move_Utility extends Move_Basic
             super.attack(attacker, attacked, f);
             return;
         }
-        if ((attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED)))
-        {
-            IPokemob a = (attacker);
-
-            boolean used = false;
-
-            EntityLivingBase owner = a.getPokemonOwner();
-
-            int number = countBerries(a, (EntityPlayer) owner);
-
-            int count = 1;
-
-            if (this.name == MOVE_FLASH)
-            {
-                owner.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5000));
-                used = true;
-                int level = a.getLevel();
-                count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
-                consumeBerries(a, count);
-                return;
-            }
-
-            if (number <= 0) return;
-
-            if (used)
-            {
-                int level = a.getLevel();
-                count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
-                consumeBerries(a, count);
-            }
-            else
-            {
-                CommandTools.sendError(owner,"pokemob.action.needsberries");
-            }
-        }
     }
 
     private int digHole(IPokemob digger, Vector3 v, boolean count)
@@ -199,7 +167,29 @@ public class Move_Utility extends Move_Basic
             EntityLivingBase owner;
             if ((owner = user.getPokemonOwner()) != null)
             {
-                CommandTools.sendError(owner,"pokemob.action.denydamageblock");
+                CommandTools.sendError(owner, "pokemob.action.denydamageblock");
+            }
+            return;
+        }
+        if (user.getPokemonAIState(IMoveConstants.ANGRY)) return;
+        if (this.name == MOVE_FLASH)
+        {
+            IPokemob a = (user);
+            boolean used = false;
+            EntityLivingBase owner = a.getPokemonOwner();
+            int number = countBerries(a, (EntityPlayer) owner);
+            int count = 10;
+            int level = a.getLevel();
+            count = (int) Math.max(1, Math.ceil(count * Math.pow((100 - level) / 100d, 3)));
+            used = count <= number;
+            if (used)
+            {
+                owner.addPotionEffect(new PotionEffect(Potion.nightVision.getId(), 5000));
+                consumeBerries(a, count);
+            }
+            else
+            {
+                CommandTools.sendError(owner, "pokemob.action.needsberries");
             }
             return;
         }
@@ -215,7 +205,7 @@ public class Move_Utility extends Move_Basic
         {
             if (!repel)
             {
-                CommandTools.sendError(owner,"pokemob.action.denyrepel");
+                CommandTools.sendError(owner, "pokemob.action.denyrepel");
                 return;
             }
             number = countBerries(user, (EntityPlayer) owner);
@@ -258,6 +248,18 @@ public class Move_Utility extends Move_Basic
         {
             TreeRemover remover = new TreeRemover(((Entity) user).worldObj, location);
             int cut = remover.cut(true);
+
+            if (cut == 0)
+            {
+                int index = new Random().nextInt(6);
+                for (int i = 0; i < 6; i++)
+                {
+                    EnumFacing dir = EnumFacing.VALUES[(i + index) % 6];
+                    remover = new TreeRemover(((Entity) user).worldObj, location.offset(dir));
+                    cut = remover.cut(true);
+                    if (cut != 0) break;
+                }
+            }
             count = (int) Math.max(1, Math.ceil(cut * Math.pow((100 - level) / 100d, 3)));
             if (count <= number && count > 0)
             {
@@ -272,7 +274,7 @@ public class Move_Utility extends Move_Basic
         }
         else
         {
-            CommandTools.sendError(owner,"pokemob.action.needsberries");
+            CommandTools.sendError(owner, "pokemob.action.needsberries");
         }
     }
 
@@ -318,7 +320,7 @@ public class Move_Utility extends Move_Basic
                     {
                         if (!count)
                         {
-                            if (!silky) temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                            if (!silky) doFortuneDrop(temp, ((Entity) digger).worldObj, fortune);
                             else
                             {
                                 if (block.canSilkHarvest(player.worldObj, temp.getPos(), state, player))
@@ -328,7 +330,7 @@ public class Move_Utility extends Move_Basic
                                 }
                                 else
                                 {
-                                    temp.breakBlock(((Entity) digger).worldObj, fortune, true);
+                                    doFortuneDrop(temp, ((Entity) digger).worldObj, fortune);
                                 }
                             }
                         }
@@ -336,5 +338,11 @@ public class Move_Utility extends Move_Basic
                     }
                 }
         return ret;
+    }
+
+    private void doFortuneDrop(Vector3 location, World world, int fortune)
+    {
+        location.getBlock(world).dropBlockAsItem(world, location.getPos(), location.getBlockState(world), fortune);
+        location.breakBlock(world, false);
     }
 }

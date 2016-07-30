@@ -1,8 +1,9 @@
 package pokecube.core.database.abilities.p;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -10,6 +11,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.items.berries.BerryManager;
 
 public class Pickup extends Ability
 {
@@ -33,9 +35,15 @@ public class Pickup extends Ability
             if (poke.getHeldItem() == null)
             {
                 List<?> items = new ArrayList<Object>(PokecubeItems.heldItems);
-                Collections.shuffle(items);
-                ItemStack item = (ItemStack) items.get(0);
-
+                ItemStack item = (ItemStack) items.get(poke.getRNG().nextInt(items.size()));
+                if(item!=null && item.getItem() == PokecubeItems.berries)
+                {
+                    items = Lists.newArrayList(BerryManager.berryNames.keySet());
+                    int index = poke.getRNG().nextInt(items.size());
+                    Object o = items.get(index);
+                    int num = (int) o;
+                    item.setItemDamage(num);
+                }
                 if (item != null) poke.setCurrentItemOrArmor(0, item.copy());
             }
         }

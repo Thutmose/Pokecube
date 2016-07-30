@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -18,10 +19,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.StatCollector;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.events.SpawnEvent.SendOut;
@@ -72,6 +73,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this.setSize(0.25F, 0.25F);
         this.renderDistanceWeight = 200;
         this.isImmuneToFire = true;
+        this.enablePersistence();
     }
 
     public EntityPokecube(World world, EntityLivingBase shootingEntity, Entity target, ItemStack entityItem)
@@ -266,20 +268,22 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public boolean interact(EntityPlayer player)
     {
-
         if (!player.worldObj.isRemote)
         {
-            IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-            if ((pokemob != null && pokemob.getPokemonOwner() == player && !isReleasing()) || pokemob == null)
+            if (!isReleasing())
             {
-                this.setReleasing(true);
-                if (!player.inventory.addItemStackToInventory(getEntityItem()))
-                    this.entityDropItem(getEntityItem(), 0.5f);
-                this.setDead();
-            }
-            else if (!isReleasing() && pokemob != null)
-            {
-                sendOut();
+                IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+                if (pokemob != null) sendOut();
+                else
+                {
+                    EntityItem entityitem = player.dropPlayerItemWithRandomChoice(getEntityItem(), false);
+                    if (entityitem != null)
+                    {
+                        entityitem.setNoPickupDelay();
+                        entityitem.setOwner(player.getName());
+                    }
+                    this.setDead();
+                }
             }
         }
 
@@ -312,7 +316,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public void onUpdate()
     {
-
         super.onUpdate();
         boolean releasing = isReleasing();
 
@@ -356,10 +359,9 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 mobStack = PokecubeManager.pokemobToItem(mob);
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    String message = StatCollector.translateToLocalFormatted("pokecube.caught",
+                    IChatComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
                             PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNumber));
-                    ((EntityPlayer) shootingEntity).addChatMessage(new ChatComponentText("\u00a7d" + message));
-
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
                     worldObj.playSoundAtEntity(shootingEntity, PokecubeMod.ID + ":pokecube_caught", 0.5F, 1.0F);
                 }
                 setDead();
@@ -404,8 +406,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {
-                    ((EntityPlayer) shootingEntity).addChatMessage(
-                            new ChatComponentText("\u00a7d" + StatCollector.translateToLocal("pokecube.missed")));
+                    IChatComponent mess = CommandTools.makeTranslatedMessage("pokecube.missed", "red");
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
                     ((EntityCreature) entity1).setAttackTarget(shootingEntity);
                 }
             }
@@ -442,7 +444,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 motionY += 0.1;
             }
         }
-
         if (motionX == motionZ && motionZ == 0)
         {
             this.inGround = true;
@@ -477,7 +478,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         if (tilt > 0 || (targetEntity != null && targetEntity.isDead))
         {
             targetEntity = null;
-            targetLocation.clear();
+            if (!targetLocation.equals(Vector3.secondAxisNeg)) targetLocation.clear();
         }
 
         Vector3 target = Vector3.getNewVector();
@@ -490,7 +491,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             target.set(targetLocation);
         }
 
-        if (!target.isEmpty())
+        if (!target.isEmpty() && target.y >= 0)
         {
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 dir = Vector3.getNewVector().set(target);
@@ -565,7 +566,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {
-                String mess = StatCollector.translateToLocalFormatted("pokemob.action.sendout",
+                IChatComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.sendout", "green",
                         entity1.getPokemonDisplayName());
                 entity1.displayMessageToOwner(mess);
             }

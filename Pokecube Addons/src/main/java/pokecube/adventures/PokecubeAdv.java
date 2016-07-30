@@ -31,6 +31,7 @@ import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
+import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
@@ -183,6 +184,7 @@ public class PokecubeAdv
     {
         event.registerServerCommand(new GeneralCommands());
         event.registerServerCommand(new TeamCommands());
+        System.out.println("test");
     }
 
     @EventHandler
@@ -190,6 +192,7 @@ public class PokecubeAdv
     {
         TrainerSpawnHandler.trainers.clear();
         TeamManager.clearInstance();
+        InventoryBag.clearInventory();
     }
 
 }

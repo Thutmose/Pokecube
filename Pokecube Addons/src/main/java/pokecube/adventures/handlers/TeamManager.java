@@ -25,17 +25,20 @@ public class TeamManager
 
     private static TeamManager instance;
 
-    public static int maxLandCount = 125;
+    public static int          maxLandCount = 125;
+    public static boolean      denyBlasts   = false;
 
     public static void clearInstance()
     {
         instance = null;
     }
+
     public static TeamManager getInstance()
     {
         if (instance == null) instance = new TeamManager();
         return instance;
     }
+
     private HashMap<ChunkCoordinate, String> landMap;
     private HashMap<String, Integer>         landCounts;
     private HashMap<String, String>          teamAdmins;
@@ -240,7 +243,8 @@ public class TeamManager
 
     public boolean isPublic(ChunkCoordinate c)
     {
-//        System.out.println(publicBlocks + " " + c + " " + publicBlocks.contains(c));
+        // System.out.println(publicBlocks + " " + c + " " +
+        // publicBlocks.contains(c));
         return publicBlocks.contains(c);
     }
 

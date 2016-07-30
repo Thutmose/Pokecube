@@ -27,6 +27,7 @@ import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
+import pokecube.core.utils.Tools;
 
 public class PokecubeItems extends Items
 {
@@ -44,6 +45,7 @@ public class PokecubeItems extends Items
         }
 
     }
+
     static HashMap<String, ItemStack>         itemstacks     = new HashMap<String, ItemStack>();
     static HashMap<String, Item>              items          = new HashMap<String, Item>();
 
@@ -80,19 +82,8 @@ public class PokecubeItems extends Items
 
     /** List of grass blocks for pokemobs to eat. */
     public static HashSet<Block>              grasses        = new HashSet<Block>();
-    public static Item                        waterstone;
 
-    public static Item                        firestone;
-    public static Item                        thunderstone;
-    public static Item                        leafstone;
-    public static Item                        moonstone;
-    public static Item                        sunstone;
-    public static Item                        shinystone;
-    public static Item                        ovalstone;
-    public static Item                        everstone;
-    public static Item                        duskstone;
-    public static Item                        dawnstone;
-    public static Item                        kingsrock;
+    public static Item                        held;
     public static Item                        luckyEgg;
     public static Item                        pokemobEgg;
     public static Item                        pokedex;
@@ -100,6 +91,7 @@ public class PokecubeItems extends Items
     public static Item                        berries;
     public static Item                        megastone;
     public static Item                        megaring;
+    public static Item                        fossil;
 
     public static Item                        revive;
     public static Block                       pokecenter;
@@ -111,7 +103,7 @@ public class PokecubeItems extends Items
 
     public static Block                       tradingtable;
 
-    public static boolean resetTimeTags = false;
+    public static boolean                     resetTimeTags  = false;
 
     /** Registers a pokecube id, the Object[] is an array with the item or block
      * assosicated with the unfilled and filled cubes. example: Object cubes =
@@ -291,7 +283,7 @@ public class PokecubeItems extends Items
      * @return */
     public static int getCubeId(ItemStack stack)
     {
-        for (Integer i : pokecubes.keySet())
+        if (stack != null) for (Integer i : pokecubes.keySet())
         {
             Item[] cubes = pokecubes.get(i);
             for (Item cube : cubes)
@@ -350,7 +342,7 @@ public class PokecubeItems extends Items
         int ret = 0;
         for (ItemStack s : fossils.keySet())
         {
-            if (s.isItemEqual(fossil))
+            if (Tools.isSameStack(s, fossil))
             {
                 ret = fossils.get(s);
                 break;
@@ -389,6 +381,11 @@ public class PokecubeItems extends Items
 
     public static ItemStack getStack(String name, boolean stacktrace)
     {
+        if (name == null)
+        {
+            if (stacktrace) Thread.dumpStack();
+            return null;
+        }
         name = name.toLowerCase().trim();
         if (itemstacks.get(name) != null) return itemstacks.get(name).copy();
 
@@ -483,6 +480,11 @@ public class PokecubeItems extends Items
         addGeneric("electirizer", Items.redstone);
         addGeneric("magmarizer", Items.flint_and_steel);
 
+        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.record_cat));
+        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.record_11));
+        addToHoldables("dubiousdisc");
+        addToHoldables("upgrade");
+
         addToEvos("ice");
         addToEvos("mossStone");
         addToEvos("razorfang");
@@ -510,7 +512,7 @@ public class PokecubeItems extends Items
         if (stack == null) return false;
         for (ItemStack s : evoItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }
@@ -521,11 +523,11 @@ public class PokecubeItems extends Items
         if (stack == null) return false;
         for (ItemStack s : heldItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         for (ItemStack s : evoItems)
         {
-            if (s != null && s.isItemEqual(stack)) return true;
+            if (s != null && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }
@@ -602,11 +604,25 @@ public class PokecubeItems extends Items
     {
         if (o instanceof Block)
         {
-            register(o, ((Block) o).getUnlocalizedName().substring(5));
+            if (((Block) o).getRegistryName() != null)
+            {
+                register(o, ((Block) o).getRegistryName());
+            }
+            else
+            {
+                register(o, ((Block) o).getUnlocalizedName().substring(5));
+            }
         }
         if (o instanceof Item)
         {
-            register(o, ((Item) o).getUnlocalizedName().substring(5));
+            if (((Item) o).getRegistryName() != null)
+            {
+                register(o, ((Item) o).getRegistryName());
+            }
+            else
+            {
+                register(o, ((Item) o).getUnlocalizedName().substring(5));
+            }
         }
     }
 

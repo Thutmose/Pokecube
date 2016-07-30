@@ -24,8 +24,6 @@ import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
@@ -60,6 +58,15 @@ public class BlockPC extends Block implements ITileEntityProvider
         return new TileEntityPC();
     }
 
+    /** Gets the metadata of the item this Block can drop. This method is called
+     * when the block gets destroyed. It returns the metadata of the dropped
+     * item based on the old metadata of the block. */
+    @Override
+    public int damageDropped(IBlockState state)
+    {
+        return state.getValue(TOP)?8:0;
+    }
+
     @Override
     public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
@@ -87,13 +94,6 @@ public class BlockPC extends Block implements ITileEntityProvider
         int ret = state.getValue(FACING).getIndex();
         if ((state.getValue(TOP))) ret += 8;
         return ret;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public int getRenderType()
-    {
-        return super.getRenderType();
     }
 
     @Override
@@ -153,8 +153,7 @@ public class BlockPC extends Block implements ITileEntityProvider
             }
             else
             {
-                player.openGui(PokecubeMod.core, Config.GUIPC_ID, world, pos.getX(), pos.getY(),
-                        pos.getZ());
+                player.openGui(PokecubeMod.core, Config.GUIPC_ID, world, pos.getX(), pos.getY(), pos.getZ());
                 return true;
             }
         }
@@ -162,11 +161,6 @@ public class BlockPC extends Block implements ITileEntityProvider
         {
             return true;
         }
-    }
-
-    @Override
-    public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-    {
     }
 
     @Override
@@ -179,7 +173,6 @@ public class BlockPC extends Block implements ITileEntityProvider
             TileEntityOwnable tile = (TileEntityOwnable) te;
             tile.setPlacer(placer);
         }
-
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite()).withProperty(TOP,
                 ((meta & 8) > 0));
     }

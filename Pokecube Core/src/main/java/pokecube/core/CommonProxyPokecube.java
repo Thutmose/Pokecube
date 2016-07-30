@@ -29,6 +29,7 @@ import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.CommonProxy;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -89,7 +90,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         }
         if (id == Config.GUIPOKEMOB_ID)
         {
-            IPokemob e = (IPokemob) world.getEntityByID(x);
+            IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);
             return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e);
         }
         BlockPos pos = new BlockPos(x, y, z);

@@ -33,6 +33,7 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
 import pokecube.core.moves.TreeRemover;
+import thut.api.maths.ExplosionCustom;
 
 /** @author Manchou */
 public class Mod_Pokecube_Helper
@@ -124,6 +125,10 @@ public class Mod_Pokecube_Helper
         getSurfaceBlocks().add(Blocks.hardened_clay);
         getSurfaceBlocks().add(Blocks.stained_hardened_clay);
         getSurfaceBlocks().add(Blocks.mycelium);
+
+        if(ExplosionCustom.dust!=null) getSurfaceBlocks().add(ExplosionCustom.dust);
+        if(ExplosionCustom.melt!=null) getSurfaceBlocks().add(ExplosionCustom.melt);
+        if(ExplosionCustom.solidmelt!=null) getSurfaceBlocks().add(ExplosionCustom.solidmelt);
 
         getTerrain().add(Blocks.dirt);
         getTerrain().add(Blocks.grass);

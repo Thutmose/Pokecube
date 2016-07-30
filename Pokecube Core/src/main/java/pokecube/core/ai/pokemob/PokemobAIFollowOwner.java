@@ -25,7 +25,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
 
     private double           speed;
     private PathNavigate     petPathfinder;
-    private int              field_75343_h;
+    private int              followTicks;
     float                    maxDist;
     float                    minDist;
     Vector3                  v        = Vector3.getNewVector();
@@ -40,7 +40,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
         this.setMutexBits(2);
         pokemob = (IPokemob) entity;
         pet = (IEntityOwnable) entity;
-        this.speed = pokemob.getMovementSpeed();
+        this.speed = 2;
         if (pokemob.getPokemonOwner() != null) ownerPos.set(pokemob.getPokemonOwner());
     }
 
@@ -48,6 +48,9 @@ public class PokemobAIFollowOwner extends EntityAIBase
     @Override
     public boolean continueExecuting()
     {
+        if (pokemob.getPokemonAIState(IMoveConstants.FOLLOWING)
+                && this.thePet.getDistanceSqToEntity(this.theOwner) > this.maxDist * this.maxDist)
+            return true;
         return !this.petPathfinder.noPath() && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
                 && this.thePet.getDistanceSqToEntity(this.theOwner) > this.maxDist * this.maxDist;
     }
@@ -59,7 +62,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
         ownerPos.set(theOwner);
         this.theOwner = null;
         this.petPathfinder.clearPathEntity();
-        // this.thePet.getNavigator().setAvoidsWater(this.field_75344_i);
+        pokemob.setPokemonAIState(IMoveConstants.FOLLOWING, false);
     }
 
     /** Returns whether the EntityAIBase should begin execution. */
@@ -70,6 +73,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
 
         this.petPathfinder = thePet.getNavigator();
         Vector3 ownerV = Vector3.getNewVector();
+
         if (entitylivingbase == null)
         {
             return false;
@@ -78,8 +82,8 @@ public class PokemobAIFollowOwner extends EntityAIBase
         {
             return false;
         }
-        else if (pokemob != null
-                && (pokemob.getPokemonAIState(IMoveConstants.GUARDING) || pokemob.getPokemonAIState(IMoveConstants.STAYING)))
+        else if (pokemob != null && (pokemob.getPokemonAIState(IMoveConstants.GUARDING)
+                || pokemob.getPokemonAIState(IMoveConstants.STAYING)))
         {
             return false;
         }
@@ -91,7 +95,7 @@ public class PokemobAIFollowOwner extends EntityAIBase
         {
             return false;
         }
-        else if ((ownerV.set(entitylivingbase)).distToSq(ownerPos) < this.minDist * this.minDist)
+        else if ((ownerV.set(entitylivingbase)).distToSq(ownerPos) < 2)
         {
             return false;
         }
@@ -114,10 +118,9 @@ public class PokemobAIFollowOwner extends EntityAIBase
     @Override
     public void startExecuting()
     {
-        this.field_75343_h = 0;
+        this.followTicks = 0;
         ownerPos.set(theOwner);
-        // this.field_75344_i = this.thePet.getNavigator().getAvoidsWater();
-        // this.thePet.getNavigator().setAvoidsWater(false);
+        pokemob.setPokemonAIState(IMoveConstants.FOLLOWING, true);
     }
 
     /** Updates the task */
@@ -144,10 +147,9 @@ public class PokemobAIFollowOwner extends EntityAIBase
 
         if (!pokemob.getPokemonAIState(IMoveConstants.SITTING))
         {
-            if (--this.field_75343_h <= 0)
+            if (--this.followTicks <= 0)
             {
-                this.field_75343_h = 10;
-
+                this.followTicks = 10;
                 this.petPathfinder.tryMoveToEntityLiving(this.theOwner, this.speed);
             }
         }

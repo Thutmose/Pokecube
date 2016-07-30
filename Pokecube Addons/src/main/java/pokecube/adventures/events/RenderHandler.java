@@ -1,5 +1,6 @@
 package pokecube.adventures.events;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -11,10 +12,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
+import pokecube.adventures.client.ClientProxy;
+import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.adventures.handlers.TeamManager;
+import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
@@ -79,6 +84,10 @@ public class RenderHandler
     {
         EntityPlayer player = evt.entityPlayer;
         ItemStack stack = evt.itemStack;
+        if (stack != null && stack.hasTagCompound() && stack.getTagCompound().getBoolean("isapokebag"))
+        {
+            evt.toolTip.add("PokeBag");
+        }
         if (player == null || player.openContainer == null || stack == null) return;
         if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)
         {
@@ -87,6 +96,17 @@ public class RenderHandler
                 evt.toolTip.add("" + stack.getTagCompound().getLong("ivs") + ":"
                         + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void keyInput(KeyInputEvent evt)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        boolean bag = BagRenderer.getChecker().isWearingBag(player);
+        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
+        {
+            PacketPokeAdv.sendBagOpenPacket();
         }
     }
 

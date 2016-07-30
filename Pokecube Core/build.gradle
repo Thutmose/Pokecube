@@ -62,19 +62,19 @@ minecraft {
     mappings = "${version_mappings}"
     runDir = "run"
     
-    useDepAts = true
+  //  useDepAts = true
     
     replace "@VERSION", project.version
     replaceIn "PokecubeMod.java"
     replace "@VERSION", project.version
     replaceIn "mcmod.info"
+    replace "@MINVERSION", "${version_mincompat}"
+    replaceIn "PokecubeMod.java"
     replace "@MCVERSION", "${version_mcsupport}"
     replaceIn "PokecubeMod.java"
     replace "@FORGEVERSION", "[${version_forge},)"
     replaceIn "PokecubeMod.java"
     replace "@THUTCORE", "[${version_thutcore},)"
-    replaceIn "PokecubeMod.java"
-    replace "@BAUBLES", "[${version_baubles},)"
     replaceIn "PokecubeMod.java"
     
     makeObfSourceJar = false

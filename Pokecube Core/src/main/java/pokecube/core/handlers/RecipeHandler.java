@@ -1,19 +1,11 @@
 package pokecube.core.handlers;
 
-import static pokecube.core.PokecubeItems.dawnstone;
-import static pokecube.core.PokecubeItems.duskstone;
-import static pokecube.core.PokecubeItems.everstone;
-import static pokecube.core.PokecubeItems.firestone;
 import static pokecube.core.PokecubeItems.getEmptyCube;
 import static pokecube.core.PokecubeItems.getStack;
-import static pokecube.core.PokecubeItems.leafstone;
 import static pokecube.core.PokecubeItems.luckyEgg;
 import static pokecube.core.PokecubeItems.pokecenter;
 import static pokecube.core.PokecubeItems.pokedex;
 import static pokecube.core.PokecubeItems.repelBlock;
-import static pokecube.core.PokecubeItems.shinystone;
-import static pokecube.core.PokecubeItems.thunderstone;
-import static pokecube.core.PokecubeItems.waterstone;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -54,10 +46,11 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(Items.cake, 1), new Object[] { "AAA", "BEB", "CCC", 'A', Items.milk_bucket,
                 'B', Items.sugar, 'C', Items.wheat, 'E', luckyEgg });
 
-        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R',
-                Items.redstone, 'S', Blocks.stone, 'M', Items.milk_bucket, 'I', Items.iron_ingot });
-        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SES", 'R',
-                Items.redstone, 'S', Blocks.stone, 'E', luckyEgg, 'I', Items.iron_ingot });
+        if (PokecubeMod.core.getConfig().tableRecipe)
+            GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] { "III", "SRS", "SMS", 'R', Items.redstone,
+                    'S', Blocks.stone, 'M', Items.milk_bucket, 'I', Items.iron_ingot });
+        if (PokecubeMod.core.getConfig().tableRecipe) GameRegistry.addRecipe(new ItemStack(pokecenter), new Object[] {
+                "III", "SRS", "SES", 'R', Items.redstone, 'S', Blocks.stone, 'E', luckyEgg, 'I', Items.iron_ingot });
         GameRegistry.addRecipe(new ItemStack(pokedex),
                 new Object[] { "PRR", "RBR", "RRR", 'P', pokecube, 'R', Items.redstone, 'B', Items.book });
 
@@ -105,38 +98,32 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         GameRegistry.addRecipe(new ItemStack(pokeseal, 2), new Object[] { "GGG", "RBR", "LLL", 'G', Blocks.glass, 'R',
                 red, 'B', Blocks.stone_button, 'L', lapis });
 
-        GameRegistry.addRecipe(new ItemStack(waterstone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("waterstone"),
                 new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Items.water_bucket });
-        GameRegistry.addRecipe(new ItemStack(firestone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("firestone"),
                 new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Blocks.torch });
-        GameRegistry.addRecipe(new ItemStack(leafstone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("leafstone"),
                 new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Blocks.sapling });
-        GameRegistry.addRecipe(new ItemStack(thunderstone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("thunderstone"),
                 new Object[] { "SSS", "SWS", "SSS", 'S', Blocks.stone, 'W', Items.redstone });
-        GameRegistry.addRecipe(new ItemStack(everstone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("everstone"),
                 new Object[] { "SSS", "SOS", "SSS", 'S', Blocks.stone, 'O', Blocks.obsidian });
-        GameRegistry.addRecipe(new ItemStack(duskstone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("duskstone"),
                 new Object[] { "SSS", "STS", "SSS", 'S', Blocks.soul_sand, 'T', Blocks.torch });
-        GameRegistry.addRecipe(new ItemStack(dawnstone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("dawnstone"),
                 new Object[] { "QQQ", "QTQ", "QQQ", 'Q', new ItemStack(Items.dye, 1, 4), 'T', Blocks.torch });
-        GameRegistry.addRecipe(new ItemStack(shinystone),
+        GameRegistry.addRecipe(PokecubeItems.getStack("shinystone"),
                 new Object[] { "QQQ", "QGQ", "QQQ", 'Q', Items.quartz, 'G', Items.glowstone_dust });
 
         GameRegistry.addRecipe(new ItemStack(repelBlock), new Object[] { "JR", "RJ", 'J',
                 BerryManager.getBerryItem("jaboca"), 'R', BerryManager.getBerryItem("rowap"), });
 
-        for (Integer i : PokecubeItems.pokecubes.keySet())
-        {
-            GameRegistry.addShapelessRecipe(new ItemStack(PokecubeItems.getFilledCube(i), 1, 1),
-                    PokecubeItems.getStack("revive"), new ItemStack(PokecubeItems.getFilledCube(i), 1, 32767));
-        }
         GameRegistry.addRecipe(new RecipePokeseals());
         GameRegistry.addRecipe(new RecipeRevive());
 
         RecipeSorter.register("pokecube:pokeseals", RecipePokeseals.class, Category.SHAPELESS,
                 "after:minecraft:shaped");
         RecipeSorter.register("pokecube:revive", RecipeRevive.class, Category.SHAPELESS, "after:minecraft:shaped");
-        
 
         // TOP
         GameRegistry.addRecipe(getStack("pctop"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.redstone, 'S',
@@ -148,9 +135,6 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         // Trading Table
         GameRegistry.addRecipe(getStack("tradingtable"), new Object[] { "III", "SRS", "SMS", 'R', Items.redstone, 'S',
                 Blocks.stone, 'M', Items.emerald, 'I', Items.iron_ingot });
-
-        PokecubeItems.addSpecificItemStack("dubiousdisc", new ItemStack(Items.record_cat));
-        PokecubeItems.addSpecificItemStack("upgrade", new ItemStack(Items.record_11));
 
         BrewingRecipeRegistry.addRecipe(new RecipeBrewBerries());
     }

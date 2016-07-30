@@ -6,6 +6,7 @@ package pokecube.core.items.pokemobeggs;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import com.google.common.base.Predicate;
 
@@ -22,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
@@ -103,6 +105,7 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         nbt.setByteArray("colour", getColour(((IMobColourable) father).getRGBA(), ((IMobColourable) mother).getRGBA()));
         nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
+        nbt.setString("motherOT", mother.getOriginalOwnerUUID().toString());
 
         int chance = 4096;
         if (mother.isShiny()) chance = chance / 2;
@@ -258,11 +261,10 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         }
         else
         {
-            ret = (byte) (rand.nextGaussian() > 0 ? nature.ordinal() : nature2.ordinal());
+            int num = rand.nextInt(5);
+            ret = (byte) (num * 6);
         }
-
         return ret;
-
     }
 
     public static int getNumber(ItemStack stack)
@@ -336,6 +338,17 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
             mob.setNature(Nature.values()[nbt.getByte("nature")]);
             mob.setSize(nbt.getFloat("size"));
+        }
+
+        if (nbt.hasKey("gender"))
+        {
+            mob.setSexe(nbt.getByte("gender"));
+        }
+
+        if (nbt.hasKey("motherOT"))
+        {
+            UUID ot = UUID.fromString(nbt.getString("motherOT"));
+            mob.setOriginalOwnerUUID(ot);
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
@@ -451,6 +464,11 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
             }
             mob.specificSpawnInit();
             world.spawnEntityInWorld(entity);
+            if (mob.getPokemonOwner() != null)
+            {
+                EntityLivingBase owner = mob.getPokemonOwner();
+                owner.addChatMessage(new ChatComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName()));
+            }
             entity.setCurrentItemOrArmor(0, null);
             entity.playLivingSound();
         }
@@ -529,17 +547,15 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         String s = null;
         String entityName = PokecubeMod.core.getTranslatedPokenameFromPokedexNumber(pokedexNb);
         PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
-
         if (entry != null)
         {
             entityName = entry.getTranslatedName();
-            s = StatCollector.translateToLocalFormatted("pokemobEgg.name", entityName).trim();
+            s = StatCollector.translateToLocalFormatted("pokemobEgg.name", entityName);
         }
         else
         {
             s = "Pokemob Egg";
         }
-
         return s;
     }
 
@@ -554,7 +570,6 @@ public class ItemPokemobEgg extends ItemMonsterPlacer
         Block i = worldIn.getBlockState(pos).getBlock();
         BlockPos newPos = pos.offset(side);
         double d = 0.0D;
-
         if (side == EnumFacing.UP && i instanceof BlockFence)
         {
             d = 0.5D;

@@ -119,7 +119,7 @@ public class AIIdle extends AIBase
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 
         if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE)
-                || entity.getAttackTarget() != null)
+                || entity.getAttackTarget() != null || mob.getPokemonAIState(IMoveConstants.FOLLOWING))
             return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
@@ -154,7 +154,8 @@ public class AIIdle extends AIBase
         }
         else if (entity.ticksExisted % (50 + new Random().nextInt(50)) == 0)
         {
-            boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED) && !mob.getPokemonAIState(IMoveConstants.GUARDING)
+            boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
+                    && !mob.getPokemonAIState(IMoveConstants.GUARDING)
                     && !mob.getPokemonAIState(IMoveConstants.STAYING);
             int distance = tameFactor ? 8 : 16;
             v.clear();
@@ -172,12 +173,11 @@ public class AIIdle extends AIBase
             else
             {
                 EntityLivingBase setTo = entity;
-                if(mob.getPokemonOwner()!=null) setTo = mob.getPokemonOwner();
+                if (mob.getPokemonOwner() != null) setTo = mob.getPokemonOwner();
                 v.set(setTo);
             }
-            v1.set((v.isEmpty()
-                    && (mob.getPokemonAIState(IMoveConstants.GUARDING) || mob.getPokemonAIState(IMoveConstants.STAYING))) ? entity
-                            : v);
+            v1.set((v.isEmpty() && (mob.getPokemonAIState(IMoveConstants.GUARDING)
+                    || mob.getPokemonAIState(IMoveConstants.STAYING))) ? entity : v);
             Vector3 v = SpawnHandler.getRandomPointNear(world, v1, distance);
 
             double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),

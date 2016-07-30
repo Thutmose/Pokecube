@@ -45,7 +45,7 @@ public class EntityRequestPacket extends AbstractPacket {
 		Entity e = player.worldObj.getEntityByID(entityID);
 		if (e instanceof EntityPlayer && e != player) {
 			sendMessageToPlayer(player, SECTION_SIGN + "cError - You may not use NBTEdit on other Players");
-			NBTEdit.log(Level.WARNING, player.getName() +  " tried to use NBTEdit on another player, " + ((EntityPlayer)e).getName());
+			NBTEdit.log(Level.WARNING, player.getName() +  " tried to use NBTEdit on another player, " + e.getName());
 		}
 		else if (e != null) {
 			NBTTagCompound tag = new NBTTagCompound();

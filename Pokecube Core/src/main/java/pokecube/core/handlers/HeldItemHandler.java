@@ -9,7 +9,8 @@ import pokecube.core.utils.PokeType;
 
 public class HeldItemHandler
 {
-    public static ArrayList<String> megaVariants = new ArrayList<>();
+    public static ArrayList<String> megaVariants   = new ArrayList<>();
+    public static ArrayList<String> fossilVariants = new ArrayList<>();
 
     static
     {
@@ -17,14 +18,43 @@ public class HeldItemHandler
         megaVariants.add("shiny_charm");
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
-        megaVariants.add("gardevoirmega");
-        megaVariants.add("charizardmega-y");
-        megaVariants.add("scizormega");
-        megaVariants.add("sceptilemega");
-        megaVariants.add("salamencemega");
-        megaVariants.add("gallademega");
         megaVariants.add("absolmega");
+        megaVariants.add("aggronmega");
+        megaVariants.add("alakazammega");
+        megaVariants.add("ampharosmega");
+        megaVariants.add("banettemega");
+        megaVariants.add("beedrillmega");
         megaVariants.add("blastoisemega");
+        megaVariants.add("blazikenmega");
+        megaVariants.add("cameruptmega");
+        megaVariants.add("charizardmega-y");
+        megaVariants.add("charizardmega-x");
+        megaVariants.add("gallademega");
+        megaVariants.add("gardevoirmega");
+        megaVariants.add("gengarmega");
+        megaVariants.add("glaliemega");
+        megaVariants.add("mawilemega");
+        megaVariants.add("mewtwomega-y");
+        megaVariants.add("mewtwomega-x");
+        megaVariants.add("pidgeotmega");
+        megaVariants.add("pinsirmega");
+        megaVariants.add("sableyemega");
+        megaVariants.add("salamencemega");
+        megaVariants.add("sceptilemega");
+        megaVariants.add("scizormega");
+        megaVariants.add("slowbromega");
+        megaVariants.add("steelixmega");
+        megaVariants.add("swampertmega");
+        megaVariants.add("venusaurmega");
+        // TODO rest of the mega stoneS here.
+
+        fossilVariants.add("omanyte");
+        fossilVariants.add("kabuto");
+        fossilVariants.add("aerodactyl");
+        fossilVariants.add("lileep");
+        fossilVariants.add("anorith");
+        fossilVariants.add("cranidos");
+        fossilVariants.add("shieldon");
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

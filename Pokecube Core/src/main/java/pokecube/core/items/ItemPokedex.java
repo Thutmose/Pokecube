@@ -9,8 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
@@ -77,10 +77,10 @@ public class ItemPokedex extends Item
         {
             TerrainSegment t = TerrainManager.getInstance().getTerrian(worldIn, hit);
             int b = t.getBiome(hit);
-            String biomeList = SpawnHandler.spawnLists.get(b)!=null?SpawnHandler.spawnLists.get(b).toString():"Nothing";
-            String message = StatCollector.translateToLocalFormatted("pokedex.locationinfo", Database.spawnables.size(),
-                    Pokedex.getInstance().getEntries().size(), biomeList);
-            CommandTools.sendMessage(playerIn, message);
+            String biomeList = SpawnHandler.spawnLists.get(b) != null ? SpawnHandler.spawnLists.get(b).toString()
+                    : "Nothing";
+            playerIn.addChatMessage(new ChatComponentTranslation("pokedex.locationinfo", Database.spawnables.size(),
+                    Pokedex.getInstance().getEntries().size(), biomeList));
         }
 
         if (!playerIn.isSneaking()) showGui(playerIn);

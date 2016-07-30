@@ -1,5 +1,7 @@
 ﻿#Pokecube Adventures translation
 
+block.rfsiphon.info=Total Output: %1$sRF/t, net Output: %2$sRF/t
+
 item.pokemobTarget.name=Target
 item.warplinker.name=Warp Pad Linker
 item.biomeSetter.name=Sub-Biome Setter
@@ -67,8 +69,9 @@ msg.celebiangry.txt=You have angered Celebi and need to re-gain its trust.
 
 entity.pokecube_adventures.targetParticles.name=Target
 
-pokecube.trainer.agress=wants to battle!
-pokecube.trainer.defeat=has been defeated!
+pokecube.trainer.agress=%1$s §cwants to battle!
+pokecube.trainer.defeat=%1$s §chas been defeated!
+pokecube.trainer.toss=%1$s §csent out %2$s!
 
 #Config Stuff
 

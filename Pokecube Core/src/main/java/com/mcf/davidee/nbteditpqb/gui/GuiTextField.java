@@ -8,8 +8,10 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ChatAllowedCharacters;
-import pokecube.core.client.render.PTezzelator;
 
 public class GuiTextField extends Gui{
 
@@ -128,17 +130,19 @@ public class GuiTextField extends Gui{
 			 par4 = var5;
 		 }
 
-		 PTezzelator tez = PTezzelator.instance;
+		 Tessellator tessellator = Tessellator.getInstance();
+		 WorldRenderer worldRenderer = tessellator.getWorldRenderer();
 		 GL11.glColor4f(0.0F, 0.0F, 255.0F, 255.0F);
 		 GlStateManager.disableTexture2D();
 		 GlStateManager.enableColorLogic();
 		 GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
-		 tez.begin();
-		 tez.vertex(par1, par4, 0.0D);
-		 tez.vertex(par3, par4, 0.0D);
-		 tez.vertex(par3, par2, 0.0D);
-		 tez.vertex(par1, par2, 0.0D);
-		 tez.end();
+
+		 worldRenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+		 worldRenderer.pos(par1, par4, 0.0D);
+		 worldRenderer.pos(par3, par4, 0.0D);
+		 worldRenderer.pos(par3, par2, 0.0D);
+		 worldRenderer.pos(par1, par2, 0.0D);
+		 tessellator.draw();
 		 GlStateManager.disableColorLogic();
 		 GlStateManager.enableTexture2D();
 	 }

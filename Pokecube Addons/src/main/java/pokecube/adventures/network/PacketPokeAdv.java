@@ -4,7 +4,6 @@ import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,18 +15,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.adventures.handlers.PASaveHandler;
-import pokecube.adventures.handlers.PlayerAsPokemobManager;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.items.bags.ContainerBag;
+import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.moves.MovesUtils;
+import pokecube.core.database.Database;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.ChunkCoordinate;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 
@@ -102,19 +102,6 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == 8) // Player transforming packets
-                {
-                    try
-                    {
-                        NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                        String name = tag.getString("playername");
-                        PlayerAsPokemobManager.getInstance().setData(name, tag);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
                 if (channel == 9)
                 {
                     Vector3 v = Vector3.readFromBuff(buffer);
@@ -146,6 +133,7 @@ public class PacketPokeAdv
             }
 
         }
+
         public static final byte MESSAGEGUIAFA = 11;
 
         PacketBuffer             buffer;;
@@ -194,6 +182,7 @@ public class PacketPokeAdv
         }
 
     }
+
     public static class MessageServer implements IMessage
     {
         public static class MessageHandlerServer implements IMessageHandler<MessageServer, IMessage>
@@ -212,22 +201,13 @@ public class PacketPokeAdv
                 }
                 if (channel == 6)
                 {
-                    byte m = message[0];
-
-                    byte dir = (byte) (m == 1 ? 1 : m == 2 ? -1 : 0);
-                    ((ContainerBag) (player.openContainer)).updateInventoryPages(dir, player.inventory);
+                    int m = buffer.readByte();
+                    ((ContainerBag) (player.openContainer)).gotoInventoryPage(m);
                 }
                 if (channel == 7)
                 {
-                    boolean pc = buffer.readBoolean();// TODO see when bag vs pc
-                                                      // packets were used
-                    Vector3 v = Vector3.readFromBuff(buffer);
-                    if (pc) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj, v.intX(),
-                            v.intY(), v.intZ());
-                    // else player.openGui(PokecubeAdv.instance,
-                    // PokecubeAdv.GUIPC_ID, player.worldObj, v.intX(),
-                    // v.intY(),
-                    // v.intZ());
+                    player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.worldObj,
+                            InventoryBag.getBag(player).getPage() + 1, 0, 0);
                 }
                 if (channel == 9)
                 {
@@ -248,20 +228,6 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == 10)
-                {
-                    IPokemob pokemob = PlayerAsPokemobManager.getInstance().getTransformed(player);
-                    if (pokemob != null)
-                    {
-                        int id = buffer.readInt();
-                        Entity hit = player.worldObj.getEntityByID(id);
-                        if (hit != null)
-                        {
-                            String moveName = pokemob.getMove(pokemob.getMoveIndex());
-                            MovesUtils.doAttack(moveName, pokemob, hit, 0);
-                        }
-                    }
-                }
                 if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
                 {
                     ContainerAFA cont = (ContainerAFA) player.openContainer;
@@ -270,7 +236,7 @@ public class PacketPokeAdv
                     {
                         int id = buffer.readInt();
                         int val = buffer.readInt();
-                        System.out.println(id+" "+ val);
+                        System.out.println(id + " " + val);
                         tile.setField(id, val);
                     }
                     PacketBuffer retBuf = new PacketBuffer(Unpooled.buffer(5));
@@ -292,6 +258,7 @@ public class PacketPokeAdv
             }
 
         }
+
         public static final byte MESSAGEGUIAFA = 11;
 
         PacketBuffer             buffer;;
@@ -340,6 +307,7 @@ public class PacketPokeAdv
         }
 
     }
+
     public static byte TYPESETPUBLIC  = 0;
 
     public static byte TYPEADDLAND    = 1;
@@ -354,51 +322,80 @@ public class PacketPokeAdv
         String type = "";
         try
         {
-            PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
-            ret.writeByte(3);
             for (int i = 0; i < 6; i++)
             {
                 numbers[i] = buffer.readInt();
                 levels[i] = buffer.readInt();
-
-                ret.writeInt(numbers[i]);
-                ret.writeInt(levels[i]);
-
             }
-            int num = buffer.readInt();
-            ret.writeInt(num);
-            byte[] string = new byte[num];
-            for (int n = 0; n < num; n++)
+            int num1 = buffer.readInt();
+            byte[] string1 = new byte[num1];
+            for (int n = 0; n < num1; n++)
             {
-                string[n] = buffer.readByte();
-                ret.writeByte(string[n]);
+                string1[n] = buffer.readByte();
             }
-            name = new String(string);
-            num = buffer.readInt();
-            ret.writeInt(num);
-            string = new byte[num];
-            for (int n = 0; n < num; n++)
+            name = new String(string1);
+            int num2 = buffer.readInt();
+            byte[] string2 = new byte[num2];
+            for (int n = 0; n < num2; n++)
             {
-                string[n] = buffer.readByte();
-                ret.writeByte(string[n]);
+                string2[n] = buffer.readByte();
             }
-            type = new String(string);
+            type = new String(string2);
             int id = buffer.readInt();
-            ret.writeInt(id);
-            PASaveHandler.getInstance().trainers.get(id).name = name;
-            PASaveHandler.getInstance().trainers.get(id).type = TypeTrainer.getTrainer(type);
-            PASaveHandler.getInstance().trainers.get(id).setTypes();
-            for (int index = 0; index < 6; index++)
+            EntityTrainer trainer = (EntityTrainer) player.worldObj.getEntityByID(id);
+            boolean stationary = buffer.readBoolean();
+            boolean male = buffer.readBoolean();
+            boolean reset = buffer.readBoolean();
+            trainer.male = male;
+            trainer.name = name;
+            trainer.type = TypeTrainer.getTrainer(type);
+            trainer.setTypes();
+            if (!reset)
             {
-                PASaveHandler.getInstance().trainers.get(id).setPokemob(numbers[index], levels[index], index);
+                for (int index = 0; index < 6; index++)
+                {
+                    trainer.setPokemob(numbers[index], levels[index], index);
+                }
             }
-
             if (!player.worldObj.isRemote)
             {
+                if (reset)
+                {
+                    int maxXp = SpawnHandler.getSpawnXp(trainer.worldObj, Vector3.getNewVector().set(trainer),
+                            Database.getEntry(1));
+                    trainer.initTrainer(trainer.type, Tools.xpToLevel(0, maxXp));
+                    numbers = trainer.pokenumbers;
+                    levels = trainer.pokelevels;
+                }
+                PacketBuffer ret = new PacketBuffer(Unpooled.buffer());
+                ret.writeByte(3);
+                for (int i = 0; i < 6; i++)
+                {
+                    ret.writeInt(numbers[i]);
+                    ret.writeInt(levels[i]);
+                }
+                ret.writeInt(num1);
+                for (int n = 0; n < num1; n++)
+                {
+                    ret.writeByte(string1[n]);
+                }
+                ret.writeInt(num2);
+                string1 = new byte[num2];
+                for (int n = 0; n < num2; n++)
+                {
+                    ret.writeByte(string2[n]);
+                }
+                ret.writeInt(id);
+                ret.writeBoolean(stationary);
+                ret.writeBoolean(male);
+                ret.writeBoolean(false);// No reset on client.
+                if (stationary)
+                {
+                    trainer.setStationary(true);
+                }
                 MessageClient mes = new MessageClient(ret.array());
                 PokecubePacketHandler.sendToClient(mes, player);
             }
-
         }
         catch (Exception e)
         {
@@ -430,12 +427,10 @@ public class PacketPokeAdv
         return new MessageServer(packetData);
     }
 
-    public static void sendBagOpenPacket(boolean fromPC, Vector3 loc)
+    public static void sendBagOpenPacket()
     {
         PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         buf.writeByte(7);
-        buf.writeBoolean(true);
-        loc.writeToBuff(buf);
         MessageServer packet = new MessageServer(buf);
         PokecubePacketHandler.sendToServer(packet);
     }

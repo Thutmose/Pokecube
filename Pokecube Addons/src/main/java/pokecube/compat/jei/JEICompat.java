@@ -46,8 +46,6 @@ public class JEICompat implements IModPlugin
 
     IItemRegistry itemRegistry;
 
-    IJeiHelpers   jeiHelpers;
-
     @Override
     public void onItemRegistryAvailable(IItemRegistry itemRegistry)
     {
@@ -57,7 +55,6 @@ public class JEICompat implements IModPlugin
     @Override
     public void onJeiHelpersAvailable(IJeiHelpers jeiHelpers)
     {
-        this.jeiHelpers = jeiHelpers;
     }
 
     @Override
@@ -75,7 +72,7 @@ public class JEICompat implements IModPlugin
     {
         if (added) return;
         added = true;
-        IGuiHelper guiHelper = jeiHelpers.getGuiHelper();
+        IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
         registry.addRecipeCategories(new ClonerRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new ClonerRecipeHandler());
         registry.addRecipeClickArea(GuiCloner.class, 88, 32, 28, 23, CLONER);
@@ -108,7 +105,7 @@ public class JEICompat implements IModPlugin
         ItemStack ironBlock = new ItemStack(Blocks.iron_block);
         ItemStack redstoneBlock = new ItemStack(Blocks.redstone_block);
         ItemStack diamondBlock = new ItemStack(Blocks.diamond_block);
-        ItemStack dome = PokecubeItems.getStack("fossilDome");
+        ItemStack dome = PokecubeItems.getStack("kabuto");
         ItemStack potion = new ItemStack(Items.potionitem, 1, Short.MAX_VALUE);
 
         ClonerRecipe newRecipe = new ClonerRecipe(egg, Lists.newArrayList(mewhair, egg, potion), 132, 10000);

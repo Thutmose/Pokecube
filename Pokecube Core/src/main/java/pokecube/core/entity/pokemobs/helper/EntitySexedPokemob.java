@@ -16,10 +16,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.PokedexEntry;
@@ -32,6 +34,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
@@ -106,7 +109,11 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
         if (getSexe() == SEXLEGENDARY && !transforms) return null;
-
+        if (isType(PokeType.ghost) && !getPokemonAIState(IMoveConstants.TAMED)) return null;
+        if (!(getOwner() instanceof EntityPlayer)
+                && !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius,
+                        PokecubeMod.core.getConfig().maxSpawnRadius / 4, this))
+            return null;
         if (getLover() != null) { return lover = getLover(); }
 
         if ((getSexe() == MALE && !transforms) || males.size() > 0) { return null; }
@@ -328,11 +335,14 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         List<EntityPokemob> near = worldObj.getEntitiesWithinAABB(EntityPokemob.class,
                 new AxisAlignedBB(i - 8, j - 8, k - 8, i + 8, j + 8, k + 8));
 
-        if (near.size() >= 5)
+        if (near.size() >= 5 && getOwner() == null)
         {
             if (PokecubeMod.debug) System.out.println("Too many pokemobs nearby, aborting Lay");
             return;
         }
+
+        int num = Tools.countPokemon(worldObj, here, PokecubeMod.core.getConfig().maxSpawnRadius);
+        if ((getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 2) return;
 
         if (worldObj.isAirBlock(new BlockPos(i, j, k)))
         {
@@ -352,7 +362,11 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
     protected void mate(IBreedingMob male)
     {
-        if (male == null || ((Entity) male).isDead) return;
+        if (male == null || ((Entity) male).isDead)
+        {
+            resetInLove();
+            return;
+        }
         if (this.getSexe() == MALE || male.getSexe() == FEMALE && male != this)
         {
             ((EntityPokemob) male).mateWith(this);
@@ -364,10 +378,8 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         {
             ((EntityPokemob) male).setLover(null);
             ((EntityPokemob) male).resetInLove();
-
             setAttackTarget(null);
             ((EntityPokemob) male).setAttackTarget(null);
-
             lay(childPokedexNb, (IPokemob) male);
         }
         resetInLove();
@@ -385,12 +397,24 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
         super.onEntityUpdate();
 
+        if (getPokemonAIState(MATING) && ticksExisted%10==0)
+        {
+            double d0 = this.rand.nextGaussian() * 0.02D;
+            double d1 = this.rand.nextGaussian() * 0.02D;
+            double d2 = this.rand.nextGaussian() * 0.02D;
+            this.worldObj.spawnParticle(EnumParticleTypes.HEART,
+                    this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width,
+                    this.posY + 0.5D + (double) (this.rand.nextFloat() * this.height),
+                    this.posZ + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2,
+                    new int[0]);
+        }
+
         if (!isServerWorld()) return;
 
         int diff = 1 * PokecubeMod.core.getConfig().mateMultiplier;
         if (inLove > 0) diff = 1;
         setLoveTimer(getLoveTimer() + diff);
-        if (isInLove() && lover == null)
+        if (isInLove() && lover == null)// TODO check that this works right.
         {
             findLover();
         }
@@ -494,14 +518,21 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         double dist = width * width + getLover().width * getLover().width;
         dist = Math.max(dist, 1);
         this.getNavigator().tryMoveToEntityLiving(getLover(), 1.5);
-        if (lover instanceof EntityLiving)
-        {
-            ((EntityLiving) lover).getNavigator().tryMoveToEntityLiving(this, 1.5);
-        }
         this.spawnBabyDelay++;
-        if (this.spawnBabyDelay >= 50 && this.getDistanceSqToEntity(getLover()) < dist)
+        this.setPokemonAIState(MATING, true);
+        if (getLover() instanceof IPokemob)
         {
+            ((IPokemob) getLover()).setPokemonAIState(MATING, true);
+        }
+        if(getLover() instanceof EntityLiving)
+        {
+            ((EntityLiving)getLover()).getNavigator().tryMoveToEntityLiving(this, 1.5);
+        }
+        if (this.spawnBabyDelay >= 50)
+        {
+            if (getLover() instanceof IPokemob) ((IPokemob) getLover()).setPokemonAIState(MATING, false);
             mate((IBreedingMob) getLover());
+            this.setPokemonAIState(MATING, false);
             this.spawnBabyDelay = 0;
         }
     }

@@ -9,29 +9,42 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Sets;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.common.ForgeVersion.CheckResult;
+import net.minecraftforge.common.ForgeVersion.Status;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -45,6 +58,8 @@ import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.render.entity.RenderHeldPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -57,6 +72,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.core.client.ClientProxy;
 
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
@@ -66,31 +82,75 @@ public class EventsHandlerClient
         boolean hasRing(EntityPlayer player);
     }
 
-    static long                                   eventTime  = 0;
+    public static class UpdateNotifier
+    {
+        public UpdateNotifier()
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
 
-    static long                                   counter    = 0;
+        private IChatComponent getInfoMessage(CheckResult result, String name)
+        {
+            String linkName = "[" + EnumChatFormatting.GREEN + name + " " + PokecubeMod.VERSION
+                    + EnumChatFormatting.WHITE;
+            String link = "" + result.url;
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
 
-    public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
+            String info = "\"" + EnumChatFormatting.GOLD + "Currently Running " + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return IChatComponent.Serializer.jsonToComponent(mess);
+        }
 
-    public static RingChecker                     checker    = new RingChecker()
-                                                             {
-                                                                 @Override
-                                                                 public boolean hasRing(EntityPlayer player)
-                                                                 {
-                                                                     for (int i = 0; i < player.inventory
-                                                                             .getSizeInventory(); i++)
-                                                                     {
-                                                                         ItemStack stack = player.inventory
-                                                                                 .getStackInSlot(i);
-                                                                         if (stack != null)
-                                                                         {
-                                                                             Item item = stack.getItem();
-                                                                             if (item instanceof ItemMegaring) { return true; }
-                                                                         }
-                                                                     }
-                                                                     return false;
-                                                                 }
-                                                             };
+        @SubscribeEvent
+        public void onPlayerJoin(TickEvent.PlayerTickEvent event)
+        {
+            if (event.player.worldObj.isRemote && event.player == FMLClientHandler.instance().getClientPlayerEntity())
+            {
+                MinecraftForge.EVENT_BUS.unregister(this);
+                Object o = Loader.instance().getIndexedModList().get(PokecubeMod.ID);
+                CheckResult result = ForgeVersion.getResult(((ModContainer) o));
+                if (result.status == Status.OUTDATED)
+                {
+                    IChatComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Core");
+                    (event.player).addChatMessage(mess);
+                }
+                else if (PokecubeMod.core.getConfig().loginmessage)
+                {
+                    IChatComponent mess = getInfoMessage(result, "Pokecube Core");
+                    (event.player).addChatMessage(mess);
+                }
+            }
+        }
+    }
+
+    static long                                   eventTime   = 0;
+    public static boolean                         renderBlock = false;
+    static long                                   counter     = 0;
+
+    public static HashMap<PokedexEntry, IPokemob> renderMobs  = new HashMap<PokedexEntry, IPokemob>();
+
+    public static RingChecker                     checker     = new RingChecker()
+                                                              {
+                                                                  @Override
+                                                                  public boolean hasRing(EntityPlayer player)
+                                                                  {
+                                                                      for (int i = 0; i < player.inventory
+                                                                              .getSizeInventory(); i++)
+                                                                      {
+                                                                          ItemStack stack = player.inventory
+                                                                                  .getStackInSlot(i);
+                                                                          if (stack != null)
+                                                                          {
+                                                                              Item item = stack.getItem();
+                                                                              if (item instanceof ItemMegaring) { return true; }
+                                                                          }
+                                                                      }
+                                                                      return false;
+                                                                  }
+                                                              };
+
+    static boolean                                notifier    = false;
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
     {
@@ -154,28 +214,48 @@ public class EventsHandlerClient
         int k1 = i / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
         Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entity, 0, -0.123456, 0, 0, 1.5F);
+
+        if (renderBlock)
+        {
+            BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
+            GlStateManager.enableRescaleNormal();
+            GlStateManager.pushMatrix();
+            GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(-180.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.translate(0.5F, 1.125F, 0.5F);
+            float f7 = 1.0F;
+            GlStateManager.scale(-f7, -f7, f7);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            FMLClientHandler.instance().getClient().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+            blockrendererdispatcher.renderBlockBrightness(Blocks.glass.getDefaultState(), 1.0F);
+            GlStateManager.popMatrix();
+            GlStateManager.disableRescaleNormal();
+            renderBlock = false;
+        }
+
         RenderHelper.disableStandardItemLighting();
         GL11.glPopMatrix();
 
     }
 
     private Set<RenderPlayer> addedLayers = Sets.newHashSet();
-
     boolean                   debug       = false;
     long                      lastSetTime = 0;
 
     public EventsHandlerClient()
     {
+        if (!notifier) new UpdateNotifier();
+        notifier = true;
     }
 
     @SubscribeEvent
     public void clientTick(TickEvent.PlayerTickEvent event)
     {
-        if (!PokecubeMod.core.getConfig().autoSelectMoves || event.phase == Phase.START
-                || lastSetTime >= System.currentTimeMillis())
+        if (!(PokecubeMod.core.getConfig().autoSelectMoves || PokecubeMod.core.getConfig().autoRecallPokemobs)
+                || event.phase == Phase.START || lastSetTime >= System.currentTimeMillis())
             return;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-        if (pokemob != null)
+        if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
             Entity target = ((EntityLiving) pokemob).getAttackTarget();
             if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))
@@ -184,6 +264,17 @@ public class EventsHandlerClient
                 {
                     setMostDamagingMove(pokemob, target);
                     lastSetTime = System.currentTimeMillis() + 1000;
+                }
+            }
+        }
+        if (PokecubeMod.core.getConfig().autoRecallPokemobs)
+        {
+            IPokemob[] pokemobs = GuiDisplayPokecubeInfo.instance().getPokemobsToDisplay();
+            for (IPokemob mob : pokemobs)
+            {
+                if (event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
+                {
+                    mob.returnToPokecube();
                 }
             }
         }
@@ -199,7 +290,7 @@ public class EventsHandlerClient
             IPokemob mount = (IPokemob) evt.entity.ridingEntity;
             if (evt.entity.isInWater() && mount.canUseDive())
             {
-                evt.density = 0.05f;
+                evt.density = 0.005f;
                 evt.setCanceled(true);
             }
         }
@@ -217,8 +308,38 @@ public class EventsHandlerClient
         eventTime = Keyboard.getEventNanoseconds();
         if (key == Keyboard.KEY_SPACE && player.ridingEntity instanceof IPokemob)
         {
-            MessageServer packet = new MessageServer(MessageServer.JUMP, player.ridingEntity.getEntityId());
-            PokecubePacketHandler.sendToServer(packet);
+            boolean state = Keyboard.getEventKeyState();
+            MountState newState = state ? EntityMountablePokemob.MountState.UP : EntityMountablePokemob.MountState.NONE;
+            if (newState != ((EntityMountablePokemob) player.ridingEntity).state)
+            {
+                ((EntityMountablePokemob) player.ridingEntity).state = newState;
+                byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
+                if (state) mess = (byte) EntityMountablePokemob.MountState.UP.ordinal();
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.MOUNTDIR);
+                buffer.writeInt(player.ridingEntity.getEntityId());
+                buffer.writeByte(mess);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+            }
+        }
+        else if (key == Keyboard.KEY_LCONTROL && player.ridingEntity instanceof IPokemob)
+        {
+            boolean state = Keyboard.getEventKeyState();
+            MountState newState = state ? EntityMountablePokemob.MountState.DOWN
+                    : EntityMountablePokemob.MountState.NONE;
+            if (newState != ((EntityMountablePokemob) player.ridingEntity).state)
+            {
+                ((EntityMountablePokemob) player.ridingEntity).state = newState;
+                byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
+                if (state) mess = (byte) EntityMountablePokemob.MountState.DOWN.ordinal();
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+                buffer.writeByte(MessageServer.MOUNTDIR);
+                buffer.writeInt(player.ridingEntity.getEntityId());
+                buffer.writeByte(mess);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+            }
         }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
         {

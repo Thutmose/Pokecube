@@ -75,6 +75,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
+import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
@@ -92,11 +93,13 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesAdder;
 import pokecube.core.moves.animations.MoveAnimationHelper;
+import pokecube.core.network.EntityProvider;
 import pokecube.core.network.PCPacketHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -111,7 +114,6 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.Message
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
-import pokecube.core.world.gen.WorldGenBerries;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenStartBuilding;
@@ -127,7 +129,8 @@ import thut.api.maths.Vector3;
         name = "Pokecube", 
         version = PokecubeMod.VERSION, 
         dependencies = "required-after:Forge@"+ PokecubeMod.MINFORGEVERSION + PokecubeMod.DEPSTRING, 
-        acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, 
+        acceptedMinecraftVersions = PokecubeMod.MCVERSIONS,
+        acceptableRemoteVersions=PokecubeMod.MINVERSION,
         updateJSON = PokecubeMod.UPDATEURL,
         guiFactory = "pokecube.core.client.gui.config.ModGuiFactory"
     )// @formatter:on
@@ -200,24 +203,9 @@ public class PokecubeCore extends PokecubeMod
         return getProxy().getWorld();
     }
 
-    @SuppressWarnings({ "rawtypes", "unused" })
     public static boolean isOnClientSide()
     {
-        if (!checked)
-        {
-            checked = true;
-            try
-            {
-                Class c = Class.forName("net.minecraft.server.dedicated.DedicatedServer");
-                server = true;
-            }
-            catch (ClassNotFoundException e)
-            {
-            }
-        }
-
-        if (server) return false;
-        return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+        return FMLCommonHandler.instance().getEffectiveSide().isClient();
     }
 
     public static void registerSpawns()
@@ -256,6 +244,8 @@ public class PokecubeCore extends PokecubeMod
     public Mod_Pokecube_Helper helper;
 
     private Config             config;
+
+    IEntityProvider provider;
 
     public PokecubeCore()
     {
@@ -327,6 +317,13 @@ public class PokecubeCore extends PokecubeMod
         {
             return null;
         }
+    }
+
+    @Override
+    public IEntityProvider getEntityProvider()
+    {
+        if (provider == null) provider = new EntityProvider(null);
+        return provider;
     }
 
     @Override
@@ -402,7 +399,6 @@ public class PokecubeCore extends PokecubeMod
         }
         GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
         // TODO figure out good spawn weights, Also config for these
-        GameRegistry.registerWorldGenerator(new WorldGenBerries(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         helper.initAllBlocks();
@@ -430,24 +426,13 @@ public class PokecubeCore extends PokecubeMod
     {
         registerSpawns();
         SpawnHandler.sortSpawnables();
-        int n = 0;
         for (Integer i : Pokedex.getInstance().getEntries())
         {
             PokedexEntry p = Pokedex.getInstance().getEntry(i);
-            if (p.getPokedexNb() < 722)
-            {
-                p.setSound(ID + ":mobs." + p.getName());
-                n++;
-            }
-            else
-            {
-                p.setSound(p.getModId() + ":mobs." + p.getName());
-            }
+            p.setSound("mobs." + p.getName());
             p.updateMoves();
-            // Refreshes the forme's modIds
-            // p.setModId(p.getModId());
         }
-        System.out.println("Loaded " + n + " Pokemob sounds, " + Pokedex.getInstance().getEntries().size()
+        System.out.println("Loaded " + Pokedex.getInstance().getEntries().size()
                 + " Pokemon and " + Database.allFormes.size() + " Formes");
     }
 
@@ -752,6 +737,13 @@ public class PokecubeCore extends PokecubeMod
     public void serverStop(FMLServerStoppingEvent event)
     {
         PokemobAIThread.clear();
+        BerryGenManager.berryLocations.clear();
+    }
+
+    @Override
+    public void setEntityProvider(IEntityProvider provider)
+    {
+        this.provider = provider;
     }
 
     @Override

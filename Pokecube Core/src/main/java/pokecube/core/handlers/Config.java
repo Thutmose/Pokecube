@@ -83,6 +83,8 @@ public class Config extends ConfigBase
     public double              scalefactor                = 1;
     @Configure(category = misc)
     public boolean             pcOnDrop                   = true;
+    @Configure(category = misc)
+    public int                 captureDelayTicks          = 50;
 
     @Configure(category = misc)
     public boolean             pcHoldsOnlyPokecubes       = true;

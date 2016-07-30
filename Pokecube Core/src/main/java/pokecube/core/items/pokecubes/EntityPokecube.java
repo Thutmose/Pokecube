@@ -373,7 +373,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     System.err.println(String.format("The pokemob %1$s spawn from pokecube has failed. ",
                             entity1.getPokemonDisplayName().getFormattedText()));
                 }
-
+                ((Entity) entity1).getEntityData().setLong("lastCubeTime",
+                        getEntityWorld().getTotalWorldTime() + PokecubeMod.core.getConfig().captureDelayTicks);
                 entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
                 entity1.setPokemonAIState(IMoveConstants.SITTING, false);
                 entity1.setPokemonAIState(IMoveConstants.TAMED, false);

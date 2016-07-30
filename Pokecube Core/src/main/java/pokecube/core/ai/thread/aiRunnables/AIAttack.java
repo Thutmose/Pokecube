@@ -123,7 +123,8 @@ public class AIAttack extends AIBase implements IAICombat
             targetLoc.set(entityTarget);
             this.chaseTime = 0;
             running = true;
-            if (PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
+            boolean previousCaptureAttempt = attacker.getEntityData().hasKey("lastCubeTime");
+            if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
                     && entityTarget instanceof EntityPlayer
                     && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker

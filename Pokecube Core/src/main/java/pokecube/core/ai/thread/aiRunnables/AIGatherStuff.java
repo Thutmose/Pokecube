@@ -7,15 +7,18 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -76,11 +79,15 @@ public class AIGatherStuff extends AIBase
 
     private void findStuff()
     {
-        if (pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonAIState(IMoveConstants.SITTING)) { return; }
+        if (pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && pokemob.getPokemonAIState(IMoveConstants.SITTING)) { return; }
         block = false;
         v.set(pokemob.getHome()).add(0, entity.height, 0);
 
-        List<Object> list = getEntitiesWithinDistance(entity, 16, EntityItem.class);
+        int distance = pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                ? PokecubeCore.core.getConfig().tameGatherDistance : PokecubeCore.core.getConfig().wildGatherDistance;
+
+        List<Object> list = getEntitiesWithinDistance(entity, distance, EntityItem.class);
         EntityItem newTarget = null;
         double closest = 1000;
 
@@ -128,16 +135,17 @@ public class AIGatherStuff extends AIBase
         {
             if (entity.getNavigator().noPath())
             {
+                double speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
                 if (stuff != null)
                 {
                     stuffLoc.set(stuff);
                     Path path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
-                    addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
+                    addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
                 }
                 else
                 {
                     Path path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
-                    addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
+                    addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
                 }
             }
         }
@@ -193,13 +201,15 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        boolean wildCheck = !pokemob.getPokemonAIState(IPokemob.TAMED) && !pokemob.getPokedexEntry().colonyBuilder;
-        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck) return false;
+        boolean wildCheck = !PokecubeCore.core.getConfig().wildGather;
+        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck)
+            return false;
         if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN) return false;
-        int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? 20 : 200;
+        int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeCore.core.getConfig().tameGatherDelay
+                : PokecubeCore.core.getConfig().wildGatherDelay;
         Random rand = new Random(pokemob.getRNGValue());
         if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt(rate)) return false;
-        if(cooldowns[0] < -2000)
+        if (cooldowns[0] < -2000)
         {
             cooldowns[0] = COOLDOWN;
         }
@@ -220,6 +230,7 @@ public class AIGatherStuff extends AIBase
      * @return */
     private boolean tameCheck()
     {
-        return pokemob.getPokemonAIState(IMoveConstants.TAMED) && !pokemob.getPokemonAIState(IMoveConstants.STAYING);
+        return pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && (!pokemob.getPokemonAIState(IMoveConstants.STAYING) || !PokecubeMod.core.getConfig().tameGather);
     }
 }

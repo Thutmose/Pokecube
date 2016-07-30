@@ -150,7 +150,7 @@ public class EntityAITrainer extends EntityAIBase
             trainer.setTarget(null);
             return false;
         }
-        if (trainer.getTarget() != null || trainer.cooldown > 0) return true;
+        if (trainer.getTarget() != null || trainer.cooldown > trainer.getEntityWorld().getTotalWorldTime()) return true;
 
         Vector3 here = loc.set(trainer);
         EntityLivingBase target = null;
@@ -199,9 +199,9 @@ public class EntityAITrainer extends EntityAIBase
         if (trainer.getTarget() == null) return;
         trainer.faceEntity(trainer.getTarget(), trainer.rotationPitch, trainer.rotationYaw);
         boolean hasOut = trainer.outMob != null && !((Entity) trainer.outMob).isDead;
-        if (trainer.cooldown > 0 && !hasOut && !trainer.getAIState(EntityHasAIStates.THROWING))
+        if (trainer.attackCooldown > 0 && !hasOut && !trainer.getAIState(EntityHasAIStates.THROWING))
         {
-            if (trainer.cooldown == Config.instance.trainerSendOutDelay/2)
+            if (trainer.attackCooldown == Config.instance.trainerSendOutDelay / 2)
             {
                 ItemStack nextStack = trainer.getNextPokemob();
                 if (nextStack != null)

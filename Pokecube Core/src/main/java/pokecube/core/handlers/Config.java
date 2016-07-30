@@ -151,9 +151,21 @@ public class Config extends ConfigBase
     public int                 attackCooldown             = 20;
     @Configure(category = mobAI)
     public int                 chaseDistance              = 32;
-
     @Configure(category = mobAI)
     public int                 aiDisableDistance          = 32;
+    @Configure(category = mobAI)
+    public int                 tameGatherDelay            = 20;
+    @Configure(category = mobAI)
+    public int                 wildGatherDelay            = 200;
+    @Configure(category = mobAI)
+    public int                 tameGatherDistance         = 16;
+    @Configure(category = mobAI)
+    public int                 wildGatherDistance         = 8;
+    @Configure(category = mobAI)
+    public boolean             tameGather                 = true;
+    @Configure(category = mobAI)
+    public boolean             wildGather                 = false;
+
     // World Gen and World effect settings
     @Configure(category = world)
     /** do meteors fall. */

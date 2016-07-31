@@ -30,8 +30,11 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
     private int              battleCooldown   = -1;
     public ItemStack[]       pokecubes        = new ItemStack[6];
     public List<ItemStack>   reward           = Lists.newArrayList(new ItemStack(Items.EMERALD));
+    // Cooldown between sending out pokemobs
     public int               attackCooldown   = 0;
-    public int               cooldown         = 0;
+    // Cooldown between agression
+    public long              cooldown         = 0;
+    // Cooldown for trading timer
     public int               friendlyCooldown = 0;
     public List<IPokemob>    currentPokemobs  = new ArrayList<IPokemob>();
     private EntityLivingBase target;
@@ -55,7 +58,18 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             {
                 InventoryPC.heal(mob);
                 pokecubes[i] = mob.copy();
-                return;
+                break;
+            }
+        }
+        if (target == null || getAIState(THROWING) || outMob != null || getNextPokemob() != null) return;
+        this.setAIState(INBATTLE, false);
+        if (outID == null && outMob == null && !getAIState(THROWING))
+        {
+            if (cooldown <= worldObj.getTotalWorldTime())
+            {
+                onDefeated(target);
+                cooldown = worldObj.getTotalWorldTime() + battleCooldown;
+                nextSlot = 0;
             }
         }
     }
@@ -156,7 +170,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         type = TypeTrainer.getTrainer(nbt.getString("type"));
         if (nbt.hasKey("battleCD")) battleCooldown = nbt.getInteger("battleCD");
         if (battleCooldown < 0) battleCooldown = Config.instance.trainerCooldown;
-        attackCooldown = nbt.getInteger("cooldown");
+        cooldown = nbt.getLong("nextBattle");
         if (nbt.hasKey("outPokemob"))
         {
             outID = UUID.fromString(nbt.getString("outPokemob"));
@@ -185,7 +199,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (outID != null) nbt.setString("outPokemob", outID.toString());
         nbt.setString("type", type.name);
         nbt.setInteger("battleCD", battleCooldown);
-        nbt.setInteger("cooldown", attackCooldown);
+        nbt.setLong("nextBattle", cooldown);
         nbt.setInteger("friendly", friendlyCooldown);
         nbt.setInteger("nextSlot", nextSlot);
         nbttaglist = new NBTTagList();
@@ -208,12 +222,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (getAIState(PERMFRIENDLY)) { return; }
         if (friendlyCooldown-- >= 0) return;
         boolean done = attackCooldown <= 0;
-        cooldown--;
-        if (getAIState(INBATTLE)) return;
-        if (!done && getTarget() != null)
-        {
-            setTarget(null);
-        }
         if (done)
         {
             attackCooldown = -1;
@@ -222,6 +230,11 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         else
         {
             attackCooldown--;
+        }
+        if (getAIState(INBATTLE)) return;
+        if (!done && getTarget() != null)
+        {
+            setTarget(null);
         }
     }
 
@@ -262,7 +275,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
             cube.throwPokecubeAt(worldObj, this, i, t, null);
             setAIState(THROWING, true);
-            cooldown = Config.instance.trainerSendOutDelay;
+            attackCooldown = Config.instance.trainerSendOutDelay;
             pokecubes[nextSlot] = null;
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(),
                     i.getDisplayName());
@@ -279,10 +292,10 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         this.setAIState(INBATTLE, false);
         if (outID == null && outMob == null && !getAIState(THROWING))
         {
-            if (attackCooldown <= 0)
+            if (cooldown <= worldObj.getTotalWorldTime())
             {
                 onDefeated(target);
-                attackCooldown = battleCooldown;
+                cooldown = worldObj.getTotalWorldTime() + battleCooldown;
                 nextSlot = 0;
             }
         }
@@ -290,9 +303,10 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
     public void setTarget(EntityLivingBase target)
     {
+        System.out.println(attackCooldown + " " + target);
         if (target != null && target != this.target && attackCooldown <= 0)
         {
-            cooldown = Config.instance.trainerBattleDelay;
+            attackCooldown = Config.instance.trainerBattleDelay;
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
             target.addChatMessage(text);
             this.setAIState(INBATTLE, true);

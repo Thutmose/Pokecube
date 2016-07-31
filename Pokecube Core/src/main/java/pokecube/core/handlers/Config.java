@@ -83,6 +83,8 @@ public class Config extends ConfigBase
     public double              scalefactor                = 1;
     @Configure(category = misc)
     public boolean             pcOnDrop                   = true;
+    @Configure(category = misc)
+    public int                 captureDelayTicks          = 50;
 
     @Configure(category = misc)
     public boolean             pcHoldsOnlyPokecubes       = true;
@@ -149,9 +151,21 @@ public class Config extends ConfigBase
     public int                 attackCooldown             = 20;
     @Configure(category = mobAI)
     public int                 chaseDistance              = 32;
-
     @Configure(category = mobAI)
     public int                 aiDisableDistance          = 32;
+    @Configure(category = mobAI)
+    public int                 tameGatherDelay            = 20;
+    @Configure(category = mobAI)
+    public int                 wildGatherDelay            = 200;
+    @Configure(category = mobAI)
+    public int                 tameGatherDistance         = 16;
+    @Configure(category = mobAI)
+    public int                 wildGatherDistance         = 8;
+    @Configure(category = mobAI)
+    public boolean             tameGather                 = true;
+    @Configure(category = mobAI)
+    public boolean             wildGather                 = false;
+
     // World Gen and World effect settings
     @Configure(category = world)
     /** do meteors fall. */
@@ -227,10 +241,15 @@ public class Config extends ConfigBase
     @Configure(category = spawning)
     public boolean             shouldCap                  = true;
     @Configure(category = spawning)
-    String[]                   spawnLevelFunctions        = { "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
-            "1:1+r/1300;r", "2:(25)*(sin(x*0.5*10^-3)^4 + sin(y*0.5*10^-3)^4)" };
+    String[]                   spawnLevelFunctions        = { //@formatter:off
+            "-1:abs((25)*(sin(x*8*10^-3)^3 + sin(y*8*10^-3)^3))",
+            "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
+            "1:1+r/1300;r"
+            };//@formatter:on
     @Configure(category = spawning)
     public boolean             expFunction                = false;
+    @Configure(category = spawning)
+    public boolean             spawnCentered              = true;
 
     @Configure(category = spawning)
     public int                 levelVariance              = 5;

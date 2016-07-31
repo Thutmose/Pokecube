@@ -264,19 +264,15 @@ public class EntityTrainer extends EntityHasPokemobs
             added = true;
             TrainerSpawnHandler.addTrainerCoord(this);
         }
-
-        for (int i = 0; i < 6; i++)
+        ItemStack next = getNextPokemob();
+        if (cooldown > worldObj.getTotalWorldTime()) next = null;
+        if (next != null)
         {
-            ItemStack item = pokecubes[i];
-            if (item != null && attackCooldown <= 0)
-            {
-                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, item);
-                break;
-            }
-            if (i == 5)
-            {
-                this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
-            }
+            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, next);
+        }
+        else
+        {
+            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
         }
 
         if (type.held != null)

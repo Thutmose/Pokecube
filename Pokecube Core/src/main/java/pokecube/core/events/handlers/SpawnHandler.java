@@ -78,9 +78,10 @@ public final class SpawnHandler
 
     static
     {
-        functions.put(0, "(10^6)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)");
+        functions.put(-1, "(50)*(sin(x*8*10^-3)^8 + sin(y*8*10^-3)^8)");
+        functions.put(0, "(50)*(sin(x*10^-3)^8 + sin(y*10^-3)^8)");
         functions.put(1, "10+r/130;r");
-        functions.put(2, "(10^6)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)");
+        functions.put(2, "(50)*(sin(x*0.5*10^-3)^8 + sin(y*0.5*10^-3)^8)");
     }
 
     private static Vector3                    vec1        = Vector3.getNewVector();
@@ -274,8 +275,9 @@ public final class SpawnHandler
         }
 
         Vector3 spawn = temp.set(world.getSpawnPoint());
+        if (!PokecubeCore.core.getConfig().spawnCentered) spawn.clear();
         JEP toUse;
-        int type = world.getWorldType().getWorldTypeID();
+        int type = world.provider.getDimension();
         boolean isNew = false;
         String function = "";
         if (functions.containsKey(type))
@@ -342,7 +344,7 @@ public final class SpawnHandler
 
         Vector3 spawn = temp.set(world.getSpawnPoint());
         JEP toUse;
-        int type = world.getWorldType().getWorldTypeID();
+        int type = world.provider.getDimension();
         boolean isNew = false;
         String function = "";
         if (functions.containsKey(type))

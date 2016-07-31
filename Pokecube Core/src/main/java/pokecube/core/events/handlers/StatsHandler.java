@@ -28,6 +28,21 @@ public class StatsHandler
     {
         int num = evt.caught.getPokedexNb();
         if (evt.caught.getPokemonAIState(IMoveConstants.TAMED)) evt.setResult(Result.DENY);
+
+        long lastAttempt = ((Entity) evt.caught).getEntityData().getLong("lastCubeTime");
+        if (lastAttempt > evt.pokecube.getEntityWorld().getTotalWorldTime())
+        {
+            Entity catcher = ((EntityPokecube) evt.pokecube).shootingEntity;
+            evt.setCanceled(true);
+            if (catcher instanceof EntityPlayer)
+            {
+                ((EntityPlayer) catcher).addChatMessage(new TextComponentTranslation("pokecube.denied"));
+            }
+            evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getEntityItem(), (float) 0.5);
+            evt.pokecube.setDead();
+            return;
+        }
+
         if (ISpecialCaptureCondition.captureMap.containsKey(num))
         {
             Entity catcher = ((EntityPokecube) evt.pokecube).shootingEntity;

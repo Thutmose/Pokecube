@@ -37,6 +37,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.compat.ai.AIRFInterferance;
+import pokecube.compat.ai.AITeslaInterferance;
 import pokecube.compat.rf.SiphonHandler;
 import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
@@ -234,7 +235,7 @@ public class Compat
         if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
         {
             EntityLiving living = (EntityLiving) evt.getEntity();
-            living.tasks.addTask(1, new AIRFInterferance((IPokemob) living));
+            living.tasks.addTask(1, new AITeslaInterferance((IPokemob) living));
         }
     }
 

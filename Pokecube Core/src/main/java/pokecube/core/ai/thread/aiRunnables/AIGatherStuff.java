@@ -204,7 +204,6 @@ public class AIGatherStuff extends AIBase
         boolean wildCheck = !PokecubeCore.core.getConfig().wildGather && !pokemob.getPokemonAIState(IPokemob.TAMED);
         if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck)
             return false;
-        if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN) return false;
         int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeCore.core.getConfig().tameGatherDelay
                 : PokecubeCore.core.getConfig().wildGatherDelay;
         Random rand = new Random(pokemob.getRNGValue());

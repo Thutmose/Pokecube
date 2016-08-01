@@ -62,6 +62,7 @@ public class AITeslaInterferance extends EntityAIBase
             Cruncher.indexToVals(i, toFill);
             mobLoc.set(pokemob).addTo(toFill);
             TileEntity tile = mobLoc.getTileEntity(entity.getEntityWorld());
+            if (tile == null) continue;
             ITeslaConsumer cap = tile.getCapability(TESLA_CONSUMER, null);
             if (cap != null)
             {

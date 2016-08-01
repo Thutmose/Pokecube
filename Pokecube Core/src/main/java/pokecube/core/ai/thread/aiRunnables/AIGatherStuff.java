@@ -201,7 +201,7 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        boolean wildCheck = !PokecubeCore.core.getConfig().wildGather;
+        boolean wildCheck = !PokecubeCore.core.getConfig().wildGather && !pokemob.getPokemonAIState(IPokemob.TAMED);
         if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck)
             return false;
         if (storage.cooldowns[1] > AIStoreStuff.COOLDOWN) return false;

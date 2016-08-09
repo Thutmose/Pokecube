@@ -80,7 +80,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Byte>    STATUSDW         = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
-    static final DataParameter<Integer>    STATUSTIMERDW         = EntityDataManager
+    static final DataParameter<Integer> STATUSTIMERDW    = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Byte>    MOVEINDEXDW      = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
@@ -640,6 +640,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
             this.setPokemonAIState(IMoveConstants.ANGRY, false);
             this.setAttackTarget(null);
+            this.captureDrops = true;
             if (owner instanceof EntityPlayer && !isShadow())
             {
                 ItemStack itemstack = PokecubeManager.pokemobToItem(this);
@@ -651,6 +652,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 }
                 if (noRoom)
                 {
+                    this.captureDrops = true;
                     ItemTossEvent toss = new ItemTossEvent(entityDropItem(itemstack, 0F), PokecubeMod.getFakePlayer());
                     MinecraftForge.EVENT_BUS.post(toss);
                     noRoom = !toss.isCanceled();
@@ -723,6 +725,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     }
                 }
             }
+            this.capturedDrops.clear();
+            this.captureDrops = false;
             this.setDead();
         }
     }

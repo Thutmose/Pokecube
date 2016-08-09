@@ -560,10 +560,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         if (efficiency > 0)
         {
             Move_Ongoing ongoing;
-            if (MovesUtils.getMoveFromName(attack) instanceof Move_Ongoing && attacked instanceof IPokemob)
+            if (MovesUtils.getMoveFromName(attack) instanceof Move_Ongoing)
             {
                 ongoing = (Move_Ongoing) MovesUtils.getMoveFromName(attack);
-                if (ongoing.onTarget()) ((IPokemob) attacked).addOngoingEffect(ongoing);
+                if (ongoing.onTarget() && attacked instanceof IPokemob) ((IPokemob) attacked).addOngoingEffect(ongoing);
                 if (ongoing.onSource()) attacker.addOngoingEffect(ongoing);
             }
         }

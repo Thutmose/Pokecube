@@ -61,9 +61,9 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public void addOngoingEffect(Move_Base effect)
+    public boolean addOngoingEffect(Move_Base effect)
     {
-        parent.addOngoingEffect(effect);
+        return parent.addOngoingEffect(effect);
     }
 
     @Override
@@ -953,6 +953,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     public void setAbilityIndex(int index)
     {
         // TODO Auto-generated method stub
-        
+
     }
 }

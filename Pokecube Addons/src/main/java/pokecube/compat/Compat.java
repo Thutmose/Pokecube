@@ -96,8 +96,6 @@ public class Compat
 
     private static FileWriter  fwriter;
 
-    static boolean             TESLALOADED = false;
-
     public static void setSpawnsFile(FMLPreInitializationEvent evt)
     {
         File file = evt.getSuggestedConfigurationFile();
@@ -217,11 +215,10 @@ public class Compat
         meta.parent = PokecubeMod.ID;
     }
 
-    @Optional.Method(modid = "CoFHAPI")
     @SubscribeEvent
     public void addRFInterference(EntityJoinWorldEvent evt)
     {
-        if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
+        if (PokecubeAdv.rf) if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
         {
             EntityLiving living = (EntityLiving) evt.getEntity();
             living.tasks.addTask(1, new AIRFInterferance((IPokemob) living));
@@ -239,11 +236,10 @@ public class Compat
         }
     }
 
-    @Optional.Method(modid = "CoFHAPI")
     @EventHandler
     public void RFCompat(FMLInitializationEvent evt)
     {
-        if (!TESLALOADED) new SiphonHandler();
+        if (PokecubeAdv.rf) new SiphonHandler();
     }
 
     @Optional.Method(modid = "tesla")
@@ -251,7 +247,6 @@ public class Compat
     public void TeslaCompat(FMLPreInitializationEvent evt)
     {
         new TeslaHandler();
-        TESLALOADED = true;
     }
 
     @SideOnly(Side.CLIENT)

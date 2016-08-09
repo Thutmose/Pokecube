@@ -153,6 +153,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             this.entityAge = 0;
 
+            if (source.isExplosion() && source.getEntity() instanceof IPokemob && isType(ghost)) { return false; }
+
             if (this.getHealth() <= 0.0F)
             {
                 return false;

@@ -988,6 +988,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
         if (hand != player.getActiveHand()) return false;
+
+        System.out.println(player.getUniqueID() + " " + getOwnerId() + " " + getOwner() + " " + player);
+
         ItemStack itemstack = player.getHeldItem(hand);
         ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
         // Check shearable interaction.

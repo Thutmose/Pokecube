@@ -250,7 +250,7 @@ public class EventsHandlerClient
             IPokemob[] pokemobs = GuiDisplayPokecubeInfo.instance().getPokemobsToDisplay();
             for (IPokemob mob : pokemobs)
             {
-                if (((Entity) mob).addedToChunk && event.player
+                if (!(((Entity) mob).isDead) && ((Entity) mob).addedToChunk && event.player
                         .getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
                 {
                     mob.returnToPokecube();
@@ -324,11 +324,11 @@ public class EventsHandlerClient
         {
             boolean ring = checker.hasRing(player);
 
-            if(!ring)
+            if (!ring)
             {
                 player.addChatMessage(new TextComponentTranslation("pokecube.mega.noring"));
             }
-            
+
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING)
                     && System.currentTimeMillis() > counter + 500)

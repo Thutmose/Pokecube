@@ -64,10 +64,17 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void addOngoingEffect(Move_Base effect)
+    public boolean addOngoingEffect(Move_Base effect)
     {
         if (effect instanceof Move_Ongoing)
-            moveInfo.ongoingEffects.put((Move_Ongoing) effect, ((Move_Ongoing) effect).getDuration());
+        {
+            if (!moveInfo.ongoingEffects.containsKey(effect))
+            {
+                moveInfo.ongoingEffects.put((Move_Ongoing) effect, ((Move_Ongoing) effect).getDuration());
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

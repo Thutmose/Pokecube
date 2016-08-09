@@ -554,8 +554,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 killCounter = 0;
             }
             giveExp = giveExp && killCounter <= 5;
-            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp)
-                    && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer))
+            boolean pvp = ((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
+                    && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer);
+            if (pvp && !PokecubeMod.core.getConfig().pvpExp)
             {
                 giveExp = false;
             }
@@ -575,7 +576,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             {
                 attacker.setExp(
                         attacker.getExp()
-                                + Tools.getExp(1, ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
+                                + Tools.getExp((float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier : 1),
+                                        ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
                         true, false);
                 byte[] evsToAdd = Pokedex.getInstance().getEntry(((IPokemob) attacked).getPokedexNb()).getEVs();
                 attacker.addEVs(evsToAdd);

@@ -72,6 +72,9 @@ public class Config extends ConfigBase
     public boolean             pvpExp                     = false;
     @Configure(category = misc)
     /** does defeating a tame pokemob give exp */
+    public double              pvpExpMultiplier           = 0.5;
+    @Configure(category = misc)
+    /** does defeating a tame pokemob give exp */
     public boolean             trainerExp                 = true;
     @Configure(category = misc)
     public boolean             mysterygift                = true;

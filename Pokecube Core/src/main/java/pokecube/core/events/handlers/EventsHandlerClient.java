@@ -229,9 +229,7 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void clientTick(TickEvent.PlayerTickEvent event)
     {
-        if (!(PokecubeMod.core.getConfig().autoSelectMoves || PokecubeMod.core.getConfig().autoRecallPokemobs)
-                || event.phase == Phase.START || lastSetTime >= System.currentTimeMillis())
-            return;
+        if (event.phase == Phase.START) return;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
@@ -241,22 +239,19 @@ public class EventsHandlerClient
                 if (target != null)
                 {
                     setMostDamagingMove(pokemob, target);
-                    lastSetTime = System.currentTimeMillis() + 1000;
                 }
             }
         }
         if (PokecubeMod.core.getConfig().autoRecallPokemobs)
         {
-            IPokemob[] pokemobs = GuiDisplayPokecubeInfo.instance().getPokemobsToDisplay();
-            for (IPokemob mob : pokemobs)
+            IPokemob mob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
+            if (mob != null && !(((Entity) mob).isDead) && ((Entity) mob).addedToChunk
+                    && event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
             {
-                if (!(((Entity) mob).isDead) && ((Entity) mob).addedToChunk && event.player
-                        .getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
-                {
-                    mob.returnToPokecube();
-                }
+                mob.returnToPokecube();
             }
         }
+        lastSetTime = System.currentTimeMillis() + 500;
     }
 
     @SideOnly(Side.CLIENT)

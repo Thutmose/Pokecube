@@ -165,9 +165,7 @@ public class Tools
 
     public static int getExp(float coef, int baseXP, int level)
     {
-        // Increase exp gain if the density is set lower.
-        float multiplier = (float) (1.0F / Math.sqrt(PokecubeMod.MAX_DENSITY));
-        return MathHelper.floor_float(multiplier * coef * baseXP * level / 7F);
+        return MathHelper.floor_float(coef * baseXP * level / 7F);
     }
 
     public static int getHealedPokemobSerialization()

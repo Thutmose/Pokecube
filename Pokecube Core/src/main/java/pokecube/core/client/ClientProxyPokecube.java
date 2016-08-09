@@ -632,7 +632,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             float offset = Float.parseFloat(args[1]);
             location.y += offset;
         }
-        if (par1Str.contains("smoke"))
+        if (par1Str.toLowerCase().contains("smoke"))
         {
             if (par1Str.contains("large"))
             {
@@ -642,6 +642,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             }
             Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, location.x, location.y,
                     location.z, 0, 0, 0, 0);
+            return;
         }
         if (par1Str.contains("flame"))
         {

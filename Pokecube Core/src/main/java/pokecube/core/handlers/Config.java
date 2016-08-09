@@ -72,6 +72,9 @@ public class Config extends ConfigBase
     public boolean             pvpExp                     = false;
     @Configure(category = misc)
     /** does defeating a tame pokemob give exp */
+    public double              pvpExpMultiplier           = 0.5;
+    @Configure(category = misc)
+    /** does defeating a tame pokemob give exp */
     public boolean             trainerExp                 = true;
     @Configure(category = misc)
     public boolean             mysterygift                = true;
@@ -81,6 +84,10 @@ public class Config extends ConfigBase
     protected boolean          tableRecipe                = true;
     @Configure(category = misc)
     public double              scalefactor                = 1;
+    @Configure(category = misc)
+    public double              contactAttackDistance      = 0;
+    @Configure(category = misc)
+    public double              rangedAttackDistance       = 16;
     @Configure(category = misc)
     public boolean             pcOnDrop                   = true;
     @Configure(category = misc)

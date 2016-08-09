@@ -65,9 +65,6 @@ pokecube.trainer.toss=%1$s §csent out %2$s!
 pokecube.trainer.next=%1$s §cis about to send out %2$s!
 pokecube.trainer.drop=%1$s §agave you %2$s §afor winning!
 
-pokecube.power.enabled=§aPower API found, Pokecube Machines will require energy to run.
-pokecube.power.disabled=§cNo Power API found, Pokecube Machines will not use energy, install something which provides Tesla or RF to enable.
-
 msg.team.deny=§cYou are not allowed to do that in land owned by Team %1$s
 msg.team.enterLand=You have entered land owned by Team %1$s
 msg.team.exitLand=You have left land owned by Team %1$s

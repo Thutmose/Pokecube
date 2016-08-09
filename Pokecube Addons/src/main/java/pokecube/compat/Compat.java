@@ -73,14 +73,19 @@ public class Compat
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Revival");
                     (event.player).addChatMessage(mess);
                 }
-                if (PokecubeAdv.hasEnergyAPI)
-                {
-                    ITextComponent mess = new TextComponentTranslation("pokecube.power.enabled");
-                    (event.player).addChatMessage(mess);
-                }
-                else
+                if (!PokecubeAdv.hasEnergyAPI)
                 {
                     ITextComponent mess = new TextComponentTranslation("pokecube.power.disabled");
+                    (event.player).addChatMessage(mess);
+                }
+                if (PokecubeAdv.tesla)
+                {
+                    ITextComponent mess = new TextComponentTranslation("pokecube.power.tesla");
+                    (event.player).addChatMessage(mess);
+                }
+                else if (PokecubeAdv.rf)
+                {
+                    ITextComponent mess = new TextComponentTranslation("pokecube.power.rf");
                     (event.player).addChatMessage(mess);
                 }
             }

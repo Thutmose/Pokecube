@@ -201,38 +201,38 @@ public class GuiPC extends GuiContainer
         if (!bound) textFieldSearch.drawTextBox();
 
         if (toRename) textFieldBoxName.drawTextBox();
+        float zLevel = 1000;
         for (int i = 0; i < 54; i++)
             if (!textFieldSearch.getText().isEmpty())
             {
                 ItemStack stack = cont.inv.getStackInSlot(i + 54 * cont.inv.getPage());
-                // if(stack!=null)
                 int x = (i % 9) * 18 + width / 2 - 80;
                 int y = (i / 9) * 18 + height / 2 - 96;
+
+                String name = stack == null ? "" : stack.getDisplayName();
+                if (name.isEmpty() || !name.toLowerCase().contains(textFieldSearch.getText()))
                 {
-                    String name = stack == null ? "" : stack.getDisplayName();
-                    if (name.isEmpty() || !name.toLowerCase().contains(textFieldSearch.getText()))
-                    {
-                        GL11.glPushMatrix();
-                        GL11.glEnable(GL11.GL_BLEND);
-                        GL11.glColor4f(0, 0, 0, 1);
-                        mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/hologram.png"));
-                        drawTexturedModalRect(x, y, 0, 0, 16, 16);
-                        GL11.glDisable(GL11.GL_BLEND);
-                        GL11.glPopMatrix();
-                    }
-                    else
-                    {
-                        GL11.glPushMatrix();
-                        GL11.glEnable(GL11.GL_BLEND);
-                        GL11.glColor4f(0, 1, 0, 1);
-                        mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/hologram.png"));
-                        drawTexturedModalRect(x, y, 0, 0, 16, 16);
-                        GL11.glDisable(GL11.GL_BLEND);
-                        GL11.glPopMatrix();
-                    }
+                    GL11.glPushMatrix();
+                    GL11.glTranslated(0, 0, zLevel);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glColor4f(0, 0, 0, 1);
+                    mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/hologram.png"));
+                    drawTexturedModalRect(x, y, 0, 0, 16, 16);
+                    GL11.glDisable(GL11.GL_BLEND);
+                    GL11.glTranslated(0, 0, -zLevel);
+                    GL11.glPopMatrix();
+                }
+                else
+                {
+                    GL11.glPushMatrix();
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glColor4f(0, 1, 0, 1);
+                    mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/hologram.png"));
+                    drawTexturedModalRect(x, y, 0, 0, 16, 16);
+                    GL11.glDisable(GL11.GL_BLEND);
+                    GL11.glPopMatrix();
                 }
             }
-
     }
 
     @Override

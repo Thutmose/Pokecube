@@ -8,3 +8,7 @@ item.thaumiumpokecube.name=Thaumium Pokecube
 
 igwtab.entry.HMs=HMs
 msg.pokedexbuttonforwiki.text=Press the blue button on the top left of the pokedex to open the ingame wiki
+
+pokecube.power.tesla=§aTesla found, Pokecube Machines will require tesla energy to run, Energy Siphon will produce Tesla power.
+pokecube.power.rf=§aRF API found, Energy Siphon will produce RF.
+pokecube.power.disabled=§cNo Power API found, Pokecube Machines will not use energy, install something which provides Tesla to enable energy use.

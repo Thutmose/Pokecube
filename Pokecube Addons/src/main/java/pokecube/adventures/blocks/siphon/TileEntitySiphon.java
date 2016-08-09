@@ -2,13 +2,11 @@ package pokecube.adventures.blocks.siphon;
 
 import org.nfunk.jep.JEP;
 
-import cofh.api.energy.IEnergyProvider;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -19,9 +17,8 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.PokedexEntry;
 
-@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
-        @Interface(iface = "cofh.api.energy.IEnergyProvider", modid = "CoFHAPI") })
-public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyProvider, SimpleComponent
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class TileEntitySiphon extends TileEntity implements ITickable, SimpleComponent
 {
     AxisAlignedBB     box;
     public static JEP parser;
@@ -36,20 +33,6 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
     public TileEntitySiphon(World world)
     {
         this();
-    }
-
-    @Override
-    public boolean canConnectEnergy(EnumFacing facing)
-    {
-        return true;
-    }
-
-    @Override
-    public int extractEnergy(EnumFacing facing, int maxExtract, boolean simulate)
-    {
-        int ret = currentOutput;
-        if (ret > maxExtract) ret = maxExtract;
-        return ret;
     }
 
     @Override
@@ -84,21 +67,9 @@ public class TileEntitySiphon extends TileEntity implements ITickable, IEnergyPr
         return Math.max(1, power);
     }
 
-    @Override
-    public int getEnergyStored(EnumFacing facing)
-    {
-        return 0;
-    }
-
     public static int getMaxEnergy(int level, int spAtk, int atk, PokedexEntry entry)
     {
         return getEnergyGain(level, spAtk, atk, entry);
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing facing)
-    {
-        return PokecubeAdv.conf.maxOutput;
     }
 
     @Callback

@@ -54,7 +54,7 @@ public class EntityMoveUse extends Entity
         this.getDataManager().set(MOVENAME, name);
         if (move.getAnimation() != null)
         {
-            getDataManager().set(TICK, move.getAnimation().getDuration());
+            getDataManager().set(TICK, move.getAnimation().getDuration() + 1);
         }
         else getDataManager().set(TICK, 1);
         return this;

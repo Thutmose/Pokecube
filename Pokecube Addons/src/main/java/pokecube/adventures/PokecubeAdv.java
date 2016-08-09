@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModAPIManager;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -68,6 +69,8 @@ public class PokecubeAdv
     public static int          GUIAFA_ID          = 6;
 
     public static boolean      hasEnergyAPI       = false;
+    public static boolean      rf                 = false;
+    public static boolean      tesla              = false;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
     public static CommonProxy  proxy;
@@ -159,7 +162,8 @@ public class PokecubeAdv
     public void preInit(FMLPreInitializationEvent e)
     {
         conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
-        hasEnergyAPI = Loader.isModLoaded("CoFHAPI") || Loader.isModLoaded("tesla");
+        rf = ModAPIManager.INSTANCE.hasAPI("CoFHAPI");
+        hasEnergyAPI = (tesla = Loader.isModLoaded("tesla"));
         BlockHandler.registerBlocks();
         ItemHandler.registerItems();
         DBLoader.preInit(e);

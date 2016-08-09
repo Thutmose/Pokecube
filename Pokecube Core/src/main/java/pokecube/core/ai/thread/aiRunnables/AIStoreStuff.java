@@ -11,7 +11,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.pathfinding.Path;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
@@ -19,7 +18,6 @@ import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.berries.ItemBerry;
-import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
 public class AIStoreStuff extends AIBase
@@ -169,14 +167,9 @@ public class AIStoreStuff extends AIBase
     }
 
     final EntityLiving entity;
-
-    final boolean[]    states    = { false, false };
-
-    final boolean[]    run       = { true };
-
-    final int[]        cooldowns = { 0, 0 };
-
-    Vector3            seeking   = Vector3.getNewVector();
+    Vector3            inventoryLocation       = null;
+    int                searchInventoryCooldown = 0;
+    int                doStorageCooldown       = 0;
 
     public AIStoreStuff(EntityLiving entity)
     {
@@ -188,15 +181,14 @@ public class AIStoreStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        world = entity.getEntityWorld();
+        if (tameCheck()) return;
         IPokemob pokemob = (IPokemob) entity;
         IInventory inventory = pokemob.getPokemobInventory();
-        if (run[0])
+        if (searchInventoryCooldown-- < 0)
         {
-            run[0] = false;
+            searchInventoryCooldown = COOLDOWN;
             Vector3 temp = Vector3.getNewVector();
             temp.set(pokemob.getHome()).offsetBy(EnumFacing.UP);
-
             Predicate<Object> matcher = new Predicate<Object>()
             {
                 @Override
@@ -213,57 +205,42 @@ public class AIStoreStuff extends AIBase
                     return false;
                 }
             };
-            temp = temp.findClosestVisibleObject(world, true, 5, matcher);
-            if (temp != null) seeking.set(temp);
-            else seeking.clear();
-            boolean empty = seeking.intX() == 0 && seeking.intZ() == 0 && (seeking.intY() == 0 || seeking.intY() == 1);
-            // If too far away, path to the nest for items.
-            if (!empty && seeking.distToEntity(entity) > 3)
-            {
-                Path path = this.entity.getNavigator().getPathToPos(seeking.getPos());
-                addEntityPath(entity.getEntityId(), entity.dimension, path, entity.getAIMoveSpeed());
-                return;
-            }
+            inventoryLocation = temp.findClosestVisibleObject(world, true, 5, matcher);
+            if (inventoryLocation == null) searchInventoryCooldown = 50 * COOLDOWN;
         }
-        if (seeking.isEmpty()) return;
-
-        cooldowns[0]--;
-        cooldowns[1]--;
-
-        TileEntity tile = seeking.getTileEntity(world);
-        // If too far away, path to the nest for items, that is done on other
-        // thread. here is just returns if too far, or on cooldown
-        if (cooldowns[0] > 0 || cooldowns[1] > 0 || seeking.distToEntity(entity) > 3) { return; }
-
+        if (inventoryLocation == null || doStorageCooldown-- > 0) return;
+        TileEntity tile = inventoryLocation.getTileEntity(world);
         if (tile != null)
         {
             ItemStack stack;
             ItemStack stack1;
-            states[0] = (stack = stack1 = inventory.getStackInSlot(2)) != null && stack.getItem() instanceof ItemBerry;
+            boolean hasBerry = (stack = stack1 = inventory.getStackInSlot(2)) != null
+                    && stack.getItem() instanceof ItemBerry;
+            boolean freeSlot = false;
 
-            for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
+            for (int i = 3; i < inventory.getSizeInventory() && !freeSlot; i++)
             {
-                states[1] = (stack = inventory.getStackInSlot(i)) == null;
+                freeSlot = (stack = inventory.getStackInSlot(i)) == null;
             }
             int index = inventory.getSizeInventory() - 1;
             IInventory inv = (IInventory) tile;
-            if (!states[0]) for (int i = 0; i < inv.getSizeInventory(); i++)
+            if (!hasBerry) for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 stack = inv.getStackInSlot(i);
                 // If it wants a berry, search for a berry item, and take that.
-                if (stack != null && !states[0])
+                if (stack != null && !hasBerry)
                 {
                     if (stack.getItem() instanceof ItemBerry)
                     {
                         inv.setInventorySlotContents(i, stack1);
                         inventory.setInventorySlotContents(2, stack);
-                        states[0] = true;
+                        hasBerry = true;
                         break;
                     }
                 }
-                if (!states[0]) cooldowns[0] = COOLDOWN;
+                if (!hasBerry) doStorageCooldown = COOLDOWN;
             }
-            if (!states[1])
+            if (!freeSlot)
             {
                 for (int i = 0; i < inv.getSizeInventory(); i++)
                 {
@@ -273,62 +250,31 @@ public class AIStoreStuff extends AIBase
                     if (addItemStackToInventory(inventory.getStackInSlot(index), inv, 0))
                     {
                         inventory.setInventorySlotContents(index, null);
+                        freeSlot = true;
                         index--;
                         if (index <= 2) break;
                     }
                 }
-                if (index <= 2) states[1] = true;
-                if (!states[1]) cooldowns[1] = COOLDOWN;
+                if (index <= 2) freeSlot = true;
+                if (!freeSlot) doStorageCooldown = COOLDOWN;
             }
-        }
-        else
-        {
-            // Longer cooldown if there is no inventory found at all.
-            cooldowns[1] = cooldowns[0] = 50 * COOLDOWN;
         }
     }
 
     @Override
     public void reset()
     {
-        states[0] = states[1] = false;
     }
 
     @Override
     public void run()
     {
-        synchronized (seeking)
-        {
-            seeking.clear();
-            run[0] = true;
-        }
     }
 
     @Override
     public boolean shouldRun()
     {
-        world = TickHandler.getInstance().getWorldCache(entity.dimension);
-
-        if (world == null || entity.getAttackTarget() != null || entity.ticksExisted % 10 > 0 || tameCheck()
-                || cooldowns[0] > 0 || cooldowns[1] > 0)
-            return false;
-        IPokemob pokemob = (IPokemob) entity;
-
-        // TODO make this instead check if it should make nests, and if it has
-        // one.
-        if (pokemob.getHome() == null || !pokemob.getPokemonAIState(IMoveConstants.TAMED)) return false;
-
-        IInventory inventory = pokemob.getPokemobInventory();
-        ItemStack stack;
-        states[0] = (stack = inventory.getStackInSlot(2)) != null && stack.getItem() instanceof ItemBerry;
-
-        if (!states[0] && cooldowns[0] <= 0) return true;
-
-        for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
-        {
-            states[1] = (stack = inventory.getStackInSlot(i)) == null;
-        }
-        return !states[1] && cooldowns[1] <= 0;
+        return false;
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.

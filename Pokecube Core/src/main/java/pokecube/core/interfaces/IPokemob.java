@@ -250,7 +250,7 @@ public interface IPokemob extends IMoveConstants
      * over time
      * 
      * @param effect */
-    void addOngoingEffect(Move_Base effect);
+    boolean addOngoingEffect(Move_Base effect);
 
     boolean attackEntityFrom(DamageSource generic, float damage);
 

@@ -2,7 +2,6 @@ package pokecube.adventures.blocks.afa;
 
 import java.util.Random;
 
-import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -45,10 +44,8 @@ import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
-        @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
-public class TileEntityAFA extends TileEntityOwnable
-        implements IInventory, IEnergyReceiver, ITickable, SimpleComponent, SidedComponent
+        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITickable, SimpleComponent, SidedComponent
 {
     public static ItemStack shiny_charm = null;
 
@@ -69,17 +66,9 @@ public class TileEntityAFA extends TileEntityOwnable
             pokemob.setAbility(abil);
         }
         byte[] rgbaBytes = new byte[4];
-        // TODO remove the legacy colour support eventually.
         if (tag.hasKey("colours", 7))
         {
             rgbaBytes = tag.getByteArray("colours");
-        }
-        else
-        {
-            rgbaBytes[0] = tag.getByte("red");
-            rgbaBytes[1] = tag.getByte("green");
-            rgbaBytes[2] = tag.getByte("blue");
-            rgbaBytes[3] = 127;
         }
         if (pokemob instanceof IMobColourable)
         {
@@ -111,13 +100,6 @@ public class TileEntityAFA extends TileEntityOwnable
     public TileEntityAFA()
     {
         super();
-    }
-
-    // Energy related things after here
-    @Override
-    public boolean canConnectEnergy(EnumFacing facing)
-    {
-        return true;
     }
 
     @Override
@@ -188,12 +170,6 @@ public class TileEntityAFA extends TileEntityOwnable
     }
 
     @Override
-    public int getEnergyStored(EnumFacing facing)
-    {
-        return energy;
-    }
-
-    @Override
     public int getField(int id)
     {
         if (id == 0) return energy;
@@ -218,7 +194,6 @@ public class TileEntityAFA extends TileEntityOwnable
         return 64;
     }
 
-    @Override
     public int getMaxEnergyStored(EnumFacing facing)
     {
         return 3200;
@@ -355,7 +330,6 @@ public class TileEntityAFA extends TileEntityOwnable
         energy = nbt.getInteger("energy");
     }
 
-    @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
         int receive = Math.min(maxReceive, getMaxEnergyStored(facing) - energy);

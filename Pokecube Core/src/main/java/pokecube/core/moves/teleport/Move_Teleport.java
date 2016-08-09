@@ -12,6 +12,7 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
@@ -71,8 +72,10 @@ public class Move_Teleport extends Move_Utility
     }
 
     @Override
-    public void attack(IPokemob attacker, Entity attacked)
+    public void postAttack(MovePacket packet)
     {
+        IPokemob attacker = packet.attacker;
+        Entity attacked = packet.attacked;
         Entity target = ((EntityCreature) attacker).getAttackTarget();
         boolean angry = attacker.getPokemonAIState(IMoveConstants.ANGRY);
         ((EntityCreature) attacker).setAttackTarget(null);
@@ -104,12 +107,13 @@ public class Move_Teleport extends Move_Utility
                     EventsHandler.recallAllPokemobsExcluding((EntityPlayer) attacker.getPokemonOwner(),
                             (IPokemob) null);
 
-                    PokecubeClientPacket packet = new PokecubeClientPacket(
+                    PokecubeClientPacket mess = new PokecubeClientPacket(
                             new byte[] { PokecubeClientPacket.TELEPORTINDEX });
-                    PokecubePacketHandler.sendToClient(packet, (EntityPlayer) attacker.getPokemonOwner());
+                    PokecubePacketHandler.sendToClient(mess, (EntityPlayer) attacker.getPokemonOwner());
                 }
             }
         }
+        super.postAttack(packet);
     }
 
     @Override

@@ -239,7 +239,7 @@ public class Compat
     @EventHandler
     public void RFCompat(FMLInitializationEvent evt)
     {
-        if (PokecubeAdv.rf) new SiphonHandler();
+        if (PokecubeAdv.rf && !PokecubeAdv.tesla) new SiphonHandler();
     }
 
     @Optional.Method(modid = "tesla")

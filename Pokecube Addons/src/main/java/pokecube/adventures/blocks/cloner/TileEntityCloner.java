@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import cofh.api.energy.IEnergyReceiver;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -38,9 +37,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.api.network.PacketHandler;
 
-@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
-        @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
-public class TileEntityCloner extends TileEntity implements IInventory, ITickable, IEnergyReceiver, SimpleComponent
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class TileEntityCloner extends TileEntity implements IInventory, ITickable, SimpleComponent
 {
     public static class CraftMatrix extends InventoryCrafting
     {
@@ -360,13 +358,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         cloneProcess = new ClonerProcess(new RecipeClone(), this);
     }
 
-    /* IEnergyConnection */
-    @Override
-    public boolean canConnectEnergy(EnumFacing facing)
-    {
-        return true;
-    }
-
     @Override
     public void clear()
     {
@@ -408,13 +399,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public ITextComponent getDisplayName()
     {
         return new TextComponentString("cloner");
-    }
-
-    /* IEnergyReceiver and IEnergyProvider */
-    @Override
-    public int getEnergyStored(EnumFacing facing)
-    {
-        return energy;
     }
 
     @Override
@@ -506,12 +490,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public int getInventoryStackLimit()
     {
         return 64;
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing facing)
-    {
-        return MAXENERGY;
     }
 
     @Override
@@ -655,10 +633,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         }
     }
 
-    @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        int receive = Math.min(maxReceive, getMaxEnergyStored(facing) - energy);
+        int receive = Math.min(maxReceive, MAXENERGY - energy);
         if (!simulate && receive > 0)
         {
             energy += receive;

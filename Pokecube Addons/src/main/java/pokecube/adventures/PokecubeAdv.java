@@ -162,8 +162,8 @@ public class PokecubeAdv
     public void preInit(FMLPreInitializationEvent e)
     {
         conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
-        hasEnergyAPI = (rf = ModAPIManager.INSTANCE.hasAPI("CoFHAPI")) || (tesla = Loader.isModLoaded("tesla"));
-        if (tesla) rf = false;
+        rf = ModAPIManager.INSTANCE.hasAPI("CoFHAPI");
+        hasEnergyAPI = (tesla = Loader.isModLoaded("tesla"));
         BlockHandler.registerBlocks();
         ItemHandler.registerItems();
         DBLoader.preInit(e);

@@ -1,6 +1,5 @@
 package pokecube.adventures.blocks.warppad;
 
-import cofh.api.energy.IEnergyReceiver;
 import io.netty.buffer.Unpooled;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -27,9 +26,8 @@ import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
-@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers"),
-        @Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFHAPI") })
-public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyReceiver, SimpleComponent
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent
 {
     public static double MAXRANGE = 64;
     public static int    COOLDOWN = 20;
@@ -45,12 +43,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     }
 
     @Override
-    public boolean canConnectEnergy(EnumFacing facing)
-    {
-        return facing == EnumFacing.DOWN;
-    }
-
-    @Override
     public String getComponentName()
     {
         return "warppad";
@@ -62,18 +54,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
     {
         if (link != null) { return new Object[] { link.x, link.y, link.z, link.w }; }
         throw new Exception("no link");
-    }
-
-    @Override
-    public int getEnergyStored(EnumFacing facing)
-    {
-        return energy;
-    }
-
-    @Override
-    public int getMaxEnergyStored(EnumFacing facing)
-    {
-        return 32000;
     }
 
     /** Overriden in a sign to provide the text. */
@@ -177,10 +157,9 @@ public class TileEntityWarpPad extends TileEntityOwnable implements IEnergyRecei
         energy = tagCompound.getInteger("energy");
     }
 
-    @Override
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        int receive = Math.min(maxReceive, getMaxEnergyStored(facing) - energy);
+        int receive = Math.min(maxReceive, 32000 - energy);//TODO replace 32000 with some constant6
         if (!simulate && receive > 0)
         {
             energy += receive;

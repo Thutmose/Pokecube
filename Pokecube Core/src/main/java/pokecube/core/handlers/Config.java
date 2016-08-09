@@ -82,6 +82,10 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     public double              scalefactor                = 1;
     @Configure(category = misc)
+    public double              contactAttackDistance      = 0;
+    @Configure(category = misc)
+    public double              rangedAttackDistance       = 16;
+    @Configure(category = misc)
     public boolean             pcOnDrop                   = true;
     @Configure(category = misc)
     public int                 captureDelayTicks          = 50;

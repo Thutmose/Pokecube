@@ -72,7 +72,7 @@ public class LogicFloatFlySwim extends LogicBase
                 }
             }
         }
-        canFloat = entry.flys();
+        canFloat = entry.flys() || entry.floats();
         if (canFloat && here.offset(EnumFacing.DOWN).getBlockState(entity.getEntityWorld()).getMaterial().isLiquid())
         {
             if (entity.motionY < -0.1) entity.motionY = 0;

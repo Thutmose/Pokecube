@@ -9,6 +9,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
@@ -51,7 +52,7 @@ public class AIAttack extends AIBase implements IAICombat
     {
         byte[] mods = ((IPokemob) attacker).getModifiers();
         int cd = PokecubeMod.core.getConfig().attackCooldown;
-        if (entityTarget instanceof EntityPlayer) cd *= distanced ? 3 : 2;
+        if (entityTarget instanceof EntityPlayer) cd *= 2;
         double accuracyMod = Tools.modifierToRatio(mods[6], true);
         double moveMod = MovesUtils.getDelayMultiplier(attacker, moveName);
         delayTime = (int) (cd * moveMod / accuracyMod);
@@ -135,7 +136,7 @@ public class AIAttack extends AIBase implements IAICombat
                         ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 entityTarget.addChatMessage(message);
             }
-            else
+            else if (delayTime < 0)
             {
                 delayTime = 0;
             }
@@ -221,7 +222,14 @@ public class AIAttack extends AIBase implements IAICombat
 
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
             {
-                var1 = 256;
+                var1 = PokecubeCore.core.getConfig().rangedAttackDistance
+                        * PokecubeCore.core.getConfig().rangedAttackDistance;
+                distanced = true;
+            }
+            else if (PokecubeCore.core.getConfig().contactAttackDistance > 0)
+            {
+                var1 = PokecubeCore.core.getConfig().contactAttackDistance
+                        * PokecubeCore.core.getConfig().contactAttackDistance;
                 distanced = true;
             }
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)

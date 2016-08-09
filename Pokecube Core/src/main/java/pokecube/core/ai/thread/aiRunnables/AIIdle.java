@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.util.EnumFacing;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
@@ -54,7 +55,17 @@ public class AIIdle extends AIBase
         }
         else if (Math.random() > 0.95 && !tamed)
         {
-            mob.setPokemonAIState(IMoveConstants.SITTING, true);
+            boolean down = true;
+            Vector3 loc = Vector3.findNextSolidBlock(world, v.set(mob), Vector3.secondAxisNeg, v.y);
+            if (loc != null && loc.offsetBy(EnumFacing.UP).getBlockMaterial(world).isLiquid())
+            {
+                down = false;
+            }
+            else if (loc == null)
+            {
+                down = false;
+            }
+            if (down) mob.setPokemonAIState(IMoveConstants.SITTING, true);
         }
         else if (Math.random() > 0.75) doGroundIdle();
     }

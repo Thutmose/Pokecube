@@ -3,7 +3,11 @@ package pokecube.core.commands;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -89,7 +93,6 @@ public class MakeCommand extends CommandBase
                             name = args[0];
                             if (name.startsWith("\'"))
                             {
-
                                 for (int j = 1; j < args.length; j++)
                                 {
                                     name += " " + args[j];
@@ -100,7 +103,35 @@ public class MakeCommand extends CommandBase
                                     }
                                 }
                             }
-                            entry = Database.getEntry(name);
+                            ArrayList<PokedexEntry> entries = Lists.newArrayList(Database.allFormes);
+                            Collections.shuffle(entries);
+                            Iterator<PokedexEntry> iterator = entries.iterator();
+                            if (name.equalsIgnoreCase("random"))
+                            {
+                                entry = iterator.next();
+                                while (entry.legendary || !entry.base)
+                                {
+                                    entry = iterator.next();
+                                }
+                                System.out.println(name + " " + entry + " " + entry.legendary);
+                            }
+                            else if (name.equalsIgnoreCase("randomall"))
+                            {
+                                entry = iterator.next();
+                                while (!entry.base)
+                                {
+                                    entry = iterator.next();
+                                }
+                            }
+                            else if (name.equalsIgnoreCase("randomlegend"))
+                            {
+                                entry = iterator.next();
+                                while (!entry.legendary || !entry.base)
+                                {
+                                    entry = iterator.next();
+                                }
+                            }
+                            else entry = Database.getEntry(name);
                         }
                         if (entry == null)
                         {
@@ -125,7 +156,7 @@ public class MakeCommand extends CommandBase
                         red = green = blue = 255;
                         boolean ancient = false;
                         String ability = null;
-
+                        String forme = null;
                         int exp = 10;
                         int level = -1;
                         String[] moves = new String[4];
@@ -194,6 +225,10 @@ public class MakeCommand extends CommandBase
                                 {
                                     asWild = true;
                                 }
+                                else if (arg.equalsIgnoreCase("f"))
+                                {
+                                    forme = val;
+                                }
                             }
                         }
 
@@ -258,6 +293,16 @@ public class MakeCommand extends CommandBase
                             }
                         }
                         mob.specificSpawnInit();
+                        if (forme != null)
+                        {
+                            if (forme.equalsIgnoreCase("random"))
+                            {
+                                List<String> formes = Lists.newArrayList(mob.getPokedexEntry().forms.keySet());
+                                if (mob.getPokedexEntry().base) formes.add(mob.getPokedexEntry().getName());
+                                if (formes.size() > 0) forme = formes.get(new Random().nextInt(formes.size()));
+                            }
+                            mob = mob.changeForme(forme);
+                        }
                         if (mob != null)
                         {
                             ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);

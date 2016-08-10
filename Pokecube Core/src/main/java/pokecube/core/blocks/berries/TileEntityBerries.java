@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 
 public class TileEntityBerries extends TileEntity implements ITickable
@@ -47,21 +48,20 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
     private void doCropTick()
     {
-        if (worldObj.getLightFromNeighbors(pos.up()) >= 9)
+        if (new Random().nextInt(PokecubeMod.core.getConfig().cropGrowthTicks) == 0
+                && worldObj.getLightFromNeighbors(pos.up()) >= 9)
         {
-            if (new Random().nextInt(2500) == 0)
-            {
-                growCrop();
-            }
+            growCrop();
         }
     }
 
     private void doLeafTick()
     {
-        if (worldObj.getLightFromNeighbors(pos.down()) >= 9)
+        if (new Random().nextInt(PokecubeMod.core.getConfig().leafBerryTicks) == 0
+                && worldObj.getLightFromNeighbors(pos.down()) >= 9)
         {
-            if (new Random().nextInt(5000) == 0 && worldObj.getBlockState(pos.down()).getBlock()
-                    .isAir(worldObj.getBlockState(pos.down()), worldObj, pos.down()))
+            if (worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj.getBlockState(pos.down()), worldObj,
+                    pos.down()))
             {
                 placeBerry();
             }

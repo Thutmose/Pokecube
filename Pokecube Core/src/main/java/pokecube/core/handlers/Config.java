@@ -199,6 +199,10 @@ public class Config extends ConfigBase
     public String              industrial                 = "";
     @Configure(category = world)
     public boolean             useConfigForBerryLocations = false;
+    @Configure(category = world)
+    public int                 cropGrowthTicks            = 2500;
+    @Configure(category = world)
+    public int                 leafBerryTicks             = 7500;
 
     @Configure(category = world)
     public String[]            berryLocations             = { // @formatter:off

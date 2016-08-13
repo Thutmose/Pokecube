@@ -20,11 +20,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.entity.professor.EntityProfessor;
+import pokecube.core.entity.professor.EntityProfessor.ProfessorType;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
 {
-    private static Map<String, ResourceLocation> players = Maps.newHashMap();
+    private static Map<String, ResourceLocation> players   = Maps.newHashMap();
+    private static final ResourceLocation        PROFESSOR = new ResourceLocation(
+            PokecubeMod.ID + ":textures/Professor.png");
+    private static final ResourceLocation        NURSE     = new ResourceLocation(
+            PokecubeMod.ID + ":textures/Nurse.png");
     private ModelBiped                           male;
     private ModelBiped                           female;
 
@@ -78,13 +83,13 @@ public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
             return resourcelocation;
         }
 
-        if (((EntityProfessor) entity).male)
+        if (((EntityProfessor) entity).type == ProfessorType.HEALER)
         {
-            return new ResourceLocation(PokecubeMod.ID + ":textures/Professor.png");
+            return NURSE;
         }
         else
         {
-            return new ResourceLocation(PokecubeMod.ID + ":textures/ProfessorFemale.png");
+            return PROFESSOR;
         }
     }
 }

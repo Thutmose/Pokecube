@@ -174,15 +174,15 @@ public class TeamEventsHandler
             {
                 evt.setUseBlock(Result.DENY);
                 evt.setCanceled(true);
+                if (!evt.getWorld().isRemote)
+                    evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", owner));
             }
             evt.setUseItem(Result.DENY);
-            if (!evt.getWorld().isRemote)
-                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", owner));
         }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void interactRightClickBlock(PlayerInteractEvent.RightClickItem evt)
+    public void interactRightClickItem(PlayerInteractEvent.RightClickItem evt)
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
         String owner = TeamManager.getInstance().getLandOwner(c);
@@ -232,14 +232,13 @@ public class TeamEventsHandler
         {
             return;
         }
-        else if (block != null && evt.getItemStack() != null && evt.getItemStack().getItem() instanceof IPokecube)
+        else if (block != null && !(block.hasTileEntity(state)) && evt.getWorld().isRemote)
         {
             b = block.onBlockActivated(evt.getWorld(), evt.getPos(), state, evt.getEntityPlayer(), evt.getHand(), null,
                     evt.getFace(), (float) evt.getHitVec().xCoord, (float) evt.getHitVec().yCoord,
                     (float) evt.getHitVec().zCoord);
-            if (!b) { return; }
         }
-        if (!b && evt.getItemStack() == null) return;
+        if (!b && (evt.getItemStack() == null || evt.getItemStack().getItem() instanceof IPokecube)) return;
 
         ChunkCoordinate blockLoc = new ChunkCoordinate(evt.getPos(), evt.getEntityPlayer().dimension);
         TeamManager.getInstance().isPublic(blockLoc);
@@ -249,12 +248,12 @@ public class TeamEventsHandler
             {
                 evt.setUseBlock(Result.DENY);
                 evt.setCanceled(true);
+                if (!evt.getWorld().isRemote && evt.getHand() == EnumHand.MAIN_HAND)
+                {
+                    evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", owner));
+                }
             }
             evt.setUseItem(Result.DENY);
-            if (!evt.getWorld().isRemote && evt.getHand() == EnumHand.MAIN_HAND)
-            {
-                evt.getEntity().addChatMessage(new TextComponentTranslation("msg.team.deny", owner));
-            }
         }
     }
 

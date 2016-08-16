@@ -26,11 +26,13 @@ import pokecube.core.commands.CommandTools;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
+import thut.api.network.PacketHandler;
 
 public class EntityProfessor extends EntityAgeable implements IEntityAdditionalSpawnData, INpc
 {
@@ -79,7 +81,19 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
         Entity e = source.getSourceOfDamage();
         if (e instanceof EntityPlayer && ((EntityPlayer) e).capabilities.isCreativeMode)
         {
-            this.setDead();
+            EntityPlayer player = (EntityPlayer) e;
+            if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemLuckyEgg)
+            {
+                if (!this.worldObj.isRemote)
+                {
+                    if (this.type == ProfessorType.PROFESSOR) this.type = ProfessorType.HEALER;
+                    else if (this.type == ProfessorType.HEALER) this.type = ProfessorType.PROFESSOR;
+                    if (this.type == ProfessorType.PROFESSOR) this.male = true;
+                    else this.male = false;
+                    PacketHandler.sendEntityUpdate(this);
+                }
+            }
+            else this.setDead();
         }
         return false;
     }

@@ -3,6 +3,7 @@ package pokecube.core.world.gen.village.buildings;
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -101,6 +102,15 @@ public abstract class ComponentVillageBase extends House1
             state = par1World.getBlockState(pos);
         }
 
+    }
+    
+    /**
+     * Places door on given position
+     */
+    protected void placeDoorCurrentPosition(World worldIn, StructureBoundingBox boundingBoxIn, Random rand, int x, int y, int z, EnumFacing facing)
+    {
+        this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, facing), x, y, z, boundingBoxIn);
+        this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, facing).withProperty(BlockDoor.HALF, BlockDoor.EnumDoorHalf.UPPER), x, y + 1, z, boundingBoxIn);
     }
 
     protected void fillDownwards(World world, IBlockState state, int xx, int par5, int zz,

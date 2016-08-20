@@ -227,7 +227,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             attackCooldown = -1;
             nextSlot = 0;
         }
-        else
+        else if (outMob == null && outID == null && !getAIState(THROWING))
         {
             attackCooldown--;
         }
@@ -262,7 +262,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
     public void throwCubeAt(Entity target)
     {
-        if (target == null || getAIState(THROWING) || outMob != null) return;
+        if (target == null || getAIState(THROWING) || outMob != null || attackCooldown > 0) return;
 
         ItemStack i = getNextPokemob();
         if (i != null)
@@ -281,7 +281,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
                     i.getDisplayName());
             target.addChatMessage(text);
             nextSlot++;
-            if (nextSlot >= 6) nextSlot = -1;
+            if (nextSlot >= 6 || getNextPokemob() == null) nextSlot = -1;
             return;
         }
         else
@@ -303,7 +303,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
     public void setTarget(EntityLivingBase target)
     {
-        System.out.println(attackCooldown + " " + target);
         if (target != null && target != this.target && attackCooldown <= 0)
         {
             attackCooldown = Config.instance.trainerBattleDelay;

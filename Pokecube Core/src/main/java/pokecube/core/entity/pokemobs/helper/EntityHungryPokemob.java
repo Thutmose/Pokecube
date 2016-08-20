@@ -63,12 +63,6 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         if (getPokemonAIState(IMoveConstants.TAMED)
                 && ((attacker instanceof EntityPlayer && ((EntityPlayer) attacker) == getOwner()))) { return false; }
         setPokemonAIState(SITTING, false);
-        ;
-
-        if (attacker instanceof EntityPlayer && !worldObj.isRemote)
-        {
-            damage *= 2;
-        }
 
         EntityLivingBase oldTarget = getAttackTarget();
         if (super.attackEntityFrom(source, damage))

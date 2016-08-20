@@ -118,9 +118,9 @@ public interface IMoveConstants extends IMoveNames
     /** Indeicates that there is a new utility move to use. */
     static final int NEWEXECUTEMOVE       = 1 << 8;
     /** Pokemon is held by the player. */
-    static final int HELD                 = 1 << 9;
+//    static final int HELD                 = 1 << 9;//Free value
     /** Pokemon is on the player's shoulder */
-    static final int SHOULDER             = 1 << 10;
+//    static final int SHOULDER             = 1 << 10;//Free value
     /** Pokemon is idle. */
     static final int IDLE                 = 1 << 11;
     /** Has the Pokemon been traded */

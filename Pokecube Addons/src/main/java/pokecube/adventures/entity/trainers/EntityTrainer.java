@@ -264,8 +264,9 @@ public class EntityTrainer extends EntityHasPokemobs
             added = true;
             TrainerSpawnHandler.addTrainerCoord(this);
         }
-        ItemStack next = getNextPokemob();
+        ItemStack next;
         if (cooldown > worldObj.getTotalWorldTime()) next = null;
+        else next = getNextPokemob();
         if (next != null)
         {
             this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, next);

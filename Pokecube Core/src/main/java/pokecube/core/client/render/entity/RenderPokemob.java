@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -381,18 +380,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         if (entity instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) entity;
-            PokedexEntry entry = mob.getPokedexEntry();
-            if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
-                    && ((Entity) mob).getRidingEntity() != null)
-            {
-                GL11.glTranslated(entry.width, 0, 0);
-            }
-            else if (mob.getPokemonAIState(IMoveConstants.HELD)
-                    && ((Entity) mob).getRidingEntity() instanceof EntityLivingBase)
-            {
-                Vector3 look = v.set(-0.5, 0.5, -0.5);
-                GL11.glTranslated(look.x, ((Entity) mob).height + 1 - look.y, look.z);
-            }
             int ticks = ((Entity) mob).ticksExisted;
             if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTicks <= 1))
             {
@@ -430,7 +417,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
         {
             short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
-            //TODO see if this is ever called.
+            // TODO see if this is ever called.
             float ratio = 1F;
             if (timer <= 200 && timer > 175)
             {

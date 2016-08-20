@@ -10,13 +10,11 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.EntityTools;
@@ -142,18 +140,29 @@ public class RenderPokemobs extends RenderPokemob
             }
 
             GlStateManager.pushMatrix();
-            // Handle these two via the RenderHeldPokemobs
-            if (mob.getPokedexEntry().canSitShoulder && mob.getPokemonAIState(IMoveConstants.SHOULDER)
-                    && ((Entity) mob).getRidingEntity() != null)
-            {
-                // GlStateManager.popMatrix();
-                // return;
-            }
-            if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).getRidingEntity() != null)
-            {
-                GlStateManager.popMatrix();
-                return;
-            }
+//            // Handle held/shoulder, whenever entities can mount players...
+//            if (mob.getPokemonAIState(IMoveConstants.SHOULDER) && ((Entity) mob).getRidingEntity() != null)
+//            {
+//                Vector3 v = Vector3.getNewVector().set(0.35,0,0);
+//                double dx = 1, dz = 1;
+//                v.x *= dx;
+//                v.y *= 0;
+//                v.z *= dz;
+//                Vector3 v0 = v.copy();
+//                float sin = MathHelper.sin((float) (((EntityLivingBase) ((Entity) mob).getRidingEntity()).renderYawOffset * 0.017453292F));
+//                float cos = MathHelper.cos((float) (((EntityLivingBase) ((Entity) mob).getRidingEntity()).renderYawOffset * 0.017453292F));
+//                v.x = v0.x * cos - v0.z * sin;
+//                v.z = v0.x * sin + v0.z * cos;
+//                
+//                GlStateManager.translate(v.x, 0, v.z);
+//                // GlStateManager.popMatrix();
+//                // return;
+//            }
+//            if (mob.getPokemonAIState(IMoveConstants.HELD) && ((Entity) mob).getRidingEntity() != null)
+//            {
+//                GlStateManager.popMatrix();
+//                return;
+//            }
 
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());

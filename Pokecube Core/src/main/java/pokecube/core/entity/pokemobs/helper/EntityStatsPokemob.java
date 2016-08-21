@@ -155,6 +155,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
             if (source.isExplosion() && source.getEntity() instanceof IPokemob && isType(ghost)) { return false; }
 
+            if (!(source.getEntity() instanceof IPokemob) && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
+                return false;
+
             if (this.getHealth() <= 0.0F)
             {
                 return false;

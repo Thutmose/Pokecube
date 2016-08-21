@@ -276,25 +276,6 @@ public class PokemobAIThread
         tickLock.clear();
     }
 
-    /** Removes the AI entry for the entity.
-     * 
-     * @param entity */
-    public static void removeEntity(EntityLiving entity)
-    {
-        int id = entity.getEntityId() % AIThread.threadCount;
-        Vector list = aiStuffLists[id];
-        ArrayList toCheck = new ArrayList(list);
-        for (Object o : toCheck)
-        {
-            AIStuff aistuff = (AIStuff) o;
-            if (aistuff.entity == entity)
-            {
-                list.remove(aistuff);
-                break;
-            }
-        }
-    }
-
     /** Sets the AIStuff to tick on correct thread.
      * 
      * @param entity

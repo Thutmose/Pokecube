@@ -867,26 +867,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             resetLoveStatus();
         }
-        if (getAIState(HELD, state))
-        {
-            if (!isRiding() || (getRidingEntity() instanceof EntityPlayer
-                    && ((EntityPlayer) getRidingEntity()).getHeldItemMainhand() != null))
-            {
-                setPokemonAIState(HELD, false);
-                if (getRidingEntity() != null)
-                {
-                    this.dismountRidingEntity();
-                }
-            }
-        }
-        if (getAIState(SHOULDER, state) && (getRidingEntity() == null || !getAIState(SITTING, state)))
-        {
-            setPokemonAIState(SHOULDER, false);
-            if (getRidingEntity() != null)
-            {
-                this.dismountRidingEntity();
-            }
-        }
         if (ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
         {
             setPokemonAIState(EXITINGCUBE, false);
@@ -1004,16 +984,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // shoulder
         if (isOwner && itemstack != null && (itemstack.getItem() == Items.STICK || itemstack.getItem() == torch))
         {
-            if (player.isSneaking())
-            {
-                if (getPokedexEntry().canSitShoulder)
-                {
-                    this.setPokemonAIState(SHOULDER, true);
-                    this.setPokemonAIState(SITTING, true);
-                    this.startRiding(player);
-                }
-                return true;
-            }
             Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
             look.y = 0.2;
             this.motionX += look.x;
@@ -1076,39 +1046,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 return true;
             }
         }
-
-        // Attempt to pick the pokemob up.
-        if (this.addedToChunk && !worldObj.isRemote && !getPokemonAIState(SADDLED) && player.isSneaking()
-                && held == null && getWeight() < 40)
-        {
-
-            boolean isHeld = getPokemonAIState(HELD);
-
-            if ((!getPokemonAIState(IMoveConstants.TAMED) || getHeldItemMainhand() == null)
-                    && !getPokemonAIState(STAYING))
-            {
-                if (!isHeld)
-                {
-                    this.startRiding(player);
-                    setPokemonAIState(HELD, true);
-                    setPokemonAIState(SITTING, false);
-                }
-                else
-                {
-                    this.dismountRidingEntity();
-                    setPokemonAIState(HELD, false);
-
-                    if (player != getPokemonOwner())
-                    {
-                        setPokemonAIState(ANGRY, true);
-                        setAttackTarget(player);
-                    }
-                }
-                return true;
-            }
-
-        }
-        if (getPokemonAIState(HELD)) return false;
 
         // Open Pokedex Gui
         if (itemstack != null && itemstack.getItem() == PokecubeItems.pokedex)
@@ -1228,7 +1165,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void setDead()
     {
         PokecubeSerializer.getInstance().removePokemob(this);
-        PokemobAIThread.removeEntity(this);
+        AISaveHandler.instance().removeAI(this);
         if (getAbility() != null)
         {
             getAbility().destroy();
@@ -1250,10 +1187,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 TileEntityNest nest = (TileEntityNest) te;
                 nest.removeResident(this);
             }
-        }
-        if (!getPokemonAIState(IMoveConstants.TAMED))
-        {
-            AISaveHandler.instance().removeAI(this);
         }
         super.setDead();
     }

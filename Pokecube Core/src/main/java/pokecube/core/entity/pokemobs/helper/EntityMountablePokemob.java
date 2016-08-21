@@ -72,7 +72,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         if (isRiding())
         {
             dismountRidingEntity();
-            setPokemonAIState(SHOULDER, false);
             counterMount = 0;
         }
         return super.attackEntityFrom(source, i);
@@ -148,12 +147,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     public double getYOffset()
     {
         double ret = yOffset;
-
-        if (getPokemonAIState(HELD))
-        {
-
-        }
-
         return ret;// - 1.6F;
     }
 
@@ -548,7 +541,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
             {
                 this.dismountRidingEntity();
                 counterMount = 0;
-                setPokemonAIState(SHOULDER, false);
             }
         }
     }
@@ -623,7 +615,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
 
     protected void updateAITick()
     {
-        if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IMoveConstants.TAMED)) return;
+        if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IMoveConstants.TAMED) || worldObj.isRemote) return;
 
         if (counterMount++ > 50000)
         {
@@ -632,11 +624,12 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         if (getRidingEntity() != null && !getPokemonAIState(SITTING))
         {
             EntityLivingBase entityplayer = getPokemonOwner();
+            System.out.println("dismount");
             if (entityplayer != null)
             {
-                dismountRidingEntity();
-                setPokemonAIState(SHOULDER, false);
-                counterMount = 0;
+                // dismountRidingEntity();
+                // setPokemonAIState(SHOULDER, false);
+                // counterMount = 0;
             }
         }
     }

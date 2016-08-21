@@ -152,6 +152,8 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public boolean             pokemobsDamageBlocks       = false;
     @Configure(category = mobAI)
+    public boolean             onlyPokemobsDamagePokemobs = false;
+    @Configure(category = mobAI)
     /** Do explosions occur and cause damage */
     public boolean             explosions                 = true;
     @Configure(category = mobAI)

@@ -96,7 +96,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public boolean canBeCollidedWith()
     {
-        return !getPokemonAIState(SHOULDER);
+        return !this.isRiding();
     }
 
     /** Returns true if this entity should push and be pushed by other entities

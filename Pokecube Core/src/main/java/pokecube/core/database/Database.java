@@ -1,14 +1,16 @@
 package pokecube.core.database;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,10 +100,6 @@ public class Database implements IMoveConstants
     private static List<ArrayList<String>>                 configDatabases  = Lists
             .newArrayList(new ArrayList<String>(), new ArrayList<String>());
 
-    private static PrintWriter                             out;
-
-    private static FileWriter                              fwriter;
-
     public static void addDatabase(String file, EnumDatabase database)
     {
         int index = database.ordinal();
@@ -168,17 +166,21 @@ public class Database implements IMoveConstants
             return;
         }
         ArrayList<String> rows = getFile(DBLOCATION + name);
+        int n = 0;
         try
         {
-            fwriter = new FileWriter(CONFIGLOC + name);
-            out = new PrintWriter(fwriter);
+            File file = new File(CONFIGLOC + name);
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
             for (int i = 0; i < rows.size(); i++)
-                out.println(rows.get(i));
+            {
+                out.write(rows.get(i) + "\n");
+                n++;
+            }
             out.close();
-            fwriter.close();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
+            System.err.println(name + " " + n);
             e.printStackTrace();
         }
     }
@@ -751,11 +753,11 @@ public class Database implements IMoveConstants
                 {
                     data = new SpawnData();
                     entry.setSpawnData(data);
-                    System.out.println("Overwriting spawns for "+entry);
+                    System.out.println("Overwriting spawns for " + entry);
                 }
                 else
                 {
-                    System.out.println("Editing spawns for "+entry);
+                    System.out.println("Editing spawns for " + entry);
                 }
                 SpawnEntry spawnEntry = new SpawnEntry();
                 String val;
@@ -879,7 +881,8 @@ public class Database implements IMoveConstants
             }
             if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
             {
-                if (e.getBaseForme() != null && Pokedex.getInstance().getEntries().contains(e.getBaseForme().getPokedexNb()))
+                if (e.getBaseForme() != null
+                        && Pokedex.getInstance().getEntries().contains(e.getBaseForme().getPokedexNb()))
                 {
                     continue;
                 }

@@ -69,7 +69,6 @@ public class JERCompat
             drops.add(drop = new LootDrop(stack, chance));
             drop.minDrop = 1;
             drop.maxDrop = stack.stackSize;
-            drop.conditionals.add("drop");
         }
         for (ItemStack stack : entry.held.keySet())
         {
@@ -77,7 +76,6 @@ public class JERCompat
             float chance = entry.held.get(stack);
             drops.add(drop = new LootDrop(stack, chance));
             drop.minDrop = drop.maxDrop;
-            drop.conditionals.add("held");
         }
         return drops.toArray(new LootDrop[0]);
     }

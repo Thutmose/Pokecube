@@ -1,14 +1,16 @@
 package pokecube.adventures.utils;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -21,10 +23,6 @@ public class DBLoader
     public static boolean      FORCECOPY  = true;
     private static String      DBLOCATION = "/assets/pokecube_adventures/database/";
     public static String       CONFIGLOC  = "";
-
-    private static PrintWriter out;
-
-    private static FileWriter  fwriter;
 
     static String              female     = "female:,Alice,Bridget,Carrie,Connie,Dana,Ellen,Krise,Laura,Linda,Michelle,Shannon,Gina,Brooke,Cindy,Debra,Edna,Erin,Heidi,Hope,Liz,Sharon,Tanya,Tiffany,Beth,Carol,Emma,Fran,Cara,Jenn,Kate,Cybil,Gwen,Irene,Kelly,Joyce,Lola,Megan,Quinn,Reena,Valerie";
 
@@ -211,12 +209,11 @@ public class DBLoader
         ArrayList<String> rows = Database.getFile(DBLOCATION + name);
         try
         {
-            fwriter = new FileWriter(CONFIGLOC + name);
-            out = new PrintWriter(fwriter);
+            File file = new File(CONFIGLOC + name);
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
             for (int i = 0; i < rows.size(); i++)
-                out.println(rows.get(i));
+                out.write(rows.get(i)+"\n");
             out.close();
-            fwriter.close();
         }
         catch (IOException e)
         {
@@ -226,12 +223,10 @@ public class DBLoader
 
     private static void writeDefaultNames(File file) throws IOException
     {
-        fwriter = new FileWriter(file);
-        out = new PrintWriter(fwriter);
-        out.println(female);
-        out.println(male);
+        Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+        out.write(female+"\n");
+        out.write(male);
         out.close();
-        fwriter.close();
     }
 
 }

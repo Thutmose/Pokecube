@@ -69,7 +69,7 @@ public class ItemFossil extends Item
             if (tag != null)
             {
                 String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase();
+                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
             }
             name = "item." + variant;
         }

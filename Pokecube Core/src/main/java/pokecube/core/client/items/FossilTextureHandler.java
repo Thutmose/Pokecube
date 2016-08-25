@@ -22,7 +22,7 @@ public class FossilTextureHandler
             if (tag != null)
             {
                 String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase();
+                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
             }
             return getLocation(variant);
         }
@@ -30,7 +30,7 @@ public class FossilTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), "type=" + name.toLowerCase());
+        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/fossil"), "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()

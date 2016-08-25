@@ -128,7 +128,7 @@ public class BiomeMatcher
         {
             if (!specific)
             {
-                BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(biomeName.toUpperCase());
+                BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(biomeName.toUpperCase(java.util.Locale.ENGLISH));
                 if (type != null)
                 {
                     if (type == BiomeDictionary.Type.WATER)

@@ -154,15 +154,15 @@ public class GuiTMCreator extends GuiContainer
         if (!textFieldSearch.getText().isEmpty()) for (String s : moves)
         {
             Move_Base move = MovesUtils.getMoveFromName(s.trim());
-            boolean nameMatch = MovesUtils.getLocalizedMove(s.trim()).toLowerCase()
-                    .contains(textFieldSearch.getText().toLowerCase());
+            boolean nameMatch = MovesUtils.getLocalizedMove(s.trim()).toLowerCase(java.util.Locale.ENGLISH)
+                    .contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH));
             boolean typeMatch = false;
             if (!nameMatch)
             {
                 for (PokeType t : PokeType.values())
                 {
-                    if (move.getType(null) == t && PokeType.getTranslatedName(t).toLowerCase()
-                            .contains(textFieldSearch.getText().toLowerCase()))
+                    if (move.getType(null) == t && PokeType.getTranslatedName(t).toLowerCase(java.util.Locale.ENGLISH)
+                            .contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH)))
                     {
                         typeMatch = true;
                         break;

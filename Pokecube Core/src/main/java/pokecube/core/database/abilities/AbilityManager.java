@@ -137,7 +137,7 @@ public class AbilityManager
     public static boolean abilityExists(String name)
     {
         if (name == null) return false;
-        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
+        name = name.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
         return nameMap.containsKey(name);
     }
 
@@ -148,7 +148,7 @@ public class AbilityManager
 
     public static void addAbility(Class<? extends Ability> ability, String name)
     {
-        name = name.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
+        name = name.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
         nameMap.put(name, ability);
         nameMap2.put(ability, name);
         idMap.put(ability, nextID);
@@ -164,7 +164,7 @@ public class AbilityManager
     public static Ability getAbility(String name, Object... args)
     {
         if (name == null) return null;
-        return makeAbility(name.toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""), args);
+        return makeAbility(name.toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""), args);
     }
 
     public static int getIdForAbility(Ability ability)
@@ -182,7 +182,7 @@ public class AbilityManager
         Ability ability = pokemob.getAbility();
         if (ability == null) { return false; }
         return ability.toString()
-                .equalsIgnoreCase(abilityName.trim().toLowerCase().replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
+                .equalsIgnoreCase(abilityName.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
     }
 
     public static Ability makeAbility(Object val, Object... args)

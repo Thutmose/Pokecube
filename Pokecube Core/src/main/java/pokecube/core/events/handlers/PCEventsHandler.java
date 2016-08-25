@@ -148,7 +148,7 @@ public class PCEventsHandler
     {
         EntityPlayer entityPlayer = evt.player;
 
-        if (entityPlayer.getName().toLowerCase().trim().equals("thutmose"))
+        if (entityPlayer.getName().toLowerCase(java.util.Locale.ENGLISH).trim().equals("thutmose"))
         {
             PCSaveHandler.getInstance().seenPCCreator = true;
         }

@@ -464,7 +464,7 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void processMetadataForCubeInfo(CubeInfo cube)
         {
-            if (headRoot.isEmpty() && cube.name.toLowerCase().contains("head") && cube.parentIdentifier != null)
+            if (headRoot.isEmpty() && cube.name.toLowerCase(java.util.Locale.ENGLISH).contains("head") && cube.parentIdentifier != null)
             {
                 headRoot = cube.identifier;
             }

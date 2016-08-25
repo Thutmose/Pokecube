@@ -133,7 +133,7 @@ public class TMCommand extends CommandBase
             String text = args[0];
             for (String name : moves)
             {
-                if (name.startsWith(text.toLowerCase()))
+                if (name.startsWith(text.toLowerCase(java.util.Locale.ENGLISH)))
                 {
                     ret.add(name);
                 }

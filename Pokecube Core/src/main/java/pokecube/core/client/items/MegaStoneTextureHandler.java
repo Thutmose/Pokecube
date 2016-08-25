@@ -22,7 +22,7 @@ public class MegaStoneTextureHandler
             if (tag != null)
             {
                 String stackname = tag.getString("pokemon");
-                variant = stackname.toLowerCase();
+                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
             }
             return getLocation(variant);
         }
@@ -31,7 +31,7 @@ public class MegaStoneTextureHandler
     public static ModelResourceLocation getLocation(String name)
     {
         return new ModelResourceLocation(new ResourceLocation("pokecube", "item/megastone"),
-                "type=" + name.toLowerCase());
+                "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()

@@ -431,7 +431,7 @@ public class PokecubePacketHandler
                 {
                     continue;
                 }
-                String username = data[0].toLowerCase();
+                String username = data[0].toLowerCase(java.util.Locale.ENGLISH);
                 if (specialStarters.containsKey(username)) continue;
                 String[] pokemonData = new String[data.length - 1];
                 for (int i = 1; i < data.length; i++)

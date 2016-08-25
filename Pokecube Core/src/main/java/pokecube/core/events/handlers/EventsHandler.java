@@ -122,7 +122,7 @@ public class EventsHandler
                 {
                     boolean special = false;
                     if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
-                            || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase()))
+                            || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
                     {
                         special = true;
                     }
@@ -177,7 +177,7 @@ public class EventsHandler
 
     public static int getShadowPokemonNb(Entity hostile)
     {
-        String temp = hostile.getName().toLowerCase().trim().replace(" ", "");
+        String temp = hostile.getName().toLowerCase(java.util.Locale.ENGLISH).trim().replace(" ", "");
 
         PokedexEntry entry = null;
 

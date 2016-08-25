@@ -419,7 +419,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:emerald_shard"));
         PokecubeItems.registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
 
-        OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase());
+        OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase(java.util.Locale.ENGLISH));
 
         Item item2 = Item.getItemFromBlock(PokecubeItems.tableBlock);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
@@ -632,7 +632,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             float offset = Float.parseFloat(args[1]);
             location.y += offset;
         }
-        if (par1Str.toLowerCase().contains("smoke"))
+        if (par1Str.toLowerCase(java.util.Locale.ENGLISH).contains("smoke"))
         {
             if (par1Str.contains("large"))
             {

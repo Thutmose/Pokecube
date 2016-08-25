@@ -19,9 +19,9 @@ public class RuinsCompat
         atomicstryker.ruins.common.RuinData data = template.getRuinData(x, y, z, event.rotation);
 
         int biome = BiomeType.RUIN.getType();
-        if (Config.biomeMap.containsKey(data.name.toLowerCase().replace("tml", "")))
+        if (Config.biomeMap.containsKey(data.name.toLowerCase(java.util.Locale.ENGLISH).replace("tml", "")))
         {
-            biome = Config.biomeMap.get(data.name.toLowerCase().replace("tml", ""));
+            biome = Config.biomeMap.get(data.name.toLowerCase(java.util.Locale.ENGLISH).replace("tml", ""));
         }
 
         for (int i = data.xMin; i < data.xMax; i++)

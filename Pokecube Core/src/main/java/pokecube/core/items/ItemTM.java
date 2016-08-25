@@ -85,7 +85,7 @@ public class ItemTM extends ItemPokemobUseable
             String[] learnables = mob.getPokedexEntry().getMoves().toArray(new String[0]);
             for (String s : learnables)
             {
-                if (mob.getPokedexNb() == 151 || s.toLowerCase().contentEquals(name.toLowerCase()) || PokecubeMod.debug)
+                if (mob.getPokedexNb() == 151 || s.toLowerCase(java.util.Locale.ENGLISH).contentEquals(name.toLowerCase(java.util.Locale.ENGLISH)) || PokecubeMod.debug)
                 {
 
                     if (mob.getMove(0) == null)

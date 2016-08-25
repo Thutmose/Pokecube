@@ -164,38 +164,38 @@ public class PokecubeItems extends Items
      * @param item */
     public static void addGeneric(String name, Object item)
     {
-        if (items.containsKey(name.toLowerCase().trim())) return;
+        if (items.containsKey(name.toLowerCase(java.util.Locale.ENGLISH).trim())) return;
 
         if (item instanceof ItemStack)
         {
-            itemstacks.put(name.toLowerCase().trim(), (ItemStack) item);
+            itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (ItemStack) item);
 
             Item i = ((ItemStack) item).getItem();
-            items.put(name.toLowerCase().trim(), i);
+            items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), i);
 
             Block b = Block.getBlockFromItem(i);
-            if (b != null) blocks.put(name.toLowerCase().trim(), b);
+            if (b != null) blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), b);
         }
         if (item instanceof Item)
         {
-            items.put(name.toLowerCase().trim(), (Item) item);
-            itemstacks.put(name.toLowerCase().trim(), new ItemStack((Item) item));
+            items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (Item) item);
+            itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), new ItemStack((Item) item));
             if (Block.getBlockFromItem((Item) item) != null)
-                blocks.put(name.toLowerCase().trim(), Block.getBlockFromItem((Item) item));
-            if (name.toLowerCase().contains("berry") || item instanceof IPokemobUseable)
+                blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), Block.getBlockFromItem((Item) item));
+            if (name.toLowerCase(java.util.Locale.ENGLISH).contains("berry") || item instanceof IPokemobUseable)
             {
                 addToHoldables(name);
             }
-            if (name.toLowerCase().contains("stone"))
+            if (name.toLowerCase(java.util.Locale.ENGLISH).contains("stone"))
             {
                 addToEvos(name);
             }
         }
         if (item instanceof Block)
         {
-            blocks.put(name.toLowerCase().trim(), (Block) item);
-            itemstacks.put(name.toLowerCase().trim(), new ItemStack((Block) item));
-            items.put(name.toLowerCase().trim(), Item.getItemFromBlock((Block) item));
+            blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (Block) item);
+            itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), new ItemStack((Block) item));
+            items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), Item.getItemFromBlock((Block) item));
         }
 
     }
@@ -222,7 +222,7 @@ public class PokecubeItems extends Items
      * @param item */
     public static void addSpecificItemStack(String name, ItemStack item)
     {
-        itemstacks.put(name.toLowerCase().trim(), item);
+        itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), item);
     }
 
     public static void addToEvos(String item)
@@ -240,8 +240,8 @@ public class PokecubeItems extends Items
 
     public static boolean contains(String name)
     {
-        return getBlock(name.toLowerCase().trim()) != null || getItem(name.toLowerCase().trim()) != null
-                || getStack(name.toLowerCase().trim()) != null;
+        return getBlock(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null || getItem(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null
+                || getStack(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null;
     }
 
     public static void deValidate(ItemStack stack)
@@ -266,7 +266,7 @@ public class PokecubeItems extends Items
 
     public static Block getBlock(String name)
     {
-        return blocks.get(name.toLowerCase().trim());
+        return blocks.get(name.toLowerCase(java.util.Locale.ENGLISH).trim());
     }
 
     public static int getCubeId(Block item)
@@ -360,7 +360,7 @@ public class PokecubeItems extends Items
         Item item = Item.REGISTRY.getObject(new ResourceLocation(name));
         if (item != null) return item;
 
-        return items.get(name.toLowerCase().trim());
+        return items.get(name.toLowerCase(java.util.Locale.ENGLISH).trim());
     }
 
     public static ItemStack getRandomMeteorDrop()
@@ -385,7 +385,7 @@ public class PokecubeItems extends Items
     public static ItemStack getStack(String name, boolean stacktrace)
     {
         if (name == null) return null;
-        name = name.toLowerCase().trim();
+        name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
         if (itemstacks.get(name) != null) return itemstacks.get(name).copy();
 
         String key = "";

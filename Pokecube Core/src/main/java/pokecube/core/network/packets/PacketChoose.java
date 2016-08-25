@@ -96,7 +96,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         // This is if the player chose to get normal starter, instead of special
         // one.
         boolean fixed = packet.data.getBoolean("F");
-        String username = player.getName().toLowerCase();
+        String username = player.getName().toLowerCase(java.util.Locale.ENGLISH);
         if (PokecubeSerializer.getInstance().hasStarter(player)) { return; }
 
         // Fire pre event to deny starters at all

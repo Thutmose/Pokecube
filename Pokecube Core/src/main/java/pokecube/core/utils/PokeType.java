@@ -100,7 +100,7 @@ public enum PokeType
 
     public static PokeType getType(String name)
     {
-        name = name.toLowerCase().trim();
+        name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
         for (PokeType type : values())
         {
             if (name.equalsIgnoreCase(type.name)) return type;

@@ -210,7 +210,7 @@ public class GuiPC extends GuiContainer
                 int y = (i / 9) * 18 + height / 2 - 96;
 
                 String name = stack == null ? "" : stack.getDisplayName();
-                if (name.isEmpty() || !name.toLowerCase().contains(textFieldSearch.getText()))
+                if (name.isEmpty() || !name.toLowerCase(java.util.Locale.ENGLISH).contains(textFieldSearch.getText()))
                 {
                     GL11.glPushMatrix();
                     GL11.glTranslated(0, 0, zLevel);

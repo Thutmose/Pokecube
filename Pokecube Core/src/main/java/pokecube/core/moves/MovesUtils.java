@@ -633,7 +633,7 @@ public class MovesUtils implements IMoveConstants
         {
             for (String s : moves.keySet())
             {
-                if (s.toLowerCase().contentEquals(attackName.toLowerCase()))
+                if (s.toLowerCase(java.util.Locale.ENGLISH).contentEquals(attackName.toLowerCase(java.util.Locale.ENGLISH)))
                 {
                     attackName = s;
                     return true;

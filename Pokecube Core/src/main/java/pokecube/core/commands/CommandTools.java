@@ -49,7 +49,7 @@ public class CommandTools
             {
                 ITextComponent component = (ITextComponent) args[i];
                 String[] args2 = formatting.split(":");
-                String colour = args2[0].toUpperCase();
+                String colour = args2[0].toUpperCase(java.util.Locale.ENGLISH);
                 component.getStyle().setColor(TextFormatting.getValueByName(colour));
                 if (args2.length > 1)
                 {

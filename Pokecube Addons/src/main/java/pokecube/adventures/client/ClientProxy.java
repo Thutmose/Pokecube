@@ -152,7 +152,7 @@ public class ClientProxy extends CommonProxy
     public void preinit()
     {
         super.preinit();
-        OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID.toLowerCase());
+        OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID.toLowerCase(java.util.Locale.ENGLISH));
 
         Item item2 = Item.getItemFromBlock(cloner);
         ModelLoader.setCustomModelResourceLocation(item2, 0,

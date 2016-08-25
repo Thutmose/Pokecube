@@ -140,7 +140,7 @@ public class Database implements IMoveConstants
     public static boolean compare(String a, String b)
     {
         boolean ret = false;
-        ret = a.toLowerCase().replaceAll("(\\W)", "").equals(b.toLowerCase().replaceAll("(\\W)", ""));
+        ret = a.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", "").equals(b.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", ""));
         return ret;
     }
 
@@ -148,7 +148,7 @@ public class Database implements IMoveConstants
     {
 
         String ret = "";
-        String name = moveNameFromBulbapedia.trim().toLowerCase().replaceAll("[^\\w\\s ]", "");
+        String name = moveNameFromBulbapedia.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "");
         String[] args = name.split(" ");
         for (int i = 0; i < args.length; i++)
         {
@@ -221,8 +221,8 @@ public class Database implements IMoveConstants
                 return e;
             }
         }
-        if (name.toLowerCase()
-                .contains("mega ")) { return getEntry((name.toLowerCase().replace("mega ", "") + " mega").trim()); }
+        if (name.toLowerCase(java.util.Locale.ENGLISH)
+                .contains("mega ")) { return getEntry((name.toLowerCase(java.util.Locale.ENGLISH).replace("mega ", "") + " mega").trim()); }
         return ret;
     }
 
@@ -594,7 +594,7 @@ public class Database implements IMoveConstants
 
             move.type = PokeType.getType(s.get(2));
 
-            String cat = s.get(3).trim().toLowerCase();
+            String cat = s.get(3).trim().toLowerCase(java.util.Locale.ENGLISH);
             if (cat.contains("spec") || cat.contains("status")) move.category = SPECIAL;
             else move.category = PHYSICAL;
             if (cat.contains("distance"))
@@ -658,7 +658,7 @@ public class Database implements IMoveConstants
                 move.accuracy = -1;
             }
 
-            String[] statusEffects = s.get(9).trim().toLowerCase().split(";");
+            String[] statusEffects = s.get(9).trim().toLowerCase(java.util.Locale.ENGLISH).split(";");
             int chance = 0;
             byte effect = 0;
             if (statusEffects.length == 2)
@@ -679,7 +679,7 @@ public class Database implements IMoveConstants
             move.statusChange = effect;
             move.statusChance = chance;
 
-            int[][] statmods = getModifiers(s.get(10).trim().toLowerCase(),
+            int[][] statmods = getModifiers(s.get(10).trim().toLowerCase(java.util.Locale.ENGLISH),
                     (move.attackCategory & CATEGORY_SELF) > 0 || (move.attackCategory & CATEGORY_SELF_EFFECT) > 0);
 
             move.attackerStatModification = statmods[2];

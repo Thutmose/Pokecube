@@ -200,7 +200,7 @@ public class TextureHelper implements IPartTexturer
             String[] args = trigger.split("\\+");
             for (String s : args)
             {
-                String test = s.trim().toUpperCase();
+                String test = s.trim().toUpperCase(java.util.Locale.ENGLISH);
                 if ((f = IMoveConstants.class.getDeclaredField(test)) != null)
                 {
                     state |= f.getInt(null);
@@ -281,7 +281,7 @@ public class TextureHelper implements IPartTexturer
             {
                 String name = part.getAttributes().getNamedItem("name").getNodeValue();
                 String tex = part.getAttributes().getNamedItem("tex").getNodeValue();
-                formeMap.put(name.toLowerCase().replace(" ", ""), tex);
+                formeMap.put(name.toLowerCase(java.util.Locale.ENGLISH).replace(" ", ""), tex);
             }
         }
     }
@@ -337,7 +337,7 @@ public class TextureHelper implements IPartTexturer
             PokedexEntry forme = entry;
             if (forme.getBaseForme() != null && forme != forme.getBaseForme())
             {
-                String name = forme.getName().toLowerCase().replace(" ", "");
+                String name = forme.getName().toLowerCase(java.util.Locale.ENGLISH).replace(" ", "");
                 String tex = formeMap.get(name);
                 if (tex != null)
                 {

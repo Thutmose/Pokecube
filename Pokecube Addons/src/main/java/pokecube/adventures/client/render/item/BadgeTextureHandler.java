@@ -22,7 +22,7 @@ public class BadgeTextureHandler
             if (tag != null)
             {
                 String stackname = tag.getString("type");
-                variant = stackname.toLowerCase();
+                variant = stackname.toLowerCase(java.util.Locale.ENGLISH);
             }
             return getLocation(variant);
         }
@@ -30,7 +30,7 @@ public class BadgeTextureHandler
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"), "type=" + name.toLowerCase());
+        return new ModelResourceLocation(new ResourceLocation("pokecube_adventures", "item/badge"), "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()

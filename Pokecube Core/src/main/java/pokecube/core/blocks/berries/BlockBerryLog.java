@@ -142,7 +142,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
     public IBlockState getStateForTree(String berryName)
     {
-        BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase());
+        BlockBerryWood.EnumType type = BlockBerryWood.EnumType.valueOf(berryName.toUpperCase(java.util.Locale.ENGLISH));
 
         if (type != null)
         {

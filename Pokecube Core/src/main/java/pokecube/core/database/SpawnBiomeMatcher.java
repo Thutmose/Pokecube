@@ -129,7 +129,7 @@ public class SpawnBiomeMatcher
                 }
                 if (subBiome == null)
                 {
-                    BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(s.toUpperCase());
+                    BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
                     if (type != null)
                     {
                         if (type == BiomeDictionary.Type.WATER)
@@ -186,7 +186,7 @@ public class SpawnBiomeMatcher
                 }
                 if (subBiome == null)
                 {
-                    BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(s.toUpperCase());
+                    BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
                     if (type != null)
                     {
                         if (type == BiomeDictionary.Type.WATER)

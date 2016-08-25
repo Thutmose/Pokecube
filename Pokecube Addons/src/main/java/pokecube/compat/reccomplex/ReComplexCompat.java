@@ -79,12 +79,12 @@ public class ReComplexCompat {
 //			return;
 //		}
 //		
-//		if(!biomeMap.containsKey(evt.structureName.toLowerCase()))
+//		if(!biomeMap.containsKey(evt.structureName.toLowerCase(java.util.Locale.ENGLISH)))
 //		{
 //			return;
 //		}
 //		
-//		int biome = biomeMap.get(evt.structureName.toLowerCase());
+//		int biome = biomeMap.get(evt.structureName.toLowerCase(java.util.Locale.ENGLISH));
 //		Vector3 pos = Vector3.getNewVector().set(evt.coordinates);
 //		System.out.println("Setting "+evt.structureName+" as biome type "+BiomeDatabase.getReadableNameFromType(biome));
 //		for(int i = 0; i<evt.size[0]; i++)

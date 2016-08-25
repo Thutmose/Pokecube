@@ -814,7 +814,7 @@ public class PokedexEntry
 
     protected void addForm(PokedexEntry form)
     {
-        String key = form.name.toLowerCase().trim().replaceAll("forme", "form").replaceAll(" ", "");
+        String key = form.name.toLowerCase(java.util.Locale.ENGLISH).trim().replaceAll("forme", "form").replaceAll(" ", "");
         form.baseName = name.split(" ")[0];
         form.setBaseForme(this);
         forms.put(key, form);
@@ -1030,7 +1030,7 @@ public class PokedexEntry
      * @return the forme of the pokemob with the assosciated name. */
     public PokedexEntry getForm(String form)
     {
-        return forms.get(form.toLowerCase().trim().replaceAll("forme", "form").replaceAll(" ", ""));
+        return forms.get(form.toLowerCase(java.util.Locale.ENGLISH).trim().replaceAll("forme", "form").replaceAll(" ", ""));
     }
 
     public int getGen()
@@ -1284,7 +1284,7 @@ public class PokedexEntry
 
     public boolean hasForm(String form)
     {
-        return forms.containsKey(form.toLowerCase().trim().replaceAll("forme", "form").replaceAll(" ", ""));
+        return forms.containsKey(form.toLowerCase(java.util.Locale.ENGLISH).trim().replaceAll("forme", "form").replaceAll(" ", ""));
     }
 
     public boolean hasPrey()

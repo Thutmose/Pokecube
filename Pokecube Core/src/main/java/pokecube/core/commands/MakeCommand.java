@@ -356,8 +356,8 @@ public class MakeCommand extends CommandBase
             String text = args[0];
             for (PokedexEntry entry : Database.allFormes)
             {
-                String check = entry.getName().toLowerCase();
-                if (check.startsWith(text.toLowerCase()))
+                String check = entry.getName().toLowerCase(java.util.Locale.ENGLISH);
+                if (check.startsWith(text.toLowerCase(java.util.Locale.ENGLISH)))
                 {
                     String name = entry.getName();
                     if (name.contains(" "))

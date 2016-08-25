@@ -24,7 +24,7 @@ public class BerryTextureHandler
     public static ModelResourceLocation getLocation(String name)
     {
         return new ModelResourceLocation(new ResourceLocation("pokecube", "item/berry"),
-                "type=" + name.toLowerCase());
+                "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
     }
 
     public static void registerItemModels()

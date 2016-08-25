@@ -844,7 +844,7 @@ public class PokedexEntryLoader
             String[] replaces = xmlStats.shadowReplacements.split(":");
             for (String s1 : replaces)
             {
-                s1 = s1.toLowerCase().trim().replace(" ", "");
+                s1 = s1.toLowerCase(java.util.Locale.ENGLISH).trim().replace(" ", "");
                 if (s1.isEmpty()) continue;
 
                 if (Database.mobReplacements.containsKey(s1))
@@ -1005,7 +1005,7 @@ public class PokedexEntryLoader
                         }
                         if (item.equals("___"))
                         {
-                            item = forme.replace(" ", "").toLowerCase();
+                            item = forme.replace(" ", "").toLowerCase(java.util.Locale.ENGLISH);
                         }
 
                         PokedexEntry formeEntry = Database.getEntry(forme);

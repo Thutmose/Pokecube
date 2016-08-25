@@ -150,7 +150,7 @@ public class BerryManager implements IMoveConstants
     {
         for (Block berryCrop : berryCrops.values())
         {
-            if (berryCrop.getUnlocalizedName().toLowerCase().contains(name.toLowerCase())) return berryCrop;
+            if (berryCrop.getUnlocalizedName().toLowerCase(java.util.Locale.ENGLISH).contains(name.toLowerCase(java.util.Locale.ENGLISH))) return berryCrop;
         }
         return null;
     }

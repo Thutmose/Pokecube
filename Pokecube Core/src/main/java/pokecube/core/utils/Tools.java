@@ -385,7 +385,7 @@ public class Tools
 
     public static int getType(String name)
     {
-        name = name.toLowerCase().trim();
+        name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
         if (name.equalsIgnoreCase("erratic")) return 4;
         if (name.equalsIgnoreCase("fast")) return 0;
         if (name.equalsIgnoreCase("medium fast")) return 1;

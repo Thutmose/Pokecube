@@ -106,8 +106,8 @@ public class GuiBag extends GuiContainer
                 int x = (i % 9) * 18 + width / 2 - 80;
                 int y = (i / 9) * 18 + height / 2 - 96;
 
-                String name = stack == null ? "" : stack.getDisplayName().toLowerCase();
-                if (name.isEmpty() || !name.toLowerCase().contains(textFieldSearch.getText().toLowerCase()))
+                String name = stack == null ? "" : stack.getDisplayName().toLowerCase(java.util.Locale.ENGLISH);
+                if (name.isEmpty() || !name.toLowerCase(java.util.Locale.ENGLISH).contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH)))
                 {
                     GL11.glPushMatrix();
                     GL11.glTranslated(0, 0, zLevel);

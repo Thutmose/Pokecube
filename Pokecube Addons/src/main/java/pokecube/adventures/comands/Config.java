@@ -151,7 +151,7 @@ public class Config extends ConfigBase
             if (s != null && !s.isEmpty())
             {
                 String[] args = s.split(":");
-                String key = args[0].toLowerCase().replace(".tml", "");
+                String key = args[0].toLowerCase(java.util.Locale.ENGLISH).replace(".tml", "");
                 String subbiome = args[1];
                 biomeMap.put(key, BiomeType.getBiome(subbiome).getType());
             }

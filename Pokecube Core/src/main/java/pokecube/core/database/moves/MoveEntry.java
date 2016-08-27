@@ -1,4 +1,4 @@
-package pokecube.core.database;
+package pokecube.core.database.moves;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -64,7 +64,6 @@ public class PokemobPacketHandler
                             else if (channel == MOVEINDEX)
                             {
                                 byte moveIndex = buffer.readByte();
-                                System.out.println(moveIndex+" "+pokemob);
                                 pokemob.setMoveIndex(moveIndex);
                             }
                             else if (channel == COME)

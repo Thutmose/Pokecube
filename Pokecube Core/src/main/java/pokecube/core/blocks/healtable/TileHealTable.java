@@ -221,6 +221,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public void update()
     {
         int power = worldObj.getStrongPower(pos);
+        ticks++;
         if (power == 0)
         {
             if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here)) worldObj.playRecord(pos, null);
@@ -232,7 +233,6 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
             worldObj.playRecord(pos, null);
             worldObj.playRecord(pos, new SoundEvent(new ResourceLocation("pokecube:pokecenterloop")));
         }
-        ticks++;
     }
 
     @Override

@@ -27,7 +27,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.utils.PokecubeSerializer;
-import thut.api.maths.Vector3;
 
 public class BlockHealTable extends Block implements ITileEntityProvider
 {
@@ -47,10 +46,9 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     public void breakBlock(World world, BlockPos pos, IBlockState state)
     {
         dropItems(world, pos);
-        Vector3 v = Vector3.getNewVector();
-        if (!world.isRemote && !((Boolean) state.getValue(BlockHealTable.FIXED)))
+        if (!world.isRemote)
         {
-            PokecubeSerializer.getInstance().removeChunks(world, v.set(pos));
+            PokecubeSerializer.getInstance().removeChunks(world, pos);
         }
         super.breakBlock(world, pos, state);
     }
@@ -157,6 +155,7 @@ public class BlockHealTable extends Block implements ITileEntityProvider
             TileEntityOwnable tile = (TileEntityOwnable) te;
             tile.setPlacer(placer);
         }
+        if (!world.isRemote) PokecubeSerializer.getInstance().addChunks(world, pos);
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite())
                 .withProperty(FIXED, ((meta & 8) > 0));
     }

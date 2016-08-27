@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Vector;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,17 +22,18 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
-import net.minecraftforge.common.ForgeChunkManager.Type;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.blocks.healtable.BlockHealTable;
+import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -99,7 +99,6 @@ public class PokecubeSerializer
     private static final String      HASSTARTER     = "hasStarter";
     private static final String      TPOPTIONS      = "tpOptions";
     private static final String      METEORS        = "meteors";
-    private static final String      CHUNKS         = "chunks";
     private static final String      LASTUID        = "lastUid";
     public static final String       USERNAME       = "username";
     public static final String       EXP            = "exp";
@@ -226,21 +225,20 @@ public class PokecubeSerializer
         return value;
     }
 
-    ISaveHandler                                        saveHandler;
-    private HashMap<String, Boolean>                    hasStarter;
-    public HashMap<String, ArrayList<TeleDest>>         teleportOptions;
-    private HashMap<String, Integer>                    teleportIndex;
-    private ArrayList<Vector3>                          meteors;
+    ISaveHandler                                       saveHandler;
+    private HashMap<String, Boolean>                   hasStarter;
+    public HashMap<String, ArrayList<TeleDest>>        teleportOptions;
+    private HashMap<String, Integer>                   teleportIndex;
+    private ArrayList<Vector3>                         meteors;
 
-    public HashMap<Integer, HashMap<Vector3, ChunkPos>> chunks;
-    private HashMap<Vector3, Ticket>                    tickets;
-    private int                                         lastId = 0;
+    public HashMap<Integer, HashMap<BlockPos, Ticket>> chunks;
+    private int                                        lastId = 0;
 
-    public World                                        myWorld;
+    public World                                       myWorld;
 
-    private String                                      serverId;
+    private String                                     serverId;
 
-    private HashMap<Integer, IPokemob>                  pokemobsMap;
+    private HashMap<Integer, IPokemob>                 pokemobsMap;
 
     private PokecubeSerializer(MinecraftServer server)
     {
@@ -254,50 +252,34 @@ public class PokecubeSerializer
         teleportOptions = new HashMap<String, ArrayList<TeleDest>>();
         teleportIndex = new HashMap<String, Integer>();
         meteors = new ArrayList<Vector3>();
-        chunks = new HashMap<Integer, HashMap<Vector3, ChunkPos>>();
-        tickets = new HashMap<Vector3, Ticket>();
+        chunks = new HashMap<>();
         loadData();
     }
 
-    public void addChunks(World world, Vector3 location, ChunkPos centre)
+    public void addChunks(World world, BlockPos location)
     {
         Integer dimension = world.provider.getDimension();
 
-        HashMap<Vector3, ChunkPos> map = this.chunks.get(dimension);
-        if (map == null)
+        HashMap<BlockPos, Ticket> tickets = chunks.get(dimension);
+        if (tickets == null)
         {
-            map = new HashMap<Vector3, ChunkPos>();
+            chunks.put(dimension, tickets = new HashMap<>());
         }
-
-        boolean found = false;
-        for (Vector3 v : map.keySet())
-        {
-            if (v.sameBlock(location))
-            {
-                map.put(v, centre);
-                found = true;
-            }
-        }
-        if (!found)
-        {
-            map.put(location, centre);
-        }
-
-        this.chunks.put(dimension, map);
-
+        boolean found = tickets.containsKey(location);
         try
         {
             if (!found)
             {
                 Ticket ticket = ForgeChunkManager.requestTicket(PokecubeCore.instance, world,
                         ForgeChunkManager.Type.NORMAL);
-                for (int i = -1; i < 2; i++)
-                    for (int j = -1; j < 2; j++)
-                    {
-                        ChunkPos chunk = new ChunkPos(centre.chunkXPos + i, centre.chunkZPos + j);
-                        ForgeChunkManager.forceChunk(ticket, chunk);
-                    }
-                this.tickets.put(location, ticket);
+                NBTTagCompound pos = new NBTTagCompound();
+                pos.setInteger("x", location.getX());
+                pos.setInteger("y", location.getY());
+                pos.setInteger("z", location.getZ());
+                ticket.getModData().setTag("pos", pos);
+                ChunkPos chunk = world.getChunkFromBlockCoords(location).getChunkCoordIntPair();
+                ForgeChunkManager.forceChunk(ticket, chunk);
+                tickets.put(location, ticket);
             }
         }
         catch (Throwable e)
@@ -500,32 +482,6 @@ public class PokecubeSerializer
                 }
             }
         }
-        temp = nbttagcompound.getTag(CHUNKS);
-        if (temp instanceof NBTTagList)
-        {
-            NBTTagList tagListChunks = (NBTTagList) temp;
-
-            for (int i = 0; i < tagListChunks.tagCount(); i++)
-            {
-                NBTTagCompound tag = tagListChunks.getCompoundTagAt(i);
-                HashMap<Vector3, ChunkPos> map = new HashMap<Vector3, ChunkPos>();
-                int dimId = tag.getInteger("dimenson");
-                NBTTagList chunksList = (NBTTagList) tag.getTag(CHUNKS);
-                for (int j = 0; j < chunksList.tagCount(); j++)
-                {
-                    NBTTagCompound nbt = chunksList.getCompoundTagAt(j);
-                    Vector3 v = Vector3.readFromNBT(nbt, CHUNKS);
-                    ChunkPos array;
-                    int[] c = nbt.getIntArray(CHUNKS);
-                    if (c.length > 1)
-                    {
-                        array = new ChunkPos(c[0], c[1]);
-                        map.put(v, array);
-                    }
-                }
-                chunks.put(dimId, map);
-            }
-        }
         temp = nbttagcompound.getTag("tmtags");
         if (temp instanceof NBTTagCompound)
         {
@@ -557,91 +513,41 @@ public class PokecubeSerializer
 
     public void reloadChunk(List<Ticket> tickets, World world)
     {
-        Integer dim = world.provider.getDimension();
-        HashMap<Vector3, ChunkPos> map = this.chunks.get(dim);
         Iterator<Ticket> next = tickets.iterator();
-        if (map != null)
+        while (next.hasNext())
         {
-            List<Vector3> toRemove = new ArrayList<Vector3>();
-            for (Vector3 v : map.keySet())
+            Ticket ticket = next.next();
+            if (!ticket.getModId().equals("pokecube")) continue;
+            if (!ticket.getModData().hasKey("pos"))
             {
-                ChunkPos centre = world.getChunkFromBlockCoords(v.getPos()).getChunkCoordIntPair();
-                Block block = v.getBlock(world);
-                if (next.hasNext() && block instanceof BlockHealTable)
+                System.out.println("invalid ticket");
+                ForgeChunkManager.releaseTicket(ticket);
+            }
+            else
+            {
+                NBTTagCompound posTag = ticket.getModData().getCompoundTag("pos");
+                BlockPos pos = new BlockPos(posTag.getInteger("x"), posTag.getInteger("y"), posTag.getInteger("z"));
+                TileEntity tile = world.getTileEntity(pos);
+                if (tile == null || !(tile instanceof TileHealTable))
                 {
-                    Ticket ticket = next.next();
-                    while (ticket.getType() == Type.ENTITY && next.hasNext())
-                    {
-                        ForgeChunkManager.releaseTicket(ticket);
-                        ticket = next.next();
-                    }
-                    if (ticket.getType() == Type.ENTITY)
-                    {
-                        break;
-                    }
-
-                    for (int i = -1; i < 2; i++)
-                        for (int j = -1; j < 2; j++)
-                        {
-                            ChunkPos chunk = new ChunkPos(centre.chunkXPos + i, centre.chunkZPos + j);
-                            ForgeChunkManager.forceChunk(ticket, chunk);
-                        }
-
-                    this.tickets.put(v, ticket);
+                    System.out.println("invalid ticket");
+                    ForgeChunkManager.releaseTicket(ticket);
                 }
-                else
-                {
-                    toRemove.add(v);
-                }
+                else ForgeChunkManager.forceChunk(ticket, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
             }
-
-            while (next.hasNext())
-            {
-                ForgeChunkManager.releaseTicket(next.next());
-            }
-
-            for (Vector3 v : toRemove)
-            {
-                for (Vector3 v1 : map.keySet())
-                    if (v.equals(v1))
-                    {
-                        map.remove(v1);
-                        break;
-                    }
-            }
-            chunks.put(dim, map);
-            saveData();
         }
-
     }
 
-    public void removeChunks(World world, Vector3 location)
+    public void removeChunks(World world, BlockPos location)
     {
         Integer dimension = world.provider.getDimension();
-
-        HashMap<Vector3, ChunkPos> map = this.chunks.get(dimension);
-        if (map == null) { return; }
-
-        for (Vector3 v : map.keySet())
+        HashMap<BlockPos, Ticket> tickets = chunks.get(dimension);
+        if (tickets != null)
         {
-            if (v.sameBlock(location))
+            Ticket ticket = tickets.remove(location);
+            if (ticket != null)
             {
-                map.remove(v);
-
-                for (Vector3 v1 : tickets.keySet())
-                {
-                    if (v1.sameBlock(location))
-                    {
-                        Ticket t = tickets.get(v1);
-                        ForgeChunkManager.releaseTicket(t);
-                        tickets.remove(v1);
-                        break;
-                    }
-                }
-
-                chunks.put(dimension, map);
-                saveData();
-                return;
+                ForgeChunkManager.releaseTicket(ticket);
             }
         }
     }
@@ -855,32 +761,6 @@ public class PokecubeSerializer
 
         StatsCollector.writeToNBT(statsTag);
         nbttagcompound.setTag("globalStats", statsTag);
-
-        NBTTagList tagListChunks = new NBTTagList();
-        for (Integer i : chunks.keySet())
-        {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("dimension", i);
-            NBTTagList tags = new NBTTagList();
-            if (chunks.get(i) != null)
-            {
-                for (Vector3 v : chunks.get(i).keySet())
-                {
-                    NBTTagCompound tpTagCompound = new NBTTagCompound();
-
-                    if (v != null && !v.isEmpty() && chunks.get(i).get(v) != null)
-                    {
-                        v.writeToNBT(tpTagCompound, CHUNKS);
-                        int[] data = { chunks.get(i).get(v).chunkXPos, chunks.get(i).get(v).chunkZPos };
-                        tpTagCompound.setIntArray(CHUNKS, data);
-                        tags.appendTag(tpTagCompound);
-                    }
-                }
-            }
-            nbt.setTag(CHUNKS, tags);
-            tagListChunks.appendTag(nbt);
-        }
-        nbttagcompound.setTag(CHUNKS, tagListChunks);
 
         NBTTagList tagListHasStarter = new NBTTagList();
         for (String username : hasStarter.keySet())

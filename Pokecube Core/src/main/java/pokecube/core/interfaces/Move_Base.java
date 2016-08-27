@@ -3,7 +3,7 @@ package pokecube.core.interfaces;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import pokecube.core.database.MoveEntry;
+import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;

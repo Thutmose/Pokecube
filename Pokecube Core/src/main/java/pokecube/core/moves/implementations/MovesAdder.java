@@ -13,8 +13,8 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
-import pokecube.core.database.MoveEntry;
 import pokecube.core.database.abilities.AbilityManager.ClassFinder;
+import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -49,6 +49,7 @@ public class MovesAdder implements IMoveConstants
             if (move.getAnimation() == null)
             {
                 String anim = move.move.animDefault;
+                if (anim == null) continue;
                 if (anim.contains("beam"))
                 {
                     move.setAnimation(new ParticleBeam(anim));

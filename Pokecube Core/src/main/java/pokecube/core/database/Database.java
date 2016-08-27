@@ -33,12 +33,12 @@ import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
-import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 
-public class Database implements IMoveConstants
+public class Database
 {
     @XmlRootElement(name = "Spawns")
     public static class XMLSpawns
@@ -105,7 +105,7 @@ public class Database implements IMoveConstants
         int index = database.ordinal();
         ArrayList<String> list = configDatabases.get(index);
         if (database == EnumDatabase.POKEMON && !file.endsWith(".xml")) file = file + ".xml";
-        else if (!file.endsWith(".csv")) file = file + ".csv";
+        else if (!file.endsWith(".json")) file = file + ".json";
         for (String s : list)
         {
             if (s.equals(file)) return;
@@ -140,7 +140,8 @@ public class Database implements IMoveConstants
     public static boolean compare(String a, String b)
     {
         boolean ret = false;
-        ret = a.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", "").equals(b.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", ""));
+        ret = a.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", "")
+                .equals(b.toLowerCase(java.util.Locale.ENGLISH).replaceAll("(\\W)", ""));
         return ret;
     }
 
@@ -221,8 +222,8 @@ public class Database implements IMoveConstants
                 return e;
             }
         }
-        if (name.toLowerCase(java.util.Locale.ENGLISH)
-                .contains("mega ")) { return getEntry((name.toLowerCase(java.util.Locale.ENGLISH).replace("mega ", "") + " mega").trim()); }
+        if (name.toLowerCase(java.util.Locale.ENGLISH).contains("mega ")) { return getEntry(
+                (name.toLowerCase(java.util.Locale.ENGLISH).replace("mega ", "") + " mega").trim()); }
         return ret;
     }
 
@@ -296,245 +297,6 @@ public class Database implements IMoveConstants
         return entryExists(nb) ? getEntry(nb).getMovesForLevel(level, oldLevel) : null;
     }
 
-    /** Index 1 = attacked modifiers, index 2 = attacked modifier chance.<br>
-     * Index 3 = attacker modifiers, index 4 = attacker modifier chance.<br>
-     * 
-     * @param input
-     * @return */
-    private static int[][] getModifiers(String input, boolean selfMove)
-    {
-        int[][] ret = new int[4][];
-
-        byte effect = 0;
-        byte amount = 0;
-        int chance = 100;
-        int[] amounts = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-
-        String[] stats = input.split("`");
-
-        String[] statEffects = stats[0].split(";");
-        if (statEffects.length == 3)
-        {
-            String stat = statEffects[0];
-            effect = stat.equals("atk") ? ATTACK
-                    : stat.equals("def") ? DEFENSE
-                            : stat.equals("spd") ? VIT
-                                    : stat.equals("spatk") ? SPATACK
-                                            : stat.equals("spdef") ? SPDEFENSE
-                                                    : stat.equals("acc") ? ACCURACY
-                                                            : stat.equals("eva") ? EVASION : STATUS_NON;
-            if (stat.equalsIgnoreCase("all"))
-            {
-                effect = ATTACK + DEFENSE + VIT + SPATACK + SPDEFENSE + ACCURACY + EVASION;
-            }
-
-            amount = Byte.parseByte(statEffects[1]);
-            chance = Integer.parseInt(statEffects[2]);
-        }
-        else
-        {
-            effect = 0;
-            chance = 100;
-            for (int i = 0; i < statEffects.length; i++)
-            {
-                String stat = statEffects[i];
-                byte effec = stat.equals("atk") ? ATTACK
-                        : stat.equals("def") ? DEFENSE
-                                : stat.equals("spd") ? VIT
-                                        : stat.equals("spatk") ? SPATACK
-                                                : stat.equals("spdef") ? SPDEFENSE
-                                                        : stat.equals("acc") ? ACCURACY
-                                                                : stat.equals("eva") ? EVASION : STATUS_NON;
-                effect += effec;
-                int j = (int) Math.round(Math.log(effec) / Math.log(2)) + 1;
-
-                amounts[j] = Byte.parseByte(statEffects[i + 1]);
-
-                i++;
-            }
-
-        }
-        if (amount != 0)
-        {
-            for (int i = 0; i < amounts.length; i++)
-            {
-                amounts[i] = amount;
-            }
-        }
-
-        int[] modifiers = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-        modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + amounts[1] * (effect & 1)));
-        modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + amounts[2] * ((effect & 2) / 2)));
-        modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + amounts[3] * ((effect & 4) / 4)));
-        modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + amounts[4] * ((effect & 8) / 8)));
-        modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + amounts[5] * ((effect & 16) / 16)));
-        modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + amounts[6] * ((effect & 32) / 32)));
-        modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + amounts[7] * ((effect & 64) / 64)));
-
-        if (selfMove)
-        {
-            ret[0] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-            ret[1] = new int[] { 0 };
-            ret[2] = modifiers.clone();
-            ret[3] = new int[] { chance };
-            return ret;
-        }
-        else if (stats.length == 1)
-        {
-            ret[2] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-            ret[3] = new int[] { 0 };
-            ret[0] = modifiers.clone();
-            ret[1] = new int[] { chance };
-            return ret;
-        }
-        ret[0] = modifiers.clone();
-        ret[1] = new int[] { chance };
-
-        effect = 0;
-        chance = 100;
-
-        statEffects = stats[1].split(";");
-        if (statEffects.length == 3)
-        {
-            String stat = statEffects[0];
-            effect = stat.equals("atk") ? ATTACK
-                    : stat.equals("def") ? DEFENSE
-                            : stat.equals("spd") ? VIT
-                                    : stat.equals("spatk") ? SPATACK
-                                            : stat.equals("spdef") ? SPDEFENSE
-                                                    : stat.equals("acc") ? ACCURACY
-                                                            : stat.equals("eva") ? EVASION : STATUS_NON;
-            if (stat.equalsIgnoreCase("all"))
-            {
-                effect = ATTACK + DEFENSE + VIT + SPATACK + SPDEFENSE + ACCURACY + EVASION;
-            }
-
-            amount = Byte.parseByte(statEffects[1]);
-            chance = Integer.parseInt(statEffects[2]);
-        }
-        else
-        {
-            effect = 0;
-            chance = 100;
-            for (int i = 0; i < statEffects.length; i++)
-            {
-                String stat = statEffects[i];
-                byte effec = stat.equals("atk") ? ATTACK
-                        : stat.equals("def") ? DEFENSE
-                                : stat.equals("spd") ? VIT
-                                        : stat.equals("spatk") ? SPATACK
-                                                : stat.equals("spdef") ? SPDEFENSE
-                                                        : stat.equals("acc") ? ACCURACY
-                                                                : stat.equals("eva") ? EVASION : STATUS_NON;
-                effect += effec;
-                int j = (int) Math.round(Math.log(effec) / Math.log(2)) + 1;
-
-                amounts[j] = Byte.parseByte(statEffects[i + 1]);
-
-                i++;
-            }
-
-        }
-        if (amount != 0)
-        {
-            for (int i = 0; i < amounts.length; i++)
-            {
-                amounts[i] = amount;
-            }
-        }
-
-        modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + amounts[1] * (effect & 1)));
-        modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + amounts[2] * ((effect & 2) / 2)));
-        modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + amounts[3] * ((effect & 4) / 4)));
-        modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + amounts[4] * ((effect & 8) / 8)));
-        modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + amounts[5] * ((effect & 16) / 16)));
-        modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + amounts[6] * ((effect & 32) / 32)));
-        modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + amounts[7] * ((effect & 64) / 64)));
-
-        ret[2] = modifiers.clone();
-        ret[3] = new int[] { chance };
-
-        return ret;
-    }
-
-    private static ArrayList<ArrayList<String>> getRows(String file)
-    {
-        InputStream res = (Database.class).getResourceAsStream(file);
-
-        ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
-        BufferedReader br = null;
-        String line = "";
-        String cvsSplitBy = ",";
-
-        try
-        {
-
-            br = new BufferedReader(new InputStreamReader(res));
-            int n = 0;
-            while ((line = br.readLine()) != null)
-            {
-
-                String[] row = line.split(cvsSplitBy);
-                rows.add(new ArrayList<String>());
-                for (int i = 0; i < row.length; i++)
-                {
-                    rows.get(n).add(row[i]);
-                }
-                n++;
-            }
-
-        }
-        catch (FileNotFoundException e)
-        {
-            System.err.println("Missing a Database file " + file);
-        }
-        catch (NullPointerException e)
-        {
-            try
-            {
-                FileReader temp = new FileReader(new File(file));
-                br = new BufferedReader(temp);
-                int n = 0;
-                while ((line = br.readLine()) != null)
-                {
-
-                    String[] row = line.split(cvsSplitBy);
-                    rows.add(new ArrayList<String>());
-                    for (int i = 0; i < row.length; i++)
-                    {
-                        rows.get(n).add(row[i]);
-                    }
-                    n++;
-                }
-            }
-            catch (IOException e1)
-            {
-                e1.printStackTrace();
-            }
-
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            if (br != null)
-            {
-                try
-                {
-                    br.close();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return rows;
-    }
-
     public static SpawnData getSpawnData(int nb)
     {
         if (data.containsKey(nb)) return data.get(nb).getSpawnData();
@@ -582,144 +344,7 @@ public class Database implements IMoveConstants
 
     public static void loadMoves(String file)
     {
-        ArrayList<ArrayList<String>> rows = getRows(file);
-
-        for (ArrayList<String> s : rows)
-        {
-            if (s == null || s.size() < 7 || s.get(0).equalsIgnoreCase("number")) continue;
-            int index = Integer.parseInt(s.get(0).trim());
-            String name = convertMoveName(s.get(1));
-
-            MoveEntry move = new MoveEntry(name, index);
-
-            move.type = PokeType.getType(s.get(2));
-
-            String cat = s.get(3).trim().toLowerCase(java.util.Locale.ENGLISH);
-            if (cat.contains("spec") || cat.contains("status")) move.category = SPECIAL;
-            else move.category = PHYSICAL;
-            if (cat.contains("distance"))
-            {
-                move.attackCategory = CATEGORY_DISTANCE;
-            }
-            if (cat.contains("contact"))
-            {
-                move.attackCategory = CATEGORY_CONTACT;
-            }
-            if (cat.equals("self"))
-            {
-                move.attackCategory = CATEGORY_SELF;
-            }
-            else if (cat.contains("self"))
-            {
-                move.attackCategory += CATEGORY_SELF_EFFECT;
-            }
-
-            if (move.attackCategory == 0)
-            {
-                if (move.category == SPECIAL)
-                {
-                    move.attackCategory = CATEGORY_DISTANCE;
-                }
-                else
-                {
-                    move.attackCategory = CATEGORY_CONTACT;
-                }
-            }
-
-            if (move.category == -1)
-            {
-                move.category = (move.attackCategory & CATEGORY_DISTANCE) > 0 ? SPECIAL : PHYSICAL;
-            }
-
-            move.pp = Integer.parseInt(s.get(5));
-
-            try
-            {
-                move.power = Integer.parseInt(s.get(6));
-            }
-            catch (NumberFormatException e)
-            {
-                if (s.get(6).equalsIgnoreCase("level"))
-                {
-                    move.power = MoveEntry.LEVEL;
-                }
-                else
-                {
-                    move.power = MoveEntry.NODAMAGE;
-                }
-            }
-
-            try
-            {
-                move.accuracy = (int) Float.parseFloat(s.get(7).replace("%", ""));
-            }
-            catch (NumberFormatException e)
-            {
-                move.accuracy = -1;
-            }
-
-            String[] statusEffects = s.get(9).trim().toLowerCase(java.util.Locale.ENGLISH).split(";");
-            int chance = 0;
-            byte effect = 0;
-            if (statusEffects.length == 2)
-            {
-                String status = statusEffects[0];
-                chance = Integer.parseInt(statusEffects[1]);
-                effect = status.equals("par") ? STATUS_PAR
-                        : status.equals("brn") ? STATUS_BRN
-                                : status.equals("frz") ? STATUS_FRZ
-                                        : status.equals("slp") ? STATUS_SLP
-                                                : status.equals("psn") ? STATUS_PSN
-                                                        : status.equals("psn2") ? STATUS_PSN2 : STATUS_NON;
-            }
-            else
-            {
-                // TODO finish this for tri-attack
-            }
-            move.statusChange = effect;
-            move.statusChance = chance;
-
-            int[][] statmods = getModifiers(s.get(10).trim().toLowerCase(java.util.Locale.ENGLISH),
-                    (move.attackCategory & CATEGORY_SELF) > 0 || (move.attackCategory & CATEGORY_SELF_EFFECT) > 0);
-
-            move.attackerStatModification = statmods[2];
-            move.attackerStatModProb = statmods[3][0];
-            move.attackedStatModification = statmods[0];
-            move.attackedStatModProb = statmods[1][0];
-
-            String[] changes = s.get(11).split(";");
-            if (!changes[0].equals("none"))
-            {
-                move.change = changes[0].equalsIgnoreCase("flinch") ? CHANGE_FLINCH : CHANGE_CONFUSED;
-                move.chanceChance = Integer.parseInt(changes[1].trim());
-            }
-            changes = s.get(12).split(";");
-            move.damageHealRatio = Integer.parseInt(changes[0].trim().replace("%", ""));
-            move.selfHealRatio = Integer.parseInt(changes[1].trim().replace("%", ""));
-
-            changes = s.get(13).split(";");
-            move.multiTarget = Boolean.parseBoolean(changes[0].trim());
-            move.notIntercepable = Boolean.parseBoolean(changes[1].trim());
-
-            move.protect = Boolean.parseBoolean(s.get(14).trim());
-            move.magiccoat = Boolean.parseBoolean(s.get(15).trim());
-            move.snatch = Boolean.parseBoolean(s.get(16).trim());
-            move.kingsrock = Boolean.parseBoolean(s.get(17).trim());
-
-            move.crit = Integer.parseInt(s.get(18).trim());
-
-            changes = s.get(19).split(";");
-            if (changes.length > 1)
-            {
-                String amt = changes[0].replace("%", "");
-                String cond = changes[1];
-                move.selfDamage = Float.parseFloat(amt);
-                move.selfDamageType = cond.contains("miss") ? MoveEntry.MISS
-                        : cond.contains("hp") ? MoveEntry.RELATIVEHP : MoveEntry.DAMAGEDEALT;
-            }
-            String anim = s.get(20);
-            move.animDefault = anim;
-        }
+        MoveEntryLoader.loadMoves(file);
     }
 
     private static void loadSpawns()
@@ -934,7 +559,7 @@ public class Database implements IMoveConstants
                 temp.mkdirs();
             }
 
-            copyDatabaseFile("moves.csv");
+            copyDatabaseFile("moves.json");
 
             for (String s : defaultDatabases)
                 copyDatabaseFile(s);

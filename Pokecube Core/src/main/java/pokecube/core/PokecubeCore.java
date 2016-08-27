@@ -476,6 +476,7 @@ public class PokecubeCore extends PokecubeMod
             {
                 PokecubeSerializer.getInstance().loadData();
                 PokecubeSerializer.getInstance().reloadChunk(tickets, world);
+                System.out.println("Test");
             }
 
         });

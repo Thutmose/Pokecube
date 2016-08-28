@@ -4879,7 +4879,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <Spawn rate="0.01" types="ocean" air="false"/>
+            <Spawn rate="0.05" types="ocean" air="false"/>
             <BASESTATS atk="64" def="45" hp="41" spatk="50" spd="50" spdef="50"/>
             <EVYIELD atk="1"/>
             <SIZES height="1.0" length="1.8" width="1.0"/>
@@ -11505,7 +11505,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Erratic</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <Spawn rate="0.01" types="river,cave"/>
+            <Spawn rate="0.01" types="river,cavewater"/>
             <BASESTATS atk="15" def="20" hp="20" spatk="10" spd="80" spdef="55"/>
             <EVYIELD spd="1"/>
             <SIZES height="0.6" length="0.6" width="0.6"/>
@@ -21754,7 +21754,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <Spawn rate="0.001" types="all" night="false"/>
+            <Spawn rate="0.05" types="all" night="false"/>
             <BASESTATS atk="35" def="40" hp="38" spatk="27" spd="35" spdef="25"/>
             <EVYIELD def="1"/>
             <SIZES height="0.3" length="0.3" width="0.3"/>
@@ -22978,7 +22978,7 @@
             <SHADOWREPLACEMENTS>slime</SHADOWREPLACEMENTS>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <Spawn rate="0.01" types="swamp"/>
+            <Spawn rate="0.05" types="swamp"/>
             <BASESTATS atk="50" def="35" hp="45" spatk="55" spd="40" spdef="75"/>
             <EVYIELD spdef="1"/>
             <SIZES height="0.3" length="0.3" width="0.3"/>

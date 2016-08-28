@@ -20,9 +20,7 @@ import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public abstract class EntityHasPokemobs extends EntityHasAIStates
@@ -52,7 +50,42 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
     public void addPokemob(ItemStack mob)
     {
+        long uuidLeast = 0;
+        long uuidMost = 0;
+
+        if (mob.hasTagCompound())
+        {
+            if (mob.getTagCompound().hasKey("Pokemob"))
+            {
+                NBTTagCompound nbt = mob.getTagCompound().getCompoundTag("Pokemob");
+                uuidLeast = nbt.getLong("UUIDLeast");
+                uuidMost = nbt.getLong("UUIDMost");
+            }
+        }
+        long uuidLeastTest = -1;
+        long uuidMostTest = -1;
+        boolean existing = false;
         for (int i = 0; i < 6; i++)
+        {
+            if (pokecubes[i] != null)
+            {
+                if (pokecubes[i].hasTagCompound())
+                {
+                    if (pokecubes[i].getTagCompound().hasKey("Pokemob"))
+                    {
+                        NBTTagCompound nbt = pokecubes[i].getTagCompound().getCompoundTag("Pokemob");
+                        uuidLeastTest = nbt.getLong("UUIDLeast");
+                        uuidMostTest = nbt.getLong("UUIDMost");
+                        if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
+                        {
+                            existing = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (!existing) for (int i = 0; i < 6; i++)
         {
             if (pokecubes[i] == null)
             {
@@ -76,27 +109,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
     public int countPokemon()
     {
-        if (outID != null && outMob == null)
-        {
-            for (int i = 0; i < worldObj.loadedEntityList.size(); ++i)
-            {
-                Entity entity = worldObj.loadedEntityList.get(i);
-                if (entity instanceof IPokemob && outID.equals(entity.getUniqueID()))
-                {
-                    outMob = (IPokemob) entity;
-                    break;
-                }
-            }
-        }
-        if (outMob != null && ((Entity) outMob).isDead)
-        {
-            outID = null;
-            outMob = null;
-        }
-        int ret = outMob == null ? 0 : 1;
-
-        if (ret == 0 && getAIState(THROWING)) ret++;
-
+        int ret = 0;
         for (ItemStack i : pokecubes)
         {
             if (i != null && PokecubeManager.getPokedexNb(i) != 0) ret++;
@@ -139,16 +152,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        // TODO remove this legacy support later
-        if (nbt.hasKey("slot" + 0)) for (int n = 0; n < 6; n++)
-        {
-            if (nbt.hasKey("slot" + n))
-            {
-                NBTTagCompound tag = nbt.getCompoundTag("slot" + n);
-                pokecubes[n] = ItemStack.loadItemStackFromNBT(tag);
-                if (PokecubeManager.getPokedexNb(pokecubes[n]) == 0) pokecubes[n] = null;
-            }
-        }
         if (nbt.hasKey("pokemobs", 9))
         {
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
@@ -238,28 +241,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         }
     }
 
-    public void setPokemob(int number, int level, int index)
-    {
-        if (number < 1)
-        {
-            pokecubes[index] = null;
-            return;
-        }
-
-        IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, worldObj);
-        if (pokemob == null)
-        {
-            pokecubes[index] = null;
-            return;
-        }
-        pokemob.setExp(Tools.levelToXp(pokemob.getExperienceMode(), level), false, true);
-        pokemob.setPokemonOwner(this);
-        ItemStack mob = PokecubeManager.pokemobToItem(pokemob);
-        ((Entity) pokemob).setDead();
-        InventoryPC.heal(mob);
-        pokecubes[index] = mob.copy();
-    }
-
     public void throwCubeAt(Entity target)
     {
         if (target == null || getAIState(THROWING) || outMob != null || attackCooldown > 0) return;
@@ -272,11 +253,9 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 t = Vector3.getNewVector().set(target);
             t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
-
             cube.throwPokecubeAt(worldObj, this, i, t, null);
             setAIState(THROWING, true);
             attackCooldown = Config.instance.trainerSendOutDelay;
-            pokecubes[nextSlot] = null;
             ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(),
                     i.getDisplayName());
             target.addChatMessage(text);

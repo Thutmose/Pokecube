@@ -37,7 +37,6 @@ import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityHasPokemobs;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
-import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
@@ -470,7 +469,7 @@ public class EntityTrainer extends EntityHasPokemobs
         TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
         if (type.hasBag)
         {
-            this.setItemStackToSlot(EntityEquipmentSlot.CHEST, PokecubeItems.getStack("pokecubebag"));
+            this.setItemStackToSlot(EntityEquipmentSlot.CHEST, type.bag.copy());
         }
         setTypes();
     }

@@ -27,7 +27,9 @@
         <BIOMES>BTcave'Tmountain</BIOMES>
         <RATE>5</RATE>
         <GENDER>Male</GENDER>
-        <BAG>true</BAG>
+        <BAG id="pokecube_adventures:pokecubebag">
+            <tag>{dyeColour:2}</tag>
+        </BAG>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Fisherman</TYPE>
@@ -205,5 +207,7 @@
         <BIOMES>BTall</BIOMES>
         <RATE>1</RATE>
         <GENDER>Male</GENDER>
+        <BAG id="pokecube_adventures:pokecubebag">
+        </BAG>
     </TYPETRAINER>
 </TYPETRAINERSET>

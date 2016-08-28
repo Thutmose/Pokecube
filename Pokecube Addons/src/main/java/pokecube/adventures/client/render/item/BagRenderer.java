@@ -84,11 +84,9 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
 
     private final RenderLivingBase<?> renderer;
     X3dModel                          model;
-
     X3dModel                          model2;
 
     private ResourceLocation          BAG_1 = new ResourceLocation("pokecube_adventures:textures/Bag_1.png");
-
     private ResourceLocation          BAG_2 = new ResourceLocation("pokecube_adventures:textures/Bag_2.png");
 
     public BagRenderer(RenderLivingBase<?> livingEntityRendererIn)
@@ -105,7 +103,12 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
         boolean bag = getChecker().isWearingBag(entity);
         if (bag)
         {
+            ItemStack bagStack = getChecker().getBag(entity);
             int brightness = entity.getBrightnessForRender(partialTicks);
+
+            ResourceLocation pass1 = BAG_1;
+            ResourceLocation pass2 = BAG_2;
+
             // First pass of render
             GL11.glPushMatrix();
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -121,7 +124,7 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
             GL11.glRotated(180, 0, 0, 1);
             GL11.glTranslated(0, -0.125, -0.6);
             GL11.glScaled(0.7, 0.7, 0.7);
-            this.renderer.bindTexture(BAG_1);
+            this.renderer.bindTexture(pass1);
             model.renderAll();
             GL11.glPopMatrix();
             // Second pass with colour.
@@ -130,9 +133,8 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
             GL11.glRotated(180, 0, 0, 1);
             GL11.glTranslated(0, -0.125, -0.6);
             GL11.glScaled(0.7, 0.7, 0.7);
-            this.renderer.bindTexture(BAG_2);
-            Color colour = new Color(
-                    getChecker().getBagColour(getChecker().getBag(entity)).getMapColor().colorValue + 0xFF000000);
+            this.renderer.bindTexture(pass2);
+            Color colour = new Color(getChecker().getBagColour(bagStack).getMapColor().colorValue + 0xFF000000);
             int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : model2.getParts().values())
             {

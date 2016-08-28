@@ -56,11 +56,20 @@ public class TrainerEntryLoader
         @XmlElement(name = "MATERIAL")
         String  material      = "air";
         @XmlElement(name = "BAG")
-        boolean bag           = false;
+        Bag     bag;
         @XmlElement(name = "BELT")
-        boolean belt           = true;
+        boolean belt          = true;
         @XmlElement(name = "HELD")
         Held    held;
+    }
+
+    @XmlRootElement(name = "BAG")
+    public static class Bag
+    {
+        @XmlAnyAttribute
+        Map<QName, String> values;
+        @XmlElement(name = "tag")
+        String             tag;
     }
 
     @XmlRootElement(name = "HELD")
@@ -95,7 +104,14 @@ public class TrainerEntryLoader
             byte male = 1;
             byte female = 2;
             type.tradeTemplate = entry.tradeTemplate;
-            type.hasBag = entry.bag;
+            type.hasBag = entry.bag != null;
+            if (type.hasBag)
+            {
+                if (entry.bag.tag != null) entry.bag.values.put(new QName("tag"), entry.bag.tag);
+                ItemStack bag = Tools.getStack(entry.bag.values);
+                type.bag = bag;
+                System.out.println(bag);
+            }
             type.hasBelt = entry.belt;
             type.weight = entry.spawnRate;
             type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male

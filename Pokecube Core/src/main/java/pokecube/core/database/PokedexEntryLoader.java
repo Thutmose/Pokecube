@@ -133,7 +133,7 @@ public class PokedexEntryLoader
     public static class SpawnRule
     {
         @XmlAnyAttribute
-        Map<QName, String> values = Maps.newHashMap();
+        public Map<QName, String> values = Maps.newHashMap();
     }
 
     @XmlRootElement(name = "MOVES")

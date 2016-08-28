@@ -64,7 +64,9 @@ public final class SpawnHandler
                                                                                        return input == BiomeType.SKY
                                                                                                .getType()
                                                                                                || input == BiomeType.CAVE
-                                                                                                       .getType()
+                                                                                               .getType()
+                                                                                               || input == BiomeType.CAVE_WATER
+                                                                                               .getType()
                                                                                                || input == BiomeType.VILLAGE
                                                                                                        .getType()
                                                                                                || input == BiomeType.ALL

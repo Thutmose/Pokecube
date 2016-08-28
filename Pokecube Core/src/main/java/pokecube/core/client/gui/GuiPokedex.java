@@ -8,8 +8,11 @@ import static pokecube.core.utils.PokeType.getTranslatedName;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -41,6 +44,9 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.PokedexEntry.SpawnData;
+import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
@@ -376,8 +382,27 @@ public class GuiPokedex extends GuiScreen
 
             ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
 
-            // TODO names list here.
-
+            final EntityPlayer player = entityPlayer;
+            final Vector3 pos = Vector3.getNewVector().set(player);
+            for (PokedexEntry e : Database.spawnables)
+            {
+                if (e.getSpawnData().isValid(player.worldObj, pos))
+                {
+                    names.add(e);
+                }
+            }
+            Collections.sort(names, new Comparator<PokedexEntry>()
+            {
+                @Override
+                public int compare(PokedexEntry o1, PokedexEntry o2)
+                {
+                    float rate1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(player.worldObj, pos))
+                            * 10e5f;
+                    float rate2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(player.worldObj, pos))
+                            * 10e5f;
+                    return (int) (-rate1 + rate2);
+                }
+            });
             index = Math.max(0, Math.min(index, names.size() - 6));
             String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
             if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
@@ -395,8 +420,9 @@ public class GuiPokedex extends GuiScreen
                     System.err.println("FATAL ERROR MISSING SPAWN DATA FOR " + dbe);
                     continue;
                 }
-                String numbers = "";// "+dbe.getSpawnData().global[0];
-                if (!entityPlayer.capabilities.isCreativeMode) numbers = "";
+                String numbers = "";
+                if (entityPlayer.capabilities.isCreativeMode)
+                    numbers = " " + dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(player.worldObj, pos));
                 drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
                         0xFF0000);
                 String time = "";
@@ -421,6 +447,53 @@ public class GuiPokedex extends GuiScreen
                 }
             }
             // TODO find a way to show what biome combination someone spawns in.
+            SpawnData data = entry.getSpawnData();
+
+            if (data == null) return;
+
+            boolean hasBiomes = false;
+            Map<SpawnBiomeMatcher, SpawnEntry> matchers = data.matchers;
+            for (SpawnBiomeMatcher matcher : matchers.keySet())
+            {
+                String biomeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.BIOMES);
+                String typeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.TYPES);
+                if (biomeString != null) hasBiomes = true;
+                else if (typeString != null)
+                {
+                    String[] args = typeString.split(",");
+                    BiomeType subBiome = null;
+                    for (String s : args)
+                    {
+                        for (BiomeType b : BiomeType.values())
+                        {
+                            if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                            {
+                                subBiome = b;
+                                break;
+                            }
+                        }
+                        if (subBiome == null) hasBiomes = true;
+                        subBiome = null;
+                        if (hasBiomes) break;
+                    }
+                }
+                if (hasBiomes) break;
+            }
+            if (hasBiomes) for (ResourceLocation key : Biome.REGISTRY.getKeys())
+            {
+                Biome b = Biome.REGISTRY.getObject(key);
+                if (b != null)
+                {
+                    if (data.isValid(b)) biomes.add(b.getBiomeName());
+                }
+            }
+            for (BiomeType b : BiomeType.values())
+            {
+                if (data.isValid(b))
+                {
+                    biomes.add(b.readableName);
+                }
+            }
 
             // System.out.println(biomes);
             index = Math.max(0, Math.min(index, biomes.size() - 6));
@@ -1030,11 +1103,11 @@ public class GuiPokedex extends GuiScreen
             {
                 nicknameTextField.setText("");
                 nicknameTextField.setEnabled(false);
-                if (button == 1)
+                if (button == 1 && page != 2)
                 {
                     index2++;
                 }
-                if (button == 2)
+                if (button == 2 && page != 2)
                 {
                     index2--;
                 }

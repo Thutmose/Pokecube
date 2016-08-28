@@ -61,7 +61,11 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                         if (sky) break outer;
                     }
             if (sky) return -1;
-            if (count(world, Blocks.WATER, v, 1) > 2) return BiomeType.CAVE_WATER.getType();
+            int water = count(world, Blocks.WATER, v, 3);
+            if (water > 4)
+            {
+                return BiomeType.CAVE_WATER.getType();
+            }
             else if (isCave(v, world)) return BiomeType.CAVE.getType();
             return INSIDE.getType();
         }

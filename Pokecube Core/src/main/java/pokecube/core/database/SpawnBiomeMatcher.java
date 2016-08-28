@@ -21,16 +21,16 @@ import thut.api.terrain.TerrainSegment;
 
 public class SpawnBiomeMatcher
 {
-    private static final QName BIOMES             = new QName("biomes");
-    private static final QName TYPES              = new QName("types");
-    private static final QName BIOMESBLACKLIST    = new QName("biomesBlacklist");
-    private static final QName TYPESBLACKLIST     = new QName("typesBlacklist");
-    private static final QName NIGHT              = new QName("night");
-    private static final QName DAY                = new QName("day");
-    private static final QName AIR                = new QName("air");
-    private static final QName WATER              = new QName("water");
-    private static final QName MINLIGHT           = new QName("minLight");
-    private static final QName MAXLIGHT           = new QName("maxLight");
+    public static final QName BIOMES             = new QName("biomes");
+    public static final QName TYPES              = new QName("types");
+    public static final QName BIOMESBLACKLIST    = new QName("biomesBlacklist");
+    public static final QName TYPESBLACKLIST     = new QName("typesBlacklist");
+    public static final QName NIGHT              = new QName("night");
+    public static final QName DAY                = new QName("day");
+    public static final QName AIR                = new QName("air");
+    public static final QName WATER              = new QName("water");
+    public static final QName MINLIGHT           = new QName("minLight");
+    public static final QName MAXLIGHT           = new QName("maxLight");
 
     public Set<Biome>          validBiomes        = Sets.newHashSet();
     public Set<BiomeType>      validSubBiomes     = Sets.newHashSet();
@@ -44,7 +44,7 @@ public class SpawnBiomeMatcher
     boolean                    air                = true;
     boolean                    water              = false;
 
-    final SpawnRule            spawnRule;
+    public final SpawnRule     spawnRule;
 
     public SpawnBiomeMatcher(SpawnRule rules)
     {

@@ -70,7 +70,7 @@ public class InventoryBag implements IInventory
 
     public static void loadFromNBT(NBTTagList nbt)
     {
-        loadFromNBT(nbt, false);
+        loadFromNBT(nbt, true);
     }
 
     public static void loadFromNBT(NBTTagList nbt, boolean replace)

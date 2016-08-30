@@ -107,7 +107,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         }
         if (message.message == REMOVE)
         {
-            Vector4 location = new Vector4(data);
+            Vector4 location = new Vector4(message.data);
             PokecubeSerializer.getInstance().unsetTeleport(location, player.getCachedUniqueIdString());
             player.addChatMessage(new TextComponentString("Removed The location " + location.toIntString()));
             PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
@@ -116,7 +116,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         else if (message.message == RENAME)
         {
             String name = message.data.getString("N");
-            Vector4 location = new Vector4(data);
+            Vector4 location = new Vector4(message.data);
             PokecubeSerializer.getInstance().setTeleport(location, player.getCachedUniqueIdString(), name);
             player.addChatMessage(
                     new TextComponentString("Set The location " + location.toIntString() + " as " + name));

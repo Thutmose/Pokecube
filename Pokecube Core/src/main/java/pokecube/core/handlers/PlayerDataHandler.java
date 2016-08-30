@@ -312,7 +312,15 @@ public class PlayerDataHandler
         for (PlayerData data : manager.data.values())
         {
             String fileName = data.dataFileName();
-            File file = PokecubeSerializer.getFileForUUID(uuid, fileName);
+            File file = null;
+            try
+            {
+                file = PokecubeSerializer.getFileForUUID(uuid, fileName);
+            }
+            catch (Exception e)
+            {
+
+            }
             if (file != null && file.exists())
             {
                 try

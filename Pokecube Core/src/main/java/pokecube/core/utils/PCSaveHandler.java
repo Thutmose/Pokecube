@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.UUID;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -33,53 +30,10 @@ public class PCSaveHandler
         return clientInstance;
     }
 
-    public boolean       seenPCCreator = false;
-
-    private ISaveHandler saveHandler;
+    public boolean seenPCCreator = false;
 
     public PCSaveHandler()
     {
-    }
-
-    public void loadPC()
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        try
-        {
-
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName("PCInventory");
-            File upperDir = new File(file.getParentFile().getAbsolutePath());
-            for (File f : upperDir.listFiles())
-            {
-                if (f.isDirectory())
-                {
-                    String s = f.getName();
-                    try
-                    {
-                        UUID.fromString(s);
-                        loadPC(s);
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
-                }
-            }
-            if (file != null && file.exists())
-            {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-                fileinputstream.close();
-                readPcFromNBT(nbttagcompound.getCompoundTag("Data"));
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
     }
 
     public void loadPC(String uuid)
@@ -87,10 +41,7 @@ public class PCSaveHandler
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         try
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            String seperator = System.getProperty("file.separator");
-            File file = saveHandler.getMapFileFromName(uuid + seperator + "PCInventory");
+            File file = PokecubeSerializer.getFileForUUID(uuid, "PCInventory");
             if (file != null && file.exists())
             {
                 FileInputStream fileinputstream = new FileInputStream(file);
@@ -101,11 +52,9 @@ public class PCSaveHandler
         }
         catch (FileNotFoundException e)
         {
-            e.printStackTrace();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
         }
     }
 
@@ -128,16 +77,7 @@ public class PCSaveHandler
             return;
         try
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            String seperator = System.getProperty("file.separator");
-            File file = saveHandler.getMapFileFromName(uuid + seperator + "PCInventory");
-
-            File dir = new File(file.getParentFile().getAbsolutePath());
-            if (file != null && !file.exists())
-            {
-                dir.mkdirs();
-            }
+            File file = PokecubeSerializer.getFileForUUID(uuid, "PCInventory");
             if (file != null)
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();

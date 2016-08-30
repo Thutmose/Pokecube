@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -20,9 +19,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Explode;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.network.packets.PacketDataSync;
 import thut.api.maths.Vector3;
 
 public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPokemobAttack, IMessage>
@@ -97,16 +94,10 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
 
         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
         boolean teleport = message.teleport;
-
         if (teleport)
         {
-            NBTTagCompound teletag = new NBTTagCompound();
-            PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
-
-            PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
-            PokecubePacketHandler.sendToClient(packe, player);
+            PacketDataSync.sendSyncPacket(player, "pokecube-data");
         }
-
         if (move instanceof Move_Explode && (user == target || target == null))
         {
             pokemob.executeMove(null, temp, 0);

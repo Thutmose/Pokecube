@@ -15,7 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
@@ -25,15 +24,14 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.packets.PacketChoose;
+import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
@@ -142,7 +140,7 @@ public class Commands implements ICommand
                             else count1++;
                             Integer i = counts.get(e.getPokedexEntry());
                             if (i == null) i = 0;
-                            counts.put(e.getPokedexEntry(), i+1);
+                            counts.put(e.getPokedexEntry(), i + 1);
                         }
                     }
                 }
@@ -417,16 +415,7 @@ public class Commands implements ICommand
                     if (player != null)
                     {
                         PokecubeSerializer.getInstance().setHasStarter(player, true);
-                        NBTTagCompound nbt = new NBTTagCompound();
-                        StatsCollector.writeToNBT(nbt);
-                        nbt.setBoolean("playerhasstarter", PokecubeSerializer.getInstance().hasStarter(player));
-                        PokecubeSerializer.getInstance().writeToNBT2(nbt);
-                        nbt.setBoolean("hasSerializer", true);
-                        boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance()
-                                .isServerInOnlineMode();
-                        nbt.setBoolean("serveroffline", offline);
-                        PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
-                        PokecubePacketHandler.sendToClient(packet, player);
+                        PacketDataSync.sendSyncPacket(player, "pokecube-data");
                         cSender.addChatMessage(
                                 new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
                     }

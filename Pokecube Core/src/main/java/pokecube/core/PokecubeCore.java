@@ -474,9 +474,7 @@ public class PokecubeCore extends PokecubeMod
             @Override
             public void ticketsLoaded(List<Ticket> tickets, World world)
             {
-                PokecubeSerializer.getInstance().loadData();
                 PokecubeSerializer.getInstance().reloadChunk(tickets, world);
-                System.out.println("Test");
             }
 
         });
@@ -754,7 +752,6 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
-        PCSaveHandler.getInstance().loadPC();
         AISaveHandler.instance();
     }
 

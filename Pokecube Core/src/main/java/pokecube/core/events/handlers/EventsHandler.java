@@ -68,7 +68,6 @@ import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.EggEvent;
@@ -83,6 +82,7 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.packets.PacketChoose;
+import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -122,7 +122,8 @@ public class EventsHandler
                 {
                     boolean special = false;
                     if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
-                            || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
+                            || PokecubePacketHandler.specialStarters
+                                    .containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
                     {
                         special = true;
                     }
@@ -593,13 +594,11 @@ public class EventsHandler
         if (!evt.player.getEntityWorld().isRemote)
         {
             NBTTagCompound nbt = new NBTTagCompound();
-            StatsCollector.writeToNBT(nbt);
-            PokecubeSerializer.getInstance().writeToNBT2(nbt);
             nbt.setBoolean("hasSerializer", true);
-            boolean offline = !FMLCommonHandler.instance().getMinecraftServerInstance().isServerInOnlineMode();
-            nbt.setBoolean("serveroffline", offline);
             PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
             PokecubePacketHandler.sendToClient(packet, entityPlayer);
+            PacketDataSync.sendSyncPacket(entityPlayer, "pokecube-data");
+            PacketDataSync.sendSyncPacket(entityPlayer, "pokecube-stats");
         }
 
         if (evt.player instanceof EntityPlayer)

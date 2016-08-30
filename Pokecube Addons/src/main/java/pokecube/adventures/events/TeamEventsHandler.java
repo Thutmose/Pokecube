@@ -270,7 +270,6 @@ public class TeamEventsHandler
             {
                 evt.getWorld().getScoreboard().addPlayerToTeam("PokecubePlayer", "Pokecube");
             }
-            PASaveHandler.getInstance().loadBag();
             PASaveHandler.getInstance().loadTeams();
         }
     }

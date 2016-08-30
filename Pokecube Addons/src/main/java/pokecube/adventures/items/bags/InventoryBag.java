@@ -37,6 +37,10 @@ public class InventoryBag implements IInventory
     {
         if (uuid != null)
         {
+            if (!map.containsKey(uuid))
+            {
+                PASaveHandler.getInstance().loadBag(uuid);
+            }
             if (map.containsKey(uuid))
             {
                 if (PokecubeCore.proxy.getPlayer(uuid) != null)

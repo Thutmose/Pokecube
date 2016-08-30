@@ -45,8 +45,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
@@ -560,9 +558,7 @@ public class GuiDisplayPokecubeInfo extends Gui
      * stand */
     public void pokemobStance()
     {
-        byte[] message = { (byte) 22 };
-        PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.STATS, message);
-        PokecubePacketHandler.sendToServer(packet);
+        //TODO redo this as a packet.
     }
 
     /** Decrements pokemob move index

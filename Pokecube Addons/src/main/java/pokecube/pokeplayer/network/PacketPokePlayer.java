@@ -20,8 +20,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.network.packets.PacketDataSync;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
 import pokecube.pokeplayer.client.gui.GuiAsPokemob;
@@ -215,12 +214,7 @@ public class PacketPokePlayer
 
                     if (teleport)
                     {
-                        NBTTagCompound teletag = new NBTTagCompound();
-                        PokecubeSerializer.getInstance().writePlayerTeleports(player.getUniqueID(), teletag);
-
-                        PokecubeClientPacket packe = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST,
-                                teletag);
-                        PokecubePacketHandler.sendToClient(packe, player);
+                        PacketDataSync.sendSyncPacket(player, "pokecube-data");
                     }
 
                     if (move instanceof Move_Explode && (id == 0))

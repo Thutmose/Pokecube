@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -404,6 +407,7 @@ public class PokecubeSerializer
 
         NBTBase temp;
         // TODO remove support for this.
+        Set<String> ids = Sets.newHashSet();
         temp = nbttagcompound.getTag(HASSTARTER);
         if (temp instanceof NBTTagList)
         {
@@ -415,6 +419,7 @@ public class PokecubeSerializer
                 if (pokemobData != null)
                 {
                     String username = pokemobData.getString(USERNAME);
+                    ids.add(username);
                     Boolean hasStarter = pokemobData.getBoolean(HASSTARTER);
                     PlayerDataHandler.getInstance().getPlayerData(username)
                             .getData("pokecube-data", PokecubePlayerData.class).setHasStarter(hasStarter);
@@ -434,6 +439,7 @@ public class PokecubeSerializer
                 if (pokemobData != null)
                 {
                     String username = pokemobData.getString(USERNAME);
+                    ids.add(username);
 
                     int index = pokemobData.getInteger("TPOPTION");
 
@@ -453,8 +459,8 @@ public class PokecubeSerializer
                 }
             }
         }
-        
-        
+        for (String uuid : ids)
+            PlayerDataHandler.getInstance().save(uuid);
 
         temp = nbttagcompound.getTag(METEORS);
         if (temp instanceof NBTTagList)

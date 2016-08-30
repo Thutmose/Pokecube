@@ -5,18 +5,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.HashMap;
-import java.util.UUID;
 
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.ISaveHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.items.bags.InventoryBag;
+import pokecube.core.utils.PokecubeSerializer;
 
 public class PASaveHandler
 {
@@ -35,53 +34,10 @@ public class PASaveHandler
         return clientInstance;
     }
 
-    private ISaveHandler                   saveHandler;
-
     public HashMap<Integer, EntityTrainer> trainers = new HashMap<Integer, EntityTrainer>();
 
     private PASaveHandler()
     {
-    }
-
-    public void loadBag()
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        try
-        {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName("BagInventory");
-            File upperDir = new File(file.getParentFile().getAbsolutePath());
-            for (File f : upperDir.listFiles())
-            {
-                if (f.isDirectory())
-                {
-                    String s = f.getName();
-                    try
-                    {
-                        UUID.fromString(s);
-                        loadBag(s);
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
-                }
-            }
-
-            if (file != null && file.exists())
-            {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-                fileinputstream.close();
-                readBagFromNBT(nbttagcompound.getCompoundTag("Data"));
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
     }
 
     public void loadBag(String uuid)
@@ -89,10 +45,7 @@ public class PASaveHandler
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         try
         {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            String seperator = System.getProperty("file.separator");
-            File file = saveHandler.getMapFileFromName(uuid + seperator + "BagInventory");
+            File file = PokecubeSerializer.getFileForUUID(uuid, "BagInventory");
             if (file != null && file.exists())
             {
                 FileInputStream fileinputstream = new FileInputStream(file);
@@ -103,11 +56,9 @@ public class PASaveHandler
         }
         catch (FileNotFoundException e)
         {
-            e.printStackTrace();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
         }
     }
 
@@ -118,8 +69,7 @@ public class PASaveHandler
         try
         {
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName("PokecubeTeams");
+            File file = world.getSaveHandler().getMapFileFromName("PokecubeTeams");
             if (file != null && file.exists())
             {
                 FileInputStream fileinputstream = new FileInputStream(file);
@@ -173,16 +123,7 @@ public class PASaveHandler
         if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
         try
         {
-
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-            File file = saveHandler.getMapFileFromName(uuid + File.separator + "BagInventory");
-
-            File dir = new File(file.getParentFile().getAbsolutePath());
-            if (file != null && !file.exists())
-            {
-                dir.mkdirs();
-            }
+            File file = PokecubeSerializer.getFileForUUID(uuid, "BagInventory");
             if (file != null)
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -211,11 +152,9 @@ public class PASaveHandler
         try
         {
             World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            saveHandler = world.getSaveHandler();
-
             if (team == null)
             {
-                File file = saveHandler.getMapFileFromName("PokecubeTeams");
+                File file = world.getSaveHandler().getMapFileFromName("PokecubeTeams");
                 if (file != null)
                 {
                     NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -229,7 +168,7 @@ public class PASaveHandler
             }
             else
             {
-                File file = saveHandler.getMapFileFromName("PokeTeams" + File.separator + team);
+                File file = world.getSaveHandler().getMapFileFromName("PokeTeams" + File.separator + team);
                 File dir = new File(file.getParentFile().getAbsolutePath());
                 if (file != null && !file.exists())
                 {

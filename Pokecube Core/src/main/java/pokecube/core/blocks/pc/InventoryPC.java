@@ -104,6 +104,10 @@ public class InventoryPC implements IInventory
     {
         if (uuid != null)
         {
+            if(!map.containsKey(uuid))
+            {
+                PCSaveHandler.getInstance().loadPC(uuid);
+            }
             if (map.containsKey(uuid))
             {
                 if (PokecubeCore.proxy.getPlayer(uuid) != null)
@@ -158,7 +162,7 @@ public class InventoryPC implements IInventory
 
     public static void loadFromNBT(NBTTagList nbt)
     {
-        loadFromNBT(nbt, false);
+        loadFromNBT(nbt, true);
     }
 
     public static void loadFromNBT(NBTTagList nbt, boolean replace)

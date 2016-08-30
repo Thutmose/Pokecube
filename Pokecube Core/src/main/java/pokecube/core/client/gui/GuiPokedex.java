@@ -21,7 +21,6 @@ import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -33,7 +32,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -58,6 +56,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -1005,11 +1004,7 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                // entityPlayer.getHeldItemMainhand().setItemDamage(page);
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
-                        new byte[] { (byte) page });
-                PokecubePacketHandler.sendToServer(packet);
-
+                PacketPokedex.sendChangePagePacket((byte) page);
                 if (page == 2)
                 {
                     TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
@@ -1283,22 +1278,12 @@ public class GuiPokedex extends GuiScreen
 
                 if (locations.size() > 0)
                 {
-                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
                     Vector4 location = locations.get((GuiTeleport.instance().indexLocation) % locations.size()).loc;
-                    if (index == 0) buffer.writeByte(-1);
-                    else if (index == 4) buffer.writeByte(-2);
-                    buffer.writeInt((int) location.w);
-                    buffer.writeFloat(location.x);
-                    buffer.writeFloat(location.y);
-                    buffer.writeFloat(location.z);
-
-                    buffer.writeString(nicknameTextField.getText());
-
-                    PokecubeSerializer.getInstance().unsetTeleport(location,
-                            minecraft.thePlayer.getCachedUniqueIdString());
-                    PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKEDEX,
-                            buffer.array());
-                    PokecubePacketHandler.sendToServer(packet);
+                    if (index == 0)
+                    {
+                        PacketPokedex.sendRenameTelePacket(nicknameTextField.getText(), location);
+                    }
+                    else if (index == 4) PacketPokedex.sendRemoveTelePacket(location);
                 }
             }
         }

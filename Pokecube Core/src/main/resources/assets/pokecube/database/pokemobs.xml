@@ -16688,6 +16688,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
+            <Drop n="1" r="1" id="minecraft:rabbit"/>
             <Spawn rate="0.4" types="plains" typesBlacklist="cold"/>
             <BASESTATS atk="55" def="39" hp="45" spatk="35" spd="42" spdef="39"/>
             <EVYIELD atk="1"/>

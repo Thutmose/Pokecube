@@ -28,11 +28,11 @@ import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
@@ -74,11 +74,7 @@ public class ItemPokedex extends Item
             PokecubeSerializer.getInstance().save();
             if (!worldIn.isRemote)
             {
-                NBTTagCompound teletag = new NBTTagCompound();
-                PokecubeSerializer.getInstance().writePlayerTeleports(playerIn.getUniqueID(), teletag);
-
-                PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.TELEPORTLIST, teletag);
-                PokecubePacketHandler.sendToClient(packet, playerIn);
+                PacketDataSync.sendSyncPacket(playerIn, "pokecube-data");
             }
             return EnumActionResult.SUCCESS;
         }
@@ -135,11 +131,8 @@ public class ItemPokedex extends Item
         else
         {
             NBTTagCompound nbt = new NBTTagCompound();
-            StatsCollector.writeToNBT(nbt);
-
             NBTTagCompound tag = new NBTTagCompound();
             TerrainManager.getInstance().getTerrainForEntity(player).saveToNBT(tag);
-
             nbt.setBoolean("hasTerrain", true);
             nbt.setTag("terrain", tag);
 
@@ -160,6 +153,7 @@ public class ItemPokedex extends Item
             }
             PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
             PokecubePacketHandler.sendToClient(packet, player);
+            PacketDataSync.sendSyncPacket(player, "pokecube-stats");
         }
     }
 

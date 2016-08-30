@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1085,16 +1084,6 @@ public class PokedexEntryLoader
                 entry.breeds = xmlEntry.breed;
                 entry.isStarter = xmlEntry.starter;
                 entry.legendary = xmlEntry.legend;
-                if (entry.isStarter && !PokecubeMod.core.starters.contains(entry.pokedexNb))
-                {
-                    PokecubeMod.core.starters.add(entry.pokedexNb);
-                    Collections.sort(PokecubeMod.core.starters);
-                }
-                else if (!entry.isStarter)
-                {
-                    for (int i = 0; i < PokecubeMod.core.starters.size(); i++)
-                        if (PokecubeMod.core.starters.get(i) == entry.pokedexNb) PokecubeMod.core.starters.remove(i);
-                }
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
                 parseEvols(entry, stats, true);

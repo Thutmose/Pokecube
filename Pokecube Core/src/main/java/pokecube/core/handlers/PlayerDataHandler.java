@@ -309,7 +309,7 @@ public class PlayerDataHandler
     public PlayerDataManager load(String uuid)
     {
         PlayerDataManager manager = new PlayerDataManager(uuid);
-        for (PlayerData data : manager.data.values())
+        if (FMLCommonHandler.instance().getSide() == Side.SERVER) for (PlayerData data : manager.data.values())
         {
             String fileName = data.dataFileName();
             File file = null;

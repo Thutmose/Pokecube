@@ -168,7 +168,7 @@ public class PlayerDataHandler
             NBTTagCompound tag1 = new NBTTagCompound();
             for (PokedexEntry dbe : kills.keySet())
             {
-                tag.setInteger(dbe.getName(), kills.get(dbe));
+                tag1.setInteger(dbe.getName(), kills.get(dbe));
             }
             tag.setTag("kills", tag1);
 

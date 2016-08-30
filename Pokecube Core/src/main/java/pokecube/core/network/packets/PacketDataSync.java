@@ -80,7 +80,10 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         {
             player = PokecubeCore.getPlayer(null);
             PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
-            manager.getData(data.getString("type"), PlayerData.class).readFromNBT(data.getCompoundTag("data"));
+            
+            System.out.println(manager+" "+message.data.getString("type")+" "+message.data.getCompoundTag("data"));
+            
+            manager.getData(message.data.getString("type"), PlayerData.class).readFromNBT(message.data.getCompoundTag("data"));
         }
     }
 }

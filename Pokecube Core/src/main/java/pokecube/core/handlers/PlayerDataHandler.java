@@ -309,10 +309,18 @@ public class PlayerDataHandler
     public PlayerDataManager load(String uuid)
     {
         PlayerDataManager manager = new PlayerDataManager(uuid);
-        for (PlayerData data : manager.data.values())
+        if (FMLCommonHandler.instance().getSide() == Side.SERVER) for (PlayerData data : manager.data.values())
         {
             String fileName = data.dataFileName();
-            File file = PokecubeSerializer.getFileForUUID(uuid, fileName);
+            File file = null;
+            try
+            {
+                file = PokecubeSerializer.getFileForUUID(uuid, fileName);
+            }
+            catch (Exception e)
+            {
+
+            }
             if (file != null && file.exists())
             {
                 try

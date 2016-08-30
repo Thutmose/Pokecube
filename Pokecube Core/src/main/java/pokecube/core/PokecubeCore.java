@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -327,6 +328,19 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public Integer[] getStarters()
     {
+        for (PokedexEntry entry : Database.baseFormes.values())
+        {
+            if (entry.isStarter && !PokecubeMod.core.starters.contains(entry.getPokedexNb()))
+            {
+                PokecubeMod.core.starters.add(entry.getPokedexNb());
+                Collections.sort(PokecubeMod.core.starters);
+            }
+            else if (!entry.isStarter)
+            {
+                for (int i = 0; i < PokecubeMod.core.starters.size(); i++)
+                    if (PokecubeMod.core.starters.get(i) == entry.getPokedexNb()) PokecubeMod.core.starters.remove(i);
+            }
+        }
         return starters.toArray(new Integer[0]);
     }
 
@@ -396,7 +410,7 @@ public class PokecubeCore extends PokecubeMod
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         helper.postInit();
         removeAllMobs();
-        
+
         logger.setLevel(Level.ALL);
 
         try

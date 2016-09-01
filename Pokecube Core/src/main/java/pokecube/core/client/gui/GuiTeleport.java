@@ -69,7 +69,7 @@ public class GuiTeleport extends Gui
         locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
         int i = 0;
         int xOffset = 43;
-        int yOffset = 60;
+        int yOffset = 73;
         int dir = 1;
         if (!PokecubeMod.core.getConfig().guiDown)
         {
@@ -80,7 +80,17 @@ public class GuiTeleport extends Gui
             {
                 if (pokemob.getMove(moveCount) == null) break;
             }
-            yOffset = -(15 + 13 * (moveCount - 1))  + (5 - moveCount);
+            yOffset = -(11 + 14 * (moveCount - 1));
+        }
+        else
+        {
+            IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
+            int moveCount = 0;
+            for (moveCount = 0; moveCount < 4; moveCount++)
+            {
+                if (pokemob.getMove(moveCount) == null) break;
+            }
+            yOffset = (34 + 13 * (moveCount - 1));
         }
         // bind texture
         minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);

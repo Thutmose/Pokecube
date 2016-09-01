@@ -13,14 +13,12 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.village.Village;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
@@ -30,13 +28,14 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.packets.PacketDataSync;
+import pokecube.core.network.packets.PacketPokedex;
+import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
+import thut.api.terrain.TerrainSegment;
 
 /** @author Manchou */
 public class ItemPokedex extends Item
@@ -74,7 +73,7 @@ public class ItemPokedex extends Item
             PokecubeSerializer.getInstance().save();
             if (!worldIn.isRemote)
             {
-                PacketDataSync.sendSyncPacket(playerIn, "pokecube-data");
+                PacketDataSync.sendInitPacket(playerIn, "pokecube-data");
             }
             return EnumActionResult.SUCCESS;
         }
@@ -130,30 +129,10 @@ public class ItemPokedex extends Item
         }
         else
         {
-            NBTTagCompound nbt = new NBTTagCompound();
-            NBTTagCompound tag = new NBTTagCompound();
-            TerrainManager.getInstance().getTerrainForEntity(player).saveToNBT(tag);
-            nbt.setBoolean("hasTerrain", true);
-            nbt.setTag("terrain", tag);
-
-            List<Village> villages = player.getEntityWorld().getVillageCollection().getVillageList();
-            if (villages.size() > 0)
-            {
-                final BlockPos pos = player.getPosition();
-                Collections.sort(villages, new Comparator<Village>()
-                {
-                    @Override
-                    public int compare(Village o1, Village o2)
-                    {
-                        return (int) (pos.distanceSq(o1.getCenter()) - pos.distanceSq(o2.getCenter()));
-                    }
-                });
-                Vector3 temp = Vector3.getNewVector().set(villages.get(0).getCenter());
-                temp.writeToNBT(tag, "village");
-            }
-            PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
-            PokecubePacketHandler.sendToClient(packet, player);
-            PacketDataSync.sendSyncPacket(player, "pokecube-stats");
+            TerrainSegment s = TerrainManager.getInstance().getTerrainForEntity(player);
+            PacketSyncTerrain.sendTerrain(player, s.chunkX, s.chunkY, s.chunkZ, s);
+            PacketPokedex.sendVillageInfoPacket(player);
+            PacketDataSync.sendInitPacket(player, "pokecube-stats");
         }
     }
 

@@ -41,14 +41,9 @@ public class StatsCollector
         if (captured.getPokemonOwner() instanceof EntityPlayer)
             owner = captured.getPokemonOwner().getCachedUniqueIdString();
         else owner = new UUID(1234, 4321).toString();
-        Map<PokedexEntry, Integer> map = getCaptures(owner);
         PokedexEntry dbe = Database.getEntry(captured);
-        int current = 1;
-        if (map.containsKey(dbe))
-        {
-            current += map.get(dbe);
-        }
-        map.put(dbe, current);
+        PlayerDataHandler.getInstance().getPlayerData(owner).getData("pokecube-stats", PokecubePlayerStats.class)
+                .addCapture(dbe);
     }
 
     public static void addHatched(EntityPokemobEgg hatched)
@@ -64,13 +59,8 @@ public class StatsCollector
             return;
         }
         PokedexEntry dbe = Database.getEntry(mob);
-        int current = 1;
-        Map<PokedexEntry, Integer> map = getHatches(owner);
-        if (map.containsKey(dbe))
-        {
-            current += map.get(dbe);
-        }
-        map.put(dbe, current);
+        PlayerDataHandler.getInstance().getPlayerData(owner).getData("pokecube-stats", PokecubePlayerStats.class)
+                .addHatch(dbe);
     }
 
     public static void addKill(IPokemob killed, IPokemob killer)
@@ -81,14 +71,9 @@ public class StatsCollector
         if (killer.getPokemonOwner() instanceof EntityPlayer)
             owner = killer.getPokemonOwner().getCachedUniqueIdString();
         else owner = new UUID(1234, 4321).toString();
-        Map<PokedexEntry, Integer> map = getKills(owner);
         PokedexEntry dbe = Database.getEntry(killed);
-        int current = 1;
-        if (map.containsKey(dbe))
-        {
-            current += map.get(dbe);
-        }
-        map.put(dbe, current);
+        PlayerDataHandler.getInstance().getPlayerData(owner).getData("pokecube-stats", PokecubePlayerStats.class)
+                .addKill(dbe);
     }
 
     public static void readFromNBT(NBTTagCompound nbt)

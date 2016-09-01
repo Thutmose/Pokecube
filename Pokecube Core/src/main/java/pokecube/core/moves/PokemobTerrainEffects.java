@@ -211,7 +211,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
         {
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
             {
-                PacketSyncTerrain.sendTerrain(e, chunkX, chunkY, chunkZ, this);
+                PacketSyncTerrain.sendTerrainEffects(e, chunkX, chunkY, chunkZ, this);
             }
         }
     }

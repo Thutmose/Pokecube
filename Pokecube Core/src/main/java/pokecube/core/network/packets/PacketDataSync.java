@@ -12,16 +12,20 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.utils.AISaveHandler;
+import pokecube.core.client.gui.GuiInfoMessages;
+import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.handlers.PlayerDataHandler;
 import pokecube.core.handlers.PlayerDataHandler.PlayerData;
 import pokecube.core.handlers.PlayerDataHandler.PlayerDataManager;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.PokecubeSerializer;
 
 public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync, IMessage>
 {
     public NBTTagCompound data = new NBTTagCompound();
 
-    public static void sendSyncPacket(EntityPlayer player, String dataType)
+    public static void sendInitPacket(EntityPlayer player, String dataType)
     {
         PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
         PlayerData data = manager.getData(dataType, PlayerData.class);
@@ -33,6 +37,13 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
         System.out.println("Saving Data for " + player);
         PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+    }
+
+    public static void sendInitHandshake(EntityPlayer player)
+    {
+        PacketDataSync packet = new PacketDataSync();
+        packet.data.setBoolean("I", true);
+        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
     }
 
     public PacketDataSync()
@@ -79,11 +90,20 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         if (ctx.side == Side.CLIENT)
         {
             player = PokecubeCore.getPlayer(null);
-            PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
-            
-            System.out.println(manager+" "+message.data.getString("type")+" "+message.data.getCompoundTag("data"));
-            
-            manager.getData(message.data.getString("type"), PlayerData.class).readFromNBT(message.data.getCompoundTag("data"));
+            if (message.data.getBoolean("I"))
+            {
+                PokecubeSerializer.getInstance().clearInstance();
+                AISaveHandler.clearInstance();
+                GuiInfoMessages.clear();
+                new GuiTeleport();
+                PokecubeCore.registerSpawns();
+            }
+            else
+            {
+                PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
+                manager.getData(message.data.getString("type"), PlayerData.class)
+                        .readFromNBT(message.data.getCompoundTag("data"));
+            }
         }
     }
 }

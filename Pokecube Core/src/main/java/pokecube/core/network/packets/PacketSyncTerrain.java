@@ -1,8 +1,12 @@
 package pokecube.core.network.packets;
 
+import java.io.IOException;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -15,9 +19,10 @@ import thut.api.terrain.TerrainSegment;
 
 public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTerrain, IMessage>
 {
-    public static void sendTerrain(Entity player, int x, int y, int z, PokemobTerrainEffects terrain)
+    public static void sendTerrainEffects(Entity player, int x, int y, int z, PokemobTerrainEffects terrain)
     {
         PacketSyncTerrain packet = new PacketSyncTerrain();
+        packet.type = EFFECTS;
         packet.x = x;
         packet.y = y;
         packet.z = z;
@@ -27,14 +32,32 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
                 new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
     }
 
+    public static void sendTerrain(Entity player, int x, int y, int z, TerrainSegment terrain)
+    {
+        PacketSyncTerrain packet = new PacketSyncTerrain();
+        packet.type = TERRAIN;
+        packet.x = x;
+        packet.y = y;
+        packet.z = z;
+        packet.data.setInteger("dimID", player.dimension);
+        terrain.saveToNBT(packet.data);
+        PokecubeMod.packetPipeline.sendToAllAround(packet,
+                new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
+    }
+
+    public static final byte TERRAIN = 0;
+    public static final byte EFFECTS = 1;
+
     public PacketSyncTerrain()
     {
     }
 
-    int    x;
-    int    y;
-    int    z;
-    long[] effects = new long[16];
+    int            x;
+    int            y;
+    int            z;
+    byte           type;
+    long[]         effects = new long[16];
+    NBTTagCompound data    = new NBTTagCompound();
 
     @Override
     public IMessage onMessage(final PacketSyncTerrain message, final MessageContext ctx)
@@ -52,24 +75,43 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
     @Override
     public void fromBytes(ByteBuf buf)
     {
+        type = buf.readByte();
         x = buf.readInt();
         y = buf.readInt();
         z = buf.readInt();
-        for (int i = 0; i < 16; i++)
+        if (type == EFFECTS) for (int i = 0; i < 16; i++)
         {
             effects[i] = buf.readLong();
+        }
+        else if (type == TERRAIN)
+        {
+            PacketBuffer buffer = new PacketBuffer(buf);
+            try
+            {
+                data = buffer.readNBTTagCompoundFromBuffer();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
+        buf.writeByte(type);
         buf.writeInt(x);
         buf.writeInt(y);
         buf.writeInt(z);
-        for (int i = 0; i < 16; i++)
+        if (type == EFFECTS) for (int i = 0; i < 16; i++)
         {
             buf.writeLong(effects[i]);
+        }
+        else if (type == TERRAIN)
+        {
+            PacketBuffer buffer = new PacketBuffer(buf);
+            buffer.writeNBTTagCompoundToBuffer(data);
         }
     }
 
@@ -79,14 +121,23 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         player = PokecubeCore.getPlayer(null);
         TerrainSegment t = TerrainManager.getInstance().getTerrain(player.worldObj).getTerrain(message.x, message.y,
                 message.z);
-        PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
-        if (effect == null)
+
+        if (message.type == EFFECTS)
         {
-            t.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
+            PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
+            if (effect == null)
+            {
+                t.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
+            }
+            for (int i = 0; i < 16; i++)
+            {
+                effect.effects[i] = message.effects[i];
+            }
         }
-        for (int i = 0; i < 16; i++)
+        else if (message.type == TERRAIN)
         {
-            effect.effects[i] = message.effects[i];
+            TerrainManager.getInstance().getTerrain(message.data.getInteger("dimID"))
+                    .addTerrain(TerrainSegment.readFromNBT(message.data));
         }
     }
 }

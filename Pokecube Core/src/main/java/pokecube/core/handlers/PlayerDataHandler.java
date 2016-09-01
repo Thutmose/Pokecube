@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
@@ -39,11 +40,21 @@ public class PlayerDataHandler
         void writeToNBT(NBTTagCompound tag);
 
         void readFromNBT(NBTTagCompound tag);
+
+        void readSync(ByteBuf data);
+
+        void writeSync(ByteBuf data);
     }
 
     public static abstract class PlayerData implements IPlayerData
     {
+        public void readSync(ByteBuf data)
+        {
+        }
 
+        public void writeSync(ByteBuf data)
+        {
+        }
     }
 
     public static class PokecubePlayerData extends PlayerData
@@ -148,6 +159,42 @@ public class PlayerDataHandler
         public PokecubePlayerStats()
         {
             super();
+        }
+
+        public void addCapture(PokedexEntry entry)
+        {
+        }
+
+        public void addKill(PokedexEntry entry)
+        {
+        }
+
+        public void addHatch(PokedexEntry entry)
+        {
+        }
+
+        public int getCaptures(PokedexEntry entry)
+        {
+            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
+            Integer ret = captures.get(entry);
+            if (ret == null) return 0;
+            return ret;
+        }
+
+        public int getKills(PokedexEntry entry)
+        {
+            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
+            Integer ret = kills.get(entry);
+            if (ret == null) return 0;
+            return ret;
+        }
+
+        public int getHatchs(PokedexEntry entry)
+        {
+            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
+            Integer ret = hatches.get(entry);
+            if (ret == null) return 0;
+            return ret;
         }
 
         @Override
@@ -309,7 +356,7 @@ public class PlayerDataHandler
     public PlayerDataManager load(String uuid)
     {
         PlayerDataManager manager = new PlayerDataManager(uuid);
-        if (FMLCommonHandler.instance().getSide() == Side.SERVER) for (PlayerData data : manager.data.values())
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) for (PlayerData data : manager.data.values())
         {
             String fileName = data.dataFileName();
             File file = null;
@@ -321,6 +368,7 @@ public class PlayerDataHandler
             {
 
             }
+            System.out.println("Loading File:"+file);
             if (file != null && file.exists())
             {
                 try

@@ -23,9 +23,10 @@ public class AIIdle extends AIBase
     private double             yPosition;
     private double             zPosition;
     private double             speed;
+    private double             maxLength = 16;
 
-    Vector3                    v  = Vector3.getNewVector();
-    Vector3                    v1 = Vector3.getNewVector();
+    Vector3                    v         = Vector3.getNewVector();
+    Vector3                    v1        = Vector3.getNewVector();
 
     public AIIdle(EntityLiving entity)
     {
@@ -130,6 +131,7 @@ public class AIIdle extends AIBase
 
         mob.setPokemonAIState(IMoveConstants.IDLE, true);
         Path path = this.entity.getNavigator().getPathToXYZ(this.xPosition, this.yPosition, this.zPosition);
+        if (path != null && path.getCurrentPathLength() > maxLength) path = null;
         addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
         mob.setPokemonAIState(IMoveConstants.IDLE, false);
     }
@@ -180,7 +182,7 @@ public class AIIdle extends AIBase
         {
             boolean tameFactor = mob.getPokemonAIState(IMoveConstants.TAMED)
                     && !mob.getPokemonAIState(IMoveConstants.STAYING);
-            int distance = tameFactor ? 8 : 16;
+            int distance = (int) (maxLength = tameFactor ? 8 : 16);
             v.clear();
             if (!tameFactor)
             {

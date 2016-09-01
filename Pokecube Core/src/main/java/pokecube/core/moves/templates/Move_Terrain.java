@@ -59,7 +59,7 @@ public class Move_Terrain extends Move_Basic
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
-            PacketSyncTerrain.sendTerrain((Entity) attacker, segment.chunkX, segment.chunkY, segment.chunkZ, teffect);
+            PacketSyncTerrain.sendTerrainEffects((Entity) attacker, segment.chunkX, segment.chunkY, segment.chunkZ, teffect);
         }
 
     }

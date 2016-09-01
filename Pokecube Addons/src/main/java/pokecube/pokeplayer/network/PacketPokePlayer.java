@@ -214,7 +214,7 @@ public class PacketPokePlayer
 
                     if (teleport)
                     {
-                        PacketDataSync.sendSyncPacket(player, "pokecube-data");
+                        PacketDataSync.sendInitPacket(player, "pokecube-data");
                     }
 
                     if (move instanceof Move_Explode && (id == 0))

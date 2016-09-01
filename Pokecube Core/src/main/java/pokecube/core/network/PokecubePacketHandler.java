@@ -3,7 +3,6 @@
  */
 package pokecube.core.network;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,14 +27,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
-import pokecube.core.ai.utils.AISaveHandler;
-import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
-import pokecube.core.database.stats.StatsCollector;
-import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IHealer;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -59,8 +54,6 @@ import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 
 /** @author Manchou */
 public class PokecubePacketHandler
@@ -87,36 +80,9 @@ public class PokecubePacketHandler
                         public void run()
                         {
                             byte channel = buffer.readByte();
-                            if (channel == STATS)
+                            if (channel == 6)
                             {
-                                handleStatsPacketClient(buffer, player);
-                            }
-                            else if (channel == TELEPORTLIST)
-                            {
-                                try
-                                {
-                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                                    PokecubeSerializer.getInstance().readPlayerTeleports(nbt);
-                                    GuiTeleport.instance().refresh();
-                                }
-                                catch (IOException e)
-                                {
-                                    e.printStackTrace();
-                                }
-                            }
-                            else if (channel == KILLENTITY)
-                            {
-                                try
-                                {
-                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                                    int id = nbt.getInteger("id");
-                                    if (player.getEntityWorld().getEntityByID(id) != null)
-                                        player.getEntityWorld().getEntityByID(id).setDead();
-                                }
-                                catch (IOException e)
-                                {
-                                    e.printStackTrace();
-                                }
+                                Thread.dumpStack();
                             }
                             else if (channel == MOVEENTITY)
                             {
@@ -134,26 +100,6 @@ public class PokecubePacketHandler
                                 PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
                                         PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
                                 PokecubePacketHandler.sendToServer(packet);
-                            }
-                            else if (channel == CHANGEFORME)
-                            {
-                                try
-                                {
-                                    NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-                                    int id = nbt.getInteger("id");
-                                    String forme = nbt.getString("forme");
-                                    if (player.getEntityWorld().getEntityByID(id) != null)
-                                    {
-                                        PokedexEntry entry = ((IPokemob) player.getEntityWorld().getEntityByID(id))
-                                                .getPokedexEntry().getForm(forme);
-                                        ((IPokemob) player.getEntityWorld().getEntityByID(id)).setPokedexEntry(entry);
-                                    }
-
-                                }
-                                catch (IOException e)
-                                {
-                                    e.printStackTrace();
-                                }
                             }
                         }
                     };
@@ -176,13 +122,8 @@ public class PokecubePacketHandler
             }
         }
 
-        public static final byte STATS         = 6;
-        public static final byte TELEPORTLIST  = 8;
-        public static final byte KILLENTITY    = 11;
         public static final byte MOVEENTITY    = 12;
         public static final byte TELEPORTINDEX = 13;
-
-        public static final byte CHANGEFORME   = 14;
 
         PacketBuffer             buffer;;
 
@@ -540,8 +481,6 @@ public class PokecubePacketHandler
                 PokecubeCore.getMessageID(), Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketNickname.class, PacketNickname.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
-        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
 
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
@@ -562,6 +501,11 @@ public class PokecubePacketHandler
         PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
 
+        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)
@@ -570,48 +514,6 @@ public class PokecubePacketHandler
         {
             IHealer healer = (IHealer) sender.openContainer;
             healer.heal();
-        }
-    }
-
-    private static void handleStatsPacketClient(PacketBuffer buffer, EntityPlayer player)
-    {
-        try
-        {
-            NBTTagCompound nbt = buffer.readNBTTagCompoundFromBuffer();
-            if (nbt == null)
-            {
-                System.err.println("Error with the stats update packet");
-                return;
-            }
-            StatsCollector.readFromNBT(nbt);
-            if (nbt.getBoolean("hasSerializer"))
-            {
-                PokecubeSerializer.getInstance().clearInstance();
-                AISaveHandler.clearInstance();
-                GuiInfoMessages.clear();
-                new GuiTeleport();
-                PokecubeCore.registerSpawns();
-            }
-            else if (nbt.getBoolean("hasTerrain"))
-            {
-                NBTTagCompound tag = nbt.getCompoundTag("terrain");
-                TerrainManager.getInstance().getTerrain(tag.getInteger("dimID"))
-                        .addTerrain(TerrainSegment.readFromNBT(tag));
-                Vector3 temp = Vector3.readFromNBT(tag, "village");
-                if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
-                else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
-                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
-            }
-            else if (nbt.getBoolean("toLoadTerrain"))
-            {
-                NBTTagCompound tag = nbt.getCompoundTag("terrain");
-                TerrainManager.getInstance().getTerrain(tag.getInteger("dimID")).loadTerrain(nbt);
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            System.err.println("Bad thing happened reading stats packet again");
         }
     }
 

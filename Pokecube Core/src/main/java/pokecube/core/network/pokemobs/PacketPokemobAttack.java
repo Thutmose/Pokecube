@@ -96,7 +96,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         boolean teleport = message.teleport;
         if (teleport)
         {
-            PacketDataSync.sendSyncPacket(player, "pokecube-data");
+            PacketDataSync.sendInitPacket(player, "pokecube-data");
         }
         if (move instanceof Move_Explode && (user == target || target == null))
         {

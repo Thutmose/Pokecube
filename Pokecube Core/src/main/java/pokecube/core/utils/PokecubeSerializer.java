@@ -327,9 +327,9 @@ public class PokecubeSerializer
 
     public void clearInstance()
     {
+        PlayerDataHandler.clear();
         if (instance == null) return;
         instance.save();
-        PlayerDataHandler.clear();
         PokecubeItems.times = new Vector<Long>();
         instance = null;
     }
@@ -607,7 +607,7 @@ public class PokecubeSerializer
         {
             System.err.println("UUID null");
         }
-        saveData();
+        PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 
     public void setTeleIndex(String uuid, int index)

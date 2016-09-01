@@ -3,8 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.UUID;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -309,10 +307,20 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
-                evolution.setUniqueId(UUID.randomUUID());
+                worldObj.removeEntity(this);
                 ((IPokemob) evolution).changeForme(forme);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                if (this.addedToChunk) worldObj.spawnEntityInWorld(evolution);
+                final Entity evo = evolution;
+                if (this.addedToChunk)
+                {
+                    PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
+                    {
+                        public void run()
+                        {
+                            worldObj.spawnEntityInWorld(evo);
+                        }
+                    });
+                }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {

@@ -100,7 +100,7 @@ public class Move_Teleport extends Move_Utility
         }
         if (attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
         {
-            if (target == null)
+            if ((target == null && packet.attacked == null) || (packet.attacked == packet.attacker))
             {
                 if (attacker.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) attacker).isServerWorld())
                 {

@@ -56,7 +56,8 @@ public class MoveEarthquake extends Move_Basic
                     Entity attacked = e;
                     if (!(e.onGround || e.fallDistance < 0.5)) continue;
                     if (e instanceof IPokemob && ((IPokemob) e).isType(flying)
-                            || (e instanceof EntityPlayer && !PokecubeMod.pokemobsDamagePlayers))
+                            || (e instanceof EntityPlayer && !PokecubeMod.pokemobsDamagePlayers)
+                            || (e == attacker.getPokemonOwner() && !PokecubeMod.pokemobsDamageOwner))
                         continue;
                     if (getAnimation() instanceof Thunder)
                     {

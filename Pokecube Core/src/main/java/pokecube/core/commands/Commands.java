@@ -415,7 +415,7 @@ public class Commands implements ICommand
                     if (player != null)
                     {
                         PokecubeSerializer.getInstance().setHasStarter(player, true);
-                        PacketDataSync.sendSyncPacket(player, "pokecube-data");
+                        PacketDataSync.sendInitPacket(player, "pokecube-data");
                         cSender.addChatMessage(
                                 new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
                     }

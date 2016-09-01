@@ -80,7 +80,6 @@ import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokeType;
@@ -593,12 +592,9 @@ public class EventsHandler
 
         if (!evt.player.getEntityWorld().isRemote)
         {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setBoolean("hasSerializer", true);
-            PokecubeClientPacket packet = new PokecubeClientPacket(PokecubeClientPacket.STATS, nbt);
-            PokecubePacketHandler.sendToClient(packet, entityPlayer);
-            PacketDataSync.sendSyncPacket(entityPlayer, "pokecube-data");
-            PacketDataSync.sendSyncPacket(entityPlayer, "pokecube-stats");
+            PacketDataSync.sendInitHandshake(entityPlayer);
+            PacketDataSync.sendInitPacket(entityPlayer, "pokecube-data");
+            PacketDataSync.sendInitPacket(entityPlayer, "pokecube-stats");
         }
 
         if (evt.player instanceof EntityPlayer)

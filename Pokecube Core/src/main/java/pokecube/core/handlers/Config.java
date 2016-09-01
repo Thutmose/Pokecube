@@ -113,7 +113,7 @@ public class Config extends ConfigBase
     public boolean             pokemobsEatGravel          = false;
     @Configure(category = mobAI)
     /** Is there a warning before a wild pokémob attacks the player. */
-    public boolean             pokemobagresswarning       = false;
+    public boolean             pokemobagresswarning       = true;
     @Configure(category = mobAI)
     /** Distance to player needed to agress the player */
     public int                 mobAggroRadius             = 3;
@@ -222,7 +222,7 @@ public class Config extends ConfigBase
     public boolean             disableMonsters            = false;
     @Configure(category = spawning, needsMcRestart = true)
     /** do animals not spawn */
-    public boolean             deactivateAnimals          = false;
+    public boolean             deactivateAnimals          = true;
     @Configure(category = spawning, needsMcRestart = true)
     /** do Pokemobs spawn */
     public boolean             pokemonSpawn               = true;

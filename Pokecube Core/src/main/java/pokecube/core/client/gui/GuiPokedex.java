@@ -54,8 +54,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -1066,10 +1064,7 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket((byte) 5,
-                        new byte[] { (byte) page });
-                PokecubePacketHandler.sendToServer(packet);
-
+                PacketPokedex.sendChangePagePacket((byte) page);
                 if (page == 1)
                 {
                     TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);

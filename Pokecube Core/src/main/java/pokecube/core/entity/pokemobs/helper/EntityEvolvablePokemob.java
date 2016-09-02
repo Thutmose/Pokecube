@@ -14,6 +14,9 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
@@ -35,6 +38,32 @@ import pokecube.core.utils.Tools;
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
+    static class EvoTicker
+    {
+        final World  world;
+        final Entity evo;
+        final long   evoTime;
+
+        public EvoTicker(World world, long evoTime, Entity evo)
+        {
+            this.world = world;
+            this.evoTime = evoTime;
+            this.evo = evo;
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void tick(WorldTickEvent evt)
+        {
+            if (evt.world != world || evt.phase != Phase.END) return;
+            if (evt.world.getTotalWorldTime() > evoTime)
+            {
+                evt.world.spawnEntityInWorld(evo);
+                MinecraftForge.EVENT_BUS.unregister(this);
+            }
+        }
+    }
+
     ItemStack      stack     = null;
     public boolean traded    = false;
     String         evolution = "";
@@ -58,7 +87,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         evolving = false;
         setEvolutionTicks(-1);
         this.setPokemonAIState(EVOLVING, false);
-        // TODO decide if it should refund itemstacks.
         this.displayMessageToOwner(
                 new TextComponentTranslation("pokemob.evolution.cancel", this.getPokemonDisplayName()));
     }
@@ -307,19 +335,19 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
+                        this.getPokemonDisplayName().getFormattedText(),
+                        ((IPokemob) evolution).getPokedexEntry().getName());
+                this.displayMessageToOwner(mess);
+                this.setPokemonOwner(null);
+                this.setDead();
                 worldObj.removeEntity(this);
                 ((IPokemob) evolution).changeForme(forme);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                final Entity evo = evolution;
+                long evoTime = worldObj.getTotalWorldTime() + 2;
                 if (this.addedToChunk)
                 {
-                    PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
-                    {
-                        public void run()
-                        {
-                            worldObj.spawnEntityInWorld(evo);
-                        }
-                    });
+                    new EvoTicker(worldObj, evoTime, evolution);
                 }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
@@ -327,12 +355,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
                     ((IPokemob) evolution).setEvolutionTicks(50);
                 }
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
-                        this.getPokemonDisplayName().getFormattedText(),
-                        ((IPokemob) evolution).getPokedexEntry().getName());
-                this.displayMessageToOwner(mess);
-                this.setPokemonOwner(null);
-                this.setDead();
             }
             else
             {

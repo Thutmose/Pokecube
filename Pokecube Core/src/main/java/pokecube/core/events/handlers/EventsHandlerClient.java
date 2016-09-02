@@ -280,7 +280,27 @@ public class EventsHandlerClient
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
         eventTime = Keyboard.getEventNanoseconds();
-        if (key == Keyboard.KEY_SPACE && player.getRidingEntity() instanceof IPokemob)
+
+        boolean up = false;
+        if (ClientProxyPokecube.mobUp.getKeyCode() == Keyboard.KEY_NONE)
+        {
+            up = key == Keyboard.KEY_SPACE;
+        }
+        else
+        {
+            up = GameSettings.isKeyDown(ClientProxyPokecube.mobUp);
+        }
+        boolean down = false;
+        if (ClientProxyPokecube.mobDown.getKeyCode() == Keyboard.KEY_NONE)
+        {
+            down = key == Keyboard.KEY_LCONTROL;
+        }
+        else
+        {
+            down = GameSettings.isKeyDown(ClientProxyPokecube.mobDown);
+        }
+
+        if (up && player.getRidingEntity() instanceof IPokemob)
         {
             boolean state = Keyboard.getEventKeyState();
             MountState newState = state ? EntityMountablePokemob.MountState.UP : EntityMountablePokemob.MountState.NONE;
@@ -297,7 +317,7 @@ public class EventsHandlerClient
                 PokecubePacketHandler.sendToServer(packet);
             }
         }
-        else if (key == Keyboard.KEY_LCONTROL && player.getRidingEntity() instanceof IPokemob)
+        else if (down && player.getRidingEntity() instanceof IPokemob)
         {
             boolean state = Keyboard.getEventKeyState();
             MountState newState = state ? EntityMountablePokemob.MountState.DOWN

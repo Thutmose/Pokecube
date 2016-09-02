@@ -292,7 +292,9 @@ public class PokeNavigator extends PathNavigate
                 v.set(theEntity);
                 v1.set(currentPath.getFinalPathPoint());
 
-                if (v.distTo(v1) < f)
+                boolean loaded = worldObj.isAreaLoaded(v.getPos(), v1.getPos());
+
+                if (!loaded || v.distTo(v1) < f)
                 {
                     this.clearPathEntity();
                     return;

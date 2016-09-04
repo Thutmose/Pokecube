@@ -414,7 +414,6 @@ public class ItemPokemobEgg extends Item
         {
             mob.setPokemonOwner(owner);
             mob.setPokemonAIState(IMoveConstants.TAMED, true);
-            mob.setPokemonAIState(IMoveConstants.SITTING, owner instanceof EntityPlayer);
             mob.setPokecubeId(0);
             mob.setHeldItem(null);
         }
@@ -423,7 +422,6 @@ public class ItemPokemobEgg extends Item
     public static void initStack(Entity mother, IPokemob father, ItemStack stack)
     {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-
         if (mother instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) mother;
@@ -431,18 +429,6 @@ public class ItemPokemobEgg extends Item
             {
                 getGenetics(mob, father, stack.getTagCompound());
             }
-        }
-        return;
-    }
-
-    public static void initStack(Entity placer, ItemStack stack)
-    {
-        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-
-        if (placer instanceof IPokemob)
-        {
-            IPokemob mob = (IPokemob) placer;
-            if (!mob.getPokemonOwnerName().equals("")) { return; }
         }
         return;
     }
@@ -515,9 +501,6 @@ public class ItemPokemobEgg extends Item
         ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg, 1, stack.getItemDamage());
         if (stack.hasTagCompound()) eggItemStack.setTagCompound(stack.getTagCompound());
         else eggItemStack.setTagCompound(new NBTTagCompound());
-
-        initStack(placer, eggItemStack);
-
         Entity entity = new EntityPokemobEgg(world, location.x, location.y, location.z, eggItemStack, placer);
         EggEvent.Place event = new EggEvent.Place(entity);
         MinecraftForge.EVENT_BUS.post(event);

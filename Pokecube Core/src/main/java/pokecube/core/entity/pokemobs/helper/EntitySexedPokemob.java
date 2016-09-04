@@ -203,7 +203,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             Entity eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, eggItemStack, this, male);
             EggEvent.Lay event = new EggEvent.Lay(eggItem);
             MinecraftForge.EVENT_BUS.post(event);
-
             if (!event.isCanceled())
             {
                 egg = eggItem;

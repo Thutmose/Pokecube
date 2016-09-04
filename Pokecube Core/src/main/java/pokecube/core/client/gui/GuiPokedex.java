@@ -842,10 +842,6 @@ public class GuiPokedex extends GuiScreen
         {
             button = 9;// exchange Move 34
         }
-        else if (xConv >= 169 && xConv <= 175 && yConv <= 5 && yConv >= 0)
-        {
-            button = 13;// single dot button above bottom window.
-        }
         else if (xConv >= -55 && xConv <= 30 && yConv >= -60 && yConv <= 15)
         {
             button = 10;// Rotate Mouse control
@@ -857,6 +853,14 @@ public class GuiPokedex extends GuiScreen
         else if (xConv >= 167 && xConv <= 176 && yConv <= -41 && yConv >= -46)
         {
             button = 12;// swap page
+        }
+        else if (xConv >= 169 && xConv <= 175 && yConv <= 5 && yConv >= 0)
+        {
+            button = 13;// single dot button above bottom window.
+        }
+        else if (xConv >= -65 && xConv <= -51 && yConv <= -88 && yConv >= -101)
+        {
+            button = 14;// Inspect Pokedex
         }
         return button;
     }
@@ -1368,6 +1372,11 @@ public class GuiPokedex extends GuiScreen
         {
             mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
+        if (button == 14)
+        {
+            PacketPokedex.sendInspectPacket(true);
+            return;
+        }
 
         if (button == 10)
         {
@@ -1491,5 +1500,11 @@ public class GuiPokedex extends GuiScreen
         {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        PacketPokedex.sendInspectPacket(false);
     }
 }

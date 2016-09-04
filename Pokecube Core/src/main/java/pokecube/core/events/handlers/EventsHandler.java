@@ -32,7 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -70,7 +69,6 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
-import pokecube.core.events.EggEvent;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -87,7 +85,6 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.ExplosionCustom;
-import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -289,20 +286,6 @@ public class EventsHandler
         {
             int meta = evt.getState().getBlock().getMetaFromState(evt.getState());
             if (meta == 1 && !evt.getPlayer().capabilities.isCreativeMode) evt.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public void checkHatch(EggEvent.PreHatch evt)
-    {
-        Vector3 location = Vector3.getNewVector().set(evt.egg);
-        World world = evt.egg.getEntityWorld();
-        int num = Tools.countPokemon(world, location, PokecubeMod.core.getConfig().maxSpawnRadius);
-        float factor = 1.25f;
-        if (num > PokecubeMod.core.getConfig().mobSpawnNumber * factor)
-        {
-            evt.egg.hatch += 600;
-            evt.setCanceled(true);
         }
     }
 

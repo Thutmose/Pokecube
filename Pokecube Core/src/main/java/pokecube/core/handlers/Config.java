@@ -42,6 +42,7 @@ public class Config extends ConfigBase
     public static final String misc                       = "misc";
     public static final String client                     = "client";
     public static final String advanced                   = "advanced";
+    public static final String rewards                    = "rewards";
 
     public static int          GUICHOOSEFIRSTPOKEMOB_ID;
     public static int          GUIDISPLAYPOKECUBEINFO_ID;
@@ -294,6 +295,19 @@ public class Config extends ConfigBase
 
     @Configure(category = database, needsMcRestart = true)
     String[]                   configDatabases            = { "pokemobs", "moves" };
+
+    @Configure(category = rewards)
+    public String              exp_shareRequirement       = "5";
+    @Configure(category = rewards)
+    public String              cutTMRequirement           = "3%";
+    @Configure(category = rewards)
+    public String              flashTMRequirement         = "6%";
+    @Configure(category = rewards)
+    public String              rocksmashTMRequirement     = "9%";
+    @Configure(category = rewards)
+    public String              mastercubeRequirement      = "20%";
+    @Configure(category = rewards)
+    public String              shinycharmRequirement      = "100%";
 
     /** List of blocks to be considered for the floor of a cave. */
     private List<Block>        caveBlocks                 = new ArrayList<Block>();

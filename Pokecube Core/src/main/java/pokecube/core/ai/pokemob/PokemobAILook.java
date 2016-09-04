@@ -45,15 +45,12 @@ public class PokemobAILook extends EntityAIBase
     {
         if (idle) return this.idleTime >= 0;
         return !this.closestEntity.isEntityAlive() ? false
-                : (this.theWatcher.getDistanceSqToEntity(
-                        this.closestEntity) > this.maxDistanceForPlayer * this.maxDistanceForPlayer ? false
-                                : this.lookTime > 0);
+                : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > this.maxDistanceForPlayer
+                        * this.maxDistanceForPlayer ? false : this.lookTime > 0);
     }
 
-    /**
-     * Determine if this AI Task is interruptible by a higher (= lower value) priority task. All vanilla AITask have
-     * this value set to true.
-     */
+    /** Determine if this AI Task is interruptible by a higher (= lower value)
+     * priority task. All vanilla AITask have this value set to true. */
     @Override
     public boolean isInterruptible()
     {
@@ -96,15 +93,18 @@ public class PokemobAILook extends EntityAIBase
             }
             else
             {
-                this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(
-                        this.watchedClass, this.theWatcher.getEntityBoundingBox()
-                                .expand(this.maxDistanceForPlayer, 3.0D, this.maxDistanceForPlayer),
+                this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(this.watchedClass,
+                        this.theWatcher.getEntityBoundingBox().expand(this.maxDistanceForPlayer, 3.0D,
+                                this.maxDistanceForPlayer),
                         this.theWatcher);
             }
+
+            if (closestEntity != null && closestEntity.getRidingEntity() == theWatcher) closestEntity = null;
 
             return this.closestEntity != null;
         }
     }
+
     /** Execute a one shot task or start executing a continuous task */
     @Override
     public void startExecuting()
@@ -118,6 +118,7 @@ public class PokemobAILook extends EntityAIBase
         }
         else this.lookTime = 40 + this.theWatcher.getRNG().nextInt(40);
     }
+
     /** Updates the task */
     @Override
     public void updateTask()
@@ -126,8 +127,8 @@ public class PokemobAILook extends EntityAIBase
         {
             --this.idleTime;
             this.theWatcher.getLookHelper().setLookPosition(this.theWatcher.posX + this.lookX,
-                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ,
-                    10.0F, this.theWatcher.getVerticalFaceSpeed());
+                    this.theWatcher.posY + this.theWatcher.getEyeHeight(), this.theWatcher.posZ + this.lookZ, 10.0F,
+                    this.theWatcher.getVerticalFaceSpeed());
             return;
         }
         this.theWatcher.getLookHelper().setLookPosition(this.closestEntity.posX,

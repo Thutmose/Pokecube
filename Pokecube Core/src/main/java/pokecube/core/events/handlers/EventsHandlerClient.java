@@ -9,8 +9,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Sets;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,7 +26,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
@@ -50,21 +49,20 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
+import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
-import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
+import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.IMegaWearable;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketChangeForme;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.network.pokemobs.PacketMountedControl;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -229,7 +227,7 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void clientTick(TickEvent.PlayerTickEvent event)
     {
-        if (event.phase == Phase.START) return;
+        if (event.phase == Phase.START || event.player != Minecraft.getMinecraft().thePlayer) return;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
@@ -249,6 +247,40 @@ public class EventsHandlerClient
                     && event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
             {
                 mob.returnToPokecube();
+            }
+        }
+        if (event.player.isRiding())
+        {
+            Entity e = event.player.getRidingEntity();
+            if (e instanceof EntityAiPokemob)
+            {
+                LogicMountedControl controller = ((EntityAiPokemob) e).controller;
+                controller.backInputDown = ((EntityPlayerSP) event.player).movementInput.backKeyDown;
+                controller.forwardInputDown = ((EntityPlayerSP) event.player).movementInput.forwardKeyDown;
+                controller.leftInputDown = ((EntityPlayerSP) event.player).movementInput.leftKeyDown;
+                controller.rightInputDown = ((EntityPlayerSP) event.player).movementInput.rightKeyDown;
+
+                boolean up = false;
+                if (ClientProxyPokecube.mobUp.getKeyCode() == Keyboard.KEY_NONE)
+                {
+                    up = Keyboard.isKeyDown(Keyboard.KEY_SPACE);
+                }
+                else
+                {
+                    up = GameSettings.isKeyDown(ClientProxyPokecube.mobUp);
+                }
+                boolean down = false;
+                if (ClientProxyPokecube.mobDown.getKeyCode() == Keyboard.KEY_NONE)
+                {
+                    down = Keyboard.isKeyDown(Keyboard.KEY_LCONTROL);
+                }
+                else
+                {
+                    down = GameSettings.isKeyDown(ClientProxyPokecube.mobDown);
+                }
+                controller.upInputDown = up;
+                controller.downInputDown = down;
+                PacketMountedControl.sendControlPacket(e, controller);
             }
         }
         lastSetTime = System.currentTimeMillis() + 500;
@@ -273,7 +305,6 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
-        int key = Keyboard.getEventKey();
 
         if (Keyboard.getEventNanoseconds() == eventTime) return;
 
@@ -281,60 +312,66 @@ public class EventsHandlerClient
 
         eventTime = Keyboard.getEventNanoseconds();
 
-        boolean up = false;
-        if (ClientProxyPokecube.mobUp.getKeyCode() == Keyboard.KEY_NONE)
-        {
-            up = key == Keyboard.KEY_SPACE;
-        }
-        else
-        {
-            up = GameSettings.isKeyDown(ClientProxyPokecube.mobUp);
-        }
-        boolean down = false;
-        if (ClientProxyPokecube.mobDown.getKeyCode() == Keyboard.KEY_NONE)
-        {
-            down = key == Keyboard.KEY_LCONTROL;
-        }
-        else
-        {
-            down = GameSettings.isKeyDown(ClientProxyPokecube.mobDown);
-        }
-
-        if (up && player.getRidingEntity() instanceof IPokemob)
-        {
-            boolean state = Keyboard.getEventKeyState();
-            MountState newState = state ? EntityMountablePokemob.MountState.UP : EntityMountablePokemob.MountState.NONE;
-            if (newState != ((EntityMountablePokemob) player.getRidingEntity()).state)
-            {
-                ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
-                byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
-                if (state) mess = (byte) EntityMountablePokemob.MountState.UP.ordinal();
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-                buffer.writeByte(MessageServer.MOUNTDIR);
-                buffer.writeInt(player.getRidingEntity().getEntityId());
-                buffer.writeByte(mess);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-            }
-        }
-        else if (down && player.getRidingEntity() instanceof IPokemob)
-        {
-            boolean state = Keyboard.getEventKeyState();
-            MountState newState = state ? EntityMountablePokemob.MountState.DOWN
-                    : EntityMountablePokemob.MountState.NONE;
-            if (newState != ((EntityMountablePokemob) player.getRidingEntity()).state)
-            {
-                ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
-                byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
-                if (state) mess = (byte) EntityMountablePokemob.MountState.DOWN.ordinal();
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-                buffer.writeByte(MessageServer.MOUNTDIR);
-                buffer.writeInt(player.getRidingEntity().getEntityId());
-                buffer.writeByte(mess);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-            }
-        }
+        // int key = Keyboard.getEventKey();
+        // boolean up = false;
+        // if (ClientProxyPokecube.mobUp.getKeyCode() == Keyboard.KEY_NONE)
+        // {
+        // up = key == Keyboard.KEY_SPACE;
+        // }
+        // else
+        // {
+        // up = GameSettings.isKeyDown(ClientProxyPokecube.mobUp);
+        // }
+        // boolean down = false;
+        // if (ClientProxyPokecube.mobDown.getKeyCode() == Keyboard.KEY_NONE)
+        // {
+        // down = key == Keyboard.KEY_LCONTROL;
+        // }
+        // else
+        // {
+        // down = GameSettings.isKeyDown(ClientProxyPokecube.mobDown);
+        // }
+        //
+        // if (up && player.getRidingEntity() instanceof IPokemob)
+        // {
+        // boolean state = Keyboard.getEventKeyState();
+        // MountState newState = state ? EntityMountablePokemob.MountState.UP :
+        // EntityMountablePokemob.MountState.NONE;
+        // if (newState != ((EntityMountablePokemob)
+        // player.getRidingEntity()).state)
+        // {
+        // ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
+        // byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
+        // if (state) mess = (byte)
+        // EntityMountablePokemob.MountState.UP.ordinal();
+        // PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+        // buffer.writeByte(MessageServer.MOUNTDIR);
+        // buffer.writeInt(player.getRidingEntity().getEntityId());
+        // buffer.writeByte(mess);
+        // MessageServer packet = new MessageServer(buffer);
+        // PokecubePacketHandler.sendToServer(packet);
+        // }
+        // }
+        // else if (down && player.getRidingEntity() instanceof IPokemob)
+        // {
+        // boolean state = Keyboard.getEventKeyState();
+        // MountState newState = state ? EntityMountablePokemob.MountState.DOWN
+        // : EntityMountablePokemob.MountState.NONE;
+        // if (newState != ((EntityMountablePokemob)
+        // player.getRidingEntity()).state)
+        // {
+        // ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
+        // byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
+        // if (state) mess = (byte)
+        // EntityMountablePokemob.MountState.DOWN.ordinal();
+        // PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+        // buffer.writeByte(MessageServer.MOUNTDIR);
+        // buffer.writeInt(player.getRidingEntity().getEntityId());
+        // buffer.writeByte(mess);
+        // MessageServer packet = new MessageServer(buffer);
+        // PokecubePacketHandler.sendToServer(packet);
+        // }
+        // }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
         {
             boolean ring = checker.hasRing(player);

@@ -60,6 +60,7 @@ import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
 import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
+import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
@@ -92,6 +93,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     public GuardAI              guardAI;
     public PokemobAIUtilityMove utilMoveAI;
+    public LogicMountedControl  controller;
     private AIStuff             aiStuff;
 
     private PokeNavigator       navi;
@@ -340,6 +342,16 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
 
         }
+
+        aiStuff.addAILogic(new LogicInLiquid(this));
+        aiStuff.addAILogic(new LogicCollision(this));
+        aiStuff.addAILogic(new LogicMovesUpdates(this));
+        aiStuff.addAILogic(new LogicInMaterials(this));
+        aiStuff.addAILogic(new LogicFloatFlySwim(this));
+        aiStuff.addAILogic(new LogicMiscUpdate(this));
+        controller = new LogicMountedControl(this);
+        // aiStuff.addAILogic();
+
         if (worldObj.isRemote) return;
 
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
@@ -357,13 +369,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
         aiStuff.addAITask(new AIIdle(this).setPriority(500));
         aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
-
-        aiStuff.addAILogic(new LogicInLiquid(this));
-        aiStuff.addAILogic(new LogicCollision(this));
-        aiStuff.addAILogic(new LogicMovesUpdates(this));
-        aiStuff.addAILogic(new LogicInMaterials(this));
-        aiStuff.addAILogic(new LogicFloatFlySwim(this));
-        aiStuff.addAILogic(new LogicMiscUpdate(this));
 
     }
 
@@ -398,7 +403,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void jump()
     {
         if (worldObj.isRemote) return;
-
         if (!this.isInWater() && !this.isInLava())
         {
             if (!this.onGround) return;
@@ -449,11 +453,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void moveEntityWithHeading(float f, float f1)
     {
         double d0;
-        if (isBeingRidden())
-        {
-            super.moveEntityWithHeading(f, f1);
-            return;
-        }
         if (isServerWorld())
         {
             PokedexEntry entry = getPokedexEntry();
@@ -797,6 +796,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             onGround = true;
         }
+        controller.doServerTick(worldObj);
         super.onLivingUpdate();
 
         if (getPokemonAIState(MATING))
@@ -1288,10 +1288,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.worldObj.theProfiler.endStartSection("look");
         this.getLookHelper().onUpdateLook();
         this.worldObj.theProfiler.endStartSection("jump");
-        this.getJumpHelper().doJump();
         if (getPokemonAIState(JUMPING))
         {
             jump();
+            this.setPokemonAIState(JUMPING, false);
         }
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.endSection();

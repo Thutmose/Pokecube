@@ -13,8 +13,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
-import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
-import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob.MountState;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -53,13 +51,6 @@ public class PokemobPacketHandler
                             {
                                 Entity mob = (Entity) pokemob;
                                 ((IPokemob) mob).returnToPokecube();
-                            }
-                            else if (channel == MOUNTDIR)
-                            {
-                                EntityMountablePokemob mob = (EntityMountablePokemob) pokemob;
-                                byte mess = buffer.readByte();
-                                MountState state = MountState.values()[mess];
-                                mob.state = state;
                             }
                             else if (channel == MOVEINDEX)
                             {
@@ -104,7 +95,6 @@ public class PokemobPacketHandler
         public static final byte MOVEINDEX    = 5;
         public static final byte ALIVECHECK   = 7;
         public static final byte COME         = 10;
-        public static final byte MOUNTDIR     = 11;
         public static final byte CANCELEVOLVE = 12;
 
         PacketBuffer             buffer;;

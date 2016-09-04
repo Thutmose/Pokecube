@@ -31,6 +31,7 @@ public class HeldItemHandler
         megaVariants.add("charizardmega-y");
         megaVariants.add("charizardmega-x");
         megaVariants.add("gallademega");
+        megaVariants.add("garchompmega");
         megaVariants.add("gardevoirmega");
         megaVariants.add("gengarmega");
         megaVariants.add("glaliemega");

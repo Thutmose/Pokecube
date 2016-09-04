@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.village.Village;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -19,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PlayerDataHandler;
+import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
@@ -26,6 +28,7 @@ import thut.api.maths.Vector4;
 
 public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, IMessage>
 {
+    public static final byte INSPECT = -4;
     public static final byte VILLAGE = -3;
     public static final byte REMOVE  = -2;
     public static final byte RENAME  = -1;
@@ -51,6 +54,14 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     {
         PacketPokedex packet = new PacketPokedex();
         packet.message = page;
+        PokecubePacketHandler.sendToServer(packet);
+    }
+
+    public static void sendInspectPacket(boolean reward)
+    {
+        PacketPokedex packet = new PacketPokedex();
+        packet.message = INSPECT;
+        packet.data.setBoolean("R", reward);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -133,7 +144,6 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         {
             player = ctx.getServerHandler().playerEntity;
         }
-        System.out.println(message.message+" "+player);
         if (message.message == REMOVE)
         {
             Vector4 location = new Vector4(message.data);
@@ -158,6 +168,27 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             if (temp != null) pokecube.core.client.gui.GuiPokedex.closestVillage.set(temp);
             else pokecube.core.client.gui.GuiPokedex.closestVillage.clear();
             player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
+        }
+        else if (message.message == INSPECT)
+        {
+            boolean reward = message.data.getBoolean("R");
+            boolean inspected = PokedexInspector.inspect(player, reward);
+
+            if (!reward)
+            {
+                if (inspected)
+                {
+                    player.addChatMessage(new TextComponentTranslation("pokedex.inspect.available"));
+                }
+            }
+            else
+            {
+                if (!inspected)
+                {
+                    player.addChatMessage(new TextComponentTranslation("pokedex.inspect.nothing"));
+                }
+                player.closeScreen();
+            }
         }
         else
         {

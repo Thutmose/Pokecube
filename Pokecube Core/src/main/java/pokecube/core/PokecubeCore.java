@@ -74,6 +74,7 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -364,6 +365,7 @@ public class PokecubeCore extends PokecubeMod
     private void init(FMLInitializationEvent evt)
     {
         System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
+        new PokedexInspector();
         proxy.initClient();
         proxy.registerRenderInformation();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,

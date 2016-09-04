@@ -54,7 +54,6 @@ public class EntityPokemobEgg extends EntityLiving
     public EntityPokemobEgg(World world, double d, double d1, double d2, ItemStack itemstack, Entity placer)
     {
         this(world);
-        ItemPokemobEgg.initStack(placer, itemstack);
         this.setHeldItem(EnumHand.MAIN_HAND, itemstack);
         this.setPosition(d, d1, d2);
         delayBeforeCanPickup = 20;
@@ -69,7 +68,6 @@ public class EntityPokemobEgg extends EntityLiving
             IPokemob father)
     {
         this(world);
-
         ItemPokemobEgg.initStack(placer, father, itemstack);
         this.setHeldItem(EnumHand.MAIN_HAND, itemstack);
         this.setPosition(d, d1, d2);
@@ -130,7 +128,6 @@ public class EntityPokemobEgg extends EntityLiving
             if (getHeldItemMainhand().getTagCompound().hasKey("motherId")) { return UUID
                     .fromString(getHeldItemMainhand().getTagCompound().getString("motherId")); }
         }
-
         return null;
     }
 

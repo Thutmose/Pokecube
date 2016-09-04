@@ -57,6 +57,49 @@ public class PlayerDataHandler
         }
     }
 
+    /** Generic data to store for each player, this gives another place besides
+     * in the player's entity data to store information. */
+    public static class PokecubePlayerCustomData extends PlayerData
+    {
+        public NBTTagCompound tag = new NBTTagCompound();
+
+        public PokecubePlayerCustomData()
+        {
+        }
+
+        @Override
+        public String getIdentifier()
+        {
+            return "pokecube-custom";
+        }
+
+        @Override
+        public String dataFileName()
+        {
+            return "customData";
+        }
+
+        @Override
+        public boolean shouldSync()
+        {
+            return false;
+        }
+
+        @Override
+        public void writeToNBT(NBTTagCompound tag)
+        {
+            tag.setTag("data", this.tag);
+        }
+
+        @Override
+        public void readFromNBT(NBTTagCompound tag)
+        {
+            this.tag = tag.getCompoundTag("data");
+        }
+    }
+
+    /** Data which needs to be synced to clients about the player, this is
+     * teleport information and starter status. */
     public static class PokecubePlayerData extends PlayerData
     {
         ArrayList<TeleDest> telelocs = Lists.newArrayList();
@@ -150,6 +193,7 @@ public class PlayerDataHandler
         }
     }
 
+    /** Player capture/hatch/kill stats */
     public static class PokecubePlayerStats extends PlayerData
     {
         public Map<PokedexEntry, Integer> hatches  = Maps.newHashMap();
@@ -306,6 +350,7 @@ public class PlayerDataHandler
     {
         dataMap.add(PokecubePlayerData.class);
         dataMap.add(PokecubePlayerStats.class);
+        dataMap.add(PokecubePlayerCustomData.class);
     }
     private static PlayerDataHandler INSTANCESERVER;
     private static PlayerDataHandler INSTANCECLIENT;
@@ -368,7 +413,7 @@ public class PlayerDataHandler
             {
 
             }
-            System.out.println("Loading File:"+file);
+            System.out.println("Loading File:" + file);
             if (file != null && file.exists())
             {
                 try

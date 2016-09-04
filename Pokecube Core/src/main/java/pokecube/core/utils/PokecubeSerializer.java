@@ -607,7 +607,8 @@ public class PokecubeSerializer
         {
             System.err.println("UUID null");
         }
-        PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+            PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 
     public void setTeleIndex(String uuid, int index)

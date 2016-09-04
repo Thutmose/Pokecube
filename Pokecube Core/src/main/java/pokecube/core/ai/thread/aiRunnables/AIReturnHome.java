@@ -45,8 +45,9 @@ public class AIReturnHome extends AIBase
     public boolean shouldRun()
     {
         BlockPos home = mob.getHome();
-        if (entity.getAttackTarget() != null || mob.getHomeDistance() * mob.getHomeDistance() < home
-                .distanceSq(entity.getPosition())) { return false; }
+        if (entity.getAttackTarget() != null
+                || mob.getHomeDistance() * mob.getHomeDistance() < home.distanceSq(entity.getPosition())
+                || mob.getPokemonAIState(IMoveConstants.SITTING)) { return false; }
 
         PokedexEntry entry = mob.getPokedexEntry();
         boolean activeTime = false;

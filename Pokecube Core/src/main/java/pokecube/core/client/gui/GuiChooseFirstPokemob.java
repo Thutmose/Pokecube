@@ -173,6 +173,11 @@ public class GuiChooseFirstPokemob extends GuiScreen
                     0xffffff);
             return;
         }
+        if (starters == null || starters.length == 0)
+        {
+            starters = new Integer[] { Pokedex.getInstance().getFirstEntry().getPokedexNb() };
+        }
+
         pokedexEntry = Database.getEntry(starters[index % starters.length]);
 
         if (pokedexEntry == null) pokedexEntry = Pokedex.getInstance().getFirstEntry();

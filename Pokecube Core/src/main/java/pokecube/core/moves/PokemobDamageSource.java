@@ -46,6 +46,15 @@ public class PokemobDamageSource extends DamageSource
             return new TextComponentTranslation("death.attack." + this.damageType,
                     new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName(),
                             localObject.getTextComponent() });
+        if (this.damageSourceEntity instanceof IPokemob
+                && ((IPokemob) this.damageSourceEntity).getPokemonOwner() != null)
+        {
+            TextComponentTranslation message = new TextComponentTranslation("pokemob.kill",
+                    par1EntityPlayer.getDisplayName(),
+                    ((IPokemob) this.damageSourceEntity).getPokemonOwner().getDisplayName(),
+                    this.damageSourceEntity.getDisplayName());
+            return message;
+        }
         return new TextComponentTranslation("death.attack." + this.damageType,
                 new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName() });
     }

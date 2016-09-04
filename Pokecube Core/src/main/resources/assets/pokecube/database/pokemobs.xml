@@ -22036,7 +22036,7 @@
     </Pokemon>
     <Pokemon base="true" name="Pancham" number="674">
         <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
+            <EVOLUTIONMODE>Iduskstone</EVOLUTIONMODE>
             <CAPTURERATE>128</CAPTURERATE>
             <EVOLUTIONANIMATION>tile crack_3</EVOLUTIONANIMATION>
             <SPECIES>Playful</SPECIES>

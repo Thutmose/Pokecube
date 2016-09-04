@@ -108,8 +108,9 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         v.y *= this.height;
         v.z *= dz;
         Vector3 v0 = v.copy();
-        float sin = MathHelper.sin((float) (this.renderYawOffset * 0.017453292F));
-        float cos = MathHelper.cos((float) (this.renderYawOffset * 0.017453292F));
+        float yaw = this.rotationYaw;
+        float sin = MathHelper.sin((float) (yaw * 0.017453292F));
+        float cos = MathHelper.cos((float) (yaw * 0.017453292F));
         v.x = v0.x * cos - v0.z * sin;
         v.z = v0.x * sin + v0.z * cos;
         passenger.setPosition(this.posX + v.x, this.posY + passenger.getYOffset() + v.y, this.posZ + v.z);

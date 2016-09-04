@@ -1,5 +1,6 @@
 package pokecube.core.ai.thread.logicRunnables;
 
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
@@ -29,13 +30,21 @@ public class LogicMountedControl extends LogicBase
         boolean shouldControl = entity.onGround;
         if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys()) shouldControl = true;
 
+        float speedFactor = (float) entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
+                .getAttributeValue();
         if (forwardInputDown)
         {
             move = true;
-            float f = 0.2f;
+            float f = speedFactor / 2;
             if (shouldControl)
             {
                 if (!entity.onGround) f *= 2;
+                entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
+                entity.motionZ += (double) (MathHelper.cos(entity.rotationYaw * 0.017453292F) * f);
+            }
+            else if (entity.isInLava() || entity.isInWater())
+            {
+                f *= 0.1;
                 entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
                 entity.motionZ += (double) (MathHelper.cos(entity.rotationYaw * 0.017453292F) * f);
             }
@@ -43,7 +52,7 @@ public class LogicMountedControl extends LogicBase
         if (backInputDown)
         {
             move = true;
-            float f = -0.1f;
+            float f = -speedFactor / 4;
             if (shouldControl)
             {
                 entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
@@ -59,6 +68,10 @@ public class LogicMountedControl extends LogicBase
             else if (shouldControl)
             {
                 entity.motionY += 0.1;
+            }
+            else if (entity.isInLava() || entity.isInWater())
+            {
+                entity.motionY += 0.05;
             }
         }
         if (downInputDown)
@@ -86,8 +99,6 @@ public class LogicMountedControl extends LogicBase
     @Override
     public void doLogic()
     {
-        // TODO Auto-generated method stub
-
     }
 
 }

@@ -221,7 +221,7 @@ public class Tools
         Vec3d vec31 = entity.getLook(0);
         Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
         Entity pointedEntity = null;
-        float f = 1.0F;
+        float f = 0.5F;
         List<Entity> list = entity.getEntityWorld()
                 .getEntitiesInAABBexcluding(
                         entity, entity.getEntityBoundingBox()

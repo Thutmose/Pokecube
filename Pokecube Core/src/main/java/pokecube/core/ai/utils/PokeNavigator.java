@@ -297,6 +297,13 @@ public class PokeNavigator extends PathNavigate
                 if (!loaded || v.distTo(v1) < f)
                 {
                     this.clearPathEntity();
+                    if (!loaded)
+                    {
+                        this.theEntity.motionX = 0;
+                        this.theEntity.motionY = 0;
+                        this.theEntity.motionZ = 0;
+                        this.theEntity.getMoveHelper().setMoveTo(v.x, v.y, v.z, speed);
+                    }
                     return;
                 }
 

@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommand;
@@ -27,7 +28,6 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
@@ -36,7 +36,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 
-public class Commands implements ICommand
+public class Commands extends CommandBase
 {
     private List<String> aliases;
 
@@ -47,9 +47,9 @@ public class Commands implements ICommand
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
+    public int getRequiredPermissionLevel()
     {
-        return true;
+        return 2;
     }
 
     @Override
@@ -252,57 +252,9 @@ public class Commands implements ICommand
 
     private boolean doRecall(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
-        if (args[0].equalsIgnoreCase("recall"))
-        {
-            String sender = cSender.getName();
-            boolean all = args.length > 1 && args[1].equalsIgnoreCase("all");
-            boolean allall = args.length > 2 && args[2].equalsIgnoreCase("all");
-            boolean guard = args.length > 1 && args[1].equalsIgnoreCase("guard");
-            boolean stay = args.length > 1 && args[1].equalsIgnoreCase("stay");
+        if (args[0].equalsIgnoreCase("recall")) {
 
-            boolean named = !all && !guard && !stay && args.length > 1;
-            String specificName = named ? args[1] : "";
-
-            WorldServer world = (WorldServer) cSender.getEntityWorld();
-
-            EntityPlayer player = cSender.getEntityWorld().getPlayerEntityByName(sender);
-            if (allall && cSender.getEntityWorld().getPlayerEntityByName(sender) != null)
-            {
-                allall = isOp;
-                if (!allall)
-                {
-                    allall = false;
-                    CommandTools.sendNoPermissions(cSender);
-                    return false;
-                }
-
-            }
-            ArrayList<?> list = new ArrayList<Object>(world.loadedEntityList);
-            for (Object o : list)
-            {
-                if (o instanceof IPokemob)
-                {
-                    IPokemob mob = (IPokemob) o;
-
-                    boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
-                    if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
-                            && (named || all || (stay == isStaying))
-                            && (named == specificName
-                                    .equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
-                        mob.returnToPokecube();
-                }
-                if (all && o instanceof EntityPokecube)
-                {
-                    EntityPokecube cube = (EntityPokecube) o;
-                    Entity owner = cube.getOwner();
-                    if ((all && owner == player) || (allall && owner instanceof EntityPlayer))
-                    {
-                        cube.sendOut().returnToPokecube();
-                    }
-                }
-            }
-            return true;
-        }
+        return true; }
         return false;
     }
 
@@ -451,7 +403,9 @@ public class Commands implements ICommand
         }
         boolean isOp = CommandTools.isOp(sender);
         boolean message = false;
-        message |= doRecall(sender, args, isOp, targets);
+
+        if (doRecall(sender, args, isOp, targets)) { throw new CommandException("Use '/pokerecall'"); }
+
         message |= doDebug(sender, args, isOp, targets);
         message |= doReset(sender, args, isOp, targets);
         message |= doMeteor(sender, args, isOp, targets);
@@ -488,29 +442,12 @@ public class Commands implements ICommand
         if (args[0].isEmpty())
         {
             List<String> ret = new ArrayList<String>();
-            ret.add("recall");
             if (isOp)
             {
                 ret.add("count");
                 ret.add("kill");
                 ret.add("cull");
                 ret.add("reset");
-            }
-            return ret;
-        }
-        if (args[0].equalsIgnoreCase("recall"))
-        {
-            List<String> ret = new ArrayList<String>();
-            if (args.length == 2)
-            {
-                ret.add("all");
-                ret.add("guard");
-                ret.add("stay");
-                ret.add("<name>");
-                if (isOp)
-                {
-                    ret.add("all all");
-                }
             }
             return ret;
         }

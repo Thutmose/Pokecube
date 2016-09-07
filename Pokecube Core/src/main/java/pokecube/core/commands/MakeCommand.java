@@ -58,11 +58,10 @@ public class MakeCommand extends CommandBase
                 targets = targs.toArray(new EntityPlayerMP[0]);
             }
         }
-        boolean isOp = CommandTools.isOp(sender);
-
         boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
-
+        boolean isOp = CommandTools.isOp(sender) || commandBlock;
+        System.out.println(isOp+" "+deobfuscated);
         if (deobfuscated || commandBlock)
         {
             String name;
@@ -343,7 +342,7 @@ public class MakeCommand extends CommandBase
     /** Return the required permission level for this command. */
     public int getRequiredPermissionLevel()
     {
-        return 4;
+        return 3;
     }
 
     @Override

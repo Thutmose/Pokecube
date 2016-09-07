@@ -103,21 +103,11 @@ public class Config extends ConfigBase
     public int                         trainerSendOutDelay = 50;
     @Configure(category = trainers)
     public int                         trainerBattleDelay  = 100;
-//    @Configure(category = trainers)
-    public int                         megaCost            = 16;
-//    @Configure(category = trainers)
-    public int                         orbCost             = 32;
-//    @Configure(category = trainers)
-    public int                         shinyCost           = 128;
-//    @Configure(category = trainers)
-    public int                         tmCost              = 16;
-//    @Configure(category = trainers)
-    public int                         badgeCost           = 64;
-//    @Configure(category = trainers)
-    public int                         vitaminCost         = 8;
 
     @Configure(category = teams)
     private int                        teamLandPerPlayer   = 125;
+    @Configure(category = teams)
+    public boolean                     teamsEnabled        = true;
     @Configure(category = teams)
     private boolean                    denyExplosions      = false;
 

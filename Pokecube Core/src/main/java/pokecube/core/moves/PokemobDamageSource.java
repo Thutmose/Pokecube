@@ -49,10 +49,18 @@ public class PokemobDamageSource extends DamageSource
         if (this.damageSourceEntity instanceof IPokemob
                 && ((IPokemob) this.damageSourceEntity).getPokemonOwner() != null)
         {
-            TextComponentTranslation message = new TextComponentTranslation("pokemob.kill",
+            TextComponentTranslation message = new TextComponentTranslation("pokemob.killed.tame",
                     par1EntityPlayer.getDisplayName(),
                     ((IPokemob) this.damageSourceEntity).getPokemonOwner().getDisplayName(),
                     this.damageSourceEntity.getDisplayName());
+            return message;
+        }
+        else if (this.damageSourceEntity instanceof IPokemob
+                && ((IPokemob) this.damageSourceEntity).getPokemonOwner() == null
+                && !((IPokemob) this.damageSourceEntity).getPokemonAIState(IPokemob.TAMED))
+        {
+            TextComponentTranslation message = new TextComponentTranslation("pokemob.killed.wild",
+                    par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName());
             return message;
         }
         return new TextComponentTranslation("death.attack." + this.damageType,

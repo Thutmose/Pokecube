@@ -261,6 +261,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     public void invalidate()
     {
         super.invalidate();
+        if (ability != null) ability.destroy();
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 

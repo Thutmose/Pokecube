@@ -17383,7 +17383,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <Spawn rate="0.05" types="all"/>
+            <Spawn rate="0.05" types="all" day="false"/>
             <BIOMESANYACCEPTABLE>all</BIOMESANYACCEPTABLE>
             <BASESTATS atk="45" def="43" hp="55" spatk="55" spd="72" spdef="43"/>
             <EVYIELD spd="1"/>

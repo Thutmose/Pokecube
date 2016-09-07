@@ -116,13 +116,11 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             MovesUtils.displayStatusMessages(attacker, attacked, STATUS_SLP, false);
             return;
         }
-
         if (attacker.getStatus() == STATUS_FRZ)
         {
             MovesUtils.displayStatusMessages(attacker, attacked, STATUS_FRZ, false);
             return;
         }
-
         if (attacker.getStatus() == STATUS_PAR && Math.random() > 0.75)
         {
             MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
@@ -205,37 +203,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 if (e != null)
                 {
                     Entity attacked = e;
-                    if (getAnimation() instanceof Thunder)
-                    {
-                        EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0,
-                                false);
-                        attacked.onStruckByLightning(lightning);
-                    }
-                    if (attacked instanceof EntityCreeper)
-                    {
-                        EntityCreeper creeper = (EntityCreeper) attacked;
-                        if (move.type == PokeType.psychic && creeper.getHealth() > 0)
-                        {
-                            creeper.explode();
-                        }
-                    }
-                    if (sound != null)
-                    {
-                        ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
-                    }
-                    byte statusChange = STATUS_NON;
-                    byte changeAddition = CHANGE_NONE;
-                    if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
-                    {
-                        statusChange = move.statusChange;
-                    }
-                    if (move.change != CHANGE_NONE && MovesUtils.rand.nextInt(100) <= move.chanceChance)
-                    {
-                        changeAddition = move.change;
-                    }
-                    MovePacket packet = new MovePacket(attacker, attacked, name, move.type, getPWR(attacker, attacked),
-                            move.crit, statusChange, changeAddition);
-                    onAttack(packet);
+                    attack(attacker, attacked);
                 }
             }
         }
@@ -550,14 +518,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 }
             }
         }
-
         if (attacked != attacker && attacked instanceof IPokemob && attacker instanceof EntityLiving)
         {
             if (((EntityLiving) attacked).getAttackTarget() != attacker)
                 ((EntityLiving) attacked).setAttackTarget((EntityLivingBase) attacker);
             ((IPokemob) attacked).setPokemonAIState(IMoveConstants.ANGRY, true);
         }
-        if (efficiency > 0)
+        if (efficiency > 0 && packet.applyOngoing)
         {
             Move_Ongoing ongoing;
             if (MovesUtils.getMoveFromName(attack) instanceof Move_Ongoing)

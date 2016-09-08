@@ -152,9 +152,9 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     }
 
     @Override
-    public void doRender(T entity, double d, double d1, double d2, float f, float partialTick)
+    public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
     {
-        float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
+        float f2 = yaw;//this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
         float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
         float f4;
         if (entity.isRiding() && entity.getRidingEntity() instanceof EntityLivingBase)
@@ -194,7 +194,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         GL11.glPushMatrix();
         if (animator != null) currentPhase = animator.modifyAnimation(entity, partialTick, currentPhase);
         GlStateManager.disableCull();
-        transformGlobal(currentPhase, entity, d, d1, d2, partialTick, f3 - f2, f13);
+        transformGlobal(currentPhase, entity, x, y, z, partialTick, f3 - f2, f13);
         updateAnimation(entity, currentPhase, partialTick);
 
         for (String partName : parts.keySet())

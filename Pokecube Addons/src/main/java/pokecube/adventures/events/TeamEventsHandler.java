@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.adventures.handlers.TeamManager;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -54,7 +55,7 @@ public class TeamEventsHandler
                 return;
             }
         }
-        if (player != null && player.getTeam() != null)
+        if (PokecubeAdv.conf.teamsEnabled && player != null && player.getTeam() != null)
         {
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), player.dimension);
             if (!TeamManager.getInstance().isOwned(c)) return;
@@ -92,7 +93,7 @@ public class TeamEventsHandler
             old = new BlockPos(player.prevChasingPosX, player.prevChasingPosY, player.prevChasingPosZ);
             ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(here, player.dimension);
             ChunkCoordinate c1 = ChunkCoordinate.getChunkCoordFromWorldCoord(old, player.dimension);
-            if (c.equals(c1)) return;
+            if (c.equals(c1) || !PokecubeAdv.conf.teamsEnabled) return;
             SpawnHandler.refreshTerrain(v.set(player), player.worldObj);
             if (TeamManager.getInstance().isOwned(c) || TeamManager.getInstance().isOwned(c1))
             {
@@ -131,7 +132,7 @@ public class TeamEventsHandler
                 }
             }
         }
-        if (TeamManager.denyBlasts)
+        if (TeamManager.denyBlasts && PokecubeAdv.conf.teamsEnabled)
         {
             int dimension = evt.getWorld().provider.getDimension();
             for (BlockPos pos : evt.getAffectedBlocks())
@@ -162,7 +163,7 @@ public class TeamEventsHandler
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
         String owner = TeamManager.getInstance().getLandOwner(c);
-        if (owner == null) return;
+        if (owner == null || !PokecubeAdv.conf.teamsEnabled) return;
         String team = evt.getWorld().getScoreboard().getPlayersTeam(evt.getEntityPlayer().getName())
                 .getRegisteredName();
         if (owner.equals(team)) { return; }
@@ -186,7 +187,7 @@ public class TeamEventsHandler
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
         String owner = TeamManager.getInstance().getLandOwner(c);
-        if (owner == null || evt.getItemStack().getItem() instanceof ItemFood) return;
+        if (owner == null || evt.getItemStack().getItem() instanceof ItemFood || !PokecubeAdv.conf.teamsEnabled) return;
 
         String team = evt.getWorld().getScoreboard().getPlayersTeam(evt.getEntityPlayer().getName())
                 .getRegisteredName();
@@ -219,7 +220,7 @@ public class TeamEventsHandler
     {
         ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(evt.getPos(), evt.getEntityPlayer().dimension);
         String owner = TeamManager.getInstance().getLandOwner(c);
-        if (owner == null) return;
+        if (owner == null || !PokecubeAdv.conf.teamsEnabled) return;
 
         Block block = null;
         IBlockState state = evt.getWorld().getBlockState(evt.getPos());

@@ -60,6 +60,7 @@ import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
 import pokecube.core.commands.MakeCommand;
+import pokecube.core.commands.RecallCommand;
 import pokecube.core.commands.SettingsCommand;
 import pokecube.core.commands.TMCommand;
 import pokecube.core.database.Database;
@@ -740,6 +741,7 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new MakeCommand());
         event.registerServerCommand(new GiftCommand());
         event.registerServerCommand(new TMCommand());
+        event.registerServerCommand(new RecallCommand());
         registerSpawns();
     }
 

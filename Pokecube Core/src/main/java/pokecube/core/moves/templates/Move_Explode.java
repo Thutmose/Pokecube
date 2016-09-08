@@ -3,14 +3,19 @@
  */
 package pokecube.core.moves.templates;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.Explosion;
-import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -19,6 +24,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
@@ -50,7 +56,38 @@ public class Move_Explode extends Move_Ongoing
                 voltorb.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
                 pokemob.getMoveStats().timeSinceIgnited = 10;
             }
-            super.attack(attacker, attacked);
+            if (attacker.getStatus() == STATUS_SLP)
+            {
+                MovesUtils.displayStatusMessages(attacker, attacked, STATUS_SLP, false);
+                return;
+            }
+            if (attacker.getStatus() == STATUS_FRZ)
+            {
+                MovesUtils.displayStatusMessages(attacker, attacked, STATUS_FRZ, false);
+                return;
+            }
+            if (attacker.getStatus() == STATUS_PAR && Math.random() > 0.75)
+            {
+                MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
+                return;
+            }
+            if (sound != null)
+            {
+                ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
+            }
+            byte statusChange = STATUS_NON;
+            byte changeAddition = CHANGE_NONE;
+            if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
+            {
+                statusChange = move.statusChange;
+            }
+            if (move.change != CHANGE_NONE && MovesUtils.rand.nextInt(100) <= move.chanceChance)
+            {
+                changeAddition = move.change;
+            }
+            MovePacket packet = new MovePacket(attacker, attacked, name, move.type, 0, move.crit, statusChange,
+                    changeAddition);
+            onAttack(packet);
         }
     }
 
@@ -65,10 +102,39 @@ public class Move_Explode extends Move_Ongoing
         }
     }
 
+    public void actualAttack(IPokemob attacker, Vector3 location)
+    {
+        List<Entity> targets = ((Entity) attacker).getEntityWorld()
+                .getEntitiesWithinAABBExcludingEntity((Entity) attacker, location.getAABB().expandXyz(8));
+        List<Entity> toRemove = Lists.newArrayList();
+        for (Entity e : targets)
+            if (!(e instanceof EntityLivingBase)) toRemove.add(e);
+        targets.removeAll(toRemove);
+        int n = targets.size();
+        if (n > 0)
+        {
+            for (Entity e : targets)
+            {
+                if (e != null)
+                {
+                    Entity attacked = e;
+                    MovePacket packet = new MovePacket(attacker, attacked, name, move.type, getPWR(attacker, attacked),
+                            move.crit, STATUS_NON, CHANGE_NONE);
+                    packet.applyOngoing = false;
+                    onAttack(packet);
+                }
+            }
+        }
+        else
+        {
+            MovesUtils.displayEfficiencyMessages(attacker, null, -1, 0);
+        }
+        doWorldAction(attacker, location);
+    }
+
     @Override
     public void doOngoingEffect(EntityLiving mob)
     {
-        System.out.println(mob);
         if (!(mob instanceof IPokemob)) return;
         IPokemob pokemob = (IPokemob) mob;
 
@@ -83,7 +149,25 @@ public class Move_Explode extends Move_Ongoing
         if (!evt.isCanceled())
         {
             if (PokecubeMod.core.getConfig().explosions) ((ExplosionCustom) boom).doExplosion();
+            else
+            {
+                mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
+                        SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
+                        (1.0F + (mob.worldObj.rand.nextFloat() - mob.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
 
+                if (getPWR() > 200)
+                {
+                    mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
+                            0.0D, 0.0D, new int[0]);
+                }
+                else
+                {
+                    mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ, 1.0D,
+                            0.0D, 0.0D, new int[0]);
+                }
+                actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
+                        pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
+            }
             mob.setHealth(0);
             mob.onDeath(DamageSource.generic);
             if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
@@ -124,39 +208,13 @@ public class Move_Explode extends Move_Ongoing
     @SideOnly(Side.CLIENT)
     public IMoveAnimation getAnimation()
     {
-        return new IMoveAnimation()
-        {
-            @Override
-            public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
-            {
-            }
-
-            @Override
-            public int getDuration()
-            {
-                return 0;
-            }
-
-            @Override
-            public void setDuration(int duration)
-            {
-            }
-
-            @Override
-            public void spawnClientEntities(MovePacketInfo info)
-            {
-                EntityLivingBase voltorb = (EntityLivingBase) info.attacker;
-                Explosion explosion = new Explosion(voltorb.getEntityWorld(), voltorb, voltorb.posX, voltorb.posY,
-                        voltorb.posZ, 10, false, true);
-                explosion.doExplosionB(true);
-            }
-        };
+        return null;
     }
 
     @Override
     public int getDuration()
     {
-        return 2;
+        return 3;
     }
 
     @Override

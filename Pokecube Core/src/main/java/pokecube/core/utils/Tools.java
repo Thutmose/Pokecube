@@ -392,7 +392,8 @@ public class Tools
         if (name.equalsIgnoreCase("medium slow")) return 2;
         if (name.equalsIgnoreCase("slow")) return 3;
         if (name.equalsIgnoreCase("fluctuating")) return 5;
-        return -1;
+        PokecubeMod.log("ERROR IN PARSING Experience Type for " + name);
+        return 0;
     }
 
     public static boolean hasMove(String move, IPokemob mob)

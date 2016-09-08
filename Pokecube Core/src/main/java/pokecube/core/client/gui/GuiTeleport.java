@@ -64,6 +64,8 @@ public class GuiTeleport extends Gui
         int h = PokecubeMod.core.getConfig().guiOffset[1];
         w = Math.min(event.getResolution().getScaledWidth() - 105, w);
         h = Math.min(event.getResolution().getScaledHeight() - 13, h);
+        IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
+        if (pokemob == null) return;
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
@@ -73,7 +75,6 @@ public class GuiTeleport extends Gui
         int dir = 1;
         if (!PokecubeMod.core.getConfig().guiDown)
         {
-            IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             int moveCount = 0;
             dir = -1;
             for (moveCount = 0; moveCount < 4; moveCount++)
@@ -84,7 +85,6 @@ public class GuiTeleport extends Gui
         }
         else
         {
-            IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             int moveCount = 0;
             for (moveCount = 0; moveCount < 4; moveCount++)
             {

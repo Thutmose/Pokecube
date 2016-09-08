@@ -1,6 +1,14 @@
 package pokecube.core.ai.thread.logicRunnables;
 
+import com.google.common.collect.Lists;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
@@ -29,7 +37,23 @@ public class LogicMountedControl extends LogicBase
 
         boolean shouldControl = entity.onGround;
         if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys()) shouldControl = true;
+        if (pokemob.getPokedexEntry().shouldDive && entity.isInWater()) shouldControl = true;
 
+        if (pokemob.getPokedexEntry().shouldDive)
+        {
+            PotionEffect vision = new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 300, 1, true,
+                    false);
+            ItemStack stack = new ItemStack(Blocks.BARRIER);
+            vision.setCurativeItems(Lists.newArrayList(stack));
+            for (Entity e : entity.getRecursivePassengers())
+            {
+                if (e instanceof EntityLivingBase)
+                {
+                    if (entity.isInWater()) ((EntityLivingBase) e).addPotionEffect(vision);
+                    else((EntityLivingBase) e).curePotionEffects(stack);
+                }
+            }
+        }
         float speedFactor = (float) entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
                 .getAttributeValue();
         if (forwardInputDown)

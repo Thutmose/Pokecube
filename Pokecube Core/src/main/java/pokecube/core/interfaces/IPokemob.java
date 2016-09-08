@@ -106,6 +106,9 @@ public interface IPokemob extends IMoveConstants
         public boolean       infatuateTarget   = false;
         /** does attacker get infatuated */
         public boolean       infatuateAttacker = false;
+        /** Whether or not to apply ongoing, this can be set to false to use
+         * these during ongoing effects */
+        public boolean       applyOngoing      = true;
         /** Stat modifications for target */
         public int[]         attackedStatModification;
         /** Stat modifications for attacker */

@@ -6,9 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
@@ -45,41 +43,11 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
     }
 
     @Override
-    public void doRender(T entity, double d, double d1, double d2, float f, float partialTick)
+    public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
     {
         PokedexEntry entry = null;
         if (entity instanceof IPokemob) entry = ((IPokemob) entity).getPokedexEntry();
         else return;
-
-        float f2 = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
-        float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
-        float f4;
-        if (entity.isRiding() && entity.getRidingEntity() instanceof EntityLivingBase)
-        {
-            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.getRidingEntity();
-            f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
-                    partialTick);
-            f4 = MathHelper.wrapDegrees(f3 - f2);
-
-            if (f4 < -85.0F)
-            {
-                f4 = -85.0F;
-            }
-
-            if (f4 >= 85.0F)
-            {
-                f4 = 85.0F;
-            }
-
-            f2 = f3 - f4;
-
-            if (f4 * f4 > 2500.0F)
-            {
-                f2 += f4 * 0.2F;
-            }
-        }
-
-        f4 = this.handleRotationFloat(entity, partialTick);
 
         if (set == null)
         {

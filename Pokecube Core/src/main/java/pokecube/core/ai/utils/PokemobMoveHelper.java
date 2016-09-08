@@ -86,13 +86,22 @@ public class PokemobMoveHelper extends EntityMoveHelper
 
             double d4 = d0 * d0 + d1 * d1;
             double d3 = d4 + d2 * d2;
+
+            double dd4 = 0.1;
+
+            if (!((IPokemob) entity).getPokemonAIState(IPokemob.ANGRY))
+            {
+                double dim = ((IPokemob) entity).getSize() * ((IPokemob) entity).getPokedexEntry().length / 2;
+                dd4 = Math.max(dd4, dim);
+            }
+
             if (d3 >= 2.5E-7D)
             {
-                if (!(water || air) || d4 > 1.0E-1D)
+                if (!(water || air) || d4 > dd4)
                 {
                     float f = (float) (Math.atan2(d1, d0) * 180.0D / Math.PI) - 90.0F;
                     entity.getLookHelper().setLookPosition(posX, posY, posZ, 10.0F, 10.0F);
-                    this.entity.rotationYaw = f;
+                    this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f, 180.0F);
                 }
                 else if (entity.getAITarget() != null)
                 {

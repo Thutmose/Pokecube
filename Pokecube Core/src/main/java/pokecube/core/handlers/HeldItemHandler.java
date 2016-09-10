@@ -54,6 +54,7 @@ public class HeldItemHandler
         megaVariants.add("slowbromega");
         megaVariants.add("steelixmega");
         megaVariants.add("swampertmega");
+        megaVariants.add("tyranitarmega");
         megaVariants.add("venusaurmega");
         // TODO rest of the mega stoneS here.
 

@@ -292,7 +292,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91, 13);
                     GL11.glPushMatrix();// TODO find out why both needed
-                    Color moveColor = new Color(move.getType(pokemob).colour);
+                    Color moveColor = new Color(move.move.type.colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
                     fontRenderer.drawString(MovesUtils.getLocalizedMove(move.getName()), 5 + movesOffsetX + w,

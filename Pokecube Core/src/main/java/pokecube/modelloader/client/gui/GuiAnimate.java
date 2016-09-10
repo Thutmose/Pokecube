@@ -132,6 +132,12 @@ public class GuiAnimate extends GuiScreen
             {
                 EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
                         .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                if (pokemob == null)
+                {
+                    System.out.println("Error with " + entry);
+                    return;
+                }
+
                 pokemob.specificSpawnInit();
             }
             forme.setText(pokemob.getPokedexEntry().getName());
@@ -217,11 +223,11 @@ public class GuiAnimate extends GuiScreen
             }
         }
         String[] gender = buttonList.get(12).displayString.split(":");
-        if(gender[1].equalsIgnoreCase("m") && pokemob.getSexe() == IPokemob.FEMALE)
+        if (gender[1].equalsIgnoreCase("m") && pokemob.getSexe() == IPokemob.FEMALE)
         {
             pokemob.setSexe(IPokemob.MALE);
         }
-        else if(gender[1].equalsIgnoreCase("f") &&pokemob.getSexe() == IPokemob.MALE)
+        else if (gender[1].equalsIgnoreCase("f") && pokemob.getSexe() == IPokemob.MALE)
         {
             pokemob.setSexe(IPokemob.FEMALE);
         }

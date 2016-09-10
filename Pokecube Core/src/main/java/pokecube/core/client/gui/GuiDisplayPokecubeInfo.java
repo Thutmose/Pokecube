@@ -46,6 +46,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
+import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -402,7 +403,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         PokecubeMod.core.getConfig().guiOffset[1] = Math.min(res.getScaledHeight() - 42,
                 PokecubeMod.core.getConfig().guiOffset[1]);
 
-        System.out.println(Arrays.toString(PokecubeMod.core.getConfig().guiOffset)+" "+res.getScaledWidth());
+        System.out.println(Arrays.toString(PokecubeMod.core.getConfig().guiOffset) + " " + res.getScaledWidth());
 
         saveConfig();
     }
@@ -558,7 +559,26 @@ public class GuiDisplayPokecubeInfo extends Gui
      * stand */
     public void pokemobStance()
     {
-        //TODO redo this as a packet.
+        IPokemob pokemob;
+        if ((pokemob = getCurrentPokemob()) != null)
+        {
+            PacketPokemobGui packet = new PacketPokemobGui(PacketPokemobGui.BUTTONTOGGLESIT,
+                    ((Entity) pokemob).getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+        }
+        else
+        {
+            EntityPlayer player = minecraft.thePlayer;
+            Entity target = null;
+            Vector3 look = Vector3.getNewVector().set(player.getLook(1));
+            Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
+            target = temp.firstEntityExcluding(32, look, player.getEntityWorld(), player.isSneaking(), player);
+            if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
+            {
+                PacketPokemobGui packet = new PacketPokemobGui(PacketPokemobGui.BUTTONTOGGLESIT, target.getEntityId());
+                PokecubeMod.packetPipeline.sendToServer(packet);
+            }
+        }
     }
 
     /** Decrements pokemob move index

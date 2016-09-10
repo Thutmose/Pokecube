@@ -61,7 +61,7 @@ public class MakeCommand extends CommandBase
         boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
         boolean isOp = CommandTools.isOp(sender) || commandBlock;
-        System.out.println(isOp+" "+deobfuscated);
+        System.out.println(isOp+" "+deobfuscated+" "+commandBlock);
         if (deobfuscated || commandBlock)
         {
             String name;
@@ -335,14 +335,14 @@ public class MakeCommand extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/" + aliases.get(0) + "<pokemob name> <arguments>";
+        return "/" + aliases.get(0) + "<pokemob name/number> <arguments>";
     }
 
     @Override
     /** Return the required permission level for this command. */
     public int getRequiredPermissionLevel()
     {
-        return 3;
+        return 2;
     }
 
     @Override

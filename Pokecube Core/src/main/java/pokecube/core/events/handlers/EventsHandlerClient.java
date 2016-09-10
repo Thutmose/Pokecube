@@ -311,67 +311,6 @@ public class EventsHandlerClient
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
         eventTime = Keyboard.getEventNanoseconds();
-
-        // int key = Keyboard.getEventKey();
-        // boolean up = false;
-        // if (ClientProxyPokecube.mobUp.getKeyCode() == Keyboard.KEY_NONE)
-        // {
-        // up = key == Keyboard.KEY_SPACE;
-        // }
-        // else
-        // {
-        // up = GameSettings.isKeyDown(ClientProxyPokecube.mobUp);
-        // }
-        // boolean down = false;
-        // if (ClientProxyPokecube.mobDown.getKeyCode() == Keyboard.KEY_NONE)
-        // {
-        // down = key == Keyboard.KEY_LCONTROL;
-        // }
-        // else
-        // {
-        // down = GameSettings.isKeyDown(ClientProxyPokecube.mobDown);
-        // }
-        //
-        // if (up && player.getRidingEntity() instanceof IPokemob)
-        // {
-        // boolean state = Keyboard.getEventKeyState();
-        // MountState newState = state ? EntityMountablePokemob.MountState.UP :
-        // EntityMountablePokemob.MountState.NONE;
-        // if (newState != ((EntityMountablePokemob)
-        // player.getRidingEntity()).state)
-        // {
-        // ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
-        // byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
-        // if (state) mess = (byte)
-        // EntityMountablePokemob.MountState.UP.ordinal();
-        // PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-        // buffer.writeByte(MessageServer.MOUNTDIR);
-        // buffer.writeInt(player.getRidingEntity().getEntityId());
-        // buffer.writeByte(mess);
-        // MessageServer packet = new MessageServer(buffer);
-        // PokecubePacketHandler.sendToServer(packet);
-        // }
-        // }
-        // else if (down && player.getRidingEntity() instanceof IPokemob)
-        // {
-        // boolean state = Keyboard.getEventKeyState();
-        // MountState newState = state ? EntityMountablePokemob.MountState.DOWN
-        // : EntityMountablePokemob.MountState.NONE;
-        // if (newState != ((EntityMountablePokemob)
-        // player.getRidingEntity()).state)
-        // {
-        // ((EntityMountablePokemob) player.getRidingEntity()).state = newState;
-        // byte mess = (byte) EntityMountablePokemob.MountState.NONE.ordinal();
-        // if (state) mess = (byte)
-        // EntityMountablePokemob.MountState.DOWN.ordinal();
-        // PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-        // buffer.writeByte(MessageServer.MOUNTDIR);
-        // buffer.writeInt(player.getRidingEntity().getEntityId());
-        // buffer.writeByte(mess);
-        // MessageServer packet = new MessageServer(buffer);
-        // PokecubePacketHandler.sendToServer(packet);
-        // }
-        // }
         if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
         {
             boolean ring = checker.hasRing(player);

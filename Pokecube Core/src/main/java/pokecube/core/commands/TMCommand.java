@@ -119,7 +119,7 @@ public class TMCommand extends CommandBase
     /** Return the required permission level for this command. */
     public int getRequiredPermissionLevel()
     {
-        return 0;
+        return 2;
     }
 
     @Override

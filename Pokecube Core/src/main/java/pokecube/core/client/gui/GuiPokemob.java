@@ -54,7 +54,7 @@ public class GuiPokemob extends GuiContainer
             {
                 PokedexEntry entry = Database.getEntry("eevee");
                 IPokemob renderMob = EventsHandlerClient.renderMobs.get(entry);
-                if (renderMob == null)
+                if (renderMob == null && entry != null)
                 {
                     EventsHandlerClient.renderMobs.put(entry,
                             renderMob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, mc.theWorld));
@@ -311,17 +311,6 @@ public class GuiPokemob extends GuiContainer
         GuiButton guard = buttonList.get(1);
         GuiButton sit = buttonList.get(2);
         List<String> text = Lists.newArrayList();
-        // String t = "O";
-        // String f = "X";
-        // if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
-        // guard.displayString = t;
-        // else guard.displayString = f;
-        // if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
-        // stay.displayString = t;
-        // else stay.displayString = f;
-        // if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
-        // sit.displayString = t;
-        // else sit.displayString = f;
         if (guard.isMouseOver())
         {
             text.add(I18n.format("pokemob.stance.guard"));

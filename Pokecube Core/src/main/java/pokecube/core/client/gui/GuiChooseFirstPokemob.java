@@ -278,7 +278,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         buttonList.clear();
         int xOffset = 0;
         int yOffset = 110;
-        if (starters.length > 1)
+        if (starters.length > 0)
         {
             String next = I18n.format("tile.pc.next");
             buttonList.add(this.next = new GuiButton(1, width / 2 - xOffset + 65, height / 2 - yOffset, 50, 20, next));
@@ -300,7 +300,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             accept.visible = false;
             deny.visible = false;
         }
-        else
+        else if (next != null && prev != null)
         {
             next.visible = false;
             prev.visible = false;

@@ -354,7 +354,7 @@ public class EventsHandler
             {
                 IBlockState state = evt.getWorld().getBlockState(evt.getPos());
                 TileEntityOwnable tile = (TileEntityOwnable) te;
-                if (tile.canEdit(evt.getEntity()))
+                if (tile.canEdit(evt.getEntity()) && tile.shouldBreak())
                 {
                     Block b = state.getBlock();
                     b.dropBlockAsItem(evt.getWorld(), evt.getPos(), state, 0);

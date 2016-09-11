@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -264,9 +265,11 @@ public class Config extends ConfigBase
     public boolean             expFunction                = false;
     @Configure(category = spawning)
     public boolean             spawnCentered              = true;
-
     @Configure(category = spawning)
     public int                 levelVariance              = 5;
+    @Configure(category = spawning)
+    public int[]               dimensionBlacklist         = {};
+
     // Gui/client settings
     @Configure(category = client)
     public int[]               guiOffset                  = { 0, 0 };
@@ -384,6 +387,11 @@ public class Config extends ConfigBase
                 Database.addDatabase(s.trim(), EnumDatabase.values()[i]);
             }
         }
+        SpawnHandler.dimensionBlacklist.clear();
+        for (int i : dimensionBlacklist)
+        {
+            SpawnHandler.dimensionBlacklist.add(i);
+        }
     }
 
     @Override
@@ -485,6 +493,13 @@ public class Config extends ConfigBase
     @Override
     public void save()
     {
+        List<Integer> dims = Lists.newArrayList(SpawnHandler.dimensionBlacklist);
+        Collections.sort(dims);
+        dimensionBlacklist = new int[dims.size()];
+        for (int i = 0; i < dims.size(); i++)
+        {
+            dimensionBlacklist[i] = dims.get(i);
+        }
         if (hasChanged())
         {
             super.save();

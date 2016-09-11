@@ -118,7 +118,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         {
             stepper.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
             PacketBuffer buff = new PacketBuffer(Unpooled.buffer());
-            buff.writeByte(9);
+            buff.writeByte(MessageClient.TELEPORTEFFECTS);
             here.writeToBuff(buff);
             MessageClient packet = new MessageClient(buff);
             PokecubePacketHandler.sendToAllNear(packet, here, stepper.dimension, 20);
@@ -140,7 +140,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             }
             if (stepper != null) stepper.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
             buff = new PacketBuffer(Unpooled.buffer());
-            buff.writeByte(9);
+            buff.writeByte(MessageClient.TELEPORTEFFECTS);
             linkPos.writeToBuff(buff);
             packet = new MessageClient(buff);
             PokecubePacketHandler.sendToAllNear(packet, linkPos, stepper.dimension, 20);
@@ -159,7 +159,9 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
 
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        int receive = Math.min(maxReceive, 32000 - energy);//TODO replace 32000 with some constant6
+        int receive = Math.min(maxReceive, 32000 - energy);// TODO replace 32000
+                                                           // with some
+                                                           // constant6
         if (!simulate && receive > 0)
         {
             energy += receive;

@@ -16,11 +16,15 @@ import com.google.common.collect.Sets;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -369,13 +373,30 @@ public class PlayerDataHandler
 
     public static void clear()
     {
+        if (INSTANCECLIENT != null) MinecraftForge.EVENT_BUS.unregister(INSTANCECLIENT);
+        if (INSTANCESERVER != null) MinecraftForge.EVENT_BUS.unregister(INSTANCESERVER);
         INSTANCECLIENT = INSTANCESERVER = null;
+    }
+
+    public static NBTTagCompound getCustomDataTag(EntityPlayer player)
+    {
+        PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
+        PokecubePlayerCustomData data = manager.getData("pokecube-custom", PokecubePlayerCustomData.class);
+        return data.tag;
+    }
+
+    public static NBTTagCompound getCustomDataTag(String player)
+    {
+        PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
+        PokecubePlayerCustomData data = manager.getData("pokecube-custom", PokecubePlayerCustomData.class);
+        return data.tag;
     }
 
     private Map<String, PlayerDataManager> data = Maps.newHashMap();
 
     public PlayerDataHandler()
     {
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public PlayerDataManager getPlayerData(EntityPlayer player)
@@ -396,6 +417,32 @@ public class PlayerDataHandler
             manager = load(uuid);
         }
         return manager;
+    }
+
+    @SubscribeEvent
+    public void cleanupOfflineData(WorldEvent.Save event)
+    {
+        // Whenever overworld saves, check player list for any that are not
+        // online, and remove them. This is done here, and not on logoff, as
+        // something may have requested the manager for an offline player, which
+        // would have loaded it.
+        if (event.getWorld().provider.getDimension() == 0)
+        {
+            Set<String> toUnload = Sets.newHashSet();
+            for (String uuid : data.keySet())
+            {
+                EntityPlayerMP player = event.getWorld().getMinecraftServer().getPlayerList().getPlayerByUsername(uuid);
+                if (player == null)
+                {
+                    toUnload.add(uuid);
+                }
+            }
+            for (String s : toUnload)
+            {
+                save(s);
+                data.remove(s);
+            }
+        }
     }
 
     public PlayerDataManager load(String uuid)

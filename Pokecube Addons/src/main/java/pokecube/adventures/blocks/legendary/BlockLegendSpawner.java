@@ -149,7 +149,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
     @Override
     public int quantityDropped(Random par1Random)
     {
-        return 0;
+        return 1;
     }
 
     public void registerType(String pokemon)

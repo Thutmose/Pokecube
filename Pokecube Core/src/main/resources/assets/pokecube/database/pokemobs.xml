@@ -14835,6 +14835,7 @@
                 lvl_60="FISSURE" lvl_7="BITE"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Hippowdon Female" number="450" gender="female" genderBase="Hippowdon"/>
     <Pokemon base="true" name="Skorupi" number="451">
         <STATS>
             <EVOLUTIONMODE>L40</EVOLUTIONMODE>

@@ -3,6 +3,9 @@
  */
 package pokecube.core.database;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,28 +52,35 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou */
 public class PokedexEntry
 {
+    // Annotation used to specify which fields should be shared to all gender
+    // formes.
+    @Retention(RetentionPolicy.RUNTIME)
+    public static @interface CopyToGender
+    {
+    }
+
     public static class EvolutionData
     {
+        public String             biome        = "";
+        public String             data;
+        public boolean            dayOnly      = false;
         public final PokedexEntry evolution;
-        public PokedexEntry       preEvolution;
-        public int                level        = -1;
+        public String             FX           = "";
+        // 1 for male, 2 for female, 0 for either;
+        public byte               gender       = 0;
+        public boolean            happy        = false;
         // the item it must be holding, if null, any item is fine, or no items
         // is fine
         public ItemStack          item         = null;
         // does it need to grow a level for the item to work
         public boolean            itemLevel    = false;
-        public boolean            dayOnly      = false;
+        public int                level        = -1;
+        public String             move         = "";
         public boolean            nightOnly    = false;
-        public boolean            traded       = false;
-        public boolean            happy        = false;
+        public PokedexEntry       preEvolution;
         public boolean            rainOnly     = false;
         public float              randomFactor = 1.0f;
-        public String             biome        = "";
-        public String             move         = "";
-        // 1 for male, 2 for female, 0 for either;
-        public byte               gender       = 0;
-        public String             FX           = "";
-        public String             data;
+        public boolean            traded       = false;
 
         private EvolutionData(PokedexEntry evol)
         {
@@ -465,8 +475,8 @@ public class PokedexEntry
             }
         }
 
-        HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
         HashMap<ItemStack, PokedexEntry>    formes = new HashMap<>();
+        HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
 
         boolean canInteract(ItemStack key)
         {
@@ -554,9 +564,9 @@ public class PokedexEntry
     {
         public static class SpawnEntry
         {
-            float rate = 0.0f;
-            int   min  = 2;
             int   max  = 4;
+            int   min  = 2;
+            float rate = 0.0f;
         }
 
         public Map<SpawnBiomeMatcher, SpawnEntry> matchers = Maps.newHashMap();
@@ -590,15 +600,6 @@ public class PokedexEntry
             return entry == null ? 0 : entry.rate;
         }
 
-        /** Only checks one biome type for vailidity
-         * 
-         * @param b
-         * @return */
-        public boolean isValid(World world, Vector3 location)
-        {
-            return getMatcher(world, location) != null;
-        }
-
         public boolean isValid(Biome biome)
         {
             for (SpawnBiomeMatcher matcher : matchers.keySet())
@@ -617,6 +618,15 @@ public class PokedexEntry
             return false;
         }
 
+        /** Only checks one biome type for vailidity
+         * 
+         * @param b
+         * @return */
+        public boolean isValid(World world, Vector3 location)
+        {
+            return getMatcher(world, location) != null;
+        }
+
         public void postInit()
         {
             for (SpawnBiomeMatcher matcher : matchers.keySet())
@@ -626,10 +636,10 @@ public class PokedexEntry
         }
     }
 
-    public static TimePeriod night = new TimePeriod(0.6, 0.9);
+    public static TimePeriod dawn  = new TimePeriod(0.9, 0.0);
     public static TimePeriod day   = new TimePeriod(0.0, 0.5);
     public static TimePeriod dusk  = new TimePeriod(0.5, 0.6);
-    public static TimePeriod dawn  = new TimePeriod(0.9, 0.0);
+    public static TimePeriod night = new TimePeriod(0.6, 0.9);
 
     private static void addFromEvolution(PokedexEntry a, PokedexEntry b)
     {
@@ -646,76 +656,70 @@ public class PokedexEntry
         }
     }
 
-    Random                                     rand             = new Random();
-    public boolean                             isStarter        = false;
-    public boolean                             legendary        = false;
-    public boolean                             base             = false;
-    public boolean                             hasShiny         = true;
-    protected int                              pokedexNb;
-    protected String                           name;
-    protected String                           baseName;
-    protected PokeType                         type1;
-    protected PokeType                         type2;
-    /** The relation between xp and level */
-    protected int                              evolutionMode    = 1;
-    /** base xp given from defeating */
-    protected int                              baseXP;
-    protected int                              catchRate        = -1;
-    protected int                              sexeRatio        = -1;
-    protected String                           sound;
-    protected int[]                            stats;
-    protected byte[]                           evs;
-    /** Used to determine egg group */
-    public String[]                            species;
-    /** Inital list of species which are prey */
-    protected String[]                         food;
-    /** Array used for animated or gender based textures. Index 0 is the male
-     * textures, index 1 is the females */
-    public String[][]                          textureDetails   = { { "" }, null };
-
-    public String                              texturePath      = "textures/entities/";
     /** The abilities available to the pokedex entry. */
+    @CopyToGender
     protected ArrayList<String>                abilities        = Lists.newArrayList();
     /** The abilities available to the pokedex entry. */
+    @CopyToGender
     protected ArrayList<String>                abilitiesHidden  = Lists.newArrayList();
+    /** Times not included here the pokemob will go to sleep when idle. */
+    @CopyToGender
+    protected List<TimePeriod>                 activeTimes      = new ArrayList<TimePeriod>();
+    public boolean                             base             = false;
+    @CopyToGender
+    private PokedexEntry                       baseForme        = null;
     /** Initial Happiness of the pokemob */
+    @CopyToGender
     protected int                              baseHappiness;
-    /** Mod which owns the pokemob, used for texture location. */
-    private String                             modId;
-    /** Movement type for this mob */
-    protected PokecubeMod.Type                 mobType          = null;
-    /** If the above is floating, how high does it try to float */
-    public double                              preferedHeight   = 1.5;
-    /** Offset between top of hitbox and where player sits */
-    public double[][]                          passengerOffsets = { { 0, 1, 0 } };
-
-    /** indicatees of the specified special texture exists. Index 4 is used for
-     * if the mob can be dyed */
-    public boolean                             dyeable          = false;
+    @CopyToGender
+    protected String                           baseName;
+    /** base xp given from defeating */
+    @CopyToGender
+    protected int                              baseXP;
+    @CopyToGender
+    public boolean                             breeds           = true;
+    @CopyToGender
+    public boolean                             canSitShoulder   = false;
+    @CopyToGender
+    protected int                              catchRate        = -1;
+    @CopyToGender
+    private int                                childNb          = 0;
+    /** A map of father pokedexnb : child pokedexNbs */
+    @CopyToGender
+    protected Map<Integer, int[]>              childNumbers     = new HashMap<Integer, int[]>();
+    /** Will the pokemob try to build colonies with others of it's kind */
+    @CopyToGender
+    public boolean                             colonyBuilder    = false;
     /** Default value of specialInfo, used to determine default colour of
      * recolourable parts */
+    @CopyToGender
     public int                                 defaultSpecial   = 0;
-    /** Can it megaevolve */
-    public boolean                             hasMegaForm      = false;
-    /** Materials which will hurt or make it despawn. */
-    public String[]                            hatedMaterial;
+    @CopyToGender
+    public Map<ItemStack, Float>               drops            = Maps.newHashMap();
+    /** indicatees of the specified special texture exists. Index 4 is used for
+     * if the mob can be dyed */
+    @CopyToGender
+    public boolean                             dyeable          = false;
+    @CopyToGender
+    SoundEvent                                 event;
+    /** The relation between xp and level */
+    @CopyToGender
+    protected int                              evolutionMode    = 1;
+    /** The list of pokemon this can evolve into */
+    @CopyToGender
+    public List<EvolutionData>                 evolutions       = new ArrayList<PokedexEntry.EvolutionData>();
 
-    /** Particle Effects. */
-    public String[]                            particleData;
-
-    public boolean                             canSitShoulder   = false;
-    public boolean                             shouldFly        = false;
-    public boolean                             shouldSurf       = false;
-    public boolean                             shouldDive       = false;
-    /** Mass of the pokemon in kg. */
-    public double                              mass             = -1;
-
-    /** Will it protect others. */
-    public boolean                             isSocial         = true;
-
-    /** Will the pokemob try to build colonies with others of it's kind */
-    public boolean                             colonyBuilder    = false;
-
+    @CopyToGender
+    public EvolutionData                       evolvesBy        = null;
+    /** Who this pokemon evolves from. */
+    @CopyToGender
+    public PokedexEntry                        evolvesFrom      = null;
+    @CopyToGender
+    protected byte[]                           evs;
+    protected PokedexEntry                     female           = null;
+    /** Inital list of species which are prey */
+    @CopyToGender
+    protected String[]                         food;
     /** light,<br>
      * rock,<br>
      * power (near redstone blocks),<br>
@@ -723,63 +727,138 @@ public class PokedexEntry
      * never hungry,<br>
      * berries,<br>
      * water (filter feeds from water) */
+    @CopyToGender
     public boolean[]                           foods            = { false, false, false, false, false, true, false };
-
-    /** Times not included here the pokemob will go to sleep when idle. */
-    protected List<TimePeriod>                 activeTimes      = new ArrayList<TimePeriod>();
-
-    public boolean                             isStationary     = false;
-    /** the key is the itemstack, the value is the chance */
-
-    public Map<ItemStack, Float>               held             = Maps.newHashMap();
-    public Map<ItemStack, Float>               drops            = Maps.newHashMap();
-
+    @CopyToGender
+    protected HashMap<ItemStack, PokedexEntry> formeItems       = Maps.newHashMap();
     /** Map of forms assosciated with this one. */
+    @CopyToGender
     public Map<String, PokedexEntry>           forms            = new HashMap<String, PokedexEntry>();
-    /** A map of father pokedexnb : child pokedexNbs */
-    protected Map<Integer, int[]>              childNumbers     = new HashMap<Integer, int[]>();
 
-    /** Interactions with items from when player right clicks. */
-    protected InteractionLogic                 interactionLogic = new InteractionLogic();
+    /** Used to stop gender formes from spawning, spawning rate is done by
+     * gender ratio of base forme instead. */
+    public boolean                             isGenderForme    = false;
+    /** Can it megaevolve */
+    @CopyToGender
+    public boolean                             hasMegaForm      = false;
+    @CopyToGender
+    public boolean                             hasShiny         = true;
+    /** Materials which will hurt or make it despawn. */
+    @CopyToGender
+    public String[]                            hatedMaterial;
 
-    /** Pokemobs with these entries will be hunted. */
-    private List<PokedexEntry>                 prey             = new ArrayList<PokedexEntry>();
+    @CopyToGender
     public float                               height           = -1;
 
-    public float                               width            = -1;
+    /** the key is the itemstack, the value is the chance */
+
+    @CopyToGender
+    public Map<ItemStack, Float>               held             = Maps.newHashMap();
+    /** Interactions with items from when player right clicks. */
+    @CopyToGender
+    protected InteractionLogic                 interactionLogic = new InteractionLogic();
+    protected boolean                          isFemaleForme    = false;
+    protected boolean                          isMaleForme      = false;
+    @CopyToGender
+    public boolean                             isShadowForme    = false;
+
+    /** Will it protect others. */
+    @CopyToGender
+    public boolean                             isSocial         = true;
+
+    public boolean                             isStarter        = false;
+
+    @CopyToGender
+    public boolean                             isStationary     = false;
+
+    @CopyToGender
+    public boolean                             legendary        = false;
+
+    @CopyToGender
     public float                               length           = -1;
-    private int                                childNb          = 0;
-    protected boolean                          hasStats         = false;
-    protected boolean                          hasEVXP          = false;
-    public boolean                             breeds           = true;
-    /** All possible moves */
-    private List<String>                       possibleMoves;
     /** Map of Level to Moves learned. */
+    @CopyToGender
     private Map<Integer, ArrayList<String>>    lvlUpMoves;
+    protected PokedexEntry                     male             = null;
 
-    private SpawnData                          spawns;
-
-    /** The list of pokemon this can evolve into */
-    public List<EvolutionData>                 evolutions       = new ArrayList<PokedexEntry.EvolutionData>();
-    /** This list will contain all pokemon that are somehow related to this one
-     * via evolution chains */
-    public List<PokedexEntry>                  related          = new ArrayList<PokedexEntry>();
-
-    /** Who this pokemon evolves from. */
-    public PokedexEntry                        evolvesFrom      = null;
-
-    public EvolutionData                       evolvesBy        = null;
-
-    private PokedexEntry                       baseForme        = null;
-
-    protected HashMap<ItemStack, PokedexEntry> formeItems       = Maps.newHashMap();
-
+    /** Mass of the pokemon in kg. */
+    @CopyToGender
+    public double                              mass             = -1;
+    @CopyToGender
     protected HashMap<PokedexEntry, MegaRule>  megaRules        = Maps.newHashMap();
 
-    public boolean                             isShadowForme    = false;
+    /** Movement type for this mob */
+    @CopyToGender
+    protected PokecubeMod.Type                 mobType          = null;
+
+    /** Mod which owns the pokemob, used for texture location. */
+    @CopyToGender
+    private String                             modId;
+    protected String                           name;
+
+    /** Particle Effects. */
+    @CopyToGender
+    public String[]                            particleData;
+    /** Offset between top of hitbox and where player sits */
+    @CopyToGender
+    public double[][]                          passengerOffsets = { { 0, 1, 0 } };
+    @CopyToGender
+    protected int                              pokedexNb;
+    /** All possible moves */
+    @CopyToGender
+    private List<String>                       possibleMoves;
+    /** If the above is floating, how high does it try to float */
+    @CopyToGender
+    public double                              preferedHeight   = 1.5;
+    /** Pokemobs with these entries will be hunted. */
+    @CopyToGender
+    private List<PokedexEntry>                 prey             = new ArrayList<PokedexEntry>();
+
+    /** This list will contain all pokemon that are somehow related to this one
+     * via evolution chains */
+    @CopyToGender
+    public List<PokedexEntry>                  related          = new ArrayList<PokedexEntry>();
+
+    @CopyToGender
+    protected int                              sexeRatio        = -1;
+    @CopyToGender
     public PokedexEntry                        shadowForme      = null;
 
-    SoundEvent                                 event;
+    @CopyToGender
+    public boolean                             shouldDive       = false;
+
+    @CopyToGender
+    public boolean                             shouldFly        = false;
+
+    @CopyToGender
+    public boolean                             shouldSurf       = false;
+
+    @CopyToGender
+    protected String                           sound;
+
+    @CopyToGender
+    private SpawnData                          spawns;
+
+    /** Used to determine egg group */
+    @CopyToGender
+    public String[]                            species;
+    @CopyToGender
+    protected int[]                            stats;
+
+    /** Array used for animated or gender based textures. Index 0 is the male
+     * textures, index 1 is the females */
+    @CopyToGender
+    public String[][]                          textureDetails   = { { "" }, null };
+    @CopyToGender
+    public String                              texturePath      = "textures/entities/";
+
+    @CopyToGender
+    protected PokeType                         type1;
+    @CopyToGender
+    protected PokeType                         type2;
+
+    @CopyToGender
+    public float                               width            = -1;
 
     public PokedexEntry(int nb, String name)
     {
@@ -924,6 +1003,54 @@ public class PokedexEntry
         this.addForm(e);
     }
 
+    public PokedexEntry createGenderForme(byte gender)
+    {
+        String suffix = "";
+        if (gender == IPokemob.MALE) suffix = " Male";
+        else suffix = " Female";
+        PokedexEntry forme = new PokedexEntry(pokedexNb, name + suffix);
+
+        forme.setBaseForme(this);
+        if (gender == IPokemob.MALE)
+        {
+            forme.isMaleForme = true;
+            this.male = forme;
+        }
+        else
+        {
+            forme.isFemaleForme = true;
+            this.female = forme;
+        }
+        forme.isGenderForme = true;
+        return forme;
+    }
+
+    protected void copyToGenderFormes()
+    {
+        if (male != null || female != null)
+        {
+            Class<?> me = getClass();
+            CopyToGender c;
+            for (Field f : me.getDeclaredFields())
+            {
+                c = f.getAnnotation(CopyToGender.class);
+                if (c != null)
+                {
+                    try
+                    {
+                        f.setAccessible(true);
+                        if (male != null) f.set(male, f.get(this));
+                        if (female != null) f.set(female, f.get(this));
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     public boolean floats()
     {
         return mobType == PokecubeMod.Type.FLOATING;
@@ -939,6 +1066,15 @@ public class PokedexEntry
         if (number < 2) { return AbilityManager.getAbility(abilities.get(number)); }
         if (number == 2) return getHiddenAbility(pokemob);
         return null;
+    }
+
+    public PokedexEntry getBaseForme()
+    {
+        if (baseForme == null && !base)
+        {
+            baseForme = Database.getEntry(getPokedexNb());
+        }
+        return baseForme;
     }
 
     /** For pokemon with multiple formes
@@ -1026,6 +1162,13 @@ public class PokedexEntry
     public byte[] getEVs()
     {
         return evs;
+    }
+
+    public PokedexEntry getForGender(byte gender)
+    {
+        if (male != null || female != null) { return gender == IPokemob.MALE ? male == null ? male = this : male
+                : female == null ? female = this : female; }
+        return this;
     }
 
     /** @param form
@@ -1281,6 +1424,8 @@ public class PokedexEntry
     /** @return the name to be fed to the language formatter */
     public String getUnlocalizedName()
     {
+        String name = this.name;
+        if (this.isFemaleForme || this.isMaleForme) name = this.getBaseName();
         String translated = "pkmn." + name + ".name";
         return translated;
     }
@@ -1484,6 +1629,11 @@ public class PokedexEntry
         return toAdd;
     }
 
+    public void setBaseForme(PokedexEntry baseForme)
+    {
+        this.baseForme = baseForme;
+    }
+
     /** Sets the Mod which declares this mob.
      * 
      * @param modId
@@ -1572,19 +1722,5 @@ public class PokedexEntry
         {
             lvlUpMoves.remove(i);
         }
-    }
-
-    public PokedexEntry getBaseForme()
-    {
-        if (baseForme == null && !base)
-        {
-            baseForme = Database.getEntry(getPokedexNb());
-        }
-        return baseForme;
-    }
-
-    public void setBaseForme(PokedexEntry baseForme)
-    {
-        this.baseForme = baseForme;
     }
 }

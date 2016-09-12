@@ -36,11 +36,14 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.PokecubeMessageHandlerClient;
+import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.PokecubeMessageHandlerServer;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPC;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.network.packets.PacketSound;
+import pokecube.core.network.packets.PacketSyncDimIds;
 import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.network.pokemobs.PacketChangeForme;
@@ -49,6 +52,8 @@ import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -460,6 +465,16 @@ public class PokecubePacketHandler
 
     public static void init()
     {
+        // General Pokecube Packets
+        PokecubeMod.packetPipeline.registerMessage(PokecubeMessageHandlerClient.class, PokecubeClientPacket.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PokecubeMessageHandlerServer.class, PokecubeServerPacket.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
+        // Packets for Pokemobs
+        PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
         PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class, PokecubeCore.getMessageID(),
                 Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketPC.class, PacketPC.class, PokecubeCore.getMessageID(),
@@ -475,6 +490,22 @@ public class PokecubePacketHandler
         PokecubeMod.packetPipeline.registerMessage(PacketChoose.class, PacketChoose.class, PokecubeCore.getMessageID(),
                 Side.SERVER);
 
+        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
+        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
+        PokecubeMod.packetPipeline.registerMessage(PacketMountedControl.class, PacketMountedControl.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketMountedControl.class, PacketMountedControl.class,
+                PokecubeCore.getMessageID(), Side.SERVER);
+
+        // Server only
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobGui.class, PacketPokemobGui.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobAttack.class, PacketPokemobAttack.class,
@@ -482,6 +513,7 @@ public class PokecubePacketHandler
         PokecubeMod.packetPipeline.registerMessage(PacketNickname.class, PacketNickname.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
 
+        // Client only
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketSound.class, PacketSound.class, PokecubeCore.getMessageID(),
@@ -490,22 +522,8 @@ public class PokecubePacketHandler
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketDataSync.class, PacketDataSync.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
-
-        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
+        PokecubeMod.packetPipeline.registerMessage(PacketSyncDimIds.class, PacketSyncDimIds.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketChangeForme.class, PacketChangeForme.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
-
-        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketPokedex.class, PacketPokedex.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
-
-        PokecubeMod.packetPipeline.registerMessage(PacketMountedControl.class, PacketMountedControl.class,
-                PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketMountedControl.class, PacketMountedControl.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
-
     }
 
     public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)

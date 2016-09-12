@@ -392,6 +392,16 @@ public class PlayerDataHandler
         return data.tag;
     }
 
+    public static void saveCustomData(EntityPlayer player)
+    {
+        saveCustomData(player.getCachedUniqueIdString());
+    }
+
+    public static void saveCustomData(String cachedUniqueIdString)
+    {
+        getInstance().save(cachedUniqueIdString, "pokecube-custom");
+    }
+
     private Map<String, PlayerDataManager> data = Maps.newHashMap();
 
     public PlayerDataHandler()
@@ -431,7 +441,8 @@ public class PlayerDataHandler
             Set<String> toUnload = Sets.newHashSet();
             for (String uuid : data.keySet())
             {
-                EntityPlayerMP player = event.getWorld().getMinecraftServer().getPlayerList().getPlayerByUsername(uuid);
+                EntityPlayerMP player = event.getWorld().getMinecraftServer().getPlayerList()
+                        .getPlayerByUUID(UUID.fromString(uuid));
                 if (player == null)
                 {
                     toUnload.add(uuid);
@@ -439,6 +450,7 @@ public class PlayerDataHandler
             }
             for (String s : toUnload)
             {
+                System.out.println("Saving " + s);
                 save(s);
                 data.remove(s);
             }
@@ -478,6 +490,37 @@ public class PlayerDataHandler
         }
         data.put(uuid, manager);
         return manager;
+    }
+
+    public void save(String uuid, String dataType)
+    {
+        PlayerDataManager manager = data.get(uuid);
+        if (manager != null)
+        {
+            for (PlayerData data : manager.data.values())
+            {
+                if (!data.getIdentifier().equals(dataType)) continue;
+                String fileName = data.dataFileName();
+                File file = PokecubeSerializer.getFileForUUID(uuid, fileName);
+                if (file != null)
+                {
+                    NBTTagCompound nbttagcompound = new NBTTagCompound();
+                    data.writeToNBT(nbttagcompound);
+                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                    nbttagcompound1.setTag("Data", nbttagcompound);
+                    try
+                    {
+                        FileOutputStream fileoutputstream = new FileOutputStream(file);
+                        CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
+                        fileoutputstream.close();
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
 
     public void save(String uuid)

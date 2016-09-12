@@ -273,13 +273,15 @@ public class PokedexEntryLoader
         @XmlAttribute
         public String  special;
         @XmlAttribute
-        public boolean base    = false;
+        public boolean base     = false;
         @XmlAttribute
-        public boolean breed   = true;
+        public boolean breed    = true;
         @XmlAttribute
-        public boolean starter = false;
+        public boolean starter  = false;
         @XmlAttribute
-        public boolean legend  = false;
+        public boolean legend   = false;
+        @XmlAttribute
+        public boolean hasShiny = true;
         @XmlElement(name = "STATS")
         StatsNode      stats;
         @XmlElement(name = "MOVES")
@@ -1084,6 +1086,7 @@ public class PokedexEntryLoader
                 entry.breeds = xmlEntry.breed;
                 entry.isStarter = xmlEntry.starter;
                 entry.legendary = xmlEntry.legend;
+                entry.hasShiny = xmlEntry.hasShiny;
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
                 parseEvols(entry, stats, true);

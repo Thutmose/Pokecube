@@ -11,12 +11,12 @@ import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkGenerator;
 
-public class ChunkProviderSecretPower implements IChunkGenerator
+public class ChunkProviderSecretBase implements IChunkGenerator
 {
 
     private final World worldObj;
 
-    public ChunkProviderSecretPower(World world)
+    public ChunkProviderSecretBase(World world)
     {
         this.worldObj = world;
     }

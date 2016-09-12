@@ -240,7 +240,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         Block nest = new BlockNest().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
                 .setUnlocalizedName("pokemobNest");
-        PokecubeItems.register(nest, ItemBlock.class, "pokemobNest");
+        PokecubeItems.register(nest, ItemBlockMeta.class, "pokemobNest");
         GameRegistry.registerTileEntity(TileEntityNest.class, "pokemobNest");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {

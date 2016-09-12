@@ -18,13 +18,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokecube.core.blocks.berries.IMetaBlock;
 import pokecube.core.database.Database;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 
-public class BlockNest extends Block implements ITileEntityProvider
+public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
 {
     public static ArrayList<String> types = new ArrayList<String>();
 
@@ -88,31 +89,36 @@ public class BlockNest extends Block implements ITileEntityProvider
         int meta = getMetaFromState(state);
         if (state.getValue(TYPE) == 1)
         {
-
-        }
-
-        if (!worldIn.isRemote)
-        {
-            BlockPos pos1 = PokecubeDimensionManager.getBaseEntrance(playerIn, 0);
-            int dim = PokecubeDimensionManager.getDimensionForPlayer(playerIn);
-            System.out.println("Test " + meta + " " + pos1 + " " + dim);
-
-            int current = playerIn.dimension;
-            if (current != dim) PokecubeDimensionManager.sendToBase(playerIn.getCachedUniqueIdString(), playerIn, pos);
-            else
+            if (playerIn.isSneaking())
             {
-                Transporter.teleportEntity(playerIn, Vector3.getNewVector().set(pos1), 0, false);
+                System.out.println(worldIn.getWorldBorder().getSize() + " ");
+            }
+            else if (!worldIn.isRemote)
+            {
+                BlockPos pos1 = PokecubeDimensionManager.getBaseEntrance(playerIn, 0);
+                int dim = PokecubeDimensionManager.getDimensionForPlayer(playerIn);
+                System.out.println("Test " + meta + " " + pos1 + " " + dim);
+                if (pos1 == null)
+                {
+                    pos1 = worldIn.getMinecraftServer().worldServerForDimension(0).getSpawnPoint();
+                }
+                int current = playerIn.dimension;
+                if (current != dim)
+                    PokecubeDimensionManager.sendToBase(playerIn.getCachedUniqueIdString(), playerIn, pos);
+                else
+                {
+                    Transporter.teleportEntity(playerIn, Vector3.getNewVector().set(pos1), 0, false);
+                }
             }
         }
-
         return true;
     }
 
-    // @Override
-    // public String getUnlocalizedName(ItemStack stack)
-    // {
-    // return super.getUnlocalizedName();
-    // }
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return super.getUnlocalizedName();
+    }
 
     @Override
     /** Convert the BlockState into the correct metadata value */

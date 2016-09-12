@@ -650,6 +650,7 @@ public class PokedexEntry
     public boolean                             isStarter        = false;
     public boolean                             legendary        = false;
     public boolean                             base             = false;
+    public boolean                             hasShiny         = true;
     protected int                              pokedexNb;
     protected String                           name;
     protected String                           baseName;

@@ -529,6 +529,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public boolean isShiny()
     {
+        if (shiny && !getPokedexEntry().hasShiny) shiny = false;
         return shiny;
     }
 

@@ -62,8 +62,9 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         {
             try
             {
-                UUID.fromString(playerName);
-                return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
+                UUID id = UUID.fromString(playerName);
+                EntityPlayer ret = getWorld().getMinecraftServer().getPlayerList().getPlayerByUUID(id);
+                return ret != null ? ret : getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
             }
             catch (Exception e)
             {

@@ -109,4 +109,10 @@ public class WorldProviderSecretBase extends WorldProvider
     public void onPlayerRemoved(EntityPlayerMP player)
     {
     }
+
+    @Override
+    protected void createBiomeProvider()
+    {
+        this.biomeProvider = new BiomeProviderSecretBase(worldObj);
+    }
 }

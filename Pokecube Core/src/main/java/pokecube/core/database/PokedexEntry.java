@@ -837,6 +837,8 @@ public class PokedexEntry
     protected String                           sound;
 
     @CopyToGender
+    /** This is copied to the gender as it will allow specifying where that
+     * gender spawns in pokedex. */
     private SpawnData                          spawns;
 
     /** Used to determine egg group */

@@ -61,7 +61,7 @@ public class MakeCommand extends CommandBase
         boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
         boolean isOp = CommandTools.isOp(sender) || commandBlock;
-        System.out.println(isOp+" "+deobfuscated+" "+commandBlock);
+        System.out.println(isOp + " " + deobfuscated + " " + commandBlock + " " + targets);
         if (deobfuscated || commandBlock)
         {
             String name;
@@ -254,6 +254,7 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
+                            // TODO look up owner or uuid properly.
                             if (p != null) owner = p.getCachedUniqueIdString();
                         }
 

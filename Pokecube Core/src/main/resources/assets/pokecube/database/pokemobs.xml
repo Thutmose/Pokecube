@@ -16276,7 +16276,7 @@
     </Pokemon>
     <Pokemon name="Arceus Ground" number="493" breed="false" legend="true">
         <STATS>
-            <TYPE type1="Gound"/>
+            <TYPE type1="Ground"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>

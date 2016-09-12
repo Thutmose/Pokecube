@@ -10,7 +10,6 @@ import static pokecube.core.handlers.ItemHandler.plank0;
 
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.UUID;
 
 import org.lwjgl.input.Keyboard;
 
@@ -262,16 +261,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         if (playerName != null)
         {
-            try
-            {
-                UUID.fromString(playerName);
-                return getWorld().getPlayerEntityByUUID(UUID.fromString(playerName));
-            }
-            catch (Exception e)
-            {
-
-            }
-            return getWorld().getPlayerEntityByName(playerName);
+            return super.getPlayer(playerName);
         }
         else
         {
@@ -526,7 +516,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.registerKeyBinding(mobMove2 = new KeyBinding("Move 2", Keyboard.KEY_U, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobMove3 = new KeyBinding("Move 3", Keyboard.KEY_H, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobMove4 = new KeyBinding("Move 4", Keyboard.KEY_J, "Pokecube"));
-        
+
         ClientRegistry.registerKeyBinding(mobUp = new KeyBinding("Pokemob Up", Keyboard.KEY_NONE, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobDown = new KeyBinding("Pokemob Down", Keyboard.KEY_NONE, "Pokecube"));
     }

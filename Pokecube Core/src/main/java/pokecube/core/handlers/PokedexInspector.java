@@ -77,7 +77,6 @@ public class PokedexInspector
             {
                 required = (int) (Double.parseDouble(arg));
             }
-            System.out.println(arg+" "+num+" "+tagString+" "+required);
             return required <= num;
         }
 

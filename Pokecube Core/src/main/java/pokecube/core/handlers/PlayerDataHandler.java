@@ -247,7 +247,6 @@ public class PlayerDataHandler
             int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
             getCaptures(player).put(entry, num + 1);
             player.addStat(ach);
-            System.out.println(captures+" "+captures.size());
         }
 
         public void addKill(EntityPlayer player, PokedexEntry entry)

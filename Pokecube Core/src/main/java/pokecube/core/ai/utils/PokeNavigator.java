@@ -246,11 +246,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean isInLiquid()
     {
-        return this.theEntity.isInWater();// ||
-                                          // worldObj.isMaterialInBB(theEntity.boundingBox.expand(-0.10000000149011612D,
-                                          // -0.4000000059604645D,
-                                          // -0.10000000149011612D),
-                                          // Material.lava);
+        return theEntity.isInWater() || theEntity.isInLava();
     }
 
     /** If null path or reached the end */

@@ -6,6 +6,8 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.moves.TerrainDamageSource;
+import pokecube.core.moves.TerrainDamageSource.TerrainType;
 import thut.api.maths.Vector3;
 
 public class LogicInMaterials extends LogicBase
@@ -57,7 +59,7 @@ public class LogicInMaterials extends LogicBase
             {
                 if (entity.isInWater() && entity.getRNG().nextInt(10) == 0)
                 {
-                    entity.attackEntityFrom(DamageSource.cactus, 1);
+                    entity.attackEntityFrom(new TerrainDamageSource("material", TerrainType.MATERIAL), 1);
                 }
             }
         }

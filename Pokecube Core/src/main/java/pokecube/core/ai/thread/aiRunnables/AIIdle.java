@@ -240,7 +240,7 @@ public class AIIdle extends AIBase
             int z = (j / (distance * distance)) % (distance) - distance / 2;
             y = Math.max(1, y);
             temp.set(ret).addTo(x, y, z);
-            if (temp.isClearOfBlocks(world) && ((IPathingMob) mob).getBlockPathWeight(world, v) <= 40) { return temp; }
+            if (temp.isClearOfBlocks(world) && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }
         }
         return null;
     }

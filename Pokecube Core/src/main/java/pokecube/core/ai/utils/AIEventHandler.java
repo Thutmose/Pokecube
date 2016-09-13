@@ -27,10 +27,12 @@ public class AIEventHandler
         if (evt.getSource() instanceof TerrainDamageSource && evt.getEntityLiving() instanceof IPokemob)
         {
             IPokemob pokemob = (IPokemob) evt.getEntityLiving();
-            if (!pokemob.getPokemonAIState(IPokemob.ANGRY))
+            if (!pokemob.getPokemonAIState(IPokemob.ANGRY)
+                    && ((EntityLiving) evt.getEntityLiving()).getNavigator().noPath())
             {
                 Vector3 v = AIIdle.getRandomPointNear(evt.getEntity().getEntityWorld(), pokemob,
                         Vector3.getNewVector().set(pokemob), 8);
+                System.out.println(evt.getSource() + " " + evt.getEntity() + " " + v);
                 if (v != null)
                 {
                     ((EntityLiving) evt.getEntityLiving()).getNavigator().tryMoveToXYZ(v.x, v.y, v.z,

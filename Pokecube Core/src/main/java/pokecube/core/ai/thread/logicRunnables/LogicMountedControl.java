@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -57,12 +56,13 @@ public class LogicMountedControl extends LogicBase
                 }
             }
         }
-        float speedFactor = (float) entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
-                .getAttributeValue();
+        float moveSpeed = 0.25f;
+        float speedFactor = (float) (1 + Math.sqrt(pokemob.getPokedexEntry().getStatVIT()) / (10F));
+        moveSpeed *= speedFactor;
         if (forwardInputDown)
         {
             move = true;
-            float f = speedFactor / 2;
+            float f = moveSpeed / 2;
             if (shouldControl)
             {
                 if (!entity.onGround) f *= 2;
@@ -79,7 +79,7 @@ public class LogicMountedControl extends LogicBase
         if (backInputDown)
         {
             move = true;
-            float f = -speedFactor / 4;
+            float f = -moveSpeed / 4;
             if (shouldControl)
             {
                 entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
@@ -90,7 +90,7 @@ public class LogicMountedControl extends LogicBase
         {
             if (entity.onGround)
             {
-                entity.setJumping(true);
+                entity.getJumpHelper().setJumping();
             }
             else if (shouldControl)
             {

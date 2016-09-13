@@ -552,9 +552,14 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double dy = 0;
             double yOff = this.yOffset;
             double newY = y + yOff + dy;
+            Vector3 dir = Vector3.getNewVector().set(x, newY, z).norm()
+                    .scalarMult(this.getSize() * getPokedexEntry().length);
+            boolean border = worldObj.getWorldBorder().contains(getEntityBoundingBox().offset(dir.x, dir.y, dir.z));
+            if (!border)
+            {
+                x = newY = z = 0;
+            }
 
-            // this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x,
-            // y, z));
             if (newY == 0)
             {
                 motionY = 0;

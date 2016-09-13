@@ -45,6 +45,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
@@ -381,9 +382,10 @@ public class GuiPokedex extends GuiScreen
 
             final EntityPlayer player = entityPlayer;
             final Vector3 pos = Vector3.getNewVector().set(player);
+            final SpawnCheck checker = new SpawnCheck(pos, player.worldObj);
             for (PokedexEntry e : Database.spawnables)
             {
-                if (e.getSpawnData().isValid(player.worldObj, pos))
+                if (e.getSpawnData().isValid(checker))
                 {
                     names.add(e);
                 }
@@ -393,9 +395,9 @@ public class GuiPokedex extends GuiScreen
                 @Override
                 public int compare(PokedexEntry o1, PokedexEntry o2)
                 {
-                    float rate1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(player.worldObj, pos))
+                    float rate1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(checker, false))
                             * 10e5f;
-                    float rate2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(player.worldObj, pos))
+                    float rate2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(checker, false))
                             * 10e5f;
                     return (int) (-rate1 + rate2);
                 }
@@ -419,7 +421,7 @@ public class GuiPokedex extends GuiScreen
                 }
                 String numbers = "";
                 if (entityPlayer.capabilities.isCreativeMode)
-                    numbers = " " + dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(player.worldObj, pos));
+                    numbers = " " + dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker, false));
                 drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
                         0xFF0000);
                 String time = "";

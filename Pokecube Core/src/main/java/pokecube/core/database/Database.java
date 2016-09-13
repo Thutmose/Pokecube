@@ -378,7 +378,7 @@ public class Database
                 SpawnData data = entry.getSpawnData();
                 if (xmlEntry.overwrite || data == null)
                 {
-                    data = new SpawnData();
+                    data = new SpawnData(entry);
                     entry.setSpawnData(data);
                     System.out.println("Overwriting spawns for " + entry);
                 }

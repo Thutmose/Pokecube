@@ -56,6 +56,7 @@ import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
+import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -305,7 +306,6 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
-
         if (Keyboard.getEventNanoseconds() == eventTime) return;
 
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
@@ -432,6 +432,16 @@ public class EventsHandlerClient
     {
         if (addedLayers.contains(event.getRenderer())) { return; }
         addedLayers.add(event.getRenderer());
+    }
+
+    /** This is done here for when pokedex is checked, to compare to blacklist.
+     * 
+     * @param event */
+    @SubscribeEvent
+    public void onSpawnCheck(SpawnEvent.Check event)
+    {
+        if (!event.forSpawn && SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension()))
+            event.setCanceled(true);
     }
 
     @SideOnly(Side.CLIENT)

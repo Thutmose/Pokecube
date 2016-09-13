@@ -30,6 +30,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import pokecube.core.PokecubeCore;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.PlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
@@ -59,6 +61,8 @@ public class PokecubeDimensionManager
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world1));
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
             registerDim(dim);
+            SpawnHandler.dimensionBlacklist.add(dim);
+            PokecubeCore.core.getConfig().save();
             getInstance().syncToAll();
         }
         for (int i = -2; i <= 2; i++)
@@ -82,6 +86,7 @@ public class PokecubeDimensionManager
     {
         int dim = 0;
         NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
+        System.out.println(tag);
         if (tag.hasKey("secretPowerDimID"))
         {
             dim = tag.getInteger("secretPowerDimID");
@@ -91,11 +96,17 @@ public class PokecubeDimensionManager
             dim = DimensionManager.getNextFreeDimId();
             tag.setInteger("secretPowerDimID", dim);
             PlayerDataHandler.saveCustomData(player);
+            Thread.dumpStack();
         }
         return dim;
     }
 
     public static BlockPos getBaseEntrance(EntityPlayer player, int dim)
+    {
+        return getBaseEntrance(player.getCachedUniqueIdString(), dim);
+    }
+
+    public static BlockPos getBaseEntrance(String player, int dim)
     {
         BlockPos ret = null;
         NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
@@ -176,7 +187,7 @@ public class PokecubeDimensionManager
             }
         }
         id++;
-        PokecubeMod.log("Registering rftools dimension type at id " + id);
+        PokecubeMod.log("Registering Pokecube Secret Base Dimension type at id " + id);
         SECRET_BASE_TYPE = DimensionType.register("pokecube_secretbase", "_pokecube", id, WorldProviderSecretBase.class,
                 false);
     }

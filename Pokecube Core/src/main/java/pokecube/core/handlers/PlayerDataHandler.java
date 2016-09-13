@@ -99,6 +99,7 @@ public class PlayerDataHandler
         public void readFromNBT(NBTTagCompound tag)
         {
             this.tag = tag.getCompoundTag("data");
+            System.out.println("Read:" + this.tag);
         }
     }
 

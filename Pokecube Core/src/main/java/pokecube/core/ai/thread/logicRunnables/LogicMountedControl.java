@@ -25,7 +25,6 @@ public class LogicMountedControl extends LogicBase
     public LogicMountedControl(IPokemob pokemob_)
     {
         super(pokemob_);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -49,7 +48,11 @@ public class LogicMountedControl extends LogicBase
             {
                 if (e instanceof EntityLivingBase)
                 {
-                    if (entity.isInWater()) ((EntityLivingBase) e).addPotionEffect(vision);
+                    if (entity.isInWater())
+                    {
+                        ((EntityLivingBase) e).addPotionEffect(vision);
+                        ((EntityLivingBase) e).setAir(300);
+                    }
                     else((EntityLivingBase) e).curePotionEffects(stack);
                 }
             }

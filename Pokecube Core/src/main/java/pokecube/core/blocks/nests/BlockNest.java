@@ -21,9 +21,6 @@ import net.minecraft.world.World;
 import pokecube.core.blocks.berries.IMetaBlock;
 import pokecube.core.database.Database;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import pokecube.core.world.dimensions.PokecubeDimensionManager;
-import thut.api.entity.Transporter;
-import thut.api.maths.Vector3;
 
 public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
 {
@@ -48,7 +45,7 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
         if (meta == 0) return new TileEntityNest();
-        else if (meta == 1) return null;
+        else if (meta == 1) return new TileEntityBasePortal();
         else return null;
     }
 
@@ -86,29 +83,12 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
             playerIn.addChatComponentMessage(new TextComponentString("Set to " + Database.getEntry(nest.pokedexNb)));
             return true;
         }
-        int meta = getMetaFromState(state);
         if (state.getValue(TYPE) == 1)
         {
-            if (playerIn.isSneaking())
+            if (!worldIn.isRemote)
             {
-                System.out.println(worldIn.getWorldBorder().getSize() + " ");
-            }
-            else if (!worldIn.isRemote)
-            {
-                BlockPos pos1 = PokecubeDimensionManager.getBaseEntrance(playerIn, 0);
-                int dim = PokecubeDimensionManager.getDimensionForPlayer(playerIn);
-                System.out.println("Test " + meta + " " + pos1 + " " + dim);
-                if (pos1 == null)
-                {
-                    pos1 = worldIn.getMinecraftServer().worldServerForDimension(0).getSpawnPoint();
-                }
-                int current = playerIn.dimension;
-                if (current != dim)
-                    PokecubeDimensionManager.sendToBase(playerIn.getCachedUniqueIdString(), playerIn, pos);
-                else
-                {
-                    Transporter.teleportEntity(playerIn, Vector3.getNewVector().set(pos1), 0, false);
-                }
+                TileEntityBasePortal portal = (TileEntityBasePortal) tile_entity;
+                portal.transferPlayer(playerIn);
             }
         }
         return true;

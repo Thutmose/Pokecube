@@ -47,6 +47,7 @@ import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.nests.BlockNest;
+import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.blocks.pc.BlockPC;
 import pokecube.core.blocks.pc.ItemBlockPC;
@@ -242,10 +243,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 .setUnlocalizedName("pokemobNest");
         PokecubeItems.register(nest, ItemBlockMeta.class, "pokemobNest");
         GameRegistry.registerTileEntity(TileEntityNest.class, "pokemobNest");
+        GameRegistry.registerTileEntity(TileEntityBasePortal.class, "pokecubeBasePortal");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            registerItemTexture(Item.getItemFromBlock(nest), 0,
-                    new ModelResourceLocation("minecraft:stone", "inventory"));
+            for (int i = 0; i < BlockNest.types.size(); i++)
+                registerItemTexture(Item.getItemFromBlock(nest), i,
+                        new ModelResourceLocation("minecraft:stone", "inventory"));
         }
 
         GameRegistry.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecenter");

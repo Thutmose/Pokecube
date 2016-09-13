@@ -19,6 +19,9 @@ type.dragon=dragon
 type.dark=dark
 type.fairy=fairy
 
+death.attack.terrain.sandstorm=%1$s died to the Sandstorm
+death.attack.terrain.hail=%1$s died to Hail
+
 pokemob.status.curse=%1$s was hurt by the curse
 pokemob.status.flinch=%1$s flinched
 pokemob.status.confuse.remove=%1$s is no longer confused

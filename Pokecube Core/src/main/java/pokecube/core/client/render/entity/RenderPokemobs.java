@@ -140,7 +140,7 @@ public class RenderPokemobs extends RenderPokemob
             }
 
             GlStateManager.pushMatrix();
-//            // Handle held/shoulder, whenever entities can mount players...
+            // // Handle held/shoulder, whenever entities can mount players...
 
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());
@@ -150,7 +150,7 @@ public class RenderPokemobs extends RenderPokemob
             Render render = getRenderer(mob.getPokedexEntry());
             if (render == instance)
             {
-                String nbm = entry.getName() + entry.getModId();
+                String nbm = entry.getTrimmedName() + entry.getModId();
                 setModel(nbm);
                 if (this.mainModel == null)
                 {
@@ -188,7 +188,7 @@ public class RenderPokemobs extends RenderPokemob
 
     public Render getRenderer(PokedexEntry entry)
     {
-        String nbm = entry.getName() + entry.getModId();
+        String nbm = entry.getTrimmedName() + entry.getModId();
         Render ret;
         if ((ret = renderMap.get(nbm)) == null)
         {

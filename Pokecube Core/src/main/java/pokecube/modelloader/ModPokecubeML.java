@@ -229,9 +229,9 @@ public class ModPokecubeML implements IMobProvider
         PokedexEntry e;
         if ((e = Database.getEntry(mob)) != null && e.getBaseForme() == null)
         {
-            if (textureProviders.containsKey(e.getName()))
+            if (textureProviders.containsKey(e.getTrimmedName()))
             {
-                e.setModId(textureProviders.get(e.getName()));
+                e.setModId(textureProviders.get(e.getTrimmedName()));
             }
             else
             {

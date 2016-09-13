@@ -25,6 +25,6 @@ public class TerrainDamageSource extends DamageSource
     public ITextComponent getDeathMessage(EntityLivingBase entityLivingBaseIn)
     {
         String s = "death.attack." + this.damageType;
-        return new TextComponentTranslation(s, new Object[] { entityLivingBaseIn.getDisplayName() });
+        return new TextComponentTranslation(s, entityLivingBaseIn.getDisplayName());
     }
 }

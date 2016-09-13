@@ -246,7 +246,8 @@ public class PlayerDataHandler
             }
             int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
             getCaptures(player).put(entry, num + 1);
-            if (!player.worldObj.isRemote) player.addStat(ach);
+            player.addStat(ach);
+            System.out.println(captures+" "+captures.size());
         }
 
         public void addKill(EntityPlayer player, PokedexEntry entry)
@@ -259,7 +260,7 @@ public class PlayerDataHandler
             }
             int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
             getKills(player).put(entry, num + 1);
-            if (!player.worldObj.isRemote) player.addStat(ach);
+            player.addStat(ach);
         }
 
         public void addHatch(EntityPlayer player, PokedexEntry entry)
@@ -272,7 +273,7 @@ public class PlayerDataHandler
             }
             int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
             getHatches(player).put(entry, num + 1);
-            if (!player.worldObj.isRemote) player.addStat(ach);
+            player.addStat(ach);
         }
 
         @Override

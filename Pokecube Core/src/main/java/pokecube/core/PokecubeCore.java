@@ -625,8 +625,7 @@ public class PokecubeCore extends PokecubeMod
         if (get1stPokemob == null)
         {
             System.out.println("REGISTERING ACHIEVEMENT");
-            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"),
-                    null));
+            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"), null));
             get1stPokemob.registerStat();
             AchievementList.ACHIEVEMENTS.add(get1stPokemob);
             achievementPageCatch = new AchievementPage("Pokecube Captures");

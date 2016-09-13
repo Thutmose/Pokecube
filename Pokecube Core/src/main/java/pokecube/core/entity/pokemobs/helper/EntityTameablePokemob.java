@@ -43,6 +43,7 @@ import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
+import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
@@ -678,9 +679,17 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         added = toss.isCanceled();
                     }
                 }
-                if (!owner.isSneaking() && !isDead
-                        && !((EntityPlayer) owner).hasAchievement(PokecubeMod.catchAchievements.get(getPokedexEntry())))
-                    ((EntityPlayer) owner).addStat(PokecubeMod.catchAchievements.get(getPokedexEntry()), 1);
+                if (!owner.isSneaking() && !isDead)
+                {
+                    boolean has = ((EntityPlayer) owner)
+                            .hasAchievement(PokecubeMod.catchAchievements.get(getPokedexEntry()));
+                    has = has || ((EntityPlayer) owner)
+                            .hasAchievement(PokecubeMod.hatchAchievements.get(getPokedexEntry()));
+                    if (!has)
+                    {
+                        StatsCollector.addCapture(this);
+                    }
+                }
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
                         getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);

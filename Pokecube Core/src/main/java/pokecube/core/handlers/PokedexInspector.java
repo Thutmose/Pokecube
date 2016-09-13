@@ -2,6 +2,11 @@ package pokecube.core.handlers;
 
 import static pokecube.core.PokecubeItems.getItem;
 
+import java.lang.reflect.Field;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,6 +27,80 @@ import pokecube.core.items.ItemTM;
 
 public class PokedexInspector
 {
+    public static interface IInspectReward
+    {
+        boolean inspect(PokecubePlayerCustomData data, Entity entity, boolean giveReward);
+    }
+
+    public static class InspectCapturesReward implements IInspectReward
+    {
+        final ItemStack reward;
+        final Field     configField;
+        final String    message;
+        final String    tagString;
+
+        public InspectCapturesReward(ItemStack reward, Field configField, String message, String tagString)
+        {
+            this.reward = reward;
+            this.configField = configField;
+            this.message = message;
+            this.tagString = tagString;
+        }
+
+        private boolean check(Entity entity, String configArg, NBTTagCompound tag, ItemStack reward, int num,
+                boolean giveReward)
+        {
+            if (reward == null || tag.getBoolean(tagString)) return false;
+            if (matches(num, configArg))
+            {
+                if (giveReward)
+                {
+                    tag.setBoolean(tagString, true);
+                    entity.addChatMessage(new TextComponentTranslation(message));
+                    EntityItem item = entity.entityDropItem(reward, 0.5f);
+                    item.setPickupDelay(0);
+                    PlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private boolean matches(int num, String arg)
+        {
+            int required = 0;
+            if (arg.contains("%"))
+            {
+                required = (int) (Double.parseDouble(arg.replace("%", "")) * Database.spawnables.size());
+            }
+            else
+            {
+                required = (int) (Double.parseDouble(arg));
+            }
+            return required <= num;
+        }
+
+        @Override
+        public boolean inspect(PokecubePlayerCustomData data, Entity entity, boolean giveReward)
+        {
+            int num = CaptureStats.getNumberUniqueCaughtBy(entity.getCachedUniqueIdString());
+            try
+            {
+                return check(entity, (String) configField.get(PokecubeCore.core.getConfig()), data.tag, reward, num,
+                        giveReward);
+            }
+            catch (IllegalArgumentException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            return false;
+        }
+    }
+
     public static boolean inspect(EntityPlayer player, boolean reward)
     {
         PokedexInspectEvent evt;
@@ -34,9 +113,48 @@ public class PokedexInspector
         return evt.isCanceled();
     }
 
+    public static Set<IInspectReward> rewards = Sets.newHashSet();
+
+    public static void init() throws NoSuchFieldException, SecurityException
+    {
+        ItemStack cut = new ItemStack(getItem("tm"));
+        ItemTM.addMoveToStack(IMoveNames.MOVE_CUT, cut);
+        ItemStack flash = new ItemStack(getItem("tm"));
+        ItemTM.addMoveToStack(IMoveNames.MOVE_FLASH, flash);
+        ItemStack rocksmash = new ItemStack(getItem("tm"));
+        ItemTM.addMoveToStack(IMoveNames.MOVE_ROCKSMASH, rocksmash);
+
+        rewards.add(new InspectCapturesReward(PokecubeItems.getStack("exp_share"),
+                PokecubeCore.core.getConfig().getClass().getDeclaredField("exp_shareRequirement"),
+                "pokedex.inspect.exp_share", "inspect-exp_share"));
+        rewards.add(new InspectCapturesReward(cut,
+                PokecubeCore.core.getConfig().getClass().getDeclaredField("cutTMRequirement"), "pokedex.inspect.cutTM",
+                "inspect-cutTM"));
+        rewards.add(new InspectCapturesReward(flash,
+                PokecubeCore.core.getConfig().getClass().getDeclaredField("flashTMRequirement"),
+                "pokedex.inspect.flashTM", "inspect-flashTM"));
+        rewards.add(new InspectCapturesReward(rocksmash,
+                PokecubeCore.core.getConfig().getClass().getDeclaredField("rocksmashTMRequirement"),
+                "pokedex.inspect.rocksmashTM", "inspect-rocksmashTM"));
+        rewards.add(new InspectCapturesReward(PokecubeItems.getStack("mastercube"),
+                PokecubeCore.core.getConfig().getClass().getDeclaredField("mastercubeRequirement"),
+                "pokedex.inspect.mastercube", "inspect-mastercube"));
+        rewards.add(new InspectCapturesReward(PokecubeItems.getStack("shiny_charm"),
+                PokecubeCore.core.getConfig().getClass().getDeclaredField("shinycharmRequirement"),
+                "pokedex.inspect.shinycharm", "inspect-shinycharm"));
+    }
+
     public PokedexInspector()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        if (rewards.isEmpty()) try
+        {
+            init();
+        }
+        catch (NoSuchFieldException | SecurityException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @SubscribeEvent(receiveCanceled = false, priority = EventPriority.LOWEST)
@@ -45,64 +163,11 @@ public class PokedexInspector
         String uuid = evt.getEntity().getCachedUniqueIdString();
         PokecubePlayerCustomData data = PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-custom",
                 PokecubePlayerCustomData.class);
-        ItemStack cut = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_CUT, cut);
-        ItemStack flash = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_FLASH, flash);
-        ItemStack rocksmash = new ItemStack(getItem("tm"));
-        ItemTM.addMoveToStack(IMoveNames.MOVE_ROCKSMASH, rocksmash);
-        int num = CaptureStats.getNumberUniqueCaughtBy(uuid);
-        boolean hasExpShare = check(evt.getEntity(), PokecubeCore.core.getConfig().exp_shareRequirement, data.tag,
-                PokecubeItems.getStack("exp_share"), num, "pokedex.inspect.exp_share", "inspect-exp_share",
-                evt.shouldReward);
-        boolean hasCutTM = check(evt.getEntity(), PokecubeCore.core.getConfig().cutTMRequirement, data.tag, cut, num,
-                "pokedex.inspect.cutTM", "inspect-cutTM", evt.shouldReward);
-        boolean hasFlashTM = check(evt.getEntity(), PokecubeCore.core.getConfig().flashTMRequirement, data.tag, flash,
-                num, "pokedex.inspect.flashTM", "inspect-flashTM", evt.shouldReward);
-        boolean hasRocksmashTM = check(evt.getEntity(), PokecubeCore.core.getConfig().rocksmashTMRequirement, data.tag,
-                rocksmash, num, "pokedex.inspect.rocksmashTM", "inspect-rocksmashTM", evt.shouldReward);
-        boolean hasMastercube = check(evt.getEntity(), PokecubeCore.core.getConfig().mastercubeRequirement, data.tag,
-                PokecubeItems.getStack("mastercube"), num, "pokedex.inspect.mastercube", "inspect-mastercube",
-                evt.shouldReward);
-        boolean hasShinyCharm = check(evt.getEntity(), PokecubeCore.core.getConfig().shinycharmRequirement, data.tag,
-                PokecubeItems.getStack("shiny_charm"), num, "pokedex.inspect.shinycharm", "inspect-shinycharm",
-                evt.shouldReward);
-
-        if (hasMastercube || hasShinyCharm || hasExpShare || hasCutTM || hasFlashTM || hasRocksmashTM)
+        boolean done = false;
+        for (IInspectReward reward : rewards)
         {
-            evt.setCanceled(true);
+            done = done || reward.inspect(data, evt.getEntity(), evt.shouldReward);
         }
-    }
-
-    private boolean check(Entity entity, String configArg, NBTTagCompound tag, ItemStack reward, int num,
-            String message, String tagString, boolean giveReward)
-    {
-        if (reward == null || tag.getBoolean(tagString)) return false;
-        if (matches(num, PokecubeCore.core.getConfig().shinycharmRequirement))
-        {
-            if (giveReward)
-            {
-                tag.setBoolean(tagString, true);
-                entity.addChatMessage(new TextComponentTranslation(message));
-                EntityItem item = entity.entityDropItem(reward, 0.5f);
-                item.setPickupDelay(0);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private boolean matches(int num, String arg)
-    {
-        int required = 0;
-        if (arg.contains("%"))
-        {
-            required = (int) (Double.parseDouble(arg.replace("%", "")) * Database.spawnables.size());
-        }
-        else
-        {
-            required = (int) (Double.parseDouble(arg));
-        }
-        return required <= num;
+        if (done) evt.setCanceled(true);
     }
 }

@@ -379,8 +379,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         String texName = texture == null ? null : texture.getResourcePath();
         texName = this.getPokedexEntry().getTexture(texName, this.getSexe(), this.ticksExisted);
         texture = new ResourceLocation(domain, texName);
-        if (!shiny) // || !getPokedexEntry().hasSpecialTextures[3])
-            return texture;
+        if (!isShiny()) return texture;
         String args = texName.substring(0, texName.length() - 4);
         return new ResourceLocation(domain, args + "S.png");
     }

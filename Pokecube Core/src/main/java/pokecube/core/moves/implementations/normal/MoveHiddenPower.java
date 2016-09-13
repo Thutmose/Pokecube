@@ -36,10 +36,10 @@ public class MoveHiddenPower extends Move_Basic
         return types[index];
     }
 
-    @Override
     /** PWR getter
      * 
      * @return the power of this move */
+    @Override
     public int getPWR(IPokemob user, Entity target)
     {
         byte[] ivs = user.getIVs();

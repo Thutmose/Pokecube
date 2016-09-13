@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -273,13 +275,19 @@ public class PokedexEntryLoader
         @XmlAttribute
         public String  special;
         @XmlAttribute
-        public boolean base    = false;
+        public boolean base       = false;
         @XmlAttribute
-        public boolean breed   = true;
+        public boolean breed      = true;
         @XmlAttribute
-        public boolean starter = false;
+        public boolean starter    = false;
         @XmlAttribute
-        public boolean legend  = false;
+        public boolean legend     = false;
+        @XmlAttribute
+        public boolean hasShiny   = true;
+        @XmlAttribute
+        public String  gender     = "";
+        @XmlAttribute
+        public String  genderBase = "";
         @XmlElement(name = "STATS")
         StatsNode      stats;
         @XmlElement(name = "MOVES")
@@ -622,6 +630,22 @@ public class PokedexEntryLoader
         }
         bar.step("Done");
         ProgressManager.pop(bar);
+        List<XMLPokedexEntry> entries = Lists.newArrayList(PokedexEntryLoader.entries);
+
+        Collections.sort(entries, new Comparator<XMLPokedexEntry>()
+        {
+            @Override
+            public int compare(XMLPokedexEntry o1, XMLPokedexEntry o2)
+            {
+                int diff = o1.number - o2.number;
+                if (diff == 0)
+                {
+                    if (o1.base && !o2.base) diff = -1;
+                    else if (o2.base && !o1.base) diff = 1;
+                }
+                return diff;
+            }
+        });
 
         bar = ProgressManager.push("Loading Pokemon", entries.size());
         for (XMLPokedexEntry xmlEntry : entries)
@@ -631,12 +655,30 @@ public class PokedexEntryLoader
             int number = xmlEntry.number;
             if (create)
             {
-                PokedexEntry entry = new PokedexEntry(number, name);
-                if (xmlEntry.base)
+                if (xmlEntry.gender.isEmpty())
                 {
-                    entry.base = xmlEntry.base;
-                    Database.baseFormes.put(number, entry);
-                    Database.addEntry(entry);
+                    PokedexEntry entry = new PokedexEntry(number, name);
+                    if (xmlEntry.base)
+                    {
+                        entry.base = xmlEntry.base;
+                        Database.baseFormes.put(number, entry);
+                        Database.addEntry(entry);
+                    }
+                }
+                else
+                {
+                    byte gender = xmlEntry.gender.equalsIgnoreCase("male") ? IPokemob.MALE
+                            : xmlEntry.gender.equalsIgnoreCase("female") ? IPokemob.FEMALE : -1;
+                    if (gender != -1)
+                    {
+                        PokedexEntry entry = Database.getEntry(xmlEntry.genderBase);
+                        System.out.println("Gender forme for " + xmlEntry.name + " " + entry);
+                        entry.createGenderForme(gender);
+                    }
+                    else
+                    {
+                        throw new IllegalArgumentException("Error in gender for " + xmlEntry.name);
+                    }
                 }
             }
             updateEntry(xmlEntry, create);
@@ -719,7 +761,7 @@ public class PokedexEntryLoader
 
     private static void parseSpawns(PokedexEntry entry, StatsNode xmlStats)
     {
-        if (xmlStats.spawnRules.isEmpty()) return;
+        if (xmlStats.spawnRules.isEmpty() || entry.isGenderForme) return;
         boolean overwrite = xmlStats.spawns == null ? false : Boolean.parseBoolean(xmlStats.spawns);
         SpawnData spawnData = entry.getSpawnData();
         if (spawnData == null || overwrite)
@@ -1084,6 +1126,7 @@ public class PokedexEntryLoader
                 entry.breeds = xmlEntry.breed;
                 entry.isStarter = xmlEntry.starter;
                 entry.legendary = xmlEntry.legend;
+                entry.hasShiny = xmlEntry.hasShiny;
                 postIniStats(entry, stats);
                 parseSpawns(entry, stats);
                 parseEvols(entry, stats, true);

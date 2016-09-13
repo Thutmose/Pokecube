@@ -12549,7 +12549,7 @@
                 lvl_61="HEALINGWISH" lvl_7="CHARM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Latias Mega" number="380">
+    <Pokemon name="Latias Mega" number="380" hasShiny="false">
         <STATS>
             <BASESTATS atk="100" def="120" hp="80" spatk="140" spd="150" spdef="110"/>
             <SIZES height="1.4" length="1.8" width="1.8"/>
@@ -12590,7 +12590,7 @@
                 lvl_51="PSYCHIC" lvl_56="DRAGONPULSE" lvl_61="MEMENTO" lvl_7="DRAGONDANCE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Latios Mega" number="381">
+    <Pokemon name="Latios Mega" number="381" hasShiny="false">
         <STATS>
             <BASESTATS atk="130" def="100" hp="80" spatk="160" spd="120" spdef="110"/>
             <SIZES height="1.5" length="2.3" width="2.3"/>
@@ -14835,6 +14835,7 @@
                 lvl_60="FISSURE" lvl_7="BITE"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Hippowdon Female" number="450" gender="female" genderBase="Hippowdon"/>
     <Pokemon base="true" name="Skorupi" number="451">
         <STATS>
             <EVOLUTIONMODE>L40</EVOLUTIONMODE>
@@ -16275,7 +16276,7 @@
     </Pokemon>
     <Pokemon name="Arceus Ground" number="493" breed="false" legend="true">
         <STATS>
-            <TYPE type1="Gound"/>
+            <TYPE type1="Ground"/>
             <ABILITY normal="Multitype"/>
         </STATS>
     </Pokemon>
@@ -21793,7 +21794,7 @@
             <LVLUP lvl_1="HARDEN" lvl_9="PROTECT"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Vivillon" number="666">
+    <Pokemon base="true" name="Vivillon" number="666" hasShiny="false">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>255</CAPTURERATE>

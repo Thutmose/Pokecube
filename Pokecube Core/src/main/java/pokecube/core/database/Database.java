@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -361,7 +363,6 @@ public class Database
      * @param file */
     private static void loadSpawns(String file)
     {
-        System.out.println(file);
         try
         {
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLSpawns.class);
@@ -372,6 +373,7 @@ public class Database
             {
                 PokedexEntry entry = Database.getEntry(xmlEntry.name);
                 if (entry == null) throw new NullPointerException(xmlEntry.name + " not found");
+                if (entry.isGenderForme) continue;
                 if (xmlEntry.isStarter() != null) entry.isStarter = xmlEntry.isStarter();
                 SpawnData data = entry.getSpawnData();
                 if (xmlEntry.overwrite || data == null)
@@ -438,7 +440,24 @@ public class Database
 
         bar = ProgressManager.push("Base Formes", allFormes.size());
         toRemove.clear();
-        for (PokedexEntry e : allFormes)
+        List<PokedexEntry> sortedEntries = Lists.newArrayList();
+        sortedEntries.addAll(Database.allFormes);
+        Collections.sort(sortedEntries, new Comparator<PokedexEntry>()
+        {
+            @Override
+            public int compare(PokedexEntry o1, PokedexEntry o2)
+            {
+                int diff = o1.getPokedexNb() - o2.getPokedexNb();
+                if (diff == 0)
+                {
+                    if (o1.base && !o2.base) diff = -1;
+                    else if (o2.base && !o1.base) diff = 1;
+                }
+                return diff;
+            }
+        });
+
+        for (PokedexEntry e : sortedEntries)
         {
             bar.step(e.getName());
             PokedexEntry base = baseFormes.get(e.pokedexNb);
@@ -447,6 +466,10 @@ public class Database
             {
                 toRemove.add(e);
                 continue;
+            }
+            if (base == e)
+            {
+                base.copyToGenderFormes();
             }
 
             if (base != e)

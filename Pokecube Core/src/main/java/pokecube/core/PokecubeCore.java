@@ -61,6 +61,7 @@ import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
 import pokecube.core.commands.MakeCommand;
 import pokecube.core.commands.RecallCommand;
+import pokecube.core.commands.SecretBaseCommand;
 import pokecube.core.commands.SettingsCommand;
 import pokecube.core.commands.TMCommand;
 import pokecube.core.database.Database;
@@ -85,18 +86,14 @@ import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.implementations.MovesAdder;
 import pokecube.core.network.EntityProvider;
+import pokecube.core.network.NetworkWrapper;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.PokecubeMessageHandlerClient;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
-import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.PokecubeMessageHandlerServer;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
 import pokecube.core.utils.LogFormatter;
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenStartBuilding;
@@ -496,17 +493,7 @@ public class PokecubeCore extends PokecubeMod
 
         });
 
-        packetPipeline = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
-
-        // General Pokecube Packets
-        packetPipeline.registerMessage(PokecubeMessageHandlerClient.class, PokecubeClientPacket.class, getMessageID(),
-                Side.CLIENT);
-        packetPipeline.registerMessage(PokecubeMessageHandlerServer.class, PokecubeServerPacket.class, getMessageID(),
-                Side.SERVER);
-
-        // Packets for Pokemobs
-        PokecubeMod.packetPipeline.registerMessage(MessageHandlerServer.class, MessageServer.class,
-                PokecubeCore.getMessageID(), Side.SERVER);
+        packetPipeline = new NetworkWrapper(ID);
 
         // Init Packets
         PokecubePacketHandler.init();
@@ -557,6 +544,7 @@ public class PokecubeCore extends PokecubeMod
         }
 
         getProxy().preInit(evt);
+        PokecubeDimensionManager.getInstance();
 
         PCSaveHandler save = new PCSaveHandler();
         MinecraftForge.EVENT_BUS.register(save);
@@ -742,7 +730,16 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new GiftCommand());
         event.registerServerCommand(new TMCommand());
         event.registerServerCommand(new RecallCommand());
+        event.registerServerCommand(new SecretBaseCommand());
         registerSpawns();
+        try
+        {
+            PokecubeDimensionManager.getInstance().onServerStart(event);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -750,6 +747,7 @@ public class PokecubeCore extends PokecubeMod
     {
         PokemobAIThread.clear();
         BerryGenManager.berryLocations.clear();
+        PokecubeDimensionManager.getInstance().onServerStop(event);
     }
 
     @Override

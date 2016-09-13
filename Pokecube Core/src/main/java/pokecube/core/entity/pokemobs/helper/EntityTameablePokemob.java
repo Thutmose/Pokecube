@@ -815,6 +815,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
         else
         {
+            // TODO check to see if s is a valid uuid, and if so, look it up and
+            // try to make owned by that player.
             setPokemonOwner(null);
             super.setOwnerId(null);
         }

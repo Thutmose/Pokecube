@@ -26,7 +26,6 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ByteClassLoader;
 import pokecube.core.CreativeTabPokecube;
@@ -35,6 +34,7 @@ import pokecube.core.CreativeTabPokecubeBlocks;
 import pokecube.core.CreativeTabPokecubes;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.Config;
+import pokecube.core.network.NetworkWrapper;
 import thut.api.maths.Vector3;
 
 public abstract class PokecubeMod
@@ -76,7 +76,7 @@ public abstract class PokecubeMod
 
     public static PokecubeMod                   core;
 
-    public static SimpleNetworkWrapper          packetPipeline;
+    public static NetworkWrapper                packetPipeline;
 
     // Manchou mobs are default mobs
     public static String                        defaultMod                 = "pokecube_ml";

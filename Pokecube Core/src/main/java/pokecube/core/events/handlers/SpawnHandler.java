@@ -5,6 +5,7 @@ import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -12,6 +13,7 @@ import java.util.Random;
 import org.nfunk.jep.JEP;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -55,6 +57,7 @@ public final class SpawnHandler
     public static HashMap<Integer, Integer[]>          subBiomeLevels          = new HashMap<Integer, Integer[]>();
     public static boolean                              doSpawns                = true;
     public static boolean                              onlySubbiomes           = false;
+    public static HashSet<Integer>                     dimensionBlacklist      = Sets.newHashSet();
     public static Predicate<Integer>                   biomeToRefresh          = new Predicate<Integer>()
                                                                                {
                                                                                    @Override
@@ -64,9 +67,9 @@ public final class SpawnHandler
                                                                                        return input == BiomeType.SKY
                                                                                                .getType()
                                                                                                || input == BiomeType.CAVE
-                                                                                               .getType()
+                                                                                                       .getType()
                                                                                                || input == BiomeType.CAVE_WATER
-                                                                                               .getType()
+                                                                                                       .getType()
                                                                                                || input == BiomeType.VILLAGE
                                                                                                        .getType()
                                                                                                || input == BiomeType.ALL
@@ -682,6 +685,7 @@ public final class SpawnHandler
             System.out.println(FMLCommonHandler.instance().getEffectiveSide());
             return;
         }
+        if (dimensionBlacklist.contains(world.provider.getDimension())) return;
         try
         {
             spawn(world);

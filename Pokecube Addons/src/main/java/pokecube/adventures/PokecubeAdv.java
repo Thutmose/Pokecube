@@ -180,7 +180,7 @@ public class PokecubeAdv
     }
 
     @EventHandler
-    public void serverLoad(FMLServerStartingEvent event)
+    public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
         event.registerServerCommand(new TeamCommands());
@@ -188,7 +188,7 @@ public class PokecubeAdv
     }
 
     @EventHandler
-    public void WorldUnloadEvent(FMLServerStoppedEvent evt)
+    public void serverEnding(FMLServerStoppedEvent evt)
     {
         TrainerSpawnHandler.trainers.clear();
         InventoryBag.clearInventory();

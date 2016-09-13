@@ -64,6 +64,7 @@ import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -287,6 +288,14 @@ public class EventsHandler
             int meta = evt.getState().getBlock().getMetaFromState(evt.getState());
             if (meta == 1 && !evt.getPlayer().capabilities.isCreativeMode) evt.setCanceled(true);
         }
+        TileEntity tile;
+        if((tile = evt.getWorld().getTileEntity(evt.getPos())) instanceof TileEntityBasePortal)
+        {
+            if(!((TileEntityBasePortal)tile).canEdit(evt.getPlayer()))
+            {
+                evt.setCanceled(true);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -354,7 +363,7 @@ public class EventsHandler
             {
                 IBlockState state = evt.getWorld().getBlockState(evt.getPos());
                 TileEntityOwnable tile = (TileEntityOwnable) te;
-                if (tile.canEdit(evt.getEntity()))
+                if (tile.canEdit(evt.getEntity()) && tile.shouldBreak())
                 {
                     Block b = state.getBlock();
                     b.dropBlockAsItem(evt.getWorld(), evt.getPos(), state, 0);

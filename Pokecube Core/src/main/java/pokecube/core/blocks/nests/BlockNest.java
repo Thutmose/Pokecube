@@ -1,52 +1,89 @@
 package pokecube.core.blocks.nests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import pokecube.core.blocks.berries.IMetaBlock;
 import pokecube.core.database.Database;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
-public class BlockNest extends Block implements ITileEntityProvider
+public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
 {
+    public static ArrayList<String> types = new ArrayList<String>();
+
+    static
+    {
+        types.add("next");
+        types.add("secretPortal");
+    }
+
+    public PropertyInteger TYPE;
 
     public BlockNest()
     {
         super(Material.LEAVES);
         setLightOpacity(2);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Integer.valueOf(0)));
     }
 
     @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_)
+    public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityNest();
+        if (meta == 0) return new TileEntityNest();
+        else if (meta == 1) return new TileEntityBasePortal();
+        else return null;
     }
 
-    // @Override
-    // public int getBlockColor() {
-    //// super.getMapColor(state)//TODO colour accordingly
-    // double d = 0.5D;
-    // double d1 = 1.0D;
-    // return ColorizerGrass.getGrassColor(d, d1);
-    // }
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        if (TYPE == null)
+        {
+            TYPE = PropertyInteger.create("type", 0, types.size() - 1);
+        }
+        return new BlockStateContainer(this, new IProperty[] { TYPE });
+    }
+
+    @Override
+    @Deprecated
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        if (state.getValue(TYPE) == 1) return Blocks.STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT,
+                BlockStoneBrick.EnumType.CHISELED);
+
+        if (pos.getY() > 0) return worldIn.getBlockState(pos.down()).getActualState(worldIn, pos.down());
+        return state;
+    }
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-
         TileEntity tile_entity = worldIn.getTileEntity(pos);
         if (tile_entity instanceof TileEntityNest && playerIn.capabilities.isCreativeMode
                 && playerIn.getHeldItemMainhand() != null
-                && playerIn.getHeldItemMainhand().getItem() instanceof ItemPokemobEgg && !playerIn.getEntityWorld().isRemote)
+                && playerIn.getHeldItemMainhand().getItem() instanceof ItemPokemobEgg
+                && !playerIn.getEntityWorld().isRemote)
         {
             TileEntityNest nest = (TileEntityNest) tile_entity;
 
@@ -54,6 +91,61 @@ public class BlockNest extends Block implements ITileEntityProvider
             playerIn.addChatComponentMessage(new TextComponentString("Set to " + Database.getEntry(nest.pokedexNb)));
             return true;
         }
-        return false;
+        if (state.getValue(TYPE) == 1)
+        {
+            if (!worldIn.isRemote)
+            {
+                TileEntityBasePortal portal = (TileEntityBasePortal) tile_entity;
+                portal.transferPlayer(playerIn);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack)
+    {
+        return super.getUnlocalizedName();
+    }
+
+    @Override
+    /** Convert the BlockState into the correct metadata value */
+    public int getMetaFromState(IBlockState state)
+    {
+        if (state.getBlock() == this) return state.getValue(TYPE).intValue();
+        else return state.getBlock().getMetaFromState(state);
+    }
+
+    @Override
+    /** Convert the given metadata into a BlockState for this Block */
+    public IBlockState getStateFromMeta(int meta)
+    {
+        return this.getDefaultState().withProperty(TYPE, Integer.valueOf(meta));
+    }
+
+    @Override
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return state.getValue(TYPE).intValue() < 2;
+    }
+
+    /** Get the Item that this Block should drop when harvested. */
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+
+        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
+        IBlockState actual = getActualState(state, world, pos);
+        int count = actual.getBlock().quantityDropped(state, fortune, rand);
+        for (int i = 0; i < count; i++)
+        {
+            Item item = actual.getBlock().getItemDropped(state, rand, fortune);
+            if (item != null)
+            {
+                ret.add(new ItemStack(item, 1, actual.getBlock().damageDropped(state)));
+            }
+        }
+        return ret;
     }
 }

@@ -34,6 +34,8 @@ public class PacketPokeAdv
 
     public static class MessageClient implements IMessage
     {
+        public static final byte TELEPORTEFFECTS = 9;
+
         public static class MessageHandlerClient implements IMessageHandler<MessageClient, MessageServer>
         {
             public void handleClientSide(EntityPlayer player, PacketBuffer buffer)
@@ -97,7 +99,7 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == 9)
+                if (channel == TELEPORTEFFECTS)
                 {
                     Vector3 v = Vector3.readFromBuff(buffer);
                     Random rand = new Random();

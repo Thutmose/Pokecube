@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveAnimation.MovePacketInfo;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.moves.animations.EntityMoveUse;
 
@@ -23,11 +24,12 @@ public class RenderMoves<T extends EntityMoveUse> extends Render<T>
         Move_Base move = entity.getMove();
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y, (float) z);
-        if (move != null && move.getAnimation() != null && entity.getUser() != null)
+        IMoveAnimation animation;
+        if (move != null && (animation = move.getAnimation((IPokemob) entity.getUser())) != null
+                && entity.getUser() != null)
         {
-            IMoveAnimation animation = move.getAnimation();
             MovePacketInfo info = entity.getMoveInfo();
-            info.currentTick = move.getAnimation().getDuration() - entity.getAge();
+            info.currentTick = animation.getDuration() - entity.getAge();
             animation.clientAnimation(info, Minecraft.getMinecraft().renderGlobal, partialTicks);
         }
         GlStateManager.popMatrix();

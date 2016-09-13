@@ -59,7 +59,7 @@ public class MoveEarthquake extends Move_Basic
                             || (e instanceof EntityPlayer && !PokecubeMod.pokemobsDamagePlayers)
                             || (e == attacker.getPokemonOwner() && !PokecubeMod.pokemobsDamageOwner))
                         continue;
-                    if (getAnimation() instanceof Thunder)
+                    if (getAnimation(attacker) instanceof Thunder)
                     {
                         EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0,
                                 false);

@@ -13,9 +13,11 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.TreeRemover;
 import pokecube.core.moves.templates.Move_Utility;
 import thut.api.maths.Vector3;
@@ -64,5 +66,21 @@ public class MoveSecretPower extends Move_Utility
         message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 "/pokebase confirm " + owner.posX + " " + owner.posY + " " + owner.posZ));
         owner.addChatMessage(message);
+    }
+
+    @Override
+    public void preAttack(MovePacket packet)
+    {
+        // TODO before super call, add in the needed stats/status/change effects
+        // based on terrain.
+        super.preAttack(packet);
+    }
+
+    @Override
+    public IMoveAnimation getAnimation(IPokemob user)
+    {
+        // TODO make this return animations for the relevant attacks based on
+        // location instead.
+        return super.getAnimation();
     }
 }

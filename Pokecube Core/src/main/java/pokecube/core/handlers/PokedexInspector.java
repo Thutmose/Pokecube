@@ -71,12 +71,13 @@ public class PokedexInspector
             int required = 0;
             if (arg.contains("%"))
             {
-                required = (int) (Double.parseDouble(arg.replace("%", "")) * Database.spawnables.size());
+                required = (int) (Double.parseDouble(arg.replace("%", "")) * Database.spawnables.size()/100d);
             }
             else
             {
                 required = (int) (Double.parseDouble(arg));
             }
+            System.out.println(arg+" "+num+" "+tagString+" "+required);
             return required <= num;
         }
 

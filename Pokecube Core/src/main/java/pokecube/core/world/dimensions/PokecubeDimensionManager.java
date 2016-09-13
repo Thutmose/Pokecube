@@ -52,6 +52,7 @@ public class PokecubeDimensionManager
         if (!DimensionManager.isDimensionRegistered(dim)) DimensionManager.registerDimension(dim, SECRET_BASE_TYPE);
         WorldServer overworld = DimensionManager.getWorld(0);
         WorldServer world1 = DimensionManager.getWorld(dim);
+        boolean registered = true;
         if (world1 == null)
         {
             MinecraftServer mcServer = overworld.getMinecraftServer();
@@ -62,25 +63,29 @@ public class PokecubeDimensionManager
             world1.addEventListener(new ServerWorldEventHandler(mcServer, world1));
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world1));
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
-            boolean registered = getInstance().dims.contains(dim) && !reset;
+            registered = getInstance().dims.contains(dim);
             if (!registered)
             {
                 registerDim(dim);
                 SpawnHandler.dimensionBlacklist.add(dim);
                 PokecubeCore.core.getConfig().save();
                 getInstance().syncToAll();
-                for (int i = -2; i <= 2; i++)
+            }
+        }
+        if (!registered || reset)
+        {
+            for (int i = -2; i <= 2; i++)
+            {
+                for (int j = -2; j <= 2; j++)
                 {
-                    for (int j = -2; j <= 2; j++)
+                    for (int k = -2; k <= 4; k++)
                     {
-                        for (int k = -2; k <= 0; k++)
-                        {
-                            world1.setBlockState(new BlockPos(i, k + 63, j), Blocks.STONE.getDefaultState());
-                        }
+                        world1.setBlockState(new BlockPos(i, k + 63, j),
+                                k <= 0 ? Blocks.STONE.getDefaultState() : Blocks.AIR.getDefaultState());
                     }
                 }
-                return true;
             }
+            return true;
         }
         return false;
     }

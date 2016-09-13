@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -151,13 +152,19 @@ public class PokecubeDimensionManager
         PlayerDataHandler.saveCustomData(player);
     }
 
-    public static void initPlayerBase(EntityPlayer player, BlockPos pos)
+    public static boolean initPlayerBase(String player, BlockPos pos, int entranceDimension)
     {
         int dim = getDimensionForPlayer(player);
         if (!DimensionManager.isDimensionRegistered(dim))
         {
-            if (createNewSecretBaseDimension(dim, false)) setBaseEntrance(player, player.dimension, pos);
+            if (createNewSecretBaseDimension(dim, false))
+            {
+                setBaseEntrance(player, entranceDimension, pos);
+                return true;
+            }
         }
+        else if (DimensionManager.getWorld(dim) == null) { return createNewSecretBaseDimension(dim, false); }
+        return false;
     }
 
     public static void sendToBase(String baseOwner, EntityPlayer toSend, int... optionalDefault)
@@ -165,14 +172,16 @@ public class PokecubeDimensionManager
         int dim = getDimensionForPlayer(baseOwner);
         WorldServer old = DimensionManager.getWorld(dim);
         Vector3 spawnPos = Vector3.getNewVector().set(0, 64, 0);
-        if (old == null && toSend.getCachedUniqueIdString().equals(baseOwner))
+        if (old == null)
         {
             BlockPos pos = toSend.getEntityWorld().getSpawnPoint();
             if (optionalDefault.length > 2)
                 pos = new BlockPos(optionalDefault[0], optionalDefault[1], optionalDefault[2]);
-            initPlayerBase(toSend, pos);
+            initPlayerBase(baseOwner, pos, optionalDefault.length > 3 ? optionalDefault[3] : toSend.dimension);
+            old = DimensionManager.getWorld(dim);
+            System.out.println(old + " " + Arrays.toString(optionalDefault));
         }
-        else if (old == null) { return; }
+        if (old == null) { return; }
         if (dim == toSend.dimension)
         {
             dim = optionalDefault.length > 3 ? optionalDefault[3] : 0;
@@ -284,12 +293,12 @@ public class PokecubeDimensionManager
 
     public void onServerStop(FMLServerStoppingEvent event)
     {
-        System.out.println("Stopping server");
+        PokecubeMod.log("Stopping server");
     }
 
     public void onServerStart(FMLServerStartingEvent evt) throws IOException
     {
-        System.out.println("Starting server");
+        PokecubeMod.log("Starting server");
         ISaveHandler saveHandler = evt.getServer().getEntityWorld().getSaveHandler();
         File file = saveHandler.getMapFileFromName("PokecubeDimensionIDs");
         dims.clear();

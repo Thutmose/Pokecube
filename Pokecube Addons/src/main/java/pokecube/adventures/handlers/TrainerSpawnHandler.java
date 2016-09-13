@@ -139,7 +139,7 @@ public class TrainerSpawnHandler
 
     public void tick(World w)
     {
-        if (w.isRemote) { return; }
+        if (w.isRemote || SpawnHandler.dimensionBlacklist.contains(w.provider.getDimension())) { return; }
         ArrayList<Object> players = new ArrayList<Object>();
         players.addAll(w.playerEntities);
         if (players.size() < 1) return;

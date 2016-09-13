@@ -99,7 +99,6 @@ public class PlayerDataHandler
         public void readFromNBT(NBTTagCompound tag)
         {
             this.tag = tag.getCompoundTag("data");
-            System.out.println("Read:" + this.tag);
         }
     }
 
@@ -451,7 +450,6 @@ public class PlayerDataHandler
             }
             for (String s : toUnload)
             {
-                System.out.println("Saving " + s);
                 save(s);
                 data.remove(s);
             }
@@ -473,7 +471,6 @@ public class PlayerDataHandler
             {
 
             }
-            System.out.println("Loading File:" + file);
             if (file != null && file.exists())
             {
                 try

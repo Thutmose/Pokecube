@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketWorldBorder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
@@ -59,7 +60,7 @@ public class PokecubeDimensionManager
             ISaveHandler savehandler = overworld.getSaveHandler();
             world1 = (WorldServer) (new WorldServerMulti(mcServer, savehandler, dim, overworld, mcServer.theProfiler)
                     .init());
-            world1.getWorldBorder().setSize(32);
+            WorldProviderSecretBase.initToDefaults(world1.getWorldBorder());
             world1.addEventListener(new ServerWorldEventHandler(mcServer, world1));
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world1));
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
@@ -277,10 +278,8 @@ public class PokecubeDimensionManager
     @SubscribeEvent
     public void playerChangeDimension(PlayerChangedDimensionEvent event)
     {
-        PacketSyncDimIds packet = new PacketSyncDimIds();
-        packet.data.setInteger("dim", event.player.dimension);
-        packet.data.setInteger("border", event.player.worldObj.getWorldBorder().getSize());
-        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.player);
+        ((EntityPlayerMP) event.player).connection.sendPacket(
+                new SPacketWorldBorder(event.player.worldObj.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
     }
 
     @SubscribeEvent
@@ -289,10 +288,8 @@ public class PokecubeDimensionManager
         World world = event.player.getEntityWorld();
         if (!world.isRemote)
         {
-            PacketSyncDimIds packet = new PacketSyncDimIds();
-            packet.data.setInteger("dim", event.player.dimension);
-            packet.data.setInteger("border", world.getWorldBorder().getSize());
-            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.player);
+            ((EntityPlayerMP) event.player).connection.sendPacket(new SPacketWorldBorder(
+                    event.player.worldObj.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
         }
     }
 

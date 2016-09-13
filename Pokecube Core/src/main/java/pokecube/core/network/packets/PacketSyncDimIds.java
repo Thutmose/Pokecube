@@ -3,7 +3,6 @@ package pokecube.core.network.packets;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -56,17 +55,6 @@ public class PacketSyncDimIds implements IMessage, IMessageHandler<PacketSyncDim
 
     void processMessage(MessageContext ctx, PacketSyncDimIds message)
     {
-        if (message.data.hasKey("border"))
-        {
-            int border = message.data.getInteger("border");
-            int dim = message.data.getInteger("dim");
-            EntityPlayer player = PokecubeCore.getPlayer(null);
-            if (player.dimension == dim)
-            {
-                System.out.println(dim+" "+player.dimension+" "+border);
-                player.worldObj.getWorldBorder().setSize(border);
-            }
-        }
-        else PokecubeDimensionManager.getInstance().loadFromTag(message.data);
+        PokecubeDimensionManager.getInstance().loadFromTag(message.data);
     }
 }

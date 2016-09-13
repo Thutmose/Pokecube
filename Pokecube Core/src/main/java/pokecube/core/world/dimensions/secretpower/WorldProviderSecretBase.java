@@ -18,6 +18,14 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 
 public class WorldProviderSecretBase extends WorldProvider
 {
+    public static int DEFAULTSIZE = 8;
+
+    public static void initToDefaults(WorldBorder border)
+    {
+        border.setCenter(0, 0);
+        border.setSize(DEFAULTSIZE);
+        border.setWarningDistance(1);
+    }
 
     public WorldProviderSecretBase()
     {
@@ -33,8 +41,7 @@ public class WorldProviderSecretBase extends WorldProvider
     public WorldBorder createWorldBorder()
     {
         WorldBorder ret = new WorldBorder();
-        ret.setCenter(0, 0);
-        ret.setSize(32);
+        initToDefaults(ret);
         return ret;
     }
 

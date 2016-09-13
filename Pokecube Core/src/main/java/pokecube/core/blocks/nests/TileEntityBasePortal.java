@@ -1,33 +1,37 @@
 package pokecube.core.blocks.nests;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
-import thut.api.entity.Transporter;
-import thut.api.maths.Vector3;
 
 public class TileEntityBasePortal extends TileEntityOwnable
 {
-    public boolean exit = false;
+    public boolean exit    = false;
+    public int     exitDim = 0;
 
     public void transferPlayer(EntityPlayer playerIn)
     {
         if (placer == null) return;
         String owner = placer.toString();
-        BlockPos pos1 = PokecubeDimensionManager.getBaseEntrance(owner, 0);
-        int dim = PokecubeDimensionManager.getDimensionForPlayer(owner);
-        if (pos1 == null)
+
+        BlockPos exitLoc = PokecubeDimensionManager.getBaseEntrance(owner, worldObj.provider.getDimension());
+        if (exitLoc == null)
         {
-            pos1 = worldObj.getMinecraftServer().worldServerForDimension(0).getSpawnPoint();
+            PokecubeDimensionManager.setBaseEntrance(owner, worldObj.provider.getDimension(), pos);
+            exitLoc = pos;
         }
-        int current = playerIn.dimension;
-        if (current != dim) PokecubeDimensionManager.sendToBase(owner, playerIn, pos);
-        else
+        double dist = exitLoc.distanceSq(pos);
+        if (dist > 36)
         {
-            Transporter.teleportEntity(playerIn, Vector3.getNewVector().set(pos1), 0, false);
+            worldObj.setBlockState(pos, Blocks.STONE.getDefaultState());
+            playerIn.addChatMessage(new TextComponentTranslation("pokemob.removebase.stale"));
         }
+        else PokecubeDimensionManager.sendToBase(owner, playerIn, exitLoc.getX(), exitLoc.getY(), exitLoc.getZ(),
+                exitDim);
     }
 
     @Override

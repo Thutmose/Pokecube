@@ -57,7 +57,11 @@ public class WorldProviderSecretBase extends WorldProvider
         try
         {
             NBTTagCompound tag = new NBTTagCompound();
-            tag.setInteger("border", worldObj.getWorldBorder().getSize());
+            int size = worldObj.getWorldBorder().getSize();
+            tag.setInteger("border", size);
+            String owner = PokecubeDimensionManager.getOwner(getDimension());
+            tag.setString("owner", owner);
+            System.out.println(tag);
             FileOutputStream fileoutputstream = new FileOutputStream(file);
             CompressedStreamTools.writeCompressed(tag, fileoutputstream);
             fileoutputstream.close();
@@ -81,6 +85,7 @@ public class WorldProviderSecretBase extends WorldProvider
                 FileInputStream fileinputstream = new FileInputStream(file);
                 NBTTagCompound tag = CompressedStreamTools.readCompressed(fileinputstream);
                 fileinputstream.close();
+                System.out.println(tag);
                 worldObj.getWorldBorder().setSize(tag.getInteger("border"));
             }
             catch (IOException e)

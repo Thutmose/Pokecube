@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -44,11 +46,10 @@ public class PokecubeDimensionManager
     private static PokecubeDimensionManager INSTANCE;
     public static DimensionType             SECRET_BASE_TYPE;
 
-    public static void createNewSecretBaseDimension(int dim)
+    public static boolean createNewSecretBaseDimension(int dim, boolean reset)
     {
         if (!DimensionManager.isDimensionRegistered(dim)) DimensionManager.registerDimension(dim, SECRET_BASE_TYPE);
         WorldServer overworld = DimensionManager.getWorld(0);
-
         WorldServer world1 = DimensionManager.getWorld(dim);
         if (world1 == null)
         {
@@ -60,21 +61,27 @@ public class PokecubeDimensionManager
             world1.addEventListener(new ServerWorldEventHandler(mcServer, world1));
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world1));
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
-            registerDim(dim);
-            SpawnHandler.dimensionBlacklist.add(dim);
-            PokecubeCore.core.getConfig().save();
-            getInstance().syncToAll();
-        }
-        for (int i = -2; i <= 2; i++)
-        {
-            for (int j = -2; j <= 2; j++)
+            boolean registered = getInstance().dims.contains(dim) && !reset;
+            if (!registered)
             {
-                for (int k = -2; k <= 0; k++)
+                registerDim(dim);
+                SpawnHandler.dimensionBlacklist.add(dim);
+                PokecubeCore.core.getConfig().save();
+                getInstance().syncToAll();
+                for (int i = -2; i <= 2; i++)
                 {
-                    world1.setBlockState(new BlockPos(i, k + 63, j), Blocks.STONE.getDefaultState());
+                    for (int j = -2; j <= 2; j++)
+                    {
+                        for (int k = -2; k <= 0; k++)
+                        {
+                            world1.setBlockState(new BlockPos(i, k + 63, j), Blocks.STONE.getDefaultState());
+                        }
+                    }
                 }
+                return true;
             }
         }
+        return false;
     }
 
     public static int getDimensionForPlayer(EntityPlayer player)
@@ -86,16 +93,17 @@ public class PokecubeDimensionManager
     {
         int dim = 0;
         NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
-        System.out.println(tag);
         if (tag.hasKey("secretPowerDimID"))
         {
             dim = tag.getInteger("secretPowerDimID");
+            if (!getInstance().dimOwners.containsKey(dim)) getInstance().dimOwners.put(dim, player);
         }
         else
         {
             dim = DimensionManager.getNextFreeDimId();
             tag.setInteger("secretPowerDimID", dim);
             PlayerDataHandler.saveCustomData(player);
+            getInstance().dimOwners.put(dim, player);
             Thread.dumpStack();
         }
         return dim;
@@ -121,6 +129,11 @@ public class PokecubeDimensionManager
 
     public static void setBaseEntrance(EntityPlayer player, int dim, BlockPos pos)
     {
+        setBaseEntrance(player.getCachedUniqueIdString(), dim, pos);
+    }
+
+    public static void setBaseEntrance(String player, int dim, BlockPos pos)
+    {
         NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
         NBTTagCompound base;
         if (tag.hasKey("secretBase"))
@@ -140,15 +153,14 @@ public class PokecubeDimensionManager
 
     public static void initPlayerBase(EntityPlayer player, BlockPos pos)
     {
-        setBaseEntrance(player, player.dimension, pos);
         int dim = getDimensionForPlayer(player);
-        if (!DimensionManager.isDimensionRegistered(dim) || DimensionManager.getWorld(dim) == null)
+        if (!DimensionManager.isDimensionRegistered(dim))
         {
-            createNewSecretBaseDimension(dim);
+            if (createNewSecretBaseDimension(dim, false)) setBaseEntrance(player, player.dimension, pos);
         }
     }
 
-    public static void sendToBase(String baseOwner, EntityPlayer toSend, BlockPos... optionalDefault)
+    public static void sendToBase(String baseOwner, EntityPlayer toSend, int... optionalDefault)
     {
         int dim = getDimensionForPlayer(baseOwner);
         WorldServer old = DimensionManager.getWorld(dim);
@@ -156,11 +168,23 @@ public class PokecubeDimensionManager
         if (old == null && toSend.getCachedUniqueIdString().equals(baseOwner))
         {
             BlockPos pos = toSend.getEntityWorld().getSpawnPoint();
-            if (optionalDefault.length > 0) pos = optionalDefault[0];
+            if (optionalDefault.length > 2)
+                pos = new BlockPos(optionalDefault[0], optionalDefault[1], optionalDefault[2]);
             initPlayerBase(toSend, pos);
         }
         else if (old == null) { return; }
-        Transporter.teleportEntity(toSend, spawnPos, dim, false);
+        if (dim == toSend.dimension)
+        {
+            dim = optionalDefault.length > 3 ? optionalDefault[3] : 0;
+            BlockPos pos;
+            if ((pos = getBaseEntrance(baseOwner, dim)) != null) spawnPos.set(pos);
+            else
+            {
+                old = DimensionManager.getWorld(dim);
+                spawnPos.set(old.getSpawnPoint());
+            }
+        }
+        Transporter.teleportEntity(toSend, spawnPos.add(0.5, 0, 0.5), dim, false);
     }
 
     public static PokecubeDimensionManager getInstance()
@@ -168,12 +192,18 @@ public class PokecubeDimensionManager
         return INSTANCE == null ? INSTANCE = new PokecubeDimensionManager() : INSTANCE;
     }
 
+    public static String getOwner(int dim)
+    {
+        return getInstance().dimOwners.get(dim);
+    }
+
     public static boolean registerDim(int dim)
     {
         return getInstance().dims.add(dim);
     }
 
-    Set<Integer> dims = Sets.newHashSet();
+    Set<Integer>         dims      = Sets.newHashSet();
+    Map<Integer, String> dimOwners = Maps.newHashMap();
 
     public PokecubeDimensionManager()
     {
@@ -258,13 +288,16 @@ public class PokecubeDimensionManager
 
     public void onServerStop(FMLServerStoppingEvent event)
     {
+        System.out.println("Stopping server");
     }
 
     public void onServerStart(FMLServerStartingEvent evt) throws IOException
     {
+        System.out.println("Starting server");
         ISaveHandler saveHandler = evt.getServer().getEntityWorld().getSaveHandler();
         File file = saveHandler.getMapFileFromName("PokecubeDimensionIDs");
         dims.clear();
+        dimOwners.clear();
         if (file != null && file.exists())
         {
             FileInputStream fileinputstream = new FileInputStream(file);
@@ -277,21 +310,19 @@ public class PokecubeDimensionManager
     private NBTTagCompound getTag()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
+        NBTTagCompound types = new NBTTagCompound();
         int[] dim = new int[dims.size()];
         int n = 0;
         for (int i : dims)
         {
             dim[n++] = i;
-            if (!DimensionManager.isDimensionRegistered(i))
+            DimensionType type = SECRET_BASE_TYPE;
+            if (DimensionManager.isDimensionRegistered(i))
             {
-                DimensionType type = SECRET_BASE_TYPE;
-                if (nbttagcompound.hasKey("types"))
-                {
-                    NBTTagCompound typesTag = nbttagcompound.getCompoundTag("types");
-                    type = DimensionType.valueOf(typesTag.getString("dim-" + i));
-                }
-                DimensionManager.registerDimension(i, type);
+                type = DimensionManager.getProviderType(i);
             }
+            types.setString("dim-" + i, type.toString());
+            if (dimOwners.containsKey(i)) nbttagcompound.setString("dim_" + i, dimOwners.get(i));
         }
         nbttagcompound.setIntArray("dims", dim);
         NBTTagCompound ret = new NBTTagCompound();
@@ -303,6 +334,7 @@ public class PokecubeDimensionManager
     {
         nbttagcompound = nbttagcompound.getCompoundTag("Data");
         int[] nums = nbttagcompound.getIntArray("dims");
+        NBTTagCompound typesTag = nbttagcompound.getCompoundTag("types");
         dims.clear();
         for (int i : nums)
         {
@@ -310,12 +342,12 @@ public class PokecubeDimensionManager
             if (!DimensionManager.isDimensionRegistered(i))
             {
                 DimensionType type = SECRET_BASE_TYPE;
-                if (nbttagcompound.hasKey("types"))
-                {
-                    NBTTagCompound typesTag = nbttagcompound.getCompoundTag("types");
-                    type = DimensionType.valueOf(typesTag.getString("dim-" + i));
-                }
+                if (typesTag.hasKey("dim-" + i)) type = DimensionType.valueOf(typesTag.getString("dim-" + i));
                 DimensionManager.registerDimension(i, type);
+            }
+            if (nbttagcompound.hasKey("dim_" + i))
+            {
+                dimOwners.put(i, nbttagcompound.getString("dim_" + i));
             }
         }
     }

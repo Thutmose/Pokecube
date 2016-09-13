@@ -41,6 +41,11 @@ pokemob.hungry.hurt=%1$s §cis starving!
 pokemob.hungry.dead=%1$s §chas died of starvation!
 
 pokemob.command.attack=You tell %1$s to attack %2$s
+pokemob.createbase.confirm=Are you sure you want to set your secret base entrance to %1$s? Click this message to set it. §cWhere you are currently standing will be the exit location.
+pokemob.createbase.deny.wrongloc=§cYou cannot create a secret base on these blocks.
+pokemob.createbase.deny.noperms=§cYou cannot create a secret base here.
+pokemob.createbase.confirmed=§aSecret Base entrance set to %1$s!
+pokemob.removebase.stale=§cRemoved stale SecretBase Entrance.
 
 pokemob.action.sendout=%1$s was sent out
 pokemob.action.return=%1$s has returned to the Pokécube

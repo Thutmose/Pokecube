@@ -1,8 +1,11 @@
 package pokecube.core.blocks.nests;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStoneBrick;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
@@ -10,6 +13,8 @@ import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -63,6 +68,9 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
     @Deprecated
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
+        if (state.getValue(TYPE) == 1) return Blocks.STONEBRICK.getDefaultState().withProperty(BlockStoneBrick.VARIANT,
+                BlockStoneBrick.EnumType.CHISELED);
+
         if (pos.getY() > 0) return worldIn.getBlockState(pos.down()).getActualState(worldIn, pos.down());
         return state;
     }
@@ -119,5 +127,25 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
     public boolean hasTileEntity(IBlockState state)
     {
         return state.getValue(TYPE).intValue() < 2;
+    }
+
+    /** Get the Item that this Block should drop when harvested. */
+    @Override
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    {
+        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+
+        Random rand = world instanceof World ? ((World) world).rand : RANDOM;
+        IBlockState actual = getActualState(state, world, pos);
+        int count = actual.getBlock().quantityDropped(state, fortune, rand);
+        for (int i = 0; i < count; i++)
+        {
+            Item item = actual.getBlock().getItemDropped(state, rand, fortune);
+            if (item != null)
+            {
+                ret.add(new ItemStack(item, 1, actual.getBlock().damageDropped(state)));
+            }
+        }
+        return ret;
     }
 }

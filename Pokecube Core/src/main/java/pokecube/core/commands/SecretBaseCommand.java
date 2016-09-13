@@ -8,10 +8,17 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntitySkull;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
+import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.nests.BlockNest;
+import pokecube.core.blocks.nests.TileEntityBasePortal;
+import pokecube.core.moves.implementations.normal.MoveSecretPower;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
+import thut.api.maths.Vector4;
 
 public class SecretBaseCommand extends CommandBase
 {
@@ -41,14 +48,16 @@ public class SecretBaseCommand extends CommandBase
             if (args[0].equals("reset"))
             {
                 int dim = PokecubeDimensionManager.getDimensionForPlayer(player);
-                PokecubeDimensionManager.createNewSecretBaseDimension(dim);
+                PokecubeDimensionManager.createNewSecretBaseDimension(dim, true);
             }
             else if (args[0].equals("exit"))
             {
                 if (player.worldObj.provider instanceof WorldProviderSecretBase)
                 {
-                    Transporter.teleportEntity(player,
-                            Vector3.getNewVector().set(server.getEntityWorld().getSpawnPoint()), 0, false);
+                    String owner = PokecubeDimensionManager.getOwner(player.dimension);
+                    BlockPos exit = PokecubeDimensionManager.getBaseEntrance(owner, 0);
+                    if (exit == null) exit = server.getEntityWorld().getSpawnPoint();
+                    Transporter.teleportEntity(player, Vector3.getNewVector().set(exit).add(0.5, 0, 0.5), 0, false);
                 }
                 else throw new CommandException("You must be in a secret base to do that.");
             }
@@ -74,6 +83,28 @@ public class SecretBaseCommand extends CommandBase
                 if (dim != 0)
                 {
                     PokecubeDimensionManager.sendToBase(player2, player);
+                }
+            }
+            else if (args[0].equals("confirm"))
+            {
+                if (MoveSecretPower.pendingBaseLocations.containsKey(player.getCachedUniqueIdString()))
+                {
+                    Vector4 loc = MoveSecretPower.pendingBaseLocations.remove(player.getCachedUniqueIdString());
+                    Vector3 pos = Vector3.getNewVector().set(loc.x, loc.y, loc.z);
+                    if (loc.w == player.dimension && pos.distToEntity(player) < 16)
+                    {
+                        BlockNest nest = (BlockNest) PokecubeItems.getBlock("pokemobNest");
+                        pos.setBlock(player.worldObj, nest.getDefaultState().withProperty(nest.TYPE, 1));
+                        TileEntityBasePortal tile = (TileEntityBasePortal) player.worldObj.getTileEntity(pos.getPos());
+                        tile.setPlacer(player);
+                        Vector3 baseExit = Vector3.getNewVector();
+                        baseExit.set(Double.parseDouble(args[1]), Double.parseDouble(args[2]),
+                                Double.parseDouble(args[3]));
+                        PokecubeDimensionManager.setBaseEntrance(player, player.dimension, baseExit.getPos());
+                        TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.confirmed",
+                                pos);
+                        sender.addChatMessage(message);
+                    }
                 }
             }
         }

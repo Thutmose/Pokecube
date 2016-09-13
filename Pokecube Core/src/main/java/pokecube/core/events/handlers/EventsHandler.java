@@ -64,6 +64,7 @@ import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -286,6 +287,14 @@ public class EventsHandler
         {
             int meta = evt.getState().getBlock().getMetaFromState(evt.getState());
             if (meta == 1 && !evt.getPlayer().capabilities.isCreativeMode) evt.setCanceled(true);
+        }
+        TileEntity tile;
+        if((tile = evt.getWorld().getTileEntity(evt.getPos())) instanceof TileEntityBasePortal)
+        {
+            if(!((TileEntityBasePortal)tile).canEdit(evt.getPlayer()))
+            {
+                evt.setCanceled(true);
+            }
         }
     }
 

@@ -286,7 +286,9 @@ ability.wonderguard.name=Wonder Guard
 ability.wonderskin.name=Wonder Skin
 ability.zenmode.name=Zen Mode
 
-achievement.catch=Catch a %1$s
+achievement.pokecube.catch=Catch a %1$s
+achievement.pokecube.hatch=Hatch a %1$s
+achievement.pokecube.kill=Defeat a %1$s
 achievement.get1stPokemob=Get 1st Pokémob
 achievement.get1stPokemob.desc=Get your starter
 gui.pokemob.choose1st=Choose your first Pokémob.

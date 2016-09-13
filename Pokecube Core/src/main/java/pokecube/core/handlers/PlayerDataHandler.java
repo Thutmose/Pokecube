@@ -21,11 +21,14 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.stats.Achievement;
+import net.minecraft.stats.StatisticsManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokecubeSerializer;
@@ -200,49 +203,76 @@ public class PlayerDataHandler
     /** Player capture/hatch/kill stats */
     public static class PokecubePlayerStats extends PlayerData
     {
-        public Map<PokedexEntry, Integer> hatches  = Maps.newHashMap();
-        public Map<PokedexEntry, Integer> captures = Maps.newHashMap();
-        public Map<PokedexEntry, Integer> kills    = Maps.newHashMap();
+        private Map<PokedexEntry, Integer> hatches;
+        private Map<PokedexEntry, Integer> captures;
+        private Map<PokedexEntry, Integer> kills;
+        private NBTTagCompound             backup;
+        protected String                   uuid;
 
         public PokecubePlayerStats()
         {
             super();
         }
 
-        public void addCapture(PokedexEntry entry)
+        public void initAchievements(StatisticsManager manager)
         {
+            captures = Maps.newHashMap();
+            hatches = Maps.newHashMap();
+            kills = Maps.newHashMap();
+            for (PokedexEntry e : PokecubeCore.catchAchievements.keySet())
+            {
+                int num = manager.readStat(PokecubeCore.catchAchievements.get(e));
+                if (num > 0) captures.put(e, num);
+            }
+            for (PokedexEntry e : PokecubeCore.hatchAchievements.keySet())
+            {
+                int num = manager.readStat(PokecubeCore.hatchAchievements.get(e));
+                if (num > 0) hatches.put(e, num);
+            }
+            for (PokedexEntry e : PokecubeCore.killAchievements.keySet())
+            {
+                int num = manager.readStat(PokecubeCore.killAchievements.get(e));
+                if (num > 0) kills.put(e, num);
+            }
         }
 
-        public void addKill(PokedexEntry entry)
+        public void addCapture(EntityPlayer player, PokedexEntry entry)
         {
+            Achievement ach = PokecubeCore.catchAchievements.get(entry);
+            if (ach == null)
+            {
+                System.err.println("missing for " + entry);
+                return;
+            }
+            int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
+            getCaptures(player).put(entry, num + 1);
+            if (!player.worldObj.isRemote) player.addStat(ach);
         }
 
-        public void addHatch(PokedexEntry entry)
+        public void addKill(EntityPlayer player, PokedexEntry entry)
         {
+            Achievement ach = PokecubeCore.killAchievements.get(entry);
+            if (ach == null)
+            {
+                System.err.println("missing for " + entry);
+                return;
+            }
+            int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
+            getKills(player).put(entry, num + 1);
+            if (!player.worldObj.isRemote) player.addStat(ach);
         }
 
-        public int getCaptures(PokedexEntry entry)
+        public void addHatch(EntityPlayer player, PokedexEntry entry)
         {
-            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
-            Integer ret = captures.get(entry);
-            if (ret == null) return 0;
-            return ret;
-        }
-
-        public int getKills(PokedexEntry entry)
-        {
-            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
-            Integer ret = kills.get(entry);
-            if (ret == null) return 0;
-            return ret;
-        }
-
-        public int getHatchs(PokedexEntry entry)
-        {
-            if (entry.getBaseForme() != null) entry = entry.getBaseForme();
-            Integer ret = hatches.get(entry);
-            if (ret == null) return 0;
-            return ret;
+            Achievement ach = PokecubeCore.hatchAchievements.get(entry);
+            if (ach == null)
+            {
+                System.err.println("missing for " + entry);
+                return;
+            }
+            int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
+            getHatches(player).put(entry, num + 1);
+            if (!player.worldObj.isRemote) player.addStat(ach);
         }
 
         @Override
@@ -254,57 +284,59 @@ public class PlayerDataHandler
         @Override
         public boolean shouldSync()
         {
-            return true;
+            return false;
         }
 
         @Override
         public void writeToNBT(NBTTagCompound tag)
         {
-            NBTTagCompound tag1 = new NBTTagCompound();
-            for (PokedexEntry dbe : kills.keySet())
-            {
-                tag1.setInteger(dbe.getName(), kills.get(dbe));
-            }
-            tag.setTag("kills", tag1);
-
-            tag1 = new NBTTagCompound();
-            for (PokedexEntry dbe : captures.keySet())
-            {
-                tag1.setInteger(dbe.getName(), captures.get(dbe));
-            }
-            tag.setTag("captures", tag1);
-
-            tag1 = new NBTTagCompound();
-            for (PokedexEntry dbe : hatches.keySet())
-            {
-                tag1.setInteger(dbe.getName(), hatches.get(dbe));
-            }
-            tag.setTag("hatches", tag1);
+            tag = backup;
         }
 
         @Override
         public void readFromNBT(NBTTagCompound tag)
         {
-            kills.clear();
-            captures.clear();
-            hatches.clear();
+            EntityPlayer player = PokecubeCore.proxy.getPlayer(uuid);
+            if (player == null || tag == null) return;
+
+            if (player.worldObj.isRemote)
+            {
+                net.minecraft.client.entity.EntityPlayerSP player1 = (net.minecraft.client.entity.EntityPlayerSP) player;
+                initAchievements(player1.getStatFileWriter());
+                return;
+            }
+            backup = tag;
             NBTTagCompound temp = tag.getCompoundTag("kills");
+            PokedexEntry entry;
             for (String s : temp.getKeySet())
             {
                 int num = temp.getInteger(s);
-                if (num > 0 && Database.getEntry(s) != null) kills.put(Database.getEntry(s), num);
+                if (num > 0 && (entry = Database.getEntry(s)) != null)
+                {
+                    for (int i = 0; i < num; i++)
+                        addKill(player, entry);
+                }
             }
             temp = tag.getCompoundTag("captures");
             for (String s : temp.getKeySet())
             {
                 int num = temp.getInteger(s);
-                if (num > 0 && Database.getEntry(s) != null) captures.put(Database.getEntry(s), num);
+                if (num > 0 && (entry = Database.getEntry(s)) != null)
+                {
+                    System.out.println(num + " " + entry);
+                    for (int i = 0; i < num; i++)
+                        addCapture(player, entry);
+                }
             }
             temp = tag.getCompoundTag("hatches");
             for (String s : temp.getKeySet())
             {
                 int num = temp.getInteger(s);
-                if (num > 0 && Database.getEntry(s) != null) hatches.put(Database.getEntry(s), num);
+                if (num > 0 && (entry = Database.getEntry(s)) != null)
+                {
+                    for (int i = 0; i < num; i++)
+                        addHatch(player, entry);
+                }
             }
         }
 
@@ -312,6 +344,24 @@ public class PlayerDataHandler
         public String dataFileName()
         {
             return "pokecubeStats";
+        }
+
+        public Map<PokedexEntry, Integer> getCaptures(EntityPlayer player)
+        {
+            if (captures == null) initAchievements(((EntityPlayerMP) player).getStatFile());
+            return captures;
+        }
+
+        public Map<PokedexEntry, Integer> getKills(EntityPlayer player)
+        {
+            if (kills == null) initAchievements(((EntityPlayerMP) player).getStatFile());
+            return kills;
+        }
+
+        public Map<PokedexEntry, Integer> getHatches(EntityPlayer player)
+        {
+            if (hatches == null) initAchievements(((EntityPlayerMP) player).getStatFile());
+            return hatches;
         }
     }
 
@@ -478,6 +528,11 @@ public class PlayerDataHandler
                     FileInputStream fileinputstream = new FileInputStream(file);
                     NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
                     fileinputstream.close();
+                    if (data instanceof PokecubePlayerStats)
+                    {
+                        ((PokecubePlayerStats) data).uuid = uuid;
+                    }
+
                     data.readFromNBT(nbttagcompound.getCompoundTag("Data"));
                 }
                 catch (IOException e)

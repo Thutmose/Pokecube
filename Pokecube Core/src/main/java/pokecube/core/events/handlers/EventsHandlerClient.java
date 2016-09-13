@@ -65,6 +65,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
 import pokecube.core.utils.Tools;
+import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.TerrainManager;
@@ -440,7 +441,8 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void onSpawnCheck(SpawnEvent.Check event)
     {
-        if (!event.forSpawn && SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension()))
+        if (!event.forSpawn && (SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension())
+                || event.world.provider instanceof WorldProviderSecretBase))
             event.setCanceled(true);
     }
 

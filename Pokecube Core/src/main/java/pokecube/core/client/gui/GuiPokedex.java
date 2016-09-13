@@ -385,7 +385,7 @@ public class GuiPokedex extends GuiScreen
             final SpawnCheck checker = new SpawnCheck(pos, player.worldObj);
             for (PokedexEntry e : Database.spawnables)
             {
-                if (e.getSpawnData().isValid(checker))
+                if (e.getSpawnData().getMatcher(checker, false) != null)
                 {
                     names.add(e);
                 }
@@ -395,10 +395,8 @@ public class GuiPokedex extends GuiScreen
                 @Override
                 public int compare(PokedexEntry o1, PokedexEntry o2)
                 {
-                    float rate1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(checker, false))
-                            * 10e5f;
-                    float rate2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(checker, false))
-                            * 10e5f;
+                    float rate1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(checker, false)) * 10e5f;
+                    float rate2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(checker, false)) * 10e5f;
                     return (int) (-rate1 + rate2);
                 }
             });
@@ -1423,8 +1421,10 @@ public class GuiPokedex extends GuiScreen
                 pokemob = (IPokemob) entity;
             }
 
-            if (!mc.thePlayer.getStatFileWriter()
-                    .hasAchievementUnlocked(PokecubeMod.pokemobAchievements.get(pokedexEntry.getPokedexNb()))
+            if (!(mc.thePlayer.getStatFileWriter()
+                    .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokedexEntry))
+                    || mc.thePlayer.getStatFileWriter()
+                            .hasAchievementUnlocked(PokecubeMod.hatchAchievements.get(pokedexEntry)))
                     && !mc.thePlayer.capabilities.isCreativeMode)
             {
 

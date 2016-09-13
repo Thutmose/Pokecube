@@ -689,15 +689,6 @@ public class PokecubeSerializer
             entity.setPokecubeId(0);
             ItemStack item = PokecubeManager.pokemobToItem(entity);
             ((Entity) entity).isDead = true;
-
-            EntityPlayer player = owner;
-
-            if (player != null && !player.getEntityWorld().isRemote)
-            {
-                player.addStat(PokecubeMod.get1stPokemob, 1);
-                player.addStat(PokecubeMod.pokemobAchievements.get(entity.getPokedexNb()), 1);
-            }
-
             return item;
         }
 

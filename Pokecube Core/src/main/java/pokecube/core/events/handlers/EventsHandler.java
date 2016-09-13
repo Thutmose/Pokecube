@@ -289,9 +289,9 @@ public class EventsHandler
             if (meta == 1 && !evt.getPlayer().capabilities.isCreativeMode) evt.setCanceled(true);
         }
         TileEntity tile;
-        if((tile = evt.getWorld().getTileEntity(evt.getPos())) instanceof TileEntityBasePortal)
+        if ((tile = evt.getWorld().getTileEntity(evt.getPos())) instanceof TileEntityBasePortal)
         {
-            if(!((TileEntityBasePortal)tile).canEdit(evt.getPlayer()))
+            if (!((TileEntityBasePortal) tile).canEdit(evt.getPlayer()))
             {
                 evt.setCanceled(true);
             }

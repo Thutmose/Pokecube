@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.Database;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.handlers.Config;
@@ -165,7 +166,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         items.clear();
         items.addAll(pick.starterPack);
         player.addStat(PokecubeMod.get1stPokemob, 1);
-        if (starterGiven) player.addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
+        if (starterGiven) player.addStat(PokecubeMod.catchAchievements.get(Database.getEntry(pokedexNb)), 1);
         for (ItemStack e : items)
         {
             if (e == null || e.getItem() == null) continue;

@@ -66,7 +66,7 @@ public class WorldProviderSecretBase extends WorldProvider
             int size = worldObj.getWorldBorder().getSize();
             tag.setInteger("border", size);
             String owner = PokecubeDimensionManager.getOwner(getDimension());
-            tag.setString("owner", owner);
+            if (owner != null && !owner.isEmpty()) tag.setString("owner", owner);
             FileOutputStream fileoutputstream = new FileOutputStream(file);
             CompressedStreamTools.writeCompressed(tag, fileoutputstream);
             fileoutputstream.close();

@@ -300,8 +300,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
                     ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
                     player.addStat(PokecubeMod.get1stPokemob, 0);
-                    player.addStat(PokecubeMod.pokemobAchievements.get(poke.getPokedexNb()), 1);
-
+                    player.addStat(PokecubeMod.catchAchievements.get(poke.getPokedexEntry()), 1);
                     cube.stackSize--;
                     if (cube.stackSize <= 0) inv.setInventorySlotContents(m, null);
                     inv.addItemStackToInventory(shedinja);

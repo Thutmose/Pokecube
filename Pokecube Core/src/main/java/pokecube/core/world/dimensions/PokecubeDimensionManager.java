@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +34,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensio
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.PlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
@@ -68,7 +66,6 @@ public class PokecubeDimensionManager
             if (!registered)
             {
                 registerDim(dim);
-                SpawnHandler.dimensionBlacklist.add(dim);
                 PokecubeCore.core.getConfig().save();
                 getInstance().syncToAll();
             }
@@ -185,7 +182,6 @@ public class PokecubeDimensionManager
                 pos = new BlockPos(optionalDefault[0], optionalDefault[1], optionalDefault[2]);
             initPlayerBase(baseOwner, pos, optionalDefault.length > 3 ? optionalDefault[3] : toSend.dimension);
             old = DimensionManager.getWorld(dim);
-            System.out.println(old + " " + Arrays.toString(optionalDefault));
         }
         if (old == null) { return; }
         if (dim == toSend.dimension)

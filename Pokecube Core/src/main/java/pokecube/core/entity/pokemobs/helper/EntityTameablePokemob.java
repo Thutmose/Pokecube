@@ -678,8 +678,9 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         added = toss.isCanceled();
                     }
                 }
-                if (!owner.isSneaking() && !isDead)
-                    ((EntityPlayer) owner).addStat(PokecubeMod.pokemobAchievements.get(pokedexNb), 1);
+                if (!owner.isSneaking() && !isDead
+                        && !((EntityPlayer) owner).hasAchievement(PokecubeMod.catchAchievements.get(getPokedexEntry())))
+                    ((EntityPlayer) owner).addStat(PokecubeMod.catchAchievements.get(getPokedexEntry()), 1);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
                         getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);

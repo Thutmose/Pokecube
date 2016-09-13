@@ -1288,6 +1288,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.worldObj.theProfiler.endStartSection("look");
         this.getLookHelper().onUpdateLook();
         this.worldObj.theProfiler.endStartSection("jump");
+        this.jumpHelper.doJump();
         if (getPokemonAIState(JUMPING))
         {
             jump();

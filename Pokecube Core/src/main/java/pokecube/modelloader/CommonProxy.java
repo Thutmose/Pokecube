@@ -288,8 +288,7 @@ public class CommonProxy implements IGuiHandler
         ArrayList<String> entries = Lists.newArrayList();
         for (PokedexEntry entry : Database.allFormes)
         {
-            String name = entry.getName();
-            if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
+            String name = entry.getTrimmedName();
             entries.add(name);
         }
         Collections.sort(entries, new Comparator<String>()

@@ -72,8 +72,7 @@ public class ClientProxy extends CommonProxy
             for (PokedexEntry p : Database.allFormes)
             {
                 bar2.step(p.getName());
-                String name = p.getName();
-                if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
+                String name = p.getTrimmedName();
                 try
                 {
                     ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");

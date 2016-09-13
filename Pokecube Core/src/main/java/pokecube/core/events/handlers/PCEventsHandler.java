@@ -16,9 +16,11 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -215,22 +217,30 @@ public class PCEventsHandler
         }
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void sendPokemobToPCPlayerDeath(LivingDeathEvent evt)
+    {
+        if (evt.getEntityLiving() instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) evt.getEntity();
+            recallAllPokemobs(player);
+        }
+    }
+
     /** Tries to send pokecubes to PC when player dies.
      * 
      * @param evt */
     @SubscribeEvent
-    public void sendPokemobToPCPlayerDeath(PlayerDropsEvent evt)
+    public void sendPokemobToPCPlayerDrops(PlayerDropsEvent evt)
     {
         if (!(evt.getEntity() instanceof EntityPlayer) || !PokecubeCore.core.getConfig().pcOnDrop) return;
         if (evt.getEntity().getEntityWorld().isRemote) return;
-        EntityPlayer player = (EntityPlayer) evt.getEntity();
-        recallAllPokemobs(player);
         List<EntityItem> toRemove = Lists.newArrayList();
         for (EntityItem item : evt.getDrops())
         {
             if (item != null && item.getEntityItem() != null && ContainerPC.isItemValid(item.getEntityItem()))
             {
-                InventoryPC.addStackToPC(player.getCachedUniqueIdString(), item.getEntityItem().copy());
+                InventoryPC.addStackToPC(evt.getEntity().getCachedUniqueIdString(), item.getEntityItem().copy());
                 toRemove.add(item);
             }
         }

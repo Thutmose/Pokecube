@@ -1302,6 +1302,17 @@ public class PokedexEntry
         return name;
     }
 
+    /** Returns the name in a format that will work for files, ie no . at the
+     * end.
+     * 
+     * @return */
+    public String getTrimmedName()
+    {
+        String name = this.name;
+        if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
+        return name;
+    }
+
     /** @return the pokedexNb */
     public int getPokedexNb()
     {
@@ -1429,7 +1440,7 @@ public class PokedexEntry
 
     public String getTexture(String original, byte gender, long time)
     {
-        if (original == null) original = name;
+        if (original == null) original = getTrimmedName();
         if (original.endsWith(".")) original = original.substring(0, original.length() - 1);
         int index = gender == IPokemob.FEMALE && textureDetails[1] != null ? 1 : 0;
         String[] textureSuffixs = textureDetails[index];

@@ -7,12 +7,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
+import thut.api.pathing.IPathingMob;
 
 public class AIIdle extends AIBase
 {
@@ -203,7 +204,7 @@ public class AIIdle extends AIBase
                 v.set(setTo);
             }
             v1.set((v.isEmpty() && mob.getPokemonAIState(IMoveConstants.STAYING)) ? entity : v);
-            Vector3 v = SpawnHandler.getRandomPointNear(world, v1, distance);
+            Vector3 v = getRandomPointNear(world, mob, v1, distance);
 
             double diff = Math.max(mob.getPokedexEntry().length * mob.getSize(),
                     mob.getPokedexEntry().width * mob.getSize());
@@ -222,6 +223,26 @@ public class AIIdle extends AIBase
             }
         }
         return false;
+    }
+
+    public static Vector3 getRandomPointNear(IBlockAccess world, IPokemob mob, Vector3 v, int distance)
+    {
+        Vector3 ret = v;
+        Vector3 temp = ret.copy();
+        int rand = Math.abs(new Random().nextInt());
+        if (distance % 2 == 0) distance++;
+        int num = distance * distance * distance;
+        for (int i = 0; i < num; i++)
+        {
+            int j = (i + rand) % num;
+            int x = j % (distance) - distance / 2;
+            int y = (j / distance) % (distance) - distance / 2;
+            int z = (j / (distance * distance)) % (distance) - distance / 2;
+            y = Math.max(1, y);
+            temp.set(ret).addTo(x, y, z);
+            if (temp.isClearOfBlocks(world) && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }
+        }
+        return null;
     }
 
 }

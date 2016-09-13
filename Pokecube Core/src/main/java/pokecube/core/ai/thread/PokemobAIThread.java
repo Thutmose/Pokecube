@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import pokecube.core.ai.utils.AIEventHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
@@ -118,10 +119,11 @@ public class PokemobAIThread
                 thread.setPriority(8);
                 thread.start();
             }
+            new AIEventHandler();
         }
 
         public final Vector<AIStuff> aiStuff;
-        final int                 id;
+        final int                    id;
 
         public AIThread(final int number, final Vector<AIStuff> aiStuff)
         {

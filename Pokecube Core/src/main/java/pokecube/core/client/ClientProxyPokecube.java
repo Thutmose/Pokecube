@@ -584,7 +584,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void registerPokemobRenderer(int nb, Render renderer, Object mod)
     {
         Mod annotation = mod.getClass().getAnnotation(Mod.class);
-        RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getName() + annotation.modid(), renderer);
+        RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getTrimmedName() + annotation.modid(), renderer);
     }
 
     @Override
@@ -594,11 +594,12 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
             RenderPokemobs.addCustomRenderer(name + annotation.modid(), renderer);
+            Thread.dumpStack();
         }
         else
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(Database.getEntry(name).getName() + annotation.modid(), renderer);
+            RenderPokemobs.addCustomRenderer(Database.getEntry(name).getTrimmedName() + annotation.modid(), renderer);
         }
     }
 

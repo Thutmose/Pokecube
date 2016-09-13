@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.TerrainDamageSource.TerrainType;
 import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -32,31 +33,36 @@ import thut.api.terrain.TerrainSegment.ITerrainEffect;
 
 public class PokemobTerrainEffects implements ITerrainEffect
 {
-    public static final int EFFECT_WEATHER_SAND     = 1;
-    public static final int EFFECT_WEATHER_RAIN     = 2;
-    public static final int EFFECT_WEATHER_HAIL     = 3;
-    public static final int EFFECT_WEATHER_SUN      = 4;
-    public static final int EFFECT_SPORT_MUD        = 5;
-    public static final int EFFECT_SPORT_WATER      = 6;
-    public static final int EFFECT_TERRAIN_GRASS    = 7;
-    public static final int EFFECT_TERRAIN_ELECTRIC = 8;
-    public static final int EFFECT_TERRAIN_MISTY    = 9;
-    public static final int EFFECT_MIST             = 10;
-    public static final int EFFECT_SPIKES           = 11;
-    public static final int EFFECT_ROCKS            = 12;
-    public static final int EFFECT_POISON           = 13;
-    public static final int EFFECT_POISON2          = 14;
-    public static final int EFFECT_WEBS             = 15;
+    public static final int                 EFFECT_WEATHER_SAND     = 1;
+    public static final int                 EFFECT_WEATHER_RAIN     = 2;
+    public static final int                 EFFECT_WEATHER_HAIL     = 3;
+    public static final int                 EFFECT_WEATHER_SUN      = 4;
+    public static final int                 EFFECT_SPORT_MUD        = 5;
+    public static final int                 EFFECT_SPORT_WATER      = 6;
+    public static final int                 EFFECT_TERRAIN_GRASS    = 7;
+    public static final int                 EFFECT_TERRAIN_ELECTRIC = 8;
+    public static final int                 EFFECT_TERRAIN_MISTY    = 9;
+    public static final int                 EFFECT_MIST             = 10;
+    public static final int                 EFFECT_SPIKES           = 11;
+    public static final int                 EFFECT_ROCKS            = 12;
+    public static final int                 EFFECT_POISON           = 13;
+    public static final int                 EFFECT_POISON2          = 14;
+    public static final int                 EFFECT_WEBS             = 15;
 
-    public static final int CLEAR_ENTRYEFFECTS      = 16;
+    public static final int                 CLEAR_ENTRYEFFECTS      = 16;
 
-    public final long[]     effects                 = new long[16];
+    public static final TerrainDamageSource HAILDAMAGE              = new TerrainDamageSource("terrain.hail",
+            TerrainType.TERRAIN);
+    public static final TerrainDamageSource SANDSTORMDAMAGE         = new TerrainDamageSource("terrain.sandstorm",
+            TerrainType.TERRAIN);
 
-    int                     chunkX;
-    int                     chunkZ;
-    int                     chunkY;
+    public final long[]                     effects                 = new long[16];
 
-    Set<IPokemob>           pokemon                 = new HashSet<IPokemob>();
+    int                                     chunkX;
+    int                                     chunkZ;
+    int                                     chunkY;
+
+    Set<IPokemob>                           pokemon                 = new HashSet<IPokemob>();
 
     public PokemobTerrainEffects()
     {
@@ -89,16 +95,13 @@ public class PokemobTerrainEffects implements ITerrainEffect
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-                entity.attackEntityFrom(DamageSource.generic, damage);
+                entity.attackEntityFrom(HAILDAMAGE, damage);
             }
             if (effects[EFFECT_WEATHER_SAND] > 0 && !(mob.isType(rock) || mob.isType(steel) || mob.isType(ground)))
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-                entity.attackEntityFrom(DamageSource.generic, damage);// TODO
-                                                                      // terrain
-                                                                      // damage
-                                                                      // type
+                entity.attackEntityFrom(SANDSTORMDAMAGE, damage);
             }
             if (effects[EFFECT_TERRAIN_ELECTRIC] > 0 && mob.getOnGround())
             {
@@ -122,16 +125,13 @@ public class PokemobTerrainEffects implements ITerrainEffect
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-                entity.attackEntityFrom(DamageSource.generic, damage);
+                entity.attackEntityFrom(HAILDAMAGE, damage);
             }
             if (effects[EFFECT_WEATHER_SAND] > 0)
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-                entity.attackEntityFrom(DamageSource.generic, damage);// TODO
-                                                                      // terrain
-                                                                      // damage
-                                                                      // type
+                entity.attackEntityFrom(SANDSTORMDAMAGE, damage);
             }
             if (effects[EFFECT_TERRAIN_GRASS] > 0 && entity.onGround)
             {

@@ -57,7 +57,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         public Vector5 interpolate(Vector5 v, float time, boolean wrap)
         {
             if (v.time == 0) return this;
-            // wrap = true;
 
             if (Double.isNaN(rotations.x))
             {
@@ -139,10 +138,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         name = model.name;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-//        if (model.model.getResourcePath().contains(".mca")) this.model = new McaModel(model.model);
-
         if (this.model == null) { return; }
-
         initModelParts();
         if (headDir == 2)
         {
@@ -154,7 +150,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     @Override
     public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
     {
-        float f2 = yaw;//this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
+        float f2 = yaw;
         float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
         float f4;
         if (entity.isRiding() && entity.getRidingEntity() instanceof EntityLivingBase)
@@ -181,9 +177,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
                 f2 += f4 * 0.2F;
             }
         }
-
         float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
-
         f4 = this.handleRotationFloat(entity, partialTick);
         float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
 

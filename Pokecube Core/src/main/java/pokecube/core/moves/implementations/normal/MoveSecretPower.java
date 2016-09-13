@@ -5,16 +5,18 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.TreeRemover;
 import pokecube.core.moves.templates.Move_Utility;
@@ -36,18 +38,14 @@ public class MoveSecretPower extends Move_Utility
         if (!PokecubeMod.pokemobsDamageBlocks) return;
         if (attacker.getPokemonAIState(IMoveConstants.ANGRY)) return;
         if (!(attacker.getPokemonOwner() instanceof EntityPlayerMP)) return;
-
+        long time = ((Entity) attacker).getEntityData().getLong("lastAttackTick");
+        if (time + (20 * 3) > ((Entity) attacker).getEntityWorld().getTotalWorldTime()) return;
         EntityPlayerMP owner = (EntityPlayerMP) attacker.getPokemonOwner();
         Block b = location.getBlock(owner.worldObj);
-        System.out.println(
-                b + " " + Mod_Pokecube_Helper.getTerrain() + " " + Mod_Pokecube_Helper.getTerrain().contains(b));
-        
-
         if (!(Mod_Pokecube_Helper.getTerrain().contains(b) || TreeRemover.woodTypes.contains(b)))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.wrongloc");
             owner.addChatMessage(message);
-            location.setBlock(owner.worldObj, Blocks.GOLD_BLOCK.getDefaultState());
             return;
         }
         if (owner instanceof EntityPlayer)
@@ -69,5 +67,21 @@ public class MoveSecretPower extends Move_Utility
         message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 "/pokebase confirm " + owner.posX + " " + owner.posY + " " + owner.posZ));
         owner.addChatMessage(message);
+    }
+
+    @Override
+    public void preAttack(MovePacket packet)
+    {
+        // TODO before super call, add in the needed stats/status/change effects
+        // based on terrain.
+        super.preAttack(packet);
+    }
+
+    @Override
+    public IMoveAnimation getAnimation(IPokemob user)
+    {
+        // TODO make this return animations for the relevant attacks based on
+        // location instead.
+        return super.getAnimation();
     }
 }

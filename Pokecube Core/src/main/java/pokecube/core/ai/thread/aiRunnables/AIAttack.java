@@ -9,6 +9,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.commands.CommandTools;
@@ -95,6 +96,16 @@ public class AIAttack extends AIBase implements IAICombat
     }
 
     @Override
+    public void doMainThreadTick(World world)
+    {
+        super.doMainThreadTick(world);
+        if (running)
+        {
+            attacker.getEntityData().setLong("lastAttackTick", attacker.getEntityWorld().getTotalWorldTime());
+        }
+    }
+
+    @Override
     public void reset()
     {
         if (running)
@@ -125,6 +136,14 @@ public class AIAttack extends AIBase implements IAICombat
             this.chaseTime = 0;
             running = true;
             boolean previousCaptureAttempt = attacker.getEntityData().hasKey("lastCubeTime");
+            if (previousCaptureAttempt)
+            {
+                long time = attacker.getEntityData().getLong("lastCubeTime");
+                if (attacker.getEntityWorld().getTotalWorldTime() - time > 20 * 60 * 2)
+                {
+                    previousCaptureAttempt = false;
+                }
+            }
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
                     && entityTarget instanceof EntityPlayer
                     && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)

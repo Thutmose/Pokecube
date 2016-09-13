@@ -35,7 +35,6 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         data.writeToNBT(tag1);
         packet.data.setTag("data", tag1);
         PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
-        System.out.println("Saving Data for " + player);
         PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 

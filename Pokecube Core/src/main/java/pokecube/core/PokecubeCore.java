@@ -22,7 +22,6 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
-import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -53,6 +52,7 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.achievements.AchievementCatch;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
@@ -617,24 +617,25 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry)
     {
-        if (pokedexmap == null || pokemobAchievements == null)
+        if (pokedexmap == null)
         {
             pokedexmap = new HashMap();
-            pokemobAchievements = new HashMap<Integer, Achievement>();
         }
 
         if (get1stPokemob == null)
         {
             System.out.println("REGISTERING ACHIEVEMENT");
-            get1stPokemob = (new AchievementCatch(0, "get1stPokemob", -3, -3, PokecubeItems.getItem("pokedex"), null));
+            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"), null));
             get1stPokemob.registerStat();
             AchievementList.ACHIEVEMENTS.add(get1stPokemob);
-            pokemobAchievements.put(new Integer(0), get1stPokemob);
-            achievementPagePokecube = new AchievementPage("Pokecube", get1stPokemob);
-            AchievementPage.registerAchievementPage(achievementPagePokecube);
+            achievementPageCatch = new AchievementPage("Pokecube Captures");
+            AchievementPage.registerAchievementPage(achievementPageCatch);
+            achievementPageHatch = new AchievementPage("Pokecube Hatchs");
+            AchievementPage.registerAchievementPage(achievementPageHatch);
+            achievementPageKill = new AchievementPage("Pokecube Kills");
+            AchievementPage.registerAchievementPage(achievementPageKill);
         }
         String name = entry.getName();
-        Achievement achievement = pokemobAchievements.get(entry.getPokedexNb());
         if (clazz != null)
         {
             try
@@ -653,33 +654,7 @@ public class PokecubeCore extends PokecubeMod
                     }
                     pokedexmap.put(new Integer(entry.getPokedexNb()), clazz);
                     registered.set(entry.getPokedexNb());
-
                     Pokedex.getInstance().registerPokemon(entry);
-
-                    if (achievement == null)
-                    {
-                        int x = -2 + (entry.getPokedexNb() / 16) * 2;
-                        int y = -2 + (entry.getPokedexNb() % 16) - 1;
-                        try
-                        {
-                            if (PokecubeItems.getEmptyCube(0) == null) System.err.println("cube is null");
-                            achievement = (new AchievementCatch(entry.getPokedexNb(), name, x, y,
-                                    PokecubeItems.getEmptyCube(0), get1stPokemob));
-                            achievement.registerStat();
-                            achievementPagePokecube.getAchievements().add(achievement);
-                            pokemobAchievements.put(entry.getPokedexNb(), achievement);
-                        }
-                        catch (Throwable e)
-                        {
-                            System.err.println("An achievement could not be added.");
-                            e.printStackTrace();
-                        }
-                    }
-                    else
-                    {
-                        System.err.println(
-                                "Double Registration " + entry + " Default set to version from " + entry.getModId());
-                    }
                 }
             }
             catch (Throwable e)

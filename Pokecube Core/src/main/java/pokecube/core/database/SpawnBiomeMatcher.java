@@ -21,30 +21,57 @@ import thut.api.terrain.TerrainSegment;
 
 public class SpawnBiomeMatcher
 {
-    public static final QName BIOMES             = new QName("biomes");
-    public static final QName TYPES              = new QName("types");
-    public static final QName BIOMESBLACKLIST    = new QName("biomesBlacklist");
-    public static final QName TYPESBLACKLIST     = new QName("typesBlacklist");
-    public static final QName NIGHT              = new QName("night");
-    public static final QName DAY                = new QName("day");
-    public static final QName AIR                = new QName("air");
-    public static final QName WATER              = new QName("water");
-    public static final QName MINLIGHT           = new QName("minLight");
-    public static final QName MAXLIGHT           = new QName("maxLight");
+    public static final QName BIOMES          = new QName("biomes");
+    public static final QName TYPES           = new QName("types");
+    public static final QName BIOMESBLACKLIST = new QName("biomesBlacklist");
+    public static final QName TYPESBLACKLIST  = new QName("typesBlacklist");
+    public static final QName NIGHT           = new QName("night");
+    public static final QName DAY             = new QName("day");
+    public static final QName AIR             = new QName("air");
+    public static final QName WATER           = new QName("water");
+    public static final QName MINLIGHT        = new QName("minLight");
+    public static final QName MAXLIGHT        = new QName("maxLight");
 
-    public Set<Biome>          validBiomes        = Sets.newHashSet();
-    public Set<BiomeType>      validSubBiomes     = Sets.newHashSet();
-    public Set<Biome>          blackListBiomes    = Sets.newHashSet();
-    public Set<BiomeType>      blackListSubBiomes = Sets.newHashSet();
+    public static class SpawnCheck
+    {
+        final boolean   day;
+        final Material  material;
+        final float     light;
+        final Biome     biome;
+        final BiomeType type;
+        final World     world;
+        final Vector3   location;
 
-    float                      minLight           = 0;
-    float                      maxLight           = 1;
-    boolean                    day                = true;
-    boolean                    night              = true;
-    boolean                    air                = true;
-    boolean                    water              = false;
+        public SpawnCheck(Vector3 location, World world)
+        {
+            this.world = world;
+            this.location = location;
+            day = world.isDaytime();
+            material = location.getBlockMaterial(world);
+            int lightBlock = world.getLightFor(EnumSkyBlock.BLOCK, location.getPos());
+            int lightDay = world.getLightFor(EnumSkyBlock.SKY, location.getPos());
+            if (lightBlock == 0 && world.isDaytime()) lightBlock = lightDay;
+            light = lightBlock / 15f;
+            biome = location.getBiome(world);
+            TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
+            int subBiomeId = t.getBiome(location);
+            type = BiomeDatabase.biomeTypeRegistry.getObjectById(subBiomeId);
+        }
+    }
 
-    public final SpawnRule     spawnRule;
+    public Set<Biome>      validBiomes        = Sets.newHashSet();
+    public Set<BiomeType>  validSubBiomes     = Sets.newHashSet();
+    public Set<Biome>      blackListBiomes    = Sets.newHashSet();
+    public Set<BiomeType>  blackListSubBiomes = Sets.newHashSet();
+
+    float                  minLight           = 0;
+    float                  maxLight           = 1;
+    boolean                day                = true;
+    boolean                night              = true;
+    boolean                air                = true;
+    boolean                water              = false;
+
+    public final SpawnRule spawnRule;
 
     public SpawnBiomeMatcher(SpawnRule rules)
     {
@@ -233,32 +260,29 @@ public class SpawnBiomeMatcher
         validBiomes.removeAll(toRemove);
     }
 
-    public boolean matches(Vector3 location, World world)
+    public boolean matches(SpawnCheck checker)
     {
-        boolean biome = biomeMatches(location, world);
+        boolean biome = biomeMatches(checker);
         if (!biome) return false;
-        boolean loc = conditionsMatch(location, world);
+        boolean loc = conditionsMatch(checker);
         return loc;
     }
 
-    private boolean conditionsMatch(Vector3 location, World world)
+    private boolean conditionsMatch(SpawnCheck checker)
     {
-        boolean isDay = world.isDaytime();
+        boolean isDay = checker.day;
         if (isDay && !day) return false;
         if (!isDay && !night) return false;
-        Material m = location.getBlockMaterial(world);
+        Material m = checker.material;
         boolean isWater = m == Material.WATER;
         if (isWater && !water) return false;
         if (m.isLiquid() && !isWater) return false;
         if (!air && !isWater) return false;
-        int lightBlock = world.getLightFor(EnumSkyBlock.BLOCK, location.getPos());
-        int lightDay = world.getLightFor(EnumSkyBlock.SKY, location.getPos());
-        if (lightBlock == 0 && world.isDaytime()) lightBlock = lightDay;
-        float light = lightBlock / 15f;
+        float light = checker.light;
         return light <= maxLight && light >= minLight;
     }
 
-    private boolean biomeMatches(Vector3 location, World world)
+    private boolean biomeMatches(SpawnCheck checker)
     {
         if (validSubBiomes.isEmpty() && validBiomes.isEmpty() && blackListBiomes.isEmpty()
                 && blackListSubBiomes.isEmpty())
@@ -268,15 +292,13 @@ public class SpawnBiomeMatcher
         if (validSubBiomes.contains(BiomeType.ALL)) { return true; }
         if (validSubBiomes.contains(BiomeType.NONE) || (validBiomes.isEmpty() && validSubBiomes.isEmpty()))
             return false;
-        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
-        Biome biome = location.getBiome(world);
-        int subBiomeId = t.getBiome(location);
-        BiomeType subBiome = BiomeDatabase.biomeTypeRegistry.getObjectById(subBiomeId);
-        boolean rightBiome = validBiomes.contains(biome) || validBiomes.isEmpty();
-        boolean rightSubBiome = (validSubBiomes.isEmpty() && subBiome == null) || validSubBiomes.contains(subBiome);
+        boolean rightBiome = validBiomes.contains(checker.biome) || validBiomes.isEmpty();
+        boolean rightSubBiome = (validSubBiomes.isEmpty() && checker.type == null)
+                || validSubBiomes.contains(checker.type);
         if (validBiomes.isEmpty() && validSubBiomes.isEmpty()) rightSubBiome = true;
-        if (subBiome == null) subBiome = BiomeType.ALL;
-        boolean blackListed = blackListBiomes.contains(biome) || blackListSubBiomes.contains(subBiome);
+        BiomeType type = checker.type;
+        if (checker.type == null) type = BiomeType.ALL;
+        boolean blackListed = blackListBiomes.contains(checker.biome) || blackListSubBiomes.contains(type);
         if (blackListed) return false;
         else return rightBiome && rightSubBiome;
     }

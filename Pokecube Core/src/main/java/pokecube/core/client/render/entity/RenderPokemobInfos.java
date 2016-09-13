@@ -168,8 +168,11 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
             FontRenderer fontrenderer = getFontRendererFromRenderManager();
 
             boolean nametag = ((IPokemob) entityliving).getPokemonAIState(IMoveConstants.TAMED);
-            nametag = nametag || Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(
-                    PokecubeMod.pokemobAchievements.get(((IPokemob) entityliving).getPokedexNb()));
+            nametag = nametag
+                    || Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(
+                            PokecubeMod.catchAchievements.get(((IPokemob) entityliving).getPokedexEntry()))
+                    || Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(
+                            PokecubeMod.hatchAchievements.get(((IPokemob) entityliving).getPokedexEntry()));
 
             if (nametag)
             {
@@ -212,7 +215,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
                 color = 0x00FF00;
                 s = ((int) entityliving.getHealth()) + "/" + ((int) entityliving.getMaxHealth());
                 length = fontrenderer.getStringWidth(s);
-                fontrenderer.drawString(s, 40-length, offset + 5, color);
+                fontrenderer.drawString(s, 40 - length, offset + 5, color);
             }
             GlStateManager.enableDepth();
             GlStateManager.enableLighting();

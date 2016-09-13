@@ -29,13 +29,16 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntryLoader.Action;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.Interact;
 import pokecube.core.database.PokedexEntryLoader.Key;
+import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
@@ -562,6 +565,8 @@ public class PokedexEntry
 
     public static class SpawnData
     {
+        final PokedexEntry entry;
+
         public static class SpawnEntry
         {
             int   max  = 4;
@@ -571,17 +576,35 @@ public class PokedexEntry
 
         public Map<SpawnBiomeMatcher, SpawnEntry> matchers = Maps.newHashMap();
 
-        public SpawnData()
+        public SpawnData(PokedexEntry entry)
         {
+            this.entry = entry;
         }
 
         public SpawnBiomeMatcher getMatcher(World world, Vector3 location)
         {
+            SpawnCheck checker = new SpawnCheck(location, world);
+            return getMatcher(checker);
+        }
+
+        public SpawnBiomeMatcher getMatcher(SpawnCheck checker, boolean forSpawn)
+        {
             for (SpawnBiomeMatcher matcher : matchers.keySet())
             {
-                if (matcher.matches(location, world)) return matcher;
+                if (matcher.matches(checker))
+                {
+                    SpawnEvent.Check evt = new SpawnEvent.Check(entry, checker.location, checker.world, forSpawn);
+                    MinecraftForge.EVENT_BUS.post(evt);
+                    if (evt.isCanceled()) continue;
+                    return matcher;
+                }
             }
             return null;
+        }
+
+        public SpawnBiomeMatcher getMatcher(SpawnCheck checker)
+        {
+            return getMatcher(checker, true);
         }
 
         public int getMax(SpawnBiomeMatcher matcher)
@@ -625,6 +648,11 @@ public class PokedexEntry
         public boolean isValid(World world, Vector3 location)
         {
             return getMatcher(world, location) != null;
+        }
+
+        public boolean isValid(SpawnCheck checker)
+        {
+            return getMatcher(checker) != null;
         }
 
         public void postInit()

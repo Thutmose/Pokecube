@@ -52,7 +52,7 @@ public class EntityMoveUse extends Entity
             name = move.name;
         }
         this.getDataManager().set(MOVENAME, name);
-        if (move.getAnimation() != null)
+        if (move.getAnimation((IPokemob) getUser()) != null)
         {
             getDataManager().set(TICK, move.getAnimation().getDuration() + 1);
         }
@@ -165,9 +165,9 @@ public class EntityMoveUse extends Entity
                 MovesUtils.doAttack(attack.name, (IPokemob) user, getEnd());
             }
         }
-        else if (attack.getAnimation() != null)
+        else if (attack.getAnimation((IPokemob) user) != null)
         {
-            attack.getAnimation().spawnClientEntities(getMoveInfo());
+            attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
         }
     }
 

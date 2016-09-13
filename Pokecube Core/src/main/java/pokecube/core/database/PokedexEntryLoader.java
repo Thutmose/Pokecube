@@ -766,7 +766,7 @@ public class PokedexEntryLoader
         SpawnData spawnData = entry.getSpawnData();
         if (spawnData == null || overwrite)
         {
-            spawnData = new SpawnData();
+            spawnData = new SpawnData(entry);
         }
         SpawnEntry spawnEntry;
         for (SpawnRule rule : xmlStats.spawnRules)

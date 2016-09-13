@@ -18,6 +18,14 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 
 public class WorldProviderSecretBase extends WorldProvider
 {
+    public static int DEFAULTSIZE = 8;
+
+    public static void initToDefaults(WorldBorder border)
+    {
+        border.setCenter(0, 0);
+        border.setSize(DEFAULTSIZE);
+        border.setWarningDistance(1);
+    }
 
     public WorldProviderSecretBase()
     {
@@ -33,8 +41,7 @@ public class WorldProviderSecretBase extends WorldProvider
     public WorldBorder createWorldBorder()
     {
         WorldBorder ret = new WorldBorder();
-        ret.setCenter(0, 0);
-        ret.setSize(32);
+        initToDefaults(ret);
         return ret;
     }
 
@@ -49,7 +56,6 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onWorldSave()
     {
-        // TODO save owner here?
         ISaveHandler saveHandler = worldObj.getSaveHandler();
         File file = saveHandler.getWorldDirectory();
         file = new File(file, getSaveFolder());
@@ -60,8 +66,7 @@ public class WorldProviderSecretBase extends WorldProvider
             int size = worldObj.getWorldBorder().getSize();
             tag.setInteger("border", size);
             String owner = PokecubeDimensionManager.getOwner(getDimension());
-            tag.setString("owner", owner);
-            System.out.println(tag);
+            if (owner != null && !owner.isEmpty()) tag.setString("owner", owner);
             FileOutputStream fileoutputstream = new FileOutputStream(file);
             CompressedStreamTools.writeCompressed(tag, fileoutputstream);
             fileoutputstream.close();
@@ -85,7 +90,6 @@ public class WorldProviderSecretBase extends WorldProvider
                 FileInputStream fileinputstream = new FileInputStream(file);
                 NBTTagCompound tag = CompressedStreamTools.readCompressed(fileinputstream);
                 fileinputstream.close();
-                System.out.println(tag);
                 worldObj.getWorldBorder().setSize(tag.getInteger("border"));
             }
             catch (IOException e)

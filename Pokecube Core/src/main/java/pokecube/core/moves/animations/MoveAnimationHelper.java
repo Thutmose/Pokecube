@@ -3,7 +3,6 @@ package pokecube.core.moves.animations;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.EntityViewRenderEvent.RenderFogEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,52 +10,13 @@ import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.interfaces.IMoveAnimation.MovePacketInfo;
 import pokecube.core.moves.PokemobTerrainEffects;
-import pokecube.core.interfaces.Move_Base;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
 public class MoveAnimationHelper
 {
-
-    public static class MoveAnimation
-    {
-        public final Entity    attacker;
-        public final Entity    targetEnt;
-        public final Vector3   targetLoc;
-        public final Vector3   sourceStart;
-        public final Move_Base move;
-        public int             duration;
-        public long            lastDrop;
-        final MovePacketInfo   info;
-
-        public MoveAnimation(Entity attacker, Entity targetEnt, Vector3 targetLoc, Move_Base move, int time)
-        {
-            this.attacker = attacker;
-            this.targetEnt = targetEnt;
-            this.targetLoc = targetLoc;
-            this.sourceStart = Vector3.getNewVector().set(attacker).addTo(0, attacker.getEyeHeight(), 0);
-            this.move = move;
-            info = new MovePacketInfo(move, attacker, targetEnt, sourceStart, targetLoc);
-            duration = time;
-        }
-
-        public void render(double partialTick)
-        {
-            if (move.getAnimation() != null)
-            {
-                info.currentTick = move.getAnimation().getDuration() - duration;
-                move.getAnimation().clientAnimation(info, Minecraft.getMinecraft().renderGlobal, (float) partialTick);
-            }
-            else
-            {
-                throw (new NullPointerException("Who Registered null animation for " + move.name));
-            }
-        }
-    }
-
     private static MoveAnimationHelper instance;
 
     public static MoveAnimationHelper Instance()

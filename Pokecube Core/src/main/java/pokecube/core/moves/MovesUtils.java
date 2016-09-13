@@ -823,7 +823,7 @@ public class MovesUtils implements IMoveConstants
             @Nonnull Vector3 start, @Nonnull Vector3 end)
     {
         EntityMoveUse moveUse = new EntityMoveUse(user.getEntityWorld());
-        moveUse.setMove(move).setUser(user).setTarget(target).setStart(start).setEnd(end);
+        moveUse.setUser(user).setMove(move).setTarget(target).setStart(start).setEnd(end);
         user.getEntityWorld().spawnEntityInWorld(moveUse);
         move.applyHungerCost((IPokemob) user);
         displayMoveMessages((IPokemob) user, target, move.name);

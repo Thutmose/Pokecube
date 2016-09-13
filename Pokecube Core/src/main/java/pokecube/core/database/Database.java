@@ -31,6 +31,10 @@ import com.google.common.collect.Sets;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import pokecube.core.PokecubeItems;
+import pokecube.core.achievements.AchievementCatch;
+import pokecube.core.achievements.AchievementHatch;
+import pokecube.core.achievements.AchievementKill;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
@@ -378,7 +382,7 @@ public class Database
                 SpawnData data = entry.getSpawnData();
                 if (xmlEntry.overwrite || data == null)
                 {
-                    data = new SpawnData();
+                    data = new SpawnData(entry);
                     entry.setSpawnData(data);
                     System.out.println("Overwriting spawns for " + entry);
                 }
@@ -424,6 +428,13 @@ public class Database
             if (!Pokedex.getInstance().getEntries().contains(p.getPokedexNb()))
             {
                 toRemove.add(p);
+                for (PokedexEntry p1 : allFormes)
+                {
+                    if (p1.getPokedexNb() == p.getPokedexNb() && p1 != p)
+                    {
+                        toRemove.add(p1);
+                    }
+                }
             }
         }
         ProgressManager.pop(bar);
@@ -435,6 +446,7 @@ public class Database
             baseFormes.remove(p.pokedexNb);
             spawnables.remove(p);
         }
+        allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
         System.err.println("Removed " + toRemove.size() + " Missing Pokemon");
 
@@ -568,6 +580,29 @@ public class Database
             if (e.stats == null || e.evs == null)
             {
                 System.err.println(new NullPointerException(e + " is missing stats or evs " + e.stats + " " + e.evs));
+            }
+            int x = -2 + (e.getPokedexNb() / 16) * 2;
+            int y = -2 + (e.getPokedexNb() % 16) - 1;
+            if (!PokecubeMod.hatchAchievements.containsKey(e))
+            {
+                AchievementHatch hatch = new AchievementHatch(e, x, y, PokecubeItems.getEmptyCube(0), null);
+                hatch.registerStat();
+                PokecubeMod.achievementPageHatch.getAchievements().add(hatch);
+                PokecubeMod.hatchAchievements.put(e, hatch);
+            }
+            if (!PokecubeMod.catchAchievements.containsKey(e))
+            {
+                AchievementCatch catc = new AchievementCatch(e, x, y, PokecubeItems.getEmptyCube(0), null);
+                catc.registerStat();
+                PokecubeMod.achievementPageCatch.getAchievements().add(catc);
+                PokecubeMod.catchAchievements.put(e, catc);
+            }
+            if (!PokecubeMod.killAchievements.containsKey(e))
+            {
+                AchievementKill kill = new AchievementKill(e, x, y, PokecubeItems.getEmptyCube(0), null);
+                kill.registerStat();
+                PokecubeMod.achievementPageKill.getAchievements().add(kill);
+                PokecubeMod.killAchievements.put(e, kill);
             }
         }
     }

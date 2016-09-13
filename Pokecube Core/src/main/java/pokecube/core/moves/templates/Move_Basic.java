@@ -126,7 +126,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
             return;
         }
-        if (getAnimation() instanceof Thunder)
+        if (getAnimation(attacker) instanceof Thunder)
         {
             EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0, false);
             attacked.onStruckByLightning(lightning);

@@ -110,7 +110,6 @@ public class TrainerEntryLoader
                 if (entry.bag.tag != null) entry.bag.values.put(new QName("tag"), entry.bag.tag);
                 ItemStack bag = Tools.getStack(entry.bag.values);
                 type.bag = bag;
-                System.out.println(bag);
             }
             type.hasBelt = entry.belt;
             type.weight = entry.spawnRate;

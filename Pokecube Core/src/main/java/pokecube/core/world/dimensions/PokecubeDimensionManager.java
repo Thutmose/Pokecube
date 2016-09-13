@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.server.SPacketWorldBorder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.DimensionType;
@@ -33,7 +34,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensio
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.PlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
@@ -51,35 +51,39 @@ public class PokecubeDimensionManager
         if (!DimensionManager.isDimensionRegistered(dim)) DimensionManager.registerDimension(dim, SECRET_BASE_TYPE);
         WorldServer overworld = DimensionManager.getWorld(0);
         WorldServer world1 = DimensionManager.getWorld(dim);
+        boolean registered = true;
         if (world1 == null)
         {
             MinecraftServer mcServer = overworld.getMinecraftServer();
             ISaveHandler savehandler = overworld.getSaveHandler();
             world1 = (WorldServer) (new WorldServerMulti(mcServer, savehandler, dim, overworld, mcServer.theProfiler)
                     .init());
-            world1.getWorldBorder().setSize(32);
+            WorldProviderSecretBase.initToDefaults(world1.getWorldBorder());
             world1.addEventListener(new ServerWorldEventHandler(mcServer, world1));
             MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world1));
             mcServer.setDifficultyForAllWorlds(mcServer.getDifficulty());
-            boolean registered = getInstance().dims.contains(dim) && !reset;
+            registered = getInstance().dims.contains(dim);
             if (!registered)
             {
                 registerDim(dim);
-                SpawnHandler.dimensionBlacklist.add(dim);
                 PokecubeCore.core.getConfig().save();
                 getInstance().syncToAll();
-                for (int i = -2; i <= 2; i++)
+            }
+        }
+        if (!registered || reset)
+        {
+            for (int i = -2; i <= 2; i++)
+            {
+                for (int j = -2; j <= 2; j++)
                 {
-                    for (int j = -2; j <= 2; j++)
+                    for (int k = -2; k <= 4; k++)
                     {
-                        for (int k = -2; k <= 0; k++)
-                        {
-                            world1.setBlockState(new BlockPos(i, k + 63, j), Blocks.STONE.getDefaultState());
-                        }
+                        world1.setBlockState(new BlockPos(i, k + 63, j),
+                                k <= 0 ? Blocks.STONE.getDefaultState() : Blocks.AIR.getDefaultState());
                     }
                 }
-                return true;
             }
+            return true;
         }
         return false;
     }
@@ -100,11 +104,11 @@ public class PokecubeDimensionManager
         }
         else
         {
+            PokecubeMod.log("Creating Base DimensionID for " + player);
             dim = DimensionManager.getNextFreeDimId();
             tag.setInteger("secretPowerDimID", dim);
             PlayerDataHandler.saveCustomData(player);
             getInstance().dimOwners.put(dim, player);
-            Thread.dumpStack();
         }
         return dim;
     }
@@ -151,13 +155,19 @@ public class PokecubeDimensionManager
         PlayerDataHandler.saveCustomData(player);
     }
 
-    public static void initPlayerBase(EntityPlayer player, BlockPos pos)
+    public static boolean initPlayerBase(String player, BlockPos pos, int entranceDimension)
     {
         int dim = getDimensionForPlayer(player);
         if (!DimensionManager.isDimensionRegistered(dim))
         {
-            if (createNewSecretBaseDimension(dim, false)) setBaseEntrance(player, player.dimension, pos);
+            if (createNewSecretBaseDimension(dim, false))
+            {
+                setBaseEntrance(player, entranceDimension, pos);
+                return true;
+            }
         }
+        else if (DimensionManager.getWorld(dim) == null) { return createNewSecretBaseDimension(dim, false); }
+        return false;
     }
 
     public static void sendToBase(String baseOwner, EntityPlayer toSend, int... optionalDefault)
@@ -165,14 +175,15 @@ public class PokecubeDimensionManager
         int dim = getDimensionForPlayer(baseOwner);
         WorldServer old = DimensionManager.getWorld(dim);
         Vector3 spawnPos = Vector3.getNewVector().set(0, 64, 0);
-        if (old == null && toSend.getCachedUniqueIdString().equals(baseOwner))
+        if (old == null)
         {
             BlockPos pos = toSend.getEntityWorld().getSpawnPoint();
             if (optionalDefault.length > 2)
                 pos = new BlockPos(optionalDefault[0], optionalDefault[1], optionalDefault[2]);
-            initPlayerBase(toSend, pos);
+            initPlayerBase(baseOwner, pos, optionalDefault.length > 3 ? optionalDefault[3] : toSend.dimension);
+            old = DimensionManager.getWorld(dim);
         }
-        else if (old == null) { return; }
+        if (old == null) { return; }
         if (dim == toSend.dimension)
         {
             dim = optionalDefault.length > 3 ? optionalDefault[3] : 0;
@@ -263,14 +274,8 @@ public class PokecubeDimensionManager
     @SubscribeEvent
     public void playerChangeDimension(PlayerChangedDimensionEvent event)
     {
-        World world = event.player.getEntityWorld();
-        if (!world.isRemote)
-        {
-            PacketSyncDimIds packet = new PacketSyncDimIds();
-            packet.data.setInteger("dim", event.player.dimension);
-            packet.data.setInteger("border", world.getWorldBorder().getSize());
-            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.player);
-        }
+        ((EntityPlayerMP) event.player).connection.sendPacket(
+                new SPacketWorldBorder(event.player.worldObj.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
     }
 
     @SubscribeEvent
@@ -279,21 +284,19 @@ public class PokecubeDimensionManager
         World world = event.player.getEntityWorld();
         if (!world.isRemote)
         {
-            PacketSyncDimIds packet = new PacketSyncDimIds();
-            packet.data.setInteger("dim", event.player.dimension);
-            packet.data.setInteger("border", world.getWorldBorder().getSize());
-            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.player);
+            ((EntityPlayerMP) event.player).connection.sendPacket(new SPacketWorldBorder(
+                    event.player.worldObj.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
         }
     }
 
     public void onServerStop(FMLServerStoppingEvent event)
     {
-        System.out.println("Stopping server");
+        PokecubeMod.log("Stopping server");
     }
 
     public void onServerStart(FMLServerStartingEvent evt) throws IOException
     {
-        System.out.println("Starting server");
+        PokecubeMod.log("Starting server");
         ISaveHandler saveHandler = evt.getServer().getEntityWorld().getSaveHandler();
         File file = saveHandler.getMapFileFromName("PokecubeDimensionIDs");
         dims.clear();

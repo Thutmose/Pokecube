@@ -92,6 +92,11 @@ public abstract class Move_Base
         return animation;
     }
 
+    public IMoveAnimation getAnimation(IPokemob user)
+    {
+        return getAnimation();
+    }
+
     /** Attack category getter. Can be {@link IMoveConstants#CATEGORY_CONTACT}
      * or {@link IMoveConstants#CATEGORY_DISTANCE}. Set by the constructor.
      * 
@@ -172,7 +177,7 @@ public abstract class Move_Base
      * 
      * @param packet */
     public abstract void preAttack(MovePacket packet);
-    
+
     /** Called after the attack is done but before postAttack is called.
      * 
      * @param packet */

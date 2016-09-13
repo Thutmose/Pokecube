@@ -10,6 +10,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -111,9 +112,15 @@ public abstract class PokecubeMod
     public static HashMap                       pokemobEggs                = new HashMap();
 
     // Achievements
-    public static AchievementPage               achievementPagePokecube;
     public static Achievement                   get1stPokemob;
-    public static HashMap<Integer, Achievement> pokemobAchievements;
+//    public static HashMap<Integer, Achievement> pokemobAchievements;
+
+    public static AchievementPage               achievementPageCatch;
+    public static AchievementPage               achievementPageKill;
+    public static AchievementPage               achievementPageHatch;
+    public static HashMap<PokedexEntry, Achievement> catchAchievements = Maps.newHashMap();
+    public static HashMap<PokedexEntry, Achievement> hatchAchievements = Maps.newHashMap();
+    public static HashMap<PokedexEntry, Achievement> killAchievements = Maps.newHashMap();
     public static final UUID                    fakeUUID                   = new UUID(1234, 4321);
     public static Logger                        logger                     = Logger.getLogger("Pokecube");
     protected static FileHandler                logHandler                 = null;

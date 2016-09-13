@@ -22,6 +22,7 @@ public class SpawnEvent extends Event
         }
 
     }
+
     /** Called right before the pokemob is spawned into the world. Cancelling
      * this does nothing.<br>
      * pokemob is the pokemob entity which is about to spawn.
@@ -39,6 +40,7 @@ public class SpawnEvent extends Event
             entity = (EntityLiving) pokemob;
         }
     }
+
     /** Called before the pokemob is spawned into the world, during the checks
      * for a valid location. <br>
      * Cancelling this will prevent the spawn.
@@ -49,6 +51,24 @@ public class SpawnEvent extends Event
         public Pre(PokedexEntry entry, Vector3 location, World worldObj)
         {
             super(entry, location, worldObj);
+        }
+    }
+
+    /** Called before the pokemob is spawned into the world, during the checks
+     * for a valid location. <br>
+     * Cancelling this will prevent the spawn.
+     * 
+     * @author Thutmose */
+    public static class Check extends SpawnEvent
+    {
+        /** Is this even actually for spawning, or just checking if something
+         * can spawn, say in pokedex */
+        public final boolean forSpawn;
+
+        public Check(PokedexEntry entry, Vector3 location, World worldObj, boolean forSpawn)
+        {
+            super(entry, location, worldObj);
+            this.forSpawn = forSpawn;
         }
     }
 

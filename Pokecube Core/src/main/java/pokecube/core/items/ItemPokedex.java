@@ -3,12 +3,6 @@
  */
 package pokecube.core.items;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -25,7 +19,6 @@ import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.network.packets.PacketDataSync;
@@ -80,40 +73,11 @@ public class ItemPokedex extends Item
 
         if (playerIn.isSneaking() && !worldIn.isRemote)
         {
-            String biomeList = "Nothing";
-
-            List<PokedexEntry> pokemobs = Lists.newArrayList();
-
-            for (PokedexEntry e : Database.spawnables)
-            {
-                if (e.getSpawnData().isValid(worldIn, hit))
-                {
-                    pokemobs.add(e);
-                }
-            }
-            if (!pokemobs.isEmpty())
-            {
-                final World world = worldIn;
-                final Vector3 v = hit;
-                Collections.sort(pokemobs, new Comparator<PokedexEntry>()
-                {
-                    @Override
-                    public int compare(PokedexEntry o1, PokedexEntry o2)
-                    {
-                        float w1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(world, v));
-                        float w2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(world, v));
-                        return (int) (w2 * 10e6 - w1 * 10e6);
-                    }
-                });
-                biomeList = pokemobs.toString();
-            }
             ITextComponent message = CommandTools.makeTranslatedMessage("pokedex.locationinfo1", "green",
                     Database.spawnables.size());
             playerIn.addChatMessage(message);
             message = CommandTools.makeTranslatedMessage("pokedex.locationinfo2", "green",
                     Pokedex.getInstance().getEntries().size());
-            playerIn.addChatMessage(message);
-            message = CommandTools.makeTranslatedMessage("pokedex.locationinfo3", "", biomeList);
             playerIn.addChatMessage(message);
         }
 

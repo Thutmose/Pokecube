@@ -35,6 +35,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
+import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
@@ -505,20 +506,22 @@ public final class SpawnHandler
         List<PokedexEntry> entries = Database.spawnables;
         int index = world.rand.nextInt(entries.size());
         PokedexEntry dbe = entries.get(index);
-        float weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
-        double random = Math.random();
         Vector3.movePointOutOfBlocks(v, world);
+        SpawnCheck checker = new SpawnCheck(v, world);
+        float weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
+        double random = Math.random();
         int n = 0;
         int max = entries.size();
         while (weight <= random && n++ < max)
         {
             dbe = entries.get((++index) % entries.size());
-            if (!dbe.flys())
+            weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
+            if (!dbe.flys() && random > weight)
             {
                 v = Vector3.getNextSurfacePoint2(world, v, Vector3.secondAxisNeg, v.y);
                 if (v != null) Vector3.movePointOutOfBlocks(v, world);
+                weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
             }
-            weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
         }
         if (random > weight) return ret;
         if (v == null) { return ret; }

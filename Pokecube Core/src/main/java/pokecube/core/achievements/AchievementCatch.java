@@ -1,7 +1,7 @@
 /**
  *
  */
-package pokecube.core;
+package pokecube.core.achievements;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
@@ -11,50 +11,42 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 
 /** @author Manchou */
 public class AchievementCatch extends Achievement
 {
-    int pokedexNb;
+    PokedexEntry entry;
 
-    public AchievementCatch(int par1, String par2Str, int par3, int par4, Item item, Achievement par6Achievement)
+    public AchievementCatch(PokedexEntry entry, int column, int row, Item item, Achievement parent)
     {
-        super(par2Str, par2Str, par3, par4, item, par6Achievement);
-        pokedexNb = par1;
+        super(entry == null ? "get1stPokemob" : "achievement.pokecube." + entry.getName() + ".catch",
+                entry == null ? "get1stPokemob" : "achievement.pokecube." + entry.getName(), column, row, item, parent);
+        this.entry = entry;
+        if (entry != null && entry.legendary) this.setSpecial();
     }
 
     @Override
     public String getDescription()
     {
         if ("get1stPokemob".equals(statId)) { return I18n.format("achievement." + statId + ".desc"); }
-        return I18n.format("achievement.catch", I18n.format(getPokemobTranslatedName()));
+        return I18n.format("achievement.pokecube.catch", I18n.format(getPokemobTranslatedName()));
     }
 
     protected String getPokemobTranslatedName()
     {
-        PokedexEntry entry;
-        if (pokedexNb > 0 && (entry = Database.getEntry(pokedexNb)) != null)
-        {
-            if(entry.getBaseForme()!=null) entry = entry.getBaseForme();
-            return entry.getUnlocalizedName();
-        }
-        else
-        {
-            System.out.println("shouldn't happen");
-            return "AchievementCatch"; // should not happen
-        }
+        return entry.getUnlocalizedName();
     }
 
     @Override
     public ITextComponent getStatName()
     {
         if ("get1stPokemob".equals(statId)) { return super.getStatName(); }
-        ITextComponent iTextComponent = new TextComponentTranslation(statId, new Object[0]);
-        iTextComponent.getStyle().setColor(TextFormatting.GRAY);
-        iTextComponent.getStyle().setHoverEvent(
-                new HoverEvent(HoverEvent.Action.SHOW_ACHIEVEMENT, new TextComponentString(this.statId)));
+        ITextComponent iTextComponent = new TextComponentTranslation("achievement.pokecube.catch",
+                new TextComponentTranslation(getPokemobTranslatedName()));
+        iTextComponent.getStyle().setColor(this.getSpecial() ? TextFormatting.DARK_PURPLE : TextFormatting.GREEN);
+        iTextComponent.getStyle()
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ACHIEVEMENT, new TextComponentString(statId)));
         return iTextComponent;
     }
 

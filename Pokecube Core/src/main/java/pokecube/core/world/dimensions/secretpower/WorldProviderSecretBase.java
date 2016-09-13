@@ -8,6 +8,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.border.WorldBorder;
@@ -20,7 +21,6 @@ public class WorldProviderSecretBase extends WorldProvider
 
     public WorldProviderSecretBase()
     {
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -107,12 +107,14 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onPlayerAdded(EntityPlayerMP player)
     {
+        player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.enter"));
     }
 
     /** Called when a Player is removed from the provider's world. */
     @Override
     public void onPlayerRemoved(EntityPlayerMP player)
     {
+        player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.exit"));
     }
 
     @Override

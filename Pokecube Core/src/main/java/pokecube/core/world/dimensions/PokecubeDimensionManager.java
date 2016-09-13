@@ -100,11 +100,11 @@ public class PokecubeDimensionManager
         }
         else
         {
+            PokecubeMod.log("Creating Base DimensionID for " + player);
             dim = DimensionManager.getNextFreeDimId();
             tag.setInteger("secretPowerDimID", dim);
             PlayerDataHandler.saveCustomData(player);
             getInstance().dimOwners.put(dim, player);
-            Thread.dumpStack();
         }
         return dim;
     }
@@ -263,14 +263,10 @@ public class PokecubeDimensionManager
     @SubscribeEvent
     public void playerChangeDimension(PlayerChangedDimensionEvent event)
     {
-        World world = event.player.getEntityWorld();
-        if (!world.isRemote)
-        {
-            PacketSyncDimIds packet = new PacketSyncDimIds();
-            packet.data.setInteger("dim", event.player.dimension);
-            packet.data.setInteger("border", world.getWorldBorder().getSize());
-            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.player);
-        }
+        PacketSyncDimIds packet = new PacketSyncDimIds();
+        packet.data.setInteger("dim", event.player.dimension);
+        packet.data.setInteger("border", event.player.worldObj.getWorldBorder().getSize());
+        PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent

@@ -36,13 +36,8 @@ public class MoveSecretPower extends Move_Utility
         if (!PokecubeMod.pokemobsDamageBlocks) return;
         if (attacker.getPokemonAIState(IMoveConstants.ANGRY)) return;
         if (!(attacker.getPokemonOwner() instanceof EntityPlayerMP)) return;
-
         EntityPlayerMP owner = (EntityPlayerMP) attacker.getPokemonOwner();
         Block b = location.getBlock(owner.worldObj);
-        System.out.println(
-                b + " " + Mod_Pokecube_Helper.getTerrain() + " " + Mod_Pokecube_Helper.getTerrain().contains(b));
-        
-
         if (!(Mod_Pokecube_Helper.getTerrain().contains(b) || TreeRemover.woodTypes.contains(b)))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.wrongloc");

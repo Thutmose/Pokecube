@@ -49,7 +49,6 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onWorldSave()
     {
-        // TODO save owner here?
         ISaveHandler saveHandler = worldObj.getSaveHandler();
         File file = saveHandler.getWorldDirectory();
         file = new File(file, getSaveFolder());

@@ -63,6 +63,7 @@ public class PacketSyncDimIds implements IMessage, IMessageHandler<PacketSyncDim
             EntityPlayer player = PokecubeCore.getPlayer(null);
             if (player.dimension == dim)
             {
+                System.out.println(dim+" "+player.dimension+" "+border);
                 player.worldObj.getWorldBorder().setSize(border);
             }
         }

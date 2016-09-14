@@ -36,9 +36,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.client.render.item.BagRenderer;
-import pokecube.compat.ai.AIRFInterferance;
 import pokecube.compat.ai.AITeslaInterferance;
-import pokecube.compat.rf.SiphonHandler;
 import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
@@ -81,11 +79,6 @@ public class Compat
                 if (PokecubeAdv.tesla)
                 {
                     ITextComponent mess = new TextComponentTranslation("pokecube.power.tesla");
-                    (event.player).addChatMessage(mess);
-                }
-                else if (PokecubeAdv.rf)
-                {
-                    ITextComponent mess = new TextComponentTranslation("pokecube.power.rf");
                     (event.player).addChatMessage(mess);
                 }
             }
@@ -220,16 +213,6 @@ public class Compat
         meta.parent = PokecubeMod.ID;
     }
 
-    @SubscribeEvent
-    public void addRFInterference(EntityJoinWorldEvent evt)
-    {
-        if (PokecubeAdv.rf) if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
-        {
-            EntityLiving living = (EntityLiving) evt.getEntity();
-            living.tasks.addTask(1, new AIRFInterferance((IPokemob) living));
-        }
-    }
-
     @Optional.Method(modid = "tesla")
     @SubscribeEvent
     public void addTeslaInterferance(EntityJoinWorldEvent evt)
@@ -239,12 +222,6 @@ public class Compat
             EntityLiving living = (EntityLiving) evt.getEntity();
             living.tasks.addTask(1, new AITeslaInterferance((IPokemob) living));
         }
-    }
-
-    @EventHandler
-    public void RFCompat(FMLInitializationEvent evt)
-    {
-        if (PokecubeAdv.rf && !PokecubeAdv.tesla) new SiphonHandler();
     }
 
     @Optional.Method(modid = "tesla")

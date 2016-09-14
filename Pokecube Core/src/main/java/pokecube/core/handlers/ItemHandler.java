@@ -59,6 +59,7 @@ import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.blocks.tradingTable.ItemBlockTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.database.stats.CaptureStats;
+import pokecube.core.database.stats.EggStats;
 import pokecube.core.events.CaptureEvent.Post;
 import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
@@ -490,8 +491,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 Entity thrower = cube.shootingEntity;
                 int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getCachedUniqueIdString(),
                         mob.getPokedexEntry());
-                // TODO make this also check achievments, to check if pokemon
-                // has been traded to or hatched.
+                has = has + EggStats.getTotalNumberOfPokemobHatchedBy(thrower.getCachedUniqueIdString(),
+                        mob.getPokedexEntry());
                 double rate = has > 0 ? 3 : 1;
                 cube.tilt = Tools.computeCatchRate(mob, rate);
                 cube.time = cube.tilt * 20;

@@ -78,6 +78,8 @@ public class Config extends ConfigBase
     @Configure(category = machines)
     public int                         warpPadRange        = 64;
     @Configure(category = machines)
+    public int                         warpPadMaxEnergy    = 32000;
+    @Configure(category = machines)
     String[]                           ranchables          = {
             // @formatter:off
             "arceus:nether_star:100000", "chinchou:glowstone_dust:500", "lanturn:glowstone_dust,2:500",

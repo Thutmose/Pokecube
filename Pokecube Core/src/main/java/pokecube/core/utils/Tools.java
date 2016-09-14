@@ -24,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -449,9 +450,30 @@ public class Tools
     public static boolean isSameStack(ItemStack a, ItemStack b)
     {
         if (a == null || b == null) return false;
-        if (a.getItem() != b.getItem()) { return false; } // TODO ore dictionary
-                                                          // check in here.
-        if (!a.isItemStackDamageable() && a.getItemDamage() != b.getItemDamage()) return false;
+        int[] aID = OreDictionary.getOreIDs(a);
+        int[] bID = OreDictionary.getOreIDs(b);
+        boolean check = a.getItem() == b.getItem();
+        if (!check)
+        {
+            outer:
+            for (int i : aID)
+            {
+                for (int i1 : bID)
+                {
+                    if (i == i1)
+                    {
+                        check = true;
+                        break outer;
+                    }
+                }
+            }
+        }
+        if (!check) { return false; }
+        check = (!a.isItemStackDamageable() && a.getItemDamage() != b.getItemDamage());
+        if (!a.isItemStackDamageable() && (a.getItemDamage() == OreDictionary.WILDCARD_VALUE
+                || b.getItemDamage() == OreDictionary.WILDCARD_VALUE))
+            check = false;
+        if (check) return false;
         return ItemStack.areItemStackTagsEqual(a, b);
     }
 

@@ -148,7 +148,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         throw new Exception("no ability");
     }
 
-    @Override // TODO re-add SimpleComponent when it is fixed.
+    @Override
     public String getComponentName()
     {
         return "afa";

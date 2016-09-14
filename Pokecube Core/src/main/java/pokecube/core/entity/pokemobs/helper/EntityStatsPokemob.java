@@ -405,11 +405,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public PokedexEntry getPokedexEntry()
     {
-//        if (entry == null)
+        if (entry == null)
         {
-            entry = Pokedex.getInstance().getEntry(getPokedexNb()).getForGender(getSexe());
+            entry = Pokedex.getInstance().getEntry(getPokedexNb());
         }
-        return entry;
+        return entry.getForGender(getSexe());
     }
 
     @Override

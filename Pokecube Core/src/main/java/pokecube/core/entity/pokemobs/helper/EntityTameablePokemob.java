@@ -630,7 +630,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
             Entity owner = getPokemonOwner();
 
-            if (getPokemonAIState(MEGAFORME))
+            if (getPokemonAIState(MEGAFORME) || getPokedexEntry().isMega)
             {
                 this.setPokemonAIState(MEGAFORME, false);
                 IPokemob base = megaEvolve(getPokedexEntry().getBaseName());

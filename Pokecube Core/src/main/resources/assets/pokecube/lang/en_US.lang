@@ -666,3 +666,6 @@ pokecube.command.settings.check=%1$s §ais currently set to: %2$s
 pokecube.command.settings.set=%1$s §aset to: %2$s
 pokecube.command.settings.invalid=§cInvalid option for %1$s
 pokecube.command.settings.error=§cError while checking config field, please report this as a bug.
+
+pokecube.command.checkreward=Does %1$s have %2$s: %3$s.
+pokecube.command.resetreward=Reset %2$s for %1$s.

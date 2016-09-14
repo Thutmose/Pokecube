@@ -66,6 +66,8 @@ public class Config extends ConfigBase
     public boolean                     HMLoot              = true;
 
     @Configure(category = machines)
+    public int                         afaShinyRate        = 4096;
+    @Configure(category = machines)
     public int                         maxOutput           = 256;
     @Configure(category = machines)
     public String                      powerFunction       = "a*x/10";
@@ -75,6 +77,8 @@ public class Config extends ConfigBase
     public boolean                     theft               = false;
     @Configure(category = machines)
     public int                         warpPadRange        = 64;
+    @Configure(category = machines)
+    public int                         warpPadMaxEnergy    = 32000;
     @Configure(category = machines)
     String[]                           ranchables          = {
             // @formatter:off

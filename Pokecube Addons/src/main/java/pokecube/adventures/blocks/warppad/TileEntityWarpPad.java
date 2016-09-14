@@ -159,9 +159,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
 
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
     {
-        int receive = Math.min(maxReceive, 32000 - energy);// TODO replace 32000
-                                                           // with some
-                                                           // constant6
+        int receive = Math.min(maxReceive, PokecubeAdv.conf.warpPadMaxEnergy - energy);
         if (!simulate && receive > 0)
         {
             energy += receive;

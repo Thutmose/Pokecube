@@ -6,14 +6,12 @@ package pokecube.core.entity.pokemobs.helper;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
@@ -258,28 +256,9 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
         return !this.canUseDive();
     }
 
-    /** main AI tick function, replaces updateEntityActionState */// TODO move
-                                                                  // this over
-                                                                  // to an AI
-
+    /** main AI tick function, replaces updateEntityActionState */
     protected void updateAITick()
     {
-        if (!getPokedexEntry().canSitShoulder || !getPokemonAIState(IMoveConstants.TAMED) || worldObj.isRemote) return;
 
-        if (counterMount++ > 50000)
-        {
-            counterMount = 0;
-        }
-        if (getRidingEntity() != null && !getPokemonAIState(SITTING))
-        {
-            EntityLivingBase entityplayer = getPokemonOwner();
-            System.out.println("dismount");
-            if (entityplayer != null)
-            {
-                // dismountRidingEntity();
-                // setPokemonAIState(SHOULDER, false);
-                // counterMount = 0;
-            }
-        }
     }
 }

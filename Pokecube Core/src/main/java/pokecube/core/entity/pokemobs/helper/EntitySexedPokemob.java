@@ -3,7 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
@@ -14,8 +13,6 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
@@ -31,6 +28,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
+import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public abstract class EntitySexedPokemob extends EntityStatsPokemob
@@ -174,30 +172,12 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
     public void lay(int pokedexNb, IPokemob male)
     {
-        // Adding some code that prevents egg laying it too many pokemobs
-        // nearby, this will prevent small caves willing with
-        // a very large number of geodude and zubat.
-
         if (PokecubeMod.debug) System.out.println(this + " lay()");
-        int i = (int) this.posX;
-        int j = (int) this.posY;
-        int k = (int) this.posZ;
-
         if (worldObj.isRemote) { return; }
-
-        List<EntityPokemob> near = worldObj.getEntitiesWithinAABB(EntityPokemob.class,
-                new AxisAlignedBB(i - 8, j - 8, k - 8, i + 8, j + 8, k + 8));
-
-        if (near.size() >= 5)
-        {
-            if (PokecubeMod.debug) System.out.println("Too many pokemobs nearby, aborting Lay");
-            return;
-        }
-
         int num = Tools.countPokemon(worldObj, here, PokecubeMod.core.getConfig().maxSpawnRadius);
-        if ((getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
-
-        if (worldObj.isAirBlock(new BlockPos(i, j, k)))
+        if (!(getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
+        Vector3 pos = Vector3.getNewVector().set(this);
+        if (pos.isClearOfBlocks(getEntityWorld()))
         {
             ItemStack eggItemStack = ItemPokemobEgg.getEggStack(pokedexNb);
             Entity eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, eggItemStack, this, male);

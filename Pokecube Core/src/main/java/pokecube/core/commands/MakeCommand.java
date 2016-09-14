@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -18,6 +19,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -254,8 +256,16 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
-                            // TODO look up owner or uuid properly.
+
                             if (p != null) owner = p.getCachedUniqueIdString();
+                            else
+                            {
+                                GameProfile profile = new GameProfile(null, owner);
+                                profile = TileEntitySkull.updateGameprofile(profile);
+                                if (profile.getId() == null) { throw new CommandException(
+                                        "Error, cannot find profile for " + owner); }
+                                owner = profile.getId().toString();
+                            }
                         }
 
                         mob.setHp(((EntityLiving) mob).getMaxHealth());
@@ -307,7 +317,7 @@ public class MakeCommand extends CommandBase
                         {
                             ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
                         }
-                        text = TextFormatting.GREEN + "Spawned " + mob;
+                        text = TextFormatting.GREEN + "Spawned " + mob.getPokemonDisplayName().getFormattedText();
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);
                         return;

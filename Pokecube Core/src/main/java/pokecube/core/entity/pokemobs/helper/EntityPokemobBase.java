@@ -927,7 +927,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public boolean attackEntityFromPart(EntityDragonPart dragonPart, DamageSource source, float damage)
     {
-        // TODO Auto-generated method stub
         return false;
     }
 

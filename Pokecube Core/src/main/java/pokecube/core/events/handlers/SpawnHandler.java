@@ -520,7 +520,8 @@ public final class SpawnHandler
             {
                 v = Vector3.getNextSurfacePoint2(world, v, Vector3.secondAxisNeg, v.y);
                 if (v != null) Vector3.movePointOutOfBlocks(v, world);
-                weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+                if (v != null) weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+                else weight = 0;
             }
         }
         if (random > weight) return ret;

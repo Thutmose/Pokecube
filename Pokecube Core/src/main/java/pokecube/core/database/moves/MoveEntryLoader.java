@@ -34,7 +34,7 @@ public class MoveEntryLoader implements IMoveConstants
         boolean kingsrock;
         int     crit;
         String  selfDamage;
-        String  defaultAnimation;
+        String  defaultanimation;
     }
 
     public static class MovesJson
@@ -193,7 +193,7 @@ public class MoveEntryLoader implements IMoveConstants
                 move.selfDamageType = cond.contains("miss") ? MoveEntry.MISS
                         : cond.contains("hp") ? MoveEntry.RELATIVEHP : MoveEntry.DAMAGEDEALT;
             }
-            String anim = entry.defaultAnimation;
+            String anim = entry.defaultanimation;
             move.animDefault = anim;
         }
         catch (Exception e)

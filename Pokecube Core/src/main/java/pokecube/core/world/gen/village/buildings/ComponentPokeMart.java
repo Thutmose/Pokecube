@@ -184,7 +184,6 @@ public class ComponentPokeMart extends ComponentVillageBase
             catch (InstantiationException | IllegalAccessException | IllegalArgumentException
                     | InvocationTargetException | NoSuchMethodException | SecurityException e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

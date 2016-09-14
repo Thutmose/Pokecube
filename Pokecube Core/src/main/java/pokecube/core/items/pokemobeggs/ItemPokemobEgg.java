@@ -109,6 +109,7 @@ public class ItemPokemobEgg extends Item
         int chance = 4096;
         if (mother.isShiny()) chance = chance / 2;
         if (father.isShiny()) chance = chance / 2;
+        if (mother.getOriginalOwnerUUID() != father.getOriginalOwnerUUID()) chance = chance / 2;
 
         nbt.setBoolean("shiny", new Random().nextInt(chance) == 0);
 

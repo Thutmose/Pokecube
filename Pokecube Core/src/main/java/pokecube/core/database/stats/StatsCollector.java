@@ -20,19 +20,19 @@ public class StatsCollector
 {
     public static Map<PokedexEntry, Integer> getCaptures(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-stats", PokecubePlayerStats.class)
+        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerStats.class)
                 .getCaptures(PokecubeCore.proxy.getPlayer(uuid));
     }
 
     public static Map<PokedexEntry, Integer> getKills(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-stats", PokecubePlayerStats.class)
+        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerStats.class)
                 .getKills(PokecubeCore.proxy.getPlayer(uuid));
     }
 
     public static Map<PokedexEntry, Integer> getHatches(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-stats", PokecubePlayerStats.class)
+        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerStats.class)
                 .getHatches(PokecubeCore.proxy.getPlayer(uuid));
     }
 
@@ -43,7 +43,7 @@ public class StatsCollector
         {
             owner = captured.getPokemonOwner().getCachedUniqueIdString();
             PokedexEntry dbe = Database.getEntry(captured);
-            PlayerDataHandler.getInstance().getPlayerData(owner).getData("pokecube-stats", PokecubePlayerStats.class)
+            PlayerDataHandler.getInstance().getPlayerData(owner).getData(PokecubePlayerStats.class)
                     .addCapture((EntityPlayer) captured.getPokemonOwner(), dbe);
         }
     }
@@ -62,7 +62,7 @@ public class StatsCollector
                 return;
             }
             PokedexEntry dbe = Database.getEntry(mob);
-            PlayerDataHandler.getInstance().getPlayerData(owner).getData("pokecube-stats", PokecubePlayerStats.class)
+            PlayerDataHandler.getInstance().getPlayerData(owner).getData(PokecubePlayerStats.class)
                     .addHatch((EntityPlayer) hatched.getEggOwner(), dbe);
         }
     }
@@ -75,7 +75,7 @@ public class StatsCollector
         {
             owner = killer.getPokemonOwner().getCachedUniqueIdString();
             PokedexEntry dbe = Database.getEntry(killed);
-            PlayerDataHandler.getInstance().getPlayerData(owner).getData("pokecube-stats", PokecubePlayerStats.class)
+            PlayerDataHandler.getInstance().getPlayerData(owner).getData(PokecubePlayerStats.class)
                     .addKill((EntityPlayer) killer.getPokemonOwner(), dbe);
         }
     }

@@ -346,14 +346,13 @@ public class PokecubeSerializer
 
     public int getTeleIndex(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-data", PokecubePlayerData.class)
-                .getTeleIndex();
+        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class).getTeleIndex();
     }
 
     public TeleDest getTeleport(String uuid)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData("pokecube-data", PokecubePlayerData.class).getTeleDests();
+        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .getTeleDests();
         int index = getTeleIndex(uuid);
         TeleDest d = null;
         if (list.size() > index)
@@ -365,14 +364,12 @@ public class PokecubeSerializer
 
     public List<TeleDest> getTeleports(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-data", PokecubePlayerData.class)
-                .getTeleDests();
+        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class).getTeleDests();
     }
 
     public boolean hasStarter(EntityPlayer player)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(player).getData("pokecube-data", PokecubePlayerData.class)
-                .hasStarter();
+        return PlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class).hasStarter();
     }
 
     public void loadData()
@@ -402,42 +399,41 @@ public class PokecubeSerializer
     {
         lastId = nbttagcompound.getInteger(LASTUID);
 
-        // TODO remove support for this.
-        StatsCollector.readFromNBT(nbttagcompound.getCompoundTag("globalStats"));
-
         NBTBase temp;
         // TODO remove support for this.
-        Set<String> ids = Sets.newHashSet();
-        temp = nbttagcompound.getTag(HASSTARTER);
-        if (temp instanceof NBTTagList)
         {
-            NBTTagList tagListHasStarter = (NBTTagList) temp;
-            for (int i = 0; i < tagListHasStarter.tagCount(); i++)
-            {
-                NBTTagCompound pokemobData = tagListHasStarter.getCompoundTagAt(i);
+            StatsCollector.readFromNBT(nbttagcompound.getCompoundTag("globalStats"));
 
-                if (pokemobData != null)
+            Set<String> ids = Sets.newHashSet();
+            temp = nbttagcompound.getTag(HASSTARTER);
+            if (temp instanceof NBTTagList)
+            {
+                NBTTagList tagListHasStarter = (NBTTagList) temp;
+                for (int i = 0; i < tagListHasStarter.tagCount(); i++)
                 {
-                    String username = pokemobData.getString(USERNAME);
-                    ids.add(username);
-                    Boolean hasStarter = pokemobData.getBoolean(HASSTARTER);
-                    PlayerDataHandler.getInstance().getPlayerData(username)
-                            .getData("pokecube-data", PokecubePlayerData.class).setHasStarter(hasStarter);
+                    NBTTagCompound pokemobData = tagListHasStarter.getCompoundTagAt(i);
+
+                    if (pokemobData != null)
+                    {
+                        String username = pokemobData.getString(USERNAME);
+                        ids.add(username);
+                        Boolean hasStarter = pokemobData.getBoolean(HASSTARTER);
+                        PlayerDataHandler.getInstance().getPlayerData(username).getData(PokecubePlayerData.class)
+                                .setHasStarter(hasStarter);
+                    }
                 }
             }
-        }
-
-        // TODO remove support for this.
-        temp = nbttagcompound.getTag(TPOPTIONS);
-        if (temp instanceof NBTTagList)
-        {
-            NBTTagList tagListTeleportLocations = (NBTTagList) temp;
-            if (tagListTeleportLocations.tagCount() > 0) for (int i = 0; i < tagListTeleportLocations.tagCount(); i++)
+            temp = nbttagcompound.getTag(TPOPTIONS);
+            if (temp instanceof NBTTagList)
             {
-                NBTTagCompound pokemobData = tagListTeleportLocations.getCompoundTagAt(i);
+                NBTTagList tagListTeleportLocations = (NBTTagList) temp;
+                if (tagListTeleportLocations.tagCount() > 0)
+                    for (int i = 0; i < tagListTeleportLocations.tagCount(); i++)
+                    {
+                    NBTTagCompound pokemobData = tagListTeleportLocations.getCompoundTagAt(i);
 
-                if (pokemobData != null)
-                {
+                    if (pokemobData != null)
+                    {
                     String username = pokemobData.getString(USERNAME);
                     ids.add(username);
 
@@ -447,21 +443,21 @@ public class PokecubeSerializer
                     NBTBase temp2 = pokemobData.getTag(TPOPTIONS);
                     if (temp2 instanceof NBTTagList)
                     {
-                        NBTTagList tagListOptions = (NBTTagList) temp2;
-                        NBTTagCompound pokemobData2 = null;
-                        for (int j = 0; j < tagListOptions.tagCount(); j++)
-                        {
-                            pokemobData2 = tagListOptions.getCompoundTagAt(j);
-                            TeleDest d = TeleDest.readFromNBT(pokemobData2);
-                            setTeleport(username, d);
-                        }
+                    NBTTagList tagListOptions = (NBTTagList) temp2;
+                    NBTTagCompound pokemobData2 = null;
+                    for (int j = 0; j < tagListOptions.tagCount(); j++)
+                    {
+                    pokemobData2 = tagListOptions.getCompoundTagAt(j);
+                    TeleDest d = TeleDest.readFromNBT(pokemobData2);
+                    setTeleport(username, d);
                     }
-                }
+                    }
+                    }
+                    }
             }
+            for (String uuid : ids)
+                PlayerDataHandler.getInstance().save(uuid);
         }
-        for (String uuid : ids)
-            PlayerDataHandler.getInstance().save(uuid);
-
         temp = nbttagcompound.getTag(METEORS);
         if (temp instanceof NBTTagList)
         {
@@ -600,7 +596,7 @@ public class PokecubeSerializer
     {
         try
         {
-            PlayerDataHandler.getInstance().getPlayerData(player).getData("pokecube-data", PokecubePlayerData.class)
+            PlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class)
                     .setHasStarter(value);
         }
         catch (Exception e)
@@ -613,8 +609,7 @@ public class PokecubeSerializer
 
     public void setTeleIndex(String uuid, int index)
     {
-        PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-data", PokecubePlayerData.class)
-                .setTeleIndex(index);
+        PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class).setTeleIndex(index);
     }
 
     public void setTeleport(String uuid, TeleDest dest)
@@ -624,8 +619,8 @@ public class PokecubeSerializer
 
     public void setTeleport(Vector4 v, String uuid)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData("pokecube-data", PokecubePlayerData.class).getTeleDests();
+        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .getTeleDests();
         boolean toRemove = false;
         List<TeleDest> old = new ArrayList<TeleDest>();
 
@@ -651,8 +646,8 @@ public class PokecubeSerializer
 
     public void setTeleport(Vector4 v, String uuid, String customName)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData("pokecube-data", PokecubePlayerData.class).getTeleDests();
+        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .getTeleDests();
         boolean toRemove = false;
         ArrayList<TeleDest> old = new ArrayList<TeleDest>();
 
@@ -697,8 +692,8 @@ public class PokecubeSerializer
 
     public void unsetTeleport(Vector4 v, String uuid)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData("pokecube-data", PokecubePlayerData.class).getTeleDests();
+        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .getTeleDests();
         boolean toRemove = false;
         ArrayList<TeleDest> old = new ArrayList<TeleDest>();
 

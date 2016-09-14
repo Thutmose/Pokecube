@@ -17,6 +17,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.interfaces.IBerryFruitBlock;
@@ -226,12 +227,15 @@ public class AIHungry extends AIBase
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
             berry.setEntityItemStack(new ItemStack(plant));
             hungrymob.eat(berry);
-            TickHandler.addBlockChange(foodLoc, entity.dimension,
-                    location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
-            if (location.getBlockState(world).getMaterial() != Material.GRASS)
+            if (PokecubeCore.core.getConfig().pokemobsDamageBlocks)
             {
-                for (ItemStack stack : plant.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
-                    toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                TickHandler.addBlockChange(foodLoc, entity.dimension,
+                        location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
+                if (location.getBlockState(world).getMaterial() != Material.GRASS)
+                {
+                    for (ItemStack stack : plant.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
+                        toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                }
             }
             foodLoc.clear();
             addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);

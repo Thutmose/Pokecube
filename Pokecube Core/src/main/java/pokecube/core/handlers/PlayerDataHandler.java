@@ -367,8 +367,9 @@ public class PlayerDataHandler
 
     public static class PlayerDataManager
     {
-        Map<String, PlayerData> data = Maps.newHashMap();
-        final String            uuid;
+        Map<Class<? extends PlayerData>, PlayerData> data  = Maps.newHashMap();
+        Map<String, PlayerData>                      idMap = Maps.newHashMap();
+        final String                                 uuid;
 
         public PlayerDataManager(String uuid)
         {
@@ -378,7 +379,8 @@ public class PlayerDataHandler
                 try
                 {
                     PlayerData toAdd = type.newInstance();
-                    data.put(toAdd.getIdentifier(), toAdd);
+                    data.put(type, toAdd);
+                    idMap.put(toAdd.getIdentifier(), toAdd);
                 }
                 catch (InstantiationException e)
                 {
@@ -392,9 +394,14 @@ public class PlayerDataHandler
         }
 
         @SuppressWarnings("unchecked")
-        public <T> T getData(String identifier, Class<T> type)
+        public <T extends PlayerData> T getData(Class<T> type)
         {
-            return (T) data.get(identifier);
+            return (T) data.get(type);
+        }
+
+        public PlayerData getData(String dataType)
+        {
+            return idMap.get(dataType);
         }
     }
 
@@ -431,14 +438,14 @@ public class PlayerDataHandler
     public static NBTTagCompound getCustomDataTag(EntityPlayer player)
     {
         PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
-        PokecubePlayerCustomData data = manager.getData("pokecube-custom", PokecubePlayerCustomData.class);
+        PokecubePlayerCustomData data = manager.getData(PokecubePlayerCustomData.class);
         return data.tag;
     }
 
     public static NBTTagCompound getCustomDataTag(String player)
     {
         PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
-        PokecubePlayerCustomData data = manager.getData("pokecube-custom", PokecubePlayerCustomData.class);
+        PokecubePlayerCustomData data = manager.getData(PokecubePlayerCustomData.class);
         return data.tag;
     }
 

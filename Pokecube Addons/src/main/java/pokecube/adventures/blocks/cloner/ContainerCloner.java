@@ -193,7 +193,7 @@ public class ContainerCloner extends Container
     }
 
     @Override
-    /** Handles slot click.//TODO see if this was needed
+    /** Handles slot click.
      * 
      * @param mode
      *            0 = basic click, 1 = shift click, 2 = hotbar, 3 = pick block,

@@ -36,7 +36,6 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     public EntityHasTrades(World worldIn)
     {
         super(worldIn);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -133,7 +132,6 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     @Override
     public EntityAgeable createChild(EntityAgeable ageable)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 

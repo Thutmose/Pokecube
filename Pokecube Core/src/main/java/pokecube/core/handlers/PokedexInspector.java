@@ -71,7 +71,7 @@ public class PokedexInspector
             int required = 0;
             if (arg.contains("%"))
             {
-                required = (int) (Double.parseDouble(arg.replace("%", "")) * Database.spawnables.size()/100d);
+                required = (int) (Double.parseDouble(arg.replace("%", "")) * Database.spawnables.size() / 100d);
             }
             else
             {
@@ -161,8 +161,8 @@ public class PokedexInspector
     public void inspectEvent(PokedexInspectEvent evt)
     {
         String uuid = evt.getEntity().getCachedUniqueIdString();
-        PokecubePlayerCustomData data = PlayerDataHandler.getInstance().getPlayerData(uuid).getData("pokecube-custom",
-                PokecubePlayerCustomData.class);
+        PokecubePlayerCustomData data = PlayerDataHandler.getInstance().getPlayerData(uuid)
+                .getData(PokecubePlayerCustomData.class);
         boolean done = false;
         for (IInspectReward reward : rewards)
         {

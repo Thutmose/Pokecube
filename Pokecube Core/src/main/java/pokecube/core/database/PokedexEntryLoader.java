@@ -1056,6 +1056,7 @@ public class PokedexEntryLoader
                             String moveName = move;
                             if (move.isEmpty() && stack == null) continue;
                             MegaRule rule = new MegaEvoRule(stack, moveName, entry);
+                            formeEntry.isMega = true;
                             entry.megaRules.put(formeEntry, rule);
                         }
                     }

@@ -28,7 +28,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
     public static void sendInitPacket(EntityPlayer player, String dataType)
     {
         PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
-        PlayerData data = manager.getData(dataType, PlayerData.class);
+        PlayerData data = manager.getData(dataType);
         PacketDataSync packet = new PacketDataSync();
         packet.data.setString("type", dataType);
         NBTTagCompound tag1 = new NBTTagCompound();
@@ -100,8 +100,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             else
             {
                 PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
-                manager.getData(message.data.getString("type"), PlayerData.class)
-                        .readFromNBT(message.data.getCompoundTag("data"));
+                manager.getData(message.data.getString("type")).readFromNBT(message.data.getCompoundTag("data"));
             }
         }
     }

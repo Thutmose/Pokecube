@@ -47,8 +47,6 @@ import thut.api.network.PacketHandler;
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITickable, SimpleComponent, SidedComponent
 {
-    public static ItemStack shiny_charm = null;
-
     public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
     {
         float scale = tag.getFloat("scale");
@@ -440,14 +438,15 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @SubscribeEvent
     public void spawnEvent(SpawnEvent.Post evt)
     {
-        if (shiny_charm == null) shiny_charm = PokecubeItems.getStack("shiny_charm");
-        shiny = inventory[0] != null && Tools.isSameStack(inventory[0], shiny_charm);
+        ItemStack reference = PokecubeItems.getStack("shiny_charm");
+        shiny = Tools.isSameStack(reference, inventory[0]);
         if (shiny)
         {
             if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
             {
                 Random rand = new Random();
-                if (rand.nextInt(4096) == 0)
+                int rate = Math.max(PokecubeAdv.conf.afaShinyRate, 1);
+                if (rand.nextInt(rate) == 0)
                 {
                     if (!noEnergy && !worldObj.isRemote)
                     {

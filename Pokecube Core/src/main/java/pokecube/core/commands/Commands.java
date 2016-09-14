@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.command.CommandBase;
@@ -12,22 +13,32 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.stats.Achievement;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import pokecube.core.PokecubeCore;
+import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.handlers.PlayerDataHandler;
+import pokecube.core.handlers.PlayerDataHandler.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
@@ -259,8 +270,61 @@ public class Commands extends CommandBase
     }
 
     private boolean doReset(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+            throws PlayerNotFoundException
     {
-        if (args[0].equalsIgnoreCase("reset"))
+        if (args[0].equalsIgnoreCase("resetreward"))
+        {
+            if (args.length >= 3)
+            {
+                EntityPlayer player = null;
+                String name = null;
+                if (targets == null)
+                {
+                    name = args[1];
+                    player = getPlayer(cSender.getServer(), cSender, name);
+                }
+                else
+                {
+                    if (targets != null)
+                    {
+                        player = targets[0];
+                    }
+                }
+                String reward = args[2];
+                boolean check = args.length == 3;
+                if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+                {
+                    if (player != null)
+                    {
+                        NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
+                        if (check)
+                        {
+                            boolean has = tag.getBoolean(reward);
+                            cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward",
+                                    "", player.getName(), reward, has));
+                        }
+                        else
+                        {
+                            tag.setBoolean(reward, false);
+                            cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward",
+                                    "", player.getName(), reward));
+                            PlayerDataHandler.saveCustomData(player);
+                        }
+                    }
+                    else
+                    {
+                        throw new PlayerNotFoundException();
+                    }
+                }
+                else
+                {
+                    CommandTools.sendNoPermissions(cSender);
+                    return false;
+                }
+                return true;
+            }
+        }
+        else if (args[0].equalsIgnoreCase("reset"))
         {
             if (args.length == 1 && cSender instanceof EntityPlayer)
             {
@@ -334,6 +398,59 @@ public class Commands extends CommandBase
             }
         }
         return false;
+    }
+
+    private boolean doFixAcievements(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+            throws PlayerNotFoundException
+    {
+        if (args[0].equalsIgnoreCase("fixFromPC") && args.length == 2)
+        {
+            EntityPlayer player = getPlayer(cSender.getServer(), cSender, args[1]);
+            InventoryPC pc = InventoryPC.getPC(player);
+            PokecubePlayerStats stats = PlayerDataHandler.getInstance().getPlayerData(player)
+                    .getData(PokecubePlayerStats.class);
+            for (ItemStack stack : pc.getContents())
+            {
+                PokedexEntry entry;
+                if (stack != null && (entry = PokecubeManager.getEntry(stack)) != null)
+                {
+                    List<PokedexEntry> toAdd = Lists.newArrayList();
+                    populateFromNextForme(toAdd, entry);
+                    System.out.println(toAdd);
+                    for (PokedexEntry prev : toAdd)
+                    {
+                        boolean has = stats.getCaptures(player).containsKey(prev);
+                        has = has || stats.getHatches(player).containsKey(prev);
+                        if (!has)
+                        {
+                            Achievement catc = PokecubeCore.catchAchievements.get(prev);
+                            if (catc != null)
+                            {
+                                player.addStat(catc);
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void populateFromNextForme(List<PokedexEntry> toAdd, PokedexEntry entry)
+    {
+        for (PokedexEntry e : entry.related)
+        {
+            for (EvolutionData d : e.evolutions)
+            {
+                if (d.evolution == entry)
+                {
+                    toAdd.add(e);
+                    populateFromNextForme(toAdd, e);
+                    break;
+                }
+            }
+        }
     }
 
     private boolean doSetHasStarter(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
@@ -410,6 +527,7 @@ public class Commands extends CommandBase
         message |= doReset(sender, args, isOp, targets);
         message |= doMeteor(sender, args, isOp, targets);
         message |= doSetHasStarter(sender, args, isOp, targets);
+        message |= doFixAcievements(sender, args, isOp, targets);
         if (!message)
         {
             CommandTools.sendBadArgumentsTryTab(sender);

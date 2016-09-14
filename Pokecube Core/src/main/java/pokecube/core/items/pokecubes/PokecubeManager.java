@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -125,6 +127,29 @@ public class PokecubeManager
         }
 
         return null;
+    }
+
+    public static PokedexEntry getEntry(ItemStack cube)
+    {
+        PokedexEntry ret = null;
+        if (isFilled(cube))
+        {
+            NBTTagCompound poketag = cube.getTagCompound().getCompoundTag("Pokemob");
+            if (poketag != null)
+            {
+                String forme = poketag.getString("forme");
+                if (forme != null && !forme.isEmpty())
+                {
+                    ret = Database.getEntry(forme);
+                }
+            }
+            if (ret == null)
+            {
+                int num = getPokedexNb(cube);
+                ret = Database.getEntry(num);
+            }
+        }
+        return ret;
     }
 
     public static ItemStack pokemobToItem(IPokemob pokemob)

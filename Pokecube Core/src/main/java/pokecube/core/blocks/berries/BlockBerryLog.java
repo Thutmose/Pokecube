@@ -100,7 +100,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
     @Override
     protected BlockStateContainer createBlockState()
-    {// TODO find out where the bug with this is.
+    {
         return new BlockStateContainer(this,
                 new IProperty[] { currentlyConstructing == 0 ? VARIANT0 : VARIANT4, BlockLog.LOG_AXIS });
     }

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.mojang.authlib.GameProfile;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
@@ -27,6 +29,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -825,8 +828,22 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         }
         else
         {
-            // TODO check to see if s is a valid uuid, and if so, look it up and
-            // try to make owned by that player.
+            if (s != null && !s.isEmpty())
+            {
+                UUID id = null;
+                try
+                {
+                    id = UUID.fromString(s);
+                }
+                catch (Exception e)
+                {
+                    GameProfile profile = new GameProfile(null, s);
+                    profile = TileEntitySkull.updateGameprofile(profile);
+                    id = profile.getId();
+                }
+                super.setOwnerId(id);
+                return;
+            }
             setPokemonOwner(null);
             super.setOwnerId(null);
         }

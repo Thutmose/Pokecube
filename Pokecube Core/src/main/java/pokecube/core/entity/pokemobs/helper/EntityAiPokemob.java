@@ -76,7 +76,9 @@ import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -983,7 +985,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // shoulder
         if (isOwner && held != null && (held.getItem() == Items.STICK || held.getItem() == torch))
         {
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(5);
+            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
             look.y = 0.2;
             this.motionX += look.x;
             this.motionY += look.y;
@@ -1063,9 +1065,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     return true;
                 }
-
-                // Check if gold apple for breeding.
-                if (held.getItem() == Items.GOLDEN_APPLE)
+                int fav = Nature.getFavouriteBerryIndex(getNature());
+                // Check if favourte berry and sneaking, if so, do breeding
+                // stuff.
+                if (player.isSneaking() && held.getItem() instanceof ItemBerry
+                        && (fav == -1 || fav == held.getItemDamage()))
                 {
                     if (!player.capabilities.isCreativeMode)
                     {

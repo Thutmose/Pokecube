@@ -40,7 +40,6 @@ import pokecube.core.ai.pokemob.PokemobAIDodge;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAILeapAtTarget;
 import pokecube.core.ai.pokemob.PokemobAILook;
-import pokecube.core.ai.pokemob.PokemobAISwimming;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.thread.ILogicRunnable;
 import pokecube.core.ai.thread.PokemobAIThread;
@@ -315,10 +314,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
-
-        // aiStuff.addAILogic(new LogicCollision(this));
-        // if (true) return;
-        this.tasks.addTask(1, new PokemobAISwimming(this));
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
         this.tasks.addTask(4, this.aiSit = new EntityAISit(this));

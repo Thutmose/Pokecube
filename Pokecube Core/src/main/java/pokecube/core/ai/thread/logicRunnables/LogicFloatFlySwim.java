@@ -32,10 +32,57 @@ public class LogicFloatFlySwim extends LogicBase
         entry = pokemob.getPokedexEntry();
         if (pokemob.getTransformedTo() instanceof IPokemob)
             entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
-        boolean canFloat = entry.floats();
+
         Vector3 here = Vector3.getNewVector();
         here.set(pokemob);
+        doFloatFly(here);
+        doSwim(here);
+    }
 
+    public boolean shouldRun()
+    {
+        return !entity.isBeingRidden();
+    }
+
+    @Override
+    public void doLogic()
+    {
+    }
+
+    private void doSwim(Vector3 here)
+    {
+        boolean isWaterMob = pokemob.getPokedexEntry().swims();
+        if (!isWaterMob && (this.entity.isInWater() || this.entity.isInLava()))
+        {
+            if (this.entity.getRNG().nextFloat() < 0.8F)
+            {
+                this.entity.getJumpHelper().setJumping();
+            }
+        }
+        else if (isWaterMob)
+        {
+            if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+            {
+                float floatHeight = (float) 0.5;
+                Path path = entity.getNavigator().getPath();
+                if (path != null)
+                {
+                    Vector3 end = Vector3.getNewVector().set(path.getFinalPathPoint());
+                    double dhs = (here.x - end.x) * (here.x - end.x) + (here.z - end.z) * (here.z - end.z);
+                    double dvs = (here.y - end.y) * (here.y - end.y);
+                    double width = Math.max(0.5, pokemob.getSize() * entry.length / 4);
+                    if (dhs < width * width && dvs <= floatHeight * floatHeight)
+                    {
+                        entity.getNavigator().clearPathEntity();
+                    }
+                }
+            }
+        }
+    }
+
+    private void doFloatFly(Vector3 here)
+    {
+        boolean canFloat = entry.floats();
         if (canFloat && !pokemob.getPokemonAIState(IMoveConstants.INWATER))
         {
             float floatHeight = (float) entry.preferedHeight;
@@ -55,7 +102,6 @@ public class LogicFloatFlySwim extends LogicBase
             }
             here.set(pokemob);
         }
-
         if ((entry.floats() || entry.flys()) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             float floatHeight = (float) entry.preferedHeight;
@@ -79,15 +125,4 @@ public class LogicFloatFlySwim extends LogicBase
             entity.motionY += 0.05;
         }
     }
-
-    public boolean shouldRun()
-    {
-        return !entity.isBeingRidden();
-    }
-
-    @Override
-    public void doLogic()
-    {
-    }
-
 }

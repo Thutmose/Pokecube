@@ -449,7 +449,7 @@ public class Tools
 
     public static boolean isSameStack(ItemStack a, ItemStack b)
     {
-        if (a == null || b == null) return false;
+        if ((a == null || a.getItem() == null) || (b == null || b.getItem() == null)) return false;
         int[] aID = OreDictionary.getOreIDs(a);
         int[] bID = OreDictionary.getOreIDs(b);
         boolean check = a.getItem() == b.getItem();

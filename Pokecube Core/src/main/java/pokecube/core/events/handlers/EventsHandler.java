@@ -270,6 +270,7 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent

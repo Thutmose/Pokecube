@@ -40,7 +40,6 @@ public class Move_Explode extends Move_Ongoing
     public Move_Explode(String name)
     {
         super(name);
-        Move_Utility.moves.add(name);
     }
 
     @Override

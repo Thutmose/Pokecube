@@ -481,8 +481,7 @@ public class PokecubeCore extends PokecubeMod
 
         config.save();
         config.initDefaultStarts();
-        EventsHandler evts = new EventsHandler();
-        MinecraftForge.EVENT_BUS.register(evts);
+        new EventsHandler();
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
         {
             @Override

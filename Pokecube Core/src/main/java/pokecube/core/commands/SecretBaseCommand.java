@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
-import pokecube.core.moves.implementations.normal.MoveSecretPower;
+import pokecube.core.moves.implementations.actions.ActionSecretPower;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.api.entity.Transporter;
@@ -87,9 +87,9 @@ public class SecretBaseCommand extends CommandBase
             }
             else if (args[0].equals("confirm"))
             {
-                if (MoveSecretPower.pendingBaseLocations.containsKey(player.getCachedUniqueIdString()))
+                if (ActionSecretPower.pendingBaseLocations.containsKey(player.getCachedUniqueIdString()))
                 {
-                    Vector4 loc = MoveSecretPower.pendingBaseLocations.remove(player.getCachedUniqueIdString());
+                    Vector4 loc = ActionSecretPower.pendingBaseLocations.remove(player.getCachedUniqueIdString());
                     Vector3 pos = Vector3.getNewVector().set(loc.x, loc.y, loc.z);
                     if (loc.w == player.dimension && pos.distToEntity(player) < 16)
                     {

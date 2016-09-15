@@ -45,7 +45,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
@@ -516,12 +515,9 @@ public class GuiDisplayPokecubeInfo extends Gui
                             pokemob.getPokemonDisplayName(),
                             new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
                     pokemob.displayMessageToOwner(mess);
-                    if (move instanceof Move_Utility)
+                    if (targetLocation != null)
                     {
-                        if (targetLocation != null)
-                        {
-                            targetLocation.addTo(Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.5));
-                        }
+                        targetLocation.addTo(Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.5));
                     }
                 }
             }

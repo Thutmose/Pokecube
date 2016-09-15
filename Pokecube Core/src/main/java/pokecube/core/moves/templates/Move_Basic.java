@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFarmland;
-import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -19,11 +17,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -31,9 +27,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.moves.MoveEntry;
+import pokecube.core.events.MoveWorldAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
@@ -52,7 +49,7 @@ import thut.api.terrain.TerrainSegment;
 /** @author Manchou */
 public class Move_Basic extends Move_Base implements IMoveConstants
 {
-    protected static ItemStack createStackedBlock(IBlockState state)
+    public static ItemStack createStackedBlock(IBlockState state)
     {
         int i = 0;
         Item item = Item.getItemFromBlock(state.getBlock());
@@ -64,14 +61,14 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         return new ItemStack(item, 1, i);
     }
 
-    protected static boolean shouldSilk(IPokemob pokemob)
+    public static boolean shouldSilk(IPokemob pokemob)
     {
         if (pokemob.getAbility() == null) return false;
         Ability ability = pokemob.getAbility();
         return pokemob.getLevel() > 90 && ability.toString().equalsIgnoreCase("hypercutter");
     }
 
-    protected static void silkHarvest(IBlockState state, BlockPos pos, World worldIn, EntityPlayer player)
+    public static void silkHarvest(IBlockState state, BlockPos pos, World worldIn, EntityPlayer player)
     {
         java.util.ArrayList<ItemStack> items = new java.util.ArrayList<ItemStack>();
         ItemStack itemstack = createStackedBlock(state);
@@ -216,98 +213,22 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
-        if (!PokecubeMod.pokemobsDamageBlocks) return;
-        if (attacker.getPokemonOwner() instanceof EntityPlayer)
+        if (!PokecubeMod.pokemobsDamageBlocks)
         {
-            EntityPlayer player = (EntityPlayer) attacker.getPokemonOwner();
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
-                    location.getBlockState(player.getEntityWorld()), player);
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (evt.isCanceled()) return;
+            EntityLivingBase owner;
+            if ((owner = attacker.getPokemonOwner()) != null && !attacker.getPokemonAIState(IPokemob.ANGRY))
+            {
+                CommandTools.sendError(owner, "pokemob.action.denydamageblock");
+            }
+            return;
         }
-        World world = ((Entity) attacker).getEntityWorld();
-        IBlockState state = location.getBlockState(world);
-        Block block = state.getBlock();
-        if (getType(attacker) == PokeType.ice && (move.attackCategory & CATEGORY_DISTANCE) > 0 && move.power > 0)
+        MoveWorldAction.PreAction preEvent = new MoveWorldAction.PreAction(this, attacker, location);
+        if (!MinecraftForge.EVENT_BUS.post(preEvent))
         {
-            if (block.isAir(state, world, location.getPos()))
-            {
-                if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
-                {
-                    try
-                    {
-                        world.setBlockState(location.getPos(), Blocks.SNOW_LAYER.getDefaultState(), 2);
-                    }
-                    catch (Exception e)
-                    {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-            else if (block == Blocks.WATER && state.getValue(BlockLiquid.LEVEL) == 0)
-            {
-                location.setBlock(world, Blocks.ICE.getDefaultState());
-            }
-            else if (block.isReplaceable(world, location.getPos()))
-            {
-                if (location.offset(EnumFacing.DOWN).getBlockState(world).isNormalCube())
-                    location.setBlock(world, Blocks.SNOW_LAYER.getDefaultState());
-            }
-        }
-        int strong = 100;
-        if (getType(attacker) == PokeType.water)
-        {
-            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                    .addTo(location);
-            IBlockState nextState = nextBlock.getBlockState(world);
-            if (getPWR() >= strong)
-            {
-                if (block == Blocks.LAVA)
-                {
-                    location.setBlock(world, Blocks.OBSIDIAN);
-                }
-                else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.LAVA)
-                {
-                    nextBlock.setBlock(world, Blocks.OBSIDIAN);
-                }
-            }
-            if (nextState.getProperties().containsKey(BlockFarmland.MOISTURE))
-            {
-                nextBlock.setBlock(world, nextState.withProperty(BlockFarmland.MOISTURE, 7));
-            }
-            if (state.getProperties().containsKey(BlockFarmland.MOISTURE))
-            {
-                location.setBlock(world, state.withProperty(BlockFarmland.MOISTURE, 7));
-            }
-        }
-        if (getType(attacker) == PokeType.electric && getPWR() >= strong)
-        {
-            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                    .addTo(location);
-            IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.SAND)
-            {
-                location.setBlock(world, Blocks.GLASS);
-            }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.SAND)
-            {
-                nextBlock.setBlock(world, Blocks.GLASS);
-            }
-        }
-        if (getType(attacker) == PokeType.fire && getPWR() >= strong)
-        {
-            Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                    .addTo(location);
-            IBlockState nextState = nextBlock.getBlockState(world);
-            if (block == Blocks.OBSIDIAN)
-            {
-                location.setBlock(world, Blocks.LAVA);
-            }
-            else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.OBSIDIAN)
-            {
-                nextBlock.setBlock(world, Blocks.LAVA);
-            }
+            MoveWorldAction.OnAction onEvent = new MoveWorldAction.OnAction(this, attacker, location);
+            MinecraftForge.EVENT_BUS.post(onEvent);
+            MoveWorldAction.PostAction postEvent = new MoveWorldAction.PostAction(this, attacker, location);
+            MinecraftForge.EVENT_BUS.post(postEvent);
         }
     }
 
@@ -552,6 +473,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         if (toSurvive)
         {
             finalAttackStrength = Math.min(finalAttackStrength, beforeHealth - 1);
+            finalAttackStrength = Math.max(0, finalAttackStrength);
         }
 
         boolean wild = !attacker.getPokemonAIState(TAMED);

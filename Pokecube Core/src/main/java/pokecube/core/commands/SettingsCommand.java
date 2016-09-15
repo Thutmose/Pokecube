@@ -63,9 +63,13 @@ public class SettingsCommand extends CommandBase
         {
             String text = "";
             Object o = field.get(PokecubeMod.core.getConfig());
-            if (o instanceof String[] || o instanceof int[])
+            if (o instanceof String[])
             {
                 text += Arrays.toString((Object[]) o);
+            }
+            else if (o instanceof int[])
+            {
+                text += Arrays.toString((int[]) o);
             }
             else
             {
@@ -87,7 +91,15 @@ public class SettingsCommand extends CommandBase
                 }
                 try
                 {
-                    PokecubeMod.core.getConfig().updateField(field, args[1]);
+                    String val = args[1];
+                    if (args.length > 2)
+                    {
+                        for (int i = 2; i < args.length; i++)
+                        {
+                            val = val + " " + args[i];
+                        }
+                    }
+                    PokecubeMod.core.getConfig().updateField(field, val);
                 }
                 catch (Exception e)
                 {
@@ -98,16 +110,19 @@ public class SettingsCommand extends CommandBase
                 }
                 text = "";
                 o = field.get(PokecubeMod.core.getConfig());
-                if (o instanceof String[] || o instanceof int[])
+                if (o instanceof String[])
                 {
                     text += Arrays.toString((Object[]) o);
+                }
+                else if (o instanceof int[])
+                {
+                    text += Arrays.toString((int[]) o);
                 }
                 else
                 {
                     text += o;
                 }
-                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.set", "gold", args[0],
-                        text);
+                mess = CommandTools.makeTranslatedMessage("pokecube.command.settings.set", "gold", args[0], text);
                 sender.addChatMessage(mess);
                 return;
             }

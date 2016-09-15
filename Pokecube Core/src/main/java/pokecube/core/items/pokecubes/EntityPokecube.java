@@ -564,6 +564,23 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             EntityLiving entity = (EntityLiving) entity1;
             entity.fallDistance = 0;
             v.moveEntity(((Entity) entity1));
+
+            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, worldObj, entity1);
+            if (MinecraftForge.EVENT_BUS.post(evt))
+            {
+                if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
+                {
+                    EntityItem entityitem = ((EntityPlayer) shootingEntity).dropItem(getEntityItem(), false);
+                    if (entityitem != null)
+                    {
+                        entityitem.setNoPickupDelay();
+                        entityitem.setOwner(shootingEntity.getName());
+                    }
+                    this.setDead();
+                }
+                return null;
+            }
+
             worldObj.spawnEntityInWorld((Entity) entity1);
 
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
@@ -587,7 +604,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
-            SendOut evt = new SendOut(entity1.getPokedexEntry(), v, worldObj, entity1);
+            evt = new SendOut.Post(entity1.getPokedexEntry(), v, worldObj, entity1);
             MinecraftForge.EVENT_BUS.post(evt);
         }
         else

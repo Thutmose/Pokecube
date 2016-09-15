@@ -103,6 +103,9 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public int                 breedingDelay              = 4000;
     @Configure(category = mobAI)
+    /** Scaling factor for pokemob explosions */
+    public double              blastStrength              = 100;
+    @Configure(category = mobAI)
     public int                 eggHatchTime               = 10000;
     @Configure(category = mobAI)
     /** do wild pokemobs which leave cullDistance despawn immediately */

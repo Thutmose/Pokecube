@@ -57,8 +57,12 @@ public class PokedexInspector
                 {
                     tag.setBoolean(tagString, true);
                     entity.addChatMessage(new TextComponentTranslation(message));
-                    EntityItem item = entity.entityDropItem(reward, 0.5f);
-                    item.setPickupDelay(0);
+                    EntityItem entityitem = ((EntityPlayer) entity).dropItem(reward, false);
+                    if (entityitem != null)
+                    {
+                        entityitem.setNoPickupDelay();
+                        entityitem.setOwner(entity.getName());
+                    }
                     PlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
                 }
                 return true;

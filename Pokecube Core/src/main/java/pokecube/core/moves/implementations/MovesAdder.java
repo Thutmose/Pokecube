@@ -15,6 +15,8 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.abilities.AbilityManager.ClassFinder;
 import pokecube.core.database.moves.MoveEntry;
+import pokecube.core.events.handlers.MoveEventsHandler;
+import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -35,7 +37,6 @@ import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.moves.templates.Move_Terrain;
-import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -212,11 +213,9 @@ public class MovesAdder implements IMoveConstants
         // End of Moves Cflame13 added
 
         // HM like moves
+        // Register world actions for some moves.
+
         registerMove(new Move_Teleport(MOVE_TELEPORT));
-        registerMove(new Move_Utility(MOVE_CUT));
-        registerMove(new Move_Utility(MOVE_FLASH));
-        registerMove(new Move_Utility(MOVE_DIG));
-        registerMove(new Move_Utility(MOVE_ROCKSMASH));
 
         // Ongoing moves
         registerOngoingMoves();
@@ -264,6 +263,7 @@ public class MovesAdder implements IMoveConstants
     static void registerAutodetect()
     {
         List<Class<?>> foundClasses;
+        // Register moves.
         try
         {
             foundClasses = ClassFinder.find(MovesAdder.class.getPackage().getName());
@@ -277,6 +277,23 @@ public class MovesAdder implements IMoveConstants
                         PokecubeCore.log("Error, Double registration of " + move.name);
                     }
                     registerMove(move);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        // Register Move Actions.
+        try
+        {
+            foundClasses = ClassFinder.find(MovesAdder.class.getPackage().getName());
+            for (Class<?> candidateClass : foundClasses)
+            {
+                if (IMoveAction.class.isAssignableFrom(candidateClass) && candidateClass.getEnclosingClass() == null)
+                {
+                    IMoveAction move = (IMoveAction) candidateClass.getConstructor().newInstance();
+                    MoveEventsHandler.register(move);
                 }
             }
         }

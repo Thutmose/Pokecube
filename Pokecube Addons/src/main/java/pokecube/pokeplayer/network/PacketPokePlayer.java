@@ -14,11 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.templates.Move_Explode;
-import pokecube.core.moves.templates.Move_Utility;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.pokeplayer.PokeInfo;
@@ -209,7 +205,6 @@ public class PacketPokePlayer
 
                     if (currentMove == 5) { return; }
 
-                    Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
                     boolean teleport = dat.readBoolean();
 
                     if (teleport)
@@ -217,11 +212,7 @@ public class PacketPokePlayer
                         PacketDataSync.sendInitPacket(player, "pokecube-data");
                     }
 
-                    if (move instanceof Move_Explode && (id == 0))
-                    {
-                        pokemob.executeMove(null, v.set(pokemob), 0);
-                    }
-                    else if (Move_Utility.isUtilityMove(move.name) && (id == 0))
+                    if (id == 0)
                     {
                         pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
                     }

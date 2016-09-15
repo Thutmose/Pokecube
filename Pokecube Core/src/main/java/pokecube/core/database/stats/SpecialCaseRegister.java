@@ -7,7 +7,7 @@ import net.minecraft.util.text.TextComponentString;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.moves.teleport.Move_Teleport;
+import pokecube.core.moves.implementations.actions.ActionTeleport;
 import pokecube.core.utils.PokeType;
 
 public class SpecialCaseRegister 
@@ -61,7 +61,7 @@ public class SpecialCaseRegister
 	    		{
 	    			if(trainer instanceof EntityPlayer)
 	    				((EntityPlayer)trainer).addChatMessage(new TextComponentString("You do not have enough badges to control Mew!"));
-	    			Move_Teleport.teleportRandomly((EntityLivingBase) pokemon);
+	    			ActionTeleport.teleportRandomly((EntityLivingBase) pokemon);
 		    		return false;
 	    		}
 	    		

@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Pokedex;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
@@ -40,7 +41,6 @@ public class Move_Explode extends Move_Ongoing
     public Move_Explode(String name)
     {
         super(name);
-        Move_Utility.moves.add(name);
     }
 
     @Override
@@ -139,7 +139,8 @@ public class Move_Explode extends Move_Ongoing
         IPokemob pokemob = (IPokemob) mob;
 
         Entity attacked = mob.getAttackTarget();
-        float f1 = getPWR() * Tools.getStats(pokemob)[1] / 1000f;
+        float f1 = (float) (getPWR() * PokecubeCore.core.getConfig().blastStrength * Tools.getStats(pokemob)[1]
+                / 100000f);
 
         if (pokemob.isType(normal)) f1 *= 1.5f;
 

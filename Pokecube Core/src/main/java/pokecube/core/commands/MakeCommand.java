@@ -258,7 +258,7 @@ public class MakeCommand extends CommandBase
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
 
                             if (p != null) owner = p.getCachedUniqueIdString();
-                            else
+                            else if(owner!=null)
                             {
                                 GameProfile profile = new GameProfile(null, owner);
                                 profile = TileEntitySkull.updateGameprofile(profile);

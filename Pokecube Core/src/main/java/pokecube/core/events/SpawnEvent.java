@@ -72,18 +72,40 @@ public class SpawnEvent extends Event
         }
     }
 
-    /** Called when a pokemob is sent out from the cube.<br>
-     * Cancelling this event does nothing. */
+    /** Called when a pokemob is sent out from the cube. */
     public static class SendOut extends SpawnEvent
     {
         public final IPokemob     pokemob;
         public final EntityLiving entity;
 
-        public SendOut(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+        protected SendOut(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
         {
             super(entry, location, worldObj);
             this.pokemob = pokemob;
             entity = (EntityLiving) pokemob;
+        }
+
+        /** Called before sending out, cancelling this will result in the cube
+         * either sitting on the ground, or trying to return to sender's
+         * inventory. This is called right before spawning the pokemob into the
+         * world. */
+        @Cancelable
+        public static class Pre extends SendOut
+        {
+            public Pre(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+            {
+                super(entry, location, worldObj, pokemob);
+                // TODO Auto-generated constructor stub
+            }
+        }
+
+        public static class Post extends SendOut
+        {
+            public Post(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+            {
+                super(entry, location, worldObj, pokemob);
+                // TODO Auto-generated constructor stub
+            }
         }
     }
 

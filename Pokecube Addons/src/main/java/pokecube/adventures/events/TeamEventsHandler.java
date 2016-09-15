@@ -10,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemFood;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
@@ -141,11 +142,15 @@ public class TeamEventsHandler
                 String owner = TeamManager.getInstance().getLandOwner(c);
                 if (evt.getExplosion().getExplosivePlacedBy() instanceof EntityPlayer)
                 {
-                    String team = evt.getWorld().getScoreboard()
-                            .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName()).getRegisteredName();
-                    if (owner.equals(team))
+                    ScorePlayerTeam playerTeam = evt.getWorld().getScoreboard()
+                            .getPlayersTeam(evt.getExplosion().getExplosivePlacedBy().getName());
+                    if (playerTeam != null)
                     {
-                        owner = null;
+                        String team = playerTeam.getRegisteredName();
+                        if (owner.equals(team))
+                        {
+                            owner = null;
+                        }
                     }
                 }
                 if (owner == null) continue;

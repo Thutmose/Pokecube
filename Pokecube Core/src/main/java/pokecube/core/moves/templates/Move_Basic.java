@@ -473,6 +473,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         if (toSurvive)
         {
             finalAttackStrength = Math.min(finalAttackStrength, beforeHealth - 1);
+            finalAttackStrength = Math.max(0, finalAttackStrength);
         }
 
         boolean wild = !attacker.getPokemonAIState(TAMED);

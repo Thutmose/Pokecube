@@ -27,7 +27,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.utils.Tools;
@@ -169,10 +168,8 @@ public class PokecubeItems extends Items
         if (item instanceof ItemStack)
         {
             itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), (ItemStack) item);
-
             Item i = ((ItemStack) item).getItem();
             items.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), i);
-
             Block b = Block.getBlockFromItem(i);
             if (b != null) blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), b);
         }
@@ -182,14 +179,6 @@ public class PokecubeItems extends Items
             itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), new ItemStack((Item) item));
             if (Block.getBlockFromItem((Item) item) != null)
                 blocks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), Block.getBlockFromItem((Item) item));
-            if (name.toLowerCase(java.util.Locale.ENGLISH).contains("berry") || item instanceof IPokemobUseable)
-            {
-                addToHoldables(name);
-            }
-            if (name.toLowerCase(java.util.Locale.ENGLISH).contains("stone"))
-            {
-                addToEvos(name);
-            }
         }
         if (item instanceof Block)
         {
@@ -240,7 +229,8 @@ public class PokecubeItems extends Items
 
     public static boolean contains(String name)
     {
-        return getBlock(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null || getItem(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null
+        return getBlock(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null
+                || getItem(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null
                 || getStack(name.toLowerCase(java.util.Locale.ENGLISH).trim()) != null;
     }
 

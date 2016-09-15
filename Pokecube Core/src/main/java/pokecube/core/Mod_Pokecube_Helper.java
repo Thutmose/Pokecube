@@ -27,7 +27,7 @@ import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.TreeRemover;
-import thut.api.maths.ExplosionCustom;
+import thut.api.boom.ExplosionCustom;
 
 /** @author Manchou */
 public class Mod_Pokecube_Helper

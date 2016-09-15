@@ -1,5 +1,9 @@
 package com.mcf.davidee.nbteditpqb;
 
+import org.apache.logging.log4j.Level;
+
+import com.mcf.davidee.nbteditpqb.packets.MouseOverPacket;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -8,9 +12,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.Level;
-
-import com.mcf.davidee.nbteditpqb.packets.MouseOverPacket;
 
 public class CommandNBTEdit extends CommandBase {
 

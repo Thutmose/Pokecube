@@ -1,5 +1,10 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
+import org.apache.logging.log4j.Level;
+
+import com.mcf.davidee.nbteditpqb.NBTEdit;
+import com.mcf.davidee.nbteditpqb.NBTHelper;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -11,10 +16,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.logging.log4j.Level;
-
-import com.mcf.davidee.nbteditpqb.NBTEdit;
-import com.mcf.davidee.nbteditpqb.NBTHelper;
 
 public class TileNBTPacket implements IMessage {
 	/** The block of the tileEntity. */

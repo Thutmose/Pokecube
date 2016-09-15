@@ -74,8 +74,8 @@ import pokecube.core.items.ItemPokemobUseableFood;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
-import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.megastuff.ItemMegastone;
+import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
@@ -527,11 +527,13 @@ public class ItemHandler extends Mod_Pokecube_Helper
             stack.getTagCompound().setString("type", s);
             PokecubeItems.addSpecificItemStack(s, stack);
             PokecubeItems.addToEvos(s);
+            PokecubeItems.addToHoldables(s);
         }
 
         berryJuice = (new ItemPokemobUseableFood(6, 0.6f, false)).setUnlocalizedName("berryjuice");
         berryJuice.setCreativeTab(creativeTabPokecube);
         register(berryJuice, "berryjuice");
+        PokecubeItems.addToHoldables("berryjuice");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(berryJuice, 0, new ModelResourceLocation("pokecube:berryjuice", "inventory"));
     }
@@ -548,6 +550,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("vitamin", s);
             PokecubeItems.addSpecificItemStack(s, stack);
+            PokecubeItems.addToHoldables(s);
         }
     }
 }

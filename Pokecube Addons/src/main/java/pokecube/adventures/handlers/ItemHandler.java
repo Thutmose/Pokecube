@@ -41,7 +41,6 @@ import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.items.ItemTM;
-import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 
 public class ItemHandler
@@ -58,17 +57,7 @@ public class ItemHandler
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("type", s);
             PokecubeItems.addSpecificItemStack(s, stack);
-        }
-    }
-
-    public static void initBadges()
-    {
-        for (PokeType type : PokeType.values())
-        {
-            if (type != PokeType.unknown)
-            {
-                PokecubeItems.addToHoldables("badge" + type);
-            }
+            PokecubeItems.addToHoldables(s);
         }
     }
 

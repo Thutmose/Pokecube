@@ -44,7 +44,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokecubeSerializer;
-import thut.api.maths.ExplosionCustom;
+import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
 
 public class Commands extends CommandBase

@@ -210,16 +210,12 @@ public class PokecubeCore extends PokecubeMod
     }
 
     public SpawnHandler        spawner;
-
     public String              newVersion;
-
     public String              newAlphaVersion;
-
     public Mod_Pokecube_Helper helper;
-
     private Config             config;
-
     IEntityProvider            provider;
+    EventsHandler              events;
 
     public PokecubeCore()
     {
@@ -481,7 +477,7 @@ public class PokecubeCore extends PokecubeMod
 
         config.save();
         config.initDefaultStarts();
-        new EventsHandler();
+        events = new EventsHandler();
         ForgeChunkManager.setForcedChunkLoadingCallback(this, new LoadingCallback()
         {
             @Override
@@ -720,6 +716,7 @@ public class PokecubeCore extends PokecubeMod
     public void serverStop(FMLServerStoppingEvent event)
     {
         PokemobAIThread.clear();
+        events.meteorprocessor.clear();
         BerryGenManager.berryLocations.clear();
         PokecubeDimensionManager.getInstance().onServerStop(event);
     }

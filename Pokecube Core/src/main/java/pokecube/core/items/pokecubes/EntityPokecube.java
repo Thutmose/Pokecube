@@ -45,8 +45,8 @@ import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
-import pokecube.core.network.packets.PacketSound;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.packets.PacketSound;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 

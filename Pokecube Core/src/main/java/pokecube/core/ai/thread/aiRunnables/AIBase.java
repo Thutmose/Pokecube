@@ -22,7 +22,6 @@ import pokecube.core.ai.thread.IAIRunnable;
 import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokecubeSerializer;
-import thut.api.maths.ExplosionCustom;
 import thut.api.maths.Vector3;
 
 public abstract class AIBase implements IAIRunnable
@@ -310,7 +309,7 @@ public abstract class AIBase implements IAIRunnable
 
     List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
     {
-        Vector<?> entities = ExplosionCustom.worldEntities.get(source.dimension);
+        Vector<?> entities = PokemobAIThread.worldEntities.get(source.dimension);
         List<Object> list = new ArrayList<Object>();
         double dsq = distance * distance;
         if (entities != null)
@@ -337,7 +336,7 @@ public abstract class AIBase implements IAIRunnable
 
     List<Object> getEntitiesWithinDistance(Vector3 source, int dimension, float distance, Class<?>... targetClass)
     {
-        Vector<?> entities = ExplosionCustom.worldEntities.get(dimension);
+        Vector<?> entities = PokemobAIThread.worldEntities.get(dimension);
         List<Object> list = new ArrayList<Object>();
         if (entities != null)
         {

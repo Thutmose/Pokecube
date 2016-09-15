@@ -1,5 +1,9 @@
 package com.mcf.davidee.nbteditpqb.packets;
 
+import org.apache.logging.log4j.Level;
+
+import com.mcf.davidee.nbteditpqb.NBTEdit;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,9 +14,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.logging.log4j.Level;
-
-import com.mcf.davidee.nbteditpqb.NBTEdit;
 
 /**
  * Created by Jay113355 on 6/28/2016.

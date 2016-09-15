@@ -1,15 +1,15 @@
 package com.mcf.davidee.nbteditpqb.forge;
 
+import java.io.File;
+
+import com.mcf.davidee.nbteditpqb.NBTEdit;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-
-import java.io.File;
-
-import com.mcf.davidee.nbteditpqb.NBTEdit;
 
 public class CommonProxy {
 	public void registerInformation() {

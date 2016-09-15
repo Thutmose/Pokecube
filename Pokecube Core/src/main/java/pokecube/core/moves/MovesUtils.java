@@ -30,7 +30,7 @@ import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
-import thut.api.maths.ExplosionCustom;
+import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
 

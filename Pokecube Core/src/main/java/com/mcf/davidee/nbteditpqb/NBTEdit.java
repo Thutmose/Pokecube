@@ -1,5 +1,19 @@
 package com.mcf.davidee.nbteditpqb;
 
+import java.io.File;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.appender.FileAppender;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+
+import com.mcf.davidee.nbteditpqb.forge.CommonProxy;
+import com.mcf.davidee.nbteditpqb.nbt.NBTNodeSorter;
+import com.mcf.davidee.nbteditpqb.nbt.NBTTree;
+import com.mcf.davidee.nbteditpqb.nbt.NamedNBT;
+import com.mcf.davidee.nbteditpqb.nbt.SaveStates;
+import com.mcf.davidee.nbteditpqb.packets.PacketHandler;
+
 import net.minecraft.command.ServerCommandManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -13,19 +27,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.appender.FileAppender;
-import org.apache.logging.log4j.core.layout.PatternLayout;
-
-import com.mcf.davidee.nbteditpqb.forge.CommonProxy;
-import com.mcf.davidee.nbteditpqb.nbt.NBTNodeSorter;
-import com.mcf.davidee.nbteditpqb.nbt.NBTTree;
-import com.mcf.davidee.nbteditpqb.nbt.NamedNBT;
-import com.mcf.davidee.nbteditpqb.nbt.SaveStates;
-import com.mcf.davidee.nbteditpqb.packets.PacketHandler;
-
-import java.io.File;
 
 @Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, acceptedMinecraftVersions = "*", version = NBTEdit.VERSION, acceptableRemoteVersions = "*")
 public class NBTEdit {

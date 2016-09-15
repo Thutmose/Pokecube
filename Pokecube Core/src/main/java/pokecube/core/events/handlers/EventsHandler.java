@@ -1,12 +1,15 @@
 package pokecube.core.events.handlers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -84,14 +87,54 @@ import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.boom.ExplosionCustom;
 import thut.api.entity.IMobColourable;
-import thut.api.maths.ExplosionCustom;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 
 public class EventsHandler
 {
+    public static class MeteorAreaSetter
+    {
+        Map<Integer, List<BlockPos>> toProcess = Maps.newHashMap();
+
+        public MeteorAreaSetter()
+        {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
+
+        @SubscribeEvent
+        public void TickEvent(WorldTickEvent evt)
+        {
+            if (evt.phase == Phase.END && evt.side != Side.CLIENT)
+            {
+                List<BlockPos> thisTick = toProcess.get(evt.world.provider.getDimension());
+                if (thisTick == null || thisTick.isEmpty()) return;
+                int i = 0;
+                for (i = 0; i < Math.min(1000, thisTick.size()); i++)
+                {
+                    BlockPos pos = thisTick.get(i);
+                    TerrainManager.getInstance().getTerrain(evt.world, pos).setBiome(pos, BiomeType.METEOR.getType());
+                }
+                for (i = 0; i < Math.min(1000, thisTick.size()); i++)
+                    thisTick.remove(i);
+            }
+        }
+
+        public void addBlocks(Collection<BlockPos> toAdd, int dimension)
+        {
+            List<BlockPos> blocks = toProcess.get(dimension);
+            if (blocks == null) toProcess.put(dimension, blocks = Lists.newArrayList());
+            blocks.addAll(toAdd);
+        }
+
+        public void clear()
+        {
+            toProcess.clear();
+        }
+    }
+
     public static class ChooseFirst
     {
         final EntityPlayer player;
@@ -263,6 +306,8 @@ public class EventsHandler
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 
+    public MeteorAreaSetter meteorprocessor;
+
     public EventsHandler()
     {
         CapabilityManager.INSTANCE.register(IGuardAICapability.class, storage = new IGuardAICapability.Storage(),
@@ -271,6 +316,7 @@ public class EventsHandler
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
         MinecraftForge.EVENT_BUS.register(this);
+        meteorprocessor = new MeteorAreaSetter();
     }
 
     @SubscribeEvent
@@ -343,13 +389,7 @@ public class EventsHandler
         {
             ExplosionCustom boom = (ExplosionCustom) evt.getExplosion();
             if (!boom.meteor) return;
-
-            List<BlockPos> blocks = Lists.newArrayList(boom.affectedBlockPositions);
-
-            for (BlockPos p : blocks)
-            {
-                TerrainManager.getInstance().getTerrain(evt.getWorld(), p).setBiome(p, BiomeType.METEOR.getType());
-            }
+            meteorprocessor.addBlocks(evt.getAffectedBlocks(), evt.getWorld().provider.getDimension());
         }
     }
 

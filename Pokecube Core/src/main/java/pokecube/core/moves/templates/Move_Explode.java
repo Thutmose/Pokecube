@@ -29,7 +29,7 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
-import thut.api.maths.ExplosionCustom;
+import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */

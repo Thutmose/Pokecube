@@ -150,7 +150,6 @@ public class PokecubeAdv
     public void postPostInit(PostPostInit e)
     {
         conf.postInit();
-        ItemHandler.initBadges();
         RecipeHandler.register();
         DBLoader.load();
         LegendaryConditions.registerSpecialConditions();

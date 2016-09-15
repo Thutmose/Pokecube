@@ -1,13 +1,14 @@
 package com.mcf.davidee.nbteditpqb.nbt;
 
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import java.io.File;
+import java.io.IOException;
+
 import org.apache.logging.log4j.Level;
 
 import com.mcf.davidee.nbteditpqb.NBTEdit;
 
-import java.io.File;
-import java.io.IOException;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 
 // This save format can definitely be improved. Also, this can be extended to provide infinite save slots - just
 // need to add some scrollbar (use GuiLib!).

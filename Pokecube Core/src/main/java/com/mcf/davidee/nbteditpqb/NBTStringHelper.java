@@ -1,5 +1,8 @@
 package com.mcf.davidee.nbteditpqb;
 
+import com.google.common.base.Strings;
+import com.mcf.davidee.nbteditpqb.nbt.NamedNBT;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -13,9 +16,6 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
-
-import com.google.common.base.Strings;
-import com.mcf.davidee.nbteditpqb.nbt.NamedNBT;
 
 public class NBTStringHelper {
 

@@ -24,6 +24,14 @@ public class RecallCommand extends CommandBase
     }
 
     @Override
+    /** Check if the given ICommandSender has permission to execute this
+     * command */
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
+    {
+        return true;
+    }
+
+    @Override
     public String getCommandName()
     {
         return "pokerecall";

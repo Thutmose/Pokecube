@@ -3,6 +3,7 @@ package pokecube.adventures.events;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.PCEvent;
@@ -43,27 +44,37 @@ public class PAEventsHandler
         if (owner instanceof EntityTrainer)
         {
             EntityTrainer t = (EntityTrainer) owner;
-            t.outID = null;
-            t.outMob = null;
+            if (recalled == t.outMob)
+            {
+                t.outID = null;
+                t.outMob = null;
+            }
             t.addPokemob(PokecubeManager.pokemobToItem(recalled));
         }
     }
 
     @SubscribeEvent
-    public void TrainerSendOutEvent(SendOut evt)
+    public void TrainerSendOutEvent(SendOut.Post evt)
     {
         IPokemob sent = evt.pokemob;
         EntityLivingBase owner = sent.getPokemonOwner();
         if (owner instanceof EntityTrainer)
         {
             EntityTrainer t = (EntityTrainer) owner;
-            t.setAIState(EntityTrainer.THROWING, false);
-            if (t.outMob != null)
+            if (t.outMob != null && t.outMob != evt.pokemob)
             {
                 t.outMob.returnToPokecube();
+                t.outID = evt.entity.getUniqueID();
+                t.outMob = evt.pokemob;
+                t.setAIState(EntityHasAIStates.THROWING, false);
+                Thread.dumpStack();
             }
-            t.outID = evt.entity.getUniqueID();
-            t.outMob = evt.pokemob;
+            else if (t.outMob == null && t.outID == null)
+            {
+                t.outID = evt.entity.getUniqueID();
+                t.outMob = evt.pokemob;
+                t.setAIState(EntityHasAIStates.THROWING, false);
+            }
         }
     }
 }

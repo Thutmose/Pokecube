@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -307,9 +308,14 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         return pokecubes[nextSlot];
     }
 
-    protected void resetPokemob()
+    public void resetPokemob()
     {
         nextSlot = 0;
+        PCEventsHandler.recallAllPokemobs(this);
+        this.setAIState(THROWING, false);
+        this.setAIState(INBATTLE, false);
+        outID = null;
+        outMob = null;
     }
 
     public ItemStack getPokemob(int slot)

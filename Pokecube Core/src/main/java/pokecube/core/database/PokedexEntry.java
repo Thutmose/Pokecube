@@ -18,6 +18,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +31,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntryLoader.Action;
 import pokecube.core.database.PokedexEntryLoader.Drop;
@@ -1471,6 +1474,12 @@ public class PokedexEntry
         if (this.isFemaleForme || this.isMaleForme) name = this.getBaseName();
         String translated = "pkmn." + name + ".name";
         return translated;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public String getTranslatedName()
+    {
+        return I18n.format(getUnlocalizedName());
     }
 
     public boolean hasForm(String form)

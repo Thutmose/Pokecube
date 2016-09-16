@@ -14,7 +14,6 @@ import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
-import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -72,10 +71,8 @@ public class EntityAITrainer extends EntityAIBase
     void doAggression()
     {
         boolean angry = trainer.getTarget() != null;
-
         if (angry)
         {
-            angry = trainer.getTarget() != null;
             if (!Vector3.isVisibleEntityFromEntity(trainer, trainer.getTarget()))
             {
                 angry = false;
@@ -83,6 +80,10 @@ public class EntityAITrainer extends EntityAIBase
                 trainer.setTarget(null);
                 return;
             }
+        }
+        else
+        {
+            return;
         }
         if (trainer instanceof EntityLeader)
         {
@@ -114,7 +115,7 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public void resetTask()
     {
-        PCEventsHandler.recallAllPokemobs(trainer);
+        trainer.resetPokemob();
     }
 
     private void setMostDamagingMove()
@@ -148,10 +149,10 @@ public class EntityAITrainer extends EntityAIBase
         if (trainer.getTarget() != null && trainer.getTarget().isDead)
         {
             trainer.setTarget(null);
+            resetTask();
             return false;
         }
         if (trainer.getTarget() != null || trainer.cooldown > trainer.getEntityWorld().getTotalWorldTime()) return true;
-
         Vector3 here = loc.set(trainer);
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
@@ -165,8 +166,14 @@ public class EntityAITrainer extends EntityAIBase
                 break;
             }
         }
-
-        if (target == null) return false;
+        if (target == null)
+        {
+            if (trainer.outID != null || trainer.outMob != null)
+            {
+                resetTask();
+            }
+            return false;
+        }
 
         boolean onCooldown = trainer.attackCooldown > 0;
         if (onCooldown) return false;
@@ -220,7 +227,7 @@ public class EntityAITrainer extends EntityAIBase
         {
             trainer.setTarget(null);
         }
-        else if (trainer.outMob != null)
+        else if (trainer.outMob != null || trainer.outID != null)
         {
             if (checkPokemobTarget())
             {

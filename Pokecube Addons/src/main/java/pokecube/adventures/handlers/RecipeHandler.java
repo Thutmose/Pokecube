@@ -108,15 +108,20 @@ public class RecipeHandler
                 'O', Blocks.GLASS_PANE, 'R', Items.REDSTONE });
 
         // Fossil Reanimator
-        GameRegistry.addRecipe(getStack("reanimator"), new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"),
-                'S', Blocks.GOLD_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 0), 'I', Items.IRON_INGOT });
+        GameRegistry.addRecipe(getStack("reanimator"),
+                new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"), 'S', Blocks.GOLD_BLOCK, 'M',
+                        new ItemStack(Items.GOLDEN_APPLE, 1, 0), 'I', Items.IRON_INGOT });
         // Splicing Device
-        GameRegistry.addRecipe(getStack("cloner"), new Object[] { "III", "SRS", "SMS", 'R', getStack("reanimator"),
-                'S', Blocks.DIAMOND_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 1), 'I', Items.NETHER_STAR });
+        GameRegistry.addRecipe(getStack("cloner"), new Object[] { "III", "SRS", "SMS", 'R', getStack("reanimator"), 'S',
+                Blocks.DIAMOND_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 1), 'I', Items.NETHER_STAR });
 
         // AFA
         GameRegistry.addRecipe(getStack("afa"), new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"), 'S',
                 Blocks.IRON_BLOCK, 'M', Items.REDSTONE, 'I', Items.IRON_INGOT });
+
+        // Energy Siphon
+        GameRegistry.addRecipe(getStack("pokesiphon"),
+                new Object[] { "BBB", "BRB", "BBB", 'R', getStack("afa"), 'B', Blocks.REDSTONE_BLOCK });
 
         // Target
         GameRegistry.addRecipe(getStack("pokemobTarget"),
@@ -132,8 +137,8 @@ public class RecipeHandler
         // Warp Linker
         GameRegistry.addRecipe(getStack("warplinker"),
                 new Object[] { " R ", "ROR", " E ", 'R', Items.EMERALD, 'O', Blocks.STONE, 'E', Items.ENDER_EYE });
-        
-        //Bag
+
+        // Bag
         GameRegistry.addRecipe(getStack("pokecubebag"),
                 new Object[] { "CCC", "COC", "CCC", 'C', Blocks.WOOL, 'O', getStack("pctop").getItem() });
 

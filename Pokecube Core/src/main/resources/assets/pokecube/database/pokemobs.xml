@@ -17511,7 +17511,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <BIOMESANYACCEPTABLE>forest 0.05</BIOMESANYACCEPTABLE>
+            <Spawn rate="0.1" types="forest"/>
             <BASESTATS atk="60" def="86" hp="103" spatk="60" spd="50" spdef="86"/>
             <EVYIELD hp="2"/>
             <SIZES height="1.1" length="0.7" width="0.7"/>

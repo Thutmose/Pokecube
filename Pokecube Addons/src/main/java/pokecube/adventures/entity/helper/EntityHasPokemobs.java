@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
@@ -21,6 +22,7 @@ import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
 
@@ -118,6 +120,27 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         return ret;
     }
 
+    public int countThrownCubes()
+    {
+        final Entity owner = this;
+        Predicate<EntityPokecube> matcher = new Predicate<EntityPokecube>()
+        {
+            @Override
+            public boolean apply(EntityPokecube input)
+            {
+                boolean isOwner = false;
+                if (PokecubeManager.isFilled(input.getEntityItem()))
+                {
+                    String name = PokecubeManager.getOwner(input.getEntityItem());
+                    isOwner = name.equals(owner.getCachedUniqueIdString());
+                }
+                return isOwner;
+            }
+        };
+        List<EntityPokecube> cubes = worldObj.getEntities(EntityPokecube.class, matcher);
+        return cubes.size();
+    }
+
     public EntityLivingBase getTarget()
     {
         return target;
@@ -145,6 +168,10 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (this.ticksExisted % 20 == 0 && this.getHealth() < this.getMaxHealth() && this.getHealth() > 0)
         {
             this.setHealth(Math.min(this.getHealth() + 1, this.getMaxHealth()));
+        }
+        if (this.getAIState(THROWING) && countThrownCubes() == 0)
+        {
+            this.resetPokemob();
         }
         despawncounter = 0;
     }

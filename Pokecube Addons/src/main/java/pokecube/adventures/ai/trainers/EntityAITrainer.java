@@ -2,6 +2,8 @@ package pokecube.adventures.ai.trainers;
 
 import java.util.List;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -146,7 +148,20 @@ public class EntityAITrainer extends EntityAIBase
     {
         trainer.lowerCooldowns();
         if (!trainer.isEntityAlive()) return false;
-        if (trainer.getTarget() != null && trainer.getTarget().isDead)
+
+        Predicate<EntityLivingBase> matcher = new Predicate<EntityLivingBase>()
+        {
+            @Override
+            public boolean apply(EntityLivingBase input)
+            {
+                if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
+                        || ((EntityPlayer) input).isSpectator(); }
+
+                return false;
+            }
+        };
+
+        if (trainer.getTarget() != null && (trainer.getTarget().isDead || matcher.apply(trainer.getTarget())))
         {
             trainer.setTarget(null);
             resetTask();

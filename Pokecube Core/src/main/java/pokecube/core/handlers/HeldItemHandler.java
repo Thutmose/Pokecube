@@ -1,6 +1,10 @@
 package pokecube.core.handlers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
 import pokecube.core.interfaces.IPokemob;
@@ -18,44 +22,6 @@ public class HeldItemHandler
         megaVariants.add("shiny_charm");
         megaVariants.add("omegaorb");
         megaVariants.add("alphaorb");
-        megaVariants.add("aerodactylmega");
-        megaVariants.add("absolmega");
-        megaVariants.add("aggronmega");
-        megaVariants.add("alakazammega");
-        megaVariants.add("ampharosmega");
-        megaVariants.add("banettemega");
-        megaVariants.add("beedrillmega");
-        megaVariants.add("blastoisemega");
-        megaVariants.add("blazikenmega");
-        megaVariants.add("cameruptmega");
-        megaVariants.add("charizardmega-y");
-        megaVariants.add("charizardmega-x");
-        megaVariants.add("gallademega");
-        megaVariants.add("garchompmega");
-        megaVariants.add("gardevoirmega");
-        megaVariants.add("gengarmega");
-        megaVariants.add("glaliemega");
-        megaVariants.add("gyaradosmega");
-        megaVariants.add("heracrossmega");
-        megaVariants.add("houndoommega");
-        megaVariants.add("kangaskhanmega");
-        megaVariants.add("lucariomega");
-        megaVariants.add("manectricmega");
-        megaVariants.add("mawilemega");
-        megaVariants.add("mewtwomega-y");
-        megaVariants.add("mewtwomega-x");
-        megaVariants.add("pidgeotmega");
-        megaVariants.add("pinsirmega");
-        megaVariants.add("sableyemega");
-        megaVariants.add("salamencemega");
-        megaVariants.add("sceptilemega");
-        megaVariants.add("scizormega");
-        megaVariants.add("sharpedomega");
-        megaVariants.add("slowbromega");
-        megaVariants.add("steelixmega");
-        megaVariants.add("swampertmega");
-        megaVariants.add("tyranitarmega");
-        megaVariants.add("venusaurmega");
         // TODO rest of the mega stoneS here.
 
         fossilVariants.add("omanyte");
@@ -67,6 +33,15 @@ public class HeldItemHandler
         fossilVariants.add("shieldon");
         fossilVariants.add("tyrunt");
         fossilVariants.add("amaura");
+    }
+
+    public static void sortMegaVariants()
+    {
+        List<String> start = Lists.newArrayList();
+        for (int i = 0; i < 4; i++)
+            start.add(megaVariants.remove(0));
+        Collections.sort(megaVariants);
+        megaVariants.addAll(0, start);
     }
 
     private static double getMoveMultiplier(ItemStack held, PokeType move)

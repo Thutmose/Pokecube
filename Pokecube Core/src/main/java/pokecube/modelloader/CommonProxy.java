@@ -97,7 +97,7 @@ public class CommonProxy implements IGuiHandler
 
     private void checkInFolder(File resourceDir, boolean[] ret, ResourceLocation[] files)
     {
-        if (!resourceDir.exists()) return;
+        if (!resourceDir.exists() || files.length == 0) return;
         int n = 0;
         if (resourceDir.isDirectory()) for (File folder : resourceDir.listFiles())
         {

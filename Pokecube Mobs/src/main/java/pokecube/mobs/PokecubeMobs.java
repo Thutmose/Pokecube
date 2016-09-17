@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.handlers.HeldItemHandler;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
 import thut.core.client.ClientProxy;
@@ -59,6 +60,59 @@ public class PokecubeMobs implements IMobProvider
     public static final String UPDATEURL  = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/mobs.json";
 
     public final static String MCVERSIONS = "[1.9.4]";
+
+    public PokecubeMobs()
+    {
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_1/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_2/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_3/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_4/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_5/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_6/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/Gen_7/models/");
+
+        HeldItemHandler.megaVariants.add("absolmega");
+        HeldItemHandler.megaVariants.add("aerodactylmega");
+        HeldItemHandler.megaVariants.add("aggronmega");
+        HeldItemHandler.megaVariants.add("alakazammega");
+        HeldItemHandler.megaVariants.add("ampharosmega");
+        HeldItemHandler.megaVariants.add("banettemega");
+        HeldItemHandler.megaVariants.add("beedrillmega");
+        HeldItemHandler.megaVariants.add("blastoisemega");
+        HeldItemHandler.megaVariants.add("blazikenmega");
+        HeldItemHandler.megaVariants.add("cameruptmega");
+        HeldItemHandler.megaVariants.add("charizardmega-y");
+        HeldItemHandler.megaVariants.add("charizardmega-x");
+        HeldItemHandler.megaVariants.add("gallademega");
+        HeldItemHandler.megaVariants.add("garchompmega");
+        HeldItemHandler.megaVariants.add("gardevoirmega");
+        HeldItemHandler.megaVariants.add("gengarmega");
+        HeldItemHandler.megaVariants.add("glaliemega");
+        HeldItemHandler.megaVariants.add("gyaradosmega");
+        HeldItemHandler.megaVariants.add("heracrossmega");
+        HeldItemHandler.megaVariants.add("houndoommega");
+        HeldItemHandler.megaVariants.add("kangaskhanmega");
+        HeldItemHandler.megaVariants.add("latiasmega");
+        HeldItemHandler.megaVariants.add("latiosmega");
+        HeldItemHandler.megaVariants.add("lucariomega");
+        HeldItemHandler.megaVariants.add("manectricmega");
+        HeldItemHandler.megaVariants.add("mawilemega");
+        HeldItemHandler.megaVariants.add("mewtwomega-y");
+        HeldItemHandler.megaVariants.add("mewtwomega-x");
+        HeldItemHandler.megaVariants.add("pidgeotmega");
+        HeldItemHandler.megaVariants.add("pinsirmega");
+        HeldItemHandler.megaVariants.add("sableyemega");
+        HeldItemHandler.megaVariants.add("salamencemega");
+        HeldItemHandler.megaVariants.add("sceptilemega");
+        HeldItemHandler.megaVariants.add("scizormega");
+        HeldItemHandler.megaVariants.add("sharpedomega");
+        HeldItemHandler.megaVariants.add("slowbromega");
+        HeldItemHandler.megaVariants.add("steelixmega");
+        HeldItemHandler.megaVariants.add("swampertmega");
+        HeldItemHandler.megaVariants.add("tyranitarmega");
+        HeldItemHandler.megaVariants.add("venusaurmega");
+        HeldItemHandler.sortMegaVariants();
+    }
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)

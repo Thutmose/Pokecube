@@ -12549,7 +12549,7 @@
                 lvl_61="HEALINGWISH" lvl_7="CHARM"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Latias Mega" number="380" hasShiny="false">
+    <Pokemon name="Latias Mega" number="380">
         <STATS>
             <BASESTATS atk="100" def="120" hp="80" spatk="140" spd="150" spdef="110"/>
             <SIZES height="1.4" length="1.8" width="1.8"/>
@@ -12590,7 +12590,7 @@
                 lvl_51="PSYCHIC" lvl_56="DRAGONPULSE" lvl_61="MEMENTO" lvl_7="DRAGONDANCE"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Latios Mega" number="381" hasShiny="false">
+    <Pokemon name="Latios Mega" number="381">
         <STATS>
             <BASESTATS atk="130" def="100" hp="80" spatk="160" spd="120" spdef="110"/>
             <SIZES height="1.5" length="2.3" width="2.3"/>

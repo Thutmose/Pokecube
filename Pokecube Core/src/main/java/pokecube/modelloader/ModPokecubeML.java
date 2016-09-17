@@ -4,11 +4,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -51,6 +53,8 @@ public class ModPokecubeML implements IMobProvider
 
     public static ArrayList<String>   addedPokemon            = Lists.newArrayList();
     public static Map<String, String> textureProviders        = Maps.newHashMap();
+
+    public static Set<String>         scanPaths               = Sets.newHashSet("assets/pokecube_ml/models/pokemobs/");
 
     public static boolean             info                    = false;
     public static boolean             preload                 = true;
@@ -171,9 +175,6 @@ public class ModPokecubeML implements IMobProvider
         ArrayList<String> toAdd = Lists.newArrayList();
 
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
-
-        String modelDir = "assets/pokecube_ml/models/pokemobs/";
-
         ArrayList<File> files = Lists.newArrayList(resourceDir.listFiles());
         for (File pack : files)
         {
@@ -188,27 +189,29 @@ public class ModPokecubeML implements IMobProvider
                     {
                         ZipEntry entry = entries.nextElement();
                         String s = entry.getName();
-                        if (s.contains(modelDir))
+                        for (String modelDir : scanPaths)
                         {
-                            String name = s.replace(modelDir, "").split("\\.")[0];
-                            if (name.trim().isEmpty()) continue;
-                            boolean has = false;
-                            for (String s1 : toAdd)
+                            if (s.contains(modelDir))
                             {
-                                if (s1.equals(name))
+                                String name = s.replace(modelDir, "").split("\\.")[0];
+                                if (name.trim().isEmpty()) continue;
+                                boolean has = false;
+                                for (String s1 : toAdd)
                                 {
-                                    has = true;
-                                    break;
+                                    if (s1.equals(name))
+                                    {
+                                        has = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (!has)
-                            {
-                                System.out.println("Adding " + name);
-                                toAdd.add(name);
+                                if (!has)
+                                {
+                                    System.out.println("Adding " + name);
+                                    toAdd.add(name);
+                                }
                             }
                         }
                     }
-
                     zip.close();
                 }
                 catch (Exception e)

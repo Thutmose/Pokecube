@@ -28,6 +28,10 @@ pokemob.status.confuse.remove=%1$s is no longer confused
 pokemob.status.confusion=%1$s hurt itself in confusion
 pokemob.status.infatuate=%1$s is immobilized by love
 
+pokemob.move.cooldown=%1$s cannot use %2$s right now.
+pokecube.recall.fail=§cNothing to recall.
+pokecube.recall.success=%1$s §arecalled.
+
 pokemob.stance.guard=GUARD
 pokemob.stance.stay=STAY
 pokemob.stance.follow=FOLLOW

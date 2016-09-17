@@ -8,6 +8,7 @@ import java.util.Map;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -26,7 +27,7 @@ import pokecube.adventures.handlers.TeamManager.PokeTeam;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.utils.ChunkCoordinate;
 
-public class TeamCommands implements ICommand
+public class TeamCommands extends CommandBase
 {
     private static List<String> options = Lists.newArrayList();
 
@@ -490,7 +491,7 @@ public class TeamCommands implements ICommand
                 if (args.length > 1)
                 {
                     String player = args[1];
-                    EntityPlayer adding = sender.getEntityWorld().getPlayerEntityByName(player);
+                    EntityPlayer adding = getPlayer(server, sender, player);
                     boolean isPlayer = adding != null;
                     if (isPlayer)
                     {

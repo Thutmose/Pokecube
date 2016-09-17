@@ -42,7 +42,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
     public TypeTrainer       type;
     int                      despawncounter   = 0;
     private int              nextSlot         = 0;
-    public UUID              outID;
+    private UUID             outID;
     public IPokemob          outMob;
 
     public EntityHasPokemobs(World worldIn)
@@ -99,7 +99,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         }
         if (target == null || getAIState(THROWING) || outMob != null || getNextPokemob() != null) return;
         this.setAIState(INBATTLE, false);
-        if (outID == null && outMob == null && !getAIState(THROWING))
+        if (outMob == null && !getAIState(THROWING))
         {
             if (cooldown <= worldObj.getTotalWorldTime())
             {
@@ -133,6 +133,8 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
                 {
                     String name = PokecubeManager.getOwner(input.getEntityItem());
                     isOwner = name.equals(owner.getCachedUniqueIdString());
+                    System.out.println(name + " " + owner.getCachedUniqueIdString() + " " + isOwner);
+
                 }
                 return isOwner;
             }
@@ -156,6 +158,11 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
     {
         super.onLivingUpdate();
         if (!isServerWorld()) return;
+        if (outID != null && outMob == null)
+        {
+            outMob = (IPokemob) getServer().worldServerForDimension(dimension).getEntityFromUuid(outID);
+            if (outMob == null) outID = null;
+        }
         if (this.countPokemon() == 0 && !getAIState(STATIONARY) && !getAIState(PERMFRIENDLY))
         {
             despawncounter++;
@@ -168,10 +175,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (this.ticksExisted % 20 == 0 && this.getHealth() < this.getMaxHealth() && this.getHealth() > 0)
         {
             this.setHealth(Math.min(this.getHealth() + 1, this.getMaxHealth()));
-        }
-        if (this.getAIState(THROWING) && countThrownCubes() == 0)
-        {
-            this.resetPokemob();
         }
         despawncounter = 0;
     }
@@ -227,7 +230,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         }
         nbt.setTag("pokemobs", nbttaglist);
         if (battleCooldown < 0) battleCooldown = Config.instance.trainerCooldown;
-        if (outID != null) nbt.setString("outPokemob", outID.toString());
+        if (outMob != null) nbt.setString("outPokemob", ((Entity) outMob).getCachedUniqueIdString());
         nbt.setString("type", type.name);
         nbt.setInteger("battleCD", battleCooldown);
         nbt.setLong("nextBattle", cooldown);
@@ -258,7 +261,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             attackCooldown = -1;
             nextSlot = 0;
         }
-        else if (outMob == null && outID == null && !getAIState(THROWING))
+        else if (outMob == null && !getAIState(THROWING))
         {
             attackCooldown--;
         }
@@ -271,8 +274,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
 
     public void throwCubeAt(Entity target)
     {
-        if (target == null || getAIState(THROWING) || outMob != null || attackCooldown > 0) return;
-
+        if (target == null || getAIState(THROWING)) return;
         ItemStack i = getNextPokemob();
         if (i != null)
         {
@@ -294,17 +296,6 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         else
         {
             nextSlot = -1;
-        }
-
-        this.setAIState(INBATTLE, false);
-        if (outID == null && outMob == null && !getAIState(THROWING))
-        {
-            if (cooldown <= worldObj.getTotalWorldTime())
-            {
-                onDefeated(target);
-                cooldown = worldObj.getTotalWorldTime() + battleCooldown;
-                nextSlot = 0;
-            }
         }
     }
 
@@ -341,8 +332,8 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         PCEventsHandler.recallAllPokemobs(this);
         this.setAIState(THROWING, false);
         this.setAIState(INBATTLE, false);
-        outID = null;
         outMob = null;
+        cooldown = worldObj.getTotalWorldTime() + battleCooldown;
     }
 
     public ItemStack getPokemob(int slot)

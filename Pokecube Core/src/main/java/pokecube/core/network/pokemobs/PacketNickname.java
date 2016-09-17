@@ -1,5 +1,7 @@
 package pokecube.core.network.pokemobs;
 
+import java.util.UUID;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,12 +20,12 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     public static void sendPacket(Entity mob, String name)
     {
         PacketNickname packet = new PacketNickname();
-        packet.entityId = mob.getEntityId();
+        packet.entityId = mob.getUniqueID();
         packet.name = name;
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
-    int    entityId;
+    UUID   entityId;
     String name;
 
     public PacketNickname()
@@ -47,7 +49,7 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     public void fromBytes(ByteBuf buf)
     {
         PacketBuffer buffer = new PacketBuffer(buf);
-        entityId = buf.readInt();
+        entityId = new UUID(buf.readLong(), buf.readLong());
         name = buffer.readStringFromBuffer(20);
     }
 
@@ -55,7 +57,8 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     public void toBytes(ByteBuf buf)
     {
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeInt(entityId);
+        buffer.writeLong(entityId.getMostSignificantBits());
+        buffer.writeLong(entityId.getLeastSignificantBits());
         buffer.writeString(name);
     }
 
@@ -63,7 +66,9 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     {
         EntityPlayer player;
         player = ctx.getServerHandler().playerEntity;
-        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, message.entityId, true);
+        Entity orignalMob = ctx.getServerHandler().playerEntity.getServerWorld().getEntityFromUuid(message.entityId);
+        if (orignalMob == null) return;
+        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, orignalMob.getEntityId(), true);
         if (mob == null || !(mob instanceof IPokemob)) return;
 
         IPokemob pokemob = (IPokemob) mob;

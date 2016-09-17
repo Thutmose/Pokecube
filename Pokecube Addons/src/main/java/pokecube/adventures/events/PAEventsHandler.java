@@ -46,7 +46,6 @@ public class PAEventsHandler
             EntityTrainer t = (EntityTrainer) owner;
             if (recalled == t.outMob)
             {
-                t.outID = null;
                 t.outMob = null;
             }
             t.addPokemob(PokecubeManager.pokemobToItem(recalled));
@@ -64,14 +63,11 @@ public class PAEventsHandler
             if (t.outMob != null && t.outMob != evt.pokemob)
             {
                 t.outMob.returnToPokecube();
-                t.outID = evt.entity.getUniqueID();
                 t.outMob = evt.pokemob;
                 t.setAIState(EntityHasAIStates.THROWING, false);
-                Thread.dumpStack();
             }
-            else if (t.outMob == null && t.outID == null)
+            else
             {
-                t.outID = evt.entity.getUniqueID();
                 t.outMob = evt.pokemob;
                 t.setAIState(EntityHasAIStates.THROWING, false);
             }

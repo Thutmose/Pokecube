@@ -8,6 +8,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -71,6 +72,7 @@ public class RecallCommand extends CommandBase
 
         }
         ArrayList<?> list = new ArrayList<Object>(world.loadedEntityList);
+        int num = 0;
         for (Object o : list)
         {
             if (!cubes && o instanceof IPokemob)
@@ -79,10 +81,12 @@ public class RecallCommand extends CommandBase
 
                 boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
                 if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
-                        && (named || all || (stay == isStaying))
-                        && (named == specificName
+                        && (named || all || (stay == isStaying)) && (named == specificName
                                 .equalsIgnoreCase(mob.getPokemonDisplayName().getUnformattedComponentText())))
+                {
+                    num++;
                     mob.returnToPokecube();
+                }
             }
             if ((all || cubes) && o instanceof EntityPokecube)
             {
@@ -100,8 +104,17 @@ public class RecallCommand extends CommandBase
                 if ((owner == player) || (allall && owned))
                 {
                     cube.sendOut().returnToPokecube();
+                    num++;
                 }
             }
+        }
+        if (num == 0)
+        {
+            cSender.addChatMessage(new TextComponentTranslation("pokecube.recall.fail"));
+        }
+        else
+        {
+            cSender.addChatMessage(new TextComponentTranslation("pokecube.recall.success", num));
         }
     }
 }

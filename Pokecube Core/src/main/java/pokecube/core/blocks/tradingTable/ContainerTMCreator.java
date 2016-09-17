@@ -84,7 +84,7 @@ public class ContainerTMCreator extends Container
             {
                 if (!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(), false)) { return null; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, 2, false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return null; }
 
             if (itemstack1.stackSize == 0)
             {

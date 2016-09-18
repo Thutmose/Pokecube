@@ -628,8 +628,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        setPokemonNickname(nbttagcompound.getString(PokecubeSerializer.NICKNAME));
-
+        this.getDataManager().set(NICKNAMEDW, nbttagcompound.getString(PokecubeSerializer.NICKNAME));
         try
         {
             setEVs(PokecubeSerializer.longAsByteArray(nbttagcompound.getLong(PokecubeSerializer.EVS)));
@@ -858,7 +857,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         }
         else
         {
-            if (getPokedexEntry().getUnlocalizedName().equals(nickname))
+            if (getPokedexEntry().getName().equals(nickname))
             {
                 dataManager.set(NICKNAMEDW, "");
             }

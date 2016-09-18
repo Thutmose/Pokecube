@@ -30,7 +30,8 @@ import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.moves.MoveEntry;
-import pokecube.core.events.MoveWorldAction;
+import pokecube.core.events.MoveUse;
+import pokecube.core.events.MoveUse.MoveWorldAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
@@ -275,11 +276,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             ((IPokemob) attacked).onMoveUse(packet);
         }
+        MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Post(packet.attacker, this, packet.attacked));
     }
 
     @Override
     public void preAttack(MovePacket packet)
     {
+        MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Pre(packet.attacker, this, packet.attacked));
         IPokemob attacker = packet.attacker;
         attacker.getMoveStats().nextMoveTick = (int) (((Entity) attacker).ticksExisted
                 + PokecubeMod.core.getConfig().attackCooldown * this.getPostDelayFactor(attacker));

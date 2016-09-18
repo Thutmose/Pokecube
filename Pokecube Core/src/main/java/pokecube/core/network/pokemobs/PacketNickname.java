@@ -91,6 +91,8 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
         }
         else
         {
+            pokemob.getPokemonOwner().addChatMessage(new TextComponentTranslation("pokemob.rename.success",
+                    pokemob.getPokemonDisplayName().getFormattedText(), name));
             pokemob.setPokemonNickname(name);
         }
 

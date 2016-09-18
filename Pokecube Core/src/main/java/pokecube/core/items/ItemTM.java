@@ -30,7 +30,9 @@ public class ItemTM extends ItemPokemobUseable
             nbt.setString("move", move.trim());
             stack.setTagCompound(nbt);
             stack.setItemDamage(attack.getType(null).ordinal());
-            stack.setStackDisplayName(MovesUtils.getLocalizedMove(move.trim()));
+            String name = MovesUtils.getMoveName(move.trim()).getFormattedText();
+            if (name.startsWith("pokemob.move.")) name = name.replaceFirst("pokemob.move.", "");
+            stack.setStackDisplayName(name);
         }
     }
 
@@ -85,7 +87,8 @@ public class ItemTM extends ItemPokemobUseable
             String[] learnables = mob.getPokedexEntry().getMoves().toArray(new String[0]);
             for (String s : learnables)
             {
-                if (mob.getPokedexNb() == 151 || s.toLowerCase(java.util.Locale.ENGLISH).contentEquals(name.toLowerCase(java.util.Locale.ENGLISH)) || PokecubeMod.debug)
+                if (mob.getPokedexNb() == 151 || s.toLowerCase(java.util.Locale.ENGLISH)
+                        .contentEquals(name.toLowerCase(java.util.Locale.ENGLISH)) || PokecubeMod.debug)
                 {
 
                     if (mob.getMove(0) == null)

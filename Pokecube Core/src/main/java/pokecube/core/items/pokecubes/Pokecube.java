@@ -284,7 +284,6 @@ public class Pokecube extends Item implements IPokecube
             Vector3 direction = Vector3.getNewVector().set(player.getLook(0));
             Vector3 targetLocation = Tools.getPointedLocation(player, 32);
             boolean filled = PokecubeManager.isFilled(stack);
-
             if (!filled && !(target instanceof IPokemob)) target = null;
             boolean used = false;
             boolean filledOrSneak = filled || player.isSneaking();

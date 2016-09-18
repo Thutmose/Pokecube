@@ -102,7 +102,7 @@ public class GuiTMCreator extends GuiContainer
             Move_Base move = MovesUtils.getMoveFromName(s);
             if (move != null)
             {
-                drawString(fontRendererObj, MovesUtils.getLocalizedMove(s), xOffset + 14, yOffset + 99,
+                drawString(fontRendererObj, MovesUtils.getMoveName(s).getFormattedText(), xOffset + 14, yOffset + 99,
                         move.getType(null).colour);
                 drawString(fontRendererObj, "" + move.getPWR(), xOffset + 102, yOffset + 99, 0xffffff);
             }
@@ -154,7 +154,7 @@ public class GuiTMCreator extends GuiContainer
         if (!textFieldSearch.getText().isEmpty()) for (String s : moves)
         {
             Move_Base move = MovesUtils.getMoveFromName(s.trim());
-            boolean nameMatch = MovesUtils.getLocalizedMove(s.trim()).toLowerCase(java.util.Locale.ENGLISH)
+            boolean nameMatch = MovesUtils.getMoveName(s.trim()).getFormattedText().toLowerCase(java.util.Locale.ENGLISH)
                     .contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH));
             boolean typeMatch = false;
             if (!nameMatch)

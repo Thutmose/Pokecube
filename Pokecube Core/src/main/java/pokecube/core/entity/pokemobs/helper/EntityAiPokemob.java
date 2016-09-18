@@ -70,6 +70,7 @@ import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
+import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
@@ -314,16 +315,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         this.getNavigator().setSpeed(moveSpeed);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
+
+        // Add in the vanilla like AI methods.
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
         this.tasks.addTask(4, this.aiSit = new EntityAISit(this));
-
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
-
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
-
         this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
         this.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
 
@@ -340,17 +340,21 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         }
 
+        // Add in the various logic AIs that are needed on both client and
+        // server.
         aiStuff.addAILogic(new LogicInLiquid(this));
         aiStuff.addAILogic(new LogicCollision(this));
         aiStuff.addAILogic(new LogicMovesUpdates(this));
         aiStuff.addAILogic(new LogicInMaterials(this));
         aiStuff.addAILogic(new LogicFloatFlySwim(this));
         aiStuff.addAILogic(new LogicMiscUpdate(this));
+
+        // Controller is done separately for ease of locating it for controls.
         controller = new LogicMountedControl(this);
-        // aiStuff.addAILogic();
 
         if (worldObj.isRemote) return;
 
+        // Add in the Custom type of AI tasks.
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
         aiStuff.addAITask(new AICombatMovement(this).setPriority(600));
         if (!entry.isStationary)
@@ -367,6 +371,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         aiStuff.addAITask(new AIIdle(this).setPriority(500));
         aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
 
+        // Send notification event of AI initilization, incase anyone wants to
+        // affect it.
+        MinecraftForge.EVENT_BUS.post(new InitAIEvent(this));
     }
 
     @Override
@@ -1151,6 +1158,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             dataManager.set(ATTACKTARGETIDDW, Integer.valueOf(-1));
         }
+        if (entity == null)
+        {
+            this.getEntityData().setString("lastMoveHitBy", "");
+        }
         if (entity != getAttackTarget() && getAbility() != null)
         {
             getAbility().onAgress(this, entity);
@@ -1295,5 +1306,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         this.worldObj.theProfiler.endSection();
         this.worldObj.theProfiler.endSection();
+    }
+
+    public AIStuff getAIStuff()
+    {
+        return aiStuff;
     }
 }

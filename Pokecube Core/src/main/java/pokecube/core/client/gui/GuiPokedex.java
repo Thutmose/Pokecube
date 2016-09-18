@@ -358,7 +358,7 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "Moves", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
         {
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(names.get(n + index)), xOffset + 18,
+            drawString(fontRendererObj, MovesUtils.getMoveName(names.get(n + index)).getFormattedText(), xOffset + 18,
                     yOffset + 30 + n * 10, 0xFF0000);
             drawString(fontRendererObj, levels.get(n + index), xOffset + 92, yOffset + 30 + n * 10, 0xFF0000);
         }
@@ -560,7 +560,7 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "Possible Mates", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
         {
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(names.get(n + index)), xOffset + 18,
+            drawString(fontRendererObj, MovesUtils.getMoveName(names.get(n + index)).getFormattedText(), xOffset + 18,
                     yOffset + 30 + n * 10, 0xFF0000);
         }
         if (pokemob != null)
@@ -720,7 +720,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 99,
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 99,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 99, 0xffffff);
         }
@@ -737,7 +737,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 113,
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 113,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 113, 0xffffff);
         }
@@ -754,7 +754,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 127,
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 127,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 127, 0xffffff);
         }
@@ -771,7 +771,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 141,
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 141,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 141, 0xffffff);
         }
@@ -788,7 +788,7 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getLocalizedMove(move.getName()), xOffset + 14, yOffset + 155,
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 155,
                     move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 155, 0xffffff);
         }
@@ -1345,9 +1345,11 @@ public class GuiPokedex extends GuiScreen
             }
             else if (par2 != 54 && par2 != 58 && par2 != 42 && page == 0 && !b)
             {
-                mc.displayGuiScreen(null);
-                mc.setIngameFocus();
-
+                if (!nicknameTextField.isFocused())
+                {
+                    mc.displayGuiScreen(null);
+                    mc.setIngameFocus();
+                }
                 String nickname = nicknameTextField.getText();
                 if (canEditPokemob() && page == 0 && !oldName.equals(nickname))
                 {

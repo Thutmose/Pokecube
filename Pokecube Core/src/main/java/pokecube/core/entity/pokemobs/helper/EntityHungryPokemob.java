@@ -188,6 +188,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     public float getBlockPathWeight(IBlockAccess world, Vector3 location)
     {
         IBlockState state = location.getBlockState(world);
+        if (state == null) state = Blocks.AIR.getDefaultState();
         Block block = state.getBlock();
         boolean water = getPokedexEntry().swims();
         boolean air = getPokedexEntry().flys() || getPokedexEntry().floats();

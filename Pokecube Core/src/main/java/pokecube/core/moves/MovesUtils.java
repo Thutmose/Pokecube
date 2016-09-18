@@ -17,7 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import pokecube.core.commands.CommandTools;
@@ -34,7 +34,6 @@ import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
 
-@SuppressWarnings("deprecation")
 public class MovesUtils implements IMoveConstants
 {
     public static Random                     rand = new Random();
@@ -409,15 +408,9 @@ public class MovesUtils implements IMoveConstants
         return ppFactor * statusMultiplier;
     }
 
-    public static String getLocalizedMove(String attack)
+    public static ITextComponent getMoveName(String attack)
     {
-        String PREFIX = "pokemob.move.";
-        String translatedAttack = I18n.translateToLocal(PREFIX + attack);
-        if (translatedAttack == null || translatedAttack.startsWith(PREFIX))
-        {
-            translatedAttack = attack;
-        }
-        return translatedAttack;
+        return new TextComponentTranslation("pokemob.move." + attack);
     }
 
     public static Move_Base getMoveFromName(String moveName)
@@ -633,7 +626,8 @@ public class MovesUtils implements IMoveConstants
         {
             for (String s : moves.keySet())
             {
-                if (s.toLowerCase(java.util.Locale.ENGLISH).contentEquals(attackName.toLowerCase(java.util.Locale.ENGLISH)))
+                if (s.toLowerCase(java.util.Locale.ENGLISH)
+                        .contentEquals(attackName.toLowerCase(java.util.Locale.ENGLISH)))
                 {
                     attackName = s;
                     return true;

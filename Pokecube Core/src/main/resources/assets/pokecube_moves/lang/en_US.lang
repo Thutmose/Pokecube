@@ -37,6 +37,8 @@ pokemob.move.isburned=%1$s is burned.
 pokemob.move.ispoisoned=%1$s is poisoned.
 pokemob.move.isbadlypoisoned=%1$s is badly poisoned.
 
+pokemob.move.sketched=%1$s Sketched %2$s
+
 ##Move Names
 
 pokemob.move.pound=Pound

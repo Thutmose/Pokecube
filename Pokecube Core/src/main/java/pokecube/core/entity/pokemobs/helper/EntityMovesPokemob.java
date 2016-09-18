@@ -569,6 +569,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         IPokemob attacker = move.attacker;
         Entity attacked = move.attacked;
 
+        if (attacked == this)
+        {
+            this.getEntityData().setString("lastMoveHitBy", move.attack);
+        }
+
         if (moveInfo.substituteHP > 0 && attacked == this)
         {
             float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().move.category,
@@ -675,6 +680,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         moveInfo.newMoves = nbttagcompound.getInteger("numberMoves");
         String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
         dataManager.set(MOVESDW, movesString);
+        this.getEntityData().setString("lastMoveHitBy", "");
     }
 
     /** Use this for anything that does not change or need to be updated. */

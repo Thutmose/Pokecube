@@ -8,11 +8,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
+import pokecube.core.events.CommandAttackEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -86,6 +88,9 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         Entity target = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.targetId, true);
 
         if (user == null || !(user instanceof IPokemob)) return;
+        CommandAttackEvent event = new CommandAttackEvent(user, target);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) return;
         IPokemob pokemob = (IPokemob) user;
         Vector3 temp = Vector3.getNewVector().set(user);
         int currentMove = pokemob.getMoveIndex();

@@ -276,7 +276,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             ((IPokemob) attacked).onMoveUse(packet);
         }
-        MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Pre(packet.attacker, this, packet.attacked));
+        MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Post(packet.attacker, this, packet.attacked));
     }
 
     @Override

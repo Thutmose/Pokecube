@@ -83,7 +83,7 @@ pokemob.megaevolve.revert=%1$s Reverted to %2$s
 pokemob.megaevolve.failed=%1$s failed to Mega Evolve.
 
 pokemob.rename.deny=§cYou cannot rename a traded Pokémob.
-pokemob.rename.deny=§a%1$s was renamed to %2$s
+pokemob.rename.success=§a%1$s was renamed to %2$s
 
 pokemob.hatch=%1$s Hatched from the egg
 

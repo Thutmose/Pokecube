@@ -97,7 +97,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
         MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, d0, d1, d2));
         GL11.glPopMatrix();
-        renderHp(entity, d0, d1, d2, yaw, partialTick);
         this.postRenderCallback();
         GL11.glPopMatrix();
     }

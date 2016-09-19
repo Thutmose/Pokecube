@@ -53,6 +53,7 @@ import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
+import pokecube.core.client.render.RenderHealth;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
@@ -222,8 +223,13 @@ public class EventsHandlerClient
 
     public EventsHandlerClient()
     {
-        if (!notifier) new UpdateNotifier();
+        if (!notifier)
+        {
+            new UpdateNotifier();
+            MinecraftForge.EVENT_BUS.register(new RenderHealth());
+        }
         notifier = true;
+
     }
 
     @SubscribeEvent
@@ -594,4 +600,5 @@ public class EventsHandlerClient
         event.getLeft().add("");
         event.getLeft().add(msg);
     }
+
 }

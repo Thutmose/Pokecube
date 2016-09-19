@@ -78,13 +78,45 @@ public class SpawnBiomeMatcher
         this.spawnRule = rules;
     }
 
+    public void preParseSubBiomes()
+    {
+        String typeString = spawnRule.values.get(TYPES);
+        if (typeString != null)
+        {
+            String[] args = typeString.split(",");
+            for (String s : args)
+            {
+                BiomeType subBiome = null;
+                for (BiomeType b : BiomeType.values())
+                {
+                    if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                    {
+                        subBiome = b;
+                        break;
+                    }
+                }
+                if (subBiome == null)
+                {
+                    try
+                    {
+                        BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
+                    }
+                    catch (Exception e)
+                    {
+                        BiomeType.getBiome(s.trim(), true);
+                    }
+                }
+            }
+        }
+    }
+
     public void parse()
     {
         validBiomes.clear();
         validSubBiomes.clear();
         blackListBiomes.clear();
         blackListSubBiomes.clear();
-
+        preParseSubBiomes();
         String biomeString = spawnRule.values.get(BIOMES);
         String typeString = spawnRule.values.get(TYPES);
         String biomeBlacklistString = spawnRule.values.get(BIOMESBLACKLIST);
@@ -145,18 +177,20 @@ public class SpawnBiomeMatcher
             String[] args = typeString.split(",");
             for (String s : args)
             {
-                BiomeType subBiome = null;
-                for (BiomeType b : BiomeType.values())
+                BiomeType subBiome = BiomeType.getBiome(s.trim(), false);
+                if (subBiome == BiomeType.NONE)
                 {
-                    if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                    BiomeDictionary.Type type;
+                    try
                     {
-                        subBiome = b;
-                        break;
+                        type = BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
                     }
-                }
-                if (subBiome == null)
-                {
-                    BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
+                    catch (Exception e)
+                    {
+                        type = null;
+                        subBiome = BiomeType.NONE;
+                        e.printStackTrace();
+                    }
                     if (type != null)
                     {
                         if (type == BiomeDictionary.Type.WATER)

@@ -171,7 +171,6 @@ public class Config extends ConfigBase
             String[] args = s.split(":");
             String biome = args[0];
             String[] levels = args[1].split("-");
-
             try
             {
                 SpawnHandler.subBiomeLevels.put(Integer.parseInt(biome),
@@ -179,11 +178,11 @@ public class Config extends ConfigBase
             }
             catch (NumberFormatException e)
             {
-                BiomeType b = BiomeType.getBiome(biome);
+                BiomeType b = BiomeType.getBiome(biome, true);
+                System.out.println(s + " " + b + " " + BiomeType.getBiome(biome));
                 SpawnHandler.subBiomeLevels.put(b.getType(),
                         new Integer[] { Integer.parseInt(levels[0]), Integer.parseInt(levels[1]) });
             }
-
         }
     }
 

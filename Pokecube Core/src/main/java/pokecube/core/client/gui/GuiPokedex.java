@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -377,9 +378,8 @@ public class GuiPokedex extends GuiScreen
         {
             if (index2 < 0) index2 = biomes.size() - 2;
             index2 = Math.max(0, index2 % (biomes.size() - 1));
-
             ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
-
+            final Map<PokedexEntry, Float> rates = Maps.newHashMap();
             final EntityPlayer player = entityPlayer;
             final Vector3 pos = Vector3.getNewVector().set(player);
             final SpawnCheck checker = new SpawnCheck(pos, player.worldObj);
@@ -400,6 +400,23 @@ public class GuiPokedex extends GuiScreen
                     return (int) (-rate1 + rate2);
                 }
             });
+            float total = 0;
+            for (PokedexEntry e : names)
+            {
+                SpawnBiomeMatcher matcher = e.getSpawnData().getMatcher(checker, false);
+                float val = e.getSpawnData().getWeight(matcher);
+                float min = e.getSpawnData().getMin(matcher);
+                float num = min + (e.getSpawnData().getMax(matcher) - min) / 2;
+                val *= num;
+                total += val;
+                rates.put(e, val);
+            }
+            for (PokedexEntry e : names)
+            {
+                float val = rates.get(e) * 100 / total;
+                rates.put(e, val);
+            }
+
             index = Math.max(0, Math.min(index, names.size() - 6));
             String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
             if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
@@ -417,11 +434,21 @@ public class GuiPokedex extends GuiScreen
                     System.err.println("FATAL ERROR MISSING SPAWN DATA FOR " + dbe);
                     continue;
                 }
-                String numbers = "";
-                if (entityPlayer.capabilities.isCreativeMode)
-                    numbers = " " + dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker, false));
-                drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()) + numbers, xOffset + 18, yO + n * 10,
-                        0xFF0000);
+                String numbers = " " + rates.get(dbe);
+                numbers = numbers.substring(0, Math.min(5, numbers.length()));
+
+                if (numbers.equals(" 0.00"))
+                {
+                    numbers = ">0.01%";
+                }
+                else
+                {
+                    numbers = numbers + "%";
+                }
+                drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()), xOffset + 18, yO + n * 10, 0xFF0000);
+                drawString(fontRendererObj, numbers, xOffset + 108 - fontRendererObj.getStringWidth(numbers),
+                        yO + n * 10, 0xFF0000);
+
                 String time = "";
 
                 drawString(fontRendererObj, time, xOffset + 85, yO + n * 10, 0xFF0000);
@@ -560,8 +587,7 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, "Possible Mates", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
         {
-            drawString(fontRendererObj, MovesUtils.getMoveName(names.get(n + index)).getFormattedText(), xOffset + 18,
-                    yOffset + 30 + n * 10, 0xFF0000);
+            drawString(fontRendererObj, names.get(n + index), xOffset + 18, yOffset + 30 + n * 10, 0xFF0000);
         }
         if (pokemob != null)
         {
@@ -720,8 +746,8 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 99,
-                    move.getType(pokemob).colour);
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+                    yOffset + 99, move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 99, 0xffffff);
         }
 
@@ -737,8 +763,8 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 113,
-                    move.getType(pokemob).colour);
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+                    yOffset + 113, move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 113, 0xffffff);
         }
 
@@ -754,8 +780,8 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 127,
-                    move.getType(pokemob).colour);
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+                    yOffset + 127, move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 127, 0xffffff);
         }
 
@@ -771,8 +797,8 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 141,
-                    move.getType(pokemob).colour);
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+                    yOffset + 141, move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 141, 0xffffff);
         }
 
@@ -788,8 +814,8 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14, yOffset + 155,
-                    move.getType(pokemob).colour);
+            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+                    yOffset + 155, move.getType(pokemob).colour);
             drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 155, 0xffffff);
         }
     }
@@ -1319,11 +1345,11 @@ public class GuiPokedex extends GuiScreen
                     }
                 }
             }
-            else if (par2 == Keyboard.KEY_LEFT && page != 4)
+            else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_LEFT && page != 4)
             {
                 handleGuiButton(2);
             }
-            else if (par2 == Keyboard.KEY_RIGHT && page != 4)
+            else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_RIGHT && page != 4)
             {
                 handleGuiButton(1);
             }
@@ -1345,7 +1371,7 @@ public class GuiPokedex extends GuiScreen
             }
             else if (par2 != 54 && par2 != 58 && par2 != 42 && page == 0 && !b)
             {
-                if (!nicknameTextField.isFocused())
+                if (!(nicknameTextField.isFocused() && par2 == 28))
                 {
                     mc.displayGuiScreen(null);
                     mc.setIngameFocus();
@@ -1357,7 +1383,7 @@ public class GuiPokedex extends GuiScreen
                 }
                 return;
             }
-            if (!b2) super.keyTyped(par1, par2);
+            if (!b2 && !nicknameTextField.isFocused()) super.keyTyped(par1, par2);
         }
     }
 

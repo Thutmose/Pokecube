@@ -13,12 +13,15 @@ import java.util.Random;
 import org.nfunk.jep.JEP;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLiving.SpawnPlacementType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -30,7 +33,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -132,8 +134,19 @@ public final class SpawnHandler
         if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
         IBlockState state = temp.set(location).addTo(0, -1, 0).getBlockState(worldObj);
         Block down = state.getBlock();
-        return down.canCreatureSpawn(state, worldObj, temp.getPos(),
-                net.minecraft.entity.EntityLiving.SpawnPlacementType.ON_GROUND);
+        net.minecraft.entity.EntityLiving.SpawnPlacementType type = SpawnPlacementType.ON_GROUND;
+        if (entry.flys())
+        {
+            type = SpawnPlacementType.IN_AIR;
+            if (down.canCreatureSpawn(state, worldObj, temp.getPos(), type) || location.isAir(worldObj)) return true;
+        }
+        if (entry.swims())
+        {
+            type = SpawnPlacementType.IN_WATER;
+            if (down.canCreatureSpawn(state, worldObj, temp.getPos(), type) || state.getMaterial() == Material.WATER)
+                return true;
+        }
+        return down.canCreatureSpawn(state, worldObj, temp.getPos(), type);
     }
 
     public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world,
@@ -255,7 +268,10 @@ public final class SpawnHandler
 
         if (temp == null) temp = Vector3.getNewVector().set(player);
 
-        temp1 = Vector3.getNextSurfacePoint2(world, temp, vec2.set(EnumFacing.DOWN), temp.y);
+        double maxTempY = temp.y - player.posY - 10;
+        if (maxTempY <= 0) return null;
+
+        temp1 = Vector3.getNextSurfacePoint2(world, temp, vec2.set(EnumFacing.DOWN), maxTempY);
 
         if (temp1 != null)
         {
@@ -512,16 +528,21 @@ public final class SpawnHandler
         double random = Math.random();
         int n = 0;
         int max = entries.size();
+        Vector3 vbak = v.copy();
         while (weight <= random && n++ < max)
         {
             dbe = entries.get((++index) % entries.size());
             weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
             if (!dbe.flys() && random > weight)
             {
-                v = Vector3.getNextSurfacePoint2(world, v, Vector3.secondAxisNeg, v.y);
+                v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 10);
                 if (v != null) Vector3.movePointOutOfBlocks(v, world);
                 if (v != null) weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
                 else weight = 0;
+            }
+            else if (v == null)
+            {
+                v = vbak.copy();
             }
         }
         if (random > weight) return ret;
@@ -631,12 +652,13 @@ public final class SpawnHandler
     public void spawn(World world)
     {
         if (world.getDifficulty() == EnumDifficulty.PEACEFUL || !doSpawns) return;
-        List<EntityPlayer> players = new ArrayList<EntityPlayer>(world.playerEntities);
+        List<EntityPlayer> players = Lists.newArrayList(world.playerEntities);
         if (players.isEmpty()) return;
         Collections.shuffle(players);
         for (int i = 0; i < players.size(); i++)
         {
-            Vector3 v = getRandomSpawningPointNearEntity(world, players.get(0),
+            if (players.get(i).dimension != world.provider.getDimension()) continue;
+            Vector3 v = getRandomSpawningPointNearEntity(world, players.get(i),
                     PokecubeMod.core.getConfig().maxSpawnRadius, 0);
             AxisAlignedBB box = v.getAABB();
             int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
@@ -684,11 +706,6 @@ public final class SpawnHandler
 
     public void tick(World world)
     {
-        if (PokecubeCore.isOnClientSide())
-        {
-            System.out.println(FMLCommonHandler.instance().getEffectiveSide());
-            return;
-        }
         if (dimensionBlacklist.contains(world.provider.getDimension())) return;
         try
         {

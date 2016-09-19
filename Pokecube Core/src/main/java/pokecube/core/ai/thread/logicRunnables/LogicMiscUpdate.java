@@ -3,6 +3,7 @@ package pokecube.core.ai.thread.logicRunnables;
 import java.util.Random;
 
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import pokecube.core.database.PokedexEntry;
@@ -32,6 +33,10 @@ public class LogicMiscUpdate extends LogicBase
     {
         super.doServerTick(world);
         Random rand = new Random(pokemob.getRNGValue());
+        if (entity.getHealth() < 1)
+        {
+            entity.attackEntityFrom(DamageSource.generic, 100);
+        }
         if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
             ((IShearable) pokemob).isShearable(null, entity.getEntityWorld(), entity.getPosition());

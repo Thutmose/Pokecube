@@ -72,6 +72,7 @@ public class EntityNBTPacket implements IMessage {
 									player.connection.sendPacket(new SPacketSetExperience(player.experience, player.experienceTotal, player.experienceLevel));
 									player.sendPlayerAbilities();
 								}
+								thut.api.network.PacketHandler.sendEntityUpdate(entity);
 								NBTEdit.proxy.sendMessage(player, "Your changes have been saved", TextFormatting.WHITE);
 							} catch (Throwable t) {
 								NBTEdit.proxy.sendMessage(player, "Save Failed - Invalid NBT format for Entity", TextFormatting.RED);

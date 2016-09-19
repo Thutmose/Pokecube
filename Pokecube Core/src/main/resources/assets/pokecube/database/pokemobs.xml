@@ -10537,7 +10537,7 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Fluctuating</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <Spawn rate="0.01" types="ocean" air="false"/>
+            <Spawn rate="0.2" types="ocean" air="false"/>
             <BASESTATS atk="70" def="35" hp="130" spatk="70" spd="60" spdef="35"/>
             <EVYIELD hp="1"/>
             <SIZES height="2.0" length="2.0" width="2.0"/>
@@ -12158,7 +12158,8 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>31</GENDERRATIO>
-            <Spawn rate="0.1" types="ocean,cave" air="false"/>
+            <Spawn rate="0.8" types="ocean,cave" air="false"/>
+            <Spawn rate="0.8" types="ocean,cavewater" air="false"/>
             <BASESTATS atk="90" def="130" hp="100" spatk="45" spd="55" spdef="65"/>
             <EVYIELD def="1" hp="1"/>
             <SIZES height="0.5" length="1.0" width="0.5"/>

@@ -44,6 +44,7 @@ public class Config extends ConfigBase
     public static final String client                     = "client";
     public static final String advanced                   = "advanced";
     public static final String rewards                    = "rewards";
+    public static final String healthbars                 = "healthbars";
 
     public static int          GUICHOOSEFIRSTPOKEMOB_ID;
     public static int          GUIDISPLAYPOKECUBEINFO_ID;
@@ -314,6 +315,39 @@ public class Config extends ConfigBase
     public String              mastercubeRequirement      = "20%";
     @Configure(category = rewards)
     public String              shinycharmRequirement      = "100%";
+
+    @Configure(category = healthbars)
+    public boolean             doHealthBars               = true;
+    @Configure(category = healthbars)
+    public int                 maxDistance                = 24;
+    @Configure(category = healthbars)
+    public boolean             renderInF1                 = false;
+    @Configure(category = healthbars)
+    public double              heightAbove                = 0.6;
+    @Configure(category = healthbars)
+    public boolean             drawBackground             = true;
+    @Configure(category = healthbars)
+    public int                 backgroundPadding          = 2;
+    @Configure(category = healthbars)
+    public int                 backgroundHeight           = 6;
+    @Configure(category = healthbars)
+    public int                 barHeight                  = 4;
+    @Configure(category = healthbars)
+    public int                 plateSize                  = 25;
+    @Configure(category = healthbars)
+    public int                 plateSizeBoss              = 50;
+    @Configure(category = healthbars)
+    public boolean             showAttributes             = true;
+    @Configure(category = healthbars)
+    public boolean             showArmor                  = true;
+    @Configure(category = healthbars)
+    public boolean             groupArmor                 = true;
+    @Configure(category = healthbars)
+    public int                 hpTextHeight               = 14;
+    @Configure(category = healthbars)
+    public boolean             showOnlyFocused            = false;
+    @Configure(category = healthbars)
+    public boolean             enableDebugInfo            = true;
 
     /** List of blocks to be considered for the floor of a cave. */
     private List<Block>        caveBlocks                 = new ArrayList<Block>();

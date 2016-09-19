@@ -519,8 +519,9 @@ public final class SpawnHandler
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
         int b = t.getBiome(v);
         if (onlySubbiomes && b <= 255) { return ret; }
-        List<PokedexEntry> entries = Database.spawnables;
-        int index = world.rand.nextInt(entries.size());
+        List<PokedexEntry> entries = Lists.newArrayList(Database.spawnables);
+        Collections.shuffle(entries);
+        int index = 0;
         PokedexEntry dbe = entries.get(index);
         Vector3.movePointOutOfBlocks(v, world);
         SpawnCheck checker = new SpawnCheck(v, world);

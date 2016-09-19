@@ -44,6 +44,10 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 
+/** This health renderer is directly based on Neat vy Vaziki, which can be found
+ * here: https://github.com/Vazkii/Neat This version has been modified to only
+ * apply to pokemobs, as well as to show level, gender and exp. I have also
+ * modified the nametags to indicate ownership */
 public class RenderHealth
 {
 

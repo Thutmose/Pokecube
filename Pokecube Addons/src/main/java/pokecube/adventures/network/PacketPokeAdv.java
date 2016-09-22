@@ -26,7 +26,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
-import thut.essentials.land.LandManager;
 
 public class PacketPokeAdv
 {
@@ -53,18 +52,6 @@ public class PacketPokeAdv
                         if (tag == null) return;
                         NBTTagList list = (NBTTagList) tag.getTag("pc");
                         InventoryPC.loadFromNBT(list, true);
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-                if (channel == 7)
-                {
-                    try
-                    {
-                        NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                        LandManager.getInstance().loadFromNBTOld(tag);
                     }
                     catch (Exception e)
                     {

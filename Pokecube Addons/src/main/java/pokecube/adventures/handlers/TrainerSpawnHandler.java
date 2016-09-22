@@ -28,6 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.core.PokecubeCore;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.database.Database;
 import pokecube.core.events.handlers.EventsHandler;
@@ -140,6 +141,9 @@ public class TrainerSpawnHandler
     public void tick(World w)
     {
         if (w.isRemote || SpawnHandler.dimensionBlacklist.contains(w.provider.getDimension())) { return; }
+        if (PokecubeCore.core.getConfig().whiteListEnabled
+                && SpawnHandler.dimensionWhitelist.contains(w.provider.getDimension()))
+            return;
         ArrayList<Object> players = new ArrayList<Object>();
         players.addAll(w.playerEntities);
         if (players.size() < 1) return;

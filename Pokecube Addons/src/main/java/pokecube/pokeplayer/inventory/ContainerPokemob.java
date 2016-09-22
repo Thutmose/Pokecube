@@ -75,11 +75,10 @@ public class ContainerPokemob extends Container
             @Override
             public void putStack(ItemStack stack)
             {
-                ItemStack old = getStack();
                 super.putStack(stack);
                 if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
                 {
-                    e.getPokedexEntry().onHeldItemChange(old, stack, e);
+                    e.setHeldItem(stack);
                 }
             }
 		});

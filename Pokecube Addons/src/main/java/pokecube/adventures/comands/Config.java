@@ -16,7 +16,6 @@ import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.handlers.RecipeHandler;
-import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeItems;
@@ -108,13 +107,6 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public int                         trainerBattleDelay  = 100;
 
-    @Configure(category = teams)
-    private int                        teamLandPerPlayer   = 125;
-    @Configure(category = teams)
-    public boolean                     teamsEnabled        = true;
-    @Configure(category = teams)
-    private boolean                    denyExplosions      = false;
-
     @Configure(category = misc)
     protected boolean                  tmRecipe            = true;
 
@@ -151,8 +143,6 @@ public class Config extends ConfigBase
             }
         }
         TileEntityWarpPad.MAXRANGE = warpPadRange;
-        TeamManager.maxLandCount = teamLandPerPlayer;
-        TeamManager.denyBlasts = denyExplosions;
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;

@@ -89,6 +89,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
 import thut.api.entity.IMobColourable;
+import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -510,16 +511,6 @@ public class EventsHandler
     public void livingUpdate(LivingUpdateEvent evt)
     {
         if (evt.getEntity().getEntityWorld().isRemote || evt.getEntity().isDead) return;
-
-        if (evt.getEntityLiving() instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
-            if (player.getTeam() == null)
-            {
-                player.getEntityWorld().getScoreboard().addPlayerToTeam(player.getName(), "Trainers");
-            }
-        }
-
         if (evt.getEntityLiving().getEntityWorld().getTotalWorldTime() % 40 == 0)
         {
             TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityLiving());
@@ -529,6 +520,11 @@ public class EventsHandler
                 terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
             }
             effect.doEffect(evt.getEntityLiving(), false);
+        }
+        if (evt.getEntityLiving() instanceof EntityPlayer)
+        {
+            SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
+                    evt.getEntity().getEntityWorld());
         }
 
         if (evt.getEntityLiving() instanceof IPokemob && ((IPokemob) evt.getEntityLiving()).getPokedexNb() == 213)
@@ -613,16 +609,6 @@ public class EventsHandler
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
         EntityPlayer entityPlayer = evt.player;
-
-        if (entityPlayer.getTeam() == null)
-        {
-            if (entityPlayer.getEntityWorld().getScoreboard().getTeam("Trainers") == null)
-            {
-                entityPlayer.getEntityWorld().getScoreboard().createTeam("Trainers");
-            }
-            entityPlayer.getEntityWorld().getScoreboard().addPlayerToTeam(entityPlayer.getName(), "Trainers");
-        }
-
         if (!evt.player.getEntityWorld().isRemote)
         {
             PacketDataSync.sendInitHandshake(entityPlayer);

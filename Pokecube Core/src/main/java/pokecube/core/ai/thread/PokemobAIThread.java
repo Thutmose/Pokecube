@@ -285,7 +285,7 @@ public class PokemobAIThread
 
     /** Sets the AIStuff to tick on correct thread.
      * 
-     * @param entity
+     * @param blockEntity
      * @param task */
     public static void scheduleAITick(AIStuff ai)
     {

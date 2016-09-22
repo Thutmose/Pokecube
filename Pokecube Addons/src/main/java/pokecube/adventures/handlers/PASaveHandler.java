@@ -10,7 +10,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -62,50 +61,6 @@ public class PASaveHandler
         }
     }
 
-    public void loadTeams()
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        try
-        {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            File file = world.getSaveHandler().getMapFileFromName("PokecubeTeams");
-            if (file != null && file.exists())
-            {
-                FileInputStream fileinputstream = new FileInputStream(file);
-                NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-                fileinputstream.close();
-
-                boolean old = !nbttagcompound.hasKey("VERSION");
-                if (old) TeamManager.getInstance().loadFromNBTOld(nbttagcompound.getCompoundTag("Data"));
-                else TeamManager.getInstance().loadFromNBT(nbttagcompound.getCompoundTag("Data"));
-            }
-            File upperDir = new File(file.getParentFile().getAbsolutePath());
-            File dir = new File(upperDir, "PokeTeams");
-            if (dir.exists() && dir.isDirectory())
-            {
-                for (File f : dir.listFiles())
-                {
-                    try
-                    {
-                        FileInputStream fileinputstream = new FileInputStream(f);
-                        NBTTagCompound nbttagcompound = CompressedStreamTools.readCompressed(fileinputstream);
-                        fileinputstream.close();
-                        TeamManager.getInstance().loadTeamFromNBT(nbttagcompound.getCompoundTag("Data"));
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-    }
-
     public void readBagFromNBT(NBTTagCompound nbt)
     {
         // Read PC Data from NBT
@@ -138,53 +93,6 @@ public class PASaveHandler
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveTeams(String team)
-    {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
-
-        try
-        {
-            World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-            if (team == null)
-            {
-                File file = world.getSaveHandler().getMapFileFromName("PokecubeTeams");
-                if (file != null)
-                {
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-                    TeamManager.getInstance().saveToNBT(nbttagcompound);
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                    nbttagcompound1.setTag("Data", nbttagcompound);
-                    FileOutputStream fileoutputstream = new FileOutputStream(file);
-                    CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                    fileoutputstream.close();
-                }
-            }
-            else
-            {
-                File file = world.getSaveHandler().getMapFileFromName("PokeTeams" + File.separator + team);
-                File dir = new File(file.getParentFile().getAbsolutePath());
-                if (file != null && !file.exists())
-                {
-                    dir.mkdirs();
-                }
-                if (file != null)
-                {
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-                    TeamManager.getInstance().saveTeamToNBT(team, nbttagcompound);
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                    nbttagcompound1.setTag("Data", nbttagcompound);
-                    FileOutputStream fileoutputstream = new FileOutputStream(file);
-                    CompressedStreamTools.writeCompressed(nbttagcompound1, fileoutputstream);
-                    fileoutputstream.close();
-                }
-            }
         }
         catch (Exception e)
         {

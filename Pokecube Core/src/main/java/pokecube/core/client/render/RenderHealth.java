@@ -259,8 +259,8 @@ public class RenderHealth
                 GlStateManager.scale(s, s, s);
 
                 String owner = pokemob.getPokemonOwnerName();
-                int colour = renderManager.renderViewEntity.getCachedUniqueIdString().equals(owner) ? 0xFFFFFF
-                        : owner.isEmpty() ? 0x888888 : 0xAA4444;
+                boolean isOwner = renderManager.renderViewEntity.getCachedUniqueIdString().equals(owner);
+                int colour = isOwner ? 0xFFFFFF : owner.isEmpty() ? 0x888888 : 0xAA4444;
                 mc.fontRendererObj.drawString(name, 0, 0, colour);
 
                 GlStateManager.pushMatrix();
@@ -270,7 +270,7 @@ public class RenderHealth
                 int h = PokecubeCore.core.getConfig().hpTextHeight;
                 String maxHpStr = "" + (int) (Math.round(maxHealth * 100.0) / 100.0);
                 String hpStr = "" + (int) (Math.round(health * 100.0) / 100.0);
-                String percStr = hpStr + "/" + maxHpStr;
+                String healthStr = hpStr + "/" + maxHpStr;
                 String gender = pokemob.getSexe() == IPokemob.MALE ? "\u2642"
                         : pokemob.getSexe() == IPokemob.FEMALE ? "\u2640" : "";
                 String lvlStr = "L." + pokemob.getLevel();
@@ -286,8 +286,8 @@ public class RenderHealth
                 {
                     colour = 0xCC5555;
                 }
-                mc.fontRendererObj.drawString(percStr,
-                        (int) (size / (s * s1)) - mc.fontRendererObj.getStringWidth(percStr) / 2, h, 0xFFFFFFFF);
+                if (isOwner) mc.fontRendererObj.drawString(healthStr,
+                        (int) (size / (s * s1)) - mc.fontRendererObj.getStringWidth(healthStr) / 2, h, 0xFFFFFFFF);
                 mc.fontRendererObj.drawString(lvlStr, 2, h, 0xFFFFFF);
                 mc.fontRendererObj.drawString(gender,
                         (int) (size / (s * s1) * 2) - 2 - mc.fontRendererObj.getStringWidth(gender), h - 1, colour);

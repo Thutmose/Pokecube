@@ -21,11 +21,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
-import pokecube.adventures.events.TeamEventsHandler;
-import pokecube.adventures.handlers.TeamManager;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeType;
@@ -106,10 +103,6 @@ public class ItemTarget extends Item
 
         if (world.isRemote)
         {
-            if (meta == 0 && player.isSneaking())
-            {
-                TeamEventsHandler.shouldRenderVolume = !TeamEventsHandler.shouldRenderVolume;
-            }
             if (meta == 2)
             {
                 // WorldTerrain t =
@@ -157,30 +150,6 @@ public class ItemTarget extends Item
         Vector3 hit = Vector3.getNewVector().set(pos);
         Block block = hit.getBlock(worldIn);
         int meta = stack.getItemDamage();
-
-        if (playerIn.isSneaking() && !worldIn.isRemote && meta == 0)
-        {
-            ChunkCoordinate c = ChunkCoordinate.getChunkCoordFromWorldCoord(pos, playerIn.dimension);
-            String team = TeamManager.getInstance().getLandOwner(c);
-            String playerTeam = worldIn.getScoreboard().getPlayersTeam(playerIn.getName()).getRegisteredName();
-            if (team != null && team.equalsIgnoreCase(playerTeam) && TeamManager.getInstance()
-                    .isAdmin(playerIn.getName(), worldIn.getScoreboard().getPlayersTeam(playerIn.getName())))
-            {
-                ChunkCoordinate blockLoc = new ChunkCoordinate(pos, playerIn.dimension);
-                if (TeamManager.getInstance().isPublic(blockLoc))
-                {
-                    playerIn.addChatMessage(new TextComponentString("Set Block to Team Only"));
-                    TeamManager.getInstance().unsetPublic(blockLoc);
-                }
-                else
-                {
-                    playerIn.addChatMessage(new TextComponentString("Set Block to Public Use"));
-                    TeamManager.getInstance().setPublic(blockLoc);
-                }
-            }
-            return EnumActionResult.SUCCESS;
-        }
-
         if (meta == 1 && !worldIn.isRemote)
         {
             if (block instanceof BlockWarpPad && playerIn.isSneaking() && stack.hasTagCompound())

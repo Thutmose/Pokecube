@@ -273,6 +273,10 @@ public class Config extends ConfigBase
     public int                 levelVariance              = 5;
     @Configure(category = spawning)
     public int[]               dimensionBlacklist         = {};
+    @Configure(category = spawning)
+    public int[]               dimensionWhitelist         = {};
+    @Configure(category = spawning)
+    public boolean             whiteListEnabled           = false;
 
     // Gui/client settings
     @Configure(category = client)
@@ -429,6 +433,11 @@ public class Config extends ConfigBase
         {
             SpawnHandler.dimensionBlacklist.add(i);
         }
+        SpawnHandler.dimensionWhitelist.clear();
+        for (int i : dimensionWhitelist)
+        {
+            SpawnHandler.dimensionWhitelist.add(i);
+        }
     }
 
     @Override
@@ -536,6 +545,13 @@ public class Config extends ConfigBase
         for (int i = 0; i < dims.size(); i++)
         {
             dimensionBlacklist[i] = dims.get(i);
+        }
+        dims = Lists.newArrayList(SpawnHandler.dimensionWhitelist);
+        Collections.sort(dims);
+        dimensionWhitelist = new int[dims.size()];
+        for (int i = 0; i < dims.size(); i++)
+        {
+            dimensionWhitelist[i] = dims.get(i);
         }
         if (hasChanged())
         {

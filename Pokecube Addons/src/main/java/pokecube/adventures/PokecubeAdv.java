@@ -19,17 +19,14 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.comands.TeamCommands;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
-import pokecube.adventures.events.TeamEventsHandler;
 import pokecube.adventures.handlers.BlockHandler;
 import pokecube.adventures.handlers.ItemHandler;
 import pokecube.adventures.handlers.RecipeHandler;
-import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.InventoryBag;
@@ -120,8 +117,6 @@ public class PokecubeAdv
         EntityRegistry.registerModEntity(EntityPokemartSeller.class, "pokecube:trainermerchant", 4, this, 80, 3, true);
 
         PAEventsHandler events = new PAEventsHandler();
-        TeamEventsHandler teams = new TeamEventsHandler();
-        MinecraftForge.EVENT_BUS.register(teams);
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();
     }
@@ -179,7 +174,6 @@ public class PokecubeAdv
     public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
-        event.registerServerCommand(new TeamCommands());
         TypeTrainer.initSpawns();
     }
 
@@ -188,7 +182,6 @@ public class PokecubeAdv
     {
         TrainerSpawnHandler.trainers.clear();
         InventoryBag.clearInventory();
-        TeamManager.clearInstance();
     }
 
 }

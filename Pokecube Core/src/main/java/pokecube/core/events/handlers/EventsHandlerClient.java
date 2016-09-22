@@ -48,6 +48,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.ClientProxyPokecube;
@@ -198,7 +199,7 @@ public class EventsHandlerClient
                 Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
 
         GL11.glPushMatrix();
-        float zoom = (float) (12f / size);
+        float zoom = (float) (12f / Math.sqrt(size));
         GL11.glScalef(-zoom, zoom, zoom);
         GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
         long time = Minecraft.getSystemTime();
@@ -449,6 +450,9 @@ public class EventsHandlerClient
     {
         if (!event.forSpawn && (SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension())
                 || event.world.provider instanceof WorldProviderSecretBase))
+            event.setCanceled(true);
+        if (!event.forSpawn && PokecubeCore.core.getConfig().whiteListEnabled
+                && SpawnHandler.dimensionWhitelist.contains(event.world.provider.getDimension()))
             event.setCanceled(true);
     }
 

@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
-import pokecube.adventures.handlers.TeamManager;
 import pokecube.adventures.items.ItemTarget;
 import pokecube.adventures.network.packets.PacketBag;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -25,9 +24,9 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
+import thut.essentials.land.LandManager;
 
 public class PacketPokeAdv
 {
@@ -60,39 +59,12 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == 6)
-                {
-                    byte type = buffer.readByte();
-
-                    int x = buffer.readInt();
-                    int y = buffer.readInt();
-                    int z = buffer.readInt();
-                    int dim = buffer.readInt();
-
-                    ChunkCoordinate c = new ChunkCoordinate(x, y, z, dim);
-
-                    if (type == TYPESETPUBLIC)
-                    {
-                        if (TeamManager.getInstance().isPublic(c)) TeamManager.getInstance().unsetPublic(c);
-                        else TeamManager.getInstance().setPublic(c);
-                    }
-                    else if (type == TYPEADDLAND)
-                    {
-                        String team = buffer.readStringFromBuffer(20);
-                        TeamManager.getInstance().addTeamLand(team, c, false);
-                    }
-                    else if (type == TYPEREMOVELAND)
-                    {
-                        String team = buffer.readStringFromBuffer(20);
-                        TeamManager.getInstance().removeTeamLand(team, c);
-                    }
-                }
                 if (channel == 7)
                 {
                     try
                     {
                         NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                        TeamManager.getInstance().loadFromNBTOld(tag);
+                        LandManager.getInstance().loadFromNBTOld(tag);
                     }
                     catch (Exception e)
                     {

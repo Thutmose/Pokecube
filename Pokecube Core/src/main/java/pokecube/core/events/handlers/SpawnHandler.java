@@ -61,6 +61,7 @@ public final class SpawnHandler
     public static boolean                              doSpawns                = true;
     public static boolean                              onlySubbiomes           = false;
     public static HashSet<Integer>                     dimensionBlacklist      = Sets.newHashSet();
+    public static HashSet<Integer>                     dimensionWhitelist      = Sets.newHashSet();
     public static Predicate<Integer>                   biomeToRefresh          = new Predicate<Integer>()
                                                                                {
                                                                                    @Override
@@ -708,6 +709,9 @@ public final class SpawnHandler
     public void tick(World world)
     {
         if (dimensionBlacklist.contains(world.provider.getDimension())) return;
+        if (PokecubeCore.core.getConfig().whiteListEnabled
+                && SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
+            return;
         try
         {
             spawn(world);

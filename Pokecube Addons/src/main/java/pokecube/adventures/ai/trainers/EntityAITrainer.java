@@ -46,12 +46,12 @@ public class EntityAITrainer extends EntityAIBase
 
     private boolean checkPokemobTarget()
     {
+        Entity mobTarget = ((EntityLiving) trainer.outMob).getAttackTarget();
         // check if pokemob's target is same as trainers.
-        if (((EntityLiving) trainer.outMob).getAttackTarget() != trainer.getTarget())
+        if (mobTarget != trainer.getTarget() && !(mobTarget instanceof IPokemob))
         {
             // If not, set it as such.
             ((EntityLiving) trainer.outMob).setAttackTarget(trainer.getTarget());
-            System.out.println("Set target");
         }
         // Return if trainer's pokemob's target is also a pokemob.
         return ((EntityLiving) trainer.outMob).getAttackTarget() instanceof IPokemob;
@@ -80,10 +80,8 @@ public class EntityAITrainer extends EntityAIBase
         }
         // Check if maybe mob was sent out, but just not seen
         List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(trainer);
-        if (trainer.ticksExisted % 10 == 0) System.out.println("Pokemobs Check");
         if (!pokemobs.isEmpty())
         {
-            if (trainer.ticksExisted % 10 == 0) System.out.println("Pokemob Found");
             for (IPokemob pokemob : pokemobs)
             {
                 // Ones not added to chunk are in pokecubes, so wait for them to
@@ -111,7 +109,6 @@ public class EntityAITrainer extends EntityAIBase
                 trainer.resetPokemob();
                 return;
             }
-            if (trainer.ticksExisted % 10 == 0) System.out.println("Cooldown: " + trainer.attackCooldown);
             // If cooldown is at specific number, send the message for sending
             // out next pokemob.
             if (trainer.attackCooldown == Config.instance.trainerSendOutDelay / 2)
@@ -127,7 +124,6 @@ public class EntityAITrainer extends EntityAIBase
             }
             return;
         }
-        if (trainer.ticksExisted % 10 == 0) System.out.println("Send Out");
         // Send next cube at the target.
         trainer.throwCubeAt(trainer.getTarget());
     }
@@ -220,11 +216,13 @@ public class EntityAITrainer extends EntityAIBase
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
                 here.getAABB().expand(16, 16, 16));
+        int sight = trainer.sight <= 0 ? Config.instance.trainerSightRange : trainer.sight;
         for (Object o : targets)
         {
             EntityLivingBase e = (EntityLivingBase) o;
             // Only visible or valid targets.
-            if (Vector3.isVisibleEntityFromEntity(trainer, e) && !matcher.apply(e))
+            if (Vector3.isVisibleEntityFromEntity(trainer, e) && !matcher.apply(e)
+                    && e.getDistanceToEntity(trainer) < sight)
             {
                 target = e;
                 break;
@@ -274,7 +272,6 @@ public class EntityAITrainer extends EntityAIBase
         else if (trainer.outMob != null && !((Entity) trainer.outMob).isDead && ((Entity) trainer.outMob).addedToChunk)
         {
             // If trainer has a living, real mob out, tell it to do stuff.
-            if (trainer.ticksExisted % 10 == 0) System.out.println("Commanding Pokemob");
             // Check if pokemob has a valid Pokemob as a target.
             if (checkPokemobTarget())
             {
@@ -290,7 +287,6 @@ public class EntityAITrainer extends EntityAIBase
             // Set out mob to null if it is dead so the trainer forgets about
             // it.
             trainer.outMob = null;
-            if (trainer.ticksExisted % 10 == 0) System.out.println("Do Agression");
             // Do agression code for sending out next pokemob.
             doAggression();
         }

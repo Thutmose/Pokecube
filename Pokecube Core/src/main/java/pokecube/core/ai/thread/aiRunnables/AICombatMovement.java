@@ -54,7 +54,7 @@ public class AICombatMovement extends AIBase
         else
         {
             Vector3 perp = diff.horizonalPerp().scalarMultBy(diff.mag());
-            perp.addTo(here);//centre.add(diff.scalarMult(attacker.getRNG().nextDouble()))
+            perp.addTo(here);
             Path path = attacker.getNavigator().getPathToPos(perp.getPos());
             addEntityPath(attacker, path, movementSpeed);
         }

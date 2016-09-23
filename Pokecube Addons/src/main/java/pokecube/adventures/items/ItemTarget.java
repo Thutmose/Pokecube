@@ -3,6 +3,8 @@ package pokecube.adventures.items;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,9 +15,15 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
@@ -35,6 +43,54 @@ public class ItemTarget extends Item
     {
         super();
         this.setHasSubtypes(true);
+        if (FMLCommonHandler.instance().getSide() == Side.CLIENT) MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void RenderBounds(DrawBlockHighlightEvent event)
+    {
+        ItemStack held;
+        EntityPlayer player = event.getPlayer();
+        if ((held = player.getHeldItemMainhand()) != null || (held = player.getHeldItemOffhand()) != null)
+        {
+            BlockPos pos = event.getTarget().getBlockPos();
+            if (pos == null) return;
+            if (!player.worldObj.getBlockState(pos).getMaterial().isSolid())
+            {
+                Vec3d loc = player.getPositionVector().addVector(0, player.getEyeHeight(), 0)
+                        .add(player.getLookVec().scale(2));
+                pos = new BlockPos(loc);
+            }
+
+            if (held.getItem() == this && held.getTagCompound() != null && held.getTagCompound().hasKey("min"))
+            {
+                BlockPos min = Vector3.readFromNBT(held.getTagCompound().getCompoundTag("min"), "").getPos();
+                BlockPos max = pos;
+                AxisAlignedBB box = new AxisAlignedBB(min, max);
+                min = new BlockPos(box.minX, box.minY, box.minZ);
+                max = new BlockPos(box.maxX, box.maxY, box.maxZ).add(1, 1, 1);
+                box = new AxisAlignedBB(min, max);
+                float partialTicks = event.getPartialTicks();
+                double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
+                double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
+                double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
+                box = box.offset(-d0, -d1, -d2);
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                        GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                        GlStateManager.DestFactor.ZERO);
+                GlStateManager.color(0.0F, 0.0F, 0.0F, 0.4F);
+                GlStateManager.glLineWidth(2.0F);
+                GlStateManager.disableTexture2D();
+                GlStateManager.depthMask(false);
+                GlStateManager.color(1.0F, 0.0F, 0.0F, 1F);
+                RenderGlobal.drawSelectionBoundingBox(box);
+                GlStateManager.depthMask(true);
+                GlStateManager.enableTexture2D();
+                GlStateManager.disableBlend();
+            }
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -63,11 +119,19 @@ public class ItemTarget extends Item
     }
 
     @Override
+    /** If this function returns true (or the item is damageable), the
+     * ItemStack's NBT tag will be sent to the client. */
+    public boolean getShareTag()
+    {
+        return true;
+    }
+
+    @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
         int meta = itemstack.getItemDamage();
-
+        System.out.println("rightclick");
         Vector3 p = Vector3.getNewVector().set(player, false);
         Vector3 d = Vector3.getNewVector().set(player.getLookVec());
 
@@ -101,22 +165,55 @@ public class ItemTarget extends Item
         }
         if (e != null && !e.isEmpty()) return new ActionResult<>(EnumActionResult.PASS, itemstack);
 
-        if (world.isRemote)
+        if (meta == 3)
         {
-            if (meta == 2)
-            {
-                // WorldTerrain t =
-                // TerrainManager.getInstance().getTerrain(world);
-                // player.addChatMessage(new TextComponentString("There are
-                // "+t.chunks.size()+" loaded terrain segments on your
-                // client"));
-            }
-            if (meta == 3 && world.isRemote && !player.isSneaking())
+
+            if (world.isRemote && !player.isSneaking())
             {
                 player.openGui(PokecubeAdv.instance, 5, player.getEntityWorld(), 0, 0, 0);
             }
-            return new ActionResult<>(EnumActionResult.PASS, itemstack);
+            else if (player.isSneaking() && itemstack.getTagCompound().hasKey("min"))
+            {
+                String s = itemstack.getTagCompound().getString("biome");
+                BiomeType type = BiomeType.getBiome(s);
+                TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(player);
+
+                Vector3 pos1 = Vector3.readFromNBT(itemstack.getTagCompound().getCompoundTag("min"), "");
+                itemstack.getTagCompound().removeTag("min");
+                Vec3d loc = player.getPositionVector().addVector(0, player.getEyeHeight(), 0)
+                        .add(player.getLookVec().scale(2));
+                Vector3 hit = Vector3.getNewVector().set(loc);
+                Vector3 pos2 = hit;
+
+                double xMin = Math.min(pos1.x, pos2.x);
+                double yMin = Math.min(pos1.y, pos2.y);
+                double zMin = Math.min(pos1.z, pos2.z);
+                double xMax = Math.max(pos1.x, pos2.x);
+                double yMax = Math.max(pos1.y, pos2.y);
+                double zMax = Math.max(pos1.z, pos2.z);
+                double x, y, z;
+
+                for (x = xMin; x <= xMax; x++)
+                    for (y = yMin; y <= yMax; y++)
+                        for (z = zMin; z <= zMax; z++)
+                        {
+                            pos1.set(x, y, z);
+                            t = TerrainManager.getInstance().getTerrian(world, pos1);
+                            t.setBiome(pos1, type.getType());
+                        }
+                try
+                {
+                    if (!world.isRemote) player.addChatMessage(
+                            new TextComponentString("Second Position " + hit + ", setting all in between to " + s));
+                }
+                catch (Exception e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
         }
+
+        if (world.isRemote) { return new ActionResult<>(EnumActionResult.PASS, itemstack); }
 
         if (player.isSneaking() && meta == 10)
         {
@@ -183,23 +280,26 @@ public class ItemTarget extends Item
 
             }
         }
-        if (meta == 3 && playerIn.isSneaking() && !worldIn.isRemote)
+        if (meta == 3)
         {
             if (stack.hasTagCompound())
             {
-                if (!stack.getTagCompound().hasKey("pos1x"))
+                if (!playerIn.isSneaking())
                 {
-                    hit.writeToNBT(stack.getTagCompound(), "pos1");
-                    playerIn.addChatMessage(new TextComponentString("First Position " + hit));
+                    NBTTagCompound minTag = new NBTTagCompound();
+                    hit.writeToNBT(minTag, "");
+                    stack.getTagCompound().setTag("min", minTag);
+                    if (!worldIn.isRemote)
+                        playerIn.addChatMessage(new TextComponentString("First Position " + hit.set(hit.getPos())));
                 }
-                else
+                else if (playerIn.isSneaking() && stack.getTagCompound().hasKey("min"))
                 {
                     String s = stack.getTagCompound().getString("biome");
                     BiomeType type = BiomeType.getBiome(s);
                     TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(playerIn);
 
-                    Vector3 pos1 = Vector3.readFromNBT(stack.getTagCompound(), "pos1");
-                    stack.getTagCompound().removeTag("pos1x");
+                    Vector3 pos1 = Vector3.readFromNBT(stack.getTagCompound().getCompoundTag("min"), "");
+                    stack.getTagCompound().removeTag("min");
                     Vector3 pos2 = hit;
 
                     double xMin = Math.min(pos1.x, pos2.x);
@@ -215,19 +315,29 @@ public class ItemTarget extends Item
                             for (z = zMin; z <= zMax; z++)
                             {
                                 pos1.set(x, y, z);
+                                if (!worldIn.isAreaLoaded(pos1.getPos(), 0))
+                                {
+                                    worldIn.getChunkFromBlockCoords(pos1.getPos());
+                                }
+                                if (!worldIn.isAreaLoaded(pos1.getPos(), 0))
+                                {
+                                    System.err.println("not loadted");
+                                    continue;
+                                }
                                 t = TerrainManager.getInstance().getTerrian(worldIn, pos1);
                                 t.setBiome(pos1, type.getType());
                             }
                     try
                     {
-                        playerIn.addChatMessage(
-                                new TextComponentString("Second Position " + hit + ", setting all in between to " + s));
+                        if (!worldIn.isRemote) playerIn.addChatMessage(new TextComponentString(
+                                "Second Position " + hit.set(hit.getPos()) + ", setting all in between to " + s));
                     }
                     catch (Exception e)
                     {
                         e.printStackTrace();
                     }
                 }
+                return EnumActionResult.SUCCESS;
             }
             return EnumActionResult.SUCCESS;
         }

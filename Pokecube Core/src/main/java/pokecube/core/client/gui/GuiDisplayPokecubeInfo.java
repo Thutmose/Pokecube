@@ -30,8 +30,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -480,9 +478,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             boolean attack = false;
             if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
             {
-                ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
-                        pokemob.getPokemonDisplayName(), target.getDisplayName());
-                pokemob.displayMessageToOwner(mess);
                 attack = true;
             }
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
@@ -511,10 +506,6 @@ public class GuiDisplayPokecubeInfo extends Gui
                 Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
                 if (move != null && (target != null || targetLocation != null))
                 {
-                    ITextComponent mess = new TextComponentTranslation("pokemob.action.usemove",
-                            pokemob.getPokemonDisplayName(),
-                            new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
-                    pokemob.displayMessageToOwner(mess);
                     if (targetLocation != null)
                     {
                         targetLocation.addTo(Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.5));

@@ -37,6 +37,7 @@ import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityHasPokemobs;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
+import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
@@ -44,6 +45,7 @@ import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TimePeriod;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class EntityTrainer extends EntityHasPokemobs
@@ -104,8 +106,11 @@ public class EntityTrainer extends EntityHasPokemobs
                 int stat1 = getBaseStats(mon1);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 String trader1 = mon1.getPokemonOwnerName();
+                boolean everstone = PokecubeManager.getHeldItemMainhand(stack) != null && Tools
+                        .isSameStack(PokecubeManager.getHeldItemMainhand(stack), PokecubeItems.getStack("everstone"));
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwnerByName(trader1);
+                mon.setTraded(!everstone);
                 stack = PokecubeManager.pokemobToItem(mon);
                 stack.getTagCompound().setInteger("slotnum", i);
                 tradeList.add(new MerchantRecipe(buy1, stack));

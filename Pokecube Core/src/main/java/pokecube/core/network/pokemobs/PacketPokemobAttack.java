@@ -8,6 +8,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -94,10 +96,24 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         IPokemob pokemob = (IPokemob) user;
         Vector3 temp = Vector3.getNewVector().set(user);
         int currentMove = pokemob.getMoveIndex();
-
         if (currentMove == 5 || !MovesUtils.canUseMove(pokemob)) { return; }
 
         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMoves()[currentMove]);
+
+        if (target != null && target != user)
+        {
+            ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
+                    pokemob.getPokemonDisplayName(), target.getDisplayName());
+            pokemob.displayMessageToOwner(mess);
+        }
+        else
+        {
+            ITextComponent mess = new TextComponentTranslation("pokemob.action.usemove",
+                    pokemob.getPokemonDisplayName(),
+                    new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
+            pokemob.displayMessageToOwner(mess);
+        }
+
         boolean teleport = message.teleport;
         if (teleport)
         {
@@ -114,6 +130,13 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
             {
                 if (target == user) target = null;
                 Entity closest = target;
+
+                if (target != null && target instanceof IPokemob)
+                {
+                    ((EntityLiving) target).setAttackTarget((EntityLivingBase) user);
+                    ((EntityLiving) user).setAttackTarget((EntityLivingBase) target);
+                }
+
                 if (closest instanceof IPokemob)
                 {
                     IPokemob tempMob = (IPokemob) closest;

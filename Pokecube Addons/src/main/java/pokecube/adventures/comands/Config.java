@@ -106,6 +106,8 @@ public class Config extends ConfigBase
     public int                         trainerSendOutDelay = 50;
     @Configure(category = trainers)
     public int                         trainerBattleDelay  = 100;
+    @Configure(category = trainers)
+    public int                         trainerSightRange   = 10;
 
     @Configure(category = misc)
     protected boolean                  tmRecipe            = true;

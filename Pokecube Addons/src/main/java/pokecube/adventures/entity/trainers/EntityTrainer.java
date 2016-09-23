@@ -52,7 +52,7 @@ public class EntityTrainer extends EntityHasPokemobs
 {
 
     private boolean   randomize  = false;
-
+    public int        sight      = 0;
     public Vector3    location   = null;
     public String     name       = "";
     public String     playerName = "";
@@ -402,6 +402,7 @@ public class EntityTrainer extends EntityHasPokemobs
         randomize = nbt.getBoolean("randomTeam");
         male = nbt.getBoolean("gender");
         name = nbt.getString("name");
+        sight = nbt.getInteger("sight");
         setTypes();
     }
 
@@ -488,5 +489,6 @@ public class EntityTrainer extends EntityHasPokemobs
         nbt.setBoolean("gender", male);
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
+        nbt.setInteger("sight", sight);
     }
 }

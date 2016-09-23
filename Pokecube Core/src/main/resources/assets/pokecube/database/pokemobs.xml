@@ -8212,7 +8212,6 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>199.0</MASSKG>
             <EXPYIELD>306</EXPYIELD>
-            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -8243,7 +8242,6 @@
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <MASSKG>5.0</MASSKG>
             <EXPYIELD>270</EXPYIELD>
-            <Drop n="1" r="1" id="minecraft:nether_star"/>
             <FOODMATERIAL>light</FOODMATERIAL>
             <BASEFRIENDSHIP>100</BASEFRIENDSHIP>
             <LOGIC shoulder="FALSE"/>

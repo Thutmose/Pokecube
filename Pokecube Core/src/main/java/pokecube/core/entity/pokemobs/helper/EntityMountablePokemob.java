@@ -5,20 +5,23 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.List;
 
+import javax.vecmath.Vector3f;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokeType;
-import thut.api.maths.Vector3;
+import thut.api.entity.IMultiplePassengerEntity;
 
 /** Handles the HM behaviour.
  * 
  * @author Manchou */
-public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
+public abstract class EntityMountablePokemob extends EntityEvolvablePokemob implements IMultiplePassengerEntity
 {
     private int       mountCounter       = 0;
     public float      landSpeedFactor    = 1;
@@ -88,30 +91,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     @Override
     public void updatePassenger(Entity passenger)
     {
-        List<Entity> passengers = this.getPassengers();
-        int index = 0;
-        for (int i = 0; i < passengers.size(); i++)
-        {
-            if (passenger == passengers.get(index))
-            {
-                index = i;
-                break;
-            }
-        }
-        if (index >= getPokedexEntry().passengerOffsets.length) index = 0;
-        double[] offset = this.getPokedexEntry().passengerOffsets[index];
-        Vector3 v = Vector3.getNewVector().set(offset);
-        double dx = this.getPokedexEntry().width * this.getSize(), dz = this.getPokedexEntry().length * this.getSize();
-        v.x *= dx;
-        v.y *= this.height;
-        v.z *= dz;
-        Vector3 v0 = v.copy();
-        float yaw = this.rotationYaw;
-        float sin = MathHelper.sin((float) (yaw * 0.017453292F));
-        float cos = MathHelper.cos((float) (yaw * 0.017453292F));
-        v.x = v0.x * cos - v0.z * sin;
-        v.z = v0.x * sin + v0.z * cos;
-        passenger.setPosition(this.posX + v.x, this.posY + passenger.getYOffset() + v.y, this.posZ + v.z);
+        IMultiplePassengerEntity.MultiplePassengerManager.managePassenger(passenger, this);
     }
 
     @Override
@@ -260,5 +240,74 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob
     protected void updateAITick()
     {
 
+    }
+
+    @Override
+    public Vector3f getSeat(Entity passenger)
+    {
+        Vector3f seat = new Vector3f();
+        int index = 0;
+        if (passenger != null)
+        {
+            List<Entity> passengers = this.getPassengers();
+            for (int i = 0; i < passengers.size(); i++)
+            {
+                if (passenger == passengers.get(index))
+                {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        if (index >= getPokedexEntry().passengerOffsets.length) index = 0;
+        double[] offset = this.getPokedexEntry().passengerOffsets[index];
+        seat.x = (float) offset[0];
+        seat.y = (float) offset[1];
+        seat.z = (float) offset[2];
+        float dx = this.getPokedexEntry().width * this.getSize(), dz = this.getPokedexEntry().length * this.getSize();
+        seat.x *= dx;
+        seat.y *= this.height;
+        seat.z *= dz;
+        return seat;
+    }
+
+    @Override
+    public Entity getPassenger(Vector3f seat)
+    {
+        List<Entity> passengers = this.getPassengers();
+        if (!passengers.isEmpty()) return passengers.get(0);
+        return null;
+    }
+
+    @Override
+    public List<Vector3f> getSeats()
+    {
+        return Lists.newArrayList(getSeat(null));
+    }
+
+    @Override
+    public float getYaw()
+    {
+        return rotationYaw;
+    }
+
+    @Override
+    public float getPitch()
+    {
+        return this.getDirectionPitch();
+    }
+
+    // We do our own rendering, so don't need this.
+    @Override
+    public float getPrevYaw()
+    {
+        return getYaw();
+    }
+
+    // We do our own rendering, so don't need this.
+    @Override
+    public float getPrevPitch()
+    {
+        return getPitch();
     }
 }

@@ -18,7 +18,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -92,7 +91,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         {
             if (pokecubes[i] == null)
             {
-                InventoryPC.heal(mob);
+                PokecubeManager.heal(mob);
                 pokecubes[i] = mob.copy();
                 break;
             }

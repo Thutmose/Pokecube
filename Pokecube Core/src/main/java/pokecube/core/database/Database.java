@@ -38,6 +38,7 @@ import pokecube.core.achievements.AchievementKill;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
+import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.interfaces.IPokemob;
@@ -67,6 +68,38 @@ public class Database
             if (!values.containsKey(STARTER)) return null;
             return Boolean.parseBoolean(values.get(STARTER));
         }
+    }
+
+    @XmlRootElement(name = "Drops")
+    public static class XMLDrops
+    {
+        @XmlElement(name = "Drop")
+        private List<XMLSpawnEntry> pokemon = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "Drop")
+    public static class XMLDropEntry extends Drop
+    {
+        @XmlAttribute
+        boolean overwrite = false;
+        @XmlAttribute
+        String  name;
+    }
+
+    @XmlRootElement(name = "Helds")
+    public static class XMLHelds
+    {
+        @XmlElement(name = "Held")
+        private List<XMLSpawnEntry> pokemon = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "Held")
+    public static class XMLHeldEntry extends Drop
+    {
+        @XmlAttribute
+        boolean overwrite = false;
+        @XmlAttribute
+        String  name;
     }
 
     /** <br>

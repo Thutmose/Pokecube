@@ -182,6 +182,7 @@ public class SettingsCommand extends CommandBase
                     return o1.compareToIgnoreCase(o2);
                 }
             });
+            ret = getListOfStringsMatchingLastWord(args, ret);
         }
         return ret;
     }

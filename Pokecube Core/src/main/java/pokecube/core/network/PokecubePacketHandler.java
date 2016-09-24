@@ -201,13 +201,7 @@ public class PokecubePacketHandler
                             }
                             else if (channel == POKECENTER)
                             {
-                                byte[] message = new byte[buffer.array().length - 1];
-
-                                for (int i = 0; i < message.length; i++)
-                                {
-                                    message[i] = buffer.array()[i + 1];
-                                }
-                                handlePokecenterPacket(message, (EntityPlayerMP) player);
+                                handlePokecenterPacket((EntityPlayerMP) player);
                             }
                             else if (channel == TELEPORT)
                             {
@@ -262,6 +256,12 @@ public class PokecubePacketHandler
         public PokecubeServerPacket(ByteBuf buffer)
         {
             this.buffer = (PacketBuffer) buffer;
+        }
+
+        public PokecubeServerPacket(byte channel)
+        {
+            this.buffer = new PacketBuffer(Unpooled.buffer());
+            buffer.writeByte(channel);
         }
 
         @Override
@@ -526,7 +526,7 @@ public class PokecubePacketHandler
                 PokecubeCore.getMessageID(), Side.CLIENT);
     }
 
-    public static void handlePokecenterPacket(byte[] packet, EntityPlayerMP sender)
+    public static void handlePokecenterPacket(EntityPlayerMP sender)
     {
         if (sender.openContainer instanceof IHealer)
         {

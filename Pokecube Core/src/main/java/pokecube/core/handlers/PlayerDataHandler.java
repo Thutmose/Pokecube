@@ -367,9 +367,9 @@ public class PlayerDataHandler
 
     public static class PlayerDataManager
     {
-        Map<Class<? extends PlayerData>, PlayerData> data  = Maps.newHashMap();
-        Map<String, PlayerData>                      idMap = Maps.newHashMap();
-        final String                                 uuid;
+        public Map<Class<? extends PlayerData>, PlayerData> data  = Maps.newHashMap();
+        Map<String, PlayerData>                             idMap = Maps.newHashMap();
+        final String                                        uuid;
 
         public PlayerDataManager(String uuid)
         {

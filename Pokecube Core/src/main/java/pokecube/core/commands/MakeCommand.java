@@ -374,7 +374,6 @@ public class MakeCommand extends CommandBase
                     {
                         name = "\'" + name + "\'";
                     }
-
                     ret.add(name);
                 }
             }
@@ -388,6 +387,7 @@ public class MakeCommand extends CommandBase
                     return o1.compareToIgnoreCase(o2);
                 }
             });
+            ret = getListOfStringsMatchingLastWord(args, ret);
         }
         return ret;
     }

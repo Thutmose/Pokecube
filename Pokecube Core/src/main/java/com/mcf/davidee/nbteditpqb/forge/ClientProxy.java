@@ -66,6 +66,17 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 	}
+
+    @Override
+    public void openEditGUI(final int entityID, final String customName, final NBTTagCompound tag)
+    {
+        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditNBTTree(entityID, customName, tag));
+            }
+        });
+    }
 	
 	@Override
 	public void openEditGUI(final BlockPos pos, final NBTTagCompound tag) {

@@ -10,6 +10,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -21,7 +22,7 @@ import pokecube.core.commands.CommandTools;
 import scala.actors.threadpool.Arrays;
 import thut.core.common.config.Configure;
 
-public class GeneralCommands implements ICommand
+public class GeneralCommands extends CommandBase
 {
     private static List<String> options = Lists.newArrayList();
 
@@ -121,7 +122,7 @@ public class GeneralCommands implements ICommand
                 }
                 else
                 {
-                    if(!isOp)
+                    if (!isOp)
                     {
                         text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
@@ -239,7 +240,7 @@ public class GeneralCommands implements ICommand
                     return o1.compareToIgnoreCase(o2);
                 }
             });
-
+            ret = getListOfStringsMatchingLastWord(args, ret);
             return ret;
         }
         else if (args.length == 1)
@@ -247,8 +248,9 @@ public class GeneralCommands implements ICommand
             List<String> ret = new ArrayList<String>();
             for (String s : options)
             {
-                if (s.startsWith(args[0])) ret.add(s);
+                ret.add(s);
             }
+            ret = getListOfStringsMatchingLastWord(args, ret);
             return ret;
         }
         return null;

@@ -7,10 +7,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.Tools;
 
 public class RecipeRevive implements IRecipe
 {
@@ -85,9 +83,7 @@ public class RecipeRevive implements IRecipe
             {
                 if (stack.getItemDamage() != 32767) return false;
                 healed = stack.copy();
-                if (stack.getItemDamage() == 32767) PokecubeManager.setStatus(healed, IMoveConstants.STATUS_NON);
-                int serialization = Tools.getHealedPokemobSerialization();
-                healed.setItemDamage(stack.getItemDamage() == 32767 ? serialization : stack.getItemDamage());
+                if (stack.getItemDamage() == 32767) PokecubeManager.heal(healed);
             }
             return healed != null;
         }

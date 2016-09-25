@@ -1047,9 +1047,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         int level = Tools.xpToLevel(getExperienceMode(), exp);
         this.oldLevel = 0;
+        dataManager.set(EXPDW, exp);
         EntityPokemobBase ret = (EntityPokemobBase) this.levelUp(level);
         ItemStack held = getHeldItemMainhand();
-        ret.dataManager.set(EXPDW, exp);
         while (ret.canEvolve(held))
         {
             IPokemob temp = ret.evolve(false, true, held);

@@ -43,29 +43,22 @@ public class AIStoreStuff extends AIBase
                         itemStackIn.stackSize = 0;
                         return true;
                     }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
                 }
-                else
+                int i;
+
+                while (true)
                 {
-                    int i;
+                    i = itemStackIn.stackSize;
+                    itemStackIn.stackSize = storePartialItemStack(itemStackIn, toAddTo, minIndex);
 
-                    while (true)
+                    if (itemStackIn.stackSize <= 0 || itemStackIn.stackSize >= i)
                     {
-                        i = itemStackIn.stackSize;
-                        itemStackIn.stackSize = storePartialItemStack(itemStackIn, toAddTo, minIndex);
-
-                        if (itemStackIn.stackSize <= 0 || itemStackIn.stackSize >= i)
-                        {
-                            break;
-                        }
+                        break;
                     }
-
-                    return itemStackIn.stackSize < i;
-
                 }
+
+                return itemStackIn.stackSize < i;
             }
             catch (Throwable throwable)
             {
@@ -77,10 +70,7 @@ public class AIStoreStuff extends AIBase
                 throw new ReportedException(crashreport);
             }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     /** Returns the first item stack that is empty. */
@@ -128,42 +118,36 @@ public class AIStoreStuff extends AIBase
         {
             return i;
         }
-        else
+        if (inventory.getStackInSlot(j) == null)
         {
-            if (inventory.getStackInSlot(j) == null)
-            {
-                inventory.setInventorySlotContents(j, new ItemStack(item, 0, itemStackIn.getMetadata()));
+            inventory.setInventorySlotContents(j, new ItemStack(item, 0, itemStackIn.getMetadata()));
 
-                if (itemStackIn.hasTagCompound())
-                {
-                    inventory.getStackInSlot(j).setTagCompound((NBTTagCompound) itemStackIn.getTagCompound().copy());
-                }
-            }
-
-            int k = i;
-
-            if (i > inventory.getStackInSlot(j).getMaxStackSize() - inventory.getStackInSlot(j).stackSize)
+            if (itemStackIn.hasTagCompound())
             {
-                k = inventory.getStackInSlot(j).getMaxStackSize() - inventory.getStackInSlot(j).stackSize;
-            }
-
-            if (k > inventory.getInventoryStackLimit() - inventory.getStackInSlot(j).stackSize)
-            {
-                k = inventory.getInventoryStackLimit() - inventory.getStackInSlot(j).stackSize;
-            }
-
-            if (k == 0)
-            {
-                return i;
-            }
-            else
-            {
-                i = i - k;
-                inventory.getStackInSlot(j).stackSize += k;
-                inventory.getStackInSlot(j).animationsToGo = 5;
-                return i;
+                inventory.getStackInSlot(j).setTagCompound((NBTTagCompound) itemStackIn.getTagCompound().copy());
             }
         }
+
+        int k = i;
+
+        if (i > inventory.getStackInSlot(j).getMaxStackSize() - inventory.getStackInSlot(j).stackSize)
+        {
+            k = inventory.getStackInSlot(j).getMaxStackSize() - inventory.getStackInSlot(j).stackSize;
+        }
+
+        if (k > inventory.getInventoryStackLimit() - inventory.getStackInSlot(j).stackSize)
+        {
+            k = inventory.getInventoryStackLimit() - inventory.getStackInSlot(j).stackSize;
+        }
+
+        if (k == 0)
+        {
+            return i;
+        }
+        i = i - k;
+        inventory.getStackInSlot(j).stackSize += k;
+        inventory.getStackInSlot(j).animationsToGo = 5;
+        return i;
     }
 
     final EntityLiving entity;

@@ -382,10 +382,7 @@ public class PokedexEntryLoader
                     entry.mergeMissingFrom(e);
                     return;
                 }
-                else
-                {
-                    return;
-                }
+                return;
             }
         }
         entries.add(entry);
@@ -604,7 +601,9 @@ public class PokedexEntryLoader
     {
         JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(new FileReader(file));
+        FileReader reader = new FileReader(file);
+        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(reader);
+        reader.close();
         return database;
     }
 
@@ -704,7 +703,7 @@ public class PokedexEntryLoader
         if (numberString == null || dataString == null) return;
         if (fxString == null) fxString = "";
         String evolutionNbs = numberString;
-        if (evolutionNbs != null && !evolutionNbs.isEmpty())
+        if (!evolutionNbs.isEmpty())
         {
             String[] evols = numberString.split(" ");
             String[] evolData = dataString.split(" ");
@@ -759,6 +758,26 @@ public class PokedexEntryLoader
         }
     }
 
+    public static void handleAddSpawn(SpawnData spawnData, SpawnRule rule)
+    {
+        SpawnEntry spawnEntry = new SpawnEntry();
+        String val;
+        if ((val = rule.values.get(new QName("min"))) != null)
+        {
+            spawnEntry.min = Integer.parseInt(val);
+        }
+        if ((val = rule.values.get(new QName("max"))) != null)
+        {
+            spawnEntry.max = Integer.parseInt(val);
+        }
+        if ((val = rule.values.get(new QName("rate"))) != null)
+        {
+            spawnEntry.rate = Float.parseFloat(val);
+        }
+        SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
+        spawnData.matchers.put(matcher, spawnEntry);
+    }
+
     private static void parseSpawns(PokedexEntry entry, StatsNode xmlStats)
     {
         if (xmlStats.spawnRules.isEmpty() || entry.isGenderForme) return;
@@ -768,25 +787,9 @@ public class PokedexEntryLoader
         {
             spawnData = new SpawnData(entry);
         }
-        SpawnEntry spawnEntry;
         for (SpawnRule rule : xmlStats.spawnRules)
         {
-            spawnEntry = new SpawnEntry();
-            String val;
-            if ((val = rule.values.get(new QName("min"))) != null)
-            {
-                spawnEntry.min = Integer.parseInt(val);
-            }
-            if ((val = rule.values.get(new QName("max"))) != null)
-            {
-                spawnEntry.max = Integer.parseInt(val);
-            }
-            if ((val = rule.values.get(new QName("rate"))) != null)
-            {
-                spawnEntry.rate = Float.parseFloat(val);
-            }
-            SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
-            spawnData.matchers.put(matcher, spawnEntry);
+            handleAddSpawn(spawnData, rule);
         }
         entry.setSpawnData(spawnData);
         if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
@@ -802,60 +805,72 @@ public class PokedexEntryLoader
         }
     }
 
+    public static void handleAddDrop(PokedexEntry entry, Drop d)
+    {
+        Map<QName, String> values = d.values;
+        if (d.tag != null)
+        {
+            QName name = new QName("tag");
+            values.put(name, d.tag);
+        }
+        ItemStack stack = Tools.getStack(d.values);
+        if (stack != null)
+        {
+            float chance = 1;
+            for (QName key : values.keySet())
+            {
+                if (key.toString().equals("r"))
+                {
+                    chance = Float.parseFloat(values.get(key));
+                    break;
+                }
+            }
+            entry.drops.put(stack, chance);
+        }
+    }
+
+    public static void handleAddHeld(PokedexEntry entry, Drop d)
+    {
+        Map<QName, String> values = d.values;
+        if (d.tag != null)
+        {
+            QName name = new QName("tag");
+            values.put(name, d.tag);
+        }
+        ItemStack stack = Tools.getStack(d.values);
+        if (stack != null)
+        {
+            float chance = 1;
+            for (QName key : values.keySet())
+            {
+                if (key.toString().equals("r"))
+                {
+                    chance = Float.parseFloat(values.get(key));
+                    break;
+                }
+            }
+            entry.held.put(stack, chance);
+        }
+    }
+
     private static void postIniStats(PokedexEntry entry, StatsNode xmlStats)
     {
 
         // Items
+        // Drops
         if (!xmlStats.drops.isEmpty())
         {
             for (Drop d : xmlStats.drops)
             {
-                Map<QName, String> values = d.values;
-                if (d.tag != null)
-                {
-                    QName name = new QName("tag");
-                    values.put(name, d.tag);
-                }
-                ItemStack stack = Tools.getStack(d.values);
-                if (stack != null)
-                {
-                    float chance = 1;
-                    for (QName key : values.keySet())
-                    {
-                        if (key.toString().equals("r"))
-                        {
-                            chance = Float.parseFloat(values.get(key));
-                            break;
-                        }
-                    }
-                    entry.drops.put(stack, chance);
-                }
+                handleAddDrop(entry, d);
             }
         }
+        // Held
         if (!xmlStats.held.isEmpty())
         {
             for (Drop d : xmlStats.held)
             {
-                Map<QName, String> values = d.values;
-                if (d.tag != null)
-                {
-                    QName name = new QName("tag");
-                    values.put(name, d.tag);
-                }
-                ItemStack stack = Tools.getStack(d.values);
-                if (stack != null)
-                {
-                    float chance = 1;
-                    for (QName key : values.keySet())
-                    {
-                        if (key.toString().equals("r"))
-                        {
-                            chance = Float.parseFloat(values.get(key));
-                            break;
-                        }
-                    }
-                    entry.held.put(stack, chance);
-                }
+                handleAddHeld(entry, d);
             }
         }
         // Logics

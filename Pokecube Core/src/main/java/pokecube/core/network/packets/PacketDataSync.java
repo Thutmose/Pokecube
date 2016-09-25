@@ -54,6 +54,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);
@@ -94,7 +95,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
                 PokecubeSerializer.getInstance().clearInstance();
                 AISaveHandler.clearInstance();
                 GuiInfoMessages.clear();
-                new GuiTeleport();
+                GuiTeleport.create();
                 PokecubeCore.registerSpawns();
             }
             else

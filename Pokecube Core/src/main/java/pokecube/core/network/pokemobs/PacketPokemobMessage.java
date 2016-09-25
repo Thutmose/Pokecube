@@ -41,6 +41,7 @@ public class PacketPokemobMessage implements IMessage, IMessageHandler<PacketPok
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

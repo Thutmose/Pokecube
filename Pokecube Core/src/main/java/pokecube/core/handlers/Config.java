@@ -167,6 +167,8 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public int                 chaseDistance              = 32;
     @Configure(category = mobAI)
+    public int                 combatDistance             = 8;
+    @Configure(category = mobAI)
     public int                 aiDisableDistance          = 32;
     @Configure(category = mobAI)
     public int                 tameGatherDelay            = 20;
@@ -298,6 +300,8 @@ public class Config extends ConfigBase
     boolean                    resetTags                  = false;
     @Configure(category = advanced)
     String[]                   extraValues                = { "3", "4.5" };
+    @Configure(category = advanced)
+    public boolean             debug                      = false;
 
     @Configure(category = advanced)
     public int                 evolutionTicks             = 50;
@@ -483,7 +487,8 @@ public class Config extends ConfigBase
                     con.setConnectTimeout(1000);
                     con.setReadTimeout(1000);
                     InputStream in = con.getInputStream();
-                    JsonElement element = parser.parse(new InputStreamReader(in));
+                    InputStreamReader reader = new InputStreamReader(in);
+                    JsonElement element = parser.parse(reader);
                     JsonElement element1 = element.getAsJsonObject().get("contributors");
                     JsonArray contribArray = element1.getAsJsonArray();
                     List<String> defaults = Lists.newArrayList(defaultStarters);
@@ -496,6 +501,7 @@ public class Config extends ConfigBase
                         if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
                     }
                     defaultStarts = defaults.toArray(new String[0]);
+                    reader.close();
                 }
                 catch (Exception e)
                 {

@@ -15,12 +15,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PCSaveHandler;
-import pokecube.core.utils.Tools;
 
 public class InventoryPC implements IInventory
 {
@@ -63,7 +61,7 @@ public class InventoryPC implements IInventory
         {
             addStackToPC(player, mob);
         }
-        //TODO see if update packet here was needed.
+        // TODO see if update packet here was needed.
     }
 
     public static void addStackToPC(String uuid, ItemStack mob)
@@ -80,7 +78,7 @@ public class InventoryPC implements IInventory
         if (PokecubeManager.isFilled(mob))
         {
             ItemStack stack = mob;
-            heal(stack);
+            PokecubeManager.heal(stack);
             if (PokecubeCore.proxy.getPlayer(uuid) != null) PokecubeCore.proxy.getPlayer(uuid)
                     .addChatMessage(new TextComponentTranslation("tile.pc.sentto", mob.getDisplayName()));
         }
@@ -96,7 +94,8 @@ public class InventoryPC implements IInventory
 
     public static InventoryPC getPC(Entity player)
     {// TODO Sync box names/numbers to blank
-        if (player == null || player.getEntityWorld().isRemote) return blank == null ? blank = new InventoryPC("blank") : blank;
+        if (player == null || player.getEntityWorld().isRemote)
+            return blank == null ? blank = new InventoryPC("blank") : blank;
         return getPC(player.getCachedUniqueIdString());
     }
 
@@ -104,7 +103,7 @@ public class InventoryPC implements IInventory
     {
         if (uuid != null)
         {
-            if(!map.containsKey(uuid))
+            if (!map.containsKey(uuid))
             {
                 PCSaveHandler.getInstance().loadPC(uuid);
             }
@@ -117,47 +116,19 @@ public class InventoryPC implements IInventory
                 }
                 return map.get(uuid);
             }
-            else
-            {
-                boolean isUid = true;
-                try
-                {
-                    UUID.fromString(uuid);
-                }
-                catch (Exception e)
-                {
-                    isUid = false;
-                }
-                if (!isUid) return getPC(PokecubeMod.fakeUUID.toString());
-                return new InventoryPC(uuid);
-            }
-        }
-        return null;
-    }
-
-    public static void heal(ItemStack stack)
-    {
-
-        if (stack != null)
-        {
-            int serialization = Tools.getHealedPokemobSerialization();
-            stack.setItemDamage(serialization);
+            boolean isUid = true;
             try
             {
-                byte oldStatus = PokecubeManager.getStatus(stack);
-                if (oldStatus > IMoveConstants.STATUS_NON)
-                {
-                    String itemName = stack.getDisplayName();
-                    if (itemName.contains(" (")) itemName = itemName.substring(0, itemName.lastIndexOf(" "));
-                    stack.setStackDisplayName(itemName);
-                }
+                UUID.fromString(uuid);
             }
-            catch (Throwable e)
+            catch (Exception e)
             {
-                e.printStackTrace();
+                isUid = false;
             }
-            PokecubeManager.setStatus(stack, IMoveConstants.STATUS_NON);
+            if (!isUid) return getPC(PokecubeMod.fakeUUID.toString());
+            return new InventoryPC(uuid);
         }
+        return null;
     }
 
     public static void loadFromNBT(NBTTagList nbt)
@@ -402,21 +373,15 @@ public class InventoryPC implements IInventory
                 contents.put(i, null);
                 return itemstack;
             }
-            else
-            {
-                itemstack = contents.get(i).splitStack(j);
+            itemstack = contents.get(i).splitStack(j);
 
-                if (contents.get(i).stackSize == 0)
-                {
-                    contents.put(i, null);
-                }
-                return itemstack;
+            if (contents.get(i).stackSize == 0)
+            {
+                contents.put(i, null);
             }
+            return itemstack;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public HashSet<ItemStack> getContents()

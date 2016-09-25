@@ -39,6 +39,7 @@ public class ProxyClient extends Proxy
         super.init();
     }
 
+    @Override
     public void postInit()
     {
         super.postInit();

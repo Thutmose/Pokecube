@@ -24,13 +24,6 @@ public class ItemPokemobUseableFood extends ItemFood implements IPokemobUseable
         {
             float health = mob.getHealth();
             float maxHealth = mob.getMaxHealth();
-
-            if (health == maxHealth)
-            {
-                mob.setHealth(health - 10);
-                return false;
-            }
-
             if (health + 20 < maxHealth) mob.setHealth(health + 20);
             else mob.setHealth(maxHealth);
             stack.splitStack(1);
@@ -46,7 +39,7 @@ public class ItemPokemobUseableFood extends ItemFood implements IPokemobUseable
         {
             EntityLivingBase mob = (EntityLivingBase) user;
             if (player != null) return useByPlayerOnPokemob(mob, stack);
-            else return useByPokemob(mob, stack);
+            return useByPokemob(mob, stack);
         }
 
         return false;

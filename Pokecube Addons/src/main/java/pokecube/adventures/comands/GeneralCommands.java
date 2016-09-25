@@ -10,6 +10,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -21,7 +22,7 @@ import pokecube.core.commands.CommandTools;
 import scala.actors.threadpool.Arrays;
 import thut.core.common.config.Configure;
 
-public class GeneralCommands implements ICommand
+public class GeneralCommands extends CommandBase
 {
     private static List<String> options = Lists.newArrayList();
 
@@ -119,40 +120,37 @@ public class GeneralCommands implements ICommand
                     sender.addChatMessage(message);
                     return;
                 }
-                else
+                if (!isOp)
                 {
-                    if(!isOp)
-                    {
-                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
-                        return;
-                    }
-                    try
-                    {
-                        Config.instance.updateField(field, args[2]);
-                    }
-                    catch (Exception e)
-                    {
-                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
-                        return;
-                    }
-                    o = field.get(Config.instance);
-                    text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " set to: " + TextFormatting.GOLD;
-                    if (o instanceof String[] || o instanceof int[])
-                    {
-                        text += Arrays.toString((Object[]) o);
-                    }
-                    else
-                    {
-                        text += o;
-                    }
+                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                     sender.addChatMessage(message);
                     return;
                 }
+                try
+                {
+                    Config.instance.updateField(field, args[2]);
+                }
+                catch (Exception e)
+                {
+                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
+                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                    sender.addChatMessage(message);
+                    return;
+                }
+                o = field.get(Config.instance);
+                text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " set to: " + TextFormatting.GOLD;
+                if (o instanceof String[] || o instanceof int[])
+                {
+                    text += Arrays.toString((Object[]) o);
+                }
+                else
+                {
+                    text += o;
+                }
+                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                sender.addChatMessage(message);
+                return;
             }
             catch (Exception e)
             {
@@ -183,13 +181,10 @@ public class GeneralCommands implements ICommand
                         sender.addChatMessage(message);
                         return;
                     }
-                    else
-                    {
-                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
-                        return;
-                    }
+                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
+                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                    sender.addChatMessage(message);
+                    return;
                 }
 
             }
@@ -239,7 +234,7 @@ public class GeneralCommands implements ICommand
                     return o1.compareToIgnoreCase(o2);
                 }
             });
-
+            ret = getListOfStringsMatchingLastWord(args, ret);
             return ret;
         }
         else if (args.length == 1)
@@ -247,8 +242,9 @@ public class GeneralCommands implements ICommand
             List<String> ret = new ArrayList<String>();
             for (String s : options)
             {
-                if (s.startsWith(args[0])) ret.add(s);
+                ret.add(s);
             }
+            ret = getListOfStringsMatchingLastWord(args, ret);
             return ret;
         }
         return null;

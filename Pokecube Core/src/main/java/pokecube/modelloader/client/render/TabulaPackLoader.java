@@ -1,7 +1,6 @@
 package pokecube.modelloader.client.render;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -220,9 +219,8 @@ public class TabulaPackLoader extends AnimationLoader
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            InputStream stream = res.getInputStream();
-            Document doc = dBuilder.parse(stream);
-
+            Document doc = dBuilder.parse(res.getInputStream());
+            res.close();
             doc.getDocumentElement().normalize();
 
             NodeList modelList = doc.getElementsByTagName("model");
@@ -464,7 +462,8 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void processMetadataForCubeInfo(CubeInfo cube)
         {
-            if (headRoot.isEmpty() && cube.name.toLowerCase(java.util.Locale.ENGLISH).contains("head") && cube.parentIdentifier != null)
+            if (headRoot.isEmpty() && cube.name.toLowerCase(java.util.Locale.ENGLISH).contains("head")
+                    && cube.parentIdentifier != null)
             {
                 headRoot = cube.identifier;
             }
@@ -513,8 +512,7 @@ public class TabulaPackLoader extends AnimationLoader
             if (entry != null)
             {
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-                InputStream stream = res.getInputStream();
-                ZipInputStream zip = new ZipInputStream(stream);
+                ZipInputStream zip = new ZipInputStream(res.getInputStream());
                 Scanner scanner = new Scanner(zip);
                 zip.getNextEntry();
                 String json = scanner.nextLine();
@@ -526,12 +524,13 @@ public class TabulaPackLoader extends AnimationLoader
                         || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
                     AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
                 scanner.close();
+                res.close();
             }
             return entry != null;
         }
         catch (IOException e)
         {
-            if (entry != null && entry.getBaseForme() != null)
+            if (entry.getBaseForme() != null)
             {
                 TabulaModelSet set;
                 if ((set = modelMap.get(entry.getBaseForme())) == null)

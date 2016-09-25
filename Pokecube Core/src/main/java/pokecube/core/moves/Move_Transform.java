@@ -66,7 +66,6 @@ public class Move_Transform extends Move_Basic
     @Override
     public void attack(IPokemob attacker, Entity attacked)
     {
-        if (!(attacker instanceof IPokemob)) return;
         if (attacker.getTransformedTo() == null && attacked instanceof EntityLivingBase)
         {
             if (MovesUtils.contactAttack(attacker, attacked))

@@ -899,10 +899,9 @@ public class GuiPokedex extends GuiScreen
         {
             pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexEntry(pokedexEntry,
                     entityPlayer.getEntityWorld());
-
-            ((IPokemob) pokemob).specificSpawnInit();
             if (pokemob != null)
             {
+                ((IPokemob) pokemob).specificSpawnInit();
                 entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
             }
         }

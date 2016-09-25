@@ -160,9 +160,6 @@ public class RecipePokeseals implements IRecipe
             this.toCraft.setTagCompound(nbttagcompound);
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }

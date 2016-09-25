@@ -24,12 +24,14 @@ public class RecipeClone implements IClonerRecipe
     {
     }
 
+    @Override
     public ItemStack getRecipeOutput()
     {
         return this.output;
     }
 
     /** Returns an Item that is the result of this recipe */
+    @Override
     @Nullable
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
@@ -44,6 +46,7 @@ public class RecipeClone implements IClonerRecipe
     }
 
     /** Used to check if a recipe matches current crafting inventory */
+    @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
         output = null;

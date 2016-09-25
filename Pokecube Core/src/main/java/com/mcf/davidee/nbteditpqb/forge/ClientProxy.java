@@ -66,6 +66,17 @@ public class ClientProxy extends CommonProxy {
 			}
 		});
 	}
+
+    @Override
+    public void openEditGUI(final int entityID, final String customName, final NBTTagCompound tag)
+    {
+        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            @Override
+            public void run() {
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditNBTTree(entityID, customName, tag));
+            }
+        });
+    }
 	
 	@Override
 	public void openEditGUI(final BlockPos pos, final NBTTagCompound tag) {
@@ -132,9 +143,9 @@ public class ClientProxy extends CommonProxy {
 
 		Entity player = Minecraft.getMinecraft().getRenderViewEntity();
 
-		double var8 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double)f;
-		double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double)f;
-		double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double)f;
+		double var8 = player.lastTickPosX + (player.posX - player.lastTickPosX) * f;
+		double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * f;
+		double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * f;
 
 		aabb = aabb.addCoord(-var8, -var10, -var12);
 

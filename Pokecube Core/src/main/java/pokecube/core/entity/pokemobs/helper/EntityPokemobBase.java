@@ -287,10 +287,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             return 20;
         }
-        else
-        {
-            return super.getVerticalFaceSpeed();
-        }
+        return super.getVerticalFaceSpeed();
     }
 
     @Override
@@ -509,8 +506,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                     Vector3 v = Vector3.getNewVector().set(e.offset.x, e.offset.y, e.offset.z);
                     v.scalarMultBy(getSize());
                     Vector3 v0 = v.copy();
-                    float sin = MathHelper.sin((float) (this.rotationYaw * 0.017453292F));
-                    float cos = MathHelper.cos((float) (this.rotationYaw * 0.017453292F));
+                    float sin = MathHelper.sin(this.rotationYaw * 0.017453292F);
+                    float cos = MathHelper.cos(this.rotationYaw * 0.017453292F);
                     v.x = v0.x * cos - v0.z * sin;
                     v.z = v0.x * sin + v0.z * cos;
                     e.motionX = motionX;
@@ -683,9 +680,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // do nothing
     }
 
+    double average = 0;
+
     @Override
     public void onUpdate()
     {
+        long time = System.nanoTime();
         here.set(posX, posY, posZ);
         boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
         if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING) || getPokemonAIState(ANGRY)
@@ -704,34 +704,16 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             int num = rand.nextInt(unowns.length);
             changeForme(unowns[num]);
         }
-        Vector3 temp = Vector3.getNewVector().set(here);
-        Vector3 temp1 = Vector3.getNewVector().setToVelocity(this);
         super.onUpdate();
-
-        boolean aNan = false;
-
-        if (Double.isNaN(motionX))
+        double dt = (System.nanoTime() - time) / 10e3D;
+        average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
+        double toolong = 500;
+        if (PokecubeMod.core.getConfig().debug && dt > toolong && !worldObj.isRemote)
         {
-            motionX = 0;
-            aNan = true;
-        }
-        if (Double.isNaN(motionY))
-        {
-            motionY = 0;
-            aNan = true;
-        }
-        if (Double.isNaN(motionZ))
-        {
-            motionZ = 0;
-            aNan = true;
-        }
-        if (aNan)
-        {
-            System.err.println(this + " had a NaN component in velocity");
-            System.out.println(here + " " + temp);
-            System.out.println(temp1);
-            new Exception().printStackTrace();
-            this.returnToPokecube();
+            here.set(here.getPos());
+            String toLog = "%3$s took %2$s\u00B5s to tick, it is located at %1$s, the average has been %4$s\u00B5s";
+            PokecubeMod.log(String.format(toLog, here, (int) dt, getPokemonDisplayName().getUnformattedComponentText(),
+                    ((int) (average * 100)) / 100d));
         }
     }
 
@@ -781,6 +763,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setSize(getSize());
     }
 
+    @Override
     public void setEntityBoundingBox(AxisAlignedBB bb)
     {
         super.setEntityBoundingBox(bb);

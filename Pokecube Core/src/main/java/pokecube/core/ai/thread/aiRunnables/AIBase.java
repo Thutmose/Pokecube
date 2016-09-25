@@ -68,12 +68,14 @@ public abstract class AIBase implements IAIRunnable
         }
 
     }
+
     public static interface IRunnable
     {
         /** @param world
          * @return task ran sucessfully */
         boolean run(World world);
     }
+
     /** A thread-safe object used to set which move a pokemob is to use.
      * 
      * @author Thutmose */
@@ -134,15 +136,16 @@ public abstract class AIBase implements IAIRunnable
             return true;
         }
     }
+
     /** A thread-safe object used to set the current path for an entity.
      * 
      * @author Thutmose */
     public static class PathInfo implements IRunnable
     {
-        public final Path path;
-        public final int        pather;
-        public final int        dim;
-        public final double     speed;
+        public final Path   path;
+        public final int    pather;
+        public final int    dim;
+        public final double speed;
 
         public PathInfo(int _pather, int dimension, Path _path, double _speed)
         {
@@ -225,8 +228,8 @@ public abstract class AIBase implements IAIRunnable
 
             boolean mobExists = !(unloadedMobs.contains(e));
 
-            if (!mobExists
-                    || (!(e1 instanceof EntityPlayer) && ((e1 != null && !e1.getEntityWorld().loadedEntityList.contains(e1))
+            if (!mobExists || (!(e1 instanceof EntityPlayer)
+                    && ((e1 != null && !e1.getEntityWorld().loadedEntityList.contains(e1))
                             || (e1 != null && unloadedMobs.contains(e1))))) { return false; }
             if (!(mob.isDead || mob.getHealth() <= 0))
             {
@@ -243,6 +246,8 @@ public abstract class AIBase implements IAIRunnable
     int                         mutex    = 0;
 
     protected Vector<IRunnable> toRun    = new Vector<IRunnable>();
+
+    protected Vector<IRunnable> moves    = new Vector<IRunnable>();
 
     protected void addEntityPath(Entity entity, Path path, double speed)
     {
@@ -263,7 +268,8 @@ public abstract class AIBase implements IAIRunnable
     /** Thread safe attack setting */
     protected void addMoveInfo(int attacker, int targetEnt, int dim, Vector3 target, float distance)
     {
-        toRun.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
+        if (!moves.isEmpty()) System.err.println("adding duplicate move");
+        else moves.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
     }
 
     /** Thread safe AI state setting
@@ -303,6 +309,16 @@ public abstract class AIBase implements IAIRunnable
             if (ran)
             {
                 toRun.remove(run);
+            }
+        }
+        runs = Lists.newArrayList();
+        runs.addAll(moves);
+        for (IRunnable run : runs)
+        {
+            boolean ran = run.run(world);
+            if (ran)
+            {
+                moves.remove(run);
             }
         }
     }

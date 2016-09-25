@@ -6,7 +6,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListOpsEntry;
 import net.minecraft.tileentity.TileEntityCommandBlock;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -36,7 +35,6 @@ public class CommandTools
 
     public static ITextComponent makeTranslatedMessage(String key, String formatting, Object... args)
     {
-        ITextComponent message = null;
         if (formatting == null) formatting = "";
         for (int i = 0; i < args.length; i++)
         {
@@ -81,8 +79,7 @@ public class CommandTools
             }
         }
         TextComponentTranslation translated = new TextComponentTranslation(key, args);
-        message = translated != null ? translated : new TextComponentString(TextFormatting.RED + "message error");
-        return message;
+        return translated;
     }
 
     public static void sendBadArgumentsMissingArg(ICommandSender sender)

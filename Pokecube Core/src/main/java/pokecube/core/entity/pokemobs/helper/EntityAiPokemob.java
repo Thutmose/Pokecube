@@ -356,7 +356,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         // Add in the Custom type of AI tasks.
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
-        aiStuff.addAITask(new AICombatMovement(this).setPriority(600));
+        aiStuff.addAITask(new AICombatMovement(this).setPriority(250));
         if (!entry.isStationary)
         {
             aiStuff.addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
@@ -1128,10 +1128,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     this.setJumping(false);
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
+                return true;
             }
 
             // Open Gui
@@ -1308,6 +1305,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.worldObj.theProfiler.endSection();
     }
 
+    @Override
     public AIStuff getAIStuff()
     {
         return aiStuff;

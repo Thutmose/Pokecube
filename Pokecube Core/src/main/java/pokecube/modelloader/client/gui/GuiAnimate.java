@@ -389,19 +389,16 @@ public class GuiAnimate extends GuiScreen
             if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
             int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
-            if (entry != null)
+            IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
+            if (pokemob == null)
             {
-                IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
-                if (pokemob == null)
-                {
-                    EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
-                            .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
-                    pokemob.specificSpawnInit();
-                }
-                forme.setText(pokemob.getPokedexEntry().getName());
-                mob = forme.getText();
-                info.setText("" + pokemob.getSpecialInfo());
+                EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
+                        .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
+                pokemob.specificSpawnInit();
             }
+            forme.setText(pokemob.getPokedexEntry().getName());
+            mob = forme.getText();
+            info.setText("" + pokemob.getSpecialInfo());
         }
         if (forme.isFocused() && typedChar == 13)
         {

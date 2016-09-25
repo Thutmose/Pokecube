@@ -57,6 +57,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

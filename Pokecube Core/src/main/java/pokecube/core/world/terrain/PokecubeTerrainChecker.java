@@ -69,41 +69,38 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
             else if (isCave(v, world)) return BiomeType.CAVE.getType();
             return INSIDE.getType();
         }
-        else
+        int biome = 0;
+        Biome b = v.getBiome(chunk, world.getBiomeProvider());
+        biome = BiomeDatabase.getBiomeType(b);
+        boolean notLake = BiomeDatabase.contains(b, Type.OCEAN) || BiomeDatabase.contains(b, Type.SWAMP)
+                || BiomeDatabase.contains(b, Type.RIVER) || BiomeDatabase.contains(b, Type.WATER)
+                || BiomeDatabase.contains(b, Type.BEACH);
+        int water = v.blockCount2(world, Blocks.WATER, 3);
+        if (water > 4)
         {
-            int biome = 0;
-            Biome b = v.getBiome(chunk, world.getBiomeProvider());
-            biome = BiomeDatabase.getBiomeType(b);
-            boolean notLake = BiomeDatabase.contains(b, Type.OCEAN) || BiomeDatabase.contains(b, Type.SWAMP)
-                    || BiomeDatabase.contains(b, Type.RIVER) || BiomeDatabase.contains(b, Type.WATER)
-                    || BiomeDatabase.contains(b, Type.BEACH);
-            int water = v.blockCount2(world, Blocks.WATER, 3);
-            if (water > 4)
+            if (!notLake)
             {
-                if (!notLake)
-                {
-                    biome = LAKE.getType();
-                }
-                return biome;
-            }
-            boolean sky = chunk.canSeeSky(v.getPos());
-            if (sky)
-            {
-                sky = v.findNextSolidBlock(world, Vector3.secondAxisNeg, 16) == null;
-                if (sky) return BiomeType.SKY.getType();
-            }
-
-            if (world.villageCollectionObj != null)
-            {
-                Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(
-                        MathHelper.floor_double(v.x), MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
-                if (village != null)
-                {
-                    biome = VILLAGE.getType();
-                }
+                biome = LAKE.getType();
             }
             return biome;
         }
+        boolean sky = chunk.canSeeSky(v.getPos());
+        if (sky)
+        {
+            sky = v.findNextSolidBlock(world, Vector3.secondAxisNeg, 16) == null;
+            if (sky) return BiomeType.SKY.getType();
+        }
+
+        if (world.villageCollectionObj != null)
+        {
+            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(
+                    MathHelper.floor_double(v.x), MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
+            if (village != null)
+            {
+                biome = VILLAGE.getType();
+            }
+        }
+        return biome;
     }
 
     public boolean isCave(Vector3 v, World world)

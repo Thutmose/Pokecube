@@ -120,7 +120,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         {
             return BUSH2_AABB;
         }
-        else return BUSH_AABB;
+        return BUSH_AABB;
     }
 
     @Override
@@ -167,7 +167,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
     {
-        Random rand = worldIn instanceof World ? worldIn.rand : RANDOM;
+        Random rand = worldIn != null ? worldIn.rand : RANDOM;
 
         int count = 1 + rand.nextInt(2);
         for (int i = 0; i < count; i++)

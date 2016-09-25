@@ -318,6 +318,7 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(aiTicker);
         MinecraftForge.EVENT_BUS.register(this);
         meteorprocessor = new MeteorAreaSetter();
+        new SpawnEventsHandler();
     }
 
     @SubscribeEvent
@@ -443,21 +444,21 @@ public class EventsHandler
             if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
             {
                 int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-                killer.setExp(exp, true, false);
+                killer.setExp(exp, true);
             }
             if (owner != null)
             {
                 List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(owner);
                 for (IPokemob mob : pokemobs)
                 {
-                    if (mob instanceof IPokemob)
+                    if (mob != null)
                     {
                         IPokemob poke = mob;
                         if (((EntityLiving) poke).getHeldItemMainhand() != null) if (((EntityLiving) poke)
                                 .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
                         {
                             int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-                            poke.setExp(exp, true, false);
+                            poke.setExp(exp, true);
                         }
                     }
                 }
@@ -477,7 +478,7 @@ public class EventsHandler
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
-        if (evt.getTarget() instanceof EntityLivingBase && evt.getEntityLiving() instanceof EntityLiving)
+        if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
         {
             List<IPokemob> pokemon = getPokemobs(evt.getTarget(), 32);
             if (pokemon.isEmpty()) return;
@@ -616,7 +617,7 @@ public class EventsHandler
             PacketDataSync.sendInitPacket(entityPlayer, "pokecube-stats");
         }
 
-        if (evt.player instanceof EntityPlayer)
+        if (evt.player != null)
         {
             if (!evt.player.getEntityWorld().isRemote)
             {

@@ -52,10 +52,12 @@ public class InventoryPlayerPokemob extends AnimalChest
         }
     }
 
+    @Override
     public void openInventory(EntityPlayer player)
     {
     }
 
+    @Override
     public void closeInventory(EntityPlayer player)
     {
         if (player.worldObj.isRemote) return;

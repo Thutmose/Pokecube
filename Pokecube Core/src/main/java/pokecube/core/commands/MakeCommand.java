@@ -63,7 +63,6 @@ public class MakeCommand extends CommandBase
         boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
         boolean isOp = CommandTools.isOp(sender) || commandBlock;
-        System.out.println(isOp + " " + deobfuscated + " " + commandBlock + " " + targets);
         if (deobfuscated || commandBlock)
         {
             String name;
@@ -114,7 +113,6 @@ public class MakeCommand extends CommandBase
                                 {
                                     entry = iterator.next();
                                 }
-                                System.out.println(name + " " + entry + " " + entry.legendary);
                             }
                             else if (name.equalsIgnoreCase("randomall"))
                             {
@@ -233,14 +231,6 @@ public class MakeCommand extends CommandBase
                             }
                         }
 
-                        Vector3 temp = Vector3.getNewVector();
-                        if (player != null)
-                        {
-                            offset = offset.add(temp.set(player.getLookVec()));
-                        }
-                        temp.set(sender.getPosition()).addTo(offset);
-                        temp.moveEntity((Entity) mob);
-
                         if (targets != null)
                         {
                             player = targets[i];
@@ -256,7 +246,7 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
-
+                            player = p;
                             if (p != null) owner = p.getCachedUniqueIdString();
                             else if (owner != null && !owner.isEmpty())
                             {
@@ -267,6 +257,14 @@ public class MakeCommand extends CommandBase
                                 owner = profile.getId().toString();
                             }
                         }
+
+                        Vector3 temp = Vector3.getNewVector();
+                        if (player != null)
+                        {
+                            offset = offset.add(temp.set(player.getLookVec()));
+                        }
+                        temp.set(sender.getPosition()).addTo(offset);
+                        temp.moveEntity((Entity) mob);
 
                         mob.setHp(((EntityLiving) mob).getMaxHealth());
                         if (!owner.equals(""))
@@ -279,9 +277,16 @@ public class MakeCommand extends CommandBase
                         if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
-                        mob = mob.setExp(exp, asWild, true);
-                        level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
-                        mob.levelUp(level);
+                        if (asWild)
+                        {
+                            mob = mob.setForSpawn(exp);
+                        }
+                        else
+                        {
+                            mob = mob.setExp(exp, asWild);
+                            level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
+                            mob.levelUp(level);
+                        }
                         if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
 
                         for (int i1 = 0; i1 < 4; i1++)
@@ -374,7 +379,6 @@ public class MakeCommand extends CommandBase
                     {
                         name = "\'" + name + "\'";
                     }
-
                     ret.add(name);
                 }
             }
@@ -388,6 +392,7 @@ public class MakeCommand extends CommandBase
                     return o1.compareToIgnoreCase(o2);
                 }
             });
+            ret = getListOfStringsMatchingLastWord(args, ret);
         }
         return ret;
     }

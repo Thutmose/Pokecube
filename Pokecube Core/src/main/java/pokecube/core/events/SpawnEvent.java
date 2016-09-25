@@ -8,9 +8,9 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 
-@Cancelable
 public class SpawnEvent extends Event
 {
+    @Cancelable
     public static class Despawn extends SpawnEvent
     {
         public final IPokemob pokemob;
@@ -25,9 +25,8 @@ public class SpawnEvent extends Event
 
     /** Called right before the pokemob is spawned into the world. Cancelling
      * this does nothing.<br>
-     * pokemob is the pokemob entity which is about to spawn.
-     * 
-     * @author Thutmose */
+     * pokemob is the pokemob entity which is about to spawn. */
+    @Cancelable
     public static class Post extends SpawnEvent
     {
         public final IPokemob     pokemob;
@@ -43,9 +42,8 @@ public class SpawnEvent extends Event
 
     /** Called before the pokemob is spawned into the world, during the checks
      * for a valid location. <br>
-     * Cancelling this will prevent the spawn.
-     * 
-     * @author Thutmose */
+     * Cancelling this will prevent the spawn. */
+    @Cancelable
     public static class Pre extends SpawnEvent
     {
         public Pre(PokedexEntry entry, Vector3 location, World worldObj)
@@ -56,9 +54,8 @@ public class SpawnEvent extends Event
 
     /** Called before the pokemob is spawned into the world, during the checks
      * for a valid location. <br>
-     * Cancelling this will prevent the spawn.
-     * 
-     * @author Thutmose */
+     * Cancelling this will prevent the spawn. */
+    @Cancelable
     public static class Check extends SpawnEvent
     {
         /** Is this even actually for spawning, or just checking if something
@@ -70,6 +67,91 @@ public class SpawnEvent extends Event
             super(entry, location, worldObj);
             this.forSpawn = forSpawn;
         }
+    }
+
+    public static class Pick extends SpawnEvent
+    {
+        private PokedexEntry pick;
+
+        public Pick(PokedexEntry entry_, Vector3 location_, World worldObj_)
+        {
+            super(entry_, location_, worldObj_);
+            pick = entry_;
+        }
+
+        public Vector3 getLocation()
+        {
+            return location;
+        }
+
+        public void setLocation(Vector3 loc)
+        {
+            location.set(loc);
+        }
+
+        public PokedexEntry getPicked()
+        {
+            return pick;
+        }
+
+        public void setPick(PokedexEntry toPick)
+        {
+            pick = toPick;
+        }
+
+        /** Called when a location is initially chosen for spawn. The initial
+         * entry handed here will be null, it will be filled in by Pokecube with
+         * an appropriate spawn (if is chosen), with event priority of HIGHEST.
+         * anything that sets this afterwards will override default pick. */
+        public static class Pre extends Pick
+        {
+            public Pre(PokedexEntry entry_, Vector3 location_, World worldObj_)
+            {
+                super(entry_, location_, worldObj_);
+            }
+        }
+
+        /** This is called after Pre is called, but only if the result from Pre
+         * was not null. This one allows modifying the spawn based on the spawn
+         * that was chosen before. */
+        public static class Post extends Pick
+        {
+            public Post(PokedexEntry entry_, Vector3 location_, World worldObj_)
+            {
+                super(entry_, location_, worldObj_);
+            }
+        }
+    }
+
+    /** Called after spawn lvl for a mob is chosen, use setLevel if you wish to
+     * change the level that it spawns at. */
+    public static class Level extends SpawnEvent
+    {
+        private int       level;
+        private final int original;
+
+        public int getLevel()
+        {
+            return level;
+        }
+
+        public int getInitialLevel()
+        {
+            return original;
+        }
+
+        public void setLevel(int level)
+        {
+            this.level = level;
+        }
+
+        public Level(PokedexEntry entry_, Vector3 location_, World worldObj_, int level)
+        {
+            super(entry_, location_, worldObj_);
+            this.level = level;
+            this.original = level;
+        }
+
     }
 
     /** Called when a pokemob is sent out from the cube. */
@@ -95,7 +177,6 @@ public class SpawnEvent extends Event
             public Pre(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
             {
                 super(entry, location, worldObj, pokemob);
-                // TODO Auto-generated constructor stub
             }
         }
 
@@ -104,7 +185,6 @@ public class SpawnEvent extends Event
             public Post(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
             {
                 super(entry, location, worldObj, pokemob);
-                // TODO Auto-generated constructor stub
             }
         }
     }

@@ -39,6 +39,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

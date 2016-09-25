@@ -42,6 +42,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

@@ -137,7 +137,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
 
                 if (((IPokemob) entity).getExp() < 100)
                 {
-                    ((IPokemob) entity).setExp(6000, true, true);
+                    entity = (EntityLiving) ((IPokemob) entity).setForSpawn(6000);
                 }
                 worldIn.spawnEntityInWorld(entity);
                 return true;

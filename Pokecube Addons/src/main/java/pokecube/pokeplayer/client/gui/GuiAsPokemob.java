@@ -33,6 +33,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         super();
     }
 
+    @Override
     public IPokemob[] getPokemobsToDisplay()
     {
         IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
@@ -45,10 +46,11 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     {
         IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
         if (pokemob == null) return super.getCurrentPokemob();
-        if (pokemob != null) currentMoveIndex = moveIndex;
+        currentMoveIndex = moveIndex;
         return pokemob;
     }
 
+    @Override
     public void pokemobAttack()
     {
         IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
@@ -73,66 +75,62 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         Entity target = Tools.getPointedEntity(player, range);
         buffer.writeInt(target != null ? target.getEntityId() : 0);
 
-        if (pokemob != null)
+        if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
+        Vector3 look = Vector3.getNewVector().set(player.getLookVec());
+        Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
+        Vector3 v = pos.findNextSolidBlock(player.worldObj, look, range);
+        boolean attack = false;
+
+        if (target != null)
         {
-            if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec());
-            Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-            Vector3 v = pos.findNextSolidBlock(player.worldObj, look, range);
-            boolean attack = false;
+            if (v == null) v = Vector3.getNewVector();
+            v.set(target);
+        }
+        else if (v == null)
+        {
+            v = pos.add(look.scalarMultBy(range));
+        }
 
-            if (target != null)
+        attack = true;
+        if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
+        {
+            if (!GuiTeleport.instance().getState())
             {
-                if (v == null) v = Vector3.getNewVector();
-                v.set(target);
+                GuiTeleport.instance().setState(true);
+                return;
             }
-            else if (v == null)
+            GuiTeleport.instance().setState(false);
+
+            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+            List<TeleDest> locations = PokecubeSerializer.getInstance()
+                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+
+            if (locations.size() > 0)
             {
-                v = pos.add(look.scalarMultBy(range));
+                buffer.writeBoolean(true);
             }
-
-            attack = true;
-            if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
+            else
             {
-                if (!GuiTeleport.instance().getState())
-                {
-                    GuiTeleport.instance().setState(true);
-                    return;
-                }
-                else
-                {
-                    GuiTeleport.instance().setState(false);
-
-                    Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                    List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getUniqueID().toString());
-
-                    if (locations.size() > 0)
-                    {
-                        buffer.writeBoolean(true);
-                    }
-                    else
-                    {
-                        buffer.writeBoolean(false);
-                    }
-                }
-            }
-            else if (!attack)
-            {
-                if (move != null && (target != null || v != null))
-                {
-//                    String mess = StatCollector.translateToLocalFormatted("pokemob.action.usemove",
-//                            pokemob.getPokemonDisplayName(), MovesUtils.getTranslatedMove(move.getName()));
-//                    pokemob.displayMessageToOwner(mess);//TODO move message
-                }
                 buffer.writeBoolean(false);
             }
-            else buffer.writeBoolean(false);
-
-            if (v != null)
+        }
+        else if (!attack)
+        {
+            if ((target != null || v != null))
             {
-                v.writeToBuff(buffer);
+                // String mess =
+                // StatCollector.translateToLocalFormatted("pokemob.action.usemove",
+                // pokemob.getPokemonDisplayName(),
+                // MovesUtils.getTranslatedMove(move.getName()));
+                // pokemob.displayMessageToOwner(mess);//TODO move message
             }
+            buffer.writeBoolean(false);
+        }
+        else buffer.writeBoolean(false);
+
+        if (v != null)
+        {
+            v.writeToBuff(buffer);
         }
 
         if (range == contactRange && target == null) return;
@@ -141,6 +139,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         PokecubePacketHandler.sendToServer(packet);
     }
 
+    @Override
     public void pokemobBack()
     {
         if (!isPokemob()) super.pokemobBack();
@@ -150,6 +149,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         }
     }
 
+    @Override
     public void nextMove(int i)
     {
         if (!isPokemob()) super.nextMove(i);
@@ -159,6 +159,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         }
     }
 
+    @Override
     public void previousMove(int j)
     {
         if (!isPokemob()) super.previousMove(j);
@@ -168,6 +169,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         }
     }
 
+    @Override
     public void setMove(int num)
     {
         if (!isPokemob()) super.setMove(num);

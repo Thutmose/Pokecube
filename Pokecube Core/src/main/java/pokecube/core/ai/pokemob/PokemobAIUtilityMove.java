@@ -77,7 +77,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
     @Override
     public void updateTask()
     {
-        if (destination == null)
+        if (destination == null || entity.getAttackTarget() != null)
         {
             if (pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
                 pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);

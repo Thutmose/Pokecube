@@ -626,10 +626,16 @@ public interface IPokemob extends IMoveConstants
      * @param exp
      * @param notifyLevelUp
      *            should be false in an initialize step and true in a true exp
-     *            earning
-     * @param newlySpawned
-     *            true if called by a spawner, false otherwise */
-    IPokemob setExp(int exp, boolean notifyLevelUp, boolean newlySpawned);
+     *            earning*/
+    IPokemob setExp(int exp, boolean notifyLevelUp);
+
+    /** Sets the experience.
+     *
+     * @param exp
+     * @param notifyLevelUp
+     *            should be false in an initialize step and true in a true exp
+     *            earning*/
+    IPokemob setForSpawn(int exp);
 
     void setExplosionState(int i);
 

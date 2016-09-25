@@ -86,6 +86,8 @@ public class Compat
     }
 
     public static String       CUSTOMSPAWNSFILE;
+    public static String       CUSTOMDROPSFILE;
+    public static String       CUSTOMHELDFILE;
 
     @Instance("pokecube_compat")
     public static Compat       instance;
@@ -98,17 +100,19 @@ public class Compat
     {
         File file = evt.getSuggestedConfigurationFile();
         String seperator = System.getProperty("file.separator");
-
         String folder = file.getAbsolutePath();
         String name = file.getName();
         folder = folder.replace(name, "pokecube" + seperator + "compat" + seperator + "spawns.xml");
-
         CUSTOMSPAWNSFILE = folder;
-        writeDefaultConfig();
+        CUSTOMDROPSFILE = folder.replace("spawns.xml", "drops.xml");
+        CUSTOMHELDFILE = folder.replace("spawns.xml", "held.xml");
+        writeDefaultSpawnsConfig();
+        writeDefaultDropsConfig();
+        writeDefaultHeldConfig();
         return;
     }
 
-    private static void writeDefaultConfig()
+    private static void writeDefaultSpawnsConfig()
     {
         try
         {
@@ -138,6 +142,67 @@ public class Compat
             out.println(cater1);
             out.println(cater2);
             out.println("</Spawns>");
+
+            out.close();
+            fwriter.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeDefaultDropsConfig()
+    {
+        try
+        {
+            File temp = new File(CUSTOMDROPSFILE.replace("drops.xml", ""));
+            if (!temp.exists())
+            {
+                temp.mkdirs();
+            }
+            File temp1 = new File(CUSTOMDROPSFILE);
+            if (temp1.exists()) { return; }
+
+            String bulba = "    <Drop name=\"Bulbasaur\" overwrite=\"true\" "
+                    + "n=\"1\" r=\"1\" id=\"minecraft:wheat_seeds\"/>";
+
+            fwriter = new FileWriter(CUSTOMDROPSFILE);
+            out = new PrintWriter(fwriter);
+            out.println("<?xml version=\"1.0\"?>");
+            out.println("<Drops>");
+            out.println(bulba);
+            out.println("</Drops>");
+
+            out.close();
+            fwriter.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static void writeDefaultHeldConfig()
+    {
+        try
+        {
+            File temp = new File(CUSTOMHELDFILE.replace("held.xml", ""));
+            if (!temp.exists())
+            {
+                temp.mkdirs();
+            }
+            File temp1 = new File(CUSTOMHELDFILE);
+            if (temp1.exists()) { return; }
+
+            String nidor = "    <Held name=\"NidoranF\" overwrite=\"true\" n=\"1\" r=\"1.0\" id=\"moonstone\"/>";
+
+            fwriter = new FileWriter(CUSTOMHELDFILE);
+            out = new PrintWriter(fwriter);
+            out.println("<?xml version=\"1.0\"?>");
+            out.println("<Helds>");
+            out.println(nidor);
+            out.println("</Helds>");
 
             out.close();
             fwriter.close();
@@ -263,6 +328,8 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(this);
         setSpawnsFile(evt);
         Database.addSpawnData(CUSTOMSPAWNSFILE);
+        Database.addDropData(CUSTOMSPAWNSFILE.replace("spawns.xml", "drops.xml"));
+        Database.addHeldData(CUSTOMSPAWNSFILE.replace("spawns.xml", "held.xml"));
     }
 
     @Optional.Method(modid = "reccomplex")

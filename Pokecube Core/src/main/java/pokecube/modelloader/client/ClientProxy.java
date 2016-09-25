@@ -77,7 +77,7 @@ public class ClientProxy extends CommonProxy
                 {
                     ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");
                     IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                    res.getInputStream().close();
+                    res.close();
                     ArrayList<String> models = modModels.get(mod);
                     if (models == null)
                     {
@@ -92,6 +92,7 @@ public class ClientProxy extends CommonProxy
                         ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
                         IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                         res.getInputStream().close();
+                        res.close();
                         ArrayList<String> models = modModels.get(mod);
                         if (models == null)
                         {
@@ -107,6 +108,7 @@ public class ClientProxy extends CommonProxy
                                     provider.getModelDirectory(p) + name + ".x3d");
                             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                             res.getInputStream().close();
+                            res.close();
                             ArrayList<String> models = modModels.get(mod);
                             if (models == null)
                             {

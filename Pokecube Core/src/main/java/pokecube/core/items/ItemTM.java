@@ -48,14 +48,12 @@ public class ItemTM extends ItemPokemobUseable
                 if (level == 100) return false;
 
                 int xp = Tools.levelToXp(((IPokemob) entity).getExperienceMode(), level + 1);
-                ((IPokemob) entity).setExp(xp, true, false);
+                ((IPokemob) entity).setExp(xp, true);
                 PokecubeItems.deValidate(stack);
                 return true;
             }
-            else// it is a TM, should try to teach the move
-            {
-                return teachToPokemob(stack, (IPokemob) entity);
-            }
+            // it is a TM, should try to teach the move
+            return teachToPokemob(stack, (IPokemob) entity);
         }
         return false;
     }
@@ -79,7 +77,7 @@ public class ItemTM extends ItemPokemobUseable
             NBTTagCompound nbt = tm.getTagCompound();
             if (nbt == null) return false;
             String name = nbt.getString("move");
-            if (name.contentEquals("") || name == null) return false;
+            if (name.contentEquals("")) return false;
             for (String move : mob.getMoves())
             {
                 if (name.equals(move)) return false;
@@ -139,17 +137,14 @@ public class ItemTM extends ItemPokemobUseable
             {
                 return feedToPokemob(stack, mob);
             }
-            else
+            // If invalid candy, drop level since it is bad candy
+            if (num == 20)
             {
-                // If invalid candy, drop level since it is bad candy
-                if (num == 20)
-                {
-                    int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
-                    ((IPokemob) mob).setExp(xp, true, false);
-                    stack.setTagCompound(null);
-                    stack.splitStack(1);
-                    return true;
-                }
+                int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
+                ((IPokemob) mob).setExp(xp, true);
+                stack.setTagCompound(null);
+                stack.splitStack(1);
+                return true;
             }
         }
         else
@@ -159,7 +154,7 @@ public class ItemTM extends ItemPokemobUseable
             if (num == 20)
             {
                 int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
-                ((IPokemob) mob).setExp(xp, true, false);
+                ((IPokemob) mob).setExp(xp, true);
                 stack.setTagCompound(null);
                 stack.splitStack(1);
                 return true;

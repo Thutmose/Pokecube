@@ -28,10 +28,8 @@ public class GuiHealTable extends GuiContainer
 
         if (guibutton.id == 1)
         {
-            PokecubeServerPacket packet = PokecubePacketHandler.makeServerPacket(PokecubeServerPacket.POKECENTER,
-                    "coucou".getBytes());
+            PokecubeServerPacket packet = new PokecubeServerPacket(PokecubeServerPacket.POKECENTER);
             PokecubePacketHandler.sendToServer(packet);
-
             ((ContainerHealTable) inventorySlots).heal();// client side
             mc.thePlayer.playSound(new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecenter")), 3, 1);
         }

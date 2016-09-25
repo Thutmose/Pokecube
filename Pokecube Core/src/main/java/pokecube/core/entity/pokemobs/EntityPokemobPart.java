@@ -37,7 +37,7 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     public EntityPokemobPart(IPokemob parent, String partName, Vector3f offset, Vector3f[] dimensions)
     {
         super((IEntityMultiPart) parent, partName, 1, 1);
-        this.parent = (IPokemob) parent;
+        this.parent = parent;
         this.offset = offset;
         defaultBox = new AxisAlignedBB(dimensions[0].x, dimensions[0].y, dimensions[0].z, dimensions[1].x,
                 dimensions[1].y, dimensions[1].z);
@@ -666,13 +666,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public IPokemob setExp(int exp, boolean notifyLevelUp, boolean newlySpawned)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void setExplosionState(int i)
     {
         // TODO Auto-generated method stub
@@ -959,6 +952,20 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public AIStuff getAIStuff()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IPokemob setExp(int exp, boolean notifyLevelUp)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IPokemob setForSpawn(int exp)
     {
         // TODO Auto-generated method stub
         return null;

@@ -164,10 +164,7 @@ public class AIIdle extends AIBase
                 addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
                 return false;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
         if (entity.getAttackTarget() != null || !entity.getNavigator().noPath()) return false;
 
@@ -214,13 +211,10 @@ public class AIIdle extends AIBase
             {
                 return false;
             }
-            else
-            {
-                this.xPosition = v.x;
-                this.yPosition = Math.round(v.y);
-                this.zPosition = v.z;
-                return true;
-            }
+            this.xPosition = v.x;
+            this.yPosition = Math.round(v.y);
+            this.zPosition = v.z;
+            return true;
         }
         return false;
     }

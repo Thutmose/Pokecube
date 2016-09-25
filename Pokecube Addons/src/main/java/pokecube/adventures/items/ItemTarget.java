@@ -74,9 +74,9 @@ public class ItemTarget extends Item
                 max = new BlockPos(box.maxX, box.maxY, box.maxZ).add(1, 1, 1);
                 box = new AxisAlignedBB(min, max);
                 float partialTicks = event.getPartialTicks();
-                double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * (double) partialTicks;
-                double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * (double) partialTicks;
-                double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * (double) partialTicks;
+                double d0 = player.lastTickPosX + (player.posX - player.lastTickPosX) * partialTicks;
+                double d1 = player.lastTickPosY + (player.posY - player.lastTickPosY) * partialTicks;
+                double d2 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * partialTicks;
                 box = box.offset(-d0, -d1, -d2);
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
@@ -191,7 +191,7 @@ public class ItemTarget extends Item
                 }
             }
         }
-        if (e != null && !e.isEmpty()) return new ActionResult<>(EnumActionResult.PASS, itemstack);
+        if (!e.isEmpty()) return new ActionResult<>(EnumActionResult.PASS, itemstack);
 
         if (meta == 3)
         {

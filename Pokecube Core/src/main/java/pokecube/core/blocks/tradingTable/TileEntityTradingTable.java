@@ -182,7 +182,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             throw new Exception("requested move not found");
         }
         if (!hasPC()) throw new Exception("no connected PC");
-        else throw new Exception("connected PC is not bound to a player");
+        throw new Exception("connected PC is not bound to a player");
     }
 
     @Override
@@ -351,7 +351,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             return moves.toArray();
         }
         if (!hasPC()) throw new Exception("no connected PC");
-        else throw new Exception("connected PC is not bound to a player");
+        throw new Exception("connected PC is not bound to a player");
     }
 
     @Override
@@ -364,7 +364,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     public int getSizeInventory()
     {
         if (trade) return inventory.length;
-        else return inventory2.length;
+        return inventory2.length;
     }
 
     @Override
@@ -452,10 +452,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             this.moves.put(player.getName(), moves);
             return moves;
         }
-        else
-        {
-            return null;
-        }
+        return null;
 
     }
 

@@ -32,11 +32,8 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
         {
             return true;
         }
-        else
-        {
-            Entity target = ((EntityCreature) entity).getAttackTarget();
-            return (player.equals(target) || ((IPokemob) entity).getPokemonAIState(IMoveConstants.TAMED));
-        }
+        Entity target = ((EntityCreature) entity).getAttackTarget();
+        return (player.equals(target) || ((IPokemob) entity).getPokemonAIState(IMoveConstants.TAMED));
     }
 
     public RenderPokemobInfos(RenderManager m, ModelBase modelbase, float shadowSize)

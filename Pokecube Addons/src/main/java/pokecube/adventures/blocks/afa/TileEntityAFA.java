@@ -458,7 +458,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                                     SoundEvents.BLOCK_NOTE_BASEDRUM, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                             return;
                         }
-                        else energy -= needed;
+                        energy -= needed;
                     }
                     evt.pokemob.setShiny(true);
                     worldObj.playSound(evt.entity.posX, evt.entity.posY, evt.entity.posZ,

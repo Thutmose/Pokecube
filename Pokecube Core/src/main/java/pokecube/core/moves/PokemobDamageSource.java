@@ -40,7 +40,7 @@ public class PokemobDamageSource extends DamageSource
     @Override
     public ITextComponent getDeathMessage(EntityLivingBase par1EntityPlayer)
     {
-        ItemStack localObject = (this.damageSourceEntity instanceof EntityLivingBase)
+        ItemStack localObject = (this.damageSourceEntity != null)
                 ? this.damageSourceEntity.getHeldItemMainhand() : null;
         if ((localObject != null) && (localObject.hasDisplayName()))
             return new TextComponentTranslation("death.attack." + this.damageType,
@@ -57,7 +57,7 @@ public class PokemobDamageSource extends DamageSource
         }
         else if (this.damageSourceEntity instanceof IPokemob
                 && ((IPokemob) this.damageSourceEntity).getPokemonOwner() == null
-                && !((IPokemob) this.damageSourceEntity).getPokemonAIState(IPokemob.TAMED))
+                && !((IPokemob) this.damageSourceEntity).getPokemonAIState(IMoveConstants.TAMED))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.killed.wild",
                     par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName());

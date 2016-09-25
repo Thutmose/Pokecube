@@ -127,10 +127,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
             }
             return texture;
         }
-        else
-        {
-            texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + "male.png");
-        }
+        texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + "male.png");
         return texture;
     }
 }

@@ -334,6 +334,6 @@ public class SpawnBiomeMatcher
         if (checker.type == null) type = BiomeType.ALL;
         boolean blackListed = blackListBiomes.contains(checker.biome) || blackListSubBiomes.contains(type);
         if (blackListed) return false;
-        else return rightBiome && rightSubBiome;
+        return rightBiome && rightSubBiome;
     }
 }

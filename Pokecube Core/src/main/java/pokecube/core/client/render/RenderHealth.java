@@ -38,7 +38,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -58,8 +57,8 @@ public class RenderHealth
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (!PokecubeCore.core.getConfig().doHealthBars
-                || (!PokecubeCore.core.getConfig().renderInF1 && !Minecraft.isGuiEnabled()))
+        if (!PokecubeMod.core.getConfig().doHealthBars
+                || (!PokecubeMod.core.getConfig().renderInF1 && !Minecraft.isGuiEnabled()))
             return;
 
         Entity cameraEntity = mc.getRenderViewEntity();
@@ -72,7 +71,7 @@ public class RenderHealth
         double viewZ = cameraEntity.lastTickPosZ + (cameraEntity.posZ - cameraEntity.lastTickPosZ) * partialTicks;
         frustum.setPosition(viewX, viewY, viewZ);
 
-        if (PokecubeCore.core.getConfig().showOnlyFocused)
+        if (PokecubeMod.core.getConfig().showOnlyFocused)
         {
             Entity focused = getEntityLookedAt(mc.thePlayer);
             if (focused != null && focused instanceof EntityLivingBase && focused.isEntityAlive())
@@ -120,7 +119,7 @@ public class RenderHealth
             processing:
             {
                 float distance = passedEntity.getDistanceToEntity(viewPoint);
-                if (distance > PokecubeCore.core.getConfig().maxDistance || !passedEntity.canEntityBeSeen(viewPoint)
+                if (distance > PokecubeMod.core.getConfig().maxDistance || !passedEntity.canEntityBeSeen(viewPoint)
                         || entity.isInvisible())
                     break processing;
 
@@ -138,7 +137,7 @@ public class RenderHealth
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(
                         (float) (x - renderManager.viewerPosX), (float) (y - renderManager.viewerPosY
-                                + passedEntity.height + PokecubeCore.core.getConfig().heightAbove),
+                                + passedEntity.height + PokecubeMod.core.getConfig().heightAbove),
                         (float) (z - renderManager.viewerPosZ));
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -154,10 +153,10 @@ public class RenderHealth
                 Tessellator tessellator = Tessellator.getInstance();
                 VertexBuffer buffer = tessellator.getBuffer();
 
-                float padding = PokecubeCore.core.getConfig().backgroundPadding;
-                int bgHeight = PokecubeCore.core.getConfig().backgroundHeight;
-                int barHeight1 = PokecubeCore.core.getConfig().barHeight;
-                float size = PokecubeCore.core.getConfig().plateSize;
+                float padding = PokecubeMod.core.getConfig().backgroundPadding;
+                int bgHeight = PokecubeMod.core.getConfig().backgroundHeight;
+                int barHeight1 = PokecubeMod.core.getConfig().barHeight;
+                float size = PokecubeMod.core.getConfig().plateSize;
 
                 int r = 0;
                 int g = 255;
@@ -195,7 +194,7 @@ public class RenderHealth
                 float healthSize = size * (health / maxHealth);
 
                 // Background
-                if (PokecubeCore.core.getConfig().drawBackground)
+                if (PokecubeMod.core.getConfig().drawBackground)
                 {
                     buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
                     buffer.pos(-size - padding, -bgHeight, 0.0D).color(0, 0, 0, 64).endVertex();
@@ -267,7 +266,7 @@ public class RenderHealth
                 float s1 = 0.75F;
                 GlStateManager.scale(s1, s1, s1);
 
-                int h = PokecubeCore.core.getConfig().hpTextHeight;
+                int h = PokecubeMod.core.getConfig().hpTextHeight;
                 String maxHpStr = "" + (int) (Math.round(maxHealth * 100.0) / 100.0);
                 String hpStr = "" + (int) (Math.round(health * 100.0) / 100.0);
                 String healthStr = hpStr + "/" + maxHpStr;
@@ -291,7 +290,7 @@ public class RenderHealth
                 mc.fontRendererObj.drawString(lvlStr, 2, h, 0xFFFFFF);
                 mc.fontRendererObj.drawString(gender,
                         (int) (size / (s * s1) * 2) - 2 - mc.fontRendererObj.getStringWidth(gender), h - 1, colour);
-                if (PokecubeCore.core.getConfig().enableDebugInfo && mc.gameSettings.showDebugInfo)
+                if (PokecubeMod.core.getConfig().enableDebugInfo && mc.gameSettings.showDebugInfo)
                     mc.fontRendererObj.drawString("ID: \"" + entityID + "\"", 0, h + 16, 0xFFFFFFFF);
                 GlStateManager.popMatrix();
 
@@ -301,17 +300,17 @@ public class RenderHealth
                 GlStateManager.scale(s1, s1, s1);
                 GlStateManager.translate(size / (s * s1) * 2 - 16, 0F, 0F);
                 mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                if (stack != null && PokecubeCore.core.getConfig().showAttributes)
+                if (stack != null && PokecubeMod.core.getConfig().showAttributes)
                 {
                     renderIcon(off, 0, stack, 16, 16);
                     off -= 16;
                 }
 
-                if (armor > 0 && PokecubeCore.core.getConfig().showArmor)
+                if (armor > 0 && PokecubeMod.core.getConfig().showArmor)
                 {
                     int ironArmor = armor % 5;
                     int diamondArmor = armor / 5;
-                    if (!PokecubeCore.core.getConfig().groupArmor)
+                    if (!PokecubeMod.core.getConfig().groupArmor)
                     {
                         ironArmor = armor;
                         diamondArmor = 0;
@@ -357,14 +356,14 @@ public class RenderHealth
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer buffer = tessellator.getBuffer();
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            buffer.pos((double) (vertexX), (double) (vertexY + intV), 0.0D)
-                    .tex((double) textureAtlasSprite.getMinU(), (double) textureAtlasSprite.getMaxV()).endVertex();
-            buffer.pos((double) (vertexX + intU), (double) (vertexY + intV), 0.0D)
-                    .tex((double) textureAtlasSprite.getMaxU(), (double) textureAtlasSprite.getMaxV()).endVertex();
-            buffer.pos((double) (vertexX + intU), (double) (vertexY), 0.0D)
-                    .tex((double) textureAtlasSprite.getMaxU(), (double) textureAtlasSprite.getMinV()).endVertex();
-            buffer.pos((double) (vertexX), (double) (vertexY), 0.0D)
-                    .tex((double) textureAtlasSprite.getMinU(), (double) textureAtlasSprite.getMinV()).endVertex();
+            buffer.pos((vertexX), vertexY + intV, 0.0D)
+                    .tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMaxV()).endVertex();
+            buffer.pos(vertexX + intU, vertexY + intV, 0.0D)
+                    .tex(textureAtlasSprite.getMaxU(), textureAtlasSprite.getMaxV()).endVertex();
+            buffer.pos(vertexX + intU, (vertexY), 0.0D)
+                    .tex(textureAtlasSprite.getMaxU(), textureAtlasSprite.getMinV()).endVertex();
+            buffer.pos((vertexX), (vertexY), 0.0D)
+                    .tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMinV()).endVertex();
             tessellator.draw();
         }
         catch (Exception e)

@@ -103,14 +103,11 @@ public class TileEntityBerries extends TileEntity implements ITickable
                 grower.growTree(worldObj, getPos(), berryId);
                 return;
             }
-            else
-            {
-                stage = 1;
-                Block fruit = BerryManager.berryFruit;
-                worldObj.setBlockState(up, fruit.getDefaultState());
-                TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(up);
-                tile.setBerryId(berryId);
-            }
+            stage = 1;
+            Block fruit = BerryManager.berryFruit;
+            worldObj.setBlockState(up, fruit.getDefaultState());
+            TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(up);
+            tile.setBerryId(berryId);
         }
         worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)),
                 2);

@@ -24,6 +24,7 @@ public class PacketSyncDimIds implements IMessage, IMessageHandler<PacketSyncDim
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

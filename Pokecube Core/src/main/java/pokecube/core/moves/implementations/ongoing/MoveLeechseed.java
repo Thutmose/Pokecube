@@ -17,7 +17,7 @@ public class MoveLeechseed extends Move_Ongoing
     @Override
     public void doOngoingEffect(EntityLiving mob)
     {
-        if (mob.getAttackTarget() instanceof EntityLivingBase)
+        if (mob.getAttackTarget() != null)
         {
             EntityLivingBase target = mob.getAttackTarget();
             float factor = 0.0625f;

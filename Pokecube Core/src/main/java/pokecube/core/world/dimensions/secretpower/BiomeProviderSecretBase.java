@@ -27,6 +27,7 @@ public class BiomeProviderSecretBase extends BiomeProvider
     /**
      * Returns the biome generator
      */
+    @Override
     public Biome getBiomeGenerator(BlockPos pos)
     {
         return this.biomeGenerator;
@@ -35,6 +36,7 @@ public class BiomeProviderSecretBase extends BiomeProvider
     /**
      * Returns an array of biomes for the location input.
      */
+    @Override
     public Biome[] getBiomesForGeneration(Biome[] biomes, int x, int z, int width, int height)
     {
         if (biomes == null || biomes.length < width * height)
@@ -50,6 +52,7 @@ public class BiomeProviderSecretBase extends BiomeProvider
      * Gets biomes to use for the blocks and loads the other data like temperature and humidity onto the
      * WorldChunkManager.
      */
+    @Override
     public Biome[] loadBlockGeneratorData(@Nullable Biome[] oldBiomeList, int x, int z, int width, int depth)
     {
         if (oldBiomeList == null || oldBiomeList.length < width * depth)
@@ -64,11 +67,13 @@ public class BiomeProviderSecretBase extends BiomeProvider
     /**
      * Gets a list of biomes for the specified blocks.
      */
+    @Override
     public Biome[] getBiomeGenAt(@Nullable Biome[] listToReuse, int x, int z, int width, int length, boolean cacheFlag)
     {
         return this.loadBlockGeneratorData(listToReuse, x, z, width, length);
     }
 
+    @Override
     @Nullable
     public BlockPos findBiomePosition(int x, int z, int range, List<Biome> biomes, Random random)
     {
@@ -78,6 +83,7 @@ public class BiomeProviderSecretBase extends BiomeProvider
     /**
      * checks given Chunk's Biomes against List of allowed ones
      */
+    @Override
     public boolean areBiomesViable(int x, int z, int radius, List<Biome> allowed)
     {
         return allowed.contains(this.biomeGenerator);

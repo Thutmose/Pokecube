@@ -28,7 +28,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -115,11 +114,8 @@ public class Commands extends CommandBase
                 cSender.addChatMessage(new TextComponentString("Killed " + count));
                 return true;
             }
-            else
-            {
-                CommandTools.sendNoPermissions(cSender);
-                return false;
-            }
+            CommandTools.sendNoPermissions(cSender);
+            return false;
         }
         if (args[0].equalsIgnoreCase("count"))
         {
@@ -160,11 +156,8 @@ public class Commands extends CommandBase
                 cSender.addChatMessage(new TextComponentString(counts.toString()));
                 return true;
             }
-            else
-            {
-                CommandTools.sendNoPermissions(cSender);
-                return false;
-            }
+            CommandTools.sendNoPermissions(cSender);
+            return false;
         }
         if (args[0].equalsIgnoreCase("cull"))
         {
@@ -199,11 +192,8 @@ public class Commands extends CommandBase
                 cSender.addChatMessage(new TextComponentString("Culled " + n));
                 return true;
             }
-            else
-            {
-                CommandTools.sendNoPermissions(cSender);
-                return false;
-            }
+            CommandTools.sendNoPermissions(cSender);
+            return false;
         }
 
         if (args[0].equalsIgnoreCase("items"))
@@ -252,11 +242,8 @@ public class Commands extends CommandBase
                 PokecubeSerializer.getInstance().addMeteorLocation(v);
                 return true;
             }
-            else
-            {
-                CommandTools.sendNoPermissions(cSender);
-                return false;
-            }
+            CommandTools.sendNoPermissions(cSender);
+            return false;
         }
         return false;
     }
@@ -285,10 +272,7 @@ public class Commands extends CommandBase
                 }
                 else
                 {
-                    if (targets != null)
-                    {
-                        player = targets[0];
-                    }
+                    player = targets[0];
                 }
                 String reward = args[2];
                 boolean check = args.length == 3;
@@ -423,7 +407,7 @@ public class Commands extends CommandBase
                         has = has || stats.getHatches(player).containsKey(prev);
                         if (!has)
                         {
-                            Achievement catc = PokecubeCore.catchAchievements.get(prev);
+                            Achievement catc = PokecubeMod.catchAchievements.get(prev);
                             if (catc != null)
                             {
                                 player.addStat(catc);

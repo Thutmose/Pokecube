@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -37,7 +38,7 @@ import pokecube.core.achievements.AchievementHatch;
 import pokecube.core.achievements.AchievementKill;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
-import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
+import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.database.moves.MoveEntryLoader;
 import pokecube.core.interfaces.IPokemob;
@@ -69,6 +70,38 @@ public class Database
         }
     }
 
+    @XmlRootElement(name = "Drops")
+    public static class XMLDrops
+    {
+        @XmlElement(name = "Drop")
+        private List<XMLDropEntry> pokemon = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "Drop")
+    public static class XMLDropEntry extends Drop
+    {
+        @XmlAttribute
+        boolean overwrite = false;
+        @XmlAttribute
+        String  name;
+    }
+
+    @XmlRootElement(name = "Helds")
+    public static class XMLHelds
+    {
+        @XmlElement(name = "Held")
+        private List<XMLHeldEntry> pokemon = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "Held")
+    public static class XMLHeldEntry extends Drop
+    {
+        @XmlAttribute
+        boolean overwrite = false;
+        @XmlAttribute
+        String  name;
+    }
+
     /** <br>
      * Index 0 = baseStats<br>
      * Index 1 = moves<br>
@@ -97,6 +130,8 @@ public class Database
     static HashSet<String>                                 defaultDatabases = Sets.newHashSet("pokemobs.xml");
     static HashSet<String>                                 extraDatabases   = Sets.newHashSet();
     private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
+    private static Set<String>                             dropDatabases    = Sets.newHashSet();
+    private static Set<String>                             heldDatabases    = Sets.newHashSet();
 
     /** These are used for config added databasea <br>
      * Index 0 = pokemon<br>
@@ -129,6 +164,16 @@ public class Database
         spawnDatabases.add(file);
     }
 
+    public static void addDropData(String file)
+    {
+        dropDatabases.add(file);
+    }
+
+    public static void addHeldData(String file)
+    {
+        heldDatabases.add(file);
+    }
+
     public static void checkConfigFiles(FMLPreInitializationEvent evt)
     {
         File file = evt.getSuggestedConfigurationFile();
@@ -153,7 +198,6 @@ public class Database
 
     public static String convertMoveName(String moveNameFromBulbapedia)
     {
-
         String ret = "";
         String name = moveNameFromBulbapedia.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "");
         String[] args = name.split(" ");
@@ -361,6 +405,22 @@ public class Database
         }
     }
 
+    private static void loadDrops()
+    {
+        for (String s : dropDatabases)
+        {
+            if (s != null) loadDrops(s);
+        }
+    }
+
+    private static void loadHeld()
+    {
+        for (String s : heldDatabases)
+        {
+            if (s != null) loadHeld(s);
+        }
+    }
+
     /** This method should only be called for override files, such as the one
      * added by Pokecube Compat
      * 
@@ -371,12 +431,17 @@ public class Database
         {
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLSpawns.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            XMLSpawns database = (XMLSpawns) unmarshaller.unmarshal(new FileReader(file));
-
+            FileReader reader = new FileReader(file);
+            XMLSpawns database = (XMLSpawns) unmarshaller.unmarshal(reader);
+            reader.close();
             for (XMLSpawnEntry xmlEntry : database.pokemon)
             {
                 PokedexEntry entry = Database.getEntry(xmlEntry.name);
-                if (entry == null) throw new NullPointerException(xmlEntry.name + " not found");
+                if (entry == null)
+                {
+                    new NullPointerException(xmlEntry.name + " not found").printStackTrace();
+                    continue;
+                }
                 if (entry.isGenderForme) continue;
                 if (xmlEntry.isStarter() != null) entry.isStarter = xmlEntry.isStarter();
                 SpawnData data = entry.getSpawnData();
@@ -390,36 +455,97 @@ public class Database
                 {
                     System.out.println("Editing spawns for " + entry);
                 }
-                SpawnEntry spawnEntry = new SpawnEntry();
-                String val;
-                if ((val = xmlEntry.values.get(new QName("min"))) != null)
+                PokedexEntryLoader.handleAddSpawn(data, xmlEntry);
+                if (data.matchers.isEmpty())
                 {
-                    spawnEntry.min = Integer.parseInt(val);
+                    Database.spawnables.remove(entry);
                 }
-                if ((val = xmlEntry.values.get(new QName("max"))) != null)
-                {
-                    spawnEntry.max = Integer.parseInt(val);
-                }
-                if ((val = xmlEntry.values.get(new QName("rate"))) != null)
-                {
-                    spawnEntry.rate = Float.parseFloat(val);
-                }
-                SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(xmlEntry);
-                data.matchers.put(matcher, spawnEntry);
-                if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
+                else if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-        // TODO redo this.
+    }
+
+    /** This method should only be called for override files, such as the one
+     * added by Pokecube Compat
+     * 
+     * @param file */
+    private static void loadDrops(String file)
+    {
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLDrops.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            FileReader reader = new FileReader(file);
+            XMLDrops database = (XMLDrops) unmarshaller.unmarshal(reader);
+            reader.close();
+            for (XMLDropEntry xmlEntry : database.pokemon)
+            {
+                PokedexEntry entry = Database.getEntry(xmlEntry.name);
+                if (entry == null)
+                {
+                    new NullPointerException(xmlEntry.name + " not found").printStackTrace();
+                    continue;
+                }
+                if (entry.isGenderForme) continue;
+                System.out.println(entry.drops);
+                if (xmlEntry.overwrite)
+                {
+                    entry.drops.clear();
+                }
+                PokedexEntryLoader.handleAddDrop(entry, xmlEntry);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /** This method should only be called for override files, such as the one
+     * added by Pokecube Compat
+     * 
+     * @param file */
+    private static void loadHeld(String file)
+    {
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLHelds.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            FileReader reader = new FileReader(file);
+            XMLHelds database = (XMLHelds) unmarshaller.unmarshal(reader);
+            reader.close();
+            for (XMLHeldEntry xmlEntry : database.pokemon)
+            {
+                PokedexEntry entry = Database.getEntry(xmlEntry.name);
+                if (entry == null)
+                {
+                    new NullPointerException(xmlEntry.name + " not found").printStackTrace();
+                    continue;
+                }
+                if (entry.isGenderForme) continue;
+                if (xmlEntry.overwrite)
+                {
+                    entry.held.clear();
+                }
+                PokedexEntryLoader.handleAddHeld(entry, xmlEntry);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public static void postInit()
     {
         PokedexEntryLoader.postInit();
         loadSpawns();
+        loadDrops();
+        loadHeld();
         ProgressBar bar = ProgressManager.push("Removal Checking", baseFormes.size());
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
         for (PokedexEntry p : baseFormes.values())
@@ -511,7 +637,7 @@ public class Database
                     e.type1 = base.type1;
                     e.type2 = base.type2;
                 }
-                if (e.abilities.isEmpty() && base != null) e.abilities.addAll(base.abilities);
+                if (e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
             }
             else
             {

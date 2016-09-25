@@ -42,7 +42,7 @@ public class Move_Teleport extends Move_Basic
         {
             ((IPokemob) attacked).setPokemonAIState(IMoveConstants.ANGRY, false);
         }
-        if (attacker instanceof IPokemob && attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
+        if (attacker.getPokemonAIState(IMoveConstants.TAMED) && !angry)
         {
             if ((target == null && packet.attacked == null) || (packet.attacked == packet.attacker))
             {

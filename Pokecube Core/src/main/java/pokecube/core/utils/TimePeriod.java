@@ -22,10 +22,7 @@ public final class TimePeriod
 		{
 			return new TimePeriod(Math.min(one.startTick, two.startTick), Math.max(one.endTick, two.endTick));
 		}
-		else
-		{
-			return null;
-		}
+        return null;
 	}
 	public final int startTick;
 	public final int endTick;
@@ -102,10 +99,7 @@ public final class TimePeriod
 		{
 			return (this.startTick < other.endTick && this.endTick > other.startTick);
 		}
-		else
-		{
-			return false;
-		}
+        return false;
 	}
 	
 }

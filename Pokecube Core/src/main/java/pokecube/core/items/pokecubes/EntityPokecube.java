@@ -184,7 +184,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         else if (PokecubeManager.isFilled(getEntityItem()))
         {
             IPokemob entity1 = sendOut();
-            if (entity1 != null && shootingEntity instanceof EntityLivingBase)
+            if (entity1 != null && shootingEntity != null)
             {
                 if (e instanceof EntityLivingBase)
                 {
@@ -197,8 +197,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     else
                     {
                         ((EntityCreature) entity1).setAttackTarget(entityHit);
-                        if (entityHit != null) entity1.setPokemonAIState(IMoveConstants.SITTING, false);
-
+                        entity1.setPokemonAIState(IMoveConstants.SITTING, false);
                         if (entityHit instanceof EntityCreature)
                         {
                             ((EntityCreature) entityHit).setAttackTarget((EntityLiving) entity1);

@@ -64,12 +64,15 @@ public class GuiTradingTable extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
+        GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
         GL11.glColor4f(1f, 1f, 1f, 1f);
-
         mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/gui/tradingTableGui.png"));
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPopMatrix();
     }
 
     /** Draw the foreground layer for the GuiContainer (everything in front of
@@ -78,7 +81,6 @@ public class GuiTradingTable extends GuiContainer
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
     {
         ItemStack stack = table.getStackInSlot(0);
-
         if (PokecubeManager.isFilled(stack))
         {
             renderMob(0);
@@ -217,9 +219,9 @@ public class GuiTradingTable extends GuiContainer
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
-            float shift = index == 0?-1.5f:1.5f;
+            float shift = index == 0 ? -1.5f : 1.5f;
             GlStateManager.translate(shift, 0, 1);
-            
+
             GlStateManager.rotate(-shift * 20, 0, 1, 0);
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             Minecraft.getMinecraft().getRenderManager().doRenderEntity(owner, 0, 0, 0, 0, POKEDEX_RENDER, false);

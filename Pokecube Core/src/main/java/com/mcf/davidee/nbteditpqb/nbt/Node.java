@@ -59,7 +59,8 @@ public class Node<T> {
 		return obj;
 	}
 	
-	public String toString(){
+	@Override
+    public String toString(){
 		return "" + obj;
 	}
 

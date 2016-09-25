@@ -1,6 +1,5 @@
 package pokecube.adventures.entity.trainers;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -222,9 +221,8 @@ public class TypeTrainer
             entity.setPokemonOwner(trainer);
             entity.setPokecubeId(0);
             int exp = Tools.levelToXp(entity.getExperienceMode(), level);
-            entity.setExp(exp, true, false);
+            entity = entity.setForSpawn(exp);
             ItemStack item = PokecubeManager.pokemobToItem(entity);
-
             ((Entity) entity).isDead = true;
             return item;
         }
@@ -383,8 +381,7 @@ public class TypeTrainer
         try
         {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(texture);
-            InputStream stream = res.getInputStream();
-            stream.close();
+            res.close();
             return true;
         }
         catch (Exception e)

@@ -234,12 +234,9 @@ public class PokeNavigator extends PathNavigate
         {
             return true;
         }
-        else
-        {
-            v.set(start);
-            v1.set(end);// TODO re-do this using safe checks
-            return v1.isVisible(worldObj, v);
-        }
+        v.set(start);
+        v1.set(end);// TODO re-do this using safe checks
+        return v1.isVisible(worldObj, v);
     }
 
     /** Returns true if the entity is in water or lava, false otherwise */
@@ -267,7 +264,15 @@ public class PokeNavigator extends PathNavigate
             {
                 try
                 {
-                    this.pathFollow();
+                    float f = this.theEntity.width;
+                    f = Math.max(f, 0.5f);
+                    v.set(theEntity);
+                    v1.set(currentPath.getFinalPathPoint());
+                    if (v.distTo(v1) < f)
+                    {
+                        this.clearPathEntity();
+                    }
+                    else this.pathFollow();
                 }
                 catch (Exception e)
                 {
@@ -283,7 +288,6 @@ public class PokeNavigator extends PathNavigate
                 if (targetLoc.isEmpty()) { return; }
 
                 float f = this.theEntity.width;
-
                 f = Math.max(f, 0.5f);
                 v.set(theEntity);
                 v1.set(currentPath.getFinalPathPoint());
@@ -439,31 +443,25 @@ public class PokeNavigator extends PathNavigate
             this.currentPath = null;
             return false;
         }
-        else
+        if (!path.isSamePath(this.currentPath))
         {
-            if (!path.isSamePath(this.currentPath))
-            {
-                this.currentPath = path;
-            }
-
-            if (this.noSunPathfind)
-            {
-                this.removeSunnyPath();
-            }
-
-            if (this.currentPath.getCurrentPathLength() == 0)
-            {
-                return false;
-            }
-            else
-            {
-                this.speed = speed;
-                Vec3d vec3 = this.getEntityPosition();
-                this.ticksAtLastPos = this.totalTicks;
-                lastPosCheck = vec3;
-                return true;
-            }
+            this.currentPath = path;
         }
+
+        if (this.noSunPathfind)
+        {
+            this.removeSunnyPath();
+        }
+
+        if (this.currentPath.getCurrentPathLength() == 0)
+        {
+            return false;
+        }
+        this.speed = speed;
+        Vec3d vec3 = this.getEntityPosition();
+        this.ticksAtLastPos = this.totalTicks;
+        lastPosCheck = vec3;
+        return true;
     }
 
     /** Sets the speed */

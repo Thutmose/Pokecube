@@ -84,7 +84,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
             }
         }
 
-        if (recipeWrapper instanceof ClonerRecipeWrapper)
+        if (recipeWrapper != null)
         {
             ICraftingRecipeWrapper wrapper = recipeWrapper;
             craftingGridHelper.setInput(guiItemStacks, wrapper.getInputs());

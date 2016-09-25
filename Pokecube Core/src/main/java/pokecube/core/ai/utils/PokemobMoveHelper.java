@@ -60,7 +60,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
                 ((IPokemob) entity).setDirectionPitch(entity.rotationPitch);
             }
-            if (d2 > (double) this.entity.stepHeight && d0 * d0 + d1 * d1 < 1.0D)
+            if (d2 > this.entity.stepHeight && d0 * d0 + d1 * d1 < 1.0D)
             {
                 this.entity.getJumpHelper().setJumping();
             }

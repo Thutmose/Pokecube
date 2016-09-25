@@ -14,7 +14,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -85,7 +84,7 @@ public class AIGatherStuff extends AIBase
         v.set(pokemob.getHome()).add(0, entity.height, 0);
 
         int distance = pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                ? PokecubeCore.core.getConfig().tameGatherDistance : PokecubeCore.core.getConfig().wildGatherDistance;
+                ? PokecubeMod.core.getConfig().tameGatherDistance : PokecubeMod.core.getConfig().wildGatherDistance;
 
         List<Object> list = getEntitiesWithinDistance(entity, distance, EntityItem.class);
         EntityItem newTarget = null;
@@ -111,7 +110,7 @@ public class AIGatherStuff extends AIBase
         v.set(entity).addTo(0, entity.getEyeHeight(), 0);
         if (!block && hungrymob.eatsBerries())
         {
-            Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, IBerryFruitBlock.class);
+            Vector3 temp = v.findClosestVisibleObject(world, true, distance, IBerryFruitBlock.class);
             if (temp != null)
             {
                 block = true;
@@ -201,11 +200,11 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        boolean wildCheck = !PokecubeCore.core.getConfig().wildGather && !pokemob.getPokemonAIState(IPokemob.TAMED);
+        boolean wildCheck = !PokecubeMod.core.getConfig().wildGather && !pokemob.getPokemonAIState(IMoveConstants.TAMED);
         if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck)
             return false;
-        int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeCore.core.getConfig().tameGatherDelay
-                : PokecubeCore.core.getConfig().wildGatherDelay;
+        int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeMod.core.getConfig().tameGatherDelay
+                : PokecubeMod.core.getConfig().wildGatherDelay;
         Random rand = new Random(pokemob.getRNGValue());
         if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt(rate)) return false;
         if (cooldowns[0] < -2000)

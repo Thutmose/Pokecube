@@ -92,13 +92,13 @@ public class GuiPokemob extends GuiContainer
                     Tessellator tessellator = Tessellator.getInstance();
                     VertexBuffer vertexbuffer = tessellator.getBuffer();
                     vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                    vertexbuffer.pos((double) (x + 0), (double) (y + height - 2), (double) this.zLevel).tex(0, 1)
+                    vertexbuffer.pos(x + 0, y + height - 2, this.zLevel).tex(0, 1)
                             .endVertex();
-                    vertexbuffer.pos((double) (x + width - 2), (double) (y + height - 2), (double) this.zLevel)
+                    vertexbuffer.pos(x + width - 2, y + height - 2, this.zLevel)
                             .tex(1, 1).endVertex();
-                    vertexbuffer.pos((double) (x + width - 2), (double) (y + 0), (double) this.zLevel).tex(1, 0)
+                    vertexbuffer.pos(x + width - 2, y + 0, this.zLevel).tex(1, 0)
                             .endVertex();
-                    vertexbuffer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex(0, 0).endVertex();
+                    vertexbuffer.pos(x + 0, y + 0, this.zLevel).tex(0, 0).endVertex();
                     tessellator.draw();
                     return;
                 }

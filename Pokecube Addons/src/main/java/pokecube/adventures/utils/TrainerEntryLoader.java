@@ -85,7 +85,9 @@ public class TrainerEntryLoader
     {
         JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(new FileReader(file));
+        FileReader reader = new FileReader(file);
+        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(reader);
+        reader.close();
         return database;
     }
 
@@ -154,7 +156,7 @@ public class TrainerEntryLoader
                 {
                     for (PokedexEntry s : Database.spawnables)
                     {
-                        if (!s.legendary && s.getPokedexNb() != 151 && s != null)
+                        if (!s.legendary && s.getPokedexNb() != 151)
                         {
                             type.pokemon.add(s);
                         }
@@ -169,7 +171,7 @@ public class TrainerEntryLoader
                         {
                             for (PokedexEntry s : Database.spawnables)
                             {
-                                if (s.isType(pokeType) && !s.legendary && s.getPokedexNb() != 151 && s != null)
+                                if (s.isType(pokeType) && !s.legendary && s.getPokedexNb() != 151)
                                 {
                                     type.pokemon.add(s);
                                 }

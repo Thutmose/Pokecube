@@ -271,4 +271,31 @@ public class PokecubeManager
         itemStack.getTagCompound().setInteger("tilt", number);
     }
 
+    public static void heal(ItemStack stack)
+    {
+        if (stack != null)
+        {
+            int serialization = Tools.getHealedPokemobSerialization();
+            stack.setItemDamage(serialization);
+            try
+            {
+                byte oldStatus = PokecubeManager.getStatus(stack);
+
+                if (oldStatus > IMoveConstants.STATUS_NON)
+                {
+                    String itemName = stack.getDisplayName();
+                    if (itemName.contains(" (")) itemName = itemName.substring(0, itemName.lastIndexOf(" "));
+                    stack.setStackDisplayName(itemName);
+                }
+            }
+            catch (Throwable e)
+            {
+                e.printStackTrace();
+            }
+            stack.getTagCompound().getCompoundTag("Pokemob").setInteger("hungerTime",
+                    -PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+            PokecubeManager.setStatus(stack, IMoveConstants.STATUS_NON);
+        }
+    }
+
 }

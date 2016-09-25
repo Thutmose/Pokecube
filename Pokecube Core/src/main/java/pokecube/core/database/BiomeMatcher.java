@@ -191,6 +191,6 @@ public class BiomeMatcher
         boolean blackListed = blackListBiomes.contains(biome) || blackListSubBiomes.contains(subBiome);
         if (blackListed) return false;
         if (needAll) return rightBiome && rightSubBiome;
-        else return rightBiome || rightSubBiome;
+        return rightBiome || rightSubBiome;
     }
 }

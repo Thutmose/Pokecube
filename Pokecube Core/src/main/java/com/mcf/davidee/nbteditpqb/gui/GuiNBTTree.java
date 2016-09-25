@@ -24,7 +24,7 @@ import com.mcf.davidee.nbteditpqb.nbt.SaveStates;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiControls;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -333,11 +333,11 @@ public class GuiNBTTree extends Gui {
 		worldRenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
 		Color color = new Color(4210752);
 		worldRenderer.color(color.getRed(), color.getGreen(), color.getBlue(), par4);
-		worldRenderer.pos(0.0D, (double)par2, 0.0D).tex(0.0D, (double)((float)par2 / var6));
-		worldRenderer.pos((double)this.width, (double)par2, 0.0D).tex ((double)((float)this.width / var6), (double)((float)par2 / var6));
+		worldRenderer.pos(0.0D, par2, 0.0D).tex(0.0D, par2 / var6);
+		worldRenderer.pos(this.width, par2, 0.0D).tex (this.width / var6, par2 / var6);
 		worldRenderer.color(color.getRed(), color.getGreen(), color.getBlue(), par3);
-		worldRenderer.pos((double)this.width, (double)par1, 0.0D).tex ((double)((float)this.width / var6), (double)((float)par1 / var6));
-		worldRenderer.pos(0.0D, (double)par1, 0.0D).tex(0.0D, (double)((float)par1 / var6));
+		worldRenderer.pos(this.width, par1, 0.0D).tex (this.width / var6, par1 / var6);
+		worldRenderer.pos(0.0D, par1, 0.0D).tex(0.0D, par1 / var6);
 		tessellator.draw();
 	}
 
@@ -715,11 +715,11 @@ public class GuiNBTTree extends Gui {
 			saves[focusedSlotIndex].keyTyped(ch, key);
 		}
 		else{
-			if (key == Keyboard.KEY_C && GuiControls.isCtrlKeyDown())
+			if (key == Keyboard.KEY_C && GuiScreen.isCtrlKeyDown())
 				copy();
-			if (key == Keyboard.KEY_V && GuiControls.isCtrlKeyDown() && canPaste())
+			if (key == Keyboard.KEY_V && GuiScreen.isCtrlKeyDown() && canPaste())
 				paste();
-			if (key == Keyboard.KEY_X && GuiControls.isCtrlKeyDown())
+			if (key == Keyboard.KEY_X && GuiScreen.isCtrlKeyDown())
 				cut();
 		}
 	}

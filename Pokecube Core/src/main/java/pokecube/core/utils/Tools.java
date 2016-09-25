@@ -67,33 +67,30 @@ public class Tools
         {
             return 5;
         }
-        else
+        double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
+        int n = 0;
+
+        if (rand.nextInt(65535) <= b)
         {
-            double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
-            int n = 0;
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            return n;
+            n++;
         }
+
+        if (rand.nextInt(65535) <= b)
+        {
+            n++;
+        }
+
+        if (rand.nextInt(65535) <= b)
+        {
+            n++;
+        }
+
+        if (rand.nextInt(65535) <= b)
+        {
+            n++;
+        }
+
+        return n;
     }
 
     public static int computeCatchRate(IPokemob pokemob, int pokecubeId)
@@ -321,10 +318,7 @@ public class Tools
         {
             return IPokemob.MALE;
         }
-        else
-        {
-            return IPokemob.FEMALE;
-        }
+        return IPokemob.FEMALE;
     }
 
     public static int getStat(int oldStat, int mod)
@@ -479,6 +473,8 @@ public class Tools
 
     public static int levelToXp(int type, int level)
     {
+        level = Math.min(100, level);
+        level = Math.max(1, level);
         switch (type)
         {
         case 0:// 800 000
@@ -488,12 +484,7 @@ public class Tools
             return MathHelper.floor_double(Math.pow(level, 3)) + 1;
 
         case 2:// 1 059 860
-            return MathHelper.floor_double(1.05D * Math.pow(level, 3)) + 1; // it
-                                                                            // should
-                                                                            // be
-                                                                            // the
-                                                                            // parabollic
-
+            return MathHelper.floor_double(1.05D * Math.pow(level, 3)) + 1; 
         case 3:// 1 250 000
             return MathHelper.floor_double(1.25D * Math.pow(level, 3)) + 1;
 
@@ -587,7 +578,7 @@ public class Tools
 
     public static int xpToLevel(int type, int exp)
     {
-        int level = 0;
+        int level = 1;
 
         switch (type)
         {

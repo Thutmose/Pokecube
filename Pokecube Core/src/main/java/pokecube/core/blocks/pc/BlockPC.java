@@ -128,16 +128,10 @@ public class BlockPC extends Block implements ITileEntityProvider
             {
                 return true;
             }
-            else
-            {
-                playerIn.openGui(PokecubeMod.core, Config.GUIPC_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
-                return true;
-            }
-        }
-        else
-        {
+            playerIn.openGui(PokecubeMod.core, Config.GUIPC_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
+        return true;
     }
 
     @Override

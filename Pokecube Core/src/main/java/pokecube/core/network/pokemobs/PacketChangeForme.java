@@ -47,6 +47,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);
@@ -82,7 +83,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         {
             player = ctx.getServerHandler().playerEntity;
         }
-        Entity mob = PokecubeCore.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
+        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
         IPokemob pokemob = (IPokemob) mob;
         if (pokemob == null) return;
 

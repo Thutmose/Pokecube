@@ -164,12 +164,57 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public IPokemob evolve(boolean delayed, boolean init, ItemStack stack)
     {
-        if (init) delayed = false;
-        if (this.getPokedexEntry().canEvolve() && !isDead)
+        // If Init, then don't bother about getting ready for animations and
+        // such, just evolve directly.
+        if (init)
         {
             boolean neededItem = false;
             PokedexEntry evol = null;
             EvolutionData data = null;
+            // Find which evolution to use.
+            for (EvolutionData d : this.getPokedexEntry().getEvolutions())
+            {
+                if (d.shouldEvolve(this, stack))
+                {
+                    evol = d.evolution;
+                    if (!d.shouldEvolve(this, null)) neededItem = true;
+                    data = d;
+                    break;
+                }
+            }
+            if (evol != null)
+            {
+                // Send evolve event.
+                EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
+                MinecraftForge.EVENT_BUS.post(evt);
+                if (evt.isCanceled()) return null;
+                // change to new forme.
+                IPokemob evo = this.megaEvolve(((EvolveEvent.Pre) evt).forme);
+                // Remove held item if it had one.
+                if (neededItem)
+                {
+                    ((EntityEvolvablePokemob) evo).setHeldItem(null);
+                }
+                // Init things like moves.
+                evo.specificSpawnInit();
+                ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
+                evo.levelUp(evo.getLevel());
+                // Send post evolve event.
+                evt = new EvolveEvent.Post(evo);
+                MinecraftForge.EVENT_BUS.post(evt);
+                ((Entity) this).setDead();
+                return evo;
+            }
+            return null;
+        }
+        // Do not evolve if it is dead, or can't evolve.
+        else if (this.getPokedexEntry().canEvolve() && !isDead)
+        {
+            boolean neededItem = false;
+            PokedexEntry evol = null;
+            EvolutionData data = null;
+            // If it has a pre-defined evolution, use that instead, otherwise
+            // look for evolution data to use.
             if (evolution == null || evolution.isEmpty())
             {
                 for (EvolutionData d : getPokedexEntry().getEvolutions())
@@ -192,48 +237,46 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
                 MinecraftForge.EVENT_BUS.post(evt);
                 if (evt.isCanceled()) return null;
-
                 if (delayed)
                 {
+                    // If delayed, set the pokemob as starting to evolve, and
+                    // set the evolution for display effects.
                     if (stack != null) this.stack = stack.copy();
-                    else stack = null;
                     this.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
                     this.setEvol(evol.getPokedexNb());
                     this.setPokemonAIState(EVOLVING, true);
                     evolving = true;
+                    // Send the message about evolving, to let user cancel.
                     this.displayMessageToOwner(
                             new TextComponentTranslation("pokemob.evolution.start", this.getPokemonDisplayName()));
                     return this;
                 }
-                else
+                // Evolve the mob.
+                IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
+                // Clear held item if used for evolving.
+                if (neededItem)
                 {
-                    IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
-                    if (neededItem)
-                    {
-                        ((EntityEvolvablePokemob) evo).setHeldItem(null);
-                    }
-
-                    if (init) evo.specificSpawnInit();
-
-                    if (evo != null)
-                    {
-                        Entity owner = evo.getPokemonOwner();
-                        evt = new EvolveEvent.Post(evo);
-                        MinecraftForge.EVENT_BUS.post(evt);
-
-                        EntityPlayer player = null;
-                        if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
-                        if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
-                        else((EntityMovesPokemob) evo).oldLevel = data.level - 1;
-                        evo.levelUp(evo.getLevel());
-                        this.setDead();
-                        if (player != null && !player.getEntityWorld().isRemote && !isShadow())
-                        {
-                            makeShedinja(evo, player);
-                        }
-                    }
-                    return evo;
+                    ((EntityEvolvablePokemob) evo).setHeldItem(null);
                 }
+                if (evo != null)
+                {
+                    Entity owner = evo.getPokemonOwner();
+                    evt = new EvolveEvent.Post(evo);
+                    MinecraftForge.EVENT_BUS.post(evt);
+                    EntityPlayer player = null;
+                    if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
+                    if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
+                    else if (data != null) ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
+                    evo.levelUp(evo.getLevel());
+                    this.setDead();
+                    // Try to make a shedinja, this only work for nincada.
+                    // TODO move this to event.
+                    if (player != null && !player.getEntityWorld().isRemote && !isShadow())
+                    {
+                        makeShedinja(evo, player);
+                    }
+                }
+                return evo;
             }
         }
         return null;
@@ -296,7 +339,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     IPokemob poke = (IPokemob) pokemon;
                     poke.setPokecubeId(cubeId);
                     poke.setPokemonOwner(player);
-                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true, false);
+                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true);
                     ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
                     ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
                     player.addStat(PokecubeMod.get1stPokemob, 0);
@@ -325,7 +368,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
                 evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
-
                 if (evolution == null)
                 {
                     System.err.println("No Entry for " + newEntry);
@@ -340,12 +382,12 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 this.displayMessageToOwner(mess);
                 this.setPokemonOwner(null);
                 this.setDead();
-                worldObj.removeEntity(this);
                 ((IPokemob) evolution).changeForme(forme);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 long evoTime = worldObj.getTotalWorldTime() + 2;
                 if (this.addedToChunk)
                 {
+                    worldObj.removeEntity(this);
                     new EvoTicker(worldObj, evoTime, evolution);
                 }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);

@@ -101,65 +101,62 @@ public class BerryGenManager
                 {
                     return;
                 }
-                else
+                temp = pos.down();
+                Block soil = world.getBlockState(temp).getBlock();
+                boolean isSoil = true;// (soil != null &&
+                                      // soil.canSustainPlant(par1World,
+                                      // par3,
+                                      // par4 - 1, par5, EnumFacing.UP,
+                                      // (BlockSapling)Block.sapling));
+
+                if (isSoil && y < 256 - l - 1)
                 {
-                    temp = pos.down();
-                    Block soil = world.getBlockState(temp).getBlock();
-                    boolean isSoil = true;// (soil != null &&
-                                          // soil.canSustainPlant(par1World,
-                                          // par3,
-                                          // par4 - 1, par5, EnumFacing.UP,
-                                          // (BlockSapling)Block.sapling));
+                    soil.onPlantGrow(world.getBlockState(temp), world, temp, pos);
+                    b0 = 3;
+                    byte b1 = 0;
+                    int i2;
+                    int j2;
+                    int k2;
 
-                    if (isSoil && y < 256 - l - 1)
+                    for (j1 = y - b0 + l; j1 <= y + l; ++j1)
                     {
-                        soil.onPlantGrow(world.getBlockState(temp), world, temp, pos);
-                        b0 = 3;
-                        byte b1 = 0;
-                        int i2;
-                        int j2;
-                        int k2;
+                        k1 = j1 - (y + l);
+                        i2 = b1 + 1 - k1 / 2;
 
-                        for (j1 = y - b0 + l; j1 <= y + l; ++j1)
+                        for (j2 = x - i2; j2 <= x + i2; ++j2)
                         {
-                            k1 = j1 - (y + l);
-                            i2 = b1 + 1 - k1 / 2;
+                            k2 = j2 - x;
 
-                            for (j2 = x - i2; j2 <= x + i2; ++j2)
+                            for (int l2 = z - i2; l2 <= z + i2; ++l2)
                             {
-                                k2 = j2 - x;
+                                int i3 = l2 - z;
 
-                                for (int l2 = z - i2; l2 <= z + i2; ++l2)
+                                if (Math.abs(k2) != i2 || Math.abs(i3) != i2
+                                        || world.rand.nextInt(2) != 0 && k1 != 0)
                                 {
-                                    int i3 = l2 - z;
+                                    temp = new BlockPos(j2, j1, l2);
+                                    Block block = world.getBlockState(temp).getBlock();
 
-                                    if (Math.abs(k2) != i2 || Math.abs(i3) != i2
-                                            || world.rand.nextInt(2) != 0 && k1 != 0)
+                                    if (block == null
+                                            || block.canBeReplacedByLeaves(world.getBlockState(temp), world, temp))
                                     {
-                                        temp = new BlockPos(j2, j1, l2);
-                                        Block block = world.getBlockState(temp).getBlock();
-
-                                        if (block == null
-                                                || block.canBeReplacedByLeaves(world.getBlockState(temp), world, temp))
-                                        {
-                                            if (world.isAirBlock(temp)) placeBerryLeaf(world, temp, berryId);
-                                        }
+                                        if (world.isAirBlock(temp)) placeBerryLeaf(world, temp, berryId);
                                     }
                                 }
                             }
                         }
+                    }
 
-                        world.setBlockState(pos, wood);
-                        for (j1 = 0; j1 < l; ++j1)
+                    world.setBlockState(pos, wood);
+                    for (j1 = 0; j1 < l; ++j1)
+                    {
+                        temp = new BlockPos(x, y + j1, z);
+                        Block block = world.getBlockState(temp).getBlock();
+
+                        if (block == null || block.isAir(world.getBlockState(temp), world, temp)
+                                || block.isLeaves(world.getBlockState(temp), world, temp))
                         {
-                            temp = new BlockPos(x, y + j1, z);
-                            Block block = world.getBlockState(temp).getBlock();
-
-                            if (block == null || block.isAir(world.getBlockState(temp), world, temp)
-                                    || block.isLeaves(world.getBlockState(temp), world, temp))
-                            {
-                                world.setBlockState(temp, wood);
-                            }
+                            world.setBlockState(temp, wood);
                         }
                     }
                 }

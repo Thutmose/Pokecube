@@ -152,11 +152,8 @@ public class EntityLeader extends EntityTrainer
                 defeater.addChatMessage(text);
             }
         }
-        if (defeater != null)
-        {
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
-            defeater.addChatMessage(text);
-        }
+        ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
+        defeater.addChatMessage(text);
     }
 
     @Override

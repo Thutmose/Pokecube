@@ -33,6 +33,7 @@ public class ByteClassLoader extends ClassLoader
             InputStream is = GenericPokemob.class.getResourceAsStream(resName);
             ClassReader reader = new ClassReader(is);
             genericMobBytes = reader.b.clone();
+            is.close();
         }
         catch (Exception e)
         {

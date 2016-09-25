@@ -32,6 +32,7 @@ public class PacketTeams implements IMessage, IMessageHandler<PacketTeams, IMess
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

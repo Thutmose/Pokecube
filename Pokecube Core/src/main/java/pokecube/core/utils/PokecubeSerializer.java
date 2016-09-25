@@ -159,9 +159,8 @@ public class PokecubeSerializer
         ISaveHandler saveHandler = world.getSaveHandler();
         String seperator = System.getProperty("file.separator");
         File file = saveHandler.getMapFileFromName(uuid + seperator + fileName);
-
         File dir = new File(file.getParentFile().getAbsolutePath());
-        if (file != null && !file.exists())
+        if (!file.exists())
         {
             dir.mkdirs();
         }
@@ -678,7 +677,7 @@ public class PokecubeSerializer
 
         if (entity != null)
         {
-            entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true, false);
+            entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
             ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
             entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
             entity.setPokecubeId(0);

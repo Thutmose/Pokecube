@@ -33,7 +33,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.PlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
@@ -66,7 +65,7 @@ public class PokecubeDimensionManager
             if (!registered)
             {
                 registerDim(dim);
-                PokecubeCore.core.getConfig().save();
+                PokecubeMod.core.getConfig().save();
                 getInstance().syncToAll();
             }
         }

@@ -135,7 +135,7 @@ public class GiftCommand extends CommandBase
                     }
                     mob.setOriginalOwnerUUID(new UUID(12345, 54321));
                     mob.setPokecubeId(13);
-                    mob.setExp(exp, false, true);
+                    mob.setExp(exp, false);
                     mob.setShiny(shiny);
                     if (gender != -3) mob.setSexe(gender);
                     if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);

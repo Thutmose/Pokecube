@@ -259,13 +259,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
                 return !recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
             }
-            else
+            if ((recipe instanceof RecipeFossilRevive))
             {
-                if ((recipe instanceof RecipeFossilRevive))
-                {
-                    RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                    return recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
-                }
+                RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
+                return recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
             }
             return recipe.matches(tile.craftMatrix, tile.getWorld());
         }
@@ -286,10 +283,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 tile.total = recipe.getEnergyCost();
                 return true;
             }
-            else
-            {
-                return !complete();
-            }
+            return !complete();
         }
 
         public int getProgress()
@@ -317,7 +311,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                     int exp = Tools.levelToXp(recipe.pokedexEntry.getEvolutionMode(), recipe.level);
                     // that will make your pokemob around level 3-5.
                     // You can give him more XP if you want
-                    ((IPokemob) entity).setExp(exp, true, true);
+                    entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);
                     if (tile.user != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.user);
                     entity.setLocationAndAngles(tile.pos.getX(), tile.pos.getY() + 1, tile.pos.getZ(),
                             tile.getWorld().rand.nextFloat() * 360F, 0.0F);
@@ -326,16 +320,13 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 }
                 return true;
             }
-            else
+            if (tile.getStackInSlot(9) == null)
             {
-                if (tile.getStackInSlot(9) == null)
-                {
-                    tile.setInventorySlotContents(9, recipe.getCraftingResult(tile.craftMatrix));
-                    if (tile.craftMatrix.eventHandler != null) tile.craftMatrix.eventHandler.onCraftMatrixChanged(tile);
-                    PacketHandler.sendTileUpdate(tile);
-                }
-                return false;
+                tile.setInventorySlotContents(9, recipe.getCraftingResult(tile.craftMatrix));
+                if (tile.craftMatrix.eventHandler != null) tile.craftMatrix.eventHandler.onCraftMatrixChanged(tile);
+                PacketHandler.sendTileUpdate(tile);
             }
+            return false;
         }
     }
 

@@ -4,7 +4,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.Path;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class AICombatMovement extends AIBase
@@ -41,11 +43,22 @@ public class AICombatMovement extends AIBase
             Vector3 diff = targetLoc.subtractFrom(attackerLoc).reverse().scalarMultBy(0.5);
             centre = attackerLoc.addTo(diff);
         }
+        if (!attacker.getNavigator().noPath())
+        {
+            Vector3 end = Vector3.getNewVector().set(attacker.getNavigator().getPath().getFinalPathPoint());
+            Vector3 here = Vector3.getNewVector().set(attacker);
+            float f = this.attacker.width;
+            f = Math.max(f, 0.5f);
+            if (here.distTo(end) > f) { return; }
+        }
+
         Vector3 here = Vector3.getNewVector().set(attacker);
         Vector3 diff = here.subtract(centre);
         if (diff.magSq() < 1) diff.norm();
-
-        if (diff.magSq() > 256)
+        int combatDistance = PokecubeMod.core.getConfig().combatDistance;
+        combatDistance = Math.max(combatDistance, 4);
+        int combatDistanceSq = combatDistance * combatDistance;
+        if (diff.magSq() > combatDistanceSq)
         {
             diff.norm().scalarMultBy(3);
             Path path = attacker.getNavigator().getPathToPos(diff.addTo(centre).getPos());
@@ -53,7 +66,7 @@ public class AICombatMovement extends AIBase
         }
         else
         {
-            Vector3 perp = diff.horizonalPerp().scalarMultBy(diff.mag());
+            Vector3 perp = diff.horizonalPerp().scalarMultBy(combatDistance);
             perp.addTo(here);
             Path path = attacker.getNavigator().getPathToPos(perp.getPos());
             addEntityPath(attacker, path, movementSpeed);
@@ -63,6 +76,6 @@ public class AICombatMovement extends AIBase
     @Override
     public boolean shouldRun()
     {
-        return (target = attacker.getAttackTarget()) != null && attacker.getNavigator().noPath();
+        return (target = attacker.getAttackTarget()) != null && pokemob.getPokemonAIState(IMoveConstants.ANGRY);
     }
 }

@@ -11,7 +11,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.abilities.AbilityManager.ClassFinder;
 import pokecube.core.database.moves.MoveEntry;
@@ -21,6 +20,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.Move_Transform;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -274,7 +274,7 @@ public class MovesAdder implements IMoveConstants
                     Move_Basic move = (Move_Basic) candidateClass.getConstructor().newInstance();
                     if (MovesUtils.isMoveImplemented(move.name))
                     {
-                        PokecubeCore.log("Error, Double registration of " + move.name);
+                        PokecubeMod.log("Error, Double registration of " + move.name);
                     }
                     registerMove(move);
                 }

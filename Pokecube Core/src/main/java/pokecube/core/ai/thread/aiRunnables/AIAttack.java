@@ -10,7 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
@@ -51,7 +50,7 @@ public class AIAttack extends AIBase implements IAICombat
 
     private void applyDelay(IPokemob attacker, String moveName, boolean distanced)
     {
-        byte[] mods = ((IPokemob) attacker).getModifiers();
+        byte[] mods = attacker.getModifiers();
         int cd = PokecubeMod.core.getConfig().attackCooldown;
         if (entityTarget instanceof EntityPlayer) cd *= 2;
         double accuracyMod = Tools.modifierToRatio(mods[6], true);
@@ -241,14 +240,14 @@ public class AIAttack extends AIBase implements IAICombat
 
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
             {
-                var1 = PokecubeCore.core.getConfig().rangedAttackDistance
-                        * PokecubeCore.core.getConfig().rangedAttackDistance;
+                var1 = PokecubeMod.core.getConfig().rangedAttackDistance
+                        * PokecubeMod.core.getConfig().rangedAttackDistance;
                 distanced = true;
             }
-            else if (PokecubeCore.core.getConfig().contactAttackDistance > 0)
+            else if (PokecubeMod.core.getConfig().contactAttackDistance > 0)
             {
-                var1 = PokecubeCore.core.getConfig().contactAttackDistance
-                        * PokecubeCore.core.getConfig().contactAttackDistance;
+                var1 = PokecubeMod.core.getConfig().contactAttackDistance
+                        * PokecubeMod.core.getConfig().contactAttackDistance;
                 distanced = true;
             }
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)
@@ -257,7 +256,7 @@ public class AIAttack extends AIBase implements IAICombat
             }
         }
         boolean canUseMove = MovesUtils.canUseMove(pokemob);
-
+        boolean shouldPath = delayTime <= 0;
         boolean inRange = false;
 
         if (distanced)
@@ -308,6 +307,9 @@ public class AIAttack extends AIBase implements IAICombat
                 AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                         dz + attackedLength);
                 inRange = box.intersectsWith(box2);
+                if (shouldPath && !(distanced || self))
+                    setPokemobAIState((IPokemob) attacker, IMoveConstants.LEAPING, true);
+
             }
         }
         if (self)
@@ -328,8 +330,6 @@ public class AIAttack extends AIBase implements IAICombat
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
         }
-
-        boolean shouldPath = true;
         if (delayTime < -20)
         {
             shouldPath = true;
@@ -373,7 +373,9 @@ public class AIAttack extends AIBase implements IAICombat
 
             }
             if (entityTarget instanceof IPokemob)
+            {
                 setPokemobAIState((IPokemob) entityTarget, IMoveConstants.DODGING, false);
+            }
             if (this.attacker.getHeldItemMainhand() != null)
             {
                 this.attacker.swingArm(EnumHand.MAIN_HAND);
@@ -384,15 +386,12 @@ public class AIAttack extends AIBase implements IAICombat
             shouldPath = false;
             setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, false);
             targetLoc.clear();
+            applyDelay(pokemob, move.name, distanced);
         }
         if (!targetLoc.isEmpty() && shouldPath)
         {
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
             if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
-        }
-        else if (targetLoc.isEmpty())
-        {
-            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
         }
         delayTime--;
     }

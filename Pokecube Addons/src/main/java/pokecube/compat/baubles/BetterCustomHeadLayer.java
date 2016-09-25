@@ -46,6 +46,7 @@ public class BetterCustomHeadLayer extends LayerCustomHead
         model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Hat.x3d"));
     }
 
+    @Override
     public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {

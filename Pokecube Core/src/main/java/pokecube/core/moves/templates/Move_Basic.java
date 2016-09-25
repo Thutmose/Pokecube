@@ -167,7 +167,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         Entity entity = (Entity) attacker;
 
-        if (!move.notIntercepable && attacker.getPokemonAIState(IPokemob.ANGRY))
+        if (!move.notIntercepable && attacker.getPokemonAIState(IMoveConstants.ANGRY))
         {
             Vec3d loc1 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3d loc2 = new Vec3d(location.x, location.y, location.z);
@@ -221,7 +221,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         if (!PokecubeMod.pokemobsDamageBlocks)
         {
             EntityLivingBase owner;
-            if ((owner = attacker.getPokemonOwner()) != null && !attacker.getPokemonAIState(IPokemob.ANGRY))
+            if ((owner = attacker.getPokemonOwner()) != null && !attacker.getPokemonAIState(IMoveConstants.ANGRY))
             {
                 CommandTools.sendError(owner, "pokemob.action.denydamageblock");
             }
@@ -344,7 +344,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             ((IPokemob) attacked).getMoveStats().infatuateTarget = (Entity) attacker;
         }
 
-        if (packet.infatuateAttacker && attacker instanceof IPokemob)
+        if (packet.infatuateAttacker)
         {
             attacker.getMoveStats().infatuateTarget = attacked;
         }
@@ -639,7 +639,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         }
         if (!effect)
         {
-            MovesUtils.displayStatsMessage(packet.attacker, (Entity) packet.attacked, -2, (byte) 0, (byte) 0);
+            MovesUtils.displayStatsMessage(packet.attacker, packet.attacked, -2, (byte) 0, (byte) 0);
         }
     }
 }

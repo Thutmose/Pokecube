@@ -10,14 +10,14 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 
 public class TileEntityBasePortal extends TileEntityOwnable
 {
-    public boolean exit    = false;
-    public int     exitDim = 0;
+    public boolean exit        = false;
+    public boolean sendToUsers = false;
+    public int     exitDim     = 0;
 
     public void transferPlayer(EntityPlayer playerIn)
     {
-        if (placer == null) return;
-        String owner = placer.toString();
-
+        if (!sendToUsers && placer == null) return;
+        String owner = sendToUsers ? playerIn.getCachedUniqueIdString() : placer.toString();
         BlockPos exitLoc = PokecubeDimensionManager.getBaseEntrance(owner, worldObj.provider.getDimension());
         if (exitLoc == null)
         {
@@ -44,12 +44,14 @@ public class TileEntityBasePortal extends TileEntityOwnable
     public void readFromNBT(NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
+        this.sendToUsers = tagCompound.getBoolean("allPlayers");
     }
 
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
+        tagCompound.setBoolean("allPlayer", sendToUsers);
         return tagCompound;
     }
 }

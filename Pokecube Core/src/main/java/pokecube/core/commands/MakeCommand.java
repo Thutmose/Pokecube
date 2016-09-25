@@ -279,7 +279,11 @@ public class MakeCommand extends CommandBase
                         if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
                         if (shadow) mob.setShadow(shadow);
                         if (ancient) mob.setAncient(ancient);
-                        mob = mob.setExp(exp, asWild, true);
+                        if (asWild)
+                        {
+                            mob = mob.setForSpawn(exp);
+                        }
+                        else mob = mob.setExp(exp, asWild);
                         level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
                         mob.levelUp(level);
                         if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));

@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
@@ -578,11 +579,10 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             }
             else if (giveExp)
             {
-                attacker.setExp(
-                        attacker.getExp()
-                                + Tools.getExp((float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier : 1),
-                                        ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
-                        true, false);
+                attacker.setExp(attacker.getExp()
+                        + Tools.getExp((float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier : 1),
+                                ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
+                        true);
                 byte[] evsToAdd = Pokedex.getInstance().getEntry(((IPokemob) attacked).getPokedexNb()).getEVs();
                 attacker.addEVs(evsToAdd);
             }
@@ -648,7 +648,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             e.printStackTrace();
         }
 
-        setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false, false);
+        setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false);
         String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
         isAncient = nbttagcompound.getBoolean("isAncient");
         wasShadow = nbttagcompound.getBoolean("wasShadow");
@@ -769,7 +769,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public IPokemob setExp(int exp, boolean notifyLevelUp, boolean newlySpawned)
+    public IPokemob setExp(int exp, boolean notifyLevelUp)
     {
         if (this.isDead) return this;
 
@@ -787,28 +787,22 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             // Fire event to allow others to interfere
             LevelUpEvent lvlup = new LevelUpEvent(this, newLvl, oldLevel);
             MinecraftForge.EVENT_BUS.post(lvlup);
-            setStats(getPokedexEntry().getStats());
             if (!lvlup.isCanceled())
             {
                 updateHealth(newLvl);
                 if (notifyLevelUp)
                 {
-                    if (!this.isDead && (canEvolve(null) || canEvolve(getHeldItemMainhand())))
+                    ItemStack held = getHeldItemMainhand();
+                    if (!this.isDead && (canEvolve(null) || canEvolve(held)))
                     {
                         levelUp(newLvl);
-                        IPokemob evo = this.evolve(true, newlySpawned, getHeldItemMainhand());
-                        IPokemob temp = evo;
-                        if (newlySpawned) while (temp != null)
-                        {
-                            temp = evo.evolve(true, newlySpawned, getHeldItemMainhand());
-                            if (temp != null) evo = temp;
-                        }
+                        IPokemob evo = this.evolve(true, false, held);
                         ret = evo;
                     }
                     ret.levelUp(newLvl);
                 }
+                ret.setStats(getPokedexEntry().getStats());
             }
-            ret.setStats(getPokedexEntry().getStats());
         }
         return ret;
     }
@@ -1046,5 +1040,25 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setRNGValue(int value)
     {
         personalityValue = value;
+    }
+
+    @Override
+    public IPokemob setForSpawn(int exp)
+    {
+        int level = Tools.xpToLevel(getExperienceMode(), exp);
+        this.oldLevel = 0;
+        EntityPokemobBase ret = (EntityPokemobBase) this.levelUp(level);
+        ItemStack held = getHeldItemMainhand();
+        ret.dataManager.set(EXPDW, exp);
+        while (ret.canEvolve(held))
+        {
+            IPokemob temp = ret.evolve(false, true, held);
+            if (temp == null) break;
+            ret = (EntityPokemobBase) temp;
+            ret.dataManager.set(EXPDW, exp);
+            ret.levelUp(level);
+        }
+        ret.setStats(ret.getPokedexEntry().getStats());
+        return ret;
     }
 }

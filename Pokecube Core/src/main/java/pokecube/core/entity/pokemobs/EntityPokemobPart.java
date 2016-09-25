@@ -666,13 +666,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public IPokemob setExp(int exp, boolean notifyLevelUp, boolean newlySpawned)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void setExplosionState(int i)
     {
         // TODO Auto-generated method stub
@@ -959,6 +952,20 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public AIStuff getAIStuff()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IPokemob setExp(int exp, boolean notifyLevelUp)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IPokemob setForSpawn(int exp)
     {
         // TODO Auto-generated method stub
         return null;

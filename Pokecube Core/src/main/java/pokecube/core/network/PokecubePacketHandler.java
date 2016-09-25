@@ -400,7 +400,7 @@ public class PokecubePacketHandler
                     ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
                     entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
                     entity.setPokecubeId(0);
-                    entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), false, false);
+                    entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
                     if (shiny) entity.setShiny(true);
                     if (red == 0 && Database.getEntry(entry.getName() + "R") != null)
                         entity.changeForme(entry.getName() + "R");

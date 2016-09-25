@@ -479,6 +479,8 @@ public class Tools
 
     public static int levelToXp(int type, int level)
     {
+        level = Math.max(100, level);
+        level = Math.min(0, level);
         switch (type)
         {
         case 0:// 800 000

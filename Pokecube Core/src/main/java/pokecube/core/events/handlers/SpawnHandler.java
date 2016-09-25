@@ -191,6 +191,7 @@ public final class SpawnHandler
 
         if (entityliving instanceof IPokemob)
         {
+            long time = System.nanoTime();
             IPokemob pokemob = (IPokemob) entityliving;
             int maxXP = 10;
             int level = 1;
@@ -209,8 +210,15 @@ public final class SpawnHandler
                 level = getSpawnLevel(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
             }
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
-            pokemob = pokemob.setExp(maxXP, true, true);
+            pokemob = pokemob.setForSpawn(maxXP);
             pokemob.specificSpawnInit();
+            double dt = (System.nanoTime() - time) / 10e3D;
+            if (PokecubeCore.core.getConfig().debug && dt > 100)
+            {
+                temp.set(temp.set(posX, posY, posZ).getPos());
+                String toLog = "location: %1$s took: %2$s\u00B5s to spawn Init for %3$s";
+                PokecubeMod.log(String.format(toLog, temp, dt, pokemob.getPokemonDisplayName().getFormattedText()));
+            }
             return (EntityLiving) pokemob;
         }
         return null;
@@ -482,7 +490,6 @@ public final class SpawnHandler
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
         int b = t.getBiome(v);
         if (onlySubbiomes && b <= 255) { return ret; }
-        Vector3.movePointOutOfBlocks(v, world);
         long time = System.nanoTime();
         SpawnEvent.Pick event = new SpawnEvent.Pick.Pre(null, v, world);
         MinecraftForge.EVENT_BUS.post(event);
@@ -495,19 +502,21 @@ public final class SpawnHandler
         if (v == null) { return ret; }
         if (!isPointValidForSpawn(world, v, dbe)) return ret;
         double dt = (System.nanoTime() - time) / 10e3D;
-        if (dt > 1000)
+        if (PokecubeCore.core.getConfig().debug && dt > 500)
         {
-            String toLog = "location:" + v + " took:" + dt + "\u00B5" + "s" + " to find a valid spawn";
-            PokecubeMod.log(toLog);
+            temp.set(v.getPos());
+            String toLog = "location: %1$s took: %2$s\u00B5s to find a valid spawn and location";
+            PokecubeMod.log(String.format(toLog, temp, dt));
         }
         num = 0;
         time = System.nanoTime();
         ret += num = doSpawnForType(world, v, dbe, parser, t);
         dt = (System.nanoTime() - time) / 10e3D;
-        if (dt > 1000)
+        if (PokecubeCore.core.getConfig().debug && dt > 500)
         {
-            String toLog = "location:" + v + " took:" + dt + "\u00B5" + "s" + " for:" + dbe + " spawned:" + num;
-            PokecubeMod.log(toLog);
+            temp.set(v.getPos());
+            String toLog = "location: %1$s took: %2$s\u00B5s to find a valid spawn for %3$s %4$s";
+            PokecubeMod.log(String.format(toLog, temp, dt, num, dbe));
         }
         return ret;
     }
@@ -532,8 +541,10 @@ public final class SpawnHandler
                     rand.nextInt(distGroupZone) - rand.nextInt(distGroupZone));
             v.set(loc);
             point.set(v.addTo(offset));
-            Vector3.movePointOutOfBlocks(point, world);
-            if (point == null || !isPointValidForSpawn(world, point, dbe)) continue;
+            if (point == null || !isPointValidForSpawn(world, point, dbe))
+            {
+                continue;
+            }
 
             float x = (float) point.x + 0.5F;
             float y = (float) point.y;
@@ -615,7 +626,7 @@ public final class SpawnHandler
                 long time = System.nanoTime();
                 int num = doSpawnForLocation(world, v);
                 double dt = (System.nanoTime() - time) / 10e3D;
-                if (dt > 2000)
+                if (PokecubeCore.core.getConfig().debug && dt > 1000)
                 {
                     PokecubeMod.log(dt + "\u00B5" + "s for player " + players.get(0).getDisplayNameString() + " at " + v
                             + ", spawned " + num);

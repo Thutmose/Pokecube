@@ -146,7 +146,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
                 if (getExp() < exp)
                 {
                     int n = new Random().nextInt(exp - getExp()) / 3 + 1;
-                    setExp(getExp() + n, false, false);
+                    setExp(getExp() + n, true);
                 }
             }
         }

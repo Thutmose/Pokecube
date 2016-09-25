@@ -191,7 +191,7 @@ public class Move_Explode extends Move_Ongoing
                     // attack
                     ((IPokemob) attacked).setExp(
                             ((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()),
-                            true, false);
+                            true);
                     byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
                     ((IPokemob) attacked).addEVs(evsToAdd);
                 }

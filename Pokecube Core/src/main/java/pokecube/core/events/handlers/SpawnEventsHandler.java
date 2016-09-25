@@ -63,12 +63,12 @@ public class SpawnEventsHandler
                 v = vbak.copy();
             }
         }
+        if (random > weight || v == null) return;
         if (dbe.legendary)
         {
             int level = SpawnHandler.getSpawnLevel(world, v, dbe);
             if (level < PokecubeMod.core.getConfig().minLegendLevel) { return; }
         }
-        if (random > weight || v == null) return;
         event.setPick(dbe);
     }
 }

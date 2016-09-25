@@ -217,7 +217,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(54500, true, true);
+                mob = mob.setForSpawn(54500);
             }
         };
 
@@ -301,7 +301,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(160000, true, true);
+                mob = mob.setForSpawn(160000);
             }
 
         };
@@ -459,7 +459,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(54500, true, true);
+                mob = mob.setForSpawn(54500);
             }
         };
 
@@ -500,7 +500,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(54500, true, true);
+                mob = mob.setForSpawn(54500);
             }
         };
 
@@ -664,7 +664,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(54500, true, true);
+                mob = mob.setForSpawn(54500);
                 Vector3 location = Vector3.getNewVector().set(mob).addTo(0, -1, 0);
 
                 ArrayList<Vector3> locations = new ArrayList<Vector3>();
@@ -773,7 +773,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(54500, true, true);
+                mob = mob.setForSpawn(54500);
                 Vector3 location = Vector3.getNewVector().set(mob).add(0, -1, 0);
 
                 ArrayList<Vector3> locations = new ArrayList<Vector3>();
@@ -860,7 +860,7 @@ public class LegendaryConditions
             @Override
             public void onSpawn(IPokemob mob)
             {
-                mob.setExp(54500, true, true);
+                mob = mob.setForSpawn(54500);
                 Vector3 location = Vector3.getNewVector().set(mob).add(0, -1, 0);
 
                 ArrayList<Vector3> locations = new ArrayList<Vector3>();

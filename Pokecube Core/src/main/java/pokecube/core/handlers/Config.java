@@ -298,6 +298,8 @@ public class Config extends ConfigBase
     boolean                    resetTags                  = false;
     @Configure(category = advanced)
     String[]                   extraValues                = { "3", "4.5" };
+    @Configure(category = advanced)
+    public boolean             debug                      = false;
 
     @Configure(category = advanced)
     public int                 evolutionTicks             = 50;

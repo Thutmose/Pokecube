@@ -317,7 +317,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                     int exp = Tools.levelToXp(recipe.pokedexEntry.getEvolutionMode(), recipe.level);
                     // that will make your pokemob around level 3-5.
                     // You can give him more XP if you want
-                    ((IPokemob) entity).setExp(exp, true, true);
+                    entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);
                     if (tile.user != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.user);
                     entity.setLocationAndAngles(tile.pos.getX(), tile.pos.getY() + 1, tile.pos.getZ(),
                             tile.getWorld().rand.nextFloat() * 360F, 0.0F);

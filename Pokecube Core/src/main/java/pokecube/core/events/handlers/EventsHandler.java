@@ -444,7 +444,7 @@ public class EventsHandler
             if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
             {
                 int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-                killer.setExp(exp, true, false);
+                killer.setExp(exp, true);
             }
             if (owner != null)
             {
@@ -458,7 +458,7 @@ public class EventsHandler
                                 .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
                         {
                             int exp = poke.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
-                            poke.setExp(exp, true, false);
+                            poke.setExp(exp, true);
                         }
                     }
                 }

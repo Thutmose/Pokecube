@@ -448,7 +448,7 @@ public class ItemPokemobEgg extends Item
             entity.setHealth(entity.getMaxHealth());
             int exp = Tools.levelToXp(mob.getExperienceMode(), 1);
             exp = Math.max(1, exp);
-            mob.setExp(exp, true, true);
+            mob.setForSpawn(exp);
             entity.setLocationAndAngles(par2, par4, par6, world.rand.nextFloat() * 360F, 0.0F);
             if (stack.hasTagCompound())
             {

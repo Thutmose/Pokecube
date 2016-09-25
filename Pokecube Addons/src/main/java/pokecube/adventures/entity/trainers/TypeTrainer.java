@@ -222,9 +222,8 @@ public class TypeTrainer
             entity.setPokemonOwner(trainer);
             entity.setPokecubeId(0);
             int exp = Tools.levelToXp(entity.getExperienceMode(), level);
-            entity.setExp(exp, true, false);
+            entity = entity.setForSpawn(exp);
             ItemStack item = PokecubeManager.pokemobToItem(entity);
-
             ((Entity) entity).isDead = true;
             return item;
         }

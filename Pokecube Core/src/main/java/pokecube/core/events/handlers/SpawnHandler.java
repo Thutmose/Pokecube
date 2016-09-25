@@ -34,11 +34,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import pokecube.core.PokecubeCore;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.SpawnBiomeMatcher;
-import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -196,20 +194,21 @@ public final class SpawnHandler
             IPokemob pokemob = (IPokemob) entityliving;
             int maxXP = 10;
             int level = 1;
-
             if (expFunction)
             {
-                maxXP = getSpawnXp(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
-                level = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), maxXP);
+                Vector3 location;
+                maxXP = getSpawnXp(world, location = Vector3.getNewVector().set(posX, posY, posZ),
+                        pokemob.getPokedexEntry());
+                SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), location, world,
+                        Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), maxXP));
+                MinecraftForge.EVENT_BUS.post(event);
+                level = event.getLevel();
             }
             else
             {
                 level = getSpawnLevel(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
             }
-
-            if (lvlCap) level = Math.min(level, capLevel);
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
-
             pokemob = pokemob.setExp(maxXP, true, true);
             pokemob.specificSpawnInit();
             return (EntityLiving) pokemob;
@@ -282,21 +281,8 @@ public final class SpawnHandler
         return temp;
     }
 
-    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
+    private static int parse(World world, Vector3 location)
     {
-        int spawnLevel = 1;
-
-        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
-        int b = t.getBiome(location);
-        if (subBiomeLevels.containsKey(b))
-        {
-            Integer[] range = subBiomeLevels.get(b);
-            int dl = range[1] - range[0];
-            if (dl > 0) dl = new Random().nextInt(dl) + 1;
-            int level = range[0] + dl;
-            return level;
-        }
-
         Vector3 spawn = temp.set(world.getSpawnPoint());
         if (!PokecubeCore.core.getConfig().spawnCentered) spawn.clear();
         JEP toUse;
@@ -327,7 +313,6 @@ public final class SpawnHandler
             parsers.put(type, toUse);
             isNew = true;
         }
-
         boolean r = function.split(";").length == 2;
         if (!r)
         {
@@ -338,21 +323,39 @@ public final class SpawnHandler
             double d = location.distToSq(spawn);
             parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
         }
-        spawnLevel = (int) Math.abs(toUse.getValue());
-        int variance = PokecubeMod.core.getConfig().levelVariance;
-        variance = new Random().nextInt(Math.max(1, variance));
-        spawnLevel += variance;
-        spawnLevel = Math.max(spawnLevel, 1);
-        return spawnLevel;
+        return (int) Math.abs(toUse.getValue());
+    }
+
+    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
+    {
+        int spawnLevel = 1;
+        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
+        int b = t.getBiome(location);
+        if (subBiomeLevels.containsKey(b))
+        {
+            Integer[] range = subBiomeLevels.get(b);
+            int dl = range[1] - range[0];
+            if (dl > 0) dl = new Random().nextInt(dl) + 1;
+            spawnLevel = range[0] + dl;
+        }
+        else
+        {
+            spawnLevel = parse(world, location);
+            int variance = PokecubeMod.core.getConfig().levelVariance;
+            variance = new Random().nextInt(Math.max(1, variance));
+            spawnLevel += variance;
+            spawnLevel = Math.max(spawnLevel, 1);
+        }
+        SpawnEvent.Level event = new SpawnEvent.Level(pokemon, location, world, spawnLevel);
+        MinecraftForge.EVENT_BUS.post(event);
+        return event.getLevel();
     }
 
     public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon)
     {
         int maxXp = 10;
-
         if (!expFunction) { return Tools.levelToXp(pokemon.getEvolutionMode(),
                 getSpawnLevel(world, location, pokemon)); }
-
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
         if (subBiomeLevels.containsKey(b))
@@ -364,48 +367,7 @@ public final class SpawnHandler
             maxXp = Math.max(10, Tools.levelToXp(pokemon.getEvolutionMode(), level));
             return maxXp;
         }
-
-        Vector3 spawn = temp.set(world.getSpawnPoint());
-        JEP toUse;
-        int type = world.provider.getDimension();
-        boolean isNew = false;
-        String function = "";
-        if (functions.containsKey(type))
-        {
-            function = functions.get(type);
-        }
-        else
-        {
-            function = functions.get(0);
-        }
-        if (parsers.containsKey(type))
-        {
-            toUse = parsers.get(type);
-        }
-        else
-        {
-            parsers.put(type, new JEP());
-            toUse = parsers.get(type);
-            isNew = true;
-        }
-        if (Double.isNaN(toUse.getValue()))
-        {
-            toUse = new JEP();
-            parsers.put(type, toUse);
-            isNew = true;
-        }
-
-        boolean r = function.split(";").length == 2;
-        if (!r)
-        {
-            parseExpression(toUse, function, location.x - spawn.x, location.z - spawn.z, r, isNew);
-        }
-        else
-        {
-            double d = location.distToSq(spawn);
-            parseExpression(toUse, function.split(";")[0], d, location.y, r, isNew);
-        }
-        maxXp = (int) Math.abs(toUse.getValue());
+        maxXp = parse(world, location);
         maxXp = Math.max(maxXp, 10);
         int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
         int variance = PokecubeMod.core.getConfig().levelVariance;
@@ -520,46 +482,18 @@ public final class SpawnHandler
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
         int b = t.getBiome(v);
         if (onlySubbiomes && b <= 255) { return ret; }
-        List<PokedexEntry> entries = Lists.newArrayList(Database.spawnables);
-        Collections.shuffle(entries);
-        int index = 0;
-        PokedexEntry dbe = entries.get(index);
+
         Vector3.movePointOutOfBlocks(v, world);
-        SpawnCheck checker = new SpawnCheck(v, world);
-        float weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
-        double random = Math.random();
-        int n = 0;
-        int max = entries.size();
-        Vector3 vbak = v.copy();
-        while (weight <= random && n++ < max)
-        {
-            dbe = entries.get((++index) % entries.size());
-            weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
-            if (!dbe.flys() && random > weight)
-            {
-                v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 10);
-                if (v != null) Vector3.movePointOutOfBlocks(v, world);
-                if (v != null) weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
-                else weight = 0;
-            }
-            else if (v == null)
-            {
-                v = vbak.copy();
-            }
-        }
-        if (random > weight) return ret;
+        SpawnEvent.Pick.Pre event = new SpawnEvent.Pick.Pre(null, v, world);
+        MinecraftForge.EVENT_BUS.post(event);
+        PokedexEntry dbe = event.getPicked();
+        if (dbe == null) return ret;
+        v = event.getLocation();
         if (v == null) { return ret; }
-        if (dbe.legendary)
-        {
-            int level = getSpawnLevel(world, v, dbe);
-            if (level < PokecubeMod.core.getConfig().minLegendLevel) { return ret; }
-        }
         if (!isPointValidForSpawn(world, v, dbe)) return ret;
         num = 0;
         long time = System.nanoTime();
-
         ret += num = doSpawnForType(world, v, dbe, parser, t);
-
         double dt = (System.nanoTime() - time) / 10e3D;
         if (dt > 2000)
         {

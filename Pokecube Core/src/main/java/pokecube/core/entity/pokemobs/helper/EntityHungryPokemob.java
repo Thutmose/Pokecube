@@ -145,7 +145,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
                 int exp = SpawnHandler.getSpawnXp(worldObj, v1.set(this), getPokedexEntry());
                 if (getExp() < exp)
                 {
-                    int n = new Random().nextInt(exp) / 3 + 1;
+                    int n = new Random().nextInt(exp - getExp()) / 3 + 1;
                     setExp(getExp() + n, false, false);
                 }
             }

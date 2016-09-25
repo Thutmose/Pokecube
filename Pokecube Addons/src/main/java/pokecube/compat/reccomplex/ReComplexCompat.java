@@ -95,17 +95,10 @@ public class ReComplexCompat
 
     public static void randomizeTrainerTeam(EntityTrainer trainer)
     {
-        // if(trainer instanceof EntityLeader)
-        // {
-        //
-        // }
-        // else
-        {
-            Vector3 loc = Vector3.getNewVector().set(trainer);
-            int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
-            trainer.initTrainer(trainer.getType(), maxXp);
-            System.out.println("Randomized " + trainer.name);
-        }
+        Vector3 loc = Vector3.getNewVector().set(trainer);
+        int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
+        trainer.initTrainer(trainer.getType(), maxXp);
+        System.out.println("Randomized " + trainer.name);
     }
 
 }

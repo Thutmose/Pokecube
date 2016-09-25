@@ -318,6 +318,7 @@ public class EventsHandler
         MinecraftForge.EVENT_BUS.register(aiTicker);
         MinecraftForge.EVENT_BUS.register(this);
         meteorprocessor = new MeteorAreaSetter();
+        new SpawnEventsHandler();
     }
 
     @SubscribeEvent

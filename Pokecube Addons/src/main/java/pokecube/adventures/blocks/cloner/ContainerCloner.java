@@ -31,11 +31,13 @@ public class ContainerCloner extends Container
 
         /** the itemStack passed in is the output - ie, iron ingots, and
          * pickaxes, not ore and wood. */
+        @Override
         protected void onCrafting(ItemStack stack)
         {
             super.onCrafting(stack);
         }
 
+        @Override
         public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack)
         {
             ItemStack vanilla = CraftingManager.getInstance().findMatchingRecipe(cloner.craftMatrix, cloner.getWorld());
@@ -134,6 +136,7 @@ public class ContainerCloner extends Container
         tile.openInventory(inv.player);
     }
 
+    @Override
     public void addListener(IContainerListener listener)
     {
         super.addListener(listener);

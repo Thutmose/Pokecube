@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 
@@ -55,10 +56,12 @@ public class PlayerDataHandler
 
     public static abstract class PlayerData implements IPlayerData
     {
+        @Override
         public void readSync(ByteBuf data)
         {
         }
 
+        @Override
         public void writeSync(ByteBuf data)
         {
         }
@@ -219,26 +222,26 @@ public class PlayerDataHandler
             captures = Maps.newHashMap();
             hatches = Maps.newHashMap();
             kills = Maps.newHashMap();
-            for (PokedexEntry e : PokecubeCore.catchAchievements.keySet())
+            for (PokedexEntry e : PokecubeMod.catchAchievements.keySet())
             {
-                int num = manager.readStat(PokecubeCore.catchAchievements.get(e));
+                int num = manager.readStat(PokecubeMod.catchAchievements.get(e));
                 if (num > 0) captures.put(e, num);
             }
-            for (PokedexEntry e : PokecubeCore.hatchAchievements.keySet())
+            for (PokedexEntry e : PokecubeMod.hatchAchievements.keySet())
             {
-                int num = manager.readStat(PokecubeCore.hatchAchievements.get(e));
+                int num = manager.readStat(PokecubeMod.hatchAchievements.get(e));
                 if (num > 0) hatches.put(e, num);
             }
-            for (PokedexEntry e : PokecubeCore.killAchievements.keySet())
+            for (PokedexEntry e : PokecubeMod.killAchievements.keySet())
             {
-                int num = manager.readStat(PokecubeCore.killAchievements.get(e));
+                int num = manager.readStat(PokecubeMod.killAchievements.get(e));
                 if (num > 0) kills.put(e, num);
             }
         }
 
         public void addCapture(EntityPlayer player, PokedexEntry entry)
         {
-            Achievement ach = PokecubeCore.catchAchievements.get(entry);
+            Achievement ach = PokecubeMod.catchAchievements.get(entry);
             if (ach == null)
             {
                 System.err.println("missing for " + entry);
@@ -251,7 +254,7 @@ public class PlayerDataHandler
 
         public void addKill(EntityPlayer player, PokedexEntry entry)
         {
-            Achievement ach = PokecubeCore.killAchievements.get(entry);
+            Achievement ach = PokecubeMod.killAchievements.get(entry);
             if (ach == null)
             {
                 System.err.println("missing for " + entry);
@@ -264,7 +267,7 @@ public class PlayerDataHandler
 
         public void addHatch(EntityPlayer player, PokedexEntry entry)
         {
-            Achievement ach = PokecubeCore.hatchAchievements.get(entry);
+            Achievement ach = PokecubeMod.hatchAchievements.get(entry);
             if (ach == null)
             {
                 System.err.println("missing for " + entry);
@@ -422,10 +425,7 @@ public class PlayerDataHandler
         {
             return INSTANCECLIENT != null ? INSTANCECLIENT : (INSTANCECLIENT = new PlayerDataHandler());
         }
-        else
-        {
-            return INSTANCESERVER != null ? INSTANCESERVER : (INSTANCESERVER = new PlayerDataHandler());
-        }
+        return INSTANCESERVER != null ? INSTANCESERVER : (INSTANCESERVER = new PlayerDataHandler());
     }
 
     public static void clear()

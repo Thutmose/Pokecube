@@ -159,9 +159,8 @@ public class PokecubeSerializer
         ISaveHandler saveHandler = world.getSaveHandler();
         String seperator = System.getProperty("file.separator");
         File file = saveHandler.getMapFileFromName(uuid + seperator + fileName);
-
         File dir = new File(file.getParentFile().getAbsolutePath());
-        if (file != null && !file.exists())
+        if (!file.exists())
         {
             dir.mkdirs();
         }

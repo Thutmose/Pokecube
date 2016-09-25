@@ -17,7 +17,6 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.interfaces.IBerryFruitBlock;
@@ -227,7 +226,7 @@ public class AIHungry extends AIBase
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
             berry.setEntityItemStack(new ItemStack(plant));
             hungrymob.eat(berry);
-            if (PokecubeCore.core.getConfig().pokemobsDamageBlocks)
+            if (PokecubeMod.core.getConfig().pokemobsDamageBlocks)
             {
                 TickHandler.addBlockChange(foodLoc, entity.dimension,
                         location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);

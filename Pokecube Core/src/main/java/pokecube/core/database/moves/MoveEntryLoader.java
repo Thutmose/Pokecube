@@ -47,7 +47,9 @@ public class MoveEntryLoader implements IMoveConstants
         File file = new File(path);
         try
         {
-            MovesJson json = JsonFactory.getGson().fromJson(new FileReader(file), MovesJson.class);
+            FileReader reader = new FileReader(file);
+            MovesJson json = JsonFactory.getGson().fromJson(reader, MovesJson.class);
+            reader.close();
             for (MoveJsonEntry entry : json.moves)
             {
                 initMove(entry);

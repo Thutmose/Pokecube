@@ -138,7 +138,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             GL11.glEnable(GL11.GL_COLOR_MATERIAL);
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 25, k + 25, 50F);
-            float zoom = (float) (20f / size);
+            float zoom = 20f / size;
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
             float f5 = ((k + 75) - 50) - 0;
@@ -173,14 +173,14 @@ public class GuiDisplayPokecubeInfo extends Gui
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer vertexbuffer = tessellator.getBuffer();
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexbuffer.pos((double) (x + 0), (double) (y + height), (double) this.zLevel)
-                    .tex((double) ((float) (u) * f), (double) ((float) (v + height) * f1)).endVertex();
-            vertexbuffer.pos((double) (x + width), (double) (y + height), (double) this.zLevel)
-                    .tex((double) ((float) (u + width) * f), (double) ((float) (v + height) * f1)).endVertex();
-            vertexbuffer.pos((double) (x + width), (double) (y + 0), (double) this.zLevel)
-                    .tex((double) ((float) (u + width) * f), (double) ((float) (v) * f1)).endVertex();
-            vertexbuffer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel)
-                    .tex((double) ((float) (u) * f), (double) ((float) (v) * f1)).endVertex();
+            vertexbuffer.pos(x + 0, y + height, this.zLevel)
+                    .tex((u) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + height, this.zLevel)
+                    .tex((u + width) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + 0, this.zLevel)
+                    .tex((u + width) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + 0, this.zLevel)
+                    .tex((u) * f, (v) * f1).endVertex();
             tessellator.draw();
 
             // Render XP
@@ -201,14 +201,14 @@ public class GuiDisplayPokecubeInfo extends Gui
             u = 0;
             v = 97;
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexbuffer.pos((double) (x + 0), (double) (y + height), (double) this.zLevel)
-                    .tex((double) ((float) (u) * f), (double) ((float) (v + height) * f1)).endVertex();
-            vertexbuffer.pos((double) (x + width), (double) (y + height), (double) this.zLevel)
-                    .tex((double) ((float) (u + width) * f), (double) ((float) (v + height) * f1)).endVertex();
-            vertexbuffer.pos((double) (x + width), (double) (y + 0), (double) this.zLevel)
-                    .tex((double) ((float) (u + width) * f), (double) ((float) (v) * f1)).endVertex();
-            vertexbuffer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel)
-                    .tex((double) ((float) (u) * f), (double) ((float) (v) * f1)).endVertex();
+            vertexbuffer.pos(x + 0, y + height, this.zLevel)
+                    .tex((u) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + height, this.zLevel)
+                    .tex((u + width) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + 0, this.zLevel)
+                    .tex((u + width) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + 0, this.zLevel)
+                    .tex((u) * f, (v) * f1).endVertex();
             tessellator.draw();
 
             // Render Status
@@ -487,18 +487,15 @@ public class GuiDisplayPokecubeInfo extends Gui
                     GuiTeleport.instance().setState(true);
                     return;
                 }
-                else
+                GuiTeleport.instance().setState(false);
+
+                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+                List<TeleDest> locations = PokecubeSerializer.getInstance()
+                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+
+                if (locations.size() > 0)
                 {
-                    GuiTeleport.instance().setState(false);
-
-                    Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                    List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
-                    if (locations.size() > 0)
-                    {
-                        teleport = true;
-                    }
+                    teleport = true;
                 }
             }
             else if (!attack)

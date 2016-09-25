@@ -97,6 +97,7 @@ public class CommandNBTEdit extends CommandBase
         return sender instanceof EntityPlayer && NBTEdit.proxy.checkPermission((EntityPlayer) sender);
     }
 
+    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
             @Nullable BlockPos pos)
     {

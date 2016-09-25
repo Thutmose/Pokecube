@@ -10,7 +10,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
@@ -51,7 +50,7 @@ public class AIAttack extends AIBase implements IAICombat
 
     private void applyDelay(IPokemob attacker, String moveName, boolean distanced)
     {
-        byte[] mods = ((IPokemob) attacker).getModifiers();
+        byte[] mods = attacker.getModifiers();
         int cd = PokecubeMod.core.getConfig().attackCooldown;
         if (entityTarget instanceof EntityPlayer) cd *= 2;
         double accuracyMod = Tools.modifierToRatio(mods[6], true);
@@ -241,14 +240,14 @@ public class AIAttack extends AIBase implements IAICombat
 
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)
             {
-                var1 = PokecubeCore.core.getConfig().rangedAttackDistance
-                        * PokecubeCore.core.getConfig().rangedAttackDistance;
+                var1 = PokecubeMod.core.getConfig().rangedAttackDistance
+                        * PokecubeMod.core.getConfig().rangedAttackDistance;
                 distanced = true;
             }
-            else if (PokecubeCore.core.getConfig().contactAttackDistance > 0)
+            else if (PokecubeMod.core.getConfig().contactAttackDistance > 0)
             {
-                var1 = PokecubeCore.core.getConfig().contactAttackDistance
-                        * PokecubeCore.core.getConfig().contactAttackDistance;
+                var1 = PokecubeMod.core.getConfig().contactAttackDistance
+                        * PokecubeMod.core.getConfig().contactAttackDistance;
                 distanced = true;
             }
             if ((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)

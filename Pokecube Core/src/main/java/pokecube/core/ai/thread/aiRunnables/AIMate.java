@@ -12,7 +12,6 @@ import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -168,8 +167,8 @@ public class AIMate extends AIBase
                     return input instanceof IPokemob && input instanceof EntityAnimal && input instanceof IBreedingMob;
                 }
             });
-            bb = entity.getEntityBoundingBox().expand(PokecubeCore.core.getConfig().maxSpawnRadius,
-                    2 * searchingLoveDist, PokecubeCore.core.getConfig().maxSpawnRadius);
+            bb = entity.getEntityBoundingBox().expand(PokecubeMod.core.getConfig().maxSpawnRadius,
+                    2 * searchingLoveDist, PokecubeMod.core.getConfig().maxSpawnRadius);
             List<Entity> list2 = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
             {
                 @Override
@@ -179,7 +178,7 @@ public class AIMate extends AIBase
                 }
             });
             float multiplier = pokemob.isPlayerOwned() ? 3 : 2;
-            if (list2.size() >= PokecubeCore.core.getConfig().mobSpawnNumber * multiplier)
+            if (list2.size() >= PokecubeMod.core.getConfig().mobSpawnNumber * multiplier)
             {
                 breedingMob.resetLoveStatus();
                 return null;
@@ -240,7 +239,7 @@ public class AIMate extends AIBase
         if (pokemob.getPokemonAIState(IMoveConstants.MATING)) return true;
         if (breedingMob.getLover() != null) { return true; }
         if (pokemob.getSexe() == IPokemob.MALE || !breedingMob.tryToBreed()) return false;
-        if (pokemob.getPokemonAIState(IPokemob.ANGRY) || entity.getAttackTarget() != null) return false;
+        if (pokemob.getPokemonAIState(IMoveConstants.ANGRY) || entity.getAttackTarget() != null) return false;
         return true;
     }
 

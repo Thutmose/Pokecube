@@ -66,14 +66,14 @@ public class LogicMountedControl extends LogicBase
             if (shouldControl)
             {
                 if (!entity.onGround) f *= 2;
-                entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
-                entity.motionZ += (double) (MathHelper.cos(entity.rotationYaw * 0.017453292F) * f);
+                entity.motionX += MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f;
+                entity.motionZ += MathHelper.cos(entity.rotationYaw * 0.017453292F) * f;
             }
             else if (entity.isInLava() || entity.isInWater())
             {
                 f *= 0.1;
-                entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
-                entity.motionZ += (double) (MathHelper.cos(entity.rotationYaw * 0.017453292F) * f);
+                entity.motionX += MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f;
+                entity.motionZ += MathHelper.cos(entity.rotationYaw * 0.017453292F) * f;
             }
         }
         if (backInputDown)
@@ -82,8 +82,8 @@ public class LogicMountedControl extends LogicBase
             float f = -moveSpeed / 4;
             if (shouldControl)
             {
-                entity.motionX += (double) (MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f);
-                entity.motionZ += (double) (MathHelper.cos(entity.rotationYaw * 0.017453292F) * f);
+                entity.motionX += MathHelper.sin(-entity.rotationYaw * 0.017453292F) * f;
+                entity.motionZ += MathHelper.cos(entity.rotationYaw * 0.017453292F) * f;
             }
         }
         if (upInputDown)

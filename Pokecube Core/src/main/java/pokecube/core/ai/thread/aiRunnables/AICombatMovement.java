@@ -4,9 +4,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.pathfinding.Path;
-import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class AICombatMovement extends AIBase
@@ -55,7 +55,7 @@ public class AICombatMovement extends AIBase
         Vector3 here = Vector3.getNewVector().set(attacker);
         Vector3 diff = here.subtract(centre);
         if (diff.magSq() < 1) diff.norm();
-        int combatDistance = PokecubeCore.core.getConfig().combatDistance;
+        int combatDistance = PokecubeMod.core.getConfig().combatDistance;
         combatDistance = Math.max(combatDistance, 4);
         int combatDistanceSq = combatDistance * combatDistance;
         if (diff.magSq() > combatDistanceSq)

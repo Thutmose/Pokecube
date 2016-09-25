@@ -221,6 +221,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 mate(male);

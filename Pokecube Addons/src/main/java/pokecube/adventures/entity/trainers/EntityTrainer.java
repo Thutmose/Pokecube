@@ -118,6 +118,7 @@ public class EntityTrainer extends EntityHasPokemobs
         }
     }
 
+    @Override
     protected void addRandomTrades()
     {
         itemList.clear();
@@ -183,6 +184,7 @@ public class EntityTrainer extends EntityHasPokemobs
     }
 
     /** Sets the active target the Task system uses for tracking */
+    @Override
     public void setAttackTarget(@Nullable EntityLivingBase entity)
     {
         if (entity instanceof IPokemob)
@@ -215,6 +217,7 @@ public class EntityTrainer extends EntityHasPokemobs
         }
     }
 
+    @Override
     public void onDefeated(Entity defeater)
     {
         if (reward != null && defeater instanceof EntityPlayer)
@@ -319,6 +322,7 @@ public class EntityTrainer extends EntityHasPokemobs
         super.onUpdate();
     }
 
+    @Override
     protected void populateBuyingList()
     {
         tradeList = new MerchantRecipeList();
@@ -386,7 +390,7 @@ public class EntityTrainer extends EntityHasPokemobs
                     player.displayVillagerTradeGui(this);
                     return true;
                 }
-                else this.setCustomer(null);
+                this.setCustomer(null);
                 return true;
             }
         }
@@ -448,6 +452,7 @@ public class EntityTrainer extends EntityHasPokemobs
         }
     }
 
+    @Override
     protected void trade(MerchantRecipe recipe)
     {
         ItemStack poke1 = recipe.getItemToBuy();

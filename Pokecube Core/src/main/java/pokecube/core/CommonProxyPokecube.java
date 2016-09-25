@@ -72,10 +72,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
             }
             return getWorld().getPlayerEntityByName(playerName);
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     @Override
@@ -97,7 +94,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
                 boolean tmc = state.getValue(BlockTradingTable.TMC);
 
                 if (!tmc) return new ContainerTradingTable((TileEntityTradingTable) tile_entity, player.inventory);
-                else return new ContainerTMCreator((TileEntityTradingTable) tile_entity, player.inventory);
+                return new ContainerTMCreator((TileEntityTradingTable) tile_entity, player.inventory);
             }
         }
         if (id == Config.GUIPC_ID)

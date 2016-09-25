@@ -38,6 +38,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

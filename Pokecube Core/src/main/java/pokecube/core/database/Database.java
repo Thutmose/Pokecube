@@ -431,12 +431,17 @@ public class Database
         {
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLSpawns.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            XMLSpawns database = (XMLSpawns) unmarshaller.unmarshal(new FileReader(file));
-
+            FileReader reader = new FileReader(file);
+            XMLSpawns database = (XMLSpawns) unmarshaller.unmarshal(reader);
+            reader.close();
             for (XMLSpawnEntry xmlEntry : database.pokemon)
             {
                 PokedexEntry entry = Database.getEntry(xmlEntry.name);
-                if (entry == null) throw new NullPointerException(xmlEntry.name + " not found");
+                if (entry == null)
+                {
+                    new NullPointerException(xmlEntry.name + " not found").printStackTrace();
+                    continue;
+                }
                 if (entry.isGenderForme) continue;
                 if (xmlEntry.isStarter() != null) entry.isStarter = xmlEntry.isStarter();
                 SpawnData data = entry.getSpawnData();
@@ -474,11 +479,17 @@ public class Database
         {
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLDrops.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            XMLDrops database = (XMLDrops) unmarshaller.unmarshal(new FileReader(file));
+            FileReader reader = new FileReader(file);
+            XMLDrops database = (XMLDrops) unmarshaller.unmarshal(reader);
+            reader.close();
             for (XMLDropEntry xmlEntry : database.pokemon)
             {
                 PokedexEntry entry = Database.getEntry(xmlEntry.name);
-                if (entry == null) throw new NullPointerException(xmlEntry.name + " not found");
+                if (entry == null)
+                {
+                    new NullPointerException(xmlEntry.name + " not found").printStackTrace();
+                    continue;
+                }
                 if (entry.isGenderForme) continue;
                 System.out.println(entry.drops);
                 if (xmlEntry.overwrite)
@@ -504,11 +515,17 @@ public class Database
         {
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLHelds.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            XMLHelds database = (XMLHelds) unmarshaller.unmarshal(new FileReader(file));
+            FileReader reader = new FileReader(file);
+            XMLHelds database = (XMLHelds) unmarshaller.unmarshal(reader);
+            reader.close();
             for (XMLHeldEntry xmlEntry : database.pokemon)
             {
                 PokedexEntry entry = Database.getEntry(xmlEntry.name);
-                if (entry == null) throw new NullPointerException(xmlEntry.name + " not found");
+                if (entry == null)
+                {
+                    new NullPointerException(xmlEntry.name + " not found").printStackTrace();
+                    continue;
+                }
                 if (entry.isGenderForme) continue;
                 if (xmlEntry.overwrite)
                 {
@@ -620,7 +637,7 @@ public class Database
                     e.type1 = base.type1;
                     e.type2 = base.type2;
                 }
-                if (e.abilities.isEmpty() && base != null) e.abilities.addAll(base.abilities);
+                if (e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
             }
             else
             {

@@ -532,27 +532,24 @@ public class PokedexEntry
                 }
                 return false;
             }
-            else
+            if (!doInteract) return true;
+            data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
+            List<ItemStack> results = stacks.get(stack);
+            int index = player.getRNG().nextInt(results.size());
+            ItemStack result = results.get(index).copy();
+            if (held.stackSize-- == 1)
             {
-                if (!doInteract) return stack != null;
-                data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
-                List<ItemStack> results = stacks.get(stack);
-                int index = player.getRNG().nextInt(results.size());
-                ItemStack result = results.get(index).copy();
-                if (held.stackSize-- == 1)
-                {
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
-                }
-                else if (!player.inventory.addItemStackToInventory(result))
-                {
-                    player.dropItem(result, false);
-                }
-                if (player != pokemob.getPokemonOwner())
-                {
-                    entity.setAttackTarget(player);
-                }
-                return true;
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
             }
+            else if (!player.inventory.addItemStackToInventory(result))
+            {
+                player.dropItem(result, false);
+            }
+            if (player != pokemob.getPokemonOwner())
+            {
+                entity.setAttackTarget(player);
+            }
+            return true;
         }
 
         List<ItemStack> interact(ItemStack key)

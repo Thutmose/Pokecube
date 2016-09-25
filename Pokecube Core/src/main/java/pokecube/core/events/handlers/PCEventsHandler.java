@@ -24,7 +24,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.CaptureEvent;
@@ -233,7 +232,7 @@ public class PCEventsHandler
     @SubscribeEvent
     public void sendPokemobToPCPlayerDrops(PlayerDropsEvent evt)
     {
-        if (!(evt.getEntity() instanceof EntityPlayer) || !PokecubeCore.core.getConfig().pcOnDrop) return;
+        if (!(evt.getEntity() instanceof EntityPlayer) || !PokecubeMod.core.getConfig().pcOnDrop) return;
         if (evt.getEntity().getEntityWorld().isRemote) return;
         List<EntityItem> toRemove = Lists.newArrayList();
         for (EntityItem item : evt.getDrops())

@@ -37,6 +37,7 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

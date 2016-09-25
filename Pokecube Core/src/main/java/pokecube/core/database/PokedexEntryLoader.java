@@ -382,10 +382,7 @@ public class PokedexEntryLoader
                     entry.mergeMissingFrom(e);
                     return;
                 }
-                else
-                {
-                    return;
-                }
+                return;
             }
         }
         entries.add(entry);
@@ -604,7 +601,9 @@ public class PokedexEntryLoader
     {
         JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(new FileReader(file));
+        FileReader reader = new FileReader(file);
+        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(reader);
+        reader.close();
         return database;
     }
 
@@ -704,7 +703,7 @@ public class PokedexEntryLoader
         if (numberString == null || dataString == null) return;
         if (fxString == null) fxString = "";
         String evolutionNbs = numberString;
-        if (evolutionNbs != null && !evolutionNbs.isEmpty())
+        if (!evolutionNbs.isEmpty())
         {
             String[] evols = numberString.split(" ");
             String[] evolData = dataString.split(" ");

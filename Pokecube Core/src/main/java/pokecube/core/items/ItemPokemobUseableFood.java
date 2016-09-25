@@ -39,7 +39,7 @@ public class ItemPokemobUseableFood extends ItemFood implements IPokemobUseable
         {
             EntityLivingBase mob = (EntityLivingBase) user;
             if (player != null) return useByPlayerOnPokemob(mob, stack);
-            else return useByPokemob(mob, stack);
+            return useByPokemob(mob, stack);
         }
 
         return false;

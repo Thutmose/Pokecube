@@ -487,7 +487,8 @@ public class Config extends ConfigBase
                     con.setConnectTimeout(1000);
                     con.setReadTimeout(1000);
                     InputStream in = con.getInputStream();
-                    JsonElement element = parser.parse(new InputStreamReader(in));
+                    InputStreamReader reader = new InputStreamReader(in);
+                    JsonElement element = parser.parse(reader);
                     JsonElement element1 = element.getAsJsonObject().get("contributors");
                     JsonArray contribArray = element1.getAsJsonArray();
                     List<String> defaults = Lists.newArrayList(defaultStarters);
@@ -500,6 +501,7 @@ public class Config extends ConfigBase
                         if (info != null && !info.isEmpty()) defaults.add(name + ":" + info);
                     }
                     defaultStarts = defaults.toArray(new String[0]);
+                    reader.close();
                 }
                 catch (Exception e)
                 {

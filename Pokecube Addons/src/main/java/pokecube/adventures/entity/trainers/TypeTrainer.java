@@ -1,6 +1,5 @@
 package pokecube.adventures.entity.trainers;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -382,8 +381,7 @@ public class TypeTrainer
         try
         {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(texture);
-            InputStream stream = res.getInputStream();
-            stream.close();
+            res.close();
             return true;
         }
         catch (Exception e)

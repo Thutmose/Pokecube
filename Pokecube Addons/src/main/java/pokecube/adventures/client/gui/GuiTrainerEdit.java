@@ -18,6 +18,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentString;
+import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -208,7 +209,7 @@ public class GuiTrainerEdit extends GuiScreen
         oldName = trainer.name;
         oldType = trainer.type.name;
 
-        String next = (stationary = trainer.getAIState(EntityTrainer.STATIONARY)) ? F : T;
+        String next = (stationary = trainer.getAIState(EntityHasAIStates.STATIONARY)) ? F : T;
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
         yOffset = 0;

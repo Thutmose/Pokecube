@@ -120,40 +120,37 @@ public class GeneralCommands extends CommandBase
                     sender.addChatMessage(message);
                     return;
                 }
-                else
+                if (!isOp)
                 {
-                    if (!isOp)
-                    {
-                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
-                        return;
-                    }
-                    try
-                    {
-                        Config.instance.updateField(field, args[2]);
-                    }
-                    catch (Exception e)
-                    {
-                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
-                        return;
-                    }
-                    o = field.get(Config.instance);
-                    text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " set to: " + TextFormatting.GOLD;
-                    if (o instanceof String[] || o instanceof int[])
-                    {
-                        text += Arrays.toString((Object[]) o);
-                    }
-                    else
-                    {
-                        text += o;
-                    }
+                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                     sender.addChatMessage(message);
                     return;
                 }
+                try
+                {
+                    Config.instance.updateField(field, args[2]);
+                }
+                catch (Exception e)
+                {
+                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
+                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                    sender.addChatMessage(message);
+                    return;
+                }
+                o = field.get(Config.instance);
+                text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " set to: " + TextFormatting.GOLD;
+                if (o instanceof String[] || o instanceof int[])
+                {
+                    text += Arrays.toString((Object[]) o);
+                }
+                else
+                {
+                    text += o;
+                }
+                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                sender.addChatMessage(message);
+                return;
             }
             catch (Exception e)
             {
@@ -184,13 +181,10 @@ public class GeneralCommands extends CommandBase
                         sender.addChatMessage(message);
                         return;
                     }
-                    else
-                    {
-                        text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
-                        message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
-                        return;
-                    }
+                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
+                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
+                    sender.addChatMessage(message);
+                    return;
                 }
 
             }

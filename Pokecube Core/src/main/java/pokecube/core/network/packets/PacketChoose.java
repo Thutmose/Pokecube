@@ -69,8 +69,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
     {
         if (player == null)
         {
-            new NullPointerException("Null Player while recieving starter packet");
-            return;
+            throw new NullPointerException("Null Player while recieving starter packet");
         }
         boolean openGui = packet.data.getBoolean("C");
         if (openGui)
@@ -219,6 +218,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

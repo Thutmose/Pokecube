@@ -120,14 +120,8 @@ public class ContainerAFA extends Container
             {
                 return itemstack;
             }
-            else
-            {
-                return null;
-            }
+            return null;
         }
-        else
-        {
-            return super.slotClick(slotId, dragType, clickTypeIn, player);
-        }
+        return super.slotClick(slotId, dragType, clickTypeIn, player);
     }
 }

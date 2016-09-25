@@ -103,7 +103,9 @@ public class TradeEntryLoader
     {
         JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(new FileReader(file));
+        FileReader reader = new FileReader(file);
+        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(reader);
+        reader.close();
         return database;
     }
 

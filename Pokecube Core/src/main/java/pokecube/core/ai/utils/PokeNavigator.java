@@ -234,12 +234,9 @@ public class PokeNavigator extends PathNavigate
         {
             return true;
         }
-        else
-        {
-            v.set(start);
-            v1.set(end);// TODO re-do this using safe checks
-            return v1.isVisible(worldObj, v);
-        }
+        v.set(start);
+        v1.set(end);// TODO re-do this using safe checks
+        return v1.isVisible(worldObj, v);
     }
 
     /** Returns true if the entity is in water or lava, false otherwise */
@@ -446,31 +443,25 @@ public class PokeNavigator extends PathNavigate
             this.currentPath = null;
             return false;
         }
-        else
+        if (!path.isSamePath(this.currentPath))
         {
-            if (!path.isSamePath(this.currentPath))
-            {
-                this.currentPath = path;
-            }
-
-            if (this.noSunPathfind)
-            {
-                this.removeSunnyPath();
-            }
-
-            if (this.currentPath.getCurrentPathLength() == 0)
-            {
-                return false;
-            }
-            else
-            {
-                this.speed = speed;
-                Vec3d vec3 = this.getEntityPosition();
-                this.ticksAtLastPos = this.totalTicks;
-                lastPosCheck = vec3;
-                return true;
-            }
+            this.currentPath = path;
         }
+
+        if (this.noSunPathfind)
+        {
+            this.removeSunnyPath();
+        }
+
+        if (this.currentPath.getCurrentPathLength() == 0)
+        {
+            return false;
+        }
+        this.speed = speed;
+        Vec3d vec3 = this.getEntityPosition();
+        this.ticksAtLastPos = this.totalTicks;
+        lastPosCheck = vec3;
+        return true;
     }
 
     /** Sets the speed */

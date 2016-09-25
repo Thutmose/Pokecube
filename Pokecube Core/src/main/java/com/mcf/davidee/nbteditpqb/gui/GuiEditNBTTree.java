@@ -57,6 +57,7 @@ public class GuiEditNBTTree extends GuiScreen
         guiTree = new GuiNBTTree(new NBTTree(tag));
     }
 
+    @Override
     public void initGui()
     {
         Keyboard.enableRepeatEvents(true);
@@ -66,11 +67,13 @@ public class GuiEditNBTTree extends GuiScreen
         this.buttonList.add(new GuiButton(0, width * 3 / 4 - 100, this.height - 27, "Quit"));
     }
 
+    @Override
     public void onGuiClosed()
     {
         Keyboard.enableRepeatEvents(false);
     }
 
+    @Override
     protected void keyTyped(char par1, int key)
     {
         GuiEditNBT window = guiTree.getWindow();
@@ -90,6 +93,7 @@ public class GuiEditNBTTree extends GuiScreen
         }
     }
 
+    @Override
     protected void mouseClicked(int x, int y, int t) throws IOException
     {
         if (guiTree.getWindow() == null) super.mouseClicked(x, y, t);
@@ -97,6 +101,7 @@ public class GuiEditNBTTree extends GuiScreen
         if (t == 1) guiTree.rightClick(x, y);
     }
 
+    @Override
     public void handleMouseInput() throws IOException
     {
         super.handleMouseInput();
@@ -109,6 +114,7 @@ public class GuiEditNBTTree extends GuiScreen
 
     }
 
+    @Override
     protected void actionPerformed(GuiButton b)
     {
         if (b.enabled)
@@ -125,6 +131,7 @@ public class GuiEditNBTTree extends GuiScreen
         }
     }
 
+    @Override
     public void updateScreen()
     {
         if (!mc.thePlayer.isEntityAlive()) quitWithoutSaving();
@@ -152,6 +159,7 @@ public class GuiEditNBTTree extends GuiScreen
         mc.displayGuiScreen(null);
     }
 
+    @Override
     public void drawScreen(int x, int y, float par3)
     {
         this.drawDefaultBackground();
@@ -161,6 +169,7 @@ public class GuiEditNBTTree extends GuiScreen
         else super.drawScreen(-1, -1, par3);
     }
 
+    @Override
     public boolean doesGuiPauseGame()
     {
         return true;

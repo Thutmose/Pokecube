@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
@@ -43,18 +42,14 @@ public class ActionSecretPower implements IMoveAction
             owner.addChatMessage(message);
             return false;
         }
-        if (owner instanceof EntityPlayer)
+        BreakEvent evt = new BreakEvent(owner.getEntityWorld(), location.getPos(),
+                location.getBlockState(owner.getEntityWorld()), owner);
+        MinecraftForge.EVENT_BUS.post(evt);
+        if (evt.isCanceled())
         {
-            BreakEvent evt = new BreakEvent(owner.getEntityWorld(), location.getPos(),
-                    location.getBlockState(owner.getEntityWorld()), owner);
-
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (evt.isCanceled())
-            {
-                TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.noperms");
-                owner.addChatMessage(message);
-                return false;
-            }
+            TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.noperms");
+            owner.addChatMessage(message);
+            return false;
         }
         pendingBaseLocations.put(attacker.getPokemonOwnerName(),
                 new Vector4(location.x, location.y, location.z, owner.dimension));

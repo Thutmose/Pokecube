@@ -162,60 +162,37 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             return new GuiHealTable(player.inventory);
         }
-        else
+        if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID)
         {
-
-            if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID)
-            {
-                return null;
-            }
-            else
-            {
-
-                if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID)
-                {
-                    return null;
-                }
-                else
-                {
-
-                    if (guiID == Config.GUIPOKEDEX_ID)
-                    {
-                        Entity entityHit = Tools.getPointedEntity(player, 16);
-                        if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
-                        else return new GuiPokedex(null, player);
-                    }
-                    else
-                    {
-
-                        if (guiID == Config.GUIPOKEMOB_ID)
-                        {
-                            IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);
-                            return new GuiPokemob(player.inventory, e);
-                        }
-                        else
-                        {
-                            if (guiID == Config.GUITRADINGTABLE_ID)
-                            {
-                                TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
-                                boolean tmc = world.getBlockState(pos).getValue(BlockTradingTable.TMC);
-                                if (!tmc) return new GuiTradingTable(player.inventory, tile);
-                                else return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
-                            }
-                            else
-                            {
-
-                                if (guiID == Config.GUIPC_ID)
-                                {
-                                    TileEntityPC tile = (TileEntityPC) world.getTileEntity(pos);
-                                    ContainerPC pc = new ContainerPC(player.inventory, tile);
-                                    return new GuiPC(pc);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            return null;
+        }
+        if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID)
+        {
+            return null;
+        }
+        if (guiID == Config.GUIPOKEDEX_ID)
+        {
+            Entity entityHit = Tools.getPointedEntity(player, 16);
+            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+            return new GuiPokedex(null, player);
+        }
+        if (guiID == Config.GUIPOKEMOB_ID)
+        {
+            IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);
+            return new GuiPokemob(player.inventory, e);
+        }
+        if (guiID == Config.GUITRADINGTABLE_ID)
+        {
+            TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
+            boolean tmc = world.getBlockState(pos).getValue(BlockTradingTable.TMC);
+            if (!tmc) return new GuiTradingTable(player.inventory, tile);
+            return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
+        }
+        if (guiID == Config.GUIPC_ID)
+        {
+            TileEntityPC tile = (TileEntityPC) world.getTileEntity(pos);
+            ContainerPC pc = new ContainerPC(player.inventory, tile);
+            return new GuiPC(pc);
         }
 
         if (guiID == Config.GUICHOOSEFIRSTPOKEMOB_ID) { return new GuiChooseFirstPokemob(null); }
@@ -237,10 +214,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             return Minecraft.getMinecraft();
         }
-        else
-        {
-            return super.getMainThreadListener();
-        }
+        return super.getMainThreadListener();
     }
 
     @Override
@@ -250,10 +224,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             return Minecraft.getMinecraft();
         }
-        else
-        {
-            return super.getMinecraftInstance();
-        }
+        return super.getMinecraftInstance();
     }
 
     @Override
@@ -263,10 +234,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             return super.getPlayer(playerName);
         }
-        else
-        {
-            return Minecraft.getMinecraft().thePlayer;
-        }
+        return Minecraft.getMinecraft().thePlayer;
     }
 
     @Override
@@ -276,10 +244,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             return FMLClientHandler.instance().getWorldClient();
         }
-        else
-        {
-            return super.getWorld();
-        }
+        return super.getWorld();
     }
 
     @Override
@@ -291,7 +256,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         try
         {
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(pokecenterloop);
-            res.getInputStream().close();
+            res.close();
         }
         catch (Exception e)
         {
@@ -311,11 +276,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                     {
                         return colour;
                     }
-                    else
-                    {
-                        colour = entry.getType2().colour;
-                        return colour;
-                    }
+                    colour = entry.getType2().colour;
+                    return colour;
                 }
                 return 0xffff00;
 
@@ -611,7 +573,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTradingTable.class, new RenderTradingTable());
 
         MinecraftForge.EVENT_BUS.register(new GuiDisplayPokecubeInfo());
-        MinecraftForge.EVENT_BUS.register(new GuiTeleport());
+        GuiTeleport.create();
         new GuiInfoMessages();
     }
 

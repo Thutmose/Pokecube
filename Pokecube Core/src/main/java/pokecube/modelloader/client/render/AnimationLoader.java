@@ -199,7 +199,7 @@ public class AnimationLoader
         {
             model = new ResourceLocation(s + ".x3d");
             IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-            res.getInputStream().close();
+            res.close();
         }
         catch (IOException e1)
         {
@@ -212,7 +212,7 @@ public class AnimationLoader
             {
                 animation = new ResourceLocation(anim);
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
-                res.getInputStream().close();
+                res.close();
             }
             catch (IOException e3)
             {
@@ -279,10 +279,9 @@ public class AnimationLoader
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             InputStream stream = res.getInputStream();
             Document doc = dBuilder.parse(stream);
+            res.close();
             doc.getDocumentElement().normalize();
-
             NodeList modelList = doc.getElementsByTagName("model");
-
             int headDir = 2;
             int headAxis = 2;
             int headAxis2 = 1;

@@ -67,33 +67,30 @@ public class Tools
         {
             return 5;
         }
-        else
+        double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
+        int n = 0;
+
+        if (rand.nextInt(65535) <= b)
         {
-            double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
-            int n = 0;
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            if (rand.nextInt(65535) <= b)
-            {
-                n++;
-            }
-
-            return n;
+            n++;
         }
+
+        if (rand.nextInt(65535) <= b)
+        {
+            n++;
+        }
+
+        if (rand.nextInt(65535) <= b)
+        {
+            n++;
+        }
+
+        if (rand.nextInt(65535) <= b)
+        {
+            n++;
+        }
+
+        return n;
     }
 
     public static int computeCatchRate(IPokemob pokemob, int pokecubeId)
@@ -321,10 +318,7 @@ public class Tools
         {
             return IPokemob.MALE;
         }
-        else
-        {
-            return IPokemob.FEMALE;
-        }
+        return IPokemob.FEMALE;
     }
 
     public static int getStat(int oldStat, int mod)

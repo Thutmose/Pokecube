@@ -199,13 +199,10 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 evo.specificSpawnInit();
                 ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
                 evo.levelUp(evo.getLevel());
-                if (evo != null)
-                {
-                    // Send post evolve event.
-                    evt = new EvolveEvent.Post(evo);
-                    MinecraftForge.EVENT_BUS.post(evt);
-                    ((Entity) this).setDead();
-                }
+                // Send post evolve event.
+                evt = new EvolveEvent.Post(evo);
+                MinecraftForge.EVENT_BUS.post(evt);
+                ((Entity) this).setDead();
                 return evo;
             }
             return null;
@@ -245,7 +242,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     // If delayed, set the pokemob as starting to evolve, and
                     // set the evolution for display effects.
                     if (stack != null) this.stack = stack.copy();
-                    else stack = null;
                     this.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
                     this.setEvol(evol.getPokedexNb());
                     this.setPokemonAIState(EVOLVING, true);
@@ -255,35 +251,32 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                             new TextComponentTranslation("pokemob.evolution.start", this.getPokemonDisplayName()));
                     return this;
                 }
-                else
+                // Evolve the mob.
+                IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
+                // Clear held item if used for evolving.
+                if (neededItem)
                 {
-                    // Evolve the mob.
-                    IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
-                    // Clear held item if used for evolving.
-                    if (neededItem)
-                    {
-                        ((EntityEvolvablePokemob) evo).setHeldItem(null);
-                    }
-                    if (evo != null)
-                    {
-                        Entity owner = evo.getPokemonOwner();
-                        evt = new EvolveEvent.Post(evo);
-                        MinecraftForge.EVENT_BUS.post(evt);
-                        EntityPlayer player = null;
-                        if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
-                        if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
-                        else if (data != null) ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
-                        evo.levelUp(evo.getLevel());
-                        this.setDead();
-                        // Try to make a shedinja, this only work for nincada.
-                        // TODO move this to event.
-                        if (player != null && !player.getEntityWorld().isRemote && !isShadow())
-                        {
-                            makeShedinja(evo, player);
-                        }
-                    }
-                    return evo;
+                    ((EntityEvolvablePokemob) evo).setHeldItem(null);
                 }
+                if (evo != null)
+                {
+                    Entity owner = evo.getPokemonOwner();
+                    evt = new EvolveEvent.Post(evo);
+                    MinecraftForge.EVENT_BUS.post(evt);
+                    EntityPlayer player = null;
+                    if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
+                    if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
+                    else if (data != null) ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
+                    evo.levelUp(evo.getLevel());
+                    this.setDead();
+                    // Try to make a shedinja, this only work for nincada.
+                    // TODO move this to event.
+                    if (player != null && !player.getEntityWorld().isRemote && !isShadow())
+                    {
+                        makeShedinja(evo, player);
+                    }
+                }
+                return evo;
             }
         }
         return null;

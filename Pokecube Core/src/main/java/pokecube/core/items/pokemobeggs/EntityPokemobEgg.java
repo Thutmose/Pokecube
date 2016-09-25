@@ -100,11 +100,8 @@ public class EntityPokemobEgg extends EntityLiving
         {
             return false;
         }
-        else
-        {
-            this.setBeenAttacked();
-            return false;
-        }
+        this.setBeenAttacked();
+        return false;
     }
 
     /** returns the bounding box for this entity */

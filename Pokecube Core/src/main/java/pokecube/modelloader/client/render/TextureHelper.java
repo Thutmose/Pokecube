@@ -148,7 +148,7 @@ public class TextureHelper implements IPartTexturer
                 }
                 return true;
             }
-            else for (RandomState state : randomStates)
+            for (RandomState state : randomStates)
             {
                 double[] arr = state.arr;
                 if (random.nextDouble() < state.chance)

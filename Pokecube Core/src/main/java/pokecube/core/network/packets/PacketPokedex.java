@@ -102,6 +102,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

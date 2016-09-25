@@ -31,10 +31,7 @@ public class CommonProxy implements IGuiHandler
         {
             return getWorld().getPlayerEntityByName(playerName);
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     @Override

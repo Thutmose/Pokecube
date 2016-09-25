@@ -113,7 +113,7 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
     public int getMetaFromState(IBlockState state)
     {
         if (state.getBlock() == this) return state.getValue(TYPE).intValue();
-        else return state.getBlock().getMetaFromState(state);
+        return state.getBlock().getMetaFromState(state);
     }
 
     @Override

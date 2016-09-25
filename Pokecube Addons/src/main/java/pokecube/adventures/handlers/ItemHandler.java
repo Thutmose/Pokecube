@@ -191,7 +191,7 @@ public class ItemHandler
             @Override
             protected void serialize(JsonObject json, JsonSerializationContext context)
             {
-                if (functions != null && functions.length > 0)
+                if (functions.length > 0)
                 {
                     json.add("functions", context.serialize(functions));
                 }

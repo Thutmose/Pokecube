@@ -401,13 +401,10 @@ public class PokecubeItems extends Items
             itemstacks.put(name, itemstacks.get(key));
             return itemstacks.get(name).copy();
         }
-        else
+        System.err.println(name + " Not found in list of items.");
+        if (stacktrace)
         {
-            System.err.println(name + " Not found in list of items.");
-            if (stacktrace)
-            {
-                Thread.dumpStack();
-            }
+            Thread.dumpStack();
         }
         return null;
     }
@@ -499,7 +496,7 @@ public class PokecubeItems extends Items
         for (ItemStack s : heldItems)
         {
             if (s != null && Tools.isSameStack(s, stack)) return true;
-            else hasANull = true;
+            hasANull = true;
         }
         while (hasANull)
         {
@@ -518,7 +515,7 @@ public class PokecubeItems extends Items
         for (ItemStack s : evoItems)
         {
             if (s != null && Tools.isSameStack(s, stack)) return true;
-            else hasANull = true;
+            hasANull = true;
         }
         while (hasANull)
         {
@@ -652,19 +649,16 @@ public class PokecubeItems extends Items
             if (clazz != null)
             {
                 ItemBlock i = null;
-                if (clazz != null)
+                Class<?>[] ctorArgClasses = new Class<?>[1];
+                ctorArgClasses[0] = Block.class;
+                try
                 {
-                    Class<?>[] ctorArgClasses = new Class<?>[1];
-                    ctorArgClasses[0] = Block.class;
-                    try
-                    {
-                        Constructor<? extends ItemBlock> itemCtor = clazz.getConstructor(ctorArgClasses);
-                        i = itemCtor.newInstance(ObjectArrays.concat(block, new Object[0]));
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    Constructor<? extends ItemBlock> itemCtor = clazz.getConstructor(ctorArgClasses);
+                    i = itemCtor.newInstance(ObjectArrays.concat(block, new Object[0]));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
                 // block registration has to happen first
                 GameRegistry.register(block.getRegistryName() == null ? block.setRegistryName(name) : block);

@@ -1128,10 +1128,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     this.setJumping(false);
                     return false;
                 }
-                else
-                {
-                    return true;
-                }
+                return true;
             }
 
             // Open Gui
@@ -1308,6 +1305,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.worldObj.theProfiler.endSection();
     }
 
+    @Override
     public AIStuff getAIStuff()
     {
         return aiStuff;

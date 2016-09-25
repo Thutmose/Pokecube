@@ -506,7 +506,7 @@ public class ItemPokemobEgg extends Item
         EggEvent.Place event = new EggEvent.Place(entity);
         MinecraftForge.EVENT_BUS.post(event);
         world.spawnEntityInWorld(entity);
-        return entity != null;
+        return true;
     }
 
     @Override

@@ -62,12 +62,9 @@ public class GuardAI extends EntityAIBase
                 ++cooldownTicks;
                 return true;
             }
-            else
-            {
-                cooldownTicks = 0;
-                capability.setState(GuardState.IDLE);
-                return false;
-            }
+            cooldownTicks = 0;
+            capability.setState(GuardState.IDLE);
+            return false;
         default:
             return false;
         }

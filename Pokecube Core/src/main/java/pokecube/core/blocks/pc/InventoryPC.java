@@ -116,20 +116,17 @@ public class InventoryPC implements IInventory
                 }
                 return map.get(uuid);
             }
-            else
+            boolean isUid = true;
+            try
             {
-                boolean isUid = true;
-                try
-                {
-                    UUID.fromString(uuid);
-                }
-                catch (Exception e)
-                {
-                    isUid = false;
-                }
-                if (!isUid) return getPC(PokecubeMod.fakeUUID.toString());
-                return new InventoryPC(uuid);
+                UUID.fromString(uuid);
             }
+            catch (Exception e)
+            {
+                isUid = false;
+            }
+            if (!isUid) return getPC(PokecubeMod.fakeUUID.toString());
+            return new InventoryPC(uuid);
         }
         return null;
     }
@@ -376,21 +373,15 @@ public class InventoryPC implements IInventory
                 contents.put(i, null);
                 return itemstack;
             }
-            else
-            {
-                itemstack = contents.get(i).splitStack(j);
+            itemstack = contents.get(i).splitStack(j);
 
-                if (contents.get(i).stackSize == 0)
-                {
-                    contents.put(i, null);
-                }
-                return itemstack;
+            if (contents.get(i).stackSize == 0)
+            {
+                contents.put(i, null);
             }
+            return itemstack;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
     public HashSet<ItemStack> getContents()

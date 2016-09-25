@@ -12,7 +12,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -92,7 +91,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             {
                 armour = this.getTotalArmorValue();
             }
-            damage = CombatRules.getDamageAfterAbsorb(damage, (float) armour,
+            damage = CombatRules.getDamageAfterAbsorb(damage, armour,
                     (float) this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
         }
         return damage;
@@ -101,7 +100,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public boolean attackEntityAsMob(Entity par1Entity)
     {
-        if (this.getAttackTarget() instanceof EntityLivingBase)
+        if (this.getAttackTarget() != null)
         {
             float distanceToEntity = this.getAttackTarget().getDistanceToEntity(this);
             attackEntityAsPokemob(par1Entity, distanceToEntity);

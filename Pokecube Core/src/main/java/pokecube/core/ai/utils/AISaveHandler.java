@@ -73,11 +73,8 @@ public class AISaveHandler
 		{
 			return aiMap.get(entity.getUniqueID());
 		}
-		else
-		{
-			aiMap.put(entity.getUniqueID(), new PokemobAI());
-			return aiMap.get(entity.getUniqueID());
-		}
+        aiMap.put(entity.getUniqueID(), new PokemobAI());
+        return aiMap.get(entity.getUniqueID());
 	}
 
 	public void loadData()

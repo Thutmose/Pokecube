@@ -93,6 +93,7 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     }
 
     /** Used to check if a recipe matches current crafting inventory */
+    @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
         List<ItemStack> list = Lists.newArrayList(this.recipeItems);
@@ -136,30 +137,27 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     public ItemStack[] getRemainingItems(InventoryCrafting inv)
     {
         if (remainIndex.isEmpty()) return super.getRemainingItems(inv);
-        else
+        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
+        for (int i = 0; i < aitemstack.length; ++i)
         {
-            ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
-            for (int i = 0; i < aitemstack.length; ++i)
-            {
-                ItemStack itemstack = inv.getStackInSlot(i);
+            ItemStack itemstack = inv.getStackInSlot(i);
 
-                boolean remain = false;
-                if (itemstack != null) for (Integer i1 : remainIndex)
-                {
-                    ItemStack stack = recipeItems.get(i1);
-                    if (stack.getMetadata() == 32767) remain = itemstack.getItem() == stack.getItem();
-                    else remain = Tools.isSameStack(itemstack, stack);
-                }
-                if (!remain)
-                {
-                    aitemstack[i] = null;
-                }
-                else
-                {
-                    aitemstack[i] = itemstack.copy();
-                }
+            boolean remain = false;
+            if (itemstack != null) for (Integer i1 : remainIndex)
+            {
+                ItemStack stack = recipeItems.get(i1);
+                if (stack.getMetadata() == 32767) remain = itemstack.getItem() == stack.getItem();
+                else remain = Tools.isSameStack(itemstack, stack);
             }
-            return aitemstack;
+            if (!remain)
+            {
+                aitemstack[i] = null;
+            }
+            else
+            {
+                aitemstack[i] = itemstack.copy();
+            }
         }
+        return aitemstack;
     }
 }

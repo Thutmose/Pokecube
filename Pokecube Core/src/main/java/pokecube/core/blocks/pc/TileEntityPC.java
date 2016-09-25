@@ -230,10 +230,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         TileEntity te = worldObj.getTileEntity(getPos().down());
         if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).setBoundOwner(player);
         boundId = uuid;
-        if (player != null)
-        {
-            boundName = player.getDisplayNameString();
-        }
+        boundName = player.getDisplayNameString();
         if (!worldObj.isRemote)
         {
             PacketHandler.sendTileUpdate(this);

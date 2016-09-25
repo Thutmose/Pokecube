@@ -39,6 +39,7 @@ public class PacketSound implements IMessage, IMessageHandler<PacketSound, IMess
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

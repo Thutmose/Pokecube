@@ -37,7 +37,7 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     public EntityPokemobPart(IPokemob parent, String partName, Vector3f offset, Vector3f[] dimensions)
     {
         super((IEntityMultiPart) parent, partName, 1, 1);
-        this.parent = (IPokemob) parent;
+        this.parent = parent;
         this.offset = offset;
         defaultBox = new AxisAlignedBB(dimensions[0].x, dimensions[0].y, dimensions[0].z, dimensions[1].x,
                 dimensions[1].y, dimensions[1].z);

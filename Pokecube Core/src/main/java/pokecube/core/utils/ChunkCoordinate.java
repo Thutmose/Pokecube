@@ -42,14 +42,11 @@ public class ChunkCoordinate extends BlockPos {
         {
             return false;
         }
-        else
-        {
-            ChunkCoordinate BlockPos = (ChunkCoordinate)p_equals_1_;
-            return this.getX() == BlockPos.getX() 
-            		&& this.getY() == BlockPos.getY() 
-            		&& this.getZ() == BlockPos.getZ()
-            		&& this.dim == BlockPos.dim;
-        }
+        ChunkCoordinate BlockPos = (ChunkCoordinate)p_equals_1_;
+        return this.getX() == BlockPos.getX() 
+        		&& this.getY() == BlockPos.getY() 
+        		&& this.getZ() == BlockPos.getZ()
+        		&& this.dim == BlockPos.dim;
     }
     
     @Override

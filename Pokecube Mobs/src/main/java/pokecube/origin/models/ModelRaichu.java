@@ -177,7 +177,7 @@ public class ModelRaichu extends APokemobModel
 
         float speed = 0.06F;
         setRotationFloating(tail, f2, 2.1F, 0.0F, 0.0F, 0.3F, speed);
-        ModelRenderer nextTailPiece = (ModelRenderer) tail.childModels.get(0);
+        ModelRenderer nextTailPiece = tail.childModels.get(0);
         int i = 0;
         while (nextTailPiece != null)
         {
@@ -187,7 +187,7 @@ public class ModelRaichu extends APokemobModel
             else setRotationFloating(nextTailPiece, f2, -0.5F, 0.F, 0.0F, 0.0F, speed);
             i++;
             if (nextTailPiece.childModels == null || nextTailPiece.childModels.isEmpty()) nextTailPiece = null;
-            else nextTailPiece = (ModelRenderer) nextTailPiece.childModels.get(0);
+            else nextTailPiece = nextTailPiece.childModels.get(0);
         }
     }
 

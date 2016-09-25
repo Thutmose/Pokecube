@@ -413,17 +413,11 @@ public class GuiTextField extends Gui{
 						 this.writeText(Character.toString(par1));
 						 return true;
 					 }
-					 else
-					 {
-						 return false;
-					 }
+                    return false;
 				 }
 			 }
 		 }
-		 else
-		 {
-			 return false;
-		 }
+        return false;
 	 }
 
 	 /**
@@ -552,10 +546,10 @@ public class GuiTextField extends Gui{
 		 GlStateManager.colorLogicOp(GL11.GL_OR_REVERSE);
 
 		 worldRenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-		 worldRenderer.pos((double)par1, (double)par4, 0.0D);
-		 worldRenderer.pos((double)par3, (double)par4, 0.0D);
-		 worldRenderer.pos((double)par3, (double)par2, 0.0D);
-		 worldRenderer.pos((double) par1, (double) par2, 0.0D);
+		 worldRenderer.pos(par1, par4, 0.0D);
+		 worldRenderer.pos(par3, par4, 0.0D);
+		 worldRenderer.pos(par3, par2, 0.0D);
+		 worldRenderer.pos(par1, par2, 0.0D);
 		 tessellator.draw();
 		 GlStateManager.disableColorLogic();
 		 GlStateManager.enableTexture2D();

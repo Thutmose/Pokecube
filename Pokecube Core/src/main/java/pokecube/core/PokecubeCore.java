@@ -517,6 +517,14 @@ public class PokecubeCore extends PokecubeMod
             }
             catch (Exception e1)
             {
+                try
+                {
+                    fileIn.close();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
                 fileIn = null;
                 e1.printStackTrace();
             }
@@ -534,6 +542,7 @@ public class PokecubeCore extends PokecubeMod
                         String gift = line.split("`")[1];
                         gifts.put(code, gift);
                     }
+                    br.close();
                 }
                 catch (IOException e)
                 {

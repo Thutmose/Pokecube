@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -199,13 +198,10 @@ public class LegendaryConditions
                     if (celebiHere) return false;
                     return SpecialCaseRegister.getCaptureCondition("celebi").canCapture(trainer);
                 }
-                else
-                {
-                    String message = "msg.nohere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message,
-                            new TextComponentTranslation(Database.getEntry("celebi").getUnlocalizedName())));
-                    return false;
-                }
+                String message = "msg.nohere.txt";
+                trainer.addChatMessage(new TextComponentTranslation(message,
+                        new TextComponentTranslation(Database.getEntry("celebi").getUnlocalizedName())));
+                return false;
             }
 
             @Override
@@ -253,13 +249,10 @@ public class LegendaryConditions
 
                     return true;
                 }
-                else
-                {
-                    String message = "msg.nohere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message,
-                            new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
-                    return false;
-                }
+                String message = "msg.nohere.txt";
+                trainer.addChatMessage(new TextComponentTranslation(message,
+                        new TextComponentTranslation(Database.getEntry("hooh").getUnlocalizedName())));
+                return false;
 
             }
 
@@ -326,7 +319,7 @@ public class LegendaryConditions
 
                 if (captureFactor >= 0.75 && count1 >= count2) { return true; }
                 // if(pokemon!=null)
-                if (trainer instanceof ICommandSender && !trainer.getEntityWorld().isRemote)
+                if (!trainer.getEntityWorld().isRemote)
                 {
                     if (captureFactor < 0.75)
                     {
@@ -441,13 +434,10 @@ public class LegendaryConditions
                     boolean here = Tools.countPokemon(v, trainer.getEntityWorld(), 32, Database.getEntry("kyogre")) > 0;
                     return !here;
                 }
-                else
-                {
-                    String message = "msg.nohere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message,
-                            new TextComponentTranslation(Database.getEntry("kyogre").getUnlocalizedName())));
-                    return false;
-                }
+                String message = "msg.nohere.txt";
+                trainer.addChatMessage(new TextComponentTranslation(message,
+                        new TextComponentTranslation(Database.getEntry("kyogre").getUnlocalizedName())));
+                return false;
             }
 
             @Override
@@ -482,13 +472,10 @@ public class LegendaryConditions
                             Database.getEntry("groudon")) > 0;
                     return !here;
                 }
-                else
-                {
-                    String message = "msg.nohere.txt";
-                    trainer.addChatMessage(new TextComponentTranslation(message,
-                            new TextComponentTranslation(Database.getEntry("groudon").getUnlocalizedName())));
-                    return false;
-                }
+                String message = "msg.nohere.txt";
+                trainer.addChatMessage(new TextComponentTranslation(message,
+                        new TextComponentTranslation(Database.getEntry("groudon").getUnlocalizedName())));
+                return false;
             }
 
             @Override

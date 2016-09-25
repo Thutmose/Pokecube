@@ -206,7 +206,7 @@ public class MovesUtils implements IMoveConstants
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
             ((IPokemob) attacked).displayMessageToOwner(text);
         }
-        else if (attacked instanceof EntityPlayer && !attacked.getEntityWorld().isRemote && attacker != null)
+        else if (attacked instanceof EntityPlayer && !attacked.getEntityWorld().isRemote)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red",
                     attacker.getPokemonDisplayName().getFormattedText(), attackName);
@@ -277,7 +277,7 @@ public class MovesUtils implements IMoveConstants
                     colour = fell ? "green" : "red";
                     text = CommandTools.makeTranslatedMessage(message, colour,
                             ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
-                    ((IPokemob) attacker).displayMessageToOwner(text);
+                    attacker.displayMessageToOwner(text);
                 }
             }
             else if (attacker == null && (attacked instanceof IPokemob))
@@ -286,7 +286,7 @@ public class MovesUtils implements IMoveConstants
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText(), statName);
                 ((IPokemob) attacked).displayMessageToOwner(text);
             }
-            else if (attacker instanceof IPokemob)
+            else
             {
                 String colour = fell ? "green" : "red";
                 text = CommandTools.makeTranslatedMessage(message, colour,
@@ -305,7 +305,7 @@ public class MovesUtils implements IMoveConstants
             if (attacker != null)
             {
                 text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
+                        attacker.getPokemonDisplayName().getFormattedText());
                 attacker.displayMessageToOwner(text);
             }
             if (attacked instanceof IPokemob)
@@ -758,8 +758,6 @@ public class MovesUtils implements IMoveConstants
                 target = e;
             }
         }
-        else target = null;
-
         return target;
     }
 

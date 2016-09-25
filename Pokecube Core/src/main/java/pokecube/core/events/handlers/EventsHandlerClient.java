@@ -48,7 +48,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.ClientProxyPokecube;
@@ -243,10 +242,7 @@ public class EventsHandlerClient
             Entity target = ((EntityLiving) pokemob).getAttackTarget();
             if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))
             {
-                if (target != null)
-                {
-                    setMostDamagingMove(pokemob, target);
-                }
+                setMostDamagingMove(pokemob, target);
             }
         }
         if (PokecubeMod.core.getConfig().autoRecallPokemobs)
@@ -451,7 +447,7 @@ public class EventsHandlerClient
         if (!event.forSpawn && (SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension())
                 || event.world.provider instanceof WorldProviderSecretBase))
             event.setCanceled(true);
-        if (!event.forSpawn && PokecubeCore.core.getConfig().whiteListEnabled
+        if (!event.forSpawn && PokecubeMod.core.getConfig().whiteListEnabled
                 && SpawnHandler.dimensionWhitelist.contains(event.world.provider.getDimension()))
             event.setCanceled(true);
     }

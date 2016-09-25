@@ -231,14 +231,6 @@ public class MakeCommand extends CommandBase
                             }
                         }
 
-                        Vector3 temp = Vector3.getNewVector();
-                        if (player != null)
-                        {
-                            offset = offset.add(temp.set(player.getLookVec()));
-                        }
-                        temp.set(sender.getPosition()).addTo(offset);
-                        temp.moveEntity((Entity) mob);
-
                         if (targets != null)
                         {
                             player = targets[i];
@@ -254,7 +246,7 @@ public class MakeCommand extends CommandBase
                         else
                         {
                             EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
-
+                            player = p;
                             if (p != null) owner = p.getCachedUniqueIdString();
                             else if (owner != null && !owner.isEmpty())
                             {
@@ -265,6 +257,14 @@ public class MakeCommand extends CommandBase
                                 owner = profile.getId().toString();
                             }
                         }
+
+                        Vector3 temp = Vector3.getNewVector();
+                        if (player != null)
+                        {
+                            offset = offset.add(temp.set(player.getLookVec()));
+                        }
+                        temp.set(sender.getPosition()).addTo(offset);
+                        temp.moveEntity((Entity) mob);
 
                         mob.setHp(((EntityLiving) mob).getMaxHealth());
                         if (!owner.equals(""))

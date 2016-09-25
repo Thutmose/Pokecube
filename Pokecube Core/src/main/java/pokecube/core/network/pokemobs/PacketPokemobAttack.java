@@ -53,6 +53,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
     {
         PokecubeCore.proxy.getMainThreadListener().addScheduledTask(new Runnable()
         {
+            @Override
             public void run()
             {
                 processMessage(ctx, message);

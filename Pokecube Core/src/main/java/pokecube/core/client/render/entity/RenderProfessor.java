@@ -87,9 +87,6 @@ public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
         {
             return NURSE;
         }
-        else
-        {
-            return PROFESSOR;
-        }
+        return PROFESSOR;
     }
 }

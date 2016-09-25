@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
@@ -28,9 +29,15 @@ public class GuiTeleport extends Gui
     protected static int       lightGrey = 0xDDDDDD;
     private static GuiTeleport instance;
 
+    public static void create()
+    {
+        if (instance != null) MinecraftForge.EVENT_BUS.unregister(instance);
+        instance = new GuiTeleport();
+    }
+
     public static GuiTeleport instance()
     {
-        if (instance == null) new GuiTeleport();
+        if (instance == null) create();
 
         if (instance.locations == null) instance.locations = PokecubeSerializer.getInstance()
                 .getTeleports(instance.minecraft.thePlayer.getCachedUniqueIdString());
@@ -51,9 +58,10 @@ public class GuiTeleport extends Gui
     /**
      *
      */
-    public GuiTeleport()
+    private GuiTeleport()
     {
         minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
+        MinecraftForge.EVENT_BUS.register(this);
         fontRenderer = minecraft.fontRendererObj;
         instance = this;
     }

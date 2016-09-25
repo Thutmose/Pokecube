@@ -287,10 +287,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             return 20;
         }
-        else
-        {
-            return super.getVerticalFaceSpeed();
-        }
+        return super.getVerticalFaceSpeed();
     }
 
     @Override
@@ -509,8 +506,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                     Vector3 v = Vector3.getNewVector().set(e.offset.x, e.offset.y, e.offset.z);
                     v.scalarMultBy(getSize());
                     Vector3 v0 = v.copy();
-                    float sin = MathHelper.sin((float) (this.rotationYaw * 0.017453292F));
-                    float cos = MathHelper.cos((float) (this.rotationYaw * 0.017453292F));
+                    float sin = MathHelper.sin(this.rotationYaw * 0.017453292F);
+                    float cos = MathHelper.cos(this.rotationYaw * 0.017453292F);
                     v.x = v0.x * cos - v0.z * sin;
                     v.z = v0.x * sin + v0.z * cos;
                     e.motionX = motionX;
@@ -711,7 +708,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         double dt = (System.nanoTime() - time) / 10e3D;
         average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
         double toolong = 500;
-        if (PokecubeCore.core.getConfig().debug && dt > toolong && !worldObj.isRemote)
+        if (PokecubeMod.core.getConfig().debug && dt > toolong && !worldObj.isRemote)
         {
             here.set(here.getPos());
             String toLog = "%3$s took %2$s\u00B5s to tick, it is located at %1$s, the average has been %4$s\u00B5s";
@@ -766,6 +763,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setSize(getSize());
     }
 
+    @Override
     public void setEntityBoundingBox(AxisAlignedBB bb)
     {
         super.setEntityBoundingBox(bb);

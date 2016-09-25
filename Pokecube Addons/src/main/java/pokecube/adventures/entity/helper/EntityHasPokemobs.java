@@ -292,10 +292,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             if (nextSlot >= 6 || getNextPokemob() == null) nextSlot = -1;
             return;
         }
-        else
-        {
-            nextSlot = -1;
-        }
+        nextSlot = -1;
     }
 
     public void setTarget(EntityLivingBase target)

@@ -69,21 +69,15 @@ public class PokemobAIHurt extends EntityAIBase
         {
             return false;
         }
-        else
-        {
-            PathPoint pathpoint = path.getFinalPathPoint();
+        PathPoint pathpoint = path.getFinalPathPoint();
 
-            if (pathpoint == null)
-            {
-                return false;
-            }
-            else
-            {
-                int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
-                int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
-                return i * i + j * j <= 2.25D;
-            }
+        if (pathpoint == null)
+        {
+            return false;
         }
+        int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
+        int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
+        return i * i + j * j <= 2.25D;
     }
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
@@ -108,20 +102,17 @@ public class PokemobAIHurt extends EntityAIBase
             {
                 return false;
             }
-            else
+            if (this.shouldCheckSight)
             {
-                if (this.shouldCheckSight)
+                if (this.taskOwner.getEntitySenses().canSee(entitylivingbase))
                 {
-                    if (this.taskOwner.getEntitySenses().canSee(entitylivingbase))
-                    {
-                        this.lastSeenTime = 0;
-                    }
-                    else if (++this.lastSeenTime > 60) { return false; }
+                    this.lastSeenTime = 0;
                 }
-
-                return !(entitylivingbase instanceof EntityPlayerMP)
-                        || !((EntityPlayerMP) entitylivingbase).interactionManager.isCreative();
+                else if (++this.lastSeenTime > 60) { return false; }
             }
+
+            return !(entitylivingbase instanceof EntityPlayerMP)
+                    || !((EntityPlayerMP) entitylivingbase).interactionManager.isCreative();
         }
     }
 

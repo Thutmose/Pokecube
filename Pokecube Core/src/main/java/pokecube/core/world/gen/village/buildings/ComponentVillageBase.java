@@ -107,7 +107,6 @@ public abstract class ComponentVillageBase extends House1
     /**
      * Places door on given position
      */
-    @Override
     protected void placeDoorCurrentPosition(World worldIn, StructureBoundingBox boundingBoxIn, Random rand, int x, int y, int z, EnumFacing facing)
     {
         this.setBlockState(worldIn, Blocks.OAK_DOOR.getDefaultState().withProperty(BlockDoor.FACING, facing), x, y, z, boundingBoxIn);

@@ -67,10 +67,10 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
+    compile "li.cil.oc:OpenComputers:MC${version_oc}:api"
     compile "net.darkhax.tesla:Tesla:${version_tesla}"
-    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
-    deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
+    deobfCompile "mezz.jei:jei_${version_jei}"
+  //  deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
     deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"
   //  deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
   //  deobfCompile name: 'pokecube', version: "${version_pokecube}", ext: 'jar'

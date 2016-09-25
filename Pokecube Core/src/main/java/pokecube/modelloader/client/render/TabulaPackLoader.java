@@ -514,7 +514,6 @@ public class TabulaPackLoader extends AnimationLoader
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
                 ZipInputStream zip = new ZipInputStream(res.getInputStream());
                 Scanner scanner = new Scanner(zip);
-                res.close();
                 zip.getNextEntry();
                 String json = scanner.nextLine();
                 TabulaModelParser parser = new TabulaModelParser();
@@ -525,6 +524,7 @@ public class TabulaPackLoader extends AnimationLoader
                         || modelMaps.get(entry.getName()) instanceof TabulaModelRenderer)
                     AnimationLoader.modelMaps.put(entry.getName(), new TabulaModelRenderer<>(set));
                 scanner.close();
+                res.close();
             }
             return entry != null;
         }

@@ -482,20 +482,29 @@ public final class SpawnHandler
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, v);
         int b = t.getBiome(v);
         if (onlySubbiomes && b <= 255) { return ret; }
-
         Vector3.movePointOutOfBlocks(v, world);
-        SpawnEvent.Pick.Pre event = new SpawnEvent.Pick.Pre(null, v, world);
+        long time = System.nanoTime();
+        SpawnEvent.Pick event = new SpawnEvent.Pick.Pre(null, v, world);
         MinecraftForge.EVENT_BUS.post(event);
         PokedexEntry dbe = event.getPicked();
         if (dbe == null) return ret;
+        event = new SpawnEvent.Pick.Post(dbe, v, world);
+        MinecraftForge.EVENT_BUS.post(event);
+        dbe = event.getPicked();
         v = event.getLocation();
         if (v == null) { return ret; }
         if (!isPointValidForSpawn(world, v, dbe)) return ret;
-        num = 0;
-        long time = System.nanoTime();
-        ret += num = doSpawnForType(world, v, dbe, parser, t);
         double dt = (System.nanoTime() - time) / 10e3D;
-        if (dt > 2000)
+        if (dt > 1000)
+        {
+            String toLog = "location:" + v + " took:" + dt + "\u00B5" + "s" + " to find a valid spawn";
+            PokecubeMod.log(toLog);
+        }
+        num = 0;
+        time = System.nanoTime();
+        ret += num = doSpawnForType(world, v, dbe, parser, t);
+        dt = (System.nanoTime() - time) / 10e3D;
+        if (dt > 1000)
         {
             String toLog = "location:" + v + " took:" + dt + "\u00B5" + "s" + " for:" + dbe + " spawned:" + num;
             PokecubeMod.log(toLog);

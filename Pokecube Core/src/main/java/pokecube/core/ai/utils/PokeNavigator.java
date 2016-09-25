@@ -267,7 +267,15 @@ public class PokeNavigator extends PathNavigate
             {
                 try
                 {
-                    this.pathFollow();
+                    float f = this.theEntity.width;
+                    f = Math.max(f, 0.5f);
+                    v.set(theEntity);
+                    v1.set(currentPath.getFinalPathPoint());
+                    if (v.distTo(v1) < f)
+                    {
+                        this.clearPathEntity();
+                    }
+                    else this.pathFollow();
                 }
                 catch (Exception e)
                 {
@@ -283,7 +291,6 @@ public class PokeNavigator extends PathNavigate
                 if (targetLoc.isEmpty()) { return; }
 
                 float f = this.theEntity.width;
-
                 f = Math.max(f, 0.5f);
                 v.set(theEntity);
                 v1.set(currentPath.getFinalPathPoint());

@@ -144,6 +144,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                             && Vector3.isVisibleEntityFromEntity(entity, entity))
                     {
                         addTargetInfo(entity, entity);
+                        setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                         setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
                         return;
                     }
@@ -167,6 +168,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                             && Vector3.isVisibleEntityFromEntity(entity, entity))
                     {
                         addTargetInfo(entity, entity);
+                        setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);
                         setPokemobAIState(pokemob, IMoveConstants.SITTING, false);
                         return;
                     }
@@ -254,7 +256,6 @@ public class AIFindTarget extends AIBase implements IAICombat
                 return false;
             }
         }
-
         return ret;
     }
 

@@ -167,6 +167,8 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public int                 chaseDistance              = 32;
     @Configure(category = mobAI)
+    public int                 combatDistance             = 8;
+    @Configure(category = mobAI)
     public int                 aiDisableDistance          = 32;
     @Configure(category = mobAI)
     public int                 tameGatherDelay            = 20;

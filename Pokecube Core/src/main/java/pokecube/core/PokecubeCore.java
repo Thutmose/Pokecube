@@ -82,6 +82,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
+import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.implementations.MovesAdder;
@@ -122,6 +123,8 @@ public class PokecubeCore extends PokecubeMod
     private static HashMap<Object, Integer> highestEntityId = new HashMap<Object, Integer>();
 
     private static int                      messageId       = 0;
+
+    public static MoveQueuer                moveQueues;
 
     public static int getMessageID()
     {
@@ -362,6 +365,7 @@ public class PokecubeCore extends PokecubeMod
         new PokedexInspector();
         proxy.initClient();
         proxy.registerRenderInformation();
+        moveQueues = new MoveQueuer();
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
         EntityRegistry.registerModEntity(EntityPokemobPart.class, "pokecube:genericMobPart", getUniqueEntityId(this),

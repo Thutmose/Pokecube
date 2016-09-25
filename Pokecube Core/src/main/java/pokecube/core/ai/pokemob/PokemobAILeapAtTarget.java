@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -48,11 +49,7 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
         if (move == null) move = MovesUtils.getMoveFromName(IMoveConstants.DEFAULT_MOVE);
 
-        if (pokemob.getPokemonAIState(IMoveConstants.LEAPING))
-        {
-            pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
-            return false;
-        }
+        if (pokemob.getPokemonAIState(IMoveConstants.LEAPING)) { return leapTarget != null; }
 
         if (pokemob.getPokemonAIState(IMoveConstants.HUNTING) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
@@ -88,25 +85,8 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
         if (!leaper.onGround && !(pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())) return false;
         if (((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0)) { return false; }
         if (((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)) { return false; }
-        if (this.leapTarget == null)
-        {
-            return false;
-        }
-        else if (!pokemob.getPokemonAIState(IMoveConstants.LEAPING)
-                && !((move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0))
-        {
-            double d0 = this.leaper.getDistanceSqToEntity(this.leapTarget);
-            double d1 = pokemob.getPokedexEntry().flys() ? 9 : 4 + leaper.width;
-            return d0 < d1;
-        }
-        else
-        {
-            double d0 = this.leaper.getDistanceSqToEntity(this.leapTarget);
-
-            float diff = leaper.width + leapTarget.width;
-            diff = diff * diff;
-            return d0 >= diff && d0 <= 16.0D ? (this.leaper.getRNG().nextInt(5) == 0) : false;
-        }
+        if (this.leapTarget == null) { return false; }
+        return false;
     }
 
     /** Execute a one shot task or start executing a continuous task */
@@ -122,7 +102,19 @@ public class PokemobAILeapAtTarget extends EntityAILeapAtTarget
                 targ.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }
-        pokemob.setPokemonAIState(IMoveConstants.LEAPING, true);
+
+        double d0 = this.leaper.getDistanceSqToEntity(this.leapTarget);
+
+        float diff = leaper.width + leapTarget.width;
+        diff = diff * diff;
+        if (!(d0 >= diff && d0 <= 16.0D ? (this.leaper.getRNG().nextInt(5) == 0) : false))
+        {
+            leaper.getNavigator().tryMoveToEntityLiving(leapTarget,
+                    leaper.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+            return;
+        }
+
+        pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
 
         Vector3 targetLoc = Vector3.getNewVector().set(leapTarget);
         Vector3 leaperLoc = Vector3.getNewVector().set(leaper);

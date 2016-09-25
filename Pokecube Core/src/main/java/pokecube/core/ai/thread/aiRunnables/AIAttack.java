@@ -257,7 +257,7 @@ public class AIAttack extends AIBase implements IAICombat
             }
         }
         boolean canUseMove = MovesUtils.canUseMove(pokemob);
-
+        boolean shouldPath = delayTime <= 0;
         boolean inRange = false;
 
         if (distanced)
@@ -308,6 +308,9 @@ public class AIAttack extends AIBase implements IAICombat
                 AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                         dz + attackedLength);
                 inRange = box.intersectsWith(box2);
+                if (shouldPath && !(distanced || self))
+                    setPokemobAIState((IPokemob) attacker, IMoveConstants.LEAPING, true);
+
             }
         }
         if (self)
@@ -328,8 +331,6 @@ public class AIAttack extends AIBase implements IAICombat
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }
         }
-
-        boolean shouldPath = true;
         if (delayTime < -20)
         {
             shouldPath = true;
@@ -373,7 +374,9 @@ public class AIAttack extends AIBase implements IAICombat
 
             }
             if (entityTarget instanceof IPokemob)
+            {
                 setPokemobAIState((IPokemob) entityTarget, IMoveConstants.DODGING, false);
+            }
             if (this.attacker.getHeldItemMainhand() != null)
             {
                 this.attacker.swingArm(EnumHand.MAIN_HAND);
@@ -384,15 +387,12 @@ public class AIAttack extends AIBase implements IAICombat
             shouldPath = false;
             setPokemobAIState((IPokemob) attacker, IMoveConstants.EXECUTINGMOVE, false);
             targetLoc.clear();
+            applyDelay(pokemob, move.name, distanced);
         }
         if (!targetLoc.isEmpty() && shouldPath)
         {
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
             if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
-        }
-        else if (targetLoc.isEmpty())
-        {
-            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
         }
         delayTime--;
     }

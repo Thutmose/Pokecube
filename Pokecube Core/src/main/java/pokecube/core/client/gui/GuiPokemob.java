@@ -106,7 +106,7 @@ public class GuiPokemob extends GuiContainer
 
                 int x = xPosition + width / 2 - 2;
                 int y = yPosition + height / 2 + 7;
-                double scale = 0.9f;
+                double scale = 1.5f;
                 GL11.glPushMatrix();
                 GL11.glTranslatef(x, y, 0F);
                 GL11.glRotated(90, 0, 1, 0);

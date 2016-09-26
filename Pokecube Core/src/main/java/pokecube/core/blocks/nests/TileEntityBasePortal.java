@@ -44,7 +44,7 @@ public class TileEntityBasePortal extends TileEntityOwnable
     public void readFromNBT(NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
-        this.sendToUsers = tagCompound.getBoolean("allPlayers");
+        this.sendToUsers = tagCompound.getBoolean("allPlayer");
     }
 
     @Override

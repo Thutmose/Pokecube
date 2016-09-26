@@ -31,7 +31,7 @@ public class LogicMovesUpdates extends LogicBase
     final private EntityAnimal entity;
     final IPokemob             pokemob;
     final PokedexEntry         entry;
-    Vector3                    v       = Vector3.getNewVector();
+    Vector3                    v = Vector3.getNewVector();
 
     public LogicMovesUpdates(EntityAnimal entity)
     {
@@ -160,6 +160,14 @@ public class LogicMovesUpdates extends LogicBase
         {
             if (BerryManager.berryEffect(pokemob, held))
             {
+                int[] flavours = BerryManager.berryFlavours.get(held.getItemDamage());
+                if (flavours != null)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        pokemob.setFlavourAmount(i, pokemob.getFlavourAmount(i) + flavours[i]);
+                    }
+                }
                 HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
                 pokemob.setHeldItem(null);
             }

@@ -1274,7 +1274,6 @@ public class GuiPokedex extends GuiScreen
         if (page == 4)
         {
             nicknameTextField.setEnabled(true);
-            nicknameTextField.setFocused(true);
 
             if ((par2 == ClientProxyPokecube.nextMove.getKeyCode()
                     || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
@@ -1311,79 +1310,75 @@ public class GuiPokedex extends GuiScreen
                 }
             }
         }
-        // else
+        boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
+        boolean b2 = pokemobTextField.textboxKeyTyped(par1, par2) || pokemobTextField.isFocused();
+        if (b2)
         {
-            boolean b = nicknameTextField.textboxKeyTyped(par1, par2);
-            boolean b2 = pokemobTextField.textboxKeyTyped(par1, par2) || pokemobTextField.isFocused();
-
-            if (b2)
+            if ((par2 == Keyboard.KEY_RETURN))
             {
-                if ((par2 == Keyboard.KEY_RETURN))
+                PokedexEntry entry = Database.getEntry(pokemobTextField.getText());
+                if (entry == null)
                 {
-                    PokedexEntry entry = Database.getEntry(pokemobTextField.getText());
-                    if (entry == null)
+                    for (PokedexEntry e : Database.allFormes)
                     {
-                        for (PokedexEntry e : Database.allFormes)
+                        String translated = I18n.format(e.getUnlocalizedName());
+                        if (translated.equalsIgnoreCase(pokemobTextField.getText()))
                         {
-                            String translated = I18n.format(e.getUnlocalizedName());
-                            if (translated.equalsIgnoreCase(pokemobTextField.getText()))
-                            {
-                                Database.data2.put(translated, e);
-                                entry = e;
-                                break;
-                            }
+                            Database.data2.put(translated, e);
+                            entry = e;
+                            break;
                         }
                     }
-                    if (entry != null)
-                    {
-                        pokedexEntry = entry;
-                    }
-                    else
-                    {
-                        pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
-                    }
                 }
-            }
-            else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_LEFT && page != 4)
-            {
-                handleGuiButton(2);
-            }
-            else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_RIGHT && page != 4)
-            {
-                handleGuiButton(1);
-            }
-            else if (par2 == Keyboard.KEY_UP)
-            {
-                handleGuiButton(3);
-            }
-            else if (par2 == Keyboard.KEY_DOWN)
-            {
-                handleGuiButton(4);
-            }
-            else if (par2 == Keyboard.KEY_PRIOR)
-            {
-                handleGuiButton(11);
-            }
-            else if (par2 == Keyboard.KEY_NEXT)
-            {
-                handleGuiButton(12);
-            }
-            else if (par2 != 54 && par2 != 58 && par2 != 42 && page == 0 && !b)
-            {
-                if (!(nicknameTextField.isFocused() && par2 == 28))
+                if (entry != null)
                 {
-                    mc.displayGuiScreen(null);
-                    mc.setIngameFocus();
+                    pokedexEntry = entry;
                 }
-                String nickname = nicknameTextField.getText();
-                if (canEditPokemob() && page == 0 && !oldName.equals(nickname))
+                else
                 {
-                    pokemob.setPokemonNickname(nickname);
+                    pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
                 }
-                return;
             }
-            if (!b2 && !nicknameTextField.isFocused()) super.keyTyped(par1, par2);
         }
+        else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_LEFT && page != 4)
+        {
+            handleGuiButton(2);
+        }
+        else if (!nicknameTextField.isFocused() && par2 == Keyboard.KEY_RIGHT && page != 4)
+        {
+            handleGuiButton(1);
+        }
+        else if (par2 == Keyboard.KEY_UP)
+        {
+            handleGuiButton(3);
+        }
+        else if (par2 == Keyboard.KEY_DOWN)
+        {
+            handleGuiButton(4);
+        }
+        else if (par2 == Keyboard.KEY_PRIOR)
+        {
+            handleGuiButton(11);
+        }
+        else if (par2 == Keyboard.KEY_NEXT)
+        {
+            handleGuiButton(12);
+        }
+        else if (par2 != 54 && par2 != 58 && par2 != 42 && page == 0 && !b)
+        {
+            if (!(nicknameTextField.isFocused() && par2 == 28))
+            {
+                mc.displayGuiScreen(null);
+                mc.setIngameFocus();
+            }
+            String nickname = nicknameTextField.getText();
+            if (canEditPokemob() && page == 0 && !oldName.equals(nickname))
+            {
+                pokemob.setPokemonNickname(nickname);
+            }
+            return;
+        }
+        if (!b2 && !nicknameTextField.isFocused()) super.keyTyped(par1, par2);
     }
 
     /** Called when the mouse is clicked. */

@@ -159,7 +159,7 @@ public class ItemTarget extends Item
             EnumHand hand)
     {
         int meta = itemstack.getItemDamage();
-        System.out.println("rightclick");
+
         Vector3 p = Vector3.getNewVector().set(player, false);
         Vector3 d = Vector3.getNewVector().set(player.getLookVec());
 

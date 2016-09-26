@@ -65,7 +65,7 @@ public class GuiTMCreator extends GuiContainer
     {
         GL11.glColor4f(1f, 1f, 1f, 1f);
 
-        mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/gui/moveTutorGui.png"));
+        mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/gui/movetutorgui.png"));
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);

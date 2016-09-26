@@ -1,8 +1,10 @@
 package pokecube.core.items.pokecubes;
 
+import java.util.List;
 import java.util.UUID;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -109,6 +111,29 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this.setEntityItemStack(entityItem);
         this.shootingEntity = shootingEntity;
         if (PokecubeManager.isFilled(entityItem)) tilt = -2;
+    }
+
+    @Override
+    protected void collideWithNearbyEntities()
+    {
+        List<Entity> list = this.worldObj.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(),
+                new Predicate<Entity>()
+                {
+                    @Override
+                    public boolean apply(Entity input)
+                    {
+                        return input instanceof EntityLivingBase && !(input instanceof EntityPokecube);
+                    }
+                });
+
+        if (!list.isEmpty())
+        {
+            for (int i = 0; i < list.size(); ++i)
+            {
+                Entity entity = list.get(i);
+                this.applyEntityCollision(entity);
+            }
+        }
     }
 
     /** Applies a velocity to each of the entities pushing them away from each

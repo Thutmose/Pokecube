@@ -1,0 +1,27 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "cheri": {"textures": {"layer0": "pokecube:items/cheriberry"}},
+      "chesto": {"textures": {"layer0": "pokecube:items/chestoberry"}},
+      "pecha": {"textures": {"layer0": "pokecube:items/pechaberry"}},
+      "rawst": {"textures": {"layer0": "pokecube:items/rawstberry"}},
+      "aspear": {"textures": {"layer0": "pokecube:items/aspearberry"}},
+      "leppa": {"textures": {"layer0": "pokecube:items/leppaberry"}},
+      "oran": {"textures": {"layer0": "pokecube:items/oranberry"}},
+      "persim": {"textures": {"layer0": "pokecube:items/persimberry"}},
+      "lum": {"textures": {"layer0": "pokecube:items/lumberry"}},
+      "sitrus": {"textures": {"layer0": "pokecube:items/sitrusberry"}},
+      "nanab": {"textures": {"layer0": "pokecube:items/nanabberry"}},
+      "pinap": {"textures": {"layer0": "pokecube:items/pinapberry"}},
+      "cornn": {"textures": {"layer0": "pokecube:items/cornnberry"}},
+      "enigma": {"textures": {"layer0": "pokecube:items/enigmaberry"}},
+      "jaboca": {"textures": {"layer0": "pokecube:items/jabocaberry"}},
+      "rowap": {"textures": {"layer0": "pokecube:items/rowapberry"}}
+    }
+  }
+}

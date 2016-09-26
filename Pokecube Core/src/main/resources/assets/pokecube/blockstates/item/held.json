@@ -1,0 +1,31 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "waterstone": {"textures": {"layer0": "pokecube:items/waterstone"}},
+      "firestone": {"textures": {"layer0": "pokecube:items/firestone"}},
+      "leafstone": {"textures": {"layer0": "pokecube:items/leafstone"}},
+      "thunderstone": {"textures": {"layer0": "pokecube:items/thunderstone"}},
+      "moonstone": {"textures": {"layer0": "pokecube:items/moonstone"}},
+      "sunstone": {"textures": {"layer0": "pokecube:items/sunstone"}},
+      "shinystone": {"textures": {"layer0": "pokecube:items/shinystone"}},
+      "ovalstone": {"textures": {"layer0": "pokecube:items/ovalstone"}},
+      "everstone": {"textures": {"layer0": "pokecube:items/everstone"}},
+      "duskstone": {"textures": {"layer0": "pokecube:items/duskstone"}},
+      "dawnstone": {"textures": {"layer0": "pokecube:items/dawnstone"}},
+      "kingsrock": {"textures": {"layer0": "pokecube:items/kingsrock"}},
+      "dubiousdisc": {"textures": {"layer0": "pokecube:items/dubious disc"}},
+      "electirizer": {"textures": {"layer0": "pokecube:items/electirizer"}},
+      "magmarizer": {"textures": {"layer0": "pokecube:items/magmarizer"}},
+      "reapercloth": {"textures": {"layer0": "pokecube:items/reaper cloth"}},
+      "prismscale": {"textures": {"layer0": "pokecube:items/prism scale"}},
+      "protector": {"textures": {"layer0": "pokecube:items/protector"}},
+      "upgrade": {"textures": {"layer0": "pokecube:items/up grade"}},
+      "metalcoat": {"textures": {"layer0": "pokecube:items/metalcoat"}}
+    }
+  }
+}

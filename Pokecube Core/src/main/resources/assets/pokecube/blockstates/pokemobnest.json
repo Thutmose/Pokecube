@@ -1,0 +1,20 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "all": "blocks/cobblestone"
+        },
+        "model": "cube_all",
+        "uvlock": true
+    },
+    "variants": {
+        "type": {
+            0: {
+            },
+            1: {
+            },
+            2: {
+            }
+        }
+    }
+}

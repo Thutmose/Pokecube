@@ -27,9 +27,9 @@ public class RenderProfessor<T extends EntityLiving> extends RenderBiped<T>
 {
     private static Map<String, ResourceLocation> players   = Maps.newHashMap();
     private static final ResourceLocation        PROFESSOR = new ResourceLocation(
-            PokecubeMod.ID + ":textures/Professor.png");
+            PokecubeMod.ID + ":textures/professor.png");
     private static final ResourceLocation        NURSE     = new ResourceLocation(
-            PokecubeMod.ID + ":textures/Nurse.png");
+            PokecubeMod.ID + ":textures/nurse.png");
     private ModelBiped                           male;
     private ModelBiped                           female;
 

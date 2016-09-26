@@ -20,7 +20,7 @@ import pokecube.core.network.PokecubePacketHandler;
 public class GuiAFA extends GuiContainer
 {
     private static final ResourceLocation guiTexture = new ResourceLocation(
-            "pokecube_adventures:textures/gui/afaGui.png");
+            "pokecube_adventures:textures/gui/afagui.png");
 
     long                                  last       = 0;
 

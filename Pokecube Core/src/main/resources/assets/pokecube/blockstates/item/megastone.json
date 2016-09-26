@@ -1,0 +1,78 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item"
+  },
+  "variants": {
+    "type": {
+      "megastone": {
+        "textures": {
+          "layer0": "pokecube:items/megastone"
+        }
+      },
+      "shiny_charm": {
+        "textures": {
+          "layer0": "pokecube:items/shiny_charm"
+        }
+      },
+      "alphaorb": {
+        "textures": {
+          "layer0": "pokecube:items/alphaorb"
+        }
+      },
+      "omegaorb": {
+        "textures": {
+          "layer0": "pokecube:items/omegaorb"
+        }
+      },
+      "aerodactylmega": {"textures": {"layer0": "pokecube:items/aerodactylite"}},
+      "abomasnowmega": {"textures": {"layer0": "pokecube:items/abomasite"}},
+      "absolmega": {"textures": {"layer0": "pokecube:items/absolite"}},
+      "aggronmega": {"textures": {"layer0": "pokecube:items/aggronite"}},
+      "alakazammega": {"textures": {"layer0": "pokecube:items/alakazite"}},
+      "altariamega": {"textures": {"layer0": "pokecube:items/altarianite"}},
+      "ampharosmega": {"textures": {"layer0": "pokecube:items/ampharosite"}},
+      "audinomega": {"textures": {"layer0": "pokecube:items/audinite"}},
+      "banettemega": {"textures": {"layer0": "pokecube:items/banettite"}},
+      "beedrillmega": {"textures": {"layer0": "pokecube:items/beedrillite"}},
+      "blastoisemega": {"textures": {"layer0": "pokecube:items/blastoisinite"}},
+      "blazikenmega": {"textures": {"layer0": "pokecube:items/blazikenite"}},
+      "cameruptmega": {"textures": {"layer0": "pokecube:items/cameruptite"}},
+      "charizardmega-x": {"textures": {"layer0": "pokecube:items/charizardite_x"}},
+      "charizardmega-y": {"textures": {"layer0": "pokecube:items/charizardite_y"}},
+      "dianciemega": {"textures": {"layer0": "pokecube:items/diancite"}},
+      "gallademega": {"textures": {"layer0": "pokecube:items/galladite"}},
+      "garchompmega": {"textures": {"layer0": "pokecube:items/garchompite"}},
+      "gardevoirmega": {"textures": {"layer0": "pokecube:items/gardevoirite"}},
+      "gengarmega": {"textures": {"layer0": "pokecube:items/gengarite"}},
+      "glaliemega": {"textures": {"layer0": "pokecube:items/glalitite"}},
+      "gyaradosmega": {"textures": {"layer0": "pokecube:items/gyaradosite"}},
+      "heracrossmega": {"textures": {"layer0": "pokecube:items/heracronite"}},
+      "houndoommega": {"textures": {"layer0": "pokecube:items/houndoominite"}},
+      "kangaskhanmega": {"textures": {"layer0": "pokecube:items/kangaskhanite"}},
+      "latiasmega": {"textures": {"layer0": "pokecube:items/latiasite"}},
+      "latiosmega": {"textures": {"layer0": "pokecube:items/latiosite"}},
+      "lopunnymega": {"textures": {"layer0": "pokecube:items/lopunnite"}},
+      "lucariomega": {"textures": {"layer0": "pokecube:items/lucarionite"}},
+      "manectricmega": {"textures": {"layer0": "pokecube:items/manectite"}},
+      "mawilemega": {"textures": {"layer0": "pokecube:items/mawilite"}},
+      "medichammega": {"textures": {"layer0": "pokecube:items/medichamite"}},
+      "metagrossmega": {"textures": {"layer0": "pokecube:items/metagrossite"}},
+      "mewtwomega-x": {"textures": {"layer0": "pokecube:items/mewtwonite_x"}},
+      "mewtwomega-y": {"textures": {"layer0": "pokecube:items/mewtwonite_y"}},
+      "pidgeotmega": {"textures": {"layer0": "pokecube:items/pidgeotite"}},
+      "pinsirmega": {"textures": {"layer0": "pokecube:items/pinsirite"}},
+      "sableyemega": {"textures": {"layer0": "pokecube:items/sablenite"}},
+      "salamencemega": {"textures": {"layer0": "pokecube:items/salamencite"}},
+      "sceptilemega": {"textures": {"layer0": "pokecube:items/sceptilite"}},
+      "scizormega": {"textures": {"layer0": "pokecube:items/scizorite"}},
+      "sharpedomega": {"textures": {"layer0": "pokecube:items/sharpedonite"}},
+      "slowbromega": {"textures": {"layer0": "pokecube:items/slowbronite"}},
+      "steelixmega": {"textures": {"layer0": "pokecube:items/steelixite"}},
+      "swampertmega": {"textures": {"layer0": "pokecube:items/swampertite"}},
+      "tyranitarmega": {"textures": {"layer0": "pokecube:items/tyranitarite"}},
+      "venusaurmega": {"textures": {"layer0": "pokecube:items/venusaurite"}}
+    }
+  }
+}

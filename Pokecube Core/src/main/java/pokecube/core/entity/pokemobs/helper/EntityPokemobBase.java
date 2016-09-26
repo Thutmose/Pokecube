@@ -800,7 +800,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected void collideWithNearbyEntities()
     {
-        // TODO push this over to a different thread for processing.
     }
 
     @Override

@@ -393,49 +393,49 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 new ModelResourceLocation(PokecubeMod.ID + ":tmc", "inventory"));
 
         ModelLoader.setCustomStateMapper(log0,
-                (new StateMap.Builder()).withName(BlockBerryLog.VARIANT0).withSuffix("Wood").build());
+                (new StateMap.Builder()).withName(BlockBerryLog.VARIANT0).withSuffix("wood").build());
         ModelLoader.setCustomStateMapper(log1,
-                (new StateMap.Builder()).withName(BlockBerryLog.VARIANT4).withSuffix("Wood").build());
+                (new StateMap.Builder()).withName(BlockBerryLog.VARIANT4).withSuffix("wood").build());
 
         ModelLoader.setCustomStateMapper(plank0,
-                (new StateMap.Builder()).withName(BlockBerryWood.VARIANT).withSuffix("Plank").build());
+                (new StateMap.Builder()).withName(BlockBerryWood.VARIANT).withSuffix("plank").build());
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:pechaPlank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:oranPlank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:leppaPlank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:sitrusPlank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:enigmaPlank"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:nanabPlank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:pechaplank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:oranplank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:leppaplank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:sitrusplank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:enigmaplank"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(plank0), new ResourceLocation("pokecube:nanabplank"));
         registerItemTexture(Item.getItemFromBlock(plank0), 0,
-                new ModelResourceLocation("pokecube:pechaPlank", "inventory"));
+                new ModelResourceLocation("pokecube:pechaplank", "inventory"));
         registerItemTexture(Item.getItemFromBlock(plank0), 1,
-                new ModelResourceLocation("pokecube:oranPlank", "inventory"));
+                new ModelResourceLocation("pokecube:oranplank", "inventory"));
         registerItemTexture(Item.getItemFromBlock(plank0), 2,
-                new ModelResourceLocation("pokecube:leppaPlank", "inventory"));
+                new ModelResourceLocation("pokecube:leppaplank", "inventory"));
         registerItemTexture(Item.getItemFromBlock(plank0), 3,
-                new ModelResourceLocation("pokecube:sitrusPlank", "inventory"));
+                new ModelResourceLocation("pokecube:sitrusplank", "inventory"));
         registerItemTexture(Item.getItemFromBlock(plank0), 4,
-                new ModelResourceLocation("pokecube:enigmaPlank", "inventory"));
+                new ModelResourceLocation("pokecube:enigmaplank", "inventory"));
         registerItemTexture(Item.getItemFromBlock(plank0), 5,
-                new ModelResourceLocation("pokecube:nanabPlank", "inventory"));
+                new ModelResourceLocation("pokecube:nanabplank", "inventory"));
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:pechaWood"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:pechawood"));
         registerItemTexture(Item.getItemFromBlock(log0), 0,
                 new ModelResourceLocation("pokecube:pechaWood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:oranWood"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:oranwood"));
         registerItemTexture(Item.getItemFromBlock(log0), 1,
                 new ModelResourceLocation("pokecube:oranWood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:leppaWood"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:leppawood"));
         registerItemTexture(Item.getItemFromBlock(log0), 2,
                 new ModelResourceLocation("pokecube:leppaWood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:sitrusWood"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:sitruswood"));
         registerItemTexture(Item.getItemFromBlock(log0), 3,
                 new ModelResourceLocation("pokecube:sitrusWood", "inventory"));
 
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:enigmaWood"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:enigmawood"));
         registerItemTexture(Item.getItemFromBlock(log1), 0,
                 new ModelResourceLocation("pokecube:enigmaWood", "inventory"));
-        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabWood"));
+        ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabwood"));
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabWood", "inventory"));
 
@@ -444,7 +444,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 .withSuffix("Crop").build();
         ModelLoader.setCustomStateMapper(crop, map);
 
-        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("Fruit").build();
+        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("fruit").build();
         ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
 
         map = (new StateMap.Builder())

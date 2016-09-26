@@ -54,14 +54,13 @@ public class NBTHelper {
 
 		if (isNull == 0) {
 			return null;
-		} else {
-			// restore index after checking to make sure the tag wasn't null/
-			buf.readerIndex(index);
-			try {
-				return CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L));
-			} catch (IOException ioexception) {
-				throw new EncoderException(ioexception);
-			}
 		}
+        // restore index after checking to make sure the tag wasn't null/
+        buf.readerIndex(index);
+        try {
+        	return CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L));
+        } catch (IOException ioexception) {
+        	throw new EncoderException(ioexception);
+        }
 	}
 }

@@ -1,5 +1,6 @@
 package pokecube.adventures.client.render.entity;
 
+import java.security.MessageDigest;
 import java.util.Map;
 import java.util.UUID;
 
@@ -16,6 +17,8 @@ import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,9 +32,10 @@ import pokecube.compat.baubles.BetterCustomHeadLayer;
 
 public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {
-    private static Map<TypeTrainer, ResourceLocation> males   = Maps.newHashMap();
-    private static Map<TypeTrainer, ResourceLocation> females = Maps.newHashMap();
-    private static Map<String, ResourceLocation>      players = Maps.newHashMap();
+    private static Map<TypeTrainer, ResourceLocation> males    = Maps.newHashMap();
+    private static Map<TypeTrainer, ResourceLocation> females  = Maps.newHashMap();
+    private static Map<String, ResourceLocation>      players  = Maps.newHashMap();
+    private static Map<String, ResourceLocation>      urlSkins = Maps.newHashMap();
 
     private ModelBiped                                male;
     private ModelBiped                                female;
@@ -80,12 +84,12 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 
         if (villager instanceof EntityTrainer)
         {
-            if (!((EntityTrainer) villager).playerName.isEmpty())
+            EntityTrainer trainer = ((EntityTrainer) villager);
+            if (!trainer.playerName.isEmpty())
             {
-                if (players.containsKey(((EntityTrainer) villager).playerName))
-                    return players.get(((EntityTrainer) villager).playerName);
+                if (players.containsKey(trainer.playerName)) return players.get(trainer.playerName);
                 Minecraft minecraft = Minecraft.getMinecraft();
-                GameProfile profile = new GameProfile((UUID) null, ((EntityTrainer) villager).playerName);
+                GameProfile profile = new GameProfile((UUID) null, trainer.playerName);
                 profile = TileEntitySkull.updateGameprofile(profile);
                 Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().loadSkinFromCache(profile);
                 ResourceLocation resourcelocation;
@@ -98,13 +102,37 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                     UUID uuid = EntityPlayer.getUUID(profile);
                     resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
                 }
-                players.put(((EntityTrainer) villager).playerName, resourcelocation);
+                players.put(trainer.playerName, resourcelocation);
                 return resourcelocation;
             }
+            if (!trainer.urlSkin.isEmpty())
+            {
+                if (urlSkins.containsKey(trainer.urlSkin)) return urlSkins.get(trainer.urlSkin);
+                try
+                {
+                    MessageDigest digest = MessageDigest.getInstance("MD5");
+                    byte[] hash = digest.digest(trainer.urlSkin.getBytes("UTF-8"));
+                    StringBuilder sb = new StringBuilder(2 * hash.length);
+                    for (byte b : hash)
+                    {
+                        sb.append(String.format("%02x", b & 0xff));
+                    }
+                    ResourceLocation resourcelocation = new ResourceLocation("skins/" + sb.toString());
+                    TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+                    ITextureObject object = new URLSkinTexture(null, trainer.urlSkin,
+                            DefaultPlayerSkin.getDefaultSkinLegacy(), new URLSkinImageBuffer());
+                    texturemanager.loadTexture(resourcelocation, object);
+                    urlSkins.put(trainer.urlSkin, resourcelocation);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                return urlSkins.get(trainer.urlSkin);
+            }
+            TypeTrainer type = trainer.getType();
 
-            TypeTrainer type = ((EntityTrainer) villager).getType();
-
-            if (((EntityTrainer) villager).male)
+            if (trainer.male)
             {
                 texture = males.get(type);
             }
@@ -114,9 +142,9 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
             }
             if (texture == null)
             {
-                texture = type == null ? super.getEntityTexture(villager) : type.getTexture(((EntityTrainer) villager));
+                texture = type == null ? super.getEntityTexture(villager) : type.getTexture(trainer);
 
-                if (((EntityTrainer) villager).male)
+                if (trainer.male)
                 {
                     males.put(type, texture);
                 }

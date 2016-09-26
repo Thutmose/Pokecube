@@ -27,7 +27,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.commands.CommandTools;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.MoveUse;
@@ -218,12 +218,12 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
+        deny:
         if (!PokecubeMod.pokemobsDamageBlocks)
         {
-            EntityLivingBase owner;
-            if ((owner = attacker.getPokemonOwner()) != null && !attacker.getPokemonAIState(IMoveConstants.ANGRY))
+            for (String s : PokecubeCore.core.getConfig().damageBlocksWhitelist)
             {
-                CommandTools.sendError(owner, "pokemob.action.denydamageblock");
+                if (s.equals(name)) break deny;
             }
             return;
         }

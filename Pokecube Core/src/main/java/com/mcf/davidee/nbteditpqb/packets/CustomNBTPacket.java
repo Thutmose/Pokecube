@@ -74,7 +74,7 @@ public class CustomNBTPacket implements IMessage
                         {
                             try
                             {
-                                NBTTagCompound tag = new NBTTagCompound();
+                                NBTTagCompound tag = packet.tag;
                                 PlayerData data = PlayerDataHandler.getInstance()
                                         .getPlayerData(entity.getCachedUniqueIdString()).getData(packet.customName);
                                 data.readFromNBT(tag);
@@ -102,7 +102,7 @@ public class CustomNBTPacket implements IMessage
             }
             else
             {
-                System.out.println(packet.tag+" "+packet.entityID+" "+packet.customName);
+                System.out.println(packet.tag + " " + packet.entityID + " " + packet.customName);
                 NBTEdit.proxy.openEditGUI(packet.entityID, packet.customName, packet.tag);
             }
             return null;

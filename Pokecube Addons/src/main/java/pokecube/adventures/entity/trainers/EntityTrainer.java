@@ -56,6 +56,7 @@ public class EntityTrainer extends EntityHasPokemobs
     public Vector3    location   = null;
     public String     name       = "";
     public String     playerName = "";
+    public String     urlSkin    = "";
     public boolean    male       = true;
     boolean           added      = false;
     protected boolean trades     = true;
@@ -403,6 +404,7 @@ public class EntityTrainer extends EntityHasPokemobs
         super.readEntityFromNBT(nbt);
         if (nbt.hasKey("trades")) trades = nbt.getBoolean("trades");
         playerName = nbt.getString("playerName");
+        urlSkin = nbt.getString("urlSkin");
         randomize = nbt.getBoolean("randomTeam");
         male = nbt.getBoolean("gender");
         name = nbt.getString("name");
@@ -490,6 +492,7 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         super.writeEntityToNBT(nbt);
         nbt.setString("playerName", playerName);
+        nbt.setString("urlSkin", urlSkin);
         nbt.setBoolean("trades", trades);
         nbt.setBoolean("gender", male);
         nbt.setBoolean("randomTeam", randomize);

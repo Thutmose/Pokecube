@@ -13,6 +13,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -83,8 +85,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
                     double d0 = worldIn.rand.nextFloat() * f + (1.0F - f) * 0.5D;
                     double d1 = worldIn.rand.nextFloat() * f + (1.0F - f) * 0.5D;
                     double d2 = worldIn.rand.nextFloat() * f + (1.0F - f) * 0.5D;
-                    EntityItem entityitem = new EntityItem(worldIn, pos.getX() + d0, pos.getY() + d1,
-                            pos.getZ() + d2, stack);
+                    EntityItem entityitem = new EntityItem(worldIn, pos.getX() + d0, pos.getY() + d1, pos.getZ() + d2,
+                            stack);
                     entityitem.setDefaultPickupDelay();
                     worldIn.spawnEntityInWorld(entityitem);
                 }
@@ -116,10 +118,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         TileEntityBerries tile = (TileEntityBerries) source.getTileEntity(pos);
-        if (TileEntityBerries.trees.containsKey(tile.getBerryId()))
-        {
-            return BUSH2_AABB;
-        }
+        if (TileEntityBerries.trees.containsKey(tile.getBerryId())) { return BUSH2_AABB; }
         return BUSH_AABB;
     }
 
@@ -162,6 +161,14 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     {
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
         return BerryManager.getBerryItem(tile.getBerryId());
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        this.onBlockHarvested(worldIn, pos, state, playerIn);
+        return true;
     }
 
     @Override

@@ -58,12 +58,27 @@ public class LogicCollision extends LogicBase
         mainBox.set(2, mainBox.rows[2].set(0, 0, (-collider.rotationYaw) * Math.PI / 180));
         mainBox.addOffsetTo(offset).addOffsetTo(vec);
         AxisAlignedBB box = mainBox.getBoundingBox();
+        if (box.maxX - box.minX > 3)
+        {
+            double meanX = box.minX + (box.maxX - box.minX) / 2;
+            box = new AxisAlignedBB(meanX - 3, box.minY, box.minZ, meanX + 3, box.maxY, box.maxZ);
+        }
+        if (box.maxZ - box.minZ > 3)
+        {
+            double meanZ = box.minZ + (box.maxZ - box.minZ) / 2;
+            box = new AxisAlignedBB(box.minX, box.minY, meanZ - 3, box.maxX, box.maxY, meanZ + 3);
+        }
+        if (box.maxY - box.minY > 3)
+        {
+            box = box.setMaxY(box.minY + 3);
+        }
         AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
+
         box1 = box1.addCoord(collider.motionX, collider.motionY, collider.motionZ);
         aabbs = mainBox.getCollidingBoxes(box1, world, world);
         // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
         Matrix3.expandAABBs(aabbs, box);
-        Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+        if (box1.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
         collider.setTileCollsionBoxes(aabbs);
     }
 

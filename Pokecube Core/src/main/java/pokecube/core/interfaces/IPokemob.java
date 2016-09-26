@@ -382,7 +382,7 @@ public interface IPokemob extends IMoveConstants
     int getExplosionState();
 
     EntityAIBase getGuardAI();
-    
+
     AIStuff getAIStuff();
 
     /** @return how happy is the pokemob, see {@link HappinessType} */
@@ -626,7 +626,7 @@ public interface IPokemob extends IMoveConstants
      * @param exp
      * @param notifyLevelUp
      *            should be false in an initialize step and true in a true exp
-     *            earning*/
+     *            earning */
     IPokemob setExp(int exp, boolean notifyLevelUp);
 
     /** Sets the experience.
@@ -634,7 +634,7 @@ public interface IPokemob extends IMoveConstants
      * @param exp
      * @param notifyLevelUp
      *            should be false in an initialize step and true in a true exp
-     *            earning*/
+     *            earning */
     IPokemob setForSpawn(int exp);
 
     void setExplosionState(int i);
@@ -787,4 +787,16 @@ public interface IPokemob extends IMoveConstants
     void setSubParts(EntityPokemobPart[] subParts);
 
     boolean isPlayerOwned();
+
+    /** @param index
+     * @return the value of the flavour amount for this mob, this will be used
+     *         for particle effects, and possibly for boosts based on how much
+     *         the mob likes the flavour */
+    int getFlavourAmount(int index);
+
+    /** Sets the flavour amount for that index.
+     * 
+     * @param index
+     * @param amount */
+    void setFlavourAmount(int index, int amount);
 }

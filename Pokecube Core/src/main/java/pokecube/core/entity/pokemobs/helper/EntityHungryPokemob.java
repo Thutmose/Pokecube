@@ -315,4 +315,16 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     {
         return getPokedexEntry().swims();
     }
+
+    @Override
+    public int getFlavourAmount(int index)
+    {
+        return dataManager.get(FLAVOURS[index]);
+    }
+
+    @Override
+    public void setFlavourAmount(int index, int amount)
+    {
+        dataManager.set(FLAVOURS[index], amount);
+    }
 }

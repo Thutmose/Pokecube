@@ -29,10 +29,11 @@ public class PokemobMoveHelper extends EntityMoveHelper
     @Override
     public void onUpdateMoveHelper()
     {
-        PokedexEntry entry = ((IPokemob) entity).getPokedexEntry();
-        if (((IPokemob) entity).getTransformedTo() instanceof IPokemob)
+        IPokemob pokemob = (IPokemob) entity;
+        PokedexEntry entry = pokemob.getPokedexEntry();
+        if (pokemob.getTransformedTo() instanceof IPokemob)
         {
-            entry = ((IPokemob) ((IPokemob) entity).getTransformedTo()).getPokedexEntry();
+            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
         }
         boolean water = entry.swims() && entity.isInWater();
         boolean air = entry.flys() || entry.floats();
@@ -50,11 +51,13 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 this.entity.setMoveForward(0.0F);
                 return;
             }
-
-            float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
-            this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 90.0F);
-            this.entity.setAIMoveSpeed((float) (this.speed
-                    * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
+            if (d4 > pokemob.getSize() * entry.length / 2 && Math.abs(d2) < entity.stepHeight)
+            {
+                float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
+                this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 90.0F);
+                this.entity.setAIMoveSpeed((float) (this.speed
+                        * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
+            }
             if (air || water)
             {
                 entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);

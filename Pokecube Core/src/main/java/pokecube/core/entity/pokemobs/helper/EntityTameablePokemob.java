@@ -121,6 +121,14 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     static final DataParameter<Optional<ItemStack>> HELDITEM         = EntityDataManager
             .<Optional<ItemStack>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_ITEM_STACK);
 
+    @SuppressWarnings("unchecked")
+    static final DataParameter<Integer>[]           FLAVOURS         = new DataParameter[] {
+            EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
+            EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
+            EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
+            EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
+            EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT) };
+
     protected boolean                               looksWithInterest;
 
     protected float                                 field_25048_b;
@@ -235,6 +243,12 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
         // Held item sync
         dataManager.register(HELDITEM, Optional.<ItemStack> absent());
+
+        // Flavours for various berries eaten.
+        for (int i = 0; i < 5; i++)
+        {
+            dataManager.register(FLAVOURS[i], Integer.valueOf(0));
+        }
     }
 
     /** Used to get the state without continually looking up in dataManager.

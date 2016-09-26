@@ -970,4 +970,18 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public int getFlavourAmount(int index)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setFlavourAmount(int index, int amount)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

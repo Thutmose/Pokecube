@@ -3,7 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -57,28 +56,25 @@ import thut.api.maths.Vector3;
 public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart
 {
 
-    static String[]             unowns            = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E", "Unown_F",
+    static String[]             unowns         = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E", "Unown_F",
             "Unown_G", "Unown_H", "Unown_I", "Unown_J", "Unown_K", "Unown_L", "Unown_M", "Unown_N", "Unown_O",
             "Unown_P", "Unown_Q", "Unown_Qu", "Unown_R", "Unown_S", "Unown_T", "Unown_U", "Unown_V", "Unown_W",
             "Unown_X", "Unown_Y", "Unown_Z", "Unown_Ex" };
 
-    public static float         scaleFactor       = 0.075f;
-    public static boolean       multibox          = true;
+    public static float         scaleFactor    = 0.075f;
+    public static boolean       multibox       = true;
 
-    private int                 uid               = -1;
-    protected int               pokecubeId        = 0;
-    private int                 despawntimer      = 0;
+    private int                 uid            = -1;
+    protected int               pokecubeId     = 0;
+    private int                 despawntimer   = 0;
 
-    protected int               particleIntensity = 0;
-    protected int               particleCounter   = 0;
-    protected String            particle;
     private float               scale;
 
-    private int[]               flavourAmounts    = new int[5];
+    private int[]               flavourAmounts = new int[5];
     private EntityPokemobPart[] partsArray;
 
     public Matrix3              mainBox;
-    private Vector3             offset            = Vector3.getNewVector();
+    private Vector3             offset         = Vector3.getNewVector();
 
     private float               nextStepDistance;
 
@@ -283,10 +279,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public int getVerticalFaceSpeed()
     {
-        if (getPokemonAIState(SITTING))
-        {
-            return 20;
-        }
+        if (getPokemonAIState(SITTING)) { return 20; }
         return super.getVerticalFaceSpeed();
     }
 
@@ -320,10 +313,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setSize(1 + scaleFactor * (float) (random).nextGaussian());
         this.initRidable();
         shiny = random.nextInt(8196) == 0;
-
-        particle = null;
-        particleCounter = 0;
-        particleIntensity = 80;
 
         int rand = (random).nextInt(1048576);
         if (rand == 0)
@@ -412,7 +401,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             aabbs = mainBox.getCollidingBoxes(box1, worldObj, worldObj);
             // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
             Matrix3.expandAABBs(aabbs, box);
-            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+            if (box.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
         }
         return aabbs;
     }
@@ -469,10 +458,25 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
             mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
             Vector3 pos = offset.add(here);
-            AxisAlignedBB aabb = mainBox.getBoundingBox().expandXyz(diff);
+            AxisAlignedBB aabb = mainBox.getBoundingBox();
+            if (aabb.maxX - aabb.minX > 3)
+            {
+                double meanX = aabb.minX + (aabb.maxX - aabb.minX) / 2;
+                aabb = new AxisAlignedBB(meanX - 3, aabb.minY, aabb.minZ, meanX + 3, aabb.maxY, aabb.maxZ);
+            }
+            if (aabb.maxZ - aabb.minZ > 3)
+            {
+                double meanZ = aabb.minZ + (aabb.maxZ - aabb.minZ) / 2;
+                aabb = new AxisAlignedBB(aabb.minX, aabb.minY, meanZ - 3, aabb.maxX, aabb.maxY, meanZ + 3);
+            }
+            if (aabb.maxY - aabb.minY > 3)
+            {
+                aabb = aabb.setMaxY(aabb.minY + 3);
+            }
+            aabb = aabb.expandXyz(Math.min(3, diff));
             List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, worldObj, world);
             Matrix3.expandAABBs(aabbs, aabb);
-            Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+            if (aabb.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
             diffs.set(mainBox.doTileCollision(world, aabbs, this, pos, diffs, false));
         }
         return diffs.isEmpty();
@@ -483,7 +487,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void moveEntity(double x, double y, double z)
     {
-        if (!multibox || !this.addedToChunk)
+        if (!this.addedToChunk) return;
+        if (!multibox)
         {
             super.moveEntity(x, y, z);
             return;
@@ -638,7 +643,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void onLivingUpdate()
     {
         super.onLivingUpdate();
-
         if (getParts() == null)
         {
             PokemobBodies.initBody(this);
@@ -650,22 +654,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 e.onUpdate();
             }
         }
-
         if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
-
-        if (worldObj.isRemote)
-        {
-            showLivingParticleFX();
-        }
-
-        for (int i = 0; i < flavourAmounts.length; i++)
-        {
-            if (flavourAmounts[i] > 0)
-            {
-                flavourAmounts[i]--;
-            }
-        }
-
         if (isAncient())
         {
             // BossStatus.setBossStatus(this, true);
@@ -808,57 +797,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         mainBox = new Matrix3(a, b, c);
     }
 
-    void showLivingParticleFX()
+    @Override
+    protected void collideWithNearbyEntities()
     {
-        if (flavourAmounts.length != 5) flavourAmounts = new int[5];
-        Vector3 particleLoc = here.copy();
-        if (flavourAmounts[SWEET] > 0)
-        {
-            particle = "powder.pink";
-        }
-        if (flavourAmounts[BITTER] > 0)
-        {
-            particle = "powder.green";
-        }
-        if (flavourAmounts[SPICY] > 0)
-        {
-            particle = "powder.red";
-        }
-        if (flavourAmounts[DRY] > 0)
-        {
-            particle = "powder.blue";
-        }
-        if (flavourAmounts[SOUR] > 0)
-        {
-            particle = "powder.yellow";
-        }
-        if (isShadow())
-        {
-            particle = "portal";
-            particleIntensity = 100;
-        }
-        else if (particle == null && getPokedexEntry().particleData != null)
-        {
-            particle = getPokedexEntry().particleData[0];
-            particleIntensity = Integer.parseInt(getPokedexEntry().particleData[1]);
-        }
-
-        Calendar calendar = Calendar.getInstance();
-        if (calendar.get(Calendar.DAY_OF_MONTH) == 25 && calendar.get(Calendar.MONTH) == 11)
-        {
-            float scale = width * 2;
-            Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble() + height / 2,
-                    rand.nextDouble() - 0.5);
-            offset.scalarMultBy(scale);
-            particleLoc.addTo(offset);
-            particle = "aurora";// Merry Xmas
-            particleIntensity = 90;
-        }
-        if (particle != null && particleCounter++ >= 100 - particleIntensity)
-        {
-            PokecubeMod.core.spawnParticle(particle, particleLoc, null);
-            particleCounter = 0;
-        }
+        // TODO push this over to a different thread for processing.
     }
 
     @Override

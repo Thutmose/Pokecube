@@ -1,7 +1,0 @@
-{
-    "parent": "block/column_side",
-    "textures": {
-        "end": "pokecube:blocks/oranWood_top",
-        "side": "pokecube:blocks/oranWood"
-    }
-}

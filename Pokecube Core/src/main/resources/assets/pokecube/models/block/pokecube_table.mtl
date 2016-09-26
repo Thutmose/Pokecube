@@ -1,6 +1,0 @@
-# Blender MTL File: 'Table.blend'
-# Material Count: 1
-
-newmtl table
-Kd 1.00 1.00 1.00
-map_Kd pokecube:blocks/pokecube_table

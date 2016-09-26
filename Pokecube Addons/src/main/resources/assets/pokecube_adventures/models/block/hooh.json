@@ -1,9 +1,0 @@
-{
-    "parent": "block/orientable",
-    "textures": {
-        "top": "pokecube_adventures:blocks/spawner",
-        "bottom": "pokecube_adventures:blocks/spawner",
-        "front": "pokecube_adventures:blocks/hooh",
-        "side": "pokecube_adventures:blocks/hooh"
-    }
-}

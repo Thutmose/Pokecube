@@ -1,8 +1,0 @@
-{
-   "variants": {
-       "axis=y": { "model": "pokecube:sitrusWood" },
-       "axis=z": { "model": "pokecube:sitrusWood_side" },
-       "axis=x": { "model": "pokecube:sitrusWood_side", "y": 90  },
-       "axis=none": { "model": "pokecube:sitrusWood_bark" }
-    }
-}

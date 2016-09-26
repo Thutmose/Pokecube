@@ -2,6 +2,7 @@ package pokecube.core.commands;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,7 +19,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
-import scala.actors.threadpool.Arrays;
 import thut.core.common.config.Configure;
 
 public class SettingsCommand extends CommandBase

@@ -302,6 +302,8 @@ public class Config extends ConfigBase
     String[]                   extraValues                = { "3", "4.5" };
     @Configure(category = advanced)
     public boolean             debug                      = false;
+    @Configure(category = advanced)
+    public String[]            damageBlocksWhitelist      = { "flash", "teleport" };
 
     @Configure(category = advanced)
     public int                 evolutionTicks             = 50;

@@ -71,9 +71,10 @@ public class ActionTeleport implements IMoveAction
         boolean angry = user.getPokemonAIState(IMoveConstants.ANGRY);
         if (!angry && user.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) user).isServerWorld())
         {
-            EventsHandler.recallAllPokemobsExcluding((EntityPlayer) user.getPokemonOwner(), (IPokemob) null);
+            EntityPlayer target = (EntityPlayer) user.getPokemonOwner();
+            EventsHandler.recallAllPokemobsExcluding(target, (IPokemob) null);
             PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.TELEPORTINDEX });
-            PokecubePacketHandler.sendToClient(packet, (EntityPlayer) user.getPokemonOwner());
+            PokecubePacketHandler.sendToClient(packet, target);
         }
         else if (angry)
         {

@@ -27,7 +27,7 @@ run
 
 #don't need multiples of these
 Pokecube Mobs/src/main/resources/assets/pokecube_mobs/sounds/*
-Pokecube Mobs/src/main/resources/assets/pokecube_mobs/Gen*
+Pokecube Mobs/src/main/resources/assets/pokecube_mobs/gen*
 
 #Dont need internal testing things
 */src/test

@@ -86,14 +86,14 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
     X3dModel                          model;
     X3dModel                          model2;
 
-    private ResourceLocation          BAG_1 = new ResourceLocation("pokecube_adventures:textures/Bag_1.png");
-    private ResourceLocation          BAG_2 = new ResourceLocation("pokecube_adventures:textures/Bag_2.png");
+    private ResourceLocation          BAG_1 = new ResourceLocation("pokecube_adventures:textures/bag_1.png");
+    private ResourceLocation          BAG_2 = new ResourceLocation("pokecube_adventures:textures/bag_2.png");
 
     public BagRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
         renderer = livingEntityRendererIn;
-        model = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/item/Bag.x3d"));
-        model2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/item/Bag.x3d"));
+        model = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/item/bag.x3d"));
+        model2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/item/bag.x3d"));
     }
 
     @Override

@@ -13,7 +13,7 @@ public class GuiCloner extends GuiContainer
 {
 
     private static final ResourceLocation guiTexture = new ResourceLocation(
-            "pokecube_adventures:textures/gui/clonerGui.png");
+            "pokecube_adventures:textures/gui/clonergui.png");
     final TileEntityCloner                tile;
 
     public GuiCloner(InventoryPlayer inventory, TileEntityCloner tile)

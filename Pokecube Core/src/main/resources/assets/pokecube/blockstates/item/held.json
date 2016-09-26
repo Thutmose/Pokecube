@@ -18,14 +18,14 @@
       "duskstone": {"textures": {"layer0": "pokecube:items/duskstone"}},
       "dawnstone": {"textures": {"layer0": "pokecube:items/dawnstone"}},
       "kingsrock": {"textures": {"layer0": "pokecube:items/kingsrock"}},
-      "dubiousdisc": {"textures": {"layer0": "pokecube:items/Dubious disc"}},
-      "electirizer": {"textures": {"layer0": "pokecube:items/Electirizer"}},
-      "magmarizer": {"textures": {"layer0": "pokecube:items/Magmarizer"}},
-      "reapercloth": {"textures": {"layer0": "pokecube:items/Reaper cloth"}},
-      "prismscale": {"textures": {"layer0": "pokecube:items/Prism Scale"}},
-      "protector": {"textures": {"layer0": "pokecube:items/Protector"}},
-      "upgrade": {"textures": {"layer0": "pokecube:items/Up grade"}},
-      "metalcoat": {"textures": {"layer0": "pokecube:items/MetalCoat"}}
+      "dubiousdisc": {"textures": {"layer0": "pokecube:items/dubious disc"}},
+      "electirizer": {"textures": {"layer0": "pokecube:items/electirizer"}},
+      "magmarizer": {"textures": {"layer0": "pokecube:items/magmarizer"}},
+      "reapercloth": {"textures": {"layer0": "pokecube:items/reaper cloth"}},
+      "prismscale": {"textures": {"layer0": "pokecube:items/prism scale"}},
+      "protector": {"textures": {"layer0": "pokecube:items/protector"}},
+      "upgrade": {"textures": {"layer0": "pokecube:items/up grade"}},
+      "metalcoat": {"textures": {"layer0": "pokecube:items/metalcoat"}}
     }
   }
 }

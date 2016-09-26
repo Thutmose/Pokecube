@@ -74,14 +74,14 @@ public class ItemHandler
 
         PokecubeItems.addToHoldables("exp_share");
 
-        Item mewHair = (new Item()).setUnlocalizedName("silkyhair").setRegistryName(PokecubeAdv.ID, "mewHair");
+        Item mewHair = (new Item()).setUnlocalizedName("silkyhair").setRegistryName(PokecubeAdv.ID, "mewhair");
         GameRegistry.register(mewHair);
-        PokecubeItems.addGeneric("mewHair", mewHair);
+        PokecubeItems.addGeneric("mewhair", mewHair);
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(mewHair, 0,
-                    new ModelResourceLocation("pokecube_adventures:mewHair", "inventory"));
+                    new ModelResourceLocation("pokecube_adventures:mewhair", "inventory"));
         }
 
         Item target = new ItemTarget().setUnlocalizedName("pokemobTarget").setCreativeTab(creativeTabPokecube);
@@ -98,7 +98,7 @@ public class ItemHandler
             PokecubeItems.registerItemTexture(target, 3,
                     new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
         }
-        Item trainer = new ItemTrainer().setUnlocalizedName("trainerSpawner").setCreativeTab(creativeTabPokecube);
+        Item trainer = new ItemTrainer().setUnlocalizedName("trainerspawner").setCreativeTab(creativeTabPokecube);
         register(trainer);
         addSpecificItemStack("traderSpawner", new ItemStack(trainer, 1, 2));
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)

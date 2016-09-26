@@ -21,13 +21,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.helper.EntityEvolvablePokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
@@ -37,8 +37,8 @@ import thut.core.client.render.model.IModelRenderer;
 @SideOnly(Side.CLIENT)
 public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 {
-    public static final ResourceLocation FRZ = new ResourceLocation(PokecubeMod.ID, "textures/FRZ.png");
-    public static final ResourceLocation PAR = new ResourceLocation(PokecubeMod.ID, "textures/PAR.png");
+    public static final ResourceLocation FRZ = Resources.STATUS_FRZ;
+    public static final ResourceLocation PAR = Resources.STATUS_PAR;
 
     public static void renderEvolution(IPokemob pokemob, float par2)
     {

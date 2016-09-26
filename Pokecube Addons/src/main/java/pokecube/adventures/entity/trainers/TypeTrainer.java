@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
@@ -286,7 +287,7 @@ public class TypeTrainer
     {
         if (texture == null && (genders == 1 || genders == 2))
         {
-            texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + ".png");
+            texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name.toLowerCase(Locale.US) + ".png");
             if (!texExists(texture)) texture = null;
             if (genders == 2 && texture == null)
             {
@@ -302,12 +303,13 @@ public class TypeTrainer
 
             if (femaleTexture == null)
             {
-                femaleTexture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + "female.png");
+                femaleTexture = new ResourceLocation(
+                        PokecubeAdv.TRAINERTEXTUREPATH + name.toLowerCase(Locale.US) + "female.png");
                 if (!texExists(femaleTexture)) femaleTexture = null;
             }
             if (texture == null)
             {
-                texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name + ".png");
+                texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + name.toLowerCase(Locale.US) + ".png");
                 if (!texExists(texture)) texture = null;
             }
             if (femaleTexture == null)

@@ -1,8 +1,0 @@
-{
-   "variants": {
-       "axis=y": { "model": "pokecube:leppaWood" },
-       "axis=z": { "model": "pokecube:leppaWood_side" },
-       "axis=x": { "model": "pokecube:leppaWood_side", "y": 90  },
-       "axis=none": { "model": "pokecube:leppaWood_bark" }
-    }
-}

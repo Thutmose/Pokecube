@@ -6,15 +6,15 @@
   },
   "variants": {
     "type": {
-      "omanyte": {"textures": {"layer0": "pokecube:items/fossilHelix"}},
-      "kabuto": {"textures": {"layer0": "pokecube:items/fossilDome"}},
-      "aerodactyl": {"textures": {"layer0": "pokecube:items/old_Amber"}},
-      "lileep": {"textures": {"layer0": "pokecube:items/fossilLileep"}},
-      "anorith": {"textures": {"layer0": "pokecube:items/fossilAnorith"}},
-      "cranidos": {"textures": {"layer0": "pokecube:items/fossilCranidos"}},
-      "shieldon": {"textures": {"layer0": "pokecube:items/fossilShieldon"}},
-      "tyrunt": {"textures": {"layer0": "pokecube:items/fossilJaw"}},
-      "amaura": {"textures": {"layer0": "pokecube:items/fossilSail"}}
+      "omanyte": {"textures": {"layer0": "pokecube:items/fossilhelix"}},
+      "kabuto": {"textures": {"layer0": "pokecube:items/fossildome"}},
+      "aerodactyl": {"textures": {"layer0": "pokecube:items/old_amber"}},
+      "lileep": {"textures": {"layer0": "pokecube:items/fossillileep"}},
+      "anorith": {"textures": {"layer0": "pokecube:items/fossilanorith"}},
+      "cranidos": {"textures": {"layer0": "pokecube:items/fossilcranidos"}},
+      "shieldon": {"textures": {"layer0": "pokecube:items/fossilshieldon"}},
+      "tyrunt": {"textures": {"layer0": "pokecube:items/fossiljaw"}},
+      "amaura": {"textures": {"layer0": "pokecube:items/fossilsail"}}
     }
   }
 }

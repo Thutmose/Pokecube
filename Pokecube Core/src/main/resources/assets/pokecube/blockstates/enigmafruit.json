@@ -1,0 +1,15 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#none": "pokecube:blocks/enigma"
+        },
+        "model": "pokecube:enigma.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
+    }
+}

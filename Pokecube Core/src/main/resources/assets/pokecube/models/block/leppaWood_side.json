@@ -1,7 +1,0 @@
-{
-    "parent": "block/column_side",
-    "textures": {
-        "end": "pokecube:blocks/leppaWood_top",
-        "side": "pokecube:blocks/leppaWood"
-    }
-}

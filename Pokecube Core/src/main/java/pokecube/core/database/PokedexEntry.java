@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -1380,6 +1381,7 @@ public class PokedexEntry
             sound = "mobs." + getBaseName();
             if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 2);
         }
+        sound = sound.toLowerCase(Locale.US);
         if (event == null)
         {
             if (getBaseForme() != null && getBaseForme() != this) getBaseForme().getSoundEvent();
@@ -1696,7 +1698,7 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
-        this.sound = sound;
+        this.sound = sound.toLowerCase(Locale.US);
     }
 
     public void setSpawnData(SpawnData data)

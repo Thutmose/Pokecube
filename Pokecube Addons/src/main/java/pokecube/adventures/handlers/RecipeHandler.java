@@ -36,9 +36,9 @@ public class RecipeHandler
                 RecipeFossilRevive.addRecipe(newRecipe);
             }
         }
-        ItemStack eggIn = PokecubeItems.getStack("pokemobEgg");
+        ItemStack eggIn = PokecubeItems.getStack("pokemobegg");
         eggIn.setItemDamage(Short.MAX_VALUE);
-        ItemStack mewhair = PokecubeItems.getStack("mewHair");
+        ItemStack mewhair = PokecubeItems.getStack("mewhair");
         ItemStack ironBlock = new ItemStack(Blocks.IRON_BLOCK);
         ItemStack redstoneBlock = new ItemStack(Blocks.REDSTONE_BLOCK);
         ItemStack diamondBlock = new ItemStack(Blocks.DIAMOND_BLOCK);

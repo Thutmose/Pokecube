@@ -222,11 +222,11 @@ public class ItemHandler extends Mod_Pokecube_Helper
         tableBlock.setCreativeTab(creativeTabPokecubeBlocks);
         register(tableBlock, ItemBlock.class, "pokecube_table");
 
-        luckyEgg = new ItemLuckyEgg().setUnlocalizedName("luckyEgg").setCreativeTab(creativeTabPokecube);
-        register(luckyEgg, "luckyEgg");
+        luckyEgg = new ItemLuckyEgg().setUnlocalizedName("luckyegg").setCreativeTab(creativeTabPokecube);
+        register(luckyEgg, "luckyegg");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(luckyEgg, 0, new ModelResourceLocation("egg", "inventory"));
-        addToHoldables("luckyEgg");
+        addToHoldables("luckyegg");
 
         BlockHealTable pokecenter = (BlockHealTable) (new BlockHealTable()).setUnlocalizedName("pokecenter");
         pokecenter.setCreativeTab(creativeTabPokecubeBlocks);
@@ -241,10 +241,10 @@ public class ItemHandler extends Mod_Pokecube_Helper
         }
 
         Block nest = new BlockNest().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
-                .setUnlocalizedName("pokemobNest");
-        PokecubeItems.register(nest, ItemBlockMeta.class, "pokemobNest");
-        GameRegistry.registerTileEntity(TileEntityNest.class, "pokemobNest");
-        GameRegistry.registerTileEntity(TileEntityBasePortal.class, "pokecubeBasePortal");
+                .setUnlocalizedName("pokemobnest");
+        PokecubeItems.register(nest, ItemBlockMeta.class, "pokemobnest");
+        GameRegistry.registerTileEntity(TileEntityNest.class, "pokemobnest");
+        GameRegistry.registerTileEntity(TileEntityBasePortal.class, "pokecubebaseportal");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             for (int i = 0; i < BlockNest.types.size(); i++)
@@ -255,10 +255,10 @@ public class ItemHandler extends Mod_Pokecube_Helper
         GameRegistry.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecenter");
         PokecubeItems.pokecenter = pokecenter;
 
-        pokemobEgg = new ItemPokemobEgg().setUnlocalizedName("pokemobEgg");
-        register(pokemobEgg, "pokemobEgg");
+        pokemobEgg = new ItemPokemobEgg().setUnlocalizedName("pokemobegg");
+        register(pokemobEgg, "pokemobegg");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobEgg", "inventory"));
+            registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobegg", "inventory"));
         OreDictionary.registerOre("egg", new ItemStack(pokemobEgg, 1, OreDictionary.WILDCARD_VALUE));
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(pokemobEgg, new DispenserBehaviorPokecube());
 

@@ -51,8 +51,8 @@ public class BlockHandler
         GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
 
         LegendaryConditions.spawner1 = new BlockLegendSpawner();
-        LegendaryConditions.spawner1.setUnlocalizedName("legendSpawner");
-        PokecubeItems.register(LegendaryConditions.spawner1, ItemBlockMeta.class, "legendSpawner");
+        LegendaryConditions.spawner1.setUnlocalizedName("legendspawner");
+        PokecubeItems.register(LegendaryConditions.spawner1, ItemBlockMeta.class, "legendspawner");
         LegendaryConditions.spawner1.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         LegendaryConditions.registerPreInit();
         PokecubeItems.addSpecificItemStack("registeelspawner", new ItemStack(LegendaryConditions.spawner1, 1, 0));

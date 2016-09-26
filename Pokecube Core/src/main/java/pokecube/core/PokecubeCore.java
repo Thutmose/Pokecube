@@ -517,7 +517,7 @@ public class PokecubeCore extends PokecubeMod
             }
             catch (Exception e1)
             {
-                try
+                if (fileIn != null) try
                 {
                     fileIn.close();
                 }

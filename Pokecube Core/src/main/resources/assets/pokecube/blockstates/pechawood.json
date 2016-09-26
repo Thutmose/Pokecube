@@ -1,0 +1,8 @@
+{
+   "variants": {
+       "axis=y": { "model": "pokecube:pechawood" },
+       "axis=z": { "model": "pokecube:pechawood_side" },
+       "axis=x": { "model": "pokecube:pechawood_side", "y": 90 },
+       "axis=none": { "model": "pokecube:pechawood_bark" }
+    }
+}

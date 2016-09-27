@@ -421,27 +421,27 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:pechawood"));
         registerItemTexture(Item.getItemFromBlock(log0), 0,
-                new ModelResourceLocation("pokecube:pechaWood", "inventory"));
+                new ModelResourceLocation("pokecube:pechawood", "inventory"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:oranwood"));
         registerItemTexture(Item.getItemFromBlock(log0), 1,
-                new ModelResourceLocation("pokecube:oranWood", "inventory"));
+                new ModelResourceLocation("pokecube:oranwood", "inventory"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:leppawood"));
         registerItemTexture(Item.getItemFromBlock(log0), 2,
-                new ModelResourceLocation("pokecube:leppaWood", "inventory"));
+                new ModelResourceLocation("pokecube:leppawood", "inventory"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log0), new ResourceLocation("pokecube:sitruswood"));
         registerItemTexture(Item.getItemFromBlock(log0), 3,
-                new ModelResourceLocation("pokecube:sitrusWood", "inventory"));
+                new ModelResourceLocation("pokecube:sitruswood", "inventory"));
 
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:enigmawood"));
         registerItemTexture(Item.getItemFromBlock(log1), 0,
-                new ModelResourceLocation("pokecube:enigmaWood", "inventory"));
+                new ModelResourceLocation("pokecube:enigmawood", "inventory"));
         ModelBakery.registerItemVariants(Item.getItemFromBlock(log1), new ResourceLocation("pokecube:nanabwood"));
         registerItemTexture(Item.getItemFromBlock(log1), 1,
-                new ModelResourceLocation("pokecube:nanabWood", "inventory"));
+                new ModelResourceLocation("pokecube:nanabwood", "inventory"));
 
         Block crop = BerryManager.berryCrop;
         StateMap map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE })
-                .withSuffix("Crop").build();
+                .withSuffix("crop").build();
         ModelLoader.setCustomStateMapper(crop, map);
 
         map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("fruit").build();

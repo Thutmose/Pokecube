@@ -100,16 +100,15 @@ public class GuiInfoMessages
         }
         while (recent.size() > 8)
             recent.remove(0);
-
-        int size = (num == 7 ? messages.size() : recent.size()) - 1;
-
+        List<String> toUse = num == 7 ? messages : recent;
+        int size = toUse.size() - 1;
+        num = Math.min(num, size + 1);
         for (int l = 0; l < num; l++)
         {
-            if (size - l < 0) break;
-            int index = (size - l + offset);
+            int index = (l + offset);
             if (index < 0) index = 0;
-            if (index > size) index = l;
-            String mess = num == 7 ? messages.get(index) : recent.get(index);
+            if (index > size) break;
+            String mess = toUse.get(index);
             List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess, trim);
             for (int j = mess1.size() - 1; j >= 0; j--)
             {

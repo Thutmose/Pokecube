@@ -284,7 +284,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public int[]               guiOffset                  = { 0, 0 };
     @Configure(category = client)
-    public int[]               messageOffset              = { 0, 0 };
+    public int[]               messageOffset              = { 480, 150 };
     @Configure(category = client)
     public int                 messageWidth               = 150;
     @Configure(category = client)

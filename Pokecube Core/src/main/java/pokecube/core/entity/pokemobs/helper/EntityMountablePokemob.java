@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IMultiplePassengerEntity;
@@ -60,7 +61,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     @Override
     public boolean canUseDive()
     {
-        return canDive;
+        return canDive && PokecubeCore.core.getConfig().diveEnabled;
     }
 
     @Override

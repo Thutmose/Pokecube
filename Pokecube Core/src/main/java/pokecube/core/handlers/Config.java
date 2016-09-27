@@ -182,6 +182,12 @@ public class Config extends ConfigBase
     public boolean             tameGather                 = true;
     @Configure(category = mobAI)
     public boolean             wildGather                 = false;
+    @Configure(category = mobAI)
+    public boolean             flyEnabled                 = true;
+    @Configure(category = mobAI)
+    public boolean             surfEnabled                = true;
+    @Configure(category = mobAI)
+    public boolean             diveEnabled                = true;
 
     // World Gen and World effect settings
     @Configure(category = world)

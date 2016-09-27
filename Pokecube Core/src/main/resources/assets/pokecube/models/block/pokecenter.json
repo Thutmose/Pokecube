@@ -1,7 +1,7 @@
 {
     "parent": "block/orientable",
     "textures": {
-        "top": "pokecube:blocks/pokecenterTop1",
+        "top": "pokecube:blocks/pokecentertop1",
         "bottom": "pokecube:blocks/white",
         "front": "pokecube:blocks/pokecenter",
         "side": "pokecube:blocks/pokecenter"

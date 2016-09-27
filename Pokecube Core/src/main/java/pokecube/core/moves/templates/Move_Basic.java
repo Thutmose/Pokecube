@@ -218,6 +218,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public void doWorldAction(IPokemob attacker, Vector3 location)
     {
+        for (String s : PokecubeCore.core.getConfig().damageBlocksBlacklist)
+        {
+            if (s.equals(name)) return;
+        }
         deny:
         if (!PokecubeMod.pokemobsDamageBlocks)
         {

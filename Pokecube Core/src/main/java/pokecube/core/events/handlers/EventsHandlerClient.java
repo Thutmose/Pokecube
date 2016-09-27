@@ -315,7 +315,7 @@ public class EventsHandlerClient
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
 
         eventTime = Keyboard.getEventNanoseconds();
-        if (GameSettings.isKeyDown(ClientProxyPokecube.mobMegavolve))
+        if (ClientProxyPokecube.mobMegavolve.isPressed())
         {
             boolean ring = checker.hasRing(player);
 
@@ -332,12 +332,11 @@ public class EventsHandlerClient
                 PacketChangeForme.sendPacketToServer(((Entity) current), "");
             }
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.noEvolve)
-                && GuiDisplayPokecubeInfo.instance().getCurrentPokemob() != null)
+        if (ClientProxyPokecube.noEvolve.isPressed() && GuiDisplayPokecubeInfo.instance().getCurrentPokemob() != null)
         {
             GuiDisplayPokecubeInfo.instance().getCurrentPokemob().cancelEvolve();
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.nextMob))
+        if (ClientProxyPokecube.nextMob.isPressed())
         {
             if (GuiScreen.isAltKeyDown())
             {
@@ -349,7 +348,7 @@ public class EventsHandlerClient
                 GuiDisplayPokecubeInfo.instance().nextPokemob();
             }
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.previousMob))
+        if (ClientProxyPokecube.previousMob.isPressed())
         {
             if (GuiScreen.isAltKeyDown())
             {
@@ -361,7 +360,7 @@ public class EventsHandlerClient
                 GuiDisplayPokecubeInfo.instance().previousPokemob();
             }
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.nextMove))
+        if (ClientProxyPokecube.nextMove.isPressed())
         {
             if (GuiScreen.isAltKeyDown())
             {
@@ -377,7 +376,7 @@ public class EventsHandlerClient
             }
 
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.previousMove))
+        if (ClientProxyPokecube.previousMove.isPressed())
         {
             if (GuiScreen.isAltKeyDown())
             {
@@ -392,9 +391,8 @@ public class EventsHandlerClient
                 else GuiDisplayPokecubeInfo.instance().previousMove(num);
             }
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.mobBack))
+        if (ClientProxyPokecube.mobBack.isPressed())
         {
-
             if (GuiTeleport.instance().getState())
             {
                 GuiTeleport.instance().setState(false);
@@ -404,7 +402,7 @@ public class EventsHandlerClient
                 GuiDisplayPokecubeInfo.instance().pokemobBack();
             }
         }
-        if (GameSettings.isKeyDown(ClientProxyPokecube.mobAttack))
+        if (ClientProxyPokecube.mobAttack.isPressed())
         {
             GuiDisplayPokecubeInfo.instance().pokemobAttack();
         }

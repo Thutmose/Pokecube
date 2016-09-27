@@ -117,7 +117,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
         GL11.glPushMatrix();
         IPokemob pokemob = getCurrentPokemob();
-        // System.out.println(indexPokemob + " " + pokemob);
         if (pokemob != null)
         {
             // Render Mob
@@ -388,7 +387,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             saveConfig();
             return;
         }
-
+        System.out.println(x+" "+y);
         PokecubeMod.core.getConfig().guiOffset[0] += x;
         PokecubeMod.core.getConfig().guiOffset[1] += y;
         if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;

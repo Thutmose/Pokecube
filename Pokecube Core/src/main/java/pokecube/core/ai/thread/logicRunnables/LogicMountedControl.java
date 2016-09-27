@@ -10,6 +10,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 
 public class LogicMountedControl extends LogicBase
@@ -34,8 +35,10 @@ public class LogicMountedControl extends LogicBase
         boolean move = false;
 
         boolean shouldControl = entity.onGround;
-        if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys()) shouldControl = true;
-        if (pokemob.getPokedexEntry().shouldDive && entity.isInWater()) shouldControl = true;
+        if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())
+            shouldControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
+        if ((pokemob.getPokedexEntry().shouldDive || pokemob.getPokedexEntry().shouldSurf) && entity.isInWater())
+            shouldControl = PokecubeCore.core.getConfig().surfEnabled || shouldControl;
 
         if (pokemob.getPokedexEntry().shouldDive)
         {

@@ -182,6 +182,12 @@ public class Config extends ConfigBase
     public boolean             tameGather                 = true;
     @Configure(category = mobAI)
     public boolean             wildGather                 = false;
+    @Configure(category = mobAI)
+    public boolean             flyEnabled                 = true;
+    @Configure(category = mobAI)
+    public boolean             surfEnabled                = true;
+    @Configure(category = mobAI)
+    public boolean             diveEnabled                = true;
 
     // World Gen and World effect settings
     @Configure(category = world)
@@ -284,6 +290,10 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public int[]               guiOffset                  = { 0, 0 };
     @Configure(category = client)
+    public int[]               messageOffset              = { 480, 150 };
+    @Configure(category = client)
+    public int                 messageWidth               = 150;
+    @Configure(category = client)
     public boolean             guiDown                    = true;
     @Configure(category = client)
     public boolean             autoSelectMoves            = false;
@@ -304,6 +314,8 @@ public class Config extends ConfigBase
     public boolean             debug                      = false;
     @Configure(category = advanced)
     public String[]            damageBlocksWhitelist      = { "flash", "teleport" };
+    @Configure(category = advanced)
+    public String[]            damageBlocksBlacklist      = {};
 
     @Configure(category = advanced)
     public int                 evolutionTicks             = 50;

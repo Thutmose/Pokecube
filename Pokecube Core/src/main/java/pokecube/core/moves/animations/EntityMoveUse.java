@@ -153,7 +153,7 @@ public class EntityMoveUse extends Entity
     {
         Move_Base attack = getMove();
         Entity user;
-        if ((user = getUser()) == null || this.isDead) return;
+        if ((user = getUser()) == null || this.isDead || user.isDead) return;
         if (!worldObj.isRemote)
         {
             if (attack.move.notIntercepable)

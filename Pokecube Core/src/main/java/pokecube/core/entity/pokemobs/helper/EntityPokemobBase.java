@@ -367,7 +367,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         texture = new ResourceLocation(domain, texName);
         if (!isShiny()) return texture;
         String args = texName.substring(0, texName.length() - 4);
-        return new ResourceLocation(domain, args + "S.png");
+        return new ResourceLocation(domain, args + "s.png");
     }
 
     List<AxisAlignedBB> aabbs = null;

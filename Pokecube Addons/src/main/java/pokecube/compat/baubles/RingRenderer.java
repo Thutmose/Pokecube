@@ -26,16 +26,16 @@ public class RingRenderer implements LayerRenderer<EntityPlayer>
     private ModelRing                 ring   = new ModelRing();
     X3dModel                          model;
     X3dModel                          model2;
-    ResourceLocation                  belt_1 = new ResourceLocation("pokecube_compat:textures/items/Belt1.png");
-    ResourceLocation                  belt_2 = new ResourceLocation("pokecube_compat:textures/items/Belt2.png");
+    ResourceLocation                  belt_1 = new ResourceLocation("pokecube_compat:textures/items/belt1.png");
+    ResourceLocation                  belt_2 = new ResourceLocation("pokecube_compat:textures/items/belt2.png");
 
     private final RenderLivingBase<?> livingEntityRenderer;
 
     public RingRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
         this.livingEntityRenderer = livingEntityRendererIn;
-        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Belt.x3d"));
-        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Belt.x3d"));
+        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/belt.x3d"));
+        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/belt.x3d"));
     }
 
     @Override

@@ -86,12 +86,12 @@ public class ModPokecubeML implements IMobProvider
         proxy.providesModels(ID, this, addedPokemon.toArray(new String[0]));
         for (String s : addedPokemon)
         {
-            loadMob(s);
+            loadMob(s.toLowerCase(Locale.ENGLISH));
         }
         ExtraDatabase.apply();
         for (String s : addedPokemon)
         {
-            registerMob(s);
+            registerMob(s.toLowerCase(Locale.ENGLISH));
         }
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }

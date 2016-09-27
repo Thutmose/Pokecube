@@ -106,7 +106,7 @@ public class EventsHandler
         }
 
         @SubscribeEvent
-        public void TickEvent(WorldTickEvent evt)
+        public void tickEvent(WorldTickEvent evt)
         {
             if (evt.phase == Phase.END && evt.side != Side.CLIENT)
             {

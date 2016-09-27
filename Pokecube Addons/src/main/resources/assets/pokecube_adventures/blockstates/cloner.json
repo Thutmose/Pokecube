@@ -1,0 +1,6 @@
+{
+   "variants": {
+        "variant=splicer": { "model": "pokecube_adventures:splicer" },
+        "variant=reanimator": { "model": "pokecube_adventures:reanimator" }
+    }
+}

@@ -42,8 +42,8 @@ public class BetterCustomHeadLayer extends LayerCustomHead
     {
         super(renderer);
         this.modelRenderer = renderer;
-        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Hat.x3d"));
-        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/Hat.x3d"));
+        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/hat.x3d"));
+        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/hat.x3d"));
     }
 
     @Override

@@ -1,0 +1,29 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#tradingtable": "pokecube:blocks/tradingtable"
+        },
+        "model": "pokecube:tradingtable.obj"
+     },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{
+            "transform": "forge:default-block"
+        }],
+        "tmc":{
+            "true": {
+                "model": "pokecube:tmc.obj"
+            },
+            "false": {
+                "model": "pokecube:tradingtable.obj"
+            }
+        },
+        "facing":{
+            "east":  { "y":0 },
+            "west":  { "y":180 },
+            "north": { "y":270 },
+            "south": {  "y":90 }
+        }
+    }
+}

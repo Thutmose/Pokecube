@@ -1,0 +1,9 @@
+{
+    "parent": "pokecube:block/pokecubes",
+    "textures": {
+        "top": "pokecube:items/quickcubetop",
+        "bottom": "pokecube:items/quickcubebottom",
+        "front": "pokecube:items/quickcubefront",
+        "side": "pokecube:items/quickcubeside"
+    }
+}

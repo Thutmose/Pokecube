@@ -1,6 +1,7 @@
 package pokecube.core.client.render.entity;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import net.minecraft.client.Minecraft;
@@ -31,13 +32,13 @@ public class RenderPokemobs extends RenderPokemob
 
     public static void addCustomRenderer(String name, Render renderer)
     {
-        renderMap.put(name, renderer);
+        renderMap.put(name.toLowerCase(Locale.ENGLISH), renderer);
     }
 
     public static void addModel(String name, ModelBase model)
     {
-        models.put(name, model);
-        renderMap.put(name, instance);
+        models.put(name.toLowerCase(Locale.ENGLISH), model);
+        renderMap.put(name.toLowerCase(Locale.ENGLISH), instance);
     }
 
     public static RenderPokemobs getInstance()
@@ -64,7 +65,7 @@ public class RenderPokemobs extends RenderPokemob
 
     public static ModelBase[] getModels(PokedexEntry entry)
     {
-        String nbm = entry.getName() + entry.getModId();
+        String nbm = entry.getName().toLowerCase(Locale.ENGLISH) + entry.getModId();
         ModelBase[] ret = new ModelBase[2];
         ret[0] = models.get(nbm);
         if (statusModels.get(nbm) == null)
@@ -150,7 +151,7 @@ public class RenderPokemobs extends RenderPokemob
             Render render = getRenderer(mob.getPokedexEntry());
             if (render == instance)
             {
-                String nbm = entry.getTrimmedName() + entry.getModId();
+                String nbm = entry.getTrimmedName().toLowerCase(Locale.ENGLISH) + entry.getModId();
                 setModel(nbm);
                 if (this.mainModel == null)
                 {
@@ -188,11 +189,11 @@ public class RenderPokemobs extends RenderPokemob
 
     public Render getRenderer(PokedexEntry entry)
     {
-        String nbm = entry.getTrimmedName() + entry.getModId();
+        String nbm = entry.getTrimmedName().toLowerCase(Locale.ENGLISH) + entry.getModId();
         Render ret;
         if ((ret = renderMap.get(nbm)) == null)
         {
-            String nbm2 = entry.getBaseName() + entry.getModId();
+            String nbm2 = entry.getBaseName().toLowerCase(Locale.ENGLISH) + entry.getModId();
             if ((ret = renderMap.get(nbm2)) == null)
             {
                 renderMap.put(nbm2, getInstance());

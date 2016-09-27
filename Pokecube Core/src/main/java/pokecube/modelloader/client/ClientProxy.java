@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -72,7 +73,7 @@ public class ClientProxy extends CommonProxy
             for (PokedexEntry p : Database.allFormes)
             {
                 bar2.step(p.getName());
-                String name = p.getTrimmedName();
+                String name = p.getTrimmedName().toLowerCase(Locale.ENGLISH);
                 try
                 {
                     ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");
@@ -143,7 +144,7 @@ public class ClientProxy extends CommonProxy
                 bar2 = ProgressManager.push("Pokemob Models Pass 2", alternateFormes.size());
                 for (String s : alternateFormes)
                 {
-                    String[] args2 = s.split("/");
+                    String[] args2 = s.toLowerCase(Locale.ENGLISH).split("/");
                     String name = args2[args2.length > 1 ? args2.length - 1 : 0];
                     bar2.step(name);
                     if (!AnimationLoader.initModel(provider, s, alternateFormes))

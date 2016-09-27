@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -288,7 +289,7 @@ public class CommonProxy implements IGuiHandler
         ArrayList<String> entries = Lists.newArrayList();
         for (PokedexEntry entry : Database.allFormes)
         {
-            String name = entry.getTrimmedName();
+            String name = entry.getTrimmedName().toLowerCase(Locale.ENGLISH);
             entries.add(name);
         }
         Collections.sort(entries, new Comparator<String>()

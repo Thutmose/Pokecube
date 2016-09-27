@@ -10,6 +10,7 @@ import static pokecube.core.handlers.ItemHandler.plank0;
 
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.lwjgl.input.Keyboard;
 
@@ -158,18 +159,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         BlockPos pos = new BlockPos(x, y, z);
 
-        if (guiID == Config.GUIPOKECENTER_ID)
-        {
-            return new GuiHealTable(player.inventory);
-        }
-        if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID)
-        {
-            return null;
-        }
-        if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID)
-        {
-            return null;
-        }
+        if (guiID == Config.GUIPOKECENTER_ID) { return new GuiHealTable(player.inventory); }
+        if (guiID == Config.GUIDISPLAYPOKECUBEINFO_ID) { return null; }
+        if (guiID == Config.GUIDISPLAYTELEPORTINFO_ID) { return null; }
         if (guiID == Config.GUIPOKEDEX_ID)
         {
             Entity entityHit = Tools.getPointedEntity(player, 16);
@@ -210,40 +202,29 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public IThreadListener getMainThreadListener()
     {
-        if (isOnClientSide())
-        {
-            return Minecraft.getMinecraft();
-        }
+        if (isOnClientSide()) { return Minecraft.getMinecraft(); }
         return super.getMainThreadListener();
     }
 
     @Override
     public ISnooperInfo getMinecraftInstance()
     {
-        if (isOnClientSide())
-        {
-            return Minecraft.getMinecraft();
-        }
+        if (isOnClientSide()) { return Minecraft.getMinecraft(); }
         return super.getMinecraftInstance();
     }
 
     @Override
     public EntityPlayer getPlayer(String playerName)
     {
-        if (playerName != null)
-        {
-            return super.getPlayer(playerName);
-        }
+        if (playerName != null) { return super.getPlayer(playerName); }
         return Minecraft.getMinecraft().thePlayer;
     }
 
     @Override
     public World getWorld()
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            return FMLClientHandler.instance().getWorldClient();
-        }
+        if (FMLCommonHandler.instance()
+                .getEffectiveSide() == Side.CLIENT) { return FMLClientHandler.instance().getWorldClient(); }
         return super.getWorld();
     }
 
@@ -272,10 +253,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 if (entry != null)
                 {
                     int colour = entry.getType1().colour;
-                    if (tintIndex == 0)
-                    {
-                        return colour;
-                    }
+                    if (tintIndex == 0) { return colour; }
                     colour = entry.getType2().colour;
                     return colour;
                 }
@@ -520,12 +498,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (Database.getEntry(name) == null)
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addModel(name + annotation.modid(), model);
+            RenderPokemobs.addModel(name.toLowerCase(Locale.ENGLISH) + annotation.modid(), model);
         }
         else
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addModel(Database.getEntry(name) + annotation.modid(), model);
+            RenderPokemobs.addModel(Database.getEntry(name).getName().toLowerCase(Locale.ENGLISH) + annotation.modid(),
+                    model);
             int number = Database.getEntry(name).getPokedexNb();
             if (models.get(number))
             {

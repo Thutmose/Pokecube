@@ -3,6 +3,7 @@ package pokecube.modelloader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -232,9 +233,9 @@ public class ModPokecubeML implements IMobProvider
         PokedexEntry e;
         if ((e = Database.getEntry(mob)) != null && e.getBaseForme() == null)
         {
-            if (textureProviders.containsKey(e.getTrimmedName()))
+            if (textureProviders.containsKey(e.getTrimmedName().toLowerCase(Locale.ENGLISH)))
             {
-                e.setModId(textureProviders.get(e.getTrimmedName()));
+                e.setModId(textureProviders.get(e.getTrimmedName().toLowerCase(Locale.ENGLISH)));
             }
             else
             {

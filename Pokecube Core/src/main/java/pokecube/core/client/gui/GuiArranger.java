@@ -67,6 +67,8 @@ public class GuiArranger
                 int bottom = (int) messRect.getMaxY();// y + texH;
                 double right = messRect.getMaxX();// x + 150;
                 double left = messRect.getMinX();// x;
+                float s = PokecubeMod.core.getConfig().messageSize;
+                messRect.setBounds((int) (x * s), (int) ((y - 7 * texH) * s), (int) (150 * s), (int) (8 * texH * s));
                 double zLevel = 0;
                 float f = (startColor >> 24 & 255) / 255.0F;
                 float f1 = (startColor >> 16 & 255) / 255.0F;
@@ -120,6 +122,8 @@ public class GuiArranger
                 right = guiRect.getMaxX();
                 left = guiRect.getMinX();
                 zLevel = 0;
+                s = PokecubeMod.core.getConfig().guiSize;
+                guiRect.setBounds((int) (x * s), (int) (y * s), (int) (147 * s), (int) (42 * s));
                 f = (startColor >> 24 & 255) / 255.0F;
                 f1 = (startColor >> 16 & 255) / 255.0F;
                 f2 = (startColor >> 8 & 255) / 255.0F;
@@ -166,6 +170,7 @@ public class GuiArranger
                         PokecubeMod.core.getConfig().messageOffset[1] -= dy;
                         messagesheld = true;
                         PokecubeMod.core.getConfig().setSettings();
+                        System.out.println(dx + " " + dy);
                     }
                     mess = true;
                 }
@@ -178,8 +183,7 @@ public class GuiArranger
                         int my = (int) guiRect.getCenterY();
                         int dx = mx - i;
                         int dy = my - j;
-                        PokecubeMod.core.getConfig().guiOffset[0] -= dx;
-                        PokecubeMod.core.getConfig().guiOffset[1] -= dy;
+                        GuiDisplayPokecubeInfo.instance().moveGui(-dx, -dy);
                         guiheld = true;
                         PokecubeMod.core.getConfig().setSettings();
                     }

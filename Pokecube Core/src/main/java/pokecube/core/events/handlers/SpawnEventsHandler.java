@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -44,21 +45,24 @@ public class SpawnEventsHandler
         SpawnCheck checker = new SpawnCheck(v, world);
         float weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
         double random = Math.random();
-        int n = 0;
         int max = entries.size();
         Vector3 vbak = v.copy();
-        while (weight <= random && n++ < max)
+        while (weight <= random && index++ < max)
         {
-            dbe = entries.get((++index) % entries.size());
+            dbe = entries.get(index % entries.size());
             weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(checker));
-            if (!dbe.flys() && random > weight)
+            if (weight == 0) continue;
+            if (!dbe.flys() && random >= weight)
             {
-                v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 10);
-                if (v != null) Vector3.movePointOutOfBlocks(v, world);
-                if (v != null) weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+                v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 20);
+                if (v != null)
+                {
+                    v.offsetBy(EnumFacing.UP);
+                    weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+                }
                 else weight = 0;
             }
-            else if (v == null)
+            if (v == null)
             {
                 v = vbak.copy();
             }
@@ -69,6 +73,7 @@ public class SpawnEventsHandler
             int level = SpawnHandler.getSpawnLevel(world, v, dbe);
             if (level < PokecubeMod.core.getConfig().minLegendLevel) { return; }
         }
+        event.setLocation(v);
         event.setPick(dbe);
     }
 }

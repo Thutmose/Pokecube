@@ -116,33 +116,22 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     static boolean                   first       = true;
 
     public static KeyBinding         nextMob;
-
     public static KeyBinding         nextMove;
-
     public static KeyBinding         previousMob;
-
     public static KeyBinding         previousMove;
-
     public static KeyBinding         mobBack;
-
     public static KeyBinding         mobAttack;
-
     public static KeyBinding         mobStance;
-
     public static KeyBinding         mobMegavolve;
-
     public static KeyBinding         noEvolve;
-
     public static KeyBinding         mobMove1;
-
     public static KeyBinding         mobMove2;
-
     public static KeyBinding         mobMove3;
-
     public static KeyBinding         mobMove4;
-
     public static KeyBinding         mobUp;
     public static KeyBinding         mobDown;
+    public static KeyBinding         arrangeGui;
+
     private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
 
     public ClientProxyPokecube()
@@ -459,6 +448,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
         ClientRegistry.registerKeyBinding(mobUp = new KeyBinding("Pokemob Up", Keyboard.KEY_NONE, "Pokecube"));
         ClientRegistry.registerKeyBinding(mobDown = new KeyBinding("Pokemob Down", Keyboard.KEY_NONE, "Pokecube"));
+
+        ClientRegistry.registerKeyBinding(arrangeGui = new KeyBinding("Arrange Gui", Keyboard.KEY_NONE, "Pokecube"));
     }
 
     @Override

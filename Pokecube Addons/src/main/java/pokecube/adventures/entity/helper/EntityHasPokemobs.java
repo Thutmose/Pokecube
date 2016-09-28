@@ -27,7 +27,7 @@ import thut.api.maths.Vector3;
 
 public abstract class EntityHasPokemobs extends EntityHasAIStates
 {
-    private int              battleCooldown   = -1;
+    protected int            battleCooldown   = -1;
     public ItemStack[]       pokecubes        = new ItemStack[6];
     public List<ItemStack>   reward           = Lists.newArrayList(new ItemStack(Items.EMERALD));
     // Cooldown between sending out pokemobs
@@ -81,6 +81,11 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
                         if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
                         {
                             existing = true;
+                            if(Config.instance.trainerslevel)
+                            {
+                                PokecubeManager.heal(mob);
+                                pokecubes[i] = mob.copy();
+                            }
                             break;
                         }
                     }

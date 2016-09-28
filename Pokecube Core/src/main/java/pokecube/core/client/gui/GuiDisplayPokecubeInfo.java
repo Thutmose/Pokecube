@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -56,6 +55,43 @@ public class GuiDisplayPokecubeInfo extends Gui
     protected static int                 lightGrey = 0xDDDDDD;
     public static GuiDisplayPokecubeInfo instance;
 
+    public static float scale(float scaled, boolean apply)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        float scaleFactor = 1;
+        boolean flag = mc.isUnicode();
+        int i = mc.gameSettings.guiScale;
+        int scaledWidth = mc.displayWidth;
+        int scaledHeight = mc.displayHeight;
+        if (i == 0)
+        {
+            i = 1000;
+        }
+        while (scaleFactor < i && scaledWidth / (scaleFactor + 1) >= 320 && scaledHeight / (scaleFactor + 1) >= 240)
+        {
+            ++scaleFactor;
+        }
+
+        if (flag && scaleFactor % 2 != 0 && scaleFactor != 1)
+        {
+            --scaleFactor;
+        }
+        float scaleFactor2 = 1;
+        i = 1000;
+        while (scaleFactor2 < i && scaledWidth / (scaleFactor2 + 1) >= 320 && scaledHeight / (scaleFactor2 + 1) >= 240)
+        {
+            ++scaleFactor2;
+        }
+
+        if (flag && scaleFactor2 % 2 != 0 && scaleFactor2 != 1)
+        {
+            --scaleFactor2;
+        }
+        scaleFactor2 *= scaled;
+        if (apply) GL11.glScaled(scaleFactor2 / scaleFactor, scaleFactor2 / scaleFactor, scaleFactor2 / scaleFactor);
+        return scaleFactor2;
+    }
+
     public static GuiDisplayPokecubeInfo instance()
     {
         return instance;
@@ -84,10 +120,6 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     protected void draw(RenderGameOverlayEvent.Post event)
     {
-        int w = PokecubeMod.core.getConfig().guiOffset[0];
-        int h = PokecubeMod.core.getConfig().guiOffset[1];
-        w = Math.min(event.getResolution().getScaledWidth() - 147, w);
-        h = Math.min(event.getResolution().getScaledHeight() - 42, h);
         int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
         int nameOffsetX = dir == 1 ? 43 : 43;
         int nameOffsetY = dir == 1 ? 0 : 23;
@@ -115,7 +147,20 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
         if (indexPokemob >= getPokemobsToDisplay().length) { return; }
         if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
+
+        int i, j;
         GL11.glPushMatrix();
+        int w = PokecubeMod.core.getConfig().guiOffset[0];
+        int h = PokecubeMod.core.getConfig().guiOffset[1];
+        int scaledWidth = Minecraft.getMinecraft().displayWidth;
+        int scaledHeight = Minecraft.getMinecraft().displayHeight;
+        float scaleFactor = scale(PokecubeMod.core.getConfig().guiSize, true);
+        scaledWidth /= scaleFactor;
+        scaledHeight /= scaleFactor;
+        w = Math.min(scaledWidth - 147, w);
+        h = Math.min(scaledHeight - 42, h);
+        w = Math.max(0, w);
+        h = Math.max(0, h);
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
@@ -128,7 +173,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
             float scale = 1;
             float size = 0;
-            int j = w;
+            j = w;
             int k = h;
 
             size = Math.max(entity.width, entity.height) * scale;
@@ -145,7 +190,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
 
-            int i = 15728880;
+            i = 15728880;
             int j1 = i % 65536;
             int k1 = i / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
@@ -172,14 +217,10 @@ public class GuiDisplayPokecubeInfo extends Gui
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer vertexbuffer = tessellator.getBuffer();
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexbuffer.pos(x + 0, y + height, this.zLevel)
-                    .tex((u) * f, (v + height) * f1).endVertex();
-            vertexbuffer.pos(x + width, y + height, this.zLevel)
-                    .tex((u + width) * f, (v + height) * f1).endVertex();
-            vertexbuffer.pos(x + width, y + 0, this.zLevel)
-                    .tex((u + width) * f, (v) * f1).endVertex();
-            vertexbuffer.pos(x + 0, y + 0, this.zLevel)
-                    .tex((u) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + height, this.zLevel).tex((u) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + height, this.zLevel).tex((u + width) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + 0, this.zLevel).tex((u + width) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + 0, this.zLevel).tex((u) * f, (v) * f1).endVertex();
             tessellator.draw();
 
             // Render XP
@@ -200,14 +241,10 @@ public class GuiDisplayPokecubeInfo extends Gui
             u = 0;
             v = 97;
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            vertexbuffer.pos(x + 0, y + height, this.zLevel)
-                    .tex((u) * f, (v + height) * f1).endVertex();
-            vertexbuffer.pos(x + width, y + height, this.zLevel)
-                    .tex((u + width) * f, (v + height) * f1).endVertex();
-            vertexbuffer.pos(x + width, y + 0, this.zLevel)
-                    .tex((u + width) * f, (v) * f1).endVertex();
-            vertexbuffer.pos(x + 0, y + 0, this.zLevel)
-                    .tex((u) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + height, this.zLevel).tex((u) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + height, this.zLevel).tex((u + width) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + 0, this.zLevel).tex((u + width) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + 0, this.zLevel).tex((u) * f, (v) * f1).endVertex();
             tessellator.draw();
 
             // Render Status
@@ -292,8 +329,8 @@ public class GuiDisplayPokecubeInfo extends Gui
                     Color moveColor = new Color(move.move.type.colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
-                    fontRenderer.drawString(MovesUtils.getMoveName(move.getName()).getFormattedText(), 5 + movesOffsetX + w,
-                            index * 13 + movesOffsetY + 3 + h, move.getType(pokemob).colour);
+                    fontRenderer.drawString(MovesUtils.getMoveName(move.getName()).getFormattedText(),
+                            5 + movesOffsetX + w, index * 13 + movesOffsetY + 3 + h, move.getType(pokemob).colour);
                     GL11.glPopMatrix();
                 }
             }
@@ -387,21 +424,20 @@ public class GuiDisplayPokecubeInfo extends Gui
             saveConfig();
             return;
         }
-        System.out.println(x+" "+y);
+        System.out.println(x + " " + y);
         PokecubeMod.core.getConfig().guiOffset[0] += x;
         PokecubeMod.core.getConfig().guiOffset[1] += y;
         if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;
         if (PokecubeMod.core.getConfig().guiOffset[1] < 0) PokecubeMod.core.getConfig().guiOffset[1] = 0;
-
-        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
-
-        PokecubeMod.core.getConfig().guiOffset[0] = Math.min(res.getScaledWidth() - 147,
+        float scaleFactor2 = scale(PokecubeMod.core.getConfig().guiSize, false);
+        int scaledWidth = Minecraft.getMinecraft().displayWidth;
+        int scaledHeight = Minecraft.getMinecraft().displayHeight;
+        scaledWidth /= scaleFactor2;
+        scaledHeight /= scaleFactor2;
+        PokecubeMod.core.getConfig().guiOffset[0] = Math.min(scaledWidth - 147,
                 PokecubeMod.core.getConfig().guiOffset[0]);
-        PokecubeMod.core.getConfig().guiOffset[1] = Math.min(res.getScaledHeight() - 42,
+        PokecubeMod.core.getConfig().guiOffset[1] = Math.min(scaledHeight - 42,
                 PokecubeMod.core.getConfig().guiOffset[1]);
-
-        System.out.println(Arrays.toString(PokecubeMod.core.getConfig().guiOffset) + " " + res.getScaledWidth());
-
         saveConfig();
     }
 
@@ -439,8 +475,8 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         try
         {
-            if (minecraft.currentScreen == null
-                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
+            if (// minecraft.currentScreen == null &&
+            !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.getType() == ElementType.HOTBAR)
             {
                 draw(event);

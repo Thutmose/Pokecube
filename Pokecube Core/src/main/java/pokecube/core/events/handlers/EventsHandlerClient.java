@@ -51,6 +51,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.ClientProxyPokecube;
+import pokecube.core.client.gui.GuiArranger;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.render.RenderHealth;
@@ -122,10 +123,6 @@ public class EventsHandlerClient
             }
         }
     }
-
-    static long                                   eventTime  = 0;
-
-    static long                                   counter    = 0;
 
     public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
 
@@ -227,6 +224,7 @@ public class EventsHandlerClient
         {
             new UpdateNotifier();
             MinecraftForge.EVENT_BUS.register(new RenderHealth());
+            MinecraftForge.EVENT_BUS.register(new GuiArranger());
         }
         notifier = true;
 
@@ -310,11 +308,7 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
-        if (Keyboard.getEventNanoseconds() == eventTime) return;
-
         EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
-
-        eventTime = Keyboard.getEventNanoseconds();
         if (ClientProxyPokecube.mobMegavolve.isPressed())
         {
             boolean ring = checker.hasRing(player);
@@ -325,12 +319,14 @@ public class EventsHandlerClient
             }
 
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING)
-                    && System.currentTimeMillis() > counter + 500)
+            if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
-                counter = System.currentTimeMillis();
                 PacketChangeForme.sendPacketToServer(((Entity) current), "");
             }
+        }
+        if (ClientProxyPokecube.arrangeGui.isPressed())
+        {
+            GuiArranger.toggle = !GuiArranger.toggle;
         }
         if (ClientProxyPokecube.noEvolve.isPressed() && GuiDisplayPokecubeInfo.instance().getCurrentPokemob() != null)
         {

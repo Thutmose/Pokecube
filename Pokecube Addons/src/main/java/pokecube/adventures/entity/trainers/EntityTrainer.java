@@ -1,5 +1,7 @@
 package pokecube.adventures.entity.trainers;
 
+import java.util.ArrayList;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
@@ -20,6 +22,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -50,17 +53,45 @@ import thut.api.maths.Vector3;
 
 public class EntityTrainer extends EntityHasPokemobs
 {
+    public static class DefeatEntry
+    {
+        static DefeatEntry createFromNBT(NBTTagCompound nbt)
+        {
+            String defeater = nbt.getString("player");
+            long time = nbt.getLong("time");
+            return new DefeatEntry(defeater, time);
+        }
 
-    private boolean   randomize  = false;
-    public int        sight      = 0;
-    public Vector3    location   = null;
-    public String     name       = "";
-    public String     playerName = "";
-    public String     urlSkin    = "";
-    public boolean    male       = true;
-    boolean           added      = false;
-    protected boolean trades     = true;
-    public GuardAI    guardAI;
+        final String defeater;
+
+        final long   defeatTime;
+
+        public DefeatEntry(String defeater, long time)
+        {
+            this.defeater = defeater;
+            this.defeatTime = time;
+        }
+
+        void writeToNBT(NBTTagCompound nbt)
+        {
+            nbt.setString("player", defeater);
+            nbt.setLong("time", defeatTime);
+        }
+    }
+
+    long                          resetTime  = 0;
+    public ArrayList<DefeatEntry> defeaters  = new ArrayList<DefeatEntry>();
+
+    private boolean               randomize  = false;
+    public int                    sight      = 0;
+    public Vector3                location   = null;
+    public String                 name       = "";
+    public String                 playerName = "";
+    public String                 urlSkin    = "";
+    public boolean                male       = true;
+    boolean                       added      = false;
+    protected boolean             trades     = true;
+    public GuardAI                guardAI;
 
     public EntityTrainer(World par1World)
     {
@@ -89,9 +120,32 @@ public class EntityTrainer extends EntityHasPokemobs
     public EntityTrainer(World par1World, Vector3 location, boolean stationary)
     {
         super(par1World);
-
+        this.resetTime = battleCooldown;
         this.setSize(0.6F, 1.8F);
         initAI(location, stationary);
+    }
+
+    public boolean hasDefeated(Entity e)
+    {
+        if (e == null) return false;
+        String name = e.getCachedUniqueIdString();
+        for (DefeatEntry s : defeaters)
+        {
+            if (s.defeater.equals(name))
+            {
+                if (resetTime > 0)
+                {
+                    long diff = worldObj.getTotalWorldTime() - s.defeatTime;
+                    if (diff > resetTime)
+                    {
+                        defeaters.remove(s);
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private void addMobTrades(ItemStack buy1)
@@ -221,6 +275,9 @@ public class EntityTrainer extends EntityHasPokemobs
     @Override
     public void onDefeated(Entity defeater)
     {
+        if (hasDefeated(defeater)) return;
+        if (defeater != null)
+            defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
         if (reward != null && defeater instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) defeater;
@@ -410,6 +467,14 @@ public class EntityTrainer extends EntityHasPokemobs
         name = nbt.getString("name");
         sight = nbt.getInteger("sight");
         setTypes();
+        defeaters.clear();
+        if (nbt.hasKey("resetTime")) resetTime = nbt.getLong("resetTime");
+        if (nbt.hasKey("DefeatList", 9))
+        {
+            NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
+            for (int i = 0; i < nbttaglist.tagCount(); i++)
+                defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
+        }
     }
 
     /** Will get destroyed next tick. */
@@ -498,5 +563,14 @@ public class EntityTrainer extends EntityHasPokemobs
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
         nbt.setInteger("sight", sight);
+        nbt.setLong("resetTime", resetTime);
+        NBTTagList nbttaglist = new NBTTagList();
+        for (DefeatEntry entry : defeaters)
+        {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            entry.writeToNBT(nbttagcompound);
+            nbttaglist.appendTag(nbttagcompound);
+        }
+        nbt.setTag("DefeatList", nbttaglist);
     }
 }

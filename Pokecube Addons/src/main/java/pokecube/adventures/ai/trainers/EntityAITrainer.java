@@ -14,7 +14,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.EntityHasAIStates;
-import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -196,7 +195,7 @@ public class EntityAITrainer extends EntityAIBase
             public boolean apply(EntityLivingBase input)
             {
                 if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
-                        || ((EntityPlayer) input).isSpectator(); }
+                        || ((EntityPlayer) input).isSpectator() || trainer.hasDefeated(input); }
 
                 return false;
             }
@@ -241,10 +240,8 @@ public class EntityAITrainer extends EntityAIBase
             return false;
         }
         // Check to see if leader has defeated.
-        if (trainer instanceof EntityLeader)
-        {
-            if (((EntityLeader) trainer).hasDefeated(target)) target = null;
-        }
+        if (trainer.hasDefeated(target)) target = null;
+
         // Set trainers target
         trainer.setTarget(target);
         // Return true if target exists.

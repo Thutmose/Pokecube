@@ -68,13 +68,20 @@ public class GuiTeleport extends Gui
 
     private void draw(RenderGameOverlayEvent.Post event)
     {
-        int w = PokecubeMod.core.getConfig().guiOffset[0];
-        int h = PokecubeMod.core.getConfig().guiOffset[1];
-        w = Math.min(event.getResolution().getScaledWidth() - 105, w);
-        h = Math.min(event.getResolution().getScaledHeight() - 13, h);
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob == null) return;
         GlStateManager.pushMatrix();
+        int w = PokecubeMod.core.getConfig().guiOffset[0];
+        int h = PokecubeMod.core.getConfig().guiOffset[1];
+        int scaledWidth = Minecraft.getMinecraft().displayWidth;
+        int scaledHeight = Minecraft.getMinecraft().displayHeight;
+        float scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().guiSize, true);
+        scaledWidth /= scaleFactor;
+        scaledHeight /= scaleFactor;
+        w = Math.min(scaledWidth, w);
+        h = Math.min(scaledHeight, h);
+        w = Math.max(0, w);
+        h = Math.max(0, h);
         GlStateManager.enableBlend();
         locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
         int i = 0;

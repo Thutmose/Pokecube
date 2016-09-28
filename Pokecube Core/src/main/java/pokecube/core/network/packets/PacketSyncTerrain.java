@@ -40,6 +40,7 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         packet.y = y;
         packet.z = z;
         packet.data.setInteger("dimID", player.dimension);
+        
         terrain.saveToNBT(packet.data);
         PokecubeMod.packetPipeline.sendToAllAround(packet,
                 new TargetPoint(player.dimension, player.posX, player.posY, player.posZ, 64));
@@ -137,8 +138,9 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         }
         else if (message.type == TERRAIN)
         {
-            TerrainManager.getInstance().getTerrain(message.data.getInteger("dimID"))
-                    .addTerrain(TerrainSegment.readFromNBT(message.data));
+            TerrainSegment.readFromNBT(t, message.data);
+            
+            TerrainManager.getInstance().getTerrain(message.data.getInteger("dimID")).addTerrain(t);
         }
     }
 }

@@ -47,15 +47,12 @@ public class MoveAnimationHelper
                         source.set(player);
                         TerrainSegment segment = TerrainManager.getInstance().getTerrain(player.getEntityWorld(),
                                 player.posX + i * 16, player.posY + j * 16, player.posZ + k * 16);
-
                         PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment
                                 .geTerrainEffect("pokemobEffects");
                         if (teffect == null) continue;
-
                         Vector3 target = Vector3.getNewVector().set(segment.getCentre());
                         GL11.glPushMatrix();
                         source.set(target.subtract(source));
-
                         GL11.glTranslated(source.x, source.y, source.z);
                         // Clear out the jitteryness from rendering
                         source.x = player.prevPosX - player.posX;

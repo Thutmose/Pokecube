@@ -33,6 +33,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
+import thut.api.entity.IHungrymob;
 
 public class GuiPokemob extends GuiContainer
 {
@@ -92,12 +93,9 @@ public class GuiPokemob extends GuiContainer
                     Tessellator tessellator = Tessellator.getInstance();
                     VertexBuffer vertexbuffer = tessellator.getBuffer();
                     vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-                    vertexbuffer.pos(x + 0, y + height - 2, this.zLevel).tex(0, 1)
-                            .endVertex();
-                    vertexbuffer.pos(x + width - 2, y + height - 2, this.zLevel)
-                            .tex(1, 1).endVertex();
-                    vertexbuffer.pos(x + width - 2, y + 0, this.zLevel).tex(1, 0)
-                            .endVertex();
+                    vertexbuffer.pos(x + 0, y + height - 2, this.zLevel).tex(0, 1).endVertex();
+                    vertexbuffer.pos(x + width - 2, y + height - 2, this.zLevel).tex(1, 1).endVertex();
+                    vertexbuffer.pos(x + width - 2, y + 0, this.zLevel).tex(1, 0).endVertex();
                     vertexbuffer.pos(x + 0, y + 0, this.zLevel).tex(0, 0).endVertex();
                     tessellator.draw();
                     return;
@@ -300,6 +298,18 @@ public class GuiPokemob extends GuiContainer
                 : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
         this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
                 : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
+        IHungrymob mob = (IHungrymob) pokemob;
+        float full = PokecubeMod.core.getConfig().pokemobLifeSpan / 4 + PokecubeMod.core.getConfig().pokemobLifeSpan;
+        float current = -(mob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan);
+        float scale = 100f / full;
+        // System.out.println(current + " " + scale+ " "+full);
+        current *= scale / 100f;
+        int i = 84, j = 37;
+        int col = 0xFF555555;
+        this.drawGradientRect(i, j, i + 80, j + 10,col , col);
+        col = 0xFFFFFFFF;
+        int col1 = 0xFF00FF77;
+        this.drawGradientRect(i, j, i + (int) (80 * current), j + 10, col, col1);
     }
 
     /** Draws the screen and all the components in it. */

@@ -95,6 +95,8 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public boolean                     trainersInvul       = false;
     @Configure(category = trainers)
+    public boolean                     trainerslevel       = true;
+    @Configure(category = trainers)
     public boolean                     trainersTradeMobs   = true;
     @Configure(category = trainers)
     public boolean                     trainersTradeItems  = true;

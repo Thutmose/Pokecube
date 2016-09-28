@@ -137,8 +137,8 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         }
         else if (message.type == TERRAIN)
         {
-            TerrainManager.getInstance().getTerrain(message.data.getInteger("dimID"))
-                    .addTerrain(TerrainSegment.readFromNBT(message.data));
+            TerrainSegment.readFromNBT(t, message.data);
+            TerrainManager.getInstance().getTerrain(message.data.getInteger("dimID")).addTerrain(t);
         }
     }
 }

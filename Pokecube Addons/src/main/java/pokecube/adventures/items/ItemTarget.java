@@ -226,8 +226,18 @@ public class ItemTarget extends Item
                         for (z = zMin; z <= zMax; z++)
                         {
                             pos1.set(x, y, z);
+                            if (!world.isAreaLoaded(pos1.getPos(), 0))
+                            {
+                                world.getChunkFromBlockCoords(pos1.getPos());
+                            }
+                            if (!world.isAreaLoaded(pos1.getPos(), 0))
+                            {
+                                System.err.println("not loadted");
+                                continue;
+                            }
                             t = TerrainManager.getInstance().getTerrian(world, pos1);
                             t.setBiome(pos1, type.getType());
+                            t.toSave = true;
                         }
                 try
                 {
@@ -354,6 +364,7 @@ public class ItemTarget extends Item
                                 }
                                 t = TerrainManager.getInstance().getTerrian(worldIn, pos1);
                                 t.setBiome(pos1, type.getType());
+                                t.toSave = true;
                             }
                     try
                     {

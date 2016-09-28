@@ -64,17 +64,24 @@ public class GuiInfoMessages
         int i = Mouse.getDWheel();
         int texH = minecraft.fontRendererObj.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;
+        GL11.glPushMatrix();
+        minecraft.entityRenderer.setupOverlayRendering();
         int w = PokecubeMod.core.getConfig().messageOffset[0];
         int h = PokecubeMod.core.getConfig().messageOffset[1];
-        w = Math.min(w, event.getResolution().getScaledWidth());
-        h = Math.min(h, event.getResolution().getScaledHeight() - texH);
-        h = Math.max(h, texH * 7);
-        w = Math.max(w, trim);
+        int scaledWidth = Minecraft.getMinecraft().displayWidth;
+        int scaledHeight = Minecraft.getMinecraft().displayHeight;
+        float scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().messageSize, true);
+        scaledWidth /= scaleFactor;
+        scaledHeight /= scaleFactor;
+        w = Math.min(scaledWidth, w);
+        h = Math.min(scaledHeight - texH, h);
+        w = Math.max(trim, w);
+        h = Math.max(texH * 7, h);
+        PokecubeMod.core.getConfig().messageOffset[0] = w;
+        PokecubeMod.core.getConfig().messageOffset[1] = h;
         int x = w, y = h;
-        GL11.glPushMatrix();
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        minecraft.entityRenderer.setupOverlayRendering();
         int num = -1;
         if (event.getType() == ElementType.CHAT)
         {

@@ -290,9 +290,13 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public int[]               guiOffset                  = { 0, 0 };
     @Configure(category = client)
+    public float               guiSize                    = 1;
+    @Configure(category = client)
     public int[]               messageOffset              = { 480, 150 };
     @Configure(category = client)
     public int                 messageWidth               = 150;
+    @Configure(category = client)
+    public float               messageSize                = 1;
     @Configure(category = client)
     public boolean             guiDown                    = true;
     @Configure(category = client)
@@ -301,7 +305,6 @@ public class Config extends ConfigBase
     public boolean             moveAnimationCallLists     = true;
     @Configure(category = client)
     public boolean             autoRecallPokemobs         = false;
-
     @Configure(category = client)
     public int                 autoRecallDistance         = 32;
     @Configure(category = advanced)

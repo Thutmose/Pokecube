@@ -1,22 +1,15 @@
 package pokecube.adventures.entity.trainers;
 
-import java.util.ArrayList;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIOpenDoor;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.EntityAITrainer;
 import pokecube.adventures.items.ItemBadge;
@@ -26,40 +19,12 @@ import thut.api.maths.Vector3;
 
 public class EntityLeader extends EntityTrainer
 {
-    public static class DefeatEntry
-    {
-        static DefeatEntry createFromNBT(NBTTagCompound nbt)
-        {
-            String defeater = nbt.getString("player");
-            long time = nbt.getLong("time");
-            return new DefeatEntry(defeater, time);
-        }
-
-        final String defeater;
-
-        final long   defeatTime;
-
-        public DefeatEntry(String defeater, long time)
-        {
-            this.defeater = defeater;
-            this.defeatTime = time;
-        }
-
-        void writeToNBT(NBTTagCompound nbt)
-        {
-            nbt.setString("player", defeater);
-            nbt.setLong("time", defeatTime);
-        }
-    }
-
-    private long                  resetTime = 0;
-    public ArrayList<DefeatEntry> defeaters = new ArrayList<DefeatEntry>();
-
     public EntityLeader(World world)
     {
         super(world);
         setAIState(STATIONARY, true);
         trades = false;
+        resetTime = 0;
     }
 
     public EntityLeader(World world, TypeTrainer type, int maxXp, Vector3 location)
@@ -86,29 +51,6 @@ public class EntityLeader extends EntityTrainer
         }
     }
 
-    public boolean hasDefeated(Entity e)
-    {
-        if (e == null) return false;
-        String name = e.getCachedUniqueIdString();
-        for (DefeatEntry s : defeaters)
-        {
-            if (s.defeater.equals(name))
-            {
-                if (resetTime > 0)
-                {
-                    long diff = worldObj.getTotalWorldTime() - s.defeatTime;
-                    if (diff > resetTime)
-                    {
-                        defeaters.remove(s);
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public void initTrainer(TypeTrainer type, int level)
     {
@@ -124,36 +66,6 @@ public class EntityLeader extends EntityTrainer
         TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
         setTypes();
         trades = false;
-    }
-
-    @Override
-    public void onDefeated(Entity defeater)
-    {
-        if (hasDefeated(defeater)) return;
-        defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
-        if (reward != null && defeater instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) defeater;
-            for (ItemStack i : reward)
-            {
-                if (i == null || i.getItem() == null) continue;
-                if (!player.inventory.addItemStackToInventory(i.copy()))
-                {
-                    EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
-                    if (item == null)
-                    {
-                        System.out.println("Test" + item + " " + i);
-                        continue;
-                    }
-                    item.setPickupDelay(0);
-                }
-                ITextComponent text = new TextComponentTranslation("pokecube.trainer.drop", this.getDisplayName(),
-                        i.getDisplayName());
-                defeater.addChatMessage(text);
-            }
-        }
-        ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
-        defeater.addChatMessage(text);
     }
 
     @Override
@@ -176,28 +88,11 @@ public class EntityLeader extends EntityTrainer
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
         super.readEntityFromNBT(nbt);
-        defeaters.clear();
-        resetTime = nbt.getLong("resetTime");
-        if (nbt.hasKey("DefeatList", 9))
-        {
-            NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
-            for (int i = 0; i < nbttaglist.tagCount(); i++)
-                defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
-        }
     }
 
     @Override
     public void writeEntityToNBT(NBTTagCompound nbt)
     {
         super.writeEntityToNBT(nbt);
-        nbt.setLong("resetTime", resetTime);
-        NBTTagList nbttaglist = new NBTTagList();
-        for (DefeatEntry entry : defeaters)
-        {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            entry.writeToNBT(nbttagcompound);
-            nbttaglist.appendTag(nbttagcompound);
-        }
-        nbt.setTag("DefeatList", nbttaglist);
     }
 }

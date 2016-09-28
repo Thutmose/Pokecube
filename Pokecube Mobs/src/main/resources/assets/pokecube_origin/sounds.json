@@ -1,4 +1,4 @@
-{"mobs.Pikachu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/Pikachu","stream": false}]},
-"mobs.Raichu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/Raichu","stream": false}]},
-"mobs.Pichu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/Pichu","stream": false}]}
+{"mobs.pikachu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/pikachu","stream": false}]},
+"mobs.raichu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/raichu","stream": false}]},
+"mobs.pichu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/pichu","stream": false}]}
 }

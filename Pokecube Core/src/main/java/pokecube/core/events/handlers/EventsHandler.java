@@ -514,7 +514,7 @@ public class EventsHandler
         if (evt.getEntity().getEntityWorld().isRemote || evt.getEntity().isDead) return;
         if (evt.getEntityLiving().getEntityWorld().getTotalWorldTime() % 40 == 0)
         {
-            TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityLiving());
+            TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntity());
             PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
             if (effect == null)
             {

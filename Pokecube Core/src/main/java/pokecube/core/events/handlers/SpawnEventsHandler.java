@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -54,13 +55,16 @@ public class SpawnEventsHandler
             if (weight == 0) continue;
             if (!dbe.flys() && random >= weight)
             {
-                v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 20);
-                if (v != null)
+                if (!(dbe.swims() && v.getBlockMaterial(world) == Material.WATER))
                 {
-                    v.offsetBy(EnumFacing.UP);
-                    weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+                    v = Vector3.getNextSurfacePoint2(world, vbak, Vector3.secondAxisNeg, 20);
+                    if (v != null)
+                    {
+                        v.offsetBy(EnumFacing.UP);
+                        weight = dbe.getSpawnData().getWeight(dbe.getSpawnData().getMatcher(world, v));
+                    }
+                    else weight = 0;
                 }
-                else weight = 0;
             }
             if (v == null)
             {

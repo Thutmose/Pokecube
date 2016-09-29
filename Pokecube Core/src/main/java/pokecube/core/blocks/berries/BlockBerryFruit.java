@@ -168,6 +168,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
         this.onBlockHarvested(worldIn, pos, state, playerIn);
+        worldIn.setBlockToAir(pos);
         return true;
     }
 

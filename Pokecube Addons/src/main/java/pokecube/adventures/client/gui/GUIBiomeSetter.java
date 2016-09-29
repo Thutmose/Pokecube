@@ -8,10 +8,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.core.network.PokecubePacketHandler;
-import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 
 public class GUIBiomeSetter extends GuiScreen
@@ -29,8 +27,7 @@ public class GUIBiomeSetter extends GuiScreen
     protected void actionPerformed(GuiButton button) throws IOException
     {
         super.actionPerformed(button);
-        FMLControlledNamespacedRegistry<BiomeType> biomeTypeRegistry = BiomeDatabase.biomeTypeRegistry;
-        List<BiomeType> types = biomeTypeRegistry.getValues();
+        List<BiomeType> types = BiomeType.values();
 
         if (button.id == 0)
         {

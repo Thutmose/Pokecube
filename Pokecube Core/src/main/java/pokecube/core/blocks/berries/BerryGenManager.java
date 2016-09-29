@@ -21,7 +21,6 @@ import pokecube.core.blocks.berries.TileEntityBerries.TreeGrower;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -421,9 +420,8 @@ public class BerryGenManager
                 }
             }
         }
-        for (ResourceLocation key : BiomeDatabase.biomeTypeRegistry.getKeys())
+        for (BiomeType type : BiomeType.values())
         {
-            BiomeType type = BiomeDatabase.biomeTypeRegistry.getObject(key);
             for (String s : PokecubeMod.core.getConfig().berryLocations)
             {
                 String[] args = s.split(":");

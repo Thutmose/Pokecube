@@ -107,6 +107,7 @@ public class AbilityManager
         }
 
     }
+
     private static HashMap<String, Class<? extends Ability>>  nameMap  = Maps.newHashMap();
     private static HashMap<Class<? extends Ability>, String>  nameMap2 = Maps.newHashMap();
     private static HashMap<Class<? extends Ability>, Integer> idMap    = Maps.newHashMap();
@@ -156,6 +157,25 @@ public class AbilityManager
         nextID++;
     }
 
+    public static void replaceAbility(Class<? extends Ability> ability, String name)
+    {
+        name = name.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
+        if (nameMap.containsKey(name))
+        {
+            Class<? extends Ability> old = nameMap.remove(name);
+            nameMap2.remove(old);
+            int id = idMap.remove(old);
+            nameMap.put(name, ability);
+            nameMap2.put(ability, name);
+            idMap.put(ability, id);
+            idMap2.put(id, ability);
+        }
+        else
+        {
+            addAbility(ability, name);
+        }
+    }
+
     public static Ability getAbility(Integer id, Object... args)
     {
         return makeAbility(id, args);
@@ -164,7 +184,8 @@ public class AbilityManager
     public static Ability getAbility(String name, Object... args)
     {
         if (name == null) return null;
-        return makeAbility(name.toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""), args);
+        return makeAbility(name.toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""),
+                args);
     }
 
     public static int getIdForAbility(Ability ability)
@@ -181,8 +202,8 @@ public class AbilityManager
     {
         Ability ability = pokemob.getAbility();
         if (ability == null) { return false; }
-        return ability.toString()
-                .equalsIgnoreCase(abilityName.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
+        return ability.toString().equalsIgnoreCase(abilityName.trim().toLowerCase(java.util.Locale.ENGLISH)
+                .replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""));
     }
 
     public static Ability makeAbility(Object val, Object... args)

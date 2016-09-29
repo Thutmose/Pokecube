@@ -9,7 +9,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -128,7 +127,8 @@ public class BiomeMatcher
         {
             if (!specific)
             {
-                BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(biomeName.toUpperCase(java.util.Locale.ENGLISH));
+                BiomeDictionary.Type type = BiomeDictionary.Type
+                        .valueOf(biomeName.toUpperCase(java.util.Locale.ENGLISH));
                 if (type != null)
                 {
                     if (type == BiomeDictionary.Type.WATER)
@@ -174,7 +174,7 @@ public class BiomeMatcher
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         Biome biome = location.getBiome(world);
         int subBiomeId = t.getBiome(location);
-        BiomeType subBiome = BiomeDatabase.biomeTypeRegistry.getObjectById(subBiomeId);
+        BiomeType subBiome = BiomeType.getType(subBiomeId);
         boolean rightBiome = validBiomes.contains(biome);
         boolean rightSubBiome = subBiome != null && validSubBiomes.contains(subBiome);
 

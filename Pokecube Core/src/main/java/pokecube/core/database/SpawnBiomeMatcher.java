@@ -14,7 +14,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -55,7 +54,7 @@ public class SpawnBiomeMatcher
             biome = location.getBiome(world);
             TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
             int subBiomeId = t.getBiome(location);
-            type = BiomeDatabase.biomeTypeRegistry.getObjectById(subBiomeId);
+            type = BiomeType.getType(subBiomeId);
         }
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
 import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -740,9 +741,17 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 this.dropFewItems(this.recentlyHit > 0, i);
                 this.dropEquipment(this.recentlyHit > 0, i);
 
-                if (this.recentlyHit > 0 && this.rand.nextFloat() < 0.025F + i * 0.01F)
+                if (recentlyHit > 0 && !getPokemonAIState(IPokemob.TAMED))
                 {
-                    // this.addRandomDrop();
+                    int i1 = this.getExperiencePoints(this.attackingPlayer);
+                    i1 = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i1);
+                    while (i1 > 0)
+                    {
+                        int j = EntityXPOrb.getXPSplit(i1);
+                        i1 -= j;
+                        this.worldObj
+                                .spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
+                    }
                 }
             }
 
@@ -777,7 +786,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void onDeathUpdate()
     {
-        if (!PokecubeCore.isOnClientSide())
+        if (!PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint.own", "red",
@@ -1007,7 +1016,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
-                this.setHungerTime(this.getHungerTime() + 1000);
+                this.setHungerTime(this.getHungerTime() + 4000);
             }
         }
         // Use shiny charm to make shiny

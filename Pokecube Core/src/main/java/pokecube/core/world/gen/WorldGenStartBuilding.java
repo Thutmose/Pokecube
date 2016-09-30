@@ -119,8 +119,9 @@ public class WorldGenStartBuilding implements IWorldGenerator
                                                                                                                      // table
         temp1.set(centre).addTo(4, 3, 7).setBlock(world, PokecubeItems.pokecenter.getDefaultState());// healing
                                                                                                      // table
-        temp1.set(centre).addTo(4, 2, 7).setBlock(world, Blocks.REDSTONE_TORCH.getDefaultState());// table
-                                                                                                  // power
+        if (PokecubeMod.core.getConfig().pokecenterTorch)
+            temp1.set(centre).addTo(4, 2, 7).setBlock(world, Blocks.REDSTONE_TORCH.getDefaultState());// table
+                                                                                                      // power
 
         ItemDoor.placeDoor(world, temp1.set(centre).addTo(4, 3, 0).getPos(), EnumFacing.SOUTH, Blocks.OAK_DOOR, false);
     }

@@ -447,6 +447,7 @@ public class AIHungry extends AIBase
                     pokemob.getPokemobInventory().setInventorySlotContents(i, null);
                 }
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                berry.setEntityItemStack(stack.copy());
                 hungrymob.eat(berry);
                 return;
             }

@@ -630,8 +630,9 @@ public class GuiPokedex extends GuiScreen
             message = I18n.format(message);
             fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 145, 100, 0xFFFFFF);
 
+            int dy = 122;
             message = "Size: " + pokemob.getSize();
-            fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 122, 100, 0xFFFFFF);
+            fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + dy, 100, 0xFFFFFF);
         }
     }
 

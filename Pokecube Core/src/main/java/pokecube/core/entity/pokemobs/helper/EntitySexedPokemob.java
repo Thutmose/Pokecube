@@ -28,6 +28,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -97,7 +98,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public Object getChild(IBreedingMob male)
     {
-
         boolean transforms = false;
         boolean otherTransforms = ((IPokemob) male).getTransformedTo() != null;
         String movesString = dataManager.get(MOVESDW);
@@ -201,7 +201,13 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             return;
         }
         int childPokedexNb = (int) getChild(male);
-
+        int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 2;
+        if (male instanceof IHungrymob)
+        {
+            IHungrymob hungry = (IHungrymob) male;
+            hungry.setHungerTime(hungry.getHungerTime() + hungerValue);
+        }
+        setHungerTime(getHungerTime() + hungerValue);
         if (childPokedexNb > 0)
         {
             ((EntityPokemob) male).setLover(null);

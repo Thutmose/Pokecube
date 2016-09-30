@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -158,6 +159,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
             if (!(source.getEntity() instanceof IPokemob) && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
                 return false;
+
+            if (source.getEntity() instanceof EntityPlayer)
+                amount *= PokecubeMod.core.getConfig().playerToPokemobDamageScale;
 
             if (this.getHealth() <= 0.0F)
             {
@@ -800,6 +804,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                         ret = evo;
                     }
                     ret.levelUp(newLvl);
+                    if (this.addedToChunk && ret.getPokemonOwner() instanceof EntityPlayer
+                            && worldObj.getGameRules().getBoolean("doMobLoot") && !worldObj.isRemote)
+                    {
+                        worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, posX, posY, posZ, 1));
+                    }
                 }
                 ret.setStats(getPokedexEntry().getStats());
             }
@@ -1061,4 +1070,5 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         ret.setStats(ret.getPokedexEntry().getStats());
         return ret;
     }
+
 }

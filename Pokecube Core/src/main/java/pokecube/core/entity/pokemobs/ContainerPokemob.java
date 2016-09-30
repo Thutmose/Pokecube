@@ -170,4 +170,9 @@ public class ContainerPokemob extends Container
 
 		return itemstack;
 	}
+
+	public IPokemob getPokemob()
+	{
+	    return pokemob;
+	}
 }

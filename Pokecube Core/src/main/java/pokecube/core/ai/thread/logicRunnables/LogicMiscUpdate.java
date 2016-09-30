@@ -71,6 +71,9 @@ public class LogicMiscUpdate extends LogicBase
                 pokemob.setModifiers(PokecubeSerializer.intAsModifierArray(1717986918));
             }
         }
+
+        // Particle stuff below here, WARNING, RESETTING RNG HERE
+        rand = new Random();
         Vector3 particleLoc = Vector3.getNewVector().set(pokemob);
         if (pokemob.isShadow())
         {
@@ -82,17 +85,22 @@ public class LogicMiscUpdate extends LogicBase
             particle = pokemob.getPokedexEntry().particleData[0];
             particleIntensity = Integer.parseInt(pokemob.getPokedexEntry().particleData[1]);
         }
-
         Calendar calendar = Calendar.getInstance();
         if (calendar.get(Calendar.DAY_OF_MONTH) == 25 && calendar.get(Calendar.MONTH) == 11)
         {
-            float scale = entity.width * 2;
-            Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble() + entity.height / 2,
-                    rand.nextDouble() - 0.5);
-            offset.scalarMultBy(scale);
-            particleLoc.addTo(offset);
             particle = "aurora";// Merry Xmas
             particleIntensity = 90;
+        }
+        if (pokemob.getPokemonAIState(IPokemob.MATING) && entity.ticksExisted % 10 == 0)
+        {
+            // System.out.println(pokemob);
+            for (int i = 0; i < 3; ++i)
+            {
+                particleLoc.set(entity.posX + rand.nextFloat() * entity.width * 2.0F - entity.width,
+                        entity.posY + 0.5D + rand.nextFloat() * entity.height,
+                        entity.posZ + rand.nextFloat() * entity.width * 2.0F - entity.width);
+                PokecubeMod.core.spawnParticle("heart", particleLoc, null);
+            }
         }
         for (int i = 0; i < 5; i++)
         {
@@ -127,6 +135,11 @@ public class LogicMiscUpdate extends LogicBase
         }
         if (particle != null && particleCounter++ >= 100 - particleIntensity)
         {
+            float scale = entity.width * 2;
+            Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble() + entity.height / 2,
+                    rand.nextDouble() - 0.5);
+            offset.scalarMultBy(scale);
+            particleLoc.addTo(offset);
             PokecubeMod.core.spawnParticle(particle, particleLoc, null);
             particleCounter = 0;
         }

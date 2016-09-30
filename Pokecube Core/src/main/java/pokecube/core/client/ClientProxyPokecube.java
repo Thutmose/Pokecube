@@ -561,22 +561,29 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             float offset = Float.parseFloat(args[1]);
             location.y += offset;
         }
+        boolean ignoreRange = true;
         if (par1Str.toLowerCase(java.util.Locale.ENGLISH).contains("smoke"))
         {
             if (par1Str.contains("large"))
             {
-                Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_LARGE, location.x, location.y,
-                        location.z, 0, 0, 0, 0);
+                Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_LARGE, ignoreRange, location.x,
+                        location.y, location.z, 0, 0, 0, 0);
                 return;
             }
-            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, location.x, location.y,
-                    location.z, 0, 0, 0, 0);
+            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, ignoreRange, location.x,
+                    location.y, location.z, 0, 0, 0, 0);
             return;
         }
         if (par1Str.contains("flame"))
         {
-            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.FLAME, location.x, location.y, location.z,
-                    0, 0, 0, 0);
+            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.FLAME, ignoreRange, location.x,
+                    location.y, location.z, 0, 0, 0, 0);
+            return;
+        }
+        if (par1Str.equalsIgnoreCase("heart"))
+        {
+            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.HEART, ignoreRange, location.x,
+                    location.y, location.z, 0, 0, 0, 0);
             return;
         }
         IParticle particle = ParticleFactory.makeParticle(par1Str, velocity);

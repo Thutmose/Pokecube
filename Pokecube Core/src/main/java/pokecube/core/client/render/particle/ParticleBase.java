@@ -65,7 +65,7 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         if (billboard)
         {
             RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-            GL11.glRotatef(-renderManager.playerViewY - 45, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
         }
         setColour();

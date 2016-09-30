@@ -3420,7 +3420,7 @@
     "kingsrock": "FALSE",
     "crit": 2,
     "selfDamage": 0,
-    "defaultanimation": "none"
+    "defaultanimation": "pont:vsweepAttack"
   },
   {
     "num": 164,
@@ -4848,7 +4848,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "none"
+    "defaultanimation": "pont:vsweepAttack"
   },
   {
     "num": 232,
@@ -8397,7 +8397,7 @@
     "kingsrock": "FALSE",
     "crit": 2,
     "selfDamage": 0,
-    "defaultanimation": "none"
+    "defaultanimation": "pont:vsweepAttack"
   },
   {
     "num": 401,
@@ -8460,7 +8460,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "flow"
+    "defaultanimation": "pont:vsweepAttack"
   },
   {
     "num": 404,

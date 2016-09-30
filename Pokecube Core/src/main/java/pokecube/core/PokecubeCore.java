@@ -741,9 +741,9 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @Override
-    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
-        getProxy().spawnParticle(par1Str, location, velocity);
+        getProxy().spawnParticle(par1Str, location, velocity, args);
     }
 
     /** Loads PC data when server starts

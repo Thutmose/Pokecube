@@ -9,11 +9,12 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -116,11 +117,6 @@ public class LogicMovesUpdates extends LogicBase
         return false;
     }
 
-    protected void spawnPoisonParticle()
-    {
-        // TODO Poison Effects
-    }
-
     protected void updateOngoingMoves()
     {
         Random rand = new Random(entity.getEntityId());
@@ -200,51 +196,8 @@ public class LogicMovesUpdates extends LogicBase
         }
         if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
-            if (status == IMoveConstants.STATUS_BRN)
-            {
-                entity.setFire(1);
-                entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 16f);
-            }
-            else if (status == IMoveConstants.STATUS_FRZ)
-            {
-                entity.addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-                entity.addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
-                if (Math.random() > 0.9)
-                {
-                    pokemob.healStatus();
-                }
-            }
-            else if (status == IMoveConstants.STATUS_PSN)
-            {
-                entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 8f);
-                spawnPoisonParticle();
-
-            }
-            else if (status == IMoveConstants.STATUS_PSN2)
-            {
-                entity.attackEntityFrom(DamageSource.magic,
-                        (pokemob.getMoveStats().TOXIC_COUNTER + 1) * entity.getMaxHealth() / 16f);
-                spawnPoisonParticle();
-                spawnPoisonParticle();
-                pokemob.getMoveStats().TOXIC_COUNTER++;
-            }
-            else if (status == IMoveConstants.STATUS_SLP)
-            {
-                entity.addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("slowness"), duration * 2, 100));
-                entity.addPotionEffect(
-                        new PotionEffect(Potion.getPotionFromResourceLocation("blindness"), duration * 2, 100));
-                if (Math.random() > 0.9 || timer <= 0)
-                {
-                    pokemob.healStatus();
-                }
-            }
-            else
-            {
-                pokemob.getMoveStats().TOXIC_COUNTER = 0;
-            }
+            StatusEffectEvent event = new StatusEffectEvent(entity, status);
+            MinecraftForge.EVENT_BUS.post(event);
         }
     }
 

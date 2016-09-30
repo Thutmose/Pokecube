@@ -160,7 +160,7 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         // unused server side. -- see ClientProxyPokecube for implementation
     }
 
-    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
         // TODO send a packet to spawn it on client if sent from here
     }

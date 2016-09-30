@@ -18,7 +18,7 @@ import thut.api.maths.Vector3;
 
 public class ParticlesOnTarget extends MoveAnimationBase
 {
-
+    String type    = null;
     String particle;
     float  width   = 1;
     float  density = 1;
@@ -40,6 +40,10 @@ public class ParticlesOnTarget extends MoveAnimationBase
             {
                 density = Float.parseFloat(val);
             }
+            else if (ident.equals("v"))
+            {
+                type = val;
+            }
         }
     }
 
@@ -47,6 +51,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
+        if (type != null) return;
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
         initColour(info.currentTick * 300, partialTick, info.move);
@@ -111,5 +116,12 @@ public class ParticlesOnTarget extends MoveAnimationBase
     public void initColour(long time, float partialTicks, Move_Base move)
     {
         rgba = getColourFromMove(move, 255);
+    }
+
+    @Override
+    public void spawnClientEntities(MovePacketInfo info)
+    {
+        if (type == null) return;
+        PokecubeMod.core.spawnParticle(type, info.target, null);
     }
 }

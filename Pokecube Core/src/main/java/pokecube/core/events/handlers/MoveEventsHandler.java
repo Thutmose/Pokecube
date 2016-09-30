@@ -1,6 +1,7 @@
 package pokecube.core.events.handlers;
 
 import java.util.Map;
+import java.util.Random;
 
 import com.google.common.collect.Maps;
 
@@ -9,8 +10,10 @@ import net.minecraft.block.BlockFarmland;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,10 +22,12 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.events.MoveUse.MoveWorldAction;
+import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
@@ -221,4 +226,82 @@ public class MoveEventsHandler
         action.applyEffect(attacker, location);
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void doStatusEffects(StatusEffectEvent evt)
+    {
+        byte status = evt.getStatus();
+        EntityLiving entity = (EntityLiving) evt.getEntity();
+        IPokemob pokemob = evt.getPokemob();
+        short timer = pokemob.getStatusTimer();
+        if (status == IMoveConstants.STATUS_BRN)
+        {
+            entity.setFire(1);
+            entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 16f);
+        }
+        if (status == IMoveConstants.STATUS_FRZ)
+        {
+            if (Math.random() > 0.9)
+            {
+                pokemob.healStatus();
+            }
+        }
+        if (status == IMoveConstants.STATUS_PSN)
+        {
+            entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 8f);
+            spawnPoisonParticle(entity);
+
+        }
+        if (status == IMoveConstants.STATUS_PSN2)
+        {
+            entity.attackEntityFrom(DamageSource.magic,
+                    (pokemob.getMoveStats().TOXIC_COUNTER + 1) * entity.getMaxHealth() / 16f);
+            spawnPoisonParticle(entity);
+            spawnPoisonParticle(entity);
+            pokemob.getMoveStats().TOXIC_COUNTER++;
+        }
+        else
+        {
+            pokemob.getMoveStats().TOXIC_COUNTER = 0;
+        }
+        if (status == IMoveConstants.STATUS_SLP)
+        {
+            if (Math.random() > 0.9 || timer <= 0)
+            {
+                pokemob.healStatus();
+            }
+            else
+            {
+                spawnSleepParticle(entity);
+            }
+
+        }
+    }
+
+    protected void spawnSleepParticle(Entity entity)
+    {
+        Random rand = new Random();
+        Vector3 particleLoc = Vector3.getNewVector();
+        Vector3 vel = Vector3.getNewVector();
+        for (int i = 0; i < 3; ++i)
+        {
+            particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
+            PokecubeMod.core.spawnParticle("mobSpell", particleLoc, vel);
+        }
+    }
+
+    protected void spawnPoisonParticle(Entity entity)
+    {
+        Random rand = new Random();
+        Vector3 particleLoc = Vector3.getNewVector();
+        int i = 0xFFFF00FF;
+        double d0 = (i >> 16 & 255) / 255.0D;
+        double d1 = (i >> 8 & 255) / 255.0D;
+        double d2 = (i >> 0 & 255) / 255.0D;
+        Vector3 vel = Vector3.getNewVector().set(d0, d1, d2);
+        for (i = 0; i < 3; ++i)
+        {
+            particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
+            PokecubeMod.core.spawnParticle("mobSpell", particleLoc, vel);
+        }
+    }
 }

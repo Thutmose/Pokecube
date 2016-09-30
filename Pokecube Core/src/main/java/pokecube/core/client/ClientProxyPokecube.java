@@ -548,20 +548,36 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     }
 
     @Override
-    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity)
+    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
         if (velocity == null) velocity = Vector3.empty;
-        String[] args = par1Str.split(",");
-        if (args.length == 4)
+        String[] args1 = par1Str.split(",");
+        if (args1.length == 4)
         {
 
         }
-        else if (args.length == 2)
+        else if (args1.length == 2)
         {
-            float offset = Float.parseFloat(args[1]);
+            float offset = Float.parseFloat(args1[1]);
             location.y += offset;
         }
         boolean ignoreRange = true;
+
+        try
+        {
+            EnumParticleTypes particle = EnumParticleTypes.getByName(par1Str);
+            if (particle != null)
+            {
+                Minecraft.getMinecraft().theWorld.spawnParticle(particle, ignoreRange, location.x, location.y,
+                        location.z, velocity.x, velocity.y, velocity.z, args);
+                return;
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+
         if (par1Str.toLowerCase(java.util.Locale.ENGLISH).contains("smoke"))
         {
             if (par1Str.contains("large"))
@@ -571,18 +587,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 return;
             }
             Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, ignoreRange, location.x,
-                    location.y, location.z, 0, 0, 0, 0);
-            return;
-        }
-        if (par1Str.contains("flame"))
-        {
-            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.FLAME, ignoreRange, location.x,
-                    location.y, location.z, 0, 0, 0, 0);
-            return;
-        }
-        if (par1Str.equalsIgnoreCase("heart"))
-        {
-            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.HEART, ignoreRange, location.x,
                     location.y, location.z, 0, 0, 0, 0);
             return;
         }

@@ -76,6 +76,9 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean canNavigate()
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || pokemob.getStatus() == IPokemob.STATUS_SLP
+                || pokemob.getStatus() == IPokemob.STATUS_FRZ)
+            return false;
         return this.theEntity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
     }
 
@@ -230,10 +233,7 @@ public class PokeNavigator extends PathNavigate
         double dy = end.yCoord - start.yCoord;
         double d2 = d0 * d0 + d1 * d1 + dy * dy;
 
-        if (d2 < 1.0E0D || !canFly)
-        {
-            return true;
-        }
+        if (d2 < 1.0E0D || !canFly) { return true; }
         v.set(start);
         v1.set(end);// TODO re-do this using safe checks
         return v1.isVisible(worldObj, v);
@@ -453,10 +453,7 @@ public class PokeNavigator extends PathNavigate
             this.removeSunnyPath();
         }
 
-        if (this.currentPath.getCurrentPathLength() == 0)
-        {
-            return false;
-        }
+        if (this.currentPath.getCurrentPathLength() == 0) { return false; }
         this.speed = speed;
         Vec3d vec3 = this.getEntityPosition();
         this.ticksAtLastPos = this.totalTicks;

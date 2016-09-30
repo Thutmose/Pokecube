@@ -203,7 +203,6 @@ public class PokecubeCore extends PokecubeMod
             if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))
             {
                 spawns.add(dbe);
-                SpawnHandler.addSpawn(dbe);
                 n++;
             }
         }

@@ -80,7 +80,6 @@ public class ItemPokedex extends Item
                     Pokedex.getInstance().getEntries().size());
             playerIn.addChatMessage(message);
         }
-
         if (!playerIn.isSneaking()) showGui(playerIn);
         return EnumActionResult.FAIL;
     }

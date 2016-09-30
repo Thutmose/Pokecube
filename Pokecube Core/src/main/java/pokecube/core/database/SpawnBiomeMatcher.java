@@ -54,7 +54,8 @@ public class SpawnBiomeMatcher
             biome = location.getBiome(world);
             TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
             int subBiomeId = t.getBiome(location);
-            type = BiomeType.getType(subBiomeId);
+            if (subBiomeId > 255) type = BiomeType.getType(subBiomeId);
+            else type = null;
         }
     }
 

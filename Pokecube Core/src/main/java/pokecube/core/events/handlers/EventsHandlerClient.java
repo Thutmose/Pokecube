@@ -334,58 +334,25 @@ public class EventsHandlerClient
         }
         if (ClientProxyPokecube.nextMob.isPressed())
         {
-            if (GuiScreen.isAltKeyDown())
-            {
-                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
-                GuiDisplayPokecubeInfo.instance().moveGui(num, 0);
-            }
-            else
-            {
-                GuiDisplayPokecubeInfo.instance().nextPokemob();
-            }
+            GuiDisplayPokecubeInfo.instance().nextPokemob();
         }
         if (ClientProxyPokecube.previousMob.isPressed())
         {
-            if (GuiScreen.isAltKeyDown())
-            {
-                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
-                GuiDisplayPokecubeInfo.instance().moveGui(-num, 0);
-            }
-            else
-            {
-                GuiDisplayPokecubeInfo.instance().previousPokemob();
-            }
+            GuiDisplayPokecubeInfo.instance().previousPokemob();
         }
         if (ClientProxyPokecube.nextMove.isPressed())
         {
-            if (GuiScreen.isAltKeyDown())
-            {
-                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
-                GuiDisplayPokecubeInfo.instance().moveGui(0, num);
-            }
-            else
-            {
-                int num = GuiScreen.isCtrlKeyDown() ? 2 : 1;
-                if (GuiScreen.isShiftKeyDown()) num++;
-                if (GuiTeleport.instance().getState()) GuiTeleport.instance().nextMove();
-                else GuiDisplayPokecubeInfo.instance().nextMove(num);
-            }
-
+            int num = GuiScreen.isCtrlKeyDown() ? 2 : 1;
+            if (GuiScreen.isShiftKeyDown()) num++;
+            if (GuiTeleport.instance().getState()) GuiTeleport.instance().nextMove();
+            else GuiDisplayPokecubeInfo.instance().nextMove(num);
         }
         if (ClientProxyPokecube.previousMove.isPressed())
         {
-            if (GuiScreen.isAltKeyDown())
-            {
-                int num = GuiScreen.isShiftKeyDown() ? 10 : 1;
-                GuiDisplayPokecubeInfo.instance().moveGui(0, -num);
-            }
-            else
-            {
-                int num = GuiScreen.isCtrlKeyDown() ? 2 : 1;
-                if (GuiScreen.isShiftKeyDown()) num++;
-                if (GuiTeleport.instance().getState()) GuiTeleport.instance().previousMove();
-                else GuiDisplayPokecubeInfo.instance().previousMove(num);
-            }
+            int num = GuiScreen.isCtrlKeyDown() ? 2 : 1;
+            if (GuiScreen.isShiftKeyDown()) num++;
+            if (GuiTeleport.instance().getState()) GuiTeleport.instance().previousMove();
+            else GuiDisplayPokecubeInfo.instance().previousMove(num);
         }
         if (ClientProxyPokecube.mobBack.isPressed())
         {

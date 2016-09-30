@@ -8,19 +8,13 @@ import static pokecube.core.utils.PokeType.getTranslatedName;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -33,9 +27,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
@@ -43,10 +35,6 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.SpawnData;
-import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
-import pokecube.core.database.SpawnBiomeMatcher;
-import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
@@ -65,9 +53,6 @@ import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.BiomeType;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 
 public class GuiPokedex extends GuiScreen
 {
@@ -94,16 +79,10 @@ public class GuiPokedex extends GuiScreen
     private float                                 xRenderAngle       = 0;
     private float                                 yHeadRenderAngle   = 10;
     private float                                 xHeadRenderAngle   = 0;
-
     private int                                   mouseRotateControl;
-
     private int                                   page               = 0;
-
     private int                                   index              = 0;
-    private int                                   index2             = 0;
     private boolean                               mode               = false;
-
-    List<Integer>                                 biomes             = new ArrayList<Integer>();
 
     int                                           prevX              = 0;
     int                                           prevY              = 0;
@@ -134,20 +113,10 @@ public class GuiPokedex extends GuiScreen
         {
             pokedexEntry = Pokedex.getInstance().getFirstEntry();
         }
-
-        for (ResourceLocation key : Biome.REGISTRY.getKeys())
-        {
-            Biome b = Biome.REGISTRY.getObject(key);
-            if (b != null)
-            {
-                int id = Biome.getIdForBiome(b);
-                biomes.add(id);
-            }
-        }
-        for (BiomeType b : BiomeType.values())
-        {
-            biomes.add(b.getType());
-        }
+        PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUEST);
+        packet.data.setBoolean("mode", mode);
+        packet.data.setString("forme", pokedexEntry.getName());
+        PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
     private boolean canEditPokemob()
@@ -374,83 +343,49 @@ public class GuiPokedex extends GuiScreen
      * @param yOffset */
     private void drawPage2(int xOffset, int yOffset)
     {
+        int listSize = mode ? 6 : 7;
+        mode:
         if (!mode)
         {
-            if (index2 < 0) index2 = biomes.size() - 2;
-            index2 = Math.max(0, index2 % (biomes.size() - 1));
-            ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
-            final Map<PokedexEntry, Float> rates = Maps.newHashMap();
-            final EntityPlayer player = entityPlayer;
-            final Vector3 pos = Vector3.getNewVector().set(player);
-            final SpawnCheck checker = new SpawnCheck(pos, player.worldObj);
-            for (PokedexEntry e : Database.spawnables)
+            List<String> names = PacketPokedex.values;
+            if (names.isEmpty()) break mode;
+            int num = -1;
+            try
             {
-                if (e.getSpawnData().getMatcher(checker, false) != null)
-                {
-                    names.add(e);
-                }
+                num = Integer.parseInt(names.get(0));
             }
-            Collections.sort(names, new Comparator<PokedexEntry>()
+            catch (NumberFormatException e)
             {
-                @Override
-                public int compare(PokedexEntry o1, PokedexEntry o2)
-                {
-                    float rate1 = o1.getSpawnData().getWeight(o1.getSpawnData().getMatcher(checker, false)) * 10e5f;
-                    float rate2 = o2.getSpawnData().getWeight(o2.getSpawnData().getMatcher(checker, false)) * 10e5f;
-                    return (int) (-rate1 + rate2);
-                }
-            });
-            float total = 0;
-            for (PokedexEntry e : names)
-            {
-                SpawnBiomeMatcher matcher = e.getSpawnData().getMatcher(checker, false);
-                float val = e.getSpawnData().getWeight(matcher);
-                float min = e.getSpawnData().getMin(matcher);
-                float num = min + (e.getSpawnData().getMax(matcher) - min) / 2;
-                val *= num;
-                total += val;
-                rates.put(e, val);
+                break mode;
             }
-            for (PokedexEntry e : names)
-            {
-                float val = rates.get(e) * 100 / total;
-                rates.put(e, val);
-            }
-
-            index = Math.max(0, Math.min(index, names.size() - 6));
-            String title = BiomeDatabase.getReadableNameFromType(biomes.get(index2));
+            index = Math.max(0, Math.min(index, names.size() - listSize));
+            String title = BiomeDatabase.getReadableNameFromType(num);
             if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
             if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
-
             drawString(fontRendererObj, title, xOffset + 16, yOffset + 15, 0xFFFFFF);
-
-            for (int n = 0; n < Math.min(names.size(), 6); n++)
+            for (int n = 1; n < Math.min(names.size(), listSize); n++)
             {
-                int yO = yOffset + 30;
-                PokedexEntry dbe = names.get((n + index));
-
-                if (dbe.getSpawnData() == null)
+                int yO = yOffset + 20;
+                String[] var = names.get((n + index)).split("`");
+                String name = var[0];
+                String numbers = "";
+                if (var.length > 1)
                 {
-                    System.err.println("FATAL ERROR MISSING SPAWN DATA FOR " + dbe);
-                    continue;
+                    numbers = var[1];
+                    numbers = numbers.substring(0, Math.min(5, numbers.length()));
+                    if (numbers.equals(" 0.00"))
+                    {
+                        numbers = ">0.01%";
+                    }
+                    else
+                    {
+                        numbers = numbers + "%";
+                    }
                 }
-                String numbers = " " + rates.get(dbe);
-                numbers = numbers.substring(0, Math.min(5, numbers.length()));
-
-                if (numbers.equals(" 0.00"))
-                {
-                    numbers = ">0.01%";
-                }
-                else
-                {
-                    numbers = numbers + "%";
-                }
-                drawString(fontRendererObj, I18n.format(dbe.getUnlocalizedName()), xOffset + 18, yO + n * 10, 0xFF0000);
+                drawString(fontRendererObj, I18n.format(name), xOffset + 18, yO + n * 10, 0xFF0000);
                 drawString(fontRendererObj, numbers, xOffset + 108 - fontRendererObj.getStringWidth(numbers),
                         yO + n * 10, 0xFF0000);
-
                 String time = "";
-
                 drawString(fontRendererObj, time, xOffset + 85, yO + n * 10, 0xFF0000);
             }
         }
@@ -458,70 +393,10 @@ public class GuiPokedex extends GuiScreen
         {
             drawString(fontRendererObj, getEntityToDisplay().getDisplayName().getFormattedText(), xOffset + 16,
                     yOffset + 15, 0xFFFFFF);
-            List<String> biomes = Lists.newArrayList();
-
-            PokedexEntry entry = ((IPokemob) getEntityToDisplay()).getPokedexEntry();
-
-            if (entry.getSpawnData() == null && entry.getChildNb() != entry.getPokedexNb())
-            {
-                PokedexEntry child;
-                if ((child = Database.getEntry(entry.getChildNb())).getSpawnData() != null)
-                {
-                    entry = child;
-                }
-            }
-            // TODO find a way to show what biome combination someone spawns in.
-            SpawnData data = entry.getSpawnData();
-
-            if (data == null) return;
-
-            boolean hasBiomes = false;
-            Map<SpawnBiomeMatcher, SpawnEntry> matchers = data.matchers;
-            for (SpawnBiomeMatcher matcher : matchers.keySet())
-            {
-                String biomeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.BIOMES);
-                String typeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.TYPES);
-                if (biomeString != null) hasBiomes = true;
-                else if (typeString != null)
-                {
-                    String[] args = typeString.split(",");
-                    BiomeType subBiome = null;
-                    for (String s : args)
-                    {
-                        for (BiomeType b : BiomeType.values())
-                        {
-                            if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
-                            {
-                                subBiome = b;
-                                break;
-                            }
-                        }
-                        if (subBiome == null) hasBiomes = true;
-                        subBiome = null;
-                        if (hasBiomes) break;
-                    }
-                }
-                if (hasBiomes) break;
-            }
-            if (hasBiomes) for (ResourceLocation key : Biome.REGISTRY.getKeys())
-            {
-                Biome b = Biome.REGISTRY.getObject(key);
-                if (b != null)
-                {
-                    if (data.isValid(b)) biomes.add(b.getBiomeName());
-                }
-            }
-            for (BiomeType b : BiomeType.values())
-            {
-                if (data.isValid(b))
-                {
-                    biomes.add(b.readableName);
-                }
-            }
-
+            List<String> biomes = PacketPokedex.values;
             // System.out.println(biomes);
-            index = Math.max(0, Math.min(index, biomes.size() - 6));
-            for (int n = 0; n < Math.min(biomes.size(), 6); n++)
+            index = Math.max(0, Math.min(index, biomes.size() - listSize));
+            for (int n = 0; n < Math.min(biomes.size(), listSize); n++)
             {
                 String s = biomes.get(n + index);
                 int yO = yOffset + 30;
@@ -560,7 +435,8 @@ public class GuiPokedex extends GuiScreen
         {
             if (o instanceof IPokemob)
             {
-                count++;
+                if (!mode) count++;
+                else if (((IPokemob) o).getPokedexEntry().getPokedexNb() == pokedexEntry.getPokedexNb()) count++;
             }
         }
         drawString(fontRendererObj, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
@@ -1035,16 +911,6 @@ public class GuiPokedex extends GuiScreen
                 PacketPokedex.sendChangePagePacket((byte) page);
                 if (page == 2)
                 {
-                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
-                    int type = t.getBiome(location);
-                    for (int i = 0; i < biomes.size(); i++)
-                    {
-                        if (biomes.get(i) == (type))
-                        {
-                            index2 = i;
-                        }
-                    }
                     nicknameTextField.setText("");
                     nicknameTextField.setEnabled(false);
                 }
@@ -1095,22 +961,16 @@ public class GuiPokedex extends GuiScreen
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
                 PacketPokedex.sendChangePagePacket((byte) page);
-                if (page == 1)
-                {
-                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-                    Vector3 location = Vector3.getNewVector().set(entityPlayer);
-                    int type = t.getBiome(location.intX(), location.intY(), location.intZ());
-                    for (int i = 0; i < biomes.size(); i++)
-                    {
-                        if (biomes.get(i) == (type))
-                        {
-                            index2 = i - 1;// type - 1;
-                        }
-                    }
-                }
             }
         }
-        if (button == 13) mode = !mode;
+        if (button == 13)
+        {
+            mode = !mode;
+            PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUEST);
+            packet.data.setBoolean("mode", mode);
+            packet.data.setString("forme", pokedexEntry.getName());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+        }
 
         if (page != 0)
         {
@@ -1123,14 +983,6 @@ public class GuiPokedex extends GuiScreen
             {
                 nicknameTextField.setText("");
                 nicknameTextField.setEnabled(false);
-                if (button == 1 && page != 2)
-                {
-                    index2++;
-                }
-                if (button == 2 && page != 2)
-                {
-                    index2--;
-                }
                 if (button == 3)
                 {
                     index--;
@@ -1240,16 +1092,6 @@ public class GuiPokedex extends GuiScreen
 
         if (page == 2)
         {
-            TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(entityPlayer);
-            Vector3 location = Vector3.getNewVector().set(entityPlayer);
-            int type = t.getBiome(location);
-            for (int i = 0; i < biomes.size(); i++)
-            {
-                if (biomes.get(i) == (type))
-                {
-                    index2 = i;
-                }
-            }
             nicknameTextField.setText("");
             nicknameTextField.setEnabled(false);
         }

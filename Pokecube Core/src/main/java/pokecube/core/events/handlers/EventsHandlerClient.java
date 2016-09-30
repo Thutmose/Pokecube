@@ -95,8 +95,20 @@ public class EventsHandlerClient
             String link = "" + result.url;
             String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
                     + link + "\"}}";
-
             String info = "\"" + TextFormatting.GOLD + "Currently Running " + "\"";
+            String mess = "[" + info + "," + linkComponent + ",\"]\"]";
+            return ITextComponent.Serializer.jsonToComponent(mess);
+        }
+
+        private ITextComponent getIssuesMessage(CheckResult result)
+        {
+            String linkName = "[" + TextFormatting.GREEN + "Clicking Here." + TextFormatting.WHITE;
+            String link = "https://github.com/Thutmose/Pokecube/issues";
+            String linkComponent = "{\"text\":\"" + linkName + "\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\""
+                    + link + "\"}}";
+            String info = "\"" + TextFormatting.GOLD
+                    + "If you find any bugs, please report them at the Github Issue tracker, you can find that by "
+                    + "\"";
             String mess = "[" + info + "," + linkComponent + ",\"]\"]";
             return ITextComponent.Serializer.jsonToComponent(mess);
         }
@@ -118,6 +130,8 @@ public class EventsHandlerClient
                 else if (PokecubeMod.core.getConfig().loginmessage)
                 {
                     ITextComponent mess = getInfoMessage(result, "Pokecube Core");
+                    (event.player).addChatMessage(mess);
+                    mess = getIssuesMessage(result);
                     (event.player).addChatMessage(mess);
                 }
             }
@@ -225,6 +239,7 @@ public class EventsHandlerClient
             new UpdateNotifier();
             MinecraftForge.EVENT_BUS.register(new RenderHealth());
             MinecraftForge.EVENT_BUS.register(new GuiArranger());
+            MinecraftForge.EVENT_BUS.register(this);
         }
         notifier = true;
 

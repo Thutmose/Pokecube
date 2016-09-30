@@ -14,7 +14,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.TypeTrainer;
@@ -25,7 +24,7 @@ import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
 
-public abstract class EntityHasPokemobs extends EntityHasAIStates
+public abstract class EntityHasPokemobs extends EntityHasMessages
 {
     protected int            battleCooldown   = -1;
     public ItemStack[]       pokecubes        = new ItemStack[6];
@@ -81,7 +80,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
                         if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
                         {
                             existing = true;
-                            if(Config.instance.trainerslevel)
+                            if (Config.instance.trainerslevel)
                             {
                                 PokecubeManager.heal(mob);
                                 pokecubes[i] = mob.copy();
@@ -290,8 +289,8 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
             cube.throwPokecubeAt(worldObj, this, i, t, null);
             setAIState(THROWING, true);
             attackCooldown = Config.instance.trainerSendOutDelay;
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.toss", getDisplayName(),
-                    i.getDisplayName());
+            ITextComponent text = getMessage(MessageState.SENDOUT, getDisplayName(), i.getDisplayName(),
+                    target.getDisplayName());
             target.addChatMessage(text);
             nextSlot++;
             if (nextSlot >= 6 || getNextPokemob() == null) nextSlot = -1;
@@ -305,7 +304,7 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         if (target != null && target != this.target && attackCooldown <= 0)
         {
             attackCooldown = Config.instance.trainerBattleDelay;
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.agress", getDisplayName());
+            ITextComponent text = getMessage(MessageState.AGRESS, getDisplayName(), target.getDisplayName());
             target.addChatMessage(text);
             this.setAIState(INBATTLE, true);
         }
@@ -313,7 +312,8 @@ public abstract class EntityHasPokemobs extends EntityHasAIStates
         {
             if (this.target != null && this.getAIState(INBATTLE))
             {
-                this.target.addChatMessage(new TextComponentTranslation("pokecube.trainer.forget", getDisplayName()));
+                this.target.addChatMessage(
+                        getMessage(MessageState.DEAGRESS, getDisplayName(), this.target.getDisplayName()));
             }
             this.setAIState(THROWING, false);
             this.setAIState(INBATTLE, false);

@@ -2,18 +2,14 @@ package pokecube.adventures.ai.trainers;
 
 import java.util.List;
 
-import com.google.common.base.Predicate;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.EntityHasAIStates;
+import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -23,24 +19,22 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
-public class EntityAITrainer extends EntityAIBase
+public class AITrainerBattle extends EntityAIBase
 {
-
-    World                             world;
-
-    // The entity (normally a player) that is the target of this trainer.
-    Class<? extends EntityLivingBase> targetClass;
-    Vector3                           loc = Vector3.getNewVector();
-
+    World               world;
     // The trainer Entity
-    final EntityTrainer               trainer;
+    final EntityTrainer trainer;
 
-    public EntityAITrainer(EntityTrainer trainer, Class<? extends EntityLivingBase> targetClass)
+    public AITrainerBattle(EntityTrainer trainer)
     {
         this.trainer = trainer;
         this.world = trainer.getEntityWorld();
-        this.setMutexBits(3);
-        this.targetClass = targetClass;
+    }
+
+    @Override
+    public boolean shouldExecute()
+    {
+        return trainer.getTarget() != null;
     }
 
     private boolean checkPokemobTarget()
@@ -116,9 +110,9 @@ public class EntityAITrainer extends EntityAIBase
                 if (nextStack != null)
                 {
                     IPokemob next = PokecubeManager.itemToPokemob(nextStack, world);
-                    if (next != null)
-                        trainer.getTarget().addChatMessage(new TextComponentTranslation("pokecube.trainer.next",
-                                trainer.getDisplayName(), next.getPokemonDisplayName()));
+                    if (next != null) trainer.getTarget()
+                            .addChatMessage(trainer.getMessage(MessageState.ABOUTSEND, trainer.getDisplayName(),
+                                    next.getPokemonDisplayName(), trainer.getTarget().getDisplayName()));
                 }
             }
             return;
@@ -179,75 +173,6 @@ public class EntityAITrainer extends EntityAIBase
         outMob.setMoveIndex(index);
     }
 
-    @Override
-    public boolean shouldExecute()
-    {
-        trainer.lowerCooldowns();
-        // Dead trainers can't fight.
-        if (!trainer.isEntityAlive()) return false;
-        // Trainers on cooldown shouldn't fight, neither should friendly ones
-        if (trainer.cooldown > trainer.getEntityWorld().getTotalWorldTime() || trainer.friendlyCooldown > 0)
-            return false;
-        // Predicated to return true for invalid targets
-        Predicate<EntityLivingBase> matcher = new Predicate<EntityLivingBase>()
-        {
-            @Override
-            public boolean apply(EntityLivingBase input)
-            {
-                if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
-                        || ((EntityPlayer) input).isSpectator() || trainer.hasDefeated(input); }
-
-                return false;
-            }
-        };
-        // Check if target is invalid.
-        if (trainer.getTarget() != null && (trainer.getTarget().isDead || matcher.apply(trainer.getTarget())))
-        {
-            trainer.setTarget(null);
-            resetTask();
-            return false;
-        }
-        // If target is valid, return true.
-        if (trainer.getTarget() != null) return true;
-
-        // Look for targets
-        Vector3 here = loc.set(trainer);
-        EntityLivingBase target = null;
-        List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
-                here.getAABB().expand(16, 16, 16));
-        int sight = trainer.sight <= 0 ? Config.instance.trainerSightRange : trainer.sight;
-        for (Object o : targets)
-        {
-            EntityLivingBase e = (EntityLivingBase) o;
-            // Only visible or valid targets.
-            if (Vector3.isVisibleEntityFromEntity(trainer, e) && !matcher.apply(e)
-                    && e.getDistanceToEntity(trainer) < sight)
-            {
-                target = e;
-                break;
-            }
-        }
-        // If no target, return false.
-        if (target == null)
-        {
-            // If trainer was in battle (any of these 3) reset trainer before
-            // returning false.
-            if (trainer.outMob != null || trainer.getAIState(EntityHasAIStates.THROWING)
-                    || trainer.getAIState(EntityHasAIStates.INBATTLE))
-            {
-                resetTask();
-            }
-            return false;
-        }
-        // Check to see if leader has defeated.
-        if (trainer.hasDefeated(target)) target = null;
-
-        // Set trainers target
-        trainer.setTarget(target);
-        // Return true if target exists.
-        return trainer.getTarget() != null;
-    }
-
     /** Execute a one shot task or start executing a continuous task */
     @Override
     public void startExecuting()
@@ -258,6 +183,7 @@ public class EntityAITrainer extends EntityAIBase
     @Override
     public void updateTask()
     {
+        if (trainer.getTarget() == null) return;
         // Check if in range, if too far, target has run away, so forget about
         // it.
         double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
@@ -288,4 +214,5 @@ public class EntityAITrainer extends EntityAIBase
             doAggression();
         }
     }
+
 }

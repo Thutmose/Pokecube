@@ -376,6 +376,15 @@ item.rowapBerry.name=Rowap Berry
 item.rowapBerry.desc=Used to make Repel
 item.berryjuice.name=Berry Juice
 
+item.berry.favourite.desc=%1$s's Favourite.
+item.berry.nomind.desc=%1$s doesn't mind this.
+item.berry.like1.desc=%1$s somewhat likes this.
+item.berry.like2.desc=%1$s likes this a lot.
+item.berry.like3.desc=%1$s likes this very much.
+item.berry.hate1.desc=%1$s somewhat hates this.
+item.berry.hate2.desc=%1$s hates this a lot.
+item.berry.hate3.desc=%1$s hates this very much.
+
 tile.cheriCrop.name=Cheri Crop
 tile.chestoCrop.name=Chesto Crop
 tile.pechaCrop.name=Pecha Crop

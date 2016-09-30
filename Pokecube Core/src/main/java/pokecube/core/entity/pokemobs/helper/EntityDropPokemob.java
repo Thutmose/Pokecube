@@ -6,11 +6,13 @@ package pokecube.core.entity.pokemobs.helper;
 import java.util.List;
 
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 
 /** @author sebastien */
@@ -93,5 +95,14 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     public ItemStack wildHeldItem()
     {
         return this.getPokedexEntry().getRandomHeldItem();
+    }
+
+    @Override
+    /** Get the experience points the entity currently has. */
+    protected int getExperiencePoints(EntityPlayer player)
+    {
+        float scale = PokecubeCore.core.getConfig().expFromDeathDropScale;
+        int exp = (int) Math.max(1, this.getBaseXP() * scale * 0.01 * Math.sqrt(getLevel()));
+        return exp;
     }
 }

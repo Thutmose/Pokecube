@@ -41,20 +41,21 @@ public interface IPokemob extends IMoveConstants
         public static void applyHappiness(IPokemob mob, HappinessType type)
         {
             int current = mob.getHappiness();
-
             if (type == BERRY && mob.getStatus() != STATUS_NON) { return; }
-
-            if (type != TRADE) if (current < 100)
+            if (type != TRADE)
             {
-                mob.addHappiness(type.low);
-            }
-            else if (current < 200)
-            {
-                mob.addHappiness(type.mid);
-            }
-            else
-            {
-                mob.addHappiness(type.high);
+                if (current < 100)
+                {
+                    mob.addHappiness(type.low);
+                }
+                else if (current < 200)
+                {
+                    mob.addHappiness(type.mid);
+                }
+                else
+                {
+                    mob.addHappiness(type.high);
+                }
             }
             else
             {
@@ -62,10 +63,9 @@ public interface IPokemob extends IMoveConstants
             }
         }
 
-        final int low;
-        final int mid;
-
-        final int high;
+        public final int low;
+        public final int mid;
+        public final int high;
 
         private HappinessType(int low, int mid, int high)
         {

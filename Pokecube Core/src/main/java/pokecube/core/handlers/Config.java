@@ -160,6 +160,10 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public boolean             onlyPokemobsDamagePokemobs = false;
     @Configure(category = mobAI)
+    public float               playerToPokemobDamageScale = 1;
+    @Configure(category = mobAI)
+    public float               expFromDeathDropScale               = 1;
+    @Configure(category = mobAI)
     /** Do explosions occur and cause damage */
     public boolean             explosions                 = true;
     @Configure(category = mobAI)
@@ -197,6 +201,8 @@ public class Config extends ConfigBase
     public int                 meteorDistance             = 3000;
     @Configure(category = world)
     public boolean             doSpawnBuilding            = true;
+    @Configure(category = world)
+    public boolean             pokecenterTorch            = true;
     @Configure(category = world)
     public boolean             pokemartMerchant           = true;
     @Configure(category = world, needsMcRestart = true)

@@ -19,10 +19,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.TileEntityBerries;
+import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.Nature;
 
 /** @author Oracion
  * @author Manchou */
@@ -47,43 +49,86 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
         case 1:
             info = I18n.format("item.cheriBerry.desc");
             list.add(info);
-            return;
+            break;
         case 2:
             info = I18n.format("item.chestoBerry.desc");
             list.add(info);
-            return;
+            break;
         case 3:
             info = I18n.format("item.pechaBerry.desc");
             list.add(info);
-            return;
+            break;
         case 4:
             info = I18n.format("item.rawstBerry.desc");
             list.add(info);
-            return;
+            break;
         case 5:
             info = I18n.format("item.aspearBerry.desc");
             list.add(info);
-            return;
+            break;
         case 7:
             info = I18n.format("item.oranBerry.desc");
             list.add(info);
-            return;
+            break;
         case 9:
             info = I18n.format("item.lumBerry.desc");
             list.add(info);
-            return;
+            break;
         case 10:
             info = I18n.format("item.sitrusBerry.desc");
             list.add(info);
-            return;
+            break;
         case 63:
             info = I18n.format("item.jabocaBerry.desc");
             list.add(info);
-            return;
+            break;
         case 64:
             info = I18n.format("item.rowapBerry.desc");
             list.add(info);
-            return;
+            break;
+        }
+
+        if (player.openContainer instanceof ContainerPokemob)
+        {
+            ContainerPokemob container = (ContainerPokemob) player.openContainer;
+            IPokemob pokemob = container.getPokemob();
+            Nature nature = pokemob.getNature();
+            int fav = Nature.getFavouriteBerryIndex(nature);
+            if (fav == stack.getItemDamage())
+            {
+                info = I18n.format("item.berry.favourite.desc", pokemob.getPokemonDisplayName().getFormattedText());
+                list.add(info);
+            }
+            int weight = Nature.getBerryWeight(stack.getItemDamage(), nature);
+            if (weight == 0)
+            {
+                info = I18n.format("item.berry.nomind.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            if (weight >= 10)
+            {
+                info = I18n.format("item.berry.like1.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            if (weight >= 20)
+            {
+                info = I18n.format("item.berry.like2.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            if (weight >= 30)
+            {
+                info = I18n.format("item.berry.like3.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            if (weight <= -10)
+            {
+                info = I18n.format("item.berry.hate1.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            if (weight <= -20)
+            {
+                info = I18n.format("item.berry.hate2.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            if (weight <= -30)
+            {
+                info = I18n.format("item.berry.hate3.desc", pokemob.getPokemonDisplayName().getFormattedText());
+            }
+            list.add(info);
         }
     }
 

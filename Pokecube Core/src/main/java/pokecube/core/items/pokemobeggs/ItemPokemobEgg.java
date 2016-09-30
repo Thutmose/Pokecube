@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -470,6 +471,11 @@ public class ItemPokemobEgg extends Item
                 EntityLivingBase owner = mob.getPokemonOwner();
                 owner.addChatMessage(
                         new TextComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName().getFormattedText()));
+                if (world.getGameRules().getBoolean("doMobLoot"))
+                {
+                    world.spawnEntityInWorld(new EntityXPOrb(world, entity.posX, entity.posY, entity.posZ,
+                            entity.getRNG().nextInt(7) + 1));
+                }
             }
             entity.setHeldItem(EnumHand.MAIN_HAND, null);
             entity.playLivingSound();

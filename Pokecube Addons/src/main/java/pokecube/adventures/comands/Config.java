@@ -135,17 +135,6 @@ public class Config extends ConfigBase
     @Override
     public void applySettings()
     {
-        String[] defaults = structureBiomes;
-        for (String s : defaults)
-        {
-            if (s != null && !s.isEmpty())
-            {
-                String[] args = s.split(":");
-                String key = args[0].toLowerCase(java.util.Locale.ENGLISH).replace(".tml", "");
-                String subbiome = args[1];
-                biomeMap.put(key, BiomeType.getBiome(subbiome).getType());
-            }
-        }
         TileEntityWarpPad.MAXRANGE = warpPadRange;
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
@@ -215,6 +204,17 @@ public class Config extends ConfigBase
     {
         processRanchables(ranchables);
         parseBiomes();
+        String[] defaults = structureBiomes;
+        for (String s : defaults)
+        {
+            if (s != null && !s.isEmpty())
+            {
+                String[] args = s.split(":");
+                String key = args[0].toLowerCase(java.util.Locale.ENGLISH).replace(".tml", "");
+                String subbiome = args[1];
+                biomeMap.put(key, BiomeType.getBiome(subbiome).getType());
+            }
+        }
     }
 
     void processRanchables(String[] list)

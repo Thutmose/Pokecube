@@ -19,6 +19,7 @@ import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.pc.BlockPC;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class ComponentPokeCentre extends ComponentVillageBase
@@ -155,7 +156,8 @@ public class ComponentPokeCentre extends ComponentVillageBase
         this.placeBlockAtCurrentPosition(world,
                 PokecubeItems.pokecenter.getDefaultState().withProperty(BlockHealTable.FIXED, true), 4, 3, 7,
                 structureboundingbox);// healingTable
-        this.placeBlockAtCurrentPosition(world, Blocks.REDSTONE_TORCH.getDefaultState(), 4, 2, 7, structureboundingbox);// healingTable
+        if (PokecubeMod.core.getConfig().pokecenterTorch) this.placeBlockAtCurrentPosition(world,
+                Blocks.REDSTONE_TORCH.getDefaultState(), 4, 2, 7, structureboundingbox);// healingTable
         // DOOR
         this.func_189927_a(world, structureboundingbox, random, 4, 3, 0, coordBaseMode.rotateY());
 

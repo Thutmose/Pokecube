@@ -22,7 +22,9 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -125,10 +127,8 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     {
         vBak.set(vec);
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
-
         if (e instanceof EntityItem)
         {
-            HappinessType.applyHappiness(this, HappinessType.EVBERRY);
             ItemStack item = ((EntityItem) e).getEntityItem();
             if (item.getItem() instanceof IPokemobUseable)
             {
@@ -138,16 +138,24 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
             {
                 hungerValue *= 2;
             }
-            // Make wild pokemon level up naturally to their cap, to allow wild
-            // hatches
-            if (!getPokemonAIState(IMoveConstants.TAMED))
+            if (item.getItem() instanceof ItemBerry)
             {
-                int exp = SpawnHandler.getSpawnXp(worldObj, v1.set(this), getPokedexEntry());
-                if (getExp() < exp)
+                int weight = Nature.getBerryWeight(item.getItemDamage(), getNature());
+                int current = getHappiness();
+                HappinessType type = HappinessType.BERRY;
+                if (current < 100)
                 {
-                    int n = new Random().nextInt(exp - getExp()) / 3 + 1;
-                    setExp(getExp() + n, true);
+                    weight *= type.low / 10f;
                 }
+                else if (current < 200)
+                {
+                    weight *= type.mid / 10f;
+                }
+                else
+                {
+                    weight *= type.high / 10f;
+                }
+                addHappiness(weight);
             }
         }
         vec.set(vBak);
@@ -158,6 +166,17 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         float missingHp = this.getMaxHealth() - this.getHealth();
         float toHeal = this.getHealth() + Math.max(1, missingHp * 0.25f);
         this.setHealth(Math.min(toHeal, getMaxHealth()));
+        // Make wild pokemon level up naturally to their cap, to allow wild
+        // hatches
+        if (!getPokemonAIState(IMoveConstants.TAMED))
+        {
+            int exp = SpawnHandler.getSpawnXp(worldObj, v1.set(this), getPokedexEntry());
+            if (getExp() < exp)
+            {
+                int n = new Random().nextInt(exp - getExp()) / 3 + 1;
+                setExp(getExp() + n, true);
+            }
+        }
     }
 
     @Override

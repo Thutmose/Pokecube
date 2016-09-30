@@ -418,12 +418,6 @@ public class GuiDisplayPokecubeInfo extends Gui
      * @param y */
     public void moveGui(int x, int y)
     {
-        if (GuiScreen.isCtrlKeyDown())
-        {
-            PokecubeMod.core.getConfig().guiDown = !PokecubeMod.core.getConfig().guiDown;
-            saveConfig();
-            return;
-        }
         System.out.println(x + " " + y);
         PokecubeMod.core.getConfig().guiOffset[0] += x;
         PokecubeMod.core.getConfig().guiOffset[1] += y;

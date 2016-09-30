@@ -30,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import pokecube.core.database.PokedexEntry;
@@ -111,14 +110,6 @@ public final class SpawnHandler
         if (forbiddenSpawningCoords.containsKey(coord)) return false;
         forbiddenSpawningCoords.put(coord, range);
         return true;
-    }
-
-    public static void addSpawn(PokedexEntry entry)
-    {
-    }
-
-    public static void addSpawn(PokedexEntry entry, Biome b)
-    {
     }
 
     public static boolean canPokemonSpawnHere(Vector3 location, World worldObj, PokedexEntry entry)
@@ -239,7 +230,6 @@ public final class SpawnHandler
             y = Math.max(1, y);
             temp.set(ret).addTo(x, y, z);
             if (temp.isClearOfBlocks(world)) { return temp; }
-
         }
         return null;
     }

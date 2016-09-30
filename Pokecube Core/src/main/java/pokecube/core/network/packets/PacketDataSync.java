@@ -96,11 +96,6 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
                 AISaveHandler.clearInstance();
                 GuiInfoMessages.clear();
                 GuiTeleport.create();
-                // PokecubeCore.registerSpawns();//TODO sync spawns in here
-                // properly
-
-                // if (FMLCommonHandler.instance().getMinecraftServerInstance()
-                // == null) TerrainManager.clear();
             }
             else
             {

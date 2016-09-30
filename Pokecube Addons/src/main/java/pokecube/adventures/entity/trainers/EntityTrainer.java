@@ -29,15 +29,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.ai.trainers.EntityAITrainer;
+import pokecube.adventures.ai.trainers.AITrainerBattle;
+import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityHasPokemobs;
+import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
@@ -256,7 +257,8 @@ public class EntityTrainer extends EntityHasPokemobs
     protected void initAI(Vector3 location, boolean stationary)
     {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
+        this.tasks.addTask(1, new AITrainerFindTarget(this, EntityPlayer.class));
+        this.tasks.addTask(1, new AITrainerBattle(this));
         this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
@@ -294,14 +296,14 @@ public class EntityTrainer extends EntityHasPokemobs
                     }
                     item.setPickupDelay(0);
                 }
-                ITextComponent text = new TextComponentTranslation("pokecube.trainer.drop", this.getDisplayName(),
-                        i.getDisplayName());
+                ITextComponent text = getMessage(MessageState.GIVEITEM, this.getDisplayName(), i.getDisplayName(),
+                        player.getDisplayName());
                 defeater.addChatMessage(text);
             }
         }
         if (defeater != null)
         {
-            ITextComponent text = new TextComponentTranslation("pokecube.trainer.defeat", this.getDisplayName());
+            ITextComponent text = getMessage(MessageState.DEFEAT, getDisplayName());
             defeater.addChatMessage(text);
         }
         this.setTrainerTarget(null);

@@ -11,7 +11,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
-import pokecube.adventures.ai.trainers.EntityAITrainer;
+import pokecube.adventures.ai.trainers.AITrainerBattle;
+import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.core.database.Database;
 import pokecube.core.utils.Tools;
@@ -40,7 +41,8 @@ public class EntityLeader extends EntityTrainer
 
         this.setSize(0.6F, 1.8F);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAITrainer(this, EntityPlayer.class));
+        this.tasks.addTask(1, new AITrainerFindTarget(this, EntityPlayer.class));
+        this.tasks.addTask(1, new AITrainerBattle(this));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
         this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));

@@ -671,7 +671,6 @@ public class PokedexEntryLoader
                     if (gender != -1)
                     {
                         PokedexEntry entry = Database.getEntry(xmlEntry.genderBase);
-                        System.out.println("Gender forme for " + xmlEntry.name + " " + entry);
                         entry.createGenderForme(gender);
                     }
                     else
@@ -780,7 +779,7 @@ public class PokedexEntryLoader
 
     private static void parseSpawns(PokedexEntry entry, StatsNode xmlStats)
     {
-        if (xmlStats.spawnRules.isEmpty() || entry.isGenderForme) return;
+        if (xmlStats.spawnRules.isEmpty()) return;
         boolean overwrite = xmlStats.spawns == null ? false : Boolean.parseBoolean(xmlStats.spawns);
         SpawnData spawnData = entry.getSpawnData();
         if (spawnData == null || overwrite)
@@ -791,6 +790,7 @@ public class PokedexEntryLoader
         {
             handleAddSpawn(spawnData, rule);
         }
+        System.out.println(entry + " " + spawnData.matchers);
         entry.setSpawnData(spawnData);
         if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
 

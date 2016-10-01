@@ -189,8 +189,9 @@ public class PokecubeCore extends PokecubeMod
     {
         int n = 0;
         List<PokedexEntry> spawns = new ArrayList<PokedexEntry>();
+        System.out.println("Before: "+Database.spawnables.size());
         Database.spawnables.clear();
-        for (PokedexEntry dbe : Database.data.values())
+        for (PokedexEntry dbe : Database.allFormes)
         {
             if (dbe.getSpawnData() != null)
             {

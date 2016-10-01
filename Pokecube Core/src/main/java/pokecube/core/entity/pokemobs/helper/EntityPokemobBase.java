@@ -780,7 +780,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 255;
-            if (j != 1 && j < this.pokeChest.getSizeInventory())
+            if (j < this.pokeChest.getSizeInventory())
             {
                 this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
             }
@@ -887,17 +887,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 255;
-            if (j != 1 && j < this.pokeChest.getSizeInventory())
+            if (j < this.pokeChest.getSizeInventory())
             {
                 this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
-            }
-            if (this.pokeChest.getStackInSlot(1) != null)
-            {
-                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
-            }
-            else
-            {
-                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
             }
         }
         handleArmourAndSaddle();
@@ -1103,6 +1095,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Write Inventory tag
         NBTTagCompound inventoryTag = new NBTTagCompound();
         NBTTagList nbttaglist = new NBTTagList();
+        this.pokeChest.setInventorySlotContents(1, this.getHeldItemMainhand());
         for (int i = 0; i < this.pokeChest.getSizeInventory(); ++i)
         {
             ItemStack itemstack = this.pokeChest.getStackInSlot(i);

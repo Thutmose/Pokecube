@@ -6605,7 +6605,6 @@
             <LOGIC shoulder="FALSE"/>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>255</GENDERRATIO>
-            <Spawn rate="0.8" types="ruin"/>
             <BASESTATS atk="72" def="48" hp="48" spatk="72" spd="48" spdef="48"/>
             <EVYIELD atk="1" spatk="1"/>
             <SIZES height="0.5" length="0.5" width="0.5"/>
@@ -6616,34 +6615,146 @@
             <LVLUP lvl_1="HIDDENPOWER"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Unown_A" number="201"/>
-    <Pokemon name="Unown_B" number="201"/>
-    <Pokemon name="Unown_C" number="201"/>
-    <Pokemon name="Unown_D" number="201"/>
-    <Pokemon name="Unown_E" number="201"/>
-    <Pokemon name="Unown_Ex" number="201"/>
-    <Pokemon name="Unown_F" number="201"/>
-    <Pokemon name="Unown_G" number="201"/>
-    <Pokemon name="Unown_H" number="201"/>
-    <Pokemon name="Unown_I" number="201"/>
-    <Pokemon name="Unown_J" number="201"/>
-    <Pokemon name="Unown_K" number="201"/>
-    <Pokemon name="Unown_L" number="201"/>
-    <Pokemon name="Unown_M" number="201"/>
-    <Pokemon name="Unown_N" number="201"/>
-    <Pokemon name="Unown_O" number="201"/>
-    <Pokemon name="Unown_P" number="201"/>
-    <Pokemon name="Unown_Q" number="201"/>
-    <Pokemon name="Unown_Qu" number="201"/>
-    <Pokemon name="Unown_R" number="201"/>
-    <Pokemon name="Unown_S" number="201"/>
-    <Pokemon name="Unown_T" number="201"/>
-    <Pokemon name="Unown_U" number="201"/>
-    <Pokemon name="Unown_V" number="201"/>
-    <Pokemon name="Unown_W" number="201"/>
-    <Pokemon name="Unown_X" number="201"/>
-    <Pokemon name="Unown_Y" number="201"/>
-    <Pokemon name="Unown_Z" number="201"/>
+    <Pokemon name="Unown_A" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_B" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_C" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_D" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_E" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_Ex" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_F" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_G" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_H" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_I" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_J" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_K" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_L" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_M" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_N" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_O" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_P" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_Q" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_Qu" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_R" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_S" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_T" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_U" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_V" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_W" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_X" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_Y" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Unown_Z" number="201">
+        <STATS>
+            <Spawn rate="0.03" types="ruin"/>
+        </STATS>
+    </Pokemon>
     <Pokemon base="true" name="Wobbuffet" number="202">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>

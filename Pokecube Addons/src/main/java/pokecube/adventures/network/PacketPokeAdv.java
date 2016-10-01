@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.items.ItemTarget;
+import pokecube.adventures.network.packets.PacketAFA;
 import pokecube.adventures.network.packets.PacketBag;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeCore;
@@ -172,24 +173,6 @@ public class PacketPokeAdv
                         e.printStackTrace();
                     }
                 }
-                if (channel == MESSAGEGUIAFA && player.openContainer instanceof ContainerAFA)
-                {
-                    ContainerAFA cont = (ContainerAFA) player.openContainer;
-                    TileEntityAFA tile = cont.tile;
-                    if (buffer.readableBytes() > 7)
-                    {
-                        int id = buffer.readInt();
-                        int val = buffer.readInt();
-                        System.out.println(id + " " + val);
-                        tile.setField(id, val);
-                    }
-                    PacketBuffer retBuf = new PacketBuffer(Unpooled.buffer(5));
-                    retBuf.writeByte(MessageClient.MESSAGEGUIAFA);
-                    retBuf.writeInt(tile.getField(0));
-                    MessageClient ret = new MessageClient(retBuf);
-                    return ret;
-
-                }
                 return null;
             }
 
@@ -204,7 +187,6 @@ public class PacketPokeAdv
         }
 
         public static final byte MESSAGEBIOMESETTER = 9;
-        public static final byte MESSAGEGUIAFA      = 11;
 
         PacketBuffer             buffer;;
 
@@ -268,6 +250,10 @@ public class PacketPokeAdv
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketTrainer.class, PacketTrainer.class,
                 PokecubeCore.getMessageID(), Side.SERVER);
+        PokecubeMod.packetPipeline.registerMessage(PacketAFA.class, PacketAFA.class, PokecubeCore.getMessageID(),
+                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketAFA.class, PacketAFA.class, PokecubeCore.getMessageID(),
+                Side.SERVER);
     }
 
     public static MessageClient makeClientPacket(byte channel, byte[] data)

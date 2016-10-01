@@ -670,7 +670,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public void update()
     {
         if (worldObj.isRemote) return;
-        if (!PokecubeAdv.hasEnergyAPI) energy = 32;
+        if (!PokecubeAdv.hasEnergyAPI) energy += 32;
         checkRecipes();
     }
 

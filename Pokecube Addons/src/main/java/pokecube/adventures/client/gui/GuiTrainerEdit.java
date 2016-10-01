@@ -29,6 +29,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 
 public class GuiTrainerEdit extends GuiScreen
@@ -83,6 +84,13 @@ public class GuiTrainerEdit extends GuiScreen
             sendChooseToServer();
             mc.thePlayer.closeScreen();
             resetTeam = false;
+        }
+        else if (guibutton.id == 7)
+        {
+            PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEKILLTRAINER);
+            packet.data.setInteger("I", trainer.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+            mc.thePlayer.closeScreen();
         }
         else
         {
@@ -222,6 +230,7 @@ public class GuiTrainerEdit extends GuiScreen
         String gender = trainer.male ? "\u2642" : "\u2640";
         buttonList.add(new GuiButton(5, width / 2 - xOffset - 90, height / 2 - yOffset - 90, 20, 20, gender));
         buttonList.add(new GuiButton(6, width / 2 - xOffset + 80, height / 2 - yOffset - 90, 50, 20, "Reset"));
+        buttonList.add(new GuiButton(7, width / 2 - xOffset + 80, height / 2 - yOffset + 60, 50, 20, "Kill"));
         yOffset = -20;
         for (int i = 0; i < 6; i++)
         {
@@ -406,9 +415,9 @@ public class GuiTrainerEdit extends GuiScreen
                     int level = Integer.parseInt(textFieldLevels[i].getText());
                     int exp = Tools.levelToXp(entry.getEvolutionMode(), level);
                     ItemStack stack = trainer.getPokemob(i);
-                    NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob");
-                    pokemob.setInteger("exp", exp);
-                    stack.getTagCompound().setTag("Pokemob", pokemob);
+                    NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob")
+                            .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.STATSTAG);
+                    pokemob.setInteger(TagNames.EXP, exp);
                 }
             }
             NBTTagCompound tag = new NBTTagCompound();

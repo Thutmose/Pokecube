@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -21,6 +22,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
 {
     public static final byte MESSAGEUPDATETRAINER = 0;
     public static final byte MESSAGENOTIFYDEFEAT  = 1;
+    public static final byte MESSAGEKILLTRAINER   = 2;
 
     byte                     message;
     public NBTTagCompound    data                 = new NBTTagCompound();
@@ -92,6 +94,10 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
             {
                 int maxXp = SpawnHandler.getSpawnLevel(trainer.getEntityWorld(), Vector3.getNewVector().set(trainer),
                         Database.getEntry(1));
+                for (EntityEquipmentSlot slot : EntityEquipmentSlot.values())
+                {
+                    trainer.setItemStackToSlot(slot, null);
+                }
                 trainer.initTrainer(trainer.type, maxXp);
             }
             else
@@ -109,13 +115,21 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 if (stationary) trainer.setStationary(stationary);
                 PacketHandler.sendEntityUpdate(trainer);
             }
+            return;
         }
-        else if (message.message == MESSAGENOTIFYDEFEAT)
+        if (message.message == MESSAGENOTIFYDEFEAT)
         {
             int id = message.data.getInteger("I");
             EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
             boolean notify = message.data.getBoolean("V");
             trainer.defeated = notify;
+            return;
+        }
+        if (message.message == MESSAGEKILLTRAINER)
+        {
+            int id = message.data.getInteger("I");
+            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
+            trainer.setDead();
         }
     }
 

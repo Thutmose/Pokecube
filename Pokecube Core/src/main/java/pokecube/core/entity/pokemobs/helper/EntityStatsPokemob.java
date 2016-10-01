@@ -33,7 +33,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
@@ -62,7 +61,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     String              forme            = "";
 
     /** The happiness value of the pokemob */
-    private int         bonusHappiness   = 0;
+    protected int       bonusHappiness   = 0;
 
     boolean             wasShadow        = false;
 
@@ -632,78 +631,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        this.getDataManager().set(NICKNAMEDW, nbttagcompound.getString(PokecubeSerializer.NICKNAME));
-        try
-        {
-            setEVs(PokecubeSerializer.longAsByteArray(nbttagcompound.getLong(PokecubeSerializer.EVS)));
-            long ivs = nbttagcompound.getLong(PokecubeSerializer.IVS);
-
-            if (ivs < 0)
-            {
-                ivs = PokecubeSerializer.byteArrayAsLong(
-                        new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
-                                Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) });
-            }
-
-            setIVs(PokecubeSerializer.longAsByteArray(ivs));
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-
-        setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false);
-        String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
-        isAncient = nbttagcompound.getBoolean("isAncient");
-        wasShadow = nbttagcompound.getBoolean("wasShadow");
-
-        byte[] rgbaBytes = new byte[4];
-        rgbaBytes = nbttagcompound.getByteArray("colours");
-
-        for (int i = 0; i < 4; i++)
-            rgba[i] = rgbaBytes[i] + 128;
-
-        shiny = nbttagcompound.getBoolean("shiny");
-        addHappiness(nbttagcompound.getInteger("happiness"));
-        if (getAbility() != null) getAbility().destroy();
-        if (nbttagcompound.hasKey("ability", 8))
-            setAbility(AbilityManager.getAbility(nbttagcompound.getString("ability")));
-        else if (nbttagcompound.hasKey("ability", 3))
-            setAbility(getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"), this));
-
-        if (ability == null)
-        {
-            int abilityNumber = abilityIndex;
-            if (getPokedexEntry().getAbility(abilityNumber, this) == null)
-            {
-                if (abilityNumber != 0) abilityNumber = 0;
-                else abilityNumber = 1;
-            }
-            setAbility(getPokedexEntry().getAbility(abilityNumber, this));
-        }
-        if (ability != null) ability.init(this);
-        if (nbttagcompound.hasKey("personalityValue")) personalityValue = nbttagcompound.getInteger("personalityValue");
-
-        nature = Nature.values()[nbttagcompound.getByte("nature")];
-        forme = nbttagcompound.getString("forme");
-        this.changeForme(forme);
-        getEntityData().setBoolean("dittotag", nbttagcompound.getBoolean("dittotag"));
-        if (movesString != null && movesString.length() > 2)
-        {
-            String[] moves = movesString.split(",");
-            int indexMove = 0;
-
-            for (int i = 0; i < Math.min(4, moves.length); i++)
-            {
-                String move = moves[i];
-
-                if (move != null && move.length() > 1)
-                {
-                    setMove(indexMove, move);
-                    indexMove++;
-                }
-            }
-        }
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -748,6 +675,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setAbility(Ability ability)
     {
+        if (this.ability != null && this.ability != ability) this.ability.destroy();
         this.ability = ability;
     }
 
@@ -1003,22 +931,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger(PokecubeSerializer.EXP, getExp());
-        nbttagcompound.setString(PokecubeSerializer.NICKNAME, getPokemonNickname());
-        nbttagcompound.setLong(PokecubeSerializer.EVS, PokecubeSerializer.byteArrayAsLong(getEVs()));
-        nbttagcompound.setLong(PokecubeSerializer.IVS, PokecubeSerializer.byteArrayAsLong(getIVs()));
-        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
-                (byte) (rgba[3] - 128) };
-        nbttagcompound.setByteArray("colours", rgbaBytes);
-        nbttagcompound.setBoolean("shiny", shiny);
-        nbttagcompound.setByte("nature", (byte) nature.ordinal());
-        nbttagcompound.setInteger("happiness", bonusHappiness);
-        if (ability != null) nbttagcompound.setString("ability", ability.toString());
-        nbttagcompound.setBoolean("isAncient", isAncient);
-        nbttagcompound.setBoolean("wasShadow", wasShadow);
-        nbttagcompound.setString("forme", forme);
-        nbttagcompound.setInteger("personalityValue", personalityValue);
-        if (pokedexNb == 132) nbttagcompound.setBoolean("dittotag", getEntityData().getBoolean("dittotag"));
     }
 
     /** Use this for anything that does not change or need to be updated. */

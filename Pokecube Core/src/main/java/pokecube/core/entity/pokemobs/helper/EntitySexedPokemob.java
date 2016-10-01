@@ -25,7 +25,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
@@ -239,8 +238,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        setSexe((byte) nbttagcompound.getInteger(PokecubeSerializer.SEXE));
-        inLove = nbttagcompound.getInteger("InLove2");
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -324,8 +321,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger(PokecubeSerializer.SEXE, getSexe());
-        nbttagcompound.setInteger("InLove2", inLove);
     }
 
     /** Use this for anything that does not change or need to be updated. */

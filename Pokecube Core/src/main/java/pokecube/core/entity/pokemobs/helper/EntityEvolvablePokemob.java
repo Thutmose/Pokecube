@@ -3,6 +3,8 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -64,10 +66,9 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         }
     }
 
-    ItemStack      stack     = null;
-    public boolean traded    = false;
-    String         evolution = "";
-    boolean        evolving  = false;
+    ItemStack stack     = null;
+    String    evolution = "";
+    boolean   evolving  = false;
 
     public EntityEvolvablePokemob(World world)
     {
@@ -331,13 +332,14 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (hasCube && hasSpace)
             {
-                int cubeId = PokecubeItems.getCubeId(cube);
                 Entity pokemon = PokecubeMod.core.createEntityByPokedexNb(Database.getEntry("shedinja").getPokedexNb(),
                         worldObj);
                 if (pokemon != null)
                 {
+                    ItemStack mobCube = cube.copy();
+                    mobCube.stackSize = 1;
                     IPokemob poke = (IPokemob) pokemon;
-                    poke.setPokecubeId(cubeId);
+                    poke.setPokecube(mobCube);
                     poke.setPokemonOwner(player);
                     poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true);
                     ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
@@ -380,7 +382,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                         this.getPokemonDisplayName().getFormattedText(),
                         ((IPokemob) evolution).getPokedexEntry().getName());
                 this.displayMessageToOwner(mess);
-                this.setPokemonOwner(null);
+                this.setPokemonOwner((UUID) null);
                 this.setDead();
                 ((IPokemob) evolution).changeForme(forme);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
@@ -444,7 +446,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         if (getHeldItemMainhand() != null
                 && Tools.isSameStack(getHeldItemMainhand(), PokecubeItems.getStack("everstone")))
         {
-            traded = false;
+            setPokemonAIState(TRADED, false);
         }
     }
 
@@ -452,7 +454,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        setTraded(nbttagcompound.getBoolean("traded"));
     }
 
     private void setEvol(int num)
@@ -481,7 +482,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public void setTraded(boolean trade)
     {
-        traded = trade;
         setPokemonAIState(TRADED, trade);
     }
 
@@ -516,6 +516,5 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("traded", traded);
     }
 }

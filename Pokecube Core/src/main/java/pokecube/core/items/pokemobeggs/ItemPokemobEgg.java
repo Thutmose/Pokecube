@@ -416,7 +416,7 @@ public class ItemPokemobEgg extends Item
         {
             mob.setPokemonOwner(owner);
             mob.setPokemonAIState(IMoveConstants.TAMED, true);
-            mob.setPokecubeId(0);
+            mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
             mob.setHeldItem(null);
         }
     }

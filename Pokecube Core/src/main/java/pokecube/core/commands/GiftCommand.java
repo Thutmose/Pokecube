@@ -12,7 +12,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IPokemob;
@@ -134,7 +136,7 @@ public class GiftCommand extends CommandBase
                         }
                     }
                     mob.setOriginalOwnerUUID(new UUID(12345, 54321));
-                    mob.setPokecubeId(13);
+                    mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(13)));
                     mob.setExp(exp, false);
                     mob.setShiny(shiny);
                     if (gender != -3) mob.setSexe(gender);

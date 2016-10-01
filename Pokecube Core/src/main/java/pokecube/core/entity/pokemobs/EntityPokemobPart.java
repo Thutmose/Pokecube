@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.inventory.AnimalChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -344,13 +345,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public int getPokecubeId()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public PokedexEntry getPokedexEntry()
     {
         // TODO Auto-generated method stub
@@ -404,13 +398,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     {
         // TODO Auto-generated method stub
         return parent.getPokemonOwner();
-    }
-
-    @Override
-    public String getPokemonOwnerName()
-    {
-        // TODO Auto-generated method stub
-        return parent.getPokemonOwnerName();
     }
 
     @Override
@@ -743,13 +730,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public void setPokecubeId(int pokeballId)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void setPokedexEntry(PokedexEntry newEntry)
     {
         // TODO Auto-generated method stub
@@ -772,13 +752,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public void setPokemonOwner(EntityLivingBase e)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setPokemonOwnerByName(String s)
     {
         // TODO Auto-generated method stub
 
@@ -982,6 +955,47 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     public void setFlavourAmount(int index, int amount)
     {
         // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public ItemStack getPokecube()
+    {
+        // TODO Auto-generated method stub
+        return parent.getPokecube();
+    }
+
+    @Override
+    public void setPokecube(ItemStack pokecube)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public UUID getPokemonOwnerID()
+    {
+        return parent.getPokemonOwnerID();
+    }
+
+    @Override
+    public void setPokemonOwner(UUID id)
+    {
+        // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void readPokemobData(NBTTagCompound tag)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public NBTTagCompound writePokemobData()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

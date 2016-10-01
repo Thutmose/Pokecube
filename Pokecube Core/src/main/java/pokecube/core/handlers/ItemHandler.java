@@ -455,7 +455,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                     cube.tilt = Tools.computeCatchRate(mob, 1);
                     cube.time = cube.tilt * 20;
 
-                    if (!tameSnag) evt.caught.setPokecubeId(PokecubeItems.getCubeId(evt.filledCube));
+                    if (!tameSnag) evt.caught.setPokecube(evt.filledCube);
 
                     cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
                     PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
@@ -496,7 +496,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 double rate = has > 0 ? 3 : 1;
                 cube.tilt = Tools.computeCatchRate(mob, rate);
                 cube.time = cube.tilt * 20;
-                evt.caught.setPokecubeId(PokecubeItems.getCubeId(evt.filledCube));
+                evt.caught.setPokecube(evt.filledCube);
                 cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
                 PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
                 v.set(evt.pokecube).moveEntity(cube);

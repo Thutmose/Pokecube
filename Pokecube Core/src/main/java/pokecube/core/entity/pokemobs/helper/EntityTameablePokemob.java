@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.common.base.Optional;
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -24,13 +24,11 @@ import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -46,7 +44,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.commands.CommandTools;
-import pokecube.core.database.Database;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
@@ -60,7 +57,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
@@ -68,8 +64,8 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityTameable implements IPokemob, IMob, IInventoryChangedListener,
-        IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob
+public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IMob, IInventoryChangedListener,
+        IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob, IEntityOwnable
 {
     public static int                               EXITCUBEDURATION = 40;
 
@@ -120,6 +116,10 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
     static final DataParameter<Optional<ItemStack>> HELDITEM         = EntityDataManager
             .<Optional<ItemStack>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_ITEM_STACK);
+    static final DataParameter<Optional<UUID>>      OWNER_ID         = EntityDataManager
+            .<Optional<UUID>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    static final DataParameter<Optional<UUID>>      OT_ID            = EntityDataManager
+            .<Optional<UUID>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     @SuppressWarnings("unchecked")
     static final DataParameter<Integer>[]           FLAVOURS         = new DataParameter[] {
@@ -142,7 +142,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     protected float                                 prevTimePokemonIsShaking;
     protected Integer                               pokedexNb        = 0;
     public float                                    length           = 1;
-    private UUID                                    original         = new UUID(1234, 4321);
     protected Vector3                               here             = Vector3.getNewVector();
 
     protected Vector3                               vec              = Vector3.getNewVector();
@@ -158,7 +157,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
 
     boolean                                         returning        = false;
     protected int                                   abilityIndex     = 0;
-    private boolean                                 players          = false;
+    protected boolean                               players          = false;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -249,6 +248,10 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         {
             dataManager.register(FLAVOURS[i], Integer.valueOf(0));
         }
+        // ID of the owner.
+        dataManager.register(OWNER_ID, Optional.<UUID> absent());
+        // ID of the OT
+        dataManager.register(OT_ID, Optional.<UUID> absent());
     }
 
     /** Used to get the state without continually looking up in dataManager.
@@ -289,15 +292,14 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public UUID getOriginalOwnerUUID()
     {
-        return original;
+        return this.dataManager.get(OT_ID).orNull();
     }
 
     @Override
     public EntityLivingBase getOwner()
     {
         if (!this.getPokemonAIState(IMoveConstants.TAMED)) return null;
-
-        UUID ownerID = super.getOwnerId();
+        UUID ownerID = this.getOwnerId();
         if (ownerID == null) return null;
         try
         {
@@ -309,10 +311,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         {
 
         }
-
         List<Object> entities = null;
         entities = new ArrayList<Object>(worldObj.loadedEntityList);
-
         for (Object o : entities)
         {
             if (o instanceof EntityLivingBase)
@@ -322,7 +322,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                 if (e.getUniqueID().equals(ownerID)) { return e; }
             }
         }
-
         return null;
     }
 
@@ -339,16 +338,15 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     }
 
     @Override
-    public String getPokemonOwnerName()
+    public UUID getPokemonOwnerID()
     {
-        try
-        {
-            return super.getOwnerId().toString();
-        }
-        catch (Exception e)
-        {
-            return "";
-        }
+        return this.dataManager.get(OWNER_ID).orNull();
+    }
+
+    @Override
+    public UUID getOwnerId()
+    {
+        return getPokemonOwnerID();
     }
 
     public boolean getPokemonShaking()
@@ -413,11 +411,10 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
         looksWithInterest = false;
     }
 
-    private void initInventory()
+    protected void initInventory()
     {
         AnimalChest animalchest = this.pokeChest;
         this.pokeChest = new AnimalChest("PokeChest", this.invSize());
-
         if (animalchest != null)
         {
             animalchest.removeInventoryChangeListener(this);
@@ -432,10 +429,8 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                     this.pokeChest.setInventorySlotContents(j, itemstack.copy());
                 }
             }
-
             animalchest = null;
         }
-
         this.pokeChest.addInventoryChangeListener(this);
         this.handleArmourAndSaddle();
     }
@@ -576,64 +571,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
-        abilityIndex = nbttagcompound.getInteger("abilityIndex");
-        this.setPokedexEntry(Database.getEntry(pokedexNb));
-        this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
-        dataManager.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
-        setHungerTime(nbttagcompound.getInteger("hungerTime"));
-        int[] home = nbttagcompound.getIntArray("homeLocation");
-        if (home.length == 4)
-        {
-            setHome(home[0], home[1], home[2], home[3]);
-        }
-        if (nbttagcompound.hasKey("OT"))
-        {
-            try
-            {
-                original = UUID.fromString(nbttagcompound.getString("OT"));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-        players = nbttagcompound.getBoolean("playerOwned");
-        this.initInventory();
-
-        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
-
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-            int j = nbttagcompound1.getByte("Slot") & 255;
-
-            if (j >= 1 && j < this.pokeChest.getSizeInventory())
-            {
-                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
-            }
-            if (this.pokeChest.getStackInSlot(1) != null)
-            {
-                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
-            }
-            else
-            {
-                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
-            }
-        }
-
-        ItemStack itemstack;
-
-        if (nbttagcompound.hasKey("SaddleItem", 10))
-        {
-            itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound.getCompoundTag("SaddleItem"));
-
-            if (itemstack != null && itemstack.getItem() == Items.SADDLE)
-            {
-                this.pokeChest.setInventorySlotContents(0, itemstack);
-            }
-        }
-        handleArmourAndSaddle();
     }
 
     @Override
@@ -725,7 +662,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
                         getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
             }
-            else if (getPokemonOwnerName() != null && !getPokemonOwnerName().isEmpty())
+            else if (getPokemonOwnerID() != null)
             {
                 if (owner == null)
                 {
@@ -820,7 +757,7 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     @Override
     public void setOriginalOwnerUUID(UUID original)
     {
-        this.original = original;
+        this.dataManager.set(OT_ID, Optional.fromNullable(original));
     }
 
     @Override
@@ -828,61 +765,22 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     {
         if (e == null)
         {
-            super.setOwnerId(null);
+            setPokemonOwner((UUID) null);
             this.setPokemonAIState(IMoveConstants.TAMED, false);
             return;
         }
-
-        boolean uuidorName = this.getPokemonOwnerName().equalsIgnoreCase(e.getCachedUniqueIdString())
-                || getPokemonOwnerName().equalsIgnoreCase(e.getName());
-
-        if (e instanceof EntityPlayer && !uuidorName)
+        this.setPokemonAIState(IMoveConstants.TAMED, true);
+        setPokemonOwner(e.getUniqueID());
+        if (getOriginalOwnerUUID() == null)
         {
-            this.setPokemonAIState(IMoveConstants.TAMED, true);
-            super.setOwnerId(e.getUniqueID());
-
-            if (original.compareTo(PokecubeMod.fakeUUID) == 0)
-            {
-                original = e.getUniqueID();
-            }
-        }
-        else
-        {
-            this.setPokemonAIState(IMoveConstants.TAMED, true);
-            super.setOwnerId(e.getUniqueID());
+            setOriginalOwnerUUID(e.getUniqueID());
         }
     }
 
     @Override
-    public void setPokemonOwnerByName(String s)
+    public void setPokemonOwner(UUID owner)
     {
-        EntityPlayer player = PokecubeCore.getPlayer(s);
-        if (player != null)
-        {
-            this.setPokemonOwner(player);
-            super.setOwnerId(player.getUniqueID());
-        }
-        else
-        {
-            if (s != null && !s.isEmpty())
-            {
-                UUID id = null;
-                try
-                {
-                    id = UUID.fromString(s);
-                }
-                catch (Exception e)
-                {
-                    GameProfile profile = new GameProfile(null, s);
-                    profile = TileEntitySkull.updateGameprofile(profile);
-                    id = profile.getId();
-                }
-                super.setOwnerId(id);
-                return;
-            }
-            setPokemonOwner(null);
-            super.setOwnerId(null);
-        }
+        this.dataManager.set(OWNER_ID, Optional.fromNullable(owner));
     }
 
     /** make a sheep sheared if set to true */
@@ -908,38 +806,6 @@ public abstract class EntityTameablePokemob extends EntityTameable implements IP
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger(PokecubeSerializer.POKEDEXNB, pokedexNb);
-        nbttagcompound.setInteger("abilityIndex", abilityIndex);
-        nbttagcompound.setInteger("PokemobActionState", dataManager.get(AIACTIONSTATESDW));
-        nbttagcompound.setInteger("hungerTime", getHungerTime());
-        nbttagcompound.setInteger("specialInfo", getSpecialInfo());
-        nbttagcompound.setIntArray("homeLocation",
-                new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });
-
-        NBTTagList nbttaglist = new NBTTagList();
-
-        for (int i = 0; i < this.pokeChest.getSizeInventory(); ++i)
-        {
-            ItemStack itemstack = this.pokeChest.getStackInSlot(i);
-
-            if (itemstack != null)
-            {
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("Slot", (byte) i);
-                itemstack.writeToNBT(nbttagcompound1);
-                nbttaglist.appendTag(nbttagcompound1);
-            }
-        }
-
-        nbttagcompound.setTag("Items", nbttaglist);
-
-        nbttagcompound.setString("OT", original.toString());
-
-        if (this.pokeChest.getStackInSlot(0) != null)
-        {
-            nbttagcompound.setTag("SaddleItem", this.pokeChest.getStackInSlot(0).writeToNBT(new NBTTagCompound()));
-        }
-        nbttagcompound.setBoolean("playerOwned", isPlayerOwned());
     }
 
     @Override

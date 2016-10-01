@@ -8,8 +8,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
-import net.minecraft.entity.ai.EntityAISit;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -97,13 +95,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public GuardAI              guardAI;
     public PokemobAIUtilityMove utilMoveAI;
     public LogicMountedControl  controller;
-    private AIStuff             aiStuff;
+    protected AIStuff           aiStuff;
 
-    private PokeNavigator       navi;
-    private PokemobMoveHelper   mover;
+    protected PokeNavigator     navi;
+    protected PokemobMoveHelper mover;
     boolean                     initAI         = true;
     boolean                     popped         = false;
-    private PokemobAI           aiObject;
+    protected PokemobAI         aiObject;
     boolean                     isAFish        = false;
 
     public TerrainSegment       currentTerrain = null;
@@ -320,12 +318,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Add in the vanilla like AI methods.
         this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
         this.tasks.addTask(1, new PokemobAIDodge(this));
-        this.tasks.addTask(4, this.aiSit = new EntityAISit(this));
+        // this.tasks.addTask(4, this.aiSit = new EntityAISit(this));//TODO
+        // re-implement a sit AI if needed
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
-        this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
+        // this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
+        // //TODO see if the hurt AI was actually needed
         this.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
 
         for (int xy = 0; xy < entry.species.length; xy++)
@@ -843,7 +843,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             initAI(getPokedexEntry());
         }
-        if (popped && traded)
+        if (popped && getPokemonAIState(TRADED))
         {
             evolve(true, false);
             popped = false;
@@ -869,9 +869,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             logic.doServerTick(worldObj);
         }
 
-        String s;
         int state = dataManager.get(AIACTIONSTATESDW);
-        if (getAIState(IMoveConstants.TAMED, state) && ((s = getPokemonOwnerName()) == null || s.isEmpty()))
+        if (getAIState(IMoveConstants.TAMED, state) && (getPokemonOwnerID() == null))
         {
             setPokemonAIState(IMoveConstants.TAMED, false);
         }
@@ -888,6 +887,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             this.getNavigator().clearPathEntity();
         }
+        // TODO move this over to a capability or something.
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(this);
         if (!t.equals(currentTerrain))
         {
@@ -1252,8 +1252,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         if ((state & SITTING) > 0)
         {
-            if (aiSit != null) aiSit.setSitting(flag);
-            super.setSitting(flag);
+            // if (aiSit != null) aiSit.setSitting(flag);
+            // super.setSitting(flag);//TODO see if sitting AI was actually
+            // needed.
         }
     }
 

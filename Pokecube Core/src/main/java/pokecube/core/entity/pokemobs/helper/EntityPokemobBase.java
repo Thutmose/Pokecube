@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Optional;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,8 +23,12 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
@@ -40,32 +46,31 @@ import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokemobBodies;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
 /** @author Manchou, Thutmose */
-public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart
+public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart, TagNames
 {
-
-    static String[]             unowns         = { "Unown_A", "Unown_B", "Unown_C", "Unown_D", "Unown_E", "Unown_F",
-            "Unown_G", "Unown_H", "Unown_I", "Unown_J", "Unown_K", "Unown_L", "Unown_M", "Unown_N", "Unown_O",
-            "Unown_P", "Unown_Q", "Unown_Qu", "Unown_R", "Unown_S", "Unown_T", "Unown_U", "Unown_V", "Unown_W",
-            "Unown_X", "Unown_Y", "Unown_Z", "Unown_Ex" };
-
     public static float         scaleFactor    = 0.075f;
     public static boolean       multibox       = true;
 
     private int                 uid            = -1;
-    protected int               pokecubeId     = 0;
+    private ItemStack           pokecube       = null;
     private int                 despawntimer   = 0;
 
     private float               scale;
@@ -226,9 +231,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public int getPokecubeId()
+    public ItemStack getPokecube()
     {
-        return pokecubeId;
+        return pokecube;
     }
 
     @Override
@@ -329,12 +334,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
 
         isImmuneToFire = isType(PokeType.fire);
-
-        if (getPokedexNb() == 201)
-        {
-            int num = random.nextInt(unowns.length);
-            changeForme(unowns[num]);
-        }
     }
 
     /** Checks if this entity is inside of an opaque block */
@@ -687,12 +686,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             despawnEntity();
             return;
         }
-        if (getPokedexNb() == 201 && (this.forme == null || this.forme.isEmpty() || this.forme.equals("unown")
-                || this.getPokedexEntry() == this.getPokedexEntry().getBaseForme()))
-        {
-            int num = rand.nextInt(unowns.length);
-            changeForme(unowns[num]);
-        }
         super.onUpdate();
         double dt = (System.nanoTime() - time) / 10e3D;
         average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
@@ -716,11 +709,267 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        setPokecubeId(nbttagcompound.getInteger("PokeballId"));
+        if (nbttagcompound.hasKey(POKEMOBTAG))
+        {
+            NBTTagCompound pokemobTag = nbttagcompound.getCompoundTag(POKEMOBTAG);
+            readPokemobData(pokemobTag);
+            return;
+        }
+        readOldPokemobData(nbttagcompound);
+    }
+
+    @Override
+    public void readPokemobData(NBTTagCompound tag)
+    {
+        NBTTagCompound ownerShipTag = tag.getCompoundTag(OWNERSHIPTAG);
+        NBTTagCompound statsTag = tag.getCompoundTag(STATSTAG);
+        NBTTagCompound movesTag = tag.getCompoundTag(MOVESTAG);
+        NBTTagCompound inventoryTag = tag.getCompoundTag(INVENTORYTAG);
+        NBTTagCompound breedingTag = tag.getCompoundTag(BREEDINGTAG);
+        NBTTagCompound visualsTag = tag.getCompoundTag(VISUALSTAG);
+        NBTTagCompound aiTag = tag.getCompoundTag(AITAG);
+        NBTTagCompound miscTag = tag.getCompoundTag(MISCTAG);
+
+        this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
+        this.players = ownerShipTag.getBoolean(PLAYERS);
+        try
+        {
+            if (ownerShipTag.hasKey(OT)) this.setOriginalOwnerUUID(UUID.fromString(ownerShipTag.getString(OT)));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        try
+        {
+            if (ownerShipTag.hasKey(OWNER)) this.setPokemonOwner(UUID.fromString(ownerShipTag.getString(OWNER)));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        this.setTraded(ownerShipTag.getBoolean(ISTRADED));
+
+        // Write stats tag
+        this.setEVs(statsTag.getByteArray(EVS));
+        this.setIVs(statsTag.getByteArray(IVS));
+        this.setExp(statsTag.getInteger(EXP), false);
+        this.setStatus(statsTag.getByte(STATUS));
+        addHappiness(statsTag.getInteger(HAPPY));
+        this.setAbilityIndex(statsTag.getInteger(ABILITYINDEX));
+        if (statsTag.hasKey(ABILITY, 8)) setAbility(AbilityManager.getAbility(statsTag.getString(ABILITY)));
+        if (getAbility() == null)
+        {
+            int abilityNumber = getAbilityIndex();
+            if (getPokedexEntry().getAbility(abilityNumber, this) == null)
+            {
+                if (abilityNumber != 0) abilityNumber = 0;
+                else abilityNumber = 1;
+            }
+            setAbility(getPokedexEntry().getAbility(abilityNumber, this));
+        }
+        setNature(Nature.values()[statsTag.getByte(NATURE)]);
+
+        // Write moves tag
+        dataManager.set(MOVESDW, movesTag.getString(MOVES));
+        getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
+
+        // Write Inventory tag
+        NBTTagList nbttaglist = inventoryTag.getTagList(ITEMS, 10);
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound1.getByte("Slot") & 255;
+            if (j != 1 && j < this.pokeChest.getSizeInventory())
+            {
+                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+            }
+            if (this.pokeChest.getStackInSlot(1) != null)
+            {
+                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
+            }
+            else
+            {
+                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
+            }
+        }
+        handleArmourAndSaddle();
+
+        // Write Breeding tag
+        this.setSexe(breedingTag.getByte(SEXE));
+        this.inLove = breedingTag.getInteger(SEXETIME);
+
+        // Write visuals tag
+        byte[] rgbaBytes = new byte[4];
+        rgbaBytes = visualsTag.getByteArray(COLOURS);
+        for (int i = 0; i < 4; i++)
+            rgba[i] = rgbaBytes[i] + 128;
+        this.setShiny(visualsTag.getBoolean(SHINY));
+        forme = visualsTag.getString(FORME);
+        this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
+        setSize(visualsTag.getFloat(SCALE));
+        this.initRidable();
+        flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
+        if (visualsTag.hasKey(POKECUBE))
+        {
+            NBTTagCompound pokecubeTag = visualsTag.getCompoundTag(POKECUBE);
+            this.setPokecube(ItemStack.loadItemStackFromNBT(pokecubeTag));
+        }
+
+        // Misc AI
+        dataManager.set(AIACTIONSTATESDW, aiTag.getInteger(AISTATE));
+        setHungerTime(aiTag.getInteger(HUNGER));
+        int[] home = aiTag.getIntArray(HOME);
+        if (home.length == 4)
+        {
+            setHome(home[0], home[1], home[2], home[3]);
+        }
+        // Misc other
+        this.setRNGValue(miscTag.getInteger(RNGVAL));
+        this.uid = miscTag.getInteger(UID);
+        this.setAncient(miscTag.getBoolean(ANCIENT));
+        this.wasShadow = miscTag.getBoolean(WASSHADOW);
+
+    }
+
+    private void readOldPokemobData(NBTTagCompound nbttagcompound)
+    {
+        String s = "";
+
+        if (nbttagcompound.hasKey("OwnerUUID", 8))
+        {
+            s = nbttagcompound.getString("OwnerUUID");
+        }
+        else
+        {
+            String s1 = nbttagcompound.getString("Owner");
+            s = PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), s1);
+        }
+
+        if (!s.isEmpty())
+        {
+            try
+            {
+                this.setPokemonOwner(UUID.fromString(s));
+            }
+            catch (Throwable var4)
+            {
+            }
+        }
+
+        // Ownership and Items
+        pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
+        abilityIndex = nbttagcompound.getInteger("abilityIndex");
+        this.setPokedexEntry(Database.getEntry(pokedexNb));
+        this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
+        dataManager.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
+        setHungerTime(nbttagcompound.getInteger("hungerTime"));
+        int[] home = nbttagcompound.getIntArray("homeLocation");
+        if (home.length == 4)
+        {
+            setHome(home[0], home[1], home[2], home[3]);
+        }
+        if (nbttagcompound.hasKey("OT"))
+        {
+            try
+            {
+                this.setOriginalOwnerUUID(UUID.fromString(nbttagcompound.getString("OT")));
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        players = nbttagcompound.getBoolean("playerOwned");
+        this.initInventory();
+        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
+        for (int i = 0; i < nbttaglist.tagCount(); ++i)
+        {
+            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound1.getByte("Slot") & 255;
+            if (j != 1 && j < this.pokeChest.getSizeInventory())
+            {
+                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+            }
+            if (this.pokeChest.getStackInSlot(1) != null)
+            {
+                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
+            }
+            else
+            {
+                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
+            }
+        }
+        handleArmourAndSaddle();
+        // Stats related
+        try
+        {
+            setEVs(PokecubeSerializer.longAsByteArray(nbttagcompound.getLong(PokecubeSerializer.EVS)));
+            long ivs = nbttagcompound.getLong(PokecubeSerializer.IVS);
+
+            if (ivs < 0)
+            {
+                ivs = PokecubeSerializer.byteArrayAsLong(
+                        new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
+                                Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) });
+            }
+
+            setIVs(PokecubeSerializer.longAsByteArray(ivs));
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+        }
+        setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false);
+        isAncient = nbttagcompound.getBoolean("isAncient");
+        wasShadow = nbttagcompound.getBoolean("wasShadow");
+        byte[] rgbaBytes = new byte[4];
+        rgbaBytes = nbttagcompound.getByteArray("colours");
+        for (int i = 0; i < 4; i++)
+            rgba[i] = rgbaBytes[i] + 128;
+        shiny = nbttagcompound.getBoolean("shiny");
+        addHappiness(nbttagcompound.getInteger("happiness"));
+        if (getAbility() != null) getAbility().destroy();
+        if (nbttagcompound.hasKey("ability", 8))
+            setAbility(AbilityManager.getAbility(nbttagcompound.getString("ability")));
+        else if (nbttagcompound.hasKey("ability", 3))
+            setAbility(getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"), this));
+        if (ability == null)
+        {
+            int abilityNumber = abilityIndex;
+            if (getPokedexEntry().getAbility(abilityNumber, this) == null)
+            {
+                if (abilityNumber != 0) abilityNumber = 0;
+                else abilityNumber = 1;
+            }
+            setAbility(getPokedexEntry().getAbility(abilityNumber, this));
+        }
+        if (ability != null) ability.init(this);
+        if (nbttagcompound.hasKey("personalityValue")) this.setRNGValue(nbttagcompound.getInteger("personalityValue"));
+        nature = Nature.values()[nbttagcompound.getByte("nature")];
+        getEntityData().setBoolean("dittotag", nbttagcompound.getBoolean("dittotag"));
+        // Sexe related
+        setSexe((byte) nbttagcompound.getInteger(PokecubeSerializer.SEXE));
+        inLove = nbttagcompound.getInteger("InLove2");
+        // Moves Related
+        setStatus(nbttagcompound.getByte(PokecubeSerializer.STATUS));
+        this.setPokemonAIState(LEARNINGMOVE, nbttagcompound.getBoolean("newMoves"));
+        getMoveStats().newMoves = nbttagcompound.getInteger("numberMoves");
+        String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
+        dataManager.set(MOVESDW, movesString);
+        this.getEntityData().setString("lastMoveHitBy", "");
+        // Evolution
+        setTraded(nbttagcompound.getBoolean("traded"));
+        // Misc
+        this.getDataManager().set(NICKNAMEDW, nbttagcompound.getString(PokecubeSerializer.NICKNAME));
+        Item cube = PokecubeItems.getFilledCube(nbttagcompound.getInteger("PokeballId"));
+        setPokecube(new ItemStack(cube));
+        forme = nbttagcompound.getString("forme");
+        this.changeForme(forme);
         setSize(nbttagcompound.getFloat("scale"));
+        this.initRidable();
         uid = nbttagcompound.getInteger("PokemobUID");
         if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
-        this.initRidable();
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -729,20 +978,25 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         this.pokedexNb = data.readInt();
         setSize(data.readFloat());
-        pokecubeId = data.readInt();
         this.uid = data.readInt();
         this.initRidable();
         for (int i = 0; i < 4; i++)
             rgba[i] = data.readByte() + 128;
         this.entityUniqueID = new UUID(data.readLong(), data.readLong());
-
         super.readSpawnData(data);
     }
 
     @Override
-    public void setPokecubeId(int pokeballId)
+    public void setPokecube(ItemStack pokeballId)
     {
-        pokecubeId = pokeballId;
+        if (pokeballId != null)
+        {
+            pokeballId = pokeballId.copy();
+            pokeballId.stackSize = 1;
+            if (pokeballId.hasTagCompound() && pokeballId.getTagCompound().hasKey("Pokemob"))
+                pokeballId.getTagCompound().removeTag("Pokemob");
+        }
+        pokecube = pokeballId;
     }
 
     @Override
@@ -814,10 +1068,99 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger("PokeballId", getPokecubeId());
-        nbttagcompound.setFloat("scale", (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
-        nbttagcompound.setInteger("PokemobUID", uid);
-        nbttagcompound.setIntArray("flavours", flavourAmounts);
+        NBTTagCompound pokemobTag = writePokemobData();
+        System.out.println(POKEMOBTAG + " " + pokemobTag);
+        nbttagcompound.setTag(POKEMOBTAG, pokemobTag);
+    }
+
+    @Override
+    public NBTTagCompound writePokemobData()
+    {
+        NBTTagCompound pokemobTag = new NBTTagCompound();
+        // Write Ownership tag
+        NBTTagCompound ownerShipTag = new NBTTagCompound();
+        ownerShipTag.setString(NICKNAME, getPokemonNickname());
+        ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
+        if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());
+        if (getPokemonOwnerID() != null) ownerShipTag.setString(OWNER, getPokemonOwnerID().toString());
+        ownerShipTag.setBoolean(ISTRADED, getPokemonAIState(TRADED));
+
+        // Write stats tag
+        NBTTagCompound statsTag = new NBTTagCompound();
+        statsTag.setByteArray(EVS, getEVs());
+        statsTag.setByteArray(IVS, getIVs());
+        statsTag.setInteger(EXP, getExp());
+        statsTag.setByte(STATUS, getStatus());
+        statsTag.setInteger(HAPPY, bonusHappiness);
+        statsTag.setInteger(ABILITYINDEX, abilityIndex);
+        if (getAbility() != null) statsTag.setString(ABILITY, getAbility().toString());
+        statsTag.setByte(NATURE, (byte) getNature().ordinal());
+
+        // Write moves tag
+        NBTTagCompound movesTag = new NBTTagCompound();
+        movesTag.setString(MOVES, dataManager.get(MOVESDW));
+        movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);
+
+        // Write Inventory tag
+        NBTTagCompound inventoryTag = new NBTTagCompound();
+        NBTTagList nbttaglist = new NBTTagList();
+        for (int i = 0; i < this.pokeChest.getSizeInventory(); ++i)
+        {
+            ItemStack itemstack = this.pokeChest.getStackInSlot(i);
+            if (itemstack != null)
+            {
+                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
+                nbttagcompound1.setByte("Slot", (byte) i);
+                itemstack.writeToNBT(nbttagcompound1);
+                nbttaglist.appendTag(nbttagcompound1);
+            }
+        }
+        inventoryTag.setTag(ITEMS, nbttaglist);
+
+        // Write Breeding tag
+        NBTTagCompound breedingTag = new NBTTagCompound();
+        breedingTag.setByte(SEXE, getSexe());
+        breedingTag.setInteger(SEXETIME, inLove);
+
+        // Write visuals tag
+        NBTTagCompound visualsTag = new NBTTagCompound();
+        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
+                (byte) (rgba[3] - 128) };
+        visualsTag.setByteArray(COLOURS, rgbaBytes);
+        visualsTag.setBoolean(SHINY, isShiny());
+        visualsTag.setString(FORME, forme);
+        visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
+        visualsTag.setFloat(SCALE, (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
+        visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);
+        if (getPokecube() != null)
+        {
+            NBTTagCompound pokecubeTag = pokecube.writeToNBT(new NBTTagCompound());
+            visualsTag.setTag(POKECUBE, pokecubeTag);
+        }
+        // Misc AI
+        NBTTagCompound aiTag = new NBTTagCompound();
+        aiTag.setInteger(AISTATE, dataManager.get(AIACTIONSTATESDW));
+        aiTag.setInteger(HUNGER, getHungerTime());
+        aiTag.setIntArray(HOME,
+                new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });
+
+        // Misc other
+        NBTTagCompound miscTag = new NBTTagCompound();
+        miscTag.setInteger(RNGVAL, getRNGValue());
+        miscTag.setInteger(UID, uid);
+        miscTag.setBoolean(ANCIENT, isAncient());
+        miscTag.setBoolean(WASSHADOW, wasShadow);
+
+        // Set tags to the pokemob tag.
+        pokemobTag.setTag(OWNERSHIPTAG, ownerShipTag);
+        pokemobTag.setTag(STATSTAG, statsTag);
+        pokemobTag.setTag(MOVESTAG, movesTag);
+        pokemobTag.setTag(INVENTORYTAG, inventoryTag);
+        pokemobTag.setTag(BREEDINGTAG, breedingTag);
+        pokemobTag.setTag(VISUALSTAG, visualsTag);
+        pokemobTag.setTag(AITAG, aiTag);
+        pokemobTag.setTag(MISCTAG, miscTag);
+        return pokemobTag;
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -831,7 +1174,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         PokecubeSerializer.getInstance().addPokemob(this);
         data.writeInt(pokedexNb);
         data.writeFloat((float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
-        data.writeInt(pokecubeId);
         data.writeInt(uid);
         byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
                 (byte) (rgba[3] - 128) };

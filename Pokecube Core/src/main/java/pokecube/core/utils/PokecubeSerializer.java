@@ -109,7 +109,7 @@ public class PokecubeSerializer
     public static final String       SEXE           = "sexe";
     public static final String       POKEDEXNB      = "pokedexNb";
     public static final String       STATUS         = "status";
-
+    public static final String       HAPPY          = "happiness";
     public static final String       NICKNAME       = "nickname";
     public static final String       EVS            = "EVS";
     public static final String       IVS            = "IVS";
@@ -679,8 +679,8 @@ public class PokecubeSerializer
         {
             entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
             ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-            entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
-            entity.setPokecubeId(0);
+            entity.setPokemonOwner(owner.getUniqueID());
+            entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
             ItemStack item = PokecubeManager.pokemobToItem(entity);
             ((Entity) entity).isDead = true;
             return item;

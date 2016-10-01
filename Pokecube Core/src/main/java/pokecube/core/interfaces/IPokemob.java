@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.inventory.AnimalChest;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -449,7 +450,7 @@ public interface IPokemob extends IMoveConstants
     /** Returns the pokecube id to know whether its a greatcube, ultracube...
      * 
      * @return the shifted index of the item */
-    int getPokecubeId();
+    ItemStack getPokecube();
 
     /** @return the {@link PokedexEntry} of the species of this Pokemob */
     PokedexEntry getPokedexEntry();
@@ -474,11 +475,12 @@ public interface IPokemob extends IMoveConstants
     /** @return the String nickname */
     String getPokemonNickname();
 
-    /** from wolf code */
+    /** Gets the owner as an EntityLivingBase, may be null if not in world, or
+     * if no owner. */
     EntityLivingBase getPokemonOwner();
 
-    /** from wolf code */
-    String getPokemonOwnerName();
+    /** Gets the UUID of the owner, might be null */
+    UUID getPokemonOwnerID();
 
     int getPokemonUID();
 
@@ -686,7 +688,7 @@ public interface IPokemob extends IMoveConstants
     /** Sets the pokecube id to know whether its a greatcube, ultracube...
      * 
      * @param pokeballId */
-    void setPokecubeId(int pokeballId);
+    void setPokecube(ItemStack pokecube);
 
     /** @return the {@link PokedexEntry} of the species of this Pokemob */
     void setPokedexEntry(PokedexEntry newEntry);
@@ -703,7 +705,7 @@ public interface IPokemob extends IMoveConstants
     void setPokemonOwner(EntityLivingBase e);
 
     /** from wolf code */
-    void setPokemonOwnerByName(String s);
+    void setPokemonOwner(UUID id);
 
     /** {@link #MALE} or {@link #FEMALE} or {@link #NOSEXE}
      *
@@ -799,4 +801,8 @@ public interface IPokemob extends IMoveConstants
      * @param index
      * @param amount */
     void setFlavourAmount(int index, int amount);
+
+    void readPokemobData(NBTTagCompound tag);
+
+    NBTTagCompound writePokemobData();
 }

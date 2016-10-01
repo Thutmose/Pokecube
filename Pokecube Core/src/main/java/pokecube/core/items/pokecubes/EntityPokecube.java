@@ -151,7 +151,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     {
                         time = 20 * tilt;
                     }
-                    hitten.setPokecubeId(PokecubeItems.getCubeId(getEntityItem()));
+                    hitten.setPokecube(getEntityItem());
                     setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
                     PokecubeManager.setTilt(getEntityItem(), tilt);
                     ((Entity) hitten).setDead();
@@ -176,7 +176,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                     time = 20 * n;
                 }
 
-                hitten.setPokecubeId(PokecubeItems.getCubeId(getEntityItem()));
+                hitten.setPokecube(getEntityItem());
                 setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
                 PokecubeManager.setTilt(getEntityItem(), n);
                 ((Entity) hitten).setDead();
@@ -195,8 +195,8 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 if (e instanceof EntityLivingBase)
                 {
                     EntityLivingBase entityHit = (EntityLivingBase) e;
-                    if (entityHit instanceof IPokemob && entity1.getPokemonOwnerName() != null
-                            && entity1.getPokemonOwnerName().equals(((IPokemob) entityHit).getPokemonOwnerName()))
+                    if (entityHit instanceof IPokemob && entity1.getPokemonOwnerID() != null
+                            && entity1.getPokemonOwnerID().equals(((IPokemob) entityHit).getPokemonOwnerID()))
                     {
                         // do not attack a mob of the same team.
                     }
@@ -383,7 +383,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
                 entity1.setPokemonAIState(IMoveConstants.SITTING, false);
                 entity1.setPokemonAIState(IMoveConstants.TAMED, false);
-                entity1.setPokemonOwnerByName("");
+                entity1.setPokemonOwner((UUID) null);
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
                 {

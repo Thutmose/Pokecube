@@ -142,7 +142,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                 if (closest instanceof IPokemob)
                 {
                     IPokemob tempMob = (IPokemob) closest;
-                    if (tempMob.getPokemonOwnerName().equals(pokemob.getPokemonOwnerName()))
+                    if (tempMob.getPokemonOwnerID().equals(pokemob.getPokemonOwnerID()))
                     {
                         if (tempMob == closest)
                         {

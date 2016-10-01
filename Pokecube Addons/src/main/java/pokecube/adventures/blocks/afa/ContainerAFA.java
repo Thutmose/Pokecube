@@ -4,11 +4,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
@@ -21,16 +24,20 @@ public class ContainerAFA extends Container
         {
             super(inventoryIn, index, xPosition, yPosition);
         }
+
         @Override
         public boolean isItemValid(ItemStack itemstack)
         {
-            return PokecubeManager.isFilled(itemstack) || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
+            return PokecubeManager.isFilled(itemstack)
+                    || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
         }
     }
-    public TileEntityAFA   tile;
-    public World    worldObj;
 
-    public BlockPos pos;
+    public TileEntityAFA tile;
+    public World         worldObj;
+    int                  energy = 0;
+
+    public BlockPos      pos;
 
     public ContainerAFA(TileEntityAFA tile, InventoryPlayer playerInv)
     {
@@ -72,10 +79,32 @@ public class ContainerAFA extends Container
     }
 
     @Override
+    public void addListener(IContainerListener listener)
+    {
+        super.addListener(listener);
+        System.out.println(listener);
+        listener.sendAllWindowProperties(this, this.tile);
+    }
+
+    @Override
+    /** Looks for changes made in the container, sends them to every
+     * listener. */
+    public void detectAndSendChanges()
+    {
+        for (int i = 0; i < this.listeners.size(); ++i)
+        {
+            IContainerListener icrafting = this.listeners.get(i);
+            if (energy != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+        }
+        energy = tile.getField(0);
+        super.detectAndSendChanges();
+    }
+
+    @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-        if (slotId < 0)
-            return null;
+        System.out.println(tile.energy + "");
+        if (slotId < 0) return null;
         if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
         {
             ItemStack itemstack = null;
@@ -116,12 +145,16 @@ public class ContainerAFA extends Container
                 }
             }
 
-            if (itemstack != null)
-            {
-                return itemstack;
-            }
+            if (itemstack != null) { return itemstack; }
             return null;
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int id, int data)
+    {
+        this.tile.setField(id, data);
     }
 }

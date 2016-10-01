@@ -29,6 +29,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 
 public class GuiTrainerEdit extends GuiScreen
@@ -414,9 +415,9 @@ public class GuiTrainerEdit extends GuiScreen
                     int level = Integer.parseInt(textFieldLevels[i].getText());
                     int exp = Tools.levelToXp(entry.getEvolutionMode(), level);
                     ItemStack stack = trainer.getPokemob(i);
-                    NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob");
-                    pokemob.setInteger("exp", exp);
-                    stack.getTagCompound().setTag("Pokemob", pokemob);
+                    NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob")
+                            .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.STATSTAG);
+                    pokemob.setInteger(TagNames.EXP, exp);
                 }
             }
             NBTTagCompound tag = new NBTTagCompound();

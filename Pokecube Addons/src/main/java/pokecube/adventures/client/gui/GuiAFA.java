@@ -4,17 +4,15 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
-import pokecube.adventures.network.PacketPokeAdv.MessageServer;
+import pokecube.adventures.network.packets.PacketAFA;
 import pokecube.core.network.PokecubePacketHandler;
 
 public class GuiAFA extends GuiContainer
@@ -37,21 +35,21 @@ public class GuiAFA extends GuiContainer
         if (te == null) return;
 
         TileEntityAFA tile = (TileEntityAFA) te;
-        MessageServer message;
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(21));
-        buffer.writeByte(MessageServer.MESSAGEGUIAFA);
+        PacketAFA message;
+        int id = -1;
+        int val = -1;
         int diff = isShiftKeyDown() ? 10 : 1;
         if (button.id == 0)
         {
             tile.setField(1, tile.getField(1) + diff);
-            buffer.writeInt(1);
-            buffer.writeInt(tile.getField(1));
+            id = 1;
+            val = tile.getField(id);
         }
         else if (button.id == 1)
         {
             tile.setField(1, tile.getField(1) - diff);
-            buffer.writeInt(1);
-            buffer.writeInt(tile.getField(1));
+            id = 1;
+            val = tile.getField(id);
         }
         else if (button.id == 2)
         {
@@ -66,72 +64,78 @@ public class GuiAFA extends GuiContainer
                 tile.setField(2, 0);
                 button.displayString = "X";
             }
-            buffer.writeInt(2);
-            buffer.writeInt(tile.getField(2));
+            id = 2;
+            val = tile.getField(id);
         }
         if (button.id == 3)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(3, tile.getField(3) + diff);
-            buffer.writeInt(3);
-            buffer.writeInt(tile.getField(3));
+            id = 3;
+            val = tile.getField(id);
         }
         else if (button.id == 4)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(3, tile.getField(3) - diff);
-            buffer.writeInt(3);
-            buffer.writeInt(tile.getField(3));
+            id = 3;
+            val = tile.getField(id);
         }
         if (button.id == 5)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(4, tile.getField(4) + diff);
-            buffer.writeInt(4);
-            buffer.writeInt(tile.getField(4));
+            id = 4;
+            val = tile.getField(id);
         }
         else if (button.id == 6)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(4, tile.getField(4) - diff);
-            buffer.writeInt(4);
-            buffer.writeInt(tile.getField(4));
+            id = 4;
+            val = tile.getField(id);
         }
         if (button.id == 7)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(5, tile.getField(5) + diff);
-            buffer.writeInt(5);
-            buffer.writeInt(tile.getField(5));
+            id = 5;
+            val = tile.getField(id);
         }
         else if (button.id == 8)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(5, tile.getField(5) - diff);
-            buffer.writeInt(5);
-            buffer.writeInt(tile.getField(5));
+            id = 5;
+            val = tile.getField(id);
         }
         if (button.id == 9)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(6, tile.getField(6) + diff);
-            buffer.writeInt(6);
-            buffer.writeInt(tile.getField(6));
+            id = 6;
+            val = tile.getField(id);
         }
         else if (button.id == 10)
         {
             diff = isCtrlKeyDown() ? diff * 10 : diff;
             tile.setField(6, tile.getField(6) - diff);
-            buffer.writeInt(6);
-            buffer.writeInt(tile.getField(6));
+            id = 6;
+            val = tile.getField(id);
         }
         else if (button.id == 11)
         {
             tile.setField(7, 0);
-            buffer.writeInt(7);
-            buffer.writeInt(0);
+            id = 7;
+            val = tile.getField(id);
         }
-        message = new MessageServer(buffer);
+
+        message = new PacketAFA();
+        if (id != -1)
+        {
+            message.data.setInteger("I", id);
+            message.data.setInteger("V", val);
+        }
         PokecubePacketHandler.sendToServer(message);
     }
 
@@ -156,26 +160,12 @@ public class GuiAFA extends GuiContainer
         if (container.worldObj != null)
         {
             TileEntity te = container.worldObj.getTileEntity(container.pos);
-
             if (te == null) return;
-
             TileEntityAFA cloner = (TileEntityAFA) te;
-
-            if (last < cloner.getWorld().getTotalWorldTime())
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(1));
-                buffer.writeByte(MessageServer.MESSAGEGUIAFA);
-                last = cloner.getWorld().getTotalWorldTime();
-                MessageServer message;
-                message = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(message);
-            }
-
             String mess;
             int energy = cloner.getField(0);
             mess = "e:" + energy;
             this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 66, 4210752);
-
             int distance = cloner.getField(1);
             mess = "r:" + distance;
             this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
@@ -191,17 +181,17 @@ public class GuiAFA extends GuiContainer
     public void initGui()
     {
         super.initGui();
-        int xOffset = 0;
+        int xOffset = 5;
         int yOffset = -11;
         // Range Control
-        buttonList.add(new GuiButton(0, width / 2 - xOffset + 64, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
-        buttonList.add(new GuiButton(1, width / 2 - xOffset + 64, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
+        buttonList.add(new GuiButton(0, width / 2 - xOffset + 69, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
+        buttonList.add(new GuiButton(1, width / 2 - xOffset + 69, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
         if (mc.thePlayer.capabilities.isCreativeMode)
         {
             ContainerAFA container = (ContainerAFA) inventorySlots;
             int num = container.tile.getField(2);
             // Power need toggle
-            buttonList.add(new GuiButton(2, width / 2 - xOffset + 64, height / 2 - yOffset - 45, 20, 20,
+            buttonList.add(new GuiButton(2, width / 2 - xOffset + 69, height / 2 - yOffset - 45, 20, 20,
                     num == 1 ? "O" : "X"));
         }
         // Scale Buttons

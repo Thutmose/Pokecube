@@ -91,8 +91,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     public float        angle          = 0;
     public boolean      noEnergy       = false;
 
-    // protected EnergyStorage storage;
-
     protected boolean   addedToNetwork = false;
 
     public TileEntityAFA()
@@ -473,7 +471,11 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void update()
     {
-        if (!PokecubeAdv.hasEnergyAPI) energy = 3200;
+        if (!PokecubeAdv.hasEnergyAPI && !worldObj.isRemote)
+        {
+            energy += 256;
+            energy = Math.min(energy, 3200);
+        }
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();

@@ -1069,7 +1069,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.writeEntityToNBT(nbttagcompound);
         NBTTagCompound pokemobTag = writePokemobData();
-        System.out.println(POKEMOBTAG + " " + pokemobTag);
         nbttagcompound.setTag(POKEMOBTAG, pokemobTag);
     }
 

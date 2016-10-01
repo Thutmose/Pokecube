@@ -121,8 +121,6 @@ public class PokecubeManager
             ItemStack cubeStack = itemStack.copy();
             cubeStack.getTagCompound().removeTag("Pokemob");
             pokemob.setPokecube(cubeStack);
-            ((EntityLivingBase) pokemob).setHealth(
-                    Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));
             pokemob.setStatus(getStatus(itemStack));
             ((EntityLivingBase) pokemob).extinguish();
             return pokemob;
@@ -157,12 +155,14 @@ public class PokecubeManager
     public static ItemStack pokemobToItem(IPokemob pokemob)
     {
         ItemStack itemStack = pokemob.getPokecube();
+        int damage = Tools.serialize(((EntityLivingBase) pokemob).getMaxHealth(),
+                ((EntityLivingBase) pokemob).getHealth());
         if (itemStack == null)
         {
-            itemStack = new ItemStack(PokecubeItems.getFilledCube(0), 1, Tools
-                    .serialize(((EntityLivingBase) pokemob).getMaxHealth(), ((EntityLivingBase) pokemob).getHealth()));
+            itemStack = new ItemStack(PokecubeItems.getFilledCube(0), 1, damage);
         }
         itemStack = itemStack.copy();
+        itemStack.setItemDamage(damage);
         // setUID(itemStack, pokemob.getUid());
         setOwner(itemStack, pokemob.getPokemonOwner());
         setColor(itemStack);

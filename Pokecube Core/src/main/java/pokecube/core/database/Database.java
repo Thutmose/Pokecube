@@ -571,7 +571,6 @@ public class Database
             data.remove(p.pokedexNb);
             baseFormes.remove(p.pokedexNb);
             spawnables.remove(p);
-            System.out.println(p);
         }
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);

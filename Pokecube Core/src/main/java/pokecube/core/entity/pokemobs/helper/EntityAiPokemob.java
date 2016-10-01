@@ -875,7 +875,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             setPokemonAIState(IMoveConstants.TAMED, false);
         }
 
-        if (inLove > 600)
+        if (loveTimer > 600)
         {
             resetLoveStatus();
         }
@@ -1091,7 +1091,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                             player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
                         }
                     }
-                    this.inLove = 10;
+                    this.loveTimer = 10;
                     this.setAttackTarget(null);
                     this.worldObj.setEntityState(this, (byte) 18);
                     return true;

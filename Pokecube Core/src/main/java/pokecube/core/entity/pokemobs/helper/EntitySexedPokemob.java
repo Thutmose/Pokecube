@@ -35,7 +35,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 {
     protected Entity               egg   = null;
     private Entity                 lover;
-    protected int                  inLove;
+    protected int                  loveTimer;
     protected byte                 sexe  = 0;
     protected Vector<IBreedingMob> males = new Vector<>();
 
@@ -140,7 +140,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public int getLoveTimer()
     {
-        return inLove;
+        return loveTimer;
     }
 
     @Override
@@ -166,7 +166,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public boolean isInLove()
     {
-        return inLove > 0 || lover != null;
+        return loveTimer > 0 || lover != null;
     }
 
     public void lay(int pokedexNb, IPokemob male)
@@ -277,7 +277,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public void setLoveTimer(final int value)
     {
-        inLove = value;
+        loveTimer = value;
     }
 
     @Override

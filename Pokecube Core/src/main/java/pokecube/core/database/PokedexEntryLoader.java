@@ -790,7 +790,6 @@ public class PokedexEntryLoader
         {
             handleAddSpawn(spawnData, rule);
         }
-        System.out.println(entry + " " + spawnData.matchers);
         entry.setSpawnData(spawnData);
         if (!Database.spawnables.contains(entry)) Database.spawnables.add(entry);
 

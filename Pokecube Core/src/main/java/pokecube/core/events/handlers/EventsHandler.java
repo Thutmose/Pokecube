@@ -280,6 +280,9 @@ public class EventsHandler
         if (tag.hasKey(TagNames.POKEMOBTAG))
         {
             NBTTagCompound pokemobTag = tag.getCompoundTag(TagNames.POKEMOBTAG);
+            pokemobTag.removeTag(TagNames.INVENTORYTAG);
+            pokemobTag.removeTag(TagNames.AITAG);
+            pokemobTag.removeTag(TagNames.MOVESTAG);
             pokemob.readPokemobData(pokemobTag);
             return;
         }

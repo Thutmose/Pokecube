@@ -189,7 +189,6 @@ public class PokecubeCore extends PokecubeMod
     {
         int n = 0;
         List<PokedexEntry> spawns = new ArrayList<PokedexEntry>();
-        System.out.println("Before: "+Database.spawnables.size());
         Database.spawnables.clear();
         for (PokedexEntry dbe : Database.allFormes)
         {
@@ -207,9 +206,8 @@ public class PokecubeCore extends PokecubeMod
                 n++;
             }
         }
-
-        if (n != 1) System.out.println("Registered " + n + " Pokemob Spawns");
-        else System.out.println("Registered " + n + " Pokemob Spawn");
+        if (n != 1) PokecubeMod.log("Registered " + n + " Pokemob Spawns");
+        else PokecubeMod.log("Registered " + n + " Pokemob Spawn");
     }
 
     public SpawnHandler        spawner;

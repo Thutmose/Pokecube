@@ -179,8 +179,8 @@ public class RenderPokemobs extends RenderPokemob
 
             if (num == 132)
             {
-                if (((EntityLiving) mob).getEntityData()
-                        .getBoolean("dittotag")) { return super.getPokemobTexture(mob); }
+                int rngval = entity.getRNGValue();
+                if (rngval % 20 == 0) { return super.getPokemobTexture(mob); }
             }
             mob = (IPokemob) mob.getTransformedTo();
         }

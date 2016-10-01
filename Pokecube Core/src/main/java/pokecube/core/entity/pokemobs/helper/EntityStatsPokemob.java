@@ -488,12 +488,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             setIVs(new byte[] { 31, 31, 31, 31, 31, 31 });
         }
-        if (nb == 132 && worldObj != null && !worldObj.isRemote)
-        {
-            boolean glitch = Math.random() > 0.95;
-            getEntityData().setBoolean("dittotag", glitch);
-        }
-
         if (PokecubeCore.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
         nature = Nature.values()[(byte) (new Random()).nextInt(25)];
@@ -625,12 +619,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             HappinessType.applyHappiness(this, HappinessType.TIME);
         }
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -925,12 +913,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         setMaxHealth(maxHealth);
         setHealth(health);
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 
     /** Use this for anything that does not change or need to be updated. */

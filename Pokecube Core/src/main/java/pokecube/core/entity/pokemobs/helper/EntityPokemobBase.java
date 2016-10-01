@@ -730,106 +730,126 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound aiTag = tag.getCompoundTag(AITAG);
         NBTTagCompound miscTag = tag.getCompoundTag(MISCTAG);
 
-        this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
-        this.players = ownerShipTag.getBoolean(PLAYERS);
-        try
+        // Read Ownership Tag
+        if (!ownerShipTag.hasNoTags())
         {
-            if (ownerShipTag.hasKey(OT)) this.setOriginalOwnerUUID(UUID.fromString(ownerShipTag.getString(OT)));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        try
-        {
-            if (ownerShipTag.hasKey(OWNER)) this.setPokemonOwner(UUID.fromString(ownerShipTag.getString(OWNER)));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        this.setTraded(ownerShipTag.getBoolean(ISTRADED));
-
-        // Write stats tag
-        this.setEVs(statsTag.getByteArray(EVS));
-        this.setIVs(statsTag.getByteArray(IVS));
-        this.setExp(statsTag.getInteger(EXP), false);
-        this.setStatus(statsTag.getByte(STATUS));
-        addHappiness(statsTag.getInteger(HAPPY));
-        this.setAbilityIndex(statsTag.getInteger(ABILITYINDEX));
-        if (statsTag.hasKey(ABILITY, 8)) setAbility(AbilityManager.getAbility(statsTag.getString(ABILITY)));
-        if (getAbility() == null)
-        {
-            int abilityNumber = getAbilityIndex();
-            if (getPokedexEntry().getAbility(abilityNumber, this) == null)
+            if (ownerShipTag.hasKey(POKEDEXNB)) pokedexNb = ownerShipTag.getInteger(POKEDEXNB);
+            this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
+            this.players = ownerShipTag.getBoolean(PLAYERS);
+            try
             {
-                if (abilityNumber != 0) abilityNumber = 0;
-                else abilityNumber = 1;
+                if (ownerShipTag.hasKey(OT)) this.setOriginalOwnerUUID(UUID.fromString(ownerShipTag.getString(OT)));
             }
-            setAbility(getPokedexEntry().getAbility(abilityNumber, this));
-        }
-        setNature(Nature.values()[statsTag.getByte(NATURE)]);
-
-        // Write moves tag
-        dataManager.set(MOVESDW, movesTag.getString(MOVES));
-        getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
-
-        // Write Inventory tag
-        NBTTagList nbttaglist = inventoryTag.getTagList(ITEMS, 10);
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-            int j = nbttagcompound1.getByte("Slot") & 255;
-            if (j < this.pokeChest.getSizeInventory())
+            catch (Exception e)
             {
-                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+                e.printStackTrace();
             }
-            if (this.pokeChest.getStackInSlot(1) != null)
+            try
             {
-                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
+                if (ownerShipTag.hasKey(OWNER)) this.setPokemonOwner(UUID.fromString(ownerShipTag.getString(OWNER)));
             }
-            else
+            catch (Exception e)
             {
-                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
+                e.printStackTrace();
+            }
+            this.setTraded(ownerShipTag.getBoolean(ISTRADED));
+        }
+        // Read stats tag
+        if (!statsTag.hasNoTags())
+        {
+            this.setEVs(statsTag.getByteArray(EVS));
+            this.setIVs(statsTag.getByteArray(IVS));
+            this.setExp(statsTag.getInteger(EXP), false);
+            this.setStatus(statsTag.getByte(STATUS));
+            addHappiness(statsTag.getInteger(HAPPY));
+            this.setAbilityIndex(statsTag.getInteger(ABILITYINDEX));
+            if (statsTag.hasKey(ABILITY, 8)) setAbility(AbilityManager.getAbility(statsTag.getString(ABILITY)));
+            if (getAbility() == null)
+            {
+                int abilityNumber = getAbilityIndex();
+                if (getPokedexEntry().getAbility(abilityNumber, this) == null)
+                {
+                    if (abilityNumber != 0) abilityNumber = 0;
+                    else abilityNumber = 1;
+                }
+                setAbility(getPokedexEntry().getAbility(abilityNumber, this));
+            }
+            setNature(Nature.values()[statsTag.getByte(NATURE)]);
+        }
+        // Read moves tag
+        if (!movesTag.hasNoTags())
+        {
+            dataManager.set(MOVESDW, movesTag.getString(MOVES));
+            getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
+        }
+        // Read Inventory tag
+        if (!inventoryTag.hasNoTags())
+        {
+            NBTTagList nbttaglist = inventoryTag.getTagList(ITEMS, 10);
+            for (int i = 0; i < nbttaglist.tagCount(); ++i)
+            {
+                NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
+                int j = nbttagcompound1.getByte("Slot") & 255;
+                if (j < this.pokeChest.getSizeInventory())
+                {
+                    this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+                }
+                if (this.pokeChest.getStackInSlot(1) != null)
+                {
+                    dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
+                }
+                else
+                {
+                    dataManager.set(HELDITEM, Optional.<ItemStack> absent());
+                }
+            }
+            handleArmourAndSaddle();
+        }
+        // Read Breeding tag
+        if (!breedingTag.hasNoTags())
+        {
+            this.setSexe(breedingTag.getByte(SEXE));
+            this.loveTimer = breedingTag.getInteger(SEXETIME);
+        }
+        // Read visuals tag
+        if (!visualsTag.hasNoTags())
+        {
+            byte[] rgbaBytes = new byte[4];
+            rgbaBytes = visualsTag.getByteArray(COLOURS);
+            for (int i = 0; i < 4; i++)
+                rgba[i] = rgbaBytes[i] + 128;
+            this.setShiny(visualsTag.getBoolean(SHINY));
+            forme = visualsTag.getString(FORME);
+            this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
+            setSize(visualsTag.getFloat(SCALE));
+            this.initRidable();
+            flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
+            if (visualsTag.hasKey(POKECUBE))
+            {
+                NBTTagCompound pokecubeTag = visualsTag.getCompoundTag(POKECUBE);
+                this.setPokecube(ItemStack.loadItemStackFromNBT(pokecubeTag));
             }
         }
-        handleArmourAndSaddle();
 
-        // Write Breeding tag
-        this.setSexe(breedingTag.getByte(SEXE));
-        this.inLove = breedingTag.getInteger(SEXETIME);
-
-        // Write visuals tag
-        byte[] rgbaBytes = new byte[4];
-        rgbaBytes = visualsTag.getByteArray(COLOURS);
-        for (int i = 0; i < 4; i++)
-            rgba[i] = rgbaBytes[i] + 128;
-        this.setShiny(visualsTag.getBoolean(SHINY));
-        forme = visualsTag.getString(FORME);
-        this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
-        setSize(visualsTag.getFloat(SCALE));
-        this.initRidable();
-        flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
-        if (visualsTag.hasKey(POKECUBE))
+        // Read AI
+        if (!aiTag.hasNoTags())
         {
-            NBTTagCompound pokecubeTag = visualsTag.getCompoundTag(POKECUBE);
-            this.setPokecube(ItemStack.loadItemStackFromNBT(pokecubeTag));
+            dataManager.set(AIACTIONSTATESDW, aiTag.getInteger(AISTATE));
+            setHungerTime(aiTag.getInteger(HUNGER));
+            int[] home = aiTag.getIntArray(HOME);
+            if (home.length == 4)
+            {
+                setHome(home[0], home[1], home[2], home[3]);
+            }
         }
-
-        // Misc AI
-        dataManager.set(AIACTIONSTATESDW, aiTag.getInteger(AISTATE));
-        setHungerTime(aiTag.getInteger(HUNGER));
-        int[] home = aiTag.getIntArray(HOME);
-        if (home.length == 4)
+        // Read Misc other
+        if (!miscTag.hasNoTags())
         {
-            setHome(home[0], home[1], home[2], home[3]);
+            this.setRNGValue(miscTag.getInteger(RNGVAL));
+            this.uid = miscTag.getInteger(UID);
+            this.setAncient(miscTag.getBoolean(ANCIENT));
+            this.wasShadow = miscTag.getBoolean(WASSHADOW);
         }
-        // Misc other
-        this.setRNGValue(miscTag.getInteger(RNGVAL));
-        this.uid = miscTag.getInteger(UID);
-        this.setAncient(miscTag.getBoolean(ANCIENT));
-        this.wasShadow = miscTag.getBoolean(WASSHADOW);
-
     }
 
     private void readOldPokemobData(NBTTagCompound nbttagcompound)
@@ -939,10 +959,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (ability != null) ability.init(this);
         if (nbttagcompound.hasKey("personalityValue")) this.setRNGValue(nbttagcompound.getInteger("personalityValue"));
         nature = Nature.values()[nbttagcompound.getByte("nature")];
-        getEntityData().setBoolean("dittotag", nbttagcompound.getBoolean("dittotag"));
         // Sexe related
         setSexe((byte) nbttagcompound.getInteger(PokecubeSerializer.SEXE));
-        inLove = nbttagcompound.getInteger("InLove2");
+        loveTimer = nbttagcompound.getInteger("InLove2");
         // Moves Related
         setStatus(nbttagcompound.getByte(PokecubeSerializer.STATUS));
         this.setPokemonAIState(LEARNINGMOVE, nbttagcompound.getBoolean("newMoves"));
@@ -1070,6 +1089,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound pokemobTag = new NBTTagCompound();
         // Write Ownership tag
         NBTTagCompound ownerShipTag = new NBTTagCompound();
+        ownerShipTag.setInteger(POKEDEXNB, getPokedexNb());
         ownerShipTag.setString(NICKNAME, getPokemonNickname());
         ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
         if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());
@@ -1112,7 +1132,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Write Breeding tag
         NBTTagCompound breedingTag = new NBTTagCompound();
         breedingTag.setByte(SEXE, getSexe());
-        breedingTag.setInteger(SEXETIME, inLove);
+        breedingTag.setInteger(SEXETIME, loveTimer);
 
         // Write visuals tag
         NBTTagCompound visualsTag = new NBTTagCompound();

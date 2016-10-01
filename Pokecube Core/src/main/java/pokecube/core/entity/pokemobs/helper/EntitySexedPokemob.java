@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
@@ -35,7 +34,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 {
     protected Entity               egg   = null;
     private Entity                 lover;
-    protected int                  inLove;
+    protected int                  loveTimer;
     protected byte                 sexe  = 0;
     protected Vector<IBreedingMob> males = new Vector<>();
 
@@ -140,7 +139,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public int getLoveTimer()
     {
-        return inLove;
+        return loveTimer;
     }
 
     @Override
@@ -166,7 +165,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public boolean isInLove()
     {
-        return inLove > 0 || lover != null;
+        return loveTimer > 0 || lover != null;
     }
 
     public void lay(int pokedexNb, IPokemob male)
@@ -234,12 +233,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         });
     }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-    }
-
     /** Use this for anything that does not change or need to be updated. */
     @Override
     public void readSpawnData(ByteBuf data)
@@ -277,7 +270,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public void setLoveTimer(final int value)
     {
-        inLove = value;
+        loveTimer = value;
     }
 
     @Override
@@ -315,12 +308,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public boolean tryToBreed()
     {
         return isInLove();
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 
     /** Use this for anything that does not change or need to be updated. */

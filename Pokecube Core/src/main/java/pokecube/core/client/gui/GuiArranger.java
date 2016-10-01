@@ -154,42 +154,42 @@ public class GuiArranger
                 GlStateManager.enableTexture2D();
                 GL11.glPopMatrix();
 
-                int i = Mouse.getEventX() * gui.width / gui.mc.displayWidth;
-                int j = gui.height - Mouse.getEventY() * gui.height / gui.mc.displayHeight - 1;
-                int k = Mouse.getEventButton();
-                boolean mess = false;
-                if (messRect.contains(i, j) && k == 1)
+                int i = Mouse.getX() * gui.width / gui.mc.displayWidth;
+                int j = gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight - 1;
+                int k = 0;
+                if (messRect.contains(i, j))
                 {
-                    if (!messagesheld)
-                    {
-                        int mx = (int) messRect.getCenterX();
-                        int my = (int) messRect.getCenterY();
-                        int dx = mx - i;
-                        int dy = my - j;
-                        PokecubeMod.core.getConfig().messageOffset[0] -= dx;
-                        PokecubeMod.core.getConfig().messageOffset[1] -= dy;
-                        messagesheld = true;
-                        PokecubeMod.core.getConfig().setSettings();
-                        System.out.println(dx + " " + dy);
-                    }
-                    mess = true;
+                    messagesheld = Mouse.isButtonDown(k);
                 }
-                else messagesheld = false;
-                if (!mess && guiRect.contains(i, j) && k == 1)
+                if (messagesheld)
                 {
-                    if (!guiheld)
+                    int mx = (int) messRect.getCenterX();
+                    int my = (int) messRect.getCenterY();
+                    int dx = mx - i;
+                    int dy = my - j;
+                    PokecubeMod.core.getConfig().messageOffset[0] -= dx;
+                    PokecubeMod.core.getConfig().messageOffset[1] -= dy;
+                    if (dx != 0 || dy != 0) PokecubeMod.core.getConfig().setSettings();
+                }
+                else
+                {
+                    if (guiRect.contains(i, j))
+                    {
+                        guiheld = Mouse.isButtonDown(k);
+                    }
+                    if (guiheld)
                     {
                         int mx = (int) guiRect.getCenterX();
                         int my = (int) guiRect.getCenterY();
                         int dx = mx - i;
                         int dy = my - j;
-                        GuiDisplayPokecubeInfo.instance().moveGui(-dx, -dy);
-                        guiheld = true;
-                        PokecubeMod.core.getConfig().setSettings();
+                        if (dx != 0 || dy != 0)
+                        {
+                            GuiDisplayPokecubeInfo.instance().moveGui(-dx, -dy);
+                            PokecubeMod.core.getConfig().setSettings();
+                        }
                     }
-
                 }
-                else guiheld = false;
             }
 
             if (event instanceof MouseInputEvent.Post)

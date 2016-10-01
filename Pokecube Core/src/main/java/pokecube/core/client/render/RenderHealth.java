@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
 
@@ -257,9 +258,9 @@ public class RenderHealth
                 GlStateManager.translate(-size, -4.5F, 0F);
                 GlStateManager.scale(s, s, s);
 
-                String owner = pokemob.getPokemonOwnerName();
-                boolean isOwner = renderManager.renderViewEntity.getCachedUniqueIdString().equals(owner);
-                int colour = isOwner ? 0xFFFFFF : owner.isEmpty() ? 0x888888 : 0xAA4444;
+                UUID owner = pokemob.getPokemonOwnerID();
+                boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
+                int colour = isOwner ? 0xFFFFFF : owner == null ? 0x888888 : 0xAA4444;
                 mc.fontRendererObj.drawString(name, 0, 0, colour);
 
                 GlStateManager.pushMatrix();
@@ -356,14 +357,14 @@ public class RenderHealth
             Tessellator tessellator = Tessellator.getInstance();
             VertexBuffer buffer = tessellator.getBuffer();
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-            buffer.pos((vertexX), vertexY + intV, 0.0D)
-                    .tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMaxV()).endVertex();
+            buffer.pos((vertexX), vertexY + intV, 0.0D).tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMaxV())
+                    .endVertex();
             buffer.pos(vertexX + intU, vertexY + intV, 0.0D)
                     .tex(textureAtlasSprite.getMaxU(), textureAtlasSprite.getMaxV()).endVertex();
-            buffer.pos(vertexX + intU, (vertexY), 0.0D)
-                    .tex(textureAtlasSprite.getMaxU(), textureAtlasSprite.getMinV()).endVertex();
-            buffer.pos((vertexX), (vertexY), 0.0D)
-                    .tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMinV()).endVertex();
+            buffer.pos(vertexX + intU, (vertexY), 0.0D).tex(textureAtlasSprite.getMaxU(), textureAtlasSprite.getMinV())
+                    .endVertex();
+            buffer.pos((vertexX), (vertexY), 0.0D).tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMinV())
+                    .endVertex();
             tessellator.draw();
         }
         catch (Exception e)

@@ -38,7 +38,6 @@ import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -674,12 +673,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        setStatus(nbttagcompound.getByte(PokecubeSerializer.STATUS));
-        this.setPokemonAIState(LEARNINGMOVE, nbttagcompound.getBoolean("newMoves"));
-        moveInfo.newMoves = nbttagcompound.getInteger("numberMoves");
-        String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
-        dataManager.set(MOVESDW, movesString);
-        this.getEntityData().setString("lastMoveHitBy", "");
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -819,11 +812,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void writeEntityToNBT(NBTTagCompound nbttagcompound)
     {
         super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setByte(PokecubeSerializer.STATUS, getStatus());
-        nbttagcompound.setBoolean("newMoves", getPokemonAIState(LEARNINGMOVE));
-        nbttagcompound.setInteger("numberMoves", moveInfo.newMoves);
-        String movesString = dataManager.get(MOVESDW);
-        nbttagcompound.setString(PokecubeSerializer.MOVES, movesString);
     }
 
     /** Use this for anything that does not change or need to be updated. */

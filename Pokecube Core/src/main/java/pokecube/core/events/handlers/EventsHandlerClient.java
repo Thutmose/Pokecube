@@ -48,7 +48,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeItems;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.ClientProxyPokecube;
 import pokecube.core.client.gui.GuiArranger;
@@ -180,7 +179,7 @@ public class EventsHandlerClient
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
             EventsHandler.setFromNBT(pokemob, pokeTag);
             pokemob.popFromPokecube();
-            pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
+            pokemob.setPokecube(itemStack);
             ((EntityLivingBase) pokemob).setHealth(
                     Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));
             pokemob.setStatus(PokecubeManager.getStatus(itemStack));

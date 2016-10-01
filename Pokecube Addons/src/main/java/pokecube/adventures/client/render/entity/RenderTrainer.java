@@ -62,6 +62,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
+        if (((EntityTrainer) entity).defeated) return;
         if (((EntityTrainer) entity).male)
         {
             mainModel = male;

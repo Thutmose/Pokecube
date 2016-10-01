@@ -75,9 +75,8 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
         IPokemob pokemob = (IPokemob) mob;
         String name = ChatAllowedCharacters.filterAllowedCharacters(new String(message.name));
         if (pokemob.getPokemonDisplayName().getFormattedText().equals(name)) return;
-        boolean OT = pokemob.getPokemonOwnerName() == null
-                || (PokecubeMod.fakeUUID.equals(pokemob.getOriginalOwnerUUID()))
-                || (pokemob.getPokemonOwnerName().equals(pokemob.getOriginalOwnerUUID().toString()));
+        boolean OT = pokemob.getPokemonOwnerID() == null || pokemob.getOriginalOwnerUUID() == null
+                || (pokemob.getPokemonOwnerID().equals(pokemob.getOriginalOwnerUUID()));
 
         if (!OT && pokemob.getPokemonOwner() != null)
         {

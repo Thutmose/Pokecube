@@ -1,6 +1,7 @@
 package pokecube.core.moves.implementations.actions;
 
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.collect.Maps;
 
@@ -21,7 +22,7 @@ import thut.api.maths.Vector4;
 
 public class ActionSecretPower implements IMoveAction
 {
-    public static Map<String, Vector4> pendingBaseLocations = Maps.newHashMap();
+    public static Map<UUID, Vector4> pendingBaseLocations = Maps.newHashMap();
 
     public ActionSecretPower()
     {
@@ -51,7 +52,7 @@ public class ActionSecretPower implements IMoveAction
             owner.addChatMessage(message);
             return false;
         }
-        pendingBaseLocations.put(attacker.getPokemonOwnerName(),
+        pendingBaseLocations.put(attacker.getPokemonOwnerID(),
                 new Vector4(location.x, location.y, location.z, owner.dimension));
         TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.confirm",
                 location.set(location.getPos()));

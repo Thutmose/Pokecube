@@ -1289,7 +1289,9 @@ public class GuiPokedex extends GuiScreen
             if (!(mc.thePlayer.getStatFileWriter()
                     .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokedexEntry))
                     || mc.thePlayer.getStatFileWriter()
-                            .hasAchievementUnlocked(PokecubeMod.hatchAchievements.get(pokedexEntry)))
+                            .hasAchievementUnlocked(PokecubeMod.hatchAchievements.get(pokedexEntry))
+                    || mc.thePlayer.getStatFileWriter()
+                            .hasAchievementUnlocked(PokecubeMod.killAchievements.get(pokedexEntry)))
                     && !mc.thePlayer.capabilities.isCreativeMode)
             {
 

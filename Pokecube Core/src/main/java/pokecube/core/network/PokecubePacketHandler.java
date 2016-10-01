@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
+import pokecube.core.PokecubeItems;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -398,8 +399,8 @@ public class PokecubePacketHandler
                 if (entity != null)
                 {
                     ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-                    entity.setPokemonOwnerByName(owner.getCachedUniqueIdString());
-                    entity.setPokecubeId(0);
+                    entity.setPokemonOwner(owner.getUniqueID());
+                    entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
                     if (shiny) entity.setShiny(true);
                     if (red == 0 && Database.getEntry(entry.getName() + "R") != null)

@@ -118,7 +118,9 @@ public class PokecubeManager
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
             poke.readFromNBT(pokeTag);
             pokemob.popFromPokecube();// should reinit status
-            pokemob.setPokecubeId(PokecubeItems.getCubeId(itemStack));
+            ItemStack cubeStack = itemStack.copy();
+            cubeStack.getTagCompound().removeTag("Pokemob");
+            pokemob.setPokecube(cubeStack);
             ((EntityLivingBase) pokemob).setHealth(
                     Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));
             pokemob.setStatus(getStatus(itemStack));
@@ -154,8 +156,13 @@ public class PokecubeManager
 
     public static ItemStack pokemobToItem(IPokemob pokemob)
     {
-        ItemStack itemStack = new ItemStack(PokecubeItems.getFilledCube(pokemob.getPokecubeId()), 1,
-                Tools.serialize(((EntityLivingBase) pokemob).getMaxHealth(), ((EntityLivingBase) pokemob).getHealth()));
+        ItemStack itemStack = pokemob.getPokecube();
+        if (itemStack == null)
+        {
+            itemStack = new ItemStack(PokecubeItems.getFilledCube(0), 1, Tools
+                    .serialize(((EntityLivingBase) pokemob).getMaxHealth(), ((EntityLivingBase) pokemob).getHealth()));
+        }
+        itemStack = itemStack.copy();
         // setUID(itemStack, pokemob.getUid());
         setOwner(itemStack, pokemob.getPokemonOwner());
         setColor(itemStack);

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
@@ -147,7 +148,7 @@ public class MakeCommand extends CommandBase
                         mob.changeForme(name);
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
 
-                        String owner = "";
+                        UUID owner = null;
                         boolean shiny = false;
                         boolean shadow = false;
                         int red, green, blue;
@@ -161,6 +162,7 @@ public class MakeCommand extends CommandBase
                         String[] moves = new String[4];
                         int mindex = 0;
                         boolean asWild = false;
+                        String ownerName = "";
 
                         if (index < args.length)
                         {
@@ -202,7 +204,7 @@ public class MakeCommand extends CommandBase
                                 }
                                 else if (arg.equalsIgnoreCase("o"))
                                 {
-                                    owner = val;
+                                    ownerName = val;
                                 }
                                 else if (arg.equalsIgnoreCase("a"))
                                 {
@@ -236,28 +238,23 @@ public class MakeCommand extends CommandBase
                             player = targets[i];
                             if (player != null)
                             {
-                                owner = targets[i].getCachedUniqueIdString();
-                            }
-                            else
-                            {
-                                owner = "";
+                                owner = targets[i].getUniqueID();
                             }
                         }
                         else
                         {
-                            EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(owner);
+                            EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(ownerName);
                             player = p;
-                            if (p != null) owner = p.getCachedUniqueIdString();
-                            else if (owner != null && !owner.isEmpty())
+                            if (p != null) owner = p.getUniqueID();
+                            else if (!ownerName.isEmpty())
                             {
-                                GameProfile profile = new GameProfile(null, owner);
+                                GameProfile profile = new GameProfile(null, ownerName);
                                 profile = TileEntitySkull.updateGameprofile(profile);
                                 if (profile.getId() == null) { throw new CommandException(
-                                        "Error, cannot find profile for " + owner); }
-                                owner = profile.getId().toString();
+                                        "Error, cannot find profile for " + ownerName); }
+                                owner = profile.getId();
                             }
                         }
-
                         Vector3 temp = Vector3.getNewVector();
                         if (player != null)
                         {
@@ -267,9 +264,9 @@ public class MakeCommand extends CommandBase
                         temp.moveEntity((Entity) mob);
 
                         mob.setHp(((EntityLiving) mob).getMaxHealth());
-                        if (!owner.equals(""))
+                        if (owner != null)
                         {
-                            mob.setPokemonOwnerByName(owner);
+                            mob.setPokemonOwner(owner);
                             mob.setPokemonAIState(IMoveConstants.TAMED, true);
                         }
                         mob.setShiny(shiny);

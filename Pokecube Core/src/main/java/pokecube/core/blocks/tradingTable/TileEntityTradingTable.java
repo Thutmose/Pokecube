@@ -588,24 +588,22 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         String owner1 = PokecubeManager.getOwner(poke1);
         String owner2 = PokecubeManager.getOwner(poke2);
 
-        String trader1 = player1.getCachedUniqueIdString();
-        String trader2 = player2.getCachedUniqueIdString();
+        UUID trader1 = player1.getUniqueID();
+        UUID trader2 = player2.getUniqueID();
 
-        if ((trader1.contentEquals(owner1) || trader1.contentEquals(owner2))
-                && ((trader2.contentEquals(owner1) || trader2.contentEquals(trader2))))
+        if ((trader1.equals(owner1) || trader1.equals(owner2)) && ((trader2.equals(owner1) || trader2.equals(trader2))))
         {
-
             boolean swap = false;
-            if (!trader1.contentEquals(owner1))
+            if (!trader1.equals(owner1))
             {
-                mon1.setPokemonOwnerByName(trader1);
-                mon2.setPokemonOwnerByName(trader2);
+                mon1.setPokemonOwner(trader1);
+                mon2.setPokemonOwner(trader2);
             }
             else
             {
                 swap = true;
-                mon2.setPokemonOwnerByName(trader1);
-                mon1.setPokemonOwnerByName(trader2);
+                mon2.setPokemonOwner(trader1);
+                mon1.setPokemonOwner(trader2);
             }
 
             boolean mon1everstone = PokecubeManager.getHeldItemMainhand(poke1) != null && Tools
@@ -660,8 +658,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             }
             else
             {
-                mob.setPokemonOwnerByName(player1.getCachedUniqueIdString());
-                mob.setPokecubeId(id);
+                mob.setPokemonOwner(player1.getUniqueID());
+                mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(id)));
             }
             player1.inventory.addItemStackToInventory(PokecubeManager.pokemobToItem(mob));
             player1 = null;
@@ -676,15 +674,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
         IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory[0], worldObj)
                 : PokecubeManager.itemToPokemob(inventory[1], worldObj);
-        if (!(mob.getPokemonOwnerName().equalsIgnoreCase(new UUID(1234, 4321).toString()) || theftEnabled))
-            return false;
-
+        if (theftEnabled) return false;
         mob.setTraded(true);
-        mob.setPokemonOwnerByName(player1.getCachedUniqueIdString());
+        mob.setPokemonOwner(player1.getUniqueID());
         player1.inventory.addItemStackToInventory(inventory[index]);
-
         inventory = new ItemStack[2];
-
         return true;
     }
 

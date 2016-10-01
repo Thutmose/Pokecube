@@ -1,6 +1,7 @@
 package pokecube.adventures.entity.trainers;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -17,6 +18,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
@@ -41,12 +43,14 @@ import pokecube.adventures.entity.helper.EntityHasPokemobs;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
+import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
@@ -80,19 +84,21 @@ public class EntityTrainer extends EntityHasPokemobs
         }
     }
 
-    long                          resetTime  = 0;
-    public ArrayList<DefeatEntry> defeaters  = new ArrayList<DefeatEntry>();
+    long                          resetTime    = 0;
+    public ArrayList<DefeatEntry> defeaters    = new ArrayList<DefeatEntry>();
 
-    private boolean               randomize  = false;
-    public int                    sight      = 0;
-    public Vector3                location   = null;
-    public String                 name       = "";
-    public String                 playerName = "";
-    public String                 urlSkin    = "";
-    public boolean                male       = true;
-    boolean                       added      = false;
-    protected boolean             trades     = true;
+    private boolean               randomize    = false;
+    public int                    sight        = 0;
+    public Vector3                location     = null;
+    public String                 name         = "";
+    public String                 playerName   = "";
+    public String                 urlSkin      = "";
+    public boolean                male         = true;
+    boolean                       added        = false;
+    protected boolean             trades       = true;
     public GuardAI                guardAI;
+    public boolean                defeated     = false;
+    public boolean                notifyDefeat = false;
 
     public EntityTrainer(World par1World)
     {
@@ -161,11 +167,11 @@ public class EntityTrainer extends EntityHasPokemobs
                 int stat = getBaseStats(mon);
                 int stat1 = getBaseStats(mon1);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
-                String trader1 = mon1.getPokemonOwnerName();
+                UUID trader1 = mon1.getPokemonOwnerID();
                 boolean everstone = PokecubeManager.getHeldItemMainhand(stack) != null && Tools
                         .isSameStack(PokecubeManager.getHeldItemMainhand(stack), PokecubeItems.getStack("everstone"));
                 mon.setOriginalOwnerUUID(getUniqueID());
-                mon.setPokemonOwnerByName(trader1);
+                mon.setPokemonOwner(trader1);
                 mon.setTraded(!everstone);
                 stack = PokecubeManager.pokemobToItem(mon);
                 stack.getTagCompound().setInteger("slotnum", i);
@@ -303,8 +309,15 @@ public class EntityTrainer extends EntityHasPokemobs
         }
         if (defeater != null)
         {
-            ITextComponent text = getMessage(MessageState.DEFEAT, getDisplayName());
+            ITextComponent text = getMessage(MessageState.DEFEAT, getDisplayName(), defeater.getDisplayName());
             defeater.addChatMessage(text);
+            if (notifyDefeat && defeater instanceof EntityPlayerMP)
+            {
+                PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
+                packet.data.setInteger("I", getEntityId());
+                packet.data.setBoolean("V", hasDefeated(defeater));
+                PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) defeater);
+            }
         }
         this.setTrainerTarget(null);
     }
@@ -477,6 +490,7 @@ public class EntityTrainer extends EntityHasPokemobs
             for (int i = 0; i < nbttaglist.tagCount(); i++)
                 defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
         }
+        notifyDefeat = nbt.getBoolean("notifyDefeat");
     }
 
     /** Will get destroyed next tick. */
@@ -531,8 +545,8 @@ public class EntityTrainer extends EntityHasPokemobs
         int num = poke2.getTagCompound().getInteger("slotnum");
         EntityLivingBase player2 = this;
         IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
-        String trader2 = player2.getCachedUniqueIdString();
-        mon1.setPokemonOwnerByName(trader2);
+        UUID trader2 = player2.getUniqueID();
+        mon1.setPokemonOwner(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;
         pokecubes[num] = poke1;
@@ -574,5 +588,6 @@ public class EntityTrainer extends EntityHasPokemobs
             nbttaglist.appendTag(nbttagcompound);
         }
         nbt.setTag("DefeatList", nbttaglist);
+        nbt.setBoolean("notifyDefeat", notifyDefeat);
     }
 }

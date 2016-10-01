@@ -86,6 +86,7 @@ import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
 import thut.api.entity.IMobColourable;
@@ -276,6 +277,12 @@ public class EventsHandler
 
     public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
     {
+        if (tag.hasKey(TagNames.POKEMOBTAG))
+        {
+            NBTTagCompound pokemobTag = tag.getCompoundTag(TagNames.POKEMOBTAG);
+            pokemob.readPokemobData(pokemobTag);
+            return;
+        }
         float scale = tag.getFloat("scale");
         if (scale > 0)
         {

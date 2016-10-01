@@ -20,6 +20,7 @@ import thut.api.network.PacketHandler;
 public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, IMessage>
 {
     public static final byte MESSAGEUPDATETRAINER = 0;
+    public static final byte MESSAGENOTIFYDEFEAT  = 1;
 
     byte                     message;
     public NBTTagCompound    data                 = new NBTTagCompound();
@@ -108,6 +109,13 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 if (stationary) trainer.setStationary(stationary);
                 PacketHandler.sendEntityUpdate(trainer);
             }
+        }
+        else if (message.message == MESSAGENOTIFYDEFEAT)
+        {
+            int id = message.data.getInteger("I");
+            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
+            boolean notify = message.data.getBoolean("V");
+            trainer.defeated = notify;
         }
     }
 

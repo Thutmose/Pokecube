@@ -397,6 +397,14 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         if (worldObj != null && !this.worldObj.isRemote)
         {
             setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != null);
+            if (this.pokeChest.getStackInSlot(1) != null)
+            {
+                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
+            }
+            else
+            {
+                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
+            }
         }
     }
 

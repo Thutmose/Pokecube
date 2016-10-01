@@ -23,7 +23,6 @@ import net.minecraft.inventory.AnimalChest;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -576,12 +575,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-    }
-
-    @Override
     public void returnToPokecube()
     {
         if (returning) return;
@@ -808,12 +801,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     {
         this.setHeldItem(this.wildHeldItem());
         setSpecialInfo(getPokedexEntry().defaultSpecial);
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 
     @Override

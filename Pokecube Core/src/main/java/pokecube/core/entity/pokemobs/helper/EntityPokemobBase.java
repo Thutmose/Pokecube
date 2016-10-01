@@ -733,6 +733,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Read Ownership Tag
         if (!ownerShipTag.hasNoTags())
         {
+            if (ownerShipTag.hasKey(POKEDEXNB)) pokedexNb = ownerShipTag.getInteger(POKEDEXNB);
             this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
             this.players = ownerShipTag.getBoolean(PLAYERS);
             try
@@ -1088,6 +1089,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound pokemobTag = new NBTTagCompound();
         // Write Ownership tag
         NBTTagCompound ownerShipTag = new NBTTagCompound();
+        ownerShipTag.setInteger(POKEDEXNB, getPokedexNb());
         ownerShipTag.setString(NICKNAME, getPokemonNickname());
         ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
         if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());

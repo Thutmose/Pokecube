@@ -621,12 +621,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         }
     }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-    }
-
     /** Use this for anything that does not change or need to be updated. */
     @Override
     public void readSpawnData(ByteBuf data)
@@ -919,12 +913,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
         setMaxHealth(maxHealth);
         setHealth(health);
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 
     /** Use this for anything that does not change or need to be updated. */

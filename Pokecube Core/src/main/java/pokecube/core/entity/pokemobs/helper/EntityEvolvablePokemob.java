@@ -10,7 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -450,12 +449,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         }
     }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-    }
-
     private void setEvol(int num)
     {
         dataManager.set(EVOLNBDW, Integer.valueOf(num));
@@ -510,11 +503,5 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public boolean traded()
     {
         return getPokemonAIState(TRADED);
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 }

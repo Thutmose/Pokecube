@@ -13,7 +13,6 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
@@ -669,12 +668,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         healStatus();
     }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-    }
-
     /** Use this for anything that does not change or need to be updated. */
     @Override
     public void readSpawnData(ByteBuf data)
@@ -806,12 +799,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (index == 0) moveInfo.weapon1 = weapon;
         else moveInfo.weapon2 = weapon;
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 
     /** Use this for anything that does not change or need to be updated. */

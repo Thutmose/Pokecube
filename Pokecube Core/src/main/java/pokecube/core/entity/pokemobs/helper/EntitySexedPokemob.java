@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
@@ -234,12 +233,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         });
     }
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
-    {
-        super.readEntityFromNBT(nbttagcompound);
-    }
-
     /** Use this for anything that does not change or need to be updated. */
     @Override
     public void readSpawnData(ByteBuf data)
@@ -315,12 +308,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public boolean tryToBreed()
     {
         return isInLove();
-    }
-
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
-    {
-        super.writeEntityToNBT(nbttagcompound);
     }
 
     /** Use this for anything that does not change or need to be updated. */

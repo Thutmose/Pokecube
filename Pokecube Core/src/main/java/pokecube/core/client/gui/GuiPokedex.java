@@ -87,9 +87,6 @@ public class GuiPokedex extends GuiScreen
     int                                           prevX              = 0;
     int                                           prevY              = 0;
 
-    String                                        oldName            = "";
-    boolean                                       nicknameChange     = false;
-
     /**
      *
      */
@@ -1077,7 +1074,6 @@ public class GuiPokedex extends GuiScreen
         {
             String name = pokemob.getPokemonDisplayName().getUnformattedComponentText().trim();
             nicknameTextField.setText(name);
-            oldName = nicknameTextField.getText();
             nicknameTextField.setEnabled(true);
         }
         pokemobTextField = new GuiTextField(0, fontRendererObj, xOffset - 65, yOffset + 123, 110, 10);
@@ -1213,9 +1209,10 @@ public class GuiPokedex extends GuiScreen
             {
                 mc.displayGuiScreen(null);
                 mc.setIngameFocus();
+                return;
             }
             String nickname = nicknameTextField.getText();
-            if (canEditPokemob() && page == 0 && !oldName.equals(nickname))
+            if (canEditPokemob() && page == 0)
             {
                 pokemob.setPokemonNickname(nickname);
             }

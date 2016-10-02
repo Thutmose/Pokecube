@@ -1,5 +1,7 @@
 package pokecube.core.items.pokecubes;
 
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -159,7 +161,7 @@ public class PokecubeManager
         itemStack = itemStack.copy();
         itemStack.setItemDamage(damage);
         // setUID(itemStack, pokemob.getUid());
-        setOwner(itemStack, pokemob.getPokemonOwner());
+        setOwner(itemStack, pokemob.getPokemonOwnerID());
         setColor(itemStack);
         int status = pokemob.getStatus();
         setStatus(itemStack, pokemob.getStatus());
@@ -229,12 +231,12 @@ public class PokecubeManager
         var4.setInteger("cubecolor", color);
     }
 
-    public static void setOwner(ItemStack itemStack, Entity owner)
+    public static void setOwner(ItemStack itemStack, UUID owner)
     {
         if (!itemStack.hasTagCompound()) return;
         NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag("Pokemob")
                 .getCompoundTag(TagNames.POKEMOBTAG);
-        poketag.getCompoundTag(TagNames.OWNERSHIPTAG).setString(TagNames.OWNER, owner.getCachedUniqueIdString());
+        poketag.getCompoundTag(TagNames.OWNERSHIPTAG).setString(TagNames.OWNER, owner.toString());
     }
 
     public static void setStatus(ItemStack itemStack, byte status)

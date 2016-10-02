@@ -41,15 +41,17 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
     static class EvoTicker
     {
-        final World  world;
-        final Entity evo;
-        final long   evoTime;
+        final World          world;
+        final Entity         evo;
+        final ITextComponent pre;
+        final long           evoTime;
 
-        public EvoTicker(World world, long evoTime, Entity evo)
+        public EvoTicker(World world, long evoTime, Entity evo, ITextComponent pre)
         {
             this.world = world;
             this.evoTime = evoTime;
             this.evo = evo;
+            this.pre = pre;
             MinecraftForge.EVENT_BUS.register(this);
         }
 
@@ -60,6 +62,9 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             if (evt.world.getTotalWorldTime() > evoTime)
             {
                 evt.world.spawnEntityInWorld(evo);
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
+                        pre.getFormattedText(), ((IPokemob) evo).getPokedexEntry().getName());
+                ((IPokemob) evo).displayMessageToOwner(mess);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
@@ -377,10 +382,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
                 evolution.copyDataFromOld(this);
                 evolution.copyLocationAndAnglesFrom(this);
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
-                        this.getPokemonDisplayName().getFormattedText(),
-                        ((IPokemob) evolution).getPokedexEntry().getName());
-                this.displayMessageToOwner(mess);
                 this.setPokemonOwner((UUID) null);
                 this.setDead();
                 ((IPokemob) evolution).changeForme(forme);
@@ -389,7 +390,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (this.addedToChunk)
                 {
                     worldObj.removeEntity(this);
-                    new EvoTicker(worldObj, evoTime, evolution);
+                    new EvoTicker(worldObj, evoTime, evolution, this.getPokemonDisplayName());
                 }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))

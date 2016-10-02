@@ -13,7 +13,7 @@ public class EntityPokemob extends EntityPokemobBase
     public EntityPokemob(World world)
     {
         super(world);
-        if (getClass().getName().contains("GenericPokemob") && pokedexNb == 0)
+        if (getClass().getName().contains("GenericPokemob"))
         {
             String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
             PokedexEntry entry = Database.getEntry(Integer.parseInt(num));

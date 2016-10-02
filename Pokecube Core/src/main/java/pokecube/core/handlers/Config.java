@@ -162,7 +162,7 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public float               playerToPokemobDamageScale = 1;
     @Configure(category = mobAI)
-    public float               expFromDeathDropScale               = 1;
+    public float               expFromDeathDropScale      = 1;
     @Configure(category = mobAI)
     /** Do explosions occur and cause damage */
     public boolean             explosions                 = true;
@@ -305,6 +305,8 @@ public class Config extends ConfigBase
     public float               messageSize                = 1;
     @Configure(category = client)
     public boolean             guiDown                    = true;
+    @Configure(category = client)
+    public boolean             guiAutoScale               = false;
     @Configure(category = client)
     public boolean             autoSelectMoves            = false;
     @Configure(category = client)

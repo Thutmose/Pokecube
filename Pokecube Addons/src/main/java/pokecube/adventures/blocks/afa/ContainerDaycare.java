@@ -12,15 +12,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeItems;
-import pokecube.core.items.pokecubes.PokecubeManager;
 
-public class ContainerAFA extends Container
+public class ContainerDaycare extends Container
 {
-    private static class AFASlot extends Slot
+    private static class SlotDaycare extends Slot
     {
-
-        public AFASlot(IInventory inventoryIn, int index, int xPosition, int yPosition)
+        public SlotDaycare(IInventory inventoryIn, int index, int xPosition, int yPosition)
         {
             super(inventoryIn, index, xPosition, yPosition);
         }
@@ -28,18 +25,16 @@ public class ContainerAFA extends Container
         @Override
         public boolean isItemValid(ItemStack itemstack)
         {
-            return PokecubeManager.isFilled(itemstack)
-                    || ItemStack.areItemStackTagsEqual(PokecubeItems.getStack("shiny_charm"), itemstack);
+            return this.inventory.isItemValidForSlot(getSlotIndex(), itemstack);
         }
     }
 
-    public TileEntityAFA tile;
-    public World         worldObj;
-    int                  energy = 0;
+    public TileEntityDaycare tile;
+    public World             worldObj;
+    public int               range = 4;
+    public BlockPos          pos;
 
-    public BlockPos      pos;
-
-    public ContainerAFA(TileEntityAFA tile, InventoryPlayer playerInv)
+    public ContainerDaycare(TileEntityDaycare tile, InventoryPlayer playerInv)
     {
         super();
         this.tile = tile;
@@ -52,7 +47,9 @@ public class ContainerAFA extends Container
     {
         clearSlots();
         bindPlayerInventory(playerInv);
-        addSlotToContainer(new AFASlot(tile, 0, 15, 12));
+        addSlotToContainer(new SlotDaycare(tile, 0, 15, 12));
+        addSlotToContainer(new SlotDaycare(tile, 1, 15, 32));
+        addSlotToContainer(new SlotDaycare(tile, 2, 15, 52));
     }
 
     private void bindPlayerInventory(InventoryPlayer playerInventory)
@@ -70,7 +67,7 @@ public class ContainerAFA extends Container
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return playerIn.getUniqueID().equals(tile.placer);
+        return tile.isUseableByPlayer(playerIn);
     }
 
     protected void clearSlots()
@@ -93,9 +90,9 @@ public class ContainerAFA extends Container
         for (int i = 0; i < this.listeners.size(); ++i)
         {
             IContainerListener icrafting = this.listeners.get(i);
-            if (energy != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+            if (range != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
         }
-        energy = tile.getField(0);
+        range = tile.getField(0);
         super.detectAndSendChanges();
     }
 

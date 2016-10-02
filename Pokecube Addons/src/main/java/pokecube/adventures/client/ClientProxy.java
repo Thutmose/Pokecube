@@ -18,6 +18,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -34,11 +35,13 @@ import pokecube.adventures.CommonProxy;
 import pokecube.adventures.LegendaryConditions;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
 import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
 import pokecube.adventures.client.gui.GuiCloner;
+import pokecube.adventures.client.gui.GuiDaycare;
 import pokecube.adventures.client.gui.GuiTrainerEdit;
 import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.entity.RenderTarget;
@@ -72,26 +75,22 @@ public class ClientProxy extends CommonProxy
             entityHit = objectClicked.entityHit;
         }
         BlockPos pos = new BlockPos(x, y, z);
-        if (guiID == PokecubeAdv.GUITRAINER_ID)
-        {
-            return new GuiTrainerEdit((EntityTrainer) entityHit);
-        }
-        else if (guiID == PokecubeAdv.GUIBAG_ID)
+        if (guiID == PokecubeAdv.GUITRAINER_ID) { return new GuiTrainerEdit((EntityTrainer) entityHit); }
+        if (guiID == PokecubeAdv.GUIBAG_ID)
         {
             ContainerBag cont = new ContainerBag(player.inventory);
             cont.gotoInventoryPage(x);
             return new GuiBag(cont, Vector3.getNewVector().set(x, y, z));
         }
-        else if (guiID == PokecubeAdv.GUICLONER_ID)
+        if (guiID == PokecubeAdv.GUICLONER_ID) { return new GuiCloner(player.inventory,
+                (TileEntityCloner) world.getTileEntity(pos)); }
+        if (guiID == PokecubeAdv.GUIBIOMESETTER_ID) { return new GUIBiomeSetter(player.getHeldItemMainhand()); }
+        if (guiID == PokecubeAdv.GUIAFA_ID)
         {
-            return new GuiCloner(player.inventory, (TileEntityCloner) world.getTileEntity(pos));
+            TileEntity tile = world.getTileEntity(pos);
+            if (tile instanceof TileEntityDaycare) return new GuiDaycare(player.inventory, (TileEntityDaycare) tile);
+            return new GuiAFA(player.inventory, (TileEntityAFA) tile);
         }
-        else if (guiID == PokecubeAdv.GUIBIOMESETTER_ID)
-        {
-            return new GUIBiomeSetter(player.getHeldItemMainhand());
-        }
-        else if (guiID == PokecubeAdv.GUIAFA_ID) { return new GuiAFA(player.inventory,
-                (TileEntityAFA) world.getTileEntity(pos)); }
         return null;
     }
 
@@ -106,10 +105,7 @@ public class ClientProxy extends CommonProxy
     {
         if (isOnClientSide())
         {
-            if (playerName != null)
-            {
-                return getWorld().getPlayerEntityByName(playerName);
-            }
+            if (playerName != null) { return getWorld().getPlayerEntityByName(playerName); }
             return Minecraft.getMinecraft().thePlayer;
         }
         return super.getPlayer(playerName);
@@ -118,10 +114,7 @@ public class ClientProxy extends CommonProxy
     @Override
     public World getWorld()
     {
-        if (isOnClientSide())
-        {
-            return Minecraft.getMinecraft().theWorld;
-        }
+        if (isOnClientSide()) { return Minecraft.getMinecraft().theWorld; }
         return super.getWorld();
     }
 
@@ -143,7 +136,7 @@ public class ClientProxy extends CommonProxy
     public void preinit()
     {
         super.preinit();
-        OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID.toLowerCase(java.util.Locale.ENGLISH));
+        OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID);
 
         Item item2 = Item.getItemFromBlock(cloner);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
@@ -151,8 +144,11 @@ public class ClientProxy extends CommonProxy
         ModelLoader.setCustomModelResourceLocation(item2, 1,
                 new ModelResourceLocation("pokecube_adventures:splicer", "inventory"));
 
-        registerItemTexture(Item.getItemFromBlock(afa), 0,
-                new ModelResourceLocation("pokecube_adventures:afa", "inventory"));
+        item2 = Item.getItemFromBlock(afa);
+        ModelLoader.setCustomModelResourceLocation(item2, 0,
+                new ModelResourceLocation(PokecubeAdv.ID + ":amplifier", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item2, 1,
+                new ModelResourceLocation(PokecubeAdv.ID + ":daycare", "inventory"));
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));

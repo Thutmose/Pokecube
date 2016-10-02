@@ -38,11 +38,12 @@ public class MoveAnimationHelper
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
             Vector3 source = Vector3.getNewVector().set(player);
             GL11.glPushMatrix();
-            for (int i = -4; i <= 4; i++)
+            int range = 4;
+            for (int i = -range; i <= range; i++)
             {
-                for (int j = -4; j <= 4; j++)
+                for (int j = -range; j <= range; j++)
                 {
-                    for (int k = -4; k <= 4; k++)
+                    for (int k = -range; k <= range; k++)
                     {
                         source.set(player);
                         TerrainSegment segment = TerrainManager.getInstance().getTerrain(player.getEntityWorld(),

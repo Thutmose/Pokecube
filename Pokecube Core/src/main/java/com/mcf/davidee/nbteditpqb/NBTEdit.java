@@ -30,7 +30,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 @Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, acceptedMinecraftVersions = "*", version = NBTEdit.VERSION, acceptableRemoteVersions = "*")
 public class NBTEdit {
-	public static final String MODID = "NBTEditpqb";
+	public static final String MODID = "pceditmod";
 	public static final String NAME = "In-game NBTEdit - Pokecube Edition";
 	public static final String VERSION = "1.10.2-2.0.0";
 

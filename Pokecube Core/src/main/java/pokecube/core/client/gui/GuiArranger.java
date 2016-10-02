@@ -154,8 +154,8 @@ public class GuiArranger
                 GlStateManager.enableTexture2D();
                 GL11.glPopMatrix();
 
-                int i = Mouse.getX() * gui.width / gui.mc.displayWidth;
-                int j = gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight - 1;
+                int i = ((Mouse.getX() * gui.width / gui.mc.displayWidth));
+                int j = ((gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight)) - 1;
                 int k = 0;
                 if (messRect.contains(i, j))
                 {

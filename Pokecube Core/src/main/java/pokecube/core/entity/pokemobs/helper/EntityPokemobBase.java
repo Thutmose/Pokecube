@@ -1089,7 +1089,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound pokemobTag = new NBTTagCompound();
         // Write Ownership tag
         NBTTagCompound ownerShipTag = new NBTTagCompound();
-        ownerShipTag.setInteger(POKEDEXNB, getPokedexNb());
+        ownerShipTag.setInteger(POKEDEXNB, getPokedexEntry().getPokedexNb());
         ownerShipTag.setString(NICKNAME, getPokemonNickname());
         ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
         if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());

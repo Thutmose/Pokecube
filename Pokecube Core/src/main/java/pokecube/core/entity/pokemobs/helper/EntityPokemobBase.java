@@ -733,7 +733,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Read Ownership Tag
         if (!ownerShipTag.hasNoTags())
         {
-            if (ownerShipTag.hasKey(POKEDEXNB)) pokedexNb = ownerShipTag.getInteger(POKEDEXNB);
+            if (ownerShipTag.hasKey(POKEDEXNB))
+                this.setPokedexEntry(Database.getEntry(ownerShipTag.getInteger(POKEDEXNB)));
             this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
             this.players = ownerShipTag.getBoolean(PLAYERS);
             try
@@ -850,6 +851,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.setAncient(miscTag.getBoolean(ANCIENT));
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
         }
+        this.changeForme(forme);
     }
 
     private void readOldPokemobData(NBTTagCompound nbttagcompound)
@@ -878,7 +880,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
 
         // Ownership and Items
-        pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
+        int pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
         abilityIndex = nbttagcompound.getInteger("abilityIndex");
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
@@ -987,7 +989,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void readSpawnData(ByteBuf data)
     {
-        this.pokedexNb = data.readInt();
+        setPokedexEntry(Database.getEntry(data.readInt()));
         setSize(data.readFloat());
         this.uid = data.readInt();
         this.initRidable();
@@ -1089,7 +1091,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound pokemobTag = new NBTTagCompound();
         // Write Ownership tag
         NBTTagCompound ownerShipTag = new NBTTagCompound();
-        ownerShipTag.setInteger(POKEDEXNB, getPokedexEntry().getPokedexNb());
+        ownerShipTag.setInteger(POKEDEXNB, this.getPokedexNb());
         ownerShipTag.setString(NICKNAME, getPokemonNickname());
         ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
         if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());
@@ -1140,6 +1142,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 (byte) (rgba[3] - 128) };
         visualsTag.setByteArray(COLOURS, rgbaBytes);
         visualsTag.setBoolean(SHINY, isShiny());
+        if (forme.trim().isEmpty()) forme = getPokedexEntry().getName();
         visualsTag.setString(FORME, forme);
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
         visualsTag.setFloat(SCALE, (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
@@ -1184,7 +1187,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             uid = PokecubeSerializer.getInstance().getNextID();
         }
         PokecubeSerializer.getInstance().addPokemob(this);
-        data.writeInt(pokedexNb);
+        data.writeInt(getPokedexNb());
         data.writeFloat((float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         data.writeInt(uid);
         byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),

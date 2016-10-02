@@ -411,7 +411,21 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         if (entry == null)
         {
-            entry = Pokedex.getInstance().getEntry(getPokedexNb());
+            if (getClass().getName().contains("GenericPokemob"))
+            {
+                String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
+                entry = Database.getEntry(Integer.parseInt(num));
+                if (entry != null && entry.getPokedexNb() > 0)
+                {
+                    init(entry.getPokedexNb());
+                    entry = Pokedex.getInstance().getEntry(getPokedexNb());
+                    return entry;
+                }
+            }
+            System.out.println(this.getClass());
+            Thread.dumpStack();
+            this.setDead();
+            return null;
         }
         return entry.getForGender(getSexe());
     }
@@ -419,25 +433,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public Integer getPokedexNb()
     {
-        if (pokedexNb == 0)
-        {
-            if (getClass().getName().contains("GenericPokemob"))
-            {
-                String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
-                PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
-                if (entry != null && entry.getPokedexNb() > 0)
-                {
-                    pokedexNb = entry.getPokedexNb();
-                    init(entry.getPokedexNb());
-                    return pokedexNb;
-                }
-            }
-            System.out.println(this.getClass());
-            Thread.dumpStack();
-            this.setDead();
-            return 0;
-        }
-        return pokedexNb;
+        return getPokedexEntry().getPokedexNb();
     }
 
     @Override
@@ -476,7 +472,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void init(int nb)
     {
         super.init(nb);
-        this.pokedexNb = nb;
         getPokedexEntry();
 
         this.setRNGValue(rand.nextInt());
@@ -759,7 +754,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setPokedexEntry(PokedexEntry newEntry)
     {
         entry = newEntry;
-        this.pokedexNb = entry.getPokedexNb();
         this.setStats(entry.getStats());
         if (worldObj != null) this.setSize(this.getSize());
     }

@@ -759,7 +759,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (this.isAncient())
             {
 
-                ItemStack eggItemStack = ItemPokemobEgg.getEggStack(pokedexNb);
+                ItemStack eggItemStack = ItemPokemobEgg.getEggStack(getPokedexNb());
                 Entity eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, eggItemStack, this);
                 EggEvent.Lay event = new EggEvent.Lay(eggItem);
                 MinecraftForge.EVENT_BUS.post(event);

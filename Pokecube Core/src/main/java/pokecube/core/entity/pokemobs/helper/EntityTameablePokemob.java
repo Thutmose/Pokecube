@@ -139,7 +139,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
 
     protected float                                 timePokemonIsShaking;
     protected float                                 prevTimePokemonIsShaking;
-    protected Integer                               pokedexNb        = 0;
+//    protected Integer                               pokedexNb        = 0;
     public float                                    length           = 1;
     protected Vector3                               here             = Vector3.getNewVector();
 

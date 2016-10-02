@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,8 +42,8 @@ public class ContainerTradingTable extends Container
         clearSlots();
         if (tile.trade)
         {
-            addSlotToContainer(new SlotTrade(tile, 0, 35, 23));
-            addSlotToContainer(new SlotTrade(tile, 1, 125, 23));
+            addSlotToContainer(new SlotTrade(tile, 0, 35, 14));
+            addSlotToContainer(new SlotTrade(tile, 1, 125, 14));
         }
         bindPlayerInventory(playerInv);
     }
@@ -134,5 +135,38 @@ public class ContainerTradingTable extends Container
             }
         }
         return itemstack;
+    }
+
+    @Override
+    public void addListener(IContainerListener listener)
+    {
+        super.addListener(listener);
+        listener.sendAllWindowProperties(this, this.tile);
+    }
+
+    int id1 = -1;
+    int id2 = -1;
+
+    @Override
+    /** Looks for changes made in the container, sends them to every
+     * listener. */
+    public void detectAndSendChanges()
+    {
+        for (int i = 0; i < this.listeners.size(); ++i)
+        {
+            IContainerListener icrafting = this.listeners.get(i);
+            if (id1 != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+            if (id2 != tile.getField(1)) icrafting.sendProgressBarUpdate(this, 1, this.tile.getField(1));
+        }
+        id1 = tile.getField(0);
+        id2 = tile.getField(1);
+        super.detectAndSendChanges();
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int id, int data)
+    {
+        this.tile.setField(id, data);
     }
 }

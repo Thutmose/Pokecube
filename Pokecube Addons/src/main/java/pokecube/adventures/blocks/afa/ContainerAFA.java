@@ -82,7 +82,6 @@ public class ContainerAFA extends Container
     public void addListener(IContainerListener listener)
     {
         super.addListener(listener);
-        System.out.println(listener);
         listener.sendAllWindowProperties(this, this.tile);
     }
 

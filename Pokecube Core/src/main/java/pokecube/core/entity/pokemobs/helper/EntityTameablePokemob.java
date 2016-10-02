@@ -139,7 +139,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
 
     protected float                                 timePokemonIsShaking;
     protected float                                 prevTimePokemonIsShaking;
-//    protected Integer                               pokedexNb        = 0;
+    // protected Integer pokedexNb = 0;
     public float                                    length           = 1;
     protected Vector3                               here             = Vector3.getNewVector();
 
@@ -297,7 +297,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     @Override
     public EntityLivingBase getOwner()
     {
-        if (!this.getPokemonAIState(IMoveConstants.TAMED)) return null;
         UUID ownerID = this.getOwnerId();
         if (ownerID == null) return null;
         try

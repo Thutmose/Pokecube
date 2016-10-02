@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
@@ -16,6 +17,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.network.PacketHandler;
 
 public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMessage>
@@ -118,7 +120,22 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
             else
             {
                 player = (EntityPlayer) player.getEntityWorld().getEntityByID(message.data.getInteger("I"));
-                tradeTable.addPlayer(player);
+                int id = message.data.getByte("B");
+                if (id == 1)
+                {
+                    ItemStack cube = tradeTable.getStackInSlot(0);
+                    if (!PokecubeManager.isFilled(cube)
+                            || PokecubeManager.getOwner(cube).equals(player.getCachedUniqueIdString()))
+                        tradeTable.player1 = tradeTable.player1 == null ? player : null;
+                }
+                if (id == 2)
+                {
+                    ItemStack cube = tradeTable.getStackInSlot(1);
+                    if (!PokecubeManager.isFilled(cube)
+                            || PokecubeManager.getOwner(cube).equals(player.getCachedUniqueIdString()))
+                        tradeTable.player2 = tradeTable.player2 == null ? player : null;
+                }
+                if (tradeTable.player1 != null && tradeTable.player2 != null) tradeTable.trade();
             }
             if (!player.getEntityWorld().isRemote) PacketHandler.sendTileUpdate(tradeTable);
 

@@ -60,7 +60,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     private ItemStack[]                       inventory2   = new ItemStack[1];
 
     public EntityPlayer                       player1;
-
     public EntityPlayer                       player2;
 
     public HashMap<String, ArrayList<String>> moves        = new HashMap<String, ArrayList<String>>();
@@ -241,13 +240,15 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public int getField(int id)
     {
+        if (id == 0) return player1 == null ? -1 : player1.getEntityId();
+        if (id == 1) return player2 == null ? -1 : player2.getEntityId();
         return 0;
     }
 
     @Override
     public int getFieldCount()
     {
-        return 0;
+        return 2;
     }
 
     public String[] getForgottenMoves(IPokemob mob)
@@ -555,7 +556,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public void setField(int id, int value)
     {
-
+        if (id == 0) player1 = (EntityPlayer) worldObj.getEntityByID(value);
+        if (id == 1) player2 = (EntityPlayer) worldObj.getEntityByID(value);
     }
 
     @Override
@@ -579,7 +581,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             player2 = null;
             return;
         }
-
         if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }
 
         IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
@@ -591,46 +592,28 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         UUID trader1 = player1.getUniqueID();
         UUID trader2 = player2.getUniqueID();
 
-        if ((trader1.equals(owner1) || trader1.equals(owner2)) && ((trader2.equals(owner1) || trader2.equals(trader2))))
+        if ((trader1.toString().equals(owner1) && trader2.toString().equals(owner2)))
         {
-            boolean swap = false;
-            if (!trader1.equals(owner1))
-            {
-                mon1.setPokemonOwner(trader1);
-                mon2.setPokemonOwner(trader2);
-            }
-            else
-            {
-                swap = true;
-                mon2.setPokemonOwner(trader1);
-                mon1.setPokemonOwner(trader2);
-            }
-
+            mon2.setPokemonOwner(trader1);
+            mon1.setPokemonOwner(trader2);
             boolean mon1everstone = PokecubeManager.getHeldItemMainhand(poke1) != null && Tools
                     .isSameStack(PokecubeManager.getHeldItemMainhand(poke1), PokecubeItems.getStack("everstone"));
             boolean mon2everstone = PokecubeManager.getHeldItemMainhand(poke2) != null && Tools
                     .isSameStack(PokecubeManager.getHeldItemMainhand(poke2), PokecubeItems.getStack("everstone"));
-
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);
-
             poke1 = PokecubeManager.pokemobToItem(mon1);
             poke2 = PokecubeManager.pokemobToItem(mon2);
-
-            ItemStack to1 = swap ? poke2 : poke1;
-            ItemStack to2 = swap ? poke1 : poke2;
-
+            ItemStack to1 = poke2;
+            ItemStack to2 = poke1;
             if (player1.inventory.getFirstEmptyStack() != -1) player1.inventory.addItemStackToInventory(to1);
             else InventoryPC.addPokecubeToPC(to1, worldObj);
             if (player2.inventory.getFirstEmptyStack() != -1) player2.inventory.addItemStackToInventory(to2);
             else InventoryPC.addPokecubeToPC(to2, worldObj);
-
             MinecraftForge.EVENT_BUS.post(new TradeEvent(worldObj, to1));
             MinecraftForge.EVENT_BUS.post(new TradeEvent(worldObj, to2));
-
             inventory = new ItemStack[2];
         }
-
         player1 = null;
         player2 = null;
     }

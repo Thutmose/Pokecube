@@ -1,12 +1,16 @@
 package pokecube.adventures;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.adventures.blocks.afa.ContainerAFA;
+import pokecube.adventures.blocks.afa.ContainerDaycare;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.items.bags.ContainerBag;
@@ -27,10 +31,7 @@ public class CommonProxy implements IGuiHandler
 
     public EntityPlayer getPlayer(String playerName)
     {
-        if (playerName != null)
-        {
-            return getWorld().getPlayerEntityByName(playerName);
-        }
+        if (playerName != null) { return getWorld().getPlayerEntityByName(playerName); }
         return null;
     }
 
@@ -53,8 +54,18 @@ public class CommonProxy implements IGuiHandler
         if (guiID == PokecubeAdv.GUIAFA_ID)
         {
             BlockPos pos = new BlockPos(x, y, z);
-            TileEntityAFA tile = (TileEntityAFA) world.getTileEntity(pos);
-            ContainerAFA cont = new ContainerAFA(tile, player.inventory);
+            Container cont = null;
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof TileEntityAFA)
+            {
+                TileEntityAFA tile = (TileEntityAFA) tileEntity;
+                cont = new ContainerAFA(tile, player.inventory);
+            }
+            else if (tileEntity instanceof TileEntityDaycare)
+            {
+                TileEntityDaycare tile = (TileEntityDaycare) tileEntity;
+                cont = new ContainerDaycare(tile, player.inventory);
+            }
             return cont;
         }
         return null;

@@ -69,6 +69,12 @@ public class Config extends ConfigBase
     @Configure(category = machines)
     public int                         maxOutput           = 256;
     @Configure(category = machines)
+    public int                         daycareTicks        = 100;
+    @Configure(category = machines)
+    public int                         daycareExp          = 100;
+    @Configure(category = machines)
+    public int                         daycareCost         = 1;
+    @Configure(category = machines)
     public String                      powerFunction       = "a*x/10";
     @Configure(category = machines)
     public boolean                     warpPadEnergy       = true;

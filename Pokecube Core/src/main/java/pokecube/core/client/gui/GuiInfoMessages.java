@@ -77,8 +77,6 @@ public class GuiInfoMessages
         h = Math.min(scaledHeight - texH, h);
         w = Math.max(trim, w);
         h = Math.max(texH * 7, h);
-        PokecubeMod.core.getConfig().messageOffset[0] = w;
-        PokecubeMod.core.getConfig().messageOffset[1] = h;
         int x = w, y = h;
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

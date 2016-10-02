@@ -6,7 +6,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.LegendaryConditions;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
+import pokecube.adventures.blocks.afa.ItemBlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.BlockCloner;
 import pokecube.adventures.blocks.cloner.ItemBlockCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
@@ -42,8 +44,11 @@ public class BlockHandler
 
         afa = new BlockAFA().setUnlocalizedName("afa");
         afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(afa, "afa");
+        PokecubeItems.register(afa, ItemBlockAFA.class, "afa");
         GameRegistry.registerTileEntity(TileEntityAFA.class, "afa");
+        GameRegistry.registerTileEntity(TileEntityDaycare.class, "daycare");
+        PokecubeItems.addSpecificItemStack("daycare", new ItemStack(afa, 1, 1));
+        PokecubeItems.addSpecificItemStack("afa", new ItemStack(afa, 1, 0));
 
         siphon = new BlockSiphon().setUnlocalizedName("pokesiphon");
         if (PokecubeAdv.hasEnergyAPI) siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);

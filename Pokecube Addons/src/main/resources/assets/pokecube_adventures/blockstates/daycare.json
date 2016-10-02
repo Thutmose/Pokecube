@@ -1,0 +1,15 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "#None": "pokecube_adventures:blocks/daycare"
+        },
+        "model": "pokecube_adventures:daycare.obj"
+     },
+   "variants": {
+        "normal": { "model": "pokecube_adventures:daycare.obj" },
+        "inventory": [{
+            "transform": "forge:default-block"
+        }]
+    }
+}

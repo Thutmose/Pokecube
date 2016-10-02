@@ -57,6 +57,8 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     public static float scale(float scaled, boolean apply)
     {
+        if (PokecubeMod.core.getConfig().guiAutoScale) return 1;
+
         Minecraft mc = Minecraft.getMinecraft();
         float scaleFactor = 1;
         boolean flag = mc.isUnicode();
@@ -418,7 +420,6 @@ public class GuiDisplayPokecubeInfo extends Gui
      * @param y */
     public void moveGui(int x, int y)
     {
-        System.out.println(x + " " + y);
         PokecubeMod.core.getConfig().guiOffset[0] += x;
         PokecubeMod.core.getConfig().guiOffset[1] += y;
         if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;

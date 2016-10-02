@@ -34,7 +34,8 @@ tile.enigmaLeaves.name=Enigma Leaves
 tile.warppad.name=Warp Pad
 tile.cloner.splicer.name=Splicing Device
 tile.cloner.reanimator.name=Fossil Reanimator
-tile.afa.name=Ability Field Amplifier
+tile.afa.amplifier.name=Ability Field Amplifier
+tile.afa.daycare.name=Daycare Block
 tile.pokesiphon.name=Energy Siphon
 
 tile.celebi.name=Mysterious Altar

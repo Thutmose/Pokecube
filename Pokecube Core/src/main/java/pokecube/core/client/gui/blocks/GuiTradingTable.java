@@ -50,15 +50,12 @@ public class GuiTradingTable extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (guibutton.id == 1)
-        {
-            PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
-            packet.data.setBoolean("R", false);
-            packet.data.setIntArray("L",
-                    new int[] { table.getPos().getX(), table.getPos().getY(), table.getPos().getZ() });
-            packet.data.setInteger("I", entityPlayer.getEntityId());
-            PokecubePacketHandler.sendToServer(packet);
-        }
+        PacketTrade packet = new PacketTrade(PacketTrade.SETTRADER);
+        packet.data.setBoolean("R", false);
+        packet.data.setIntArray("L", new int[] { table.getPos().getX(), table.getPos().getY(), table.getPos().getZ() });
+        packet.data.setInteger("I", entityPlayer.getEntityId());
+        packet.data.setByte("B", (byte) guibutton.id);
+        PokecubePacketHandler.sendToServer(packet);
     }
 
     @Override
@@ -98,7 +95,7 @@ public class GuiTradingTable extends GuiContainer
         super.drawScreen(i, j, f);
 
         int x = width / 2 - 53;
-        int y = height / 2 - 60;
+        int y = height / 2 - 69;
         boolean red = false, green = false, blue = false;
         if (table.player1 != null)
         {
@@ -144,7 +141,8 @@ public class GuiTradingTable extends GuiContainer
     {
         buttonList.clear();
         String trade = I18n.format("tile.tradingtable.trade");
-        buttonList.add(new GuiButton(1, width / 2 - 20, height / 2 - 21, 40, 20, trade));
+        buttonList.add(new GuiButton(1, width / 2 - 70, height / 2 - 22, 40, 20, trade));
+        buttonList.add(new GuiButton(2, width / 2 + 30, height / 2 - 22, 40, 20, trade));
         super.initGui();
     }
 
@@ -167,7 +165,7 @@ public class GuiTradingTable extends GuiContainer
 
         float size = 0;
         int j = index == 0 ? 45 : 130;
-        int k = -30;
+        int k = -40;
 
         IPokemob pokemob = null;
         if (entity instanceof IPokemob)

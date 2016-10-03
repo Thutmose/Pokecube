@@ -729,12 +729,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound visualsTag = tag.getCompoundTag(VISUALSTAG);
         NBTTagCompound aiTag = tag.getCompoundTag(AITAG);
         NBTTagCompound miscTag = tag.getCompoundTag(MISCTAG);
-
+        int nb = 0;
+        String forme = "";
         // Read Ownership Tag
         if (!ownerShipTag.hasNoTags())
         {
-            if (ownerShipTag.hasKey(POKEDEXNB))
-                this.setPokedexEntry(Database.getEntry(ownerShipTag.getInteger(POKEDEXNB)));
+            nb = ownerShipTag.getInteger(POKEDEXNB);
             this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
             this.players = ownerShipTag.getBoolean(PLAYERS);
             try
@@ -851,7 +851,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.setAncient(miscTag.getBoolean(ANCIENT));
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
         }
-        this.changeForme(forme);
+        if (!forme.isEmpty()) this.setPokedexEntry(Database.getEntry(forme));
+        else if (nb != 0) this.setPokedexEntry(Database.getEntry(nb));
     }
 
     private void readOldPokemobData(NBTTagCompound nbttagcompound)
@@ -977,8 +978,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         this.getDataManager().set(NICKNAMEDW, nbttagcompound.getString(PokecubeSerializer.NICKNAME));
         Item cube = PokecubeItems.getFilledCube(nbttagcompound.getInteger("PokeballId"));
         setPokecube(new ItemStack(cube));
-        forme = nbttagcompound.getString("forme");
-        this.changeForme(forme);
+        String forme = nbttagcompound.getString("forme");
+        if (!forme.isEmpty()) this.setPokedexEntry(Database.getEntry(forme));
         setSize(nbttagcompound.getFloat("scale"));
         this.initRidable();
         uid = nbttagcompound.getInteger("PokemobUID");
@@ -1010,13 +1011,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 pokeballId.getTagCompound().removeTag("Pokemob");
         }
         pokecube = pokeballId;
-    }
-
-    @Override
-    public void setPokedexEntry(PokedexEntry newEntry)
-    {
-        super.setPokedexEntry(newEntry);
-        setSize(getSize());
     }
 
     @Override
@@ -1142,8 +1136,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 (byte) (rgba[3] - 128) };
         visualsTag.setByteArray(COLOURS, rgbaBytes);
         visualsTag.setBoolean(SHINY, isShiny());
-        if (forme.trim().isEmpty()) forme = getPokedexEntry().getName();
-        visualsTag.setString(FORME, forme);
+        visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
         visualsTag.setFloat(SCALE, (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);

@@ -45,6 +45,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -312,8 +313,6 @@ public class EventsHandler
             ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
                     rgbaBytes[2] + 128);
         }
-        String forme = tag.getString("forme");
-        pokemob.changeForme(forme);
         pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 
@@ -478,6 +477,13 @@ public class EventsHandler
         {
             if (evt.getEntityLiving().getRidingEntity() instanceof IPokemob) evt.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public void livingDeath(LivingDeathEvent evt)
+    {
+        if (evt.getEntity().worldObj.isRemote) return;
+        System.out.println(evt.getEntity() + "\n" + evt.getSource() + "\n" + evt.getSource().getEntity());
     }
 
     @SubscribeEvent

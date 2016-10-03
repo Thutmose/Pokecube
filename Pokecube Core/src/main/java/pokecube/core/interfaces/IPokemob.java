@@ -283,6 +283,11 @@ public interface IPokemob extends IMoveConstants
      * @return whether this mob can be ridden with HMSurf */
     boolean canUseSurf();
 
+    /** Use setPokedexEntry instead.
+     * 
+     * @param forme
+     * @return */
+    @Deprecated
     IPokemob changeForme(String forme);
 
     /** Displays a message in the console of the owner player (if this pokemob
@@ -569,7 +574,10 @@ public interface IPokemob extends IMoveConstants
      *            the new level */
     IPokemob levelUp(int level);
 
+    @Deprecated
     IPokemob megaEvolve(String forme);
+
+    IPokemob megaEvolve(PokedexEntry forme);
 
     /** Returns modified texture to account for shininess, animation, etc.
      * 
@@ -691,7 +699,7 @@ public interface IPokemob extends IMoveConstants
     void setPokecube(ItemStack pokecube);
 
     /** @return the {@link PokedexEntry} of the species of this Pokemob */
-    void setPokedexEntry(PokedexEntry newEntry);
+    IPokemob setPokedexEntry(PokedexEntry newEntry);
 
     /*
      * Sets AI state state to flag.

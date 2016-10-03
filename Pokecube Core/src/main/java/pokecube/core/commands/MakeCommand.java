@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
@@ -133,11 +132,6 @@ public class MakeCommand extends CommandBase
                             }
                             else entry = Database.getEntry(name);
                         }
-                        if (entry == null)
-                        {
-
-                        }
-
                         mob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, sender.getEntityWorld());
 
                         if (mob == null)
@@ -145,7 +139,6 @@ public class MakeCommand extends CommandBase
                             CommandTools.sendError(sender, "pokecube.command.makeinvalid");
                             return;
                         }
-                        mob.changeForme(name);
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
 
                         UUID owner = null;
@@ -156,7 +149,6 @@ public class MakeCommand extends CommandBase
                         red = green = blue = 255;
                         boolean ancient = false;
                         String ability = null;
-                        String forme = null;
                         int exp = 10;
                         int level = -1;
                         String[] moves = new String[4];
@@ -225,10 +217,6 @@ public class MakeCommand extends CommandBase
                                 else if (arg.equalsIgnoreCase("w"))
                                 {
                                     asWild = true;
-                                }
-                                else if (arg.equalsIgnoreCase("f"))
-                                {
-                                    forme = val;
                                 }
                             }
                         }
@@ -305,20 +293,7 @@ public class MakeCommand extends CommandBase
                             }
                         }
                         mob.specificSpawnInit();
-                        if (forme != null)
-                        {
-                            if (forme.equalsIgnoreCase("random"))
-                            {
-                                List<String> formes = Lists.newArrayList(mob.getPokedexEntry().forms.keySet());
-                                if (mob.getPokedexEntry().base) formes.add(mob.getPokedexEntry().getName());
-                                if (formes.size() > 0) forme = formes.get(new Random().nextInt(formes.size()));
-                            }
-                            mob = mob.changeForme(forme);
-                        }
-                        if (mob != null)
-                        {
-                            ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
-                        }
+                        ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
                         text = TextFormatting.GREEN + "Spawned " + mob.getPokemonDisplayName().getFormattedText();
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);

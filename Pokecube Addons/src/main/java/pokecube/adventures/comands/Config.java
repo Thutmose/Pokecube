@@ -94,8 +94,6 @@ public class Config extends ConfigBase
     };
     @Configure(category = spawning)
     String[]                           biomeLevels         = { "mound:5-10" };
-    @Configure(category = spawning)
-    public int[]                       dimensionBlackList  = {};
 
     @Configure(category = trainers)
     public boolean                     trainerSpawn        = true;

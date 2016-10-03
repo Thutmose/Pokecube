@@ -403,12 +403,13 @@ public class PokecubePacketHandler
                     entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
                     entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
                     if (shiny) entity.setShiny(true);
-                    if (red == 0 && Database.getEntry(entry.getName() + "R") != null)
-                        entity.changeForme(entry.getName() + "R");
-                    if (green == 0 && Database.getEntry(entry.getName() + "G") != null)
-                        entity.changeForme(entry.getName() + "G");
-                    if (blue == 0 && Database.getEntry(entry.getName() + "B") != null)
-                        entity.changeForme(entry.getName() + "B");
+                    PokedexEntry entry2;
+                    if (red == 0 && (entry2 = Database.getEntry(entry.getName() + "R")) != null)
+                        entity.setPokedexEntry(entry2);
+                    if (green == 0 && (entry2 = Database.getEntry(entry.getName() + "G")) != null)
+                        entity.setPokedexEntry(entry2);
+                    if (blue == 0 && (entry2 = Database.getEntry(entry.getName() + "B")) != null)
+                        entity.setPokedexEntry(entry2);
                     if (ability != null && AbilityManager.abilityExists(ability))
                     {
                         entity.setAbility(AbilityManager.getAbility(ability));

@@ -38,7 +38,6 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerSer
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.PostPostInit;
-import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
@@ -119,20 +118,6 @@ public class PokecubeAdv
         PAEventsHandler events = new PAEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();
-    }
-
-    @SubscribeEvent
-    public void pokemobSpawnCheck(SpawnEvent.Pre evt)
-    {
-        int id = evt.world.provider.getDimension();
-        for (int i : conf.dimensionBlackList)
-        {
-            if (i == id)
-            {
-                evt.setCanceled(true);
-                return;
-            }
-        }
     }
 
     @EventHandler

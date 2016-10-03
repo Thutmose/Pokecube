@@ -228,9 +228,9 @@ public class PokecubeCore extends PokecubeMod
     public Entity createEntityByPokedexEntry(PokedexEntry entry, World world)
     {
         Entity e = createEntityByPokedexNb(entry.getPokedexNb(), world);
-        if (e != null && ((IPokemob) e).getPokedexEntry() != entry)
+        if (e != null)
         {
-            ((IPokemob) e).changeForme(entry.getName());
+            e = (Entity) ((IPokemob) e).setPokedexEntry(entry);
         }
         return e;
     }

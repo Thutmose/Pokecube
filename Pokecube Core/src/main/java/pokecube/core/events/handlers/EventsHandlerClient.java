@@ -335,7 +335,7 @@ public class EventsHandlerClient
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
             if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
-                PacketChangeForme.sendPacketToServer(((Entity) current), "");
+                PacketChangeForme.sendPacketToServer(((Entity) current), null);
             }
         }
         if (ClientProxyPokecube.arrangeGui.isPressed())

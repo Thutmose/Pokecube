@@ -26,7 +26,9 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
@@ -42,6 +44,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
+import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -58,7 +61,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     protected Nature    nature           = Nature.HARDY;
     public int          oldLevel         = 0;
     public PokedexEntry entry;
-    String              forme            = "";
 
     /** The happiness value of the pokemob */
     protected int       bonusHappiness   = 0;
@@ -625,12 +627,12 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         byte[] arr = new byte[num];
         for (int i = 0; i < num; i++)
             arr[i] = data.readByte();
-        forme = new String(arr);
+        String forme = new String(arr);
         shiny = data.readBoolean();
         wasShadow = data.readBoolean();
         isAncient = data.readBoolean();
         nature = Nature.values()[data.readByte()];
-        this.changeForme(forme);
+        this.setPokedexEntry(Database.getEntry(forme));
         for (int i = 0; i < ivs.length; i++)
         {
             ivs[i] = data.readByte();
@@ -751,11 +753,22 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public void setPokedexEntry(PokedexEntry newEntry)
+    public IPokemob setPokedexEntry(PokedexEntry newEntry)
     {
+        if (newEntry == null || newEntry == entry) return this;
+        IPokemob ret = this;
         entry = newEntry;
         this.setStats(entry.getStats());
-        if (worldObj != null) this.setSize(this.getSize());
+        if (newEntry.getPokedexNb() != getPokedexNb())
+        {
+            ret = megaEvolve(newEntry);
+        }
+        if (worldObj != null) ret.setSize(ret.getSize());
+        if (worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            PacketChangeForme.sendPacketToNear((Entity) ret, newEntry, 128);
+        }
+        return ret;
     }
 
     @Override
@@ -841,11 +854,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         PokedexEntry entry = getPokedexEntry();
         if (entry.isShadowForme && !shadow)
         {
-            this.changeForme(entry.getBaseName());
+            this.setPokedexEntry(entry);
         }
         else if (shadow && !entry.isShadowForme && entry.shadowForme != null)
         {
-            this.changeForme(entry.shadowForme.getName());
+            this.setPokedexEntry(entry.shadowForme);
         }
         if (shadow && !wasShadow)
         {
@@ -914,8 +927,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void writeSpawnData(ByteBuf data)
     {
         data.writeInt(personalityValue);
-        data.writeInt(forme.getBytes().length);
-        data.writeBytes(forme.getBytes());
+        data.writeInt(getPokedexEntry().getName().getBytes().length);
+        data.writeBytes(getPokedexEntry().getName().getBytes());
         data.writeBoolean(shiny);
         data.writeBoolean(wasShadow);
         data.writeBoolean(isAncient);

@@ -101,7 +101,7 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     @Override
     public IPokemob changeForme(String forme)
     {
-        return parent.changeForme(forme);
+        return this;
     }
 
     @Override
@@ -730,10 +730,10 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public void setPokedexEntry(PokedexEntry newEntry)
+    public IPokemob setPokedexEntry(PokedexEntry newEntry)
     {
         // TODO Auto-generated method stub
-
+        return this;
     }
 
     @Override
@@ -982,18 +982,25 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     public void setPokemonOwner(UUID id)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void readPokemobData(NBTTagCompound tag)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public NBTTagCompound writePokemobData()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IPokemob megaEvolve(PokedexEntry forme)
     {
         // TODO Auto-generated method stub
         return null;

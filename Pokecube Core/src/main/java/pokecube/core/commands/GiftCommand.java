@@ -2,10 +2,7 @@ package pokecube.core.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -78,7 +75,6 @@ public class GiftCommand extends CommandBase
                     int exp = 10;
                     int level = -1;
                     String ability = null;
-                    String forme = null;
                     String[] moves = new String[4];
                     int index = 0;
                     for (int i = 1; i < gift.length; i++)
@@ -130,10 +126,6 @@ public class GiftCommand extends CommandBase
                         {
                             mob.setPokemonNickname(val);
                         }
-                        else if (arg.equalsIgnoreCase("f"))
-                        {
-                            forme = val;
-                        }
                     }
                     mob.setOriginalOwnerUUID(new UUID(12345, 54321));
                     mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(13)));
@@ -160,16 +152,6 @@ public class GiftCommand extends CommandBase
                                 }
                             }
                         }
-                    }
-                    if (forme != null)
-                    {
-                        if (forme.equalsIgnoreCase("random"))
-                        {
-                            List<String> formes = Lists.newArrayList(mob.getPokedexEntry().forms.keySet());
-                            if (mob.getPokedexEntry().base) formes.add(mob.getPokedexEntry().getName());
-                            if (formes.size() > 0) forme = formes.get(new Random().nextInt(formes.size()));
-                        }
-                        mob = mob.changeForme(forme);
                     }
                     mob.setPokemonOwner(player);
                     mob.setHp(((EntityLiving) mob).getMaxHealth());

@@ -33,13 +33,10 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.abilities.Ability;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
-import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
 
@@ -47,37 +44,6 @@ import thut.api.network.PacketHandler;
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITickable, SimpleComponent, SidedComponent
 {
-    public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
-    {
-        float scale = tag.getFloat("scale");
-        if (scale > 0)
-        {
-            pokemob.setSize(scale);
-        }
-        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        boolean shiny = tag.getBoolean("shiny");
-        pokemob.setShiny(shiny);
-        String ability = tag.getString("ability");
-        if (!ability.isEmpty())
-        {
-            Ability abil = AbilityManager.getAbility(ability);
-            pokemob.setAbility(abil);
-        }
-        byte[] rgbaBytes = new byte[4];
-        if (tag.hasKey("colours", 7))
-        {
-            rgbaBytes = tag.getByteArray("colours");
-        }
-        if (pokemob instanceof IMobColourable)
-        {
-            ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
-                    rgbaBytes[2] + 128);
-        }
-        String forme = tag.getString("forme");
-        pokemob.changeForme(forme);
-        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
-    }
-
     public IPokemob     pokemob        = null;
     boolean             shiny          = false;
     private ItemStack[] inventory      = new ItemStack[1];

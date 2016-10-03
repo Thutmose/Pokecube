@@ -601,7 +601,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             if (getPokemonAIState(MEGAFORME) || getPokedexEntry().isMega)
             {
                 this.setPokemonAIState(MEGAFORME, false);
-                IPokemob base = megaEvolve(getPokedexEntry().getBaseName());
+                IPokemob base = megaEvolve(getPokedexEntry().getBaseForme());
                 if (base == this) returning = false;
                 base.returnToPokecube();
                 return;

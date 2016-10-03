@@ -2,6 +2,7 @@ package pokecube.core.utils;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import pokecube.core.interfaces.IPokemob;
 
 public class EntityTools
 {
@@ -34,5 +35,10 @@ public class EntityTools
         NBTTagCompound tag = new NBTTagCompound();
         from.writeEntityToNBT(tag);
         to.readEntityFromNBT(tag);
+    }
+
+    public static void copy(IPokemob from, IPokemob to)
+    {
+        to.readPokemobData(from.writePokemobData());
     }
 }

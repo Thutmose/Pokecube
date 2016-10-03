@@ -202,6 +202,8 @@ public class Config extends ConfigBase
     @Configure(category = world)
     public boolean             doSpawnBuilding            = true;
     @Configure(category = world)
+    public boolean             basesLoaded                = false;
+    @Configure(category = world)
     public boolean             pokecenterTorch            = true;
     @Configure(category = world)
     public boolean             pokemartMerchant           = true;

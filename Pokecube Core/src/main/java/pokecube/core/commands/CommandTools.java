@@ -25,7 +25,7 @@ public class CommandTools
             return userentry != null && userentry.getPermissionLevel() >= 4;
         }
         else if (sender instanceof TileEntityCommandBlock) { return true; }
-        return sender.getName().equalsIgnoreCase("@") || sender.getName().equals("Server");
+        return true;
     }
 
     public static ITextComponent makeError(String text)

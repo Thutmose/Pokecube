@@ -41,6 +41,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
@@ -655,6 +656,7 @@ public final class SpawnHandler
         if (PokecubeMod.core.getConfig().whiteListEnabled
                 && SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
             return;
+        if (world.provider instanceof WorldProviderSecretBase) return;
         try
         {
             spawn(world);

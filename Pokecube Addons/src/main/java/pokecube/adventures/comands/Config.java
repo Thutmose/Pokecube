@@ -17,6 +17,7 @@ import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
+import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
@@ -116,10 +117,12 @@ public class Config extends ConfigBase
     public int                         trainerBattleDelay  = 100;
     @Configure(category = trainers)
     public int                         trainerSightRange   = 10;
-
     @Configure(category = misc)
     protected boolean                  tmRecipe            = true;
-
+    @Configure(category = misc)
+    public boolean                     bagHoldAll          = false;
+    @Configure(category = misc)
+    public int                         bagPageCount        = 32;
     @Configure(category = database)
     protected boolean                  forceDatabase       = true;
 
@@ -146,6 +149,7 @@ public class Config extends ConfigBase
         TrainerSpawnHandler.trainerBox = trainerBox;
         RecipeHandler.tmRecipe = tmRecipe;
         DBLoader.FORCECOPY = forceDatabase;
+        InventoryBag.PAGECOUNT = bagPageCount;
     }
 
     protected FluidStack getFluid(String toParse)

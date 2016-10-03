@@ -3,7 +3,6 @@
  */
 package pokecube.core;
 
-import static pokecube.core.PokecubeCore.getWorld;
 import static pokecube.core.PokecubeItems.removeFromHoldables;
 import static pokecube.core.handlers.Config.GUICHOOSEFIRSTPOKEMOB_ID;
 import static pokecube.core.handlers.Config.GUIDISPLAYPOKECUBEINFO_ID;
@@ -18,16 +17,14 @@ import static pokecube.core.handlers.Config.GUITRADINGTABLE_ID;
 import java.util.HashSet;
 import java.util.List;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.pattern.BlockMatcher;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.block.state.IBlockState;
+import pokecube.core.handlers.Config;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.moves.TreeRemover;
-import thut.api.boom.ExplosionCustom;
 
 /** @author Manchou */
 public class Mod_Pokecube_Helper
@@ -37,17 +34,13 @@ public class Mod_Pokecube_Helper
 
     public static HashSet<Block> allBlocks         = new HashSet<Block>();
 
-    private static void addToList(List<Block> list, String toAdd)
+    private static void addToList(List<Predicate<IBlockState>> list, String... conts)
     {
-        if (toAdd == null || toAdd.equals("")) return;
-
-        String[] conts = toAdd.split(";");
-        if (conts == null || conts.length < 1) return;
-
-        Block b = null;
+        if (conts == null) return;
+        if (conts.length < 1) return;
         for (String s : conts)
         {
-            b = getBlock(s);
+            Predicate<IBlockState> b = PokecubeItems.getState(s);
             if (b != null)
             {
                 list.add(b);
@@ -56,81 +49,51 @@ public class Mod_Pokecube_Helper
 
     }
 
-    private static Block getBlock(String name)
-    {
-        Block b = null;
-        b = Block.getBlockFromName(name.replace("tile.", ""));
-        return b;
-    }
-
-    public static List<Block> getCaveBlocks()
-    {
-        return PokecubeMod.core.getConfig().getCaveBlocks();
-    }
-
-    public static List<Block> getRocks()
-    {
-        return PokecubeMod.core.getConfig().getRocks();
-    }
-
-    public static List<Block> getSurfaceBlocks()
-    {
-        return PokecubeMod.core.getConfig().getSurfaceBlocks();
-    }
-
-    public static List<Block> getTerrain()
-    {
-        return PokecubeMod.core.getConfig().getTerrain();
-    }
-
     static void initLists()
     {
-        getCaveBlocks().add(Blocks.STONE);
-        getCaveBlocks().add(Blocks.DIRT);
-        getCaveBlocks().add(Blocks.GRAVEL);
-        getCaveBlocks().add(Blocks.IRON_ORE);
-        getCaveBlocks().add(Blocks.COAL_ORE);
-        getCaveBlocks().add(Blocks.DIAMOND_ORE);
-        getCaveBlocks().add(Blocks.REDSTONE_ORE);
-        getCaveBlocks().add(Blocks.GOLD_ORE);
-        getCaveBlocks().add(Blocks.GRAVEL);
-        getCaveBlocks().add(Blocks.NETHERRACK);
-        getCaveBlocks().add(Blocks.NETHER_BRICK);
+        Config config = PokecubeCore.core.getConfig();
+        if (!config.autoPopulateLists) return;
+        String[] STONES = { "minecraft:stone variant=stone", "minecraft:stone variant=granite",
+                "minecraft:stone variant=diorite", "minecraft:stone variant=andesite", "minecraft:netherrack",
+                "minecraft:sandstone type=sandstone", "minecraft:red_sandstone type=red_sandstone" };
+        String[] ORE = { "minecraft:.*_ore" };
+        String[] GROUND = { "minecraft:sand", "minecraft:gravel", "minecraft:stained_hardened_clay",
+                "minecraft:hardened_clay", "minecraft:dirt", "minecraft:grass" };
+        String[] PLANTS = { "minecraft:double_plant", "minecraft:red_flower", "minecraft:yellow_flower",
+                "minecraft:tallgrass", "minecraft:deadbush", "pokecube:berryfruit" };
+        String[] INDUSTRIAL = { "minecraft:redstone_block", "minecraft:furnace", "minecraft:lit_furnace",
+                "minecraft:piston", "minecraft:sticky_piston", "minecraft:dispenser", "minecraft:dropper",
+                "minecraft:hopper", "minecraft:anvil" };
 
-        getRocks().add(Blocks.STONE);
-        getRocks().add(Blocks.IRON_ORE);
-        getRocks().add(Blocks.COAL_ORE);
-        getRocks().add(Blocks.DIAMOND_ORE);
-        getRocks().add(Blocks.REDSTONE_ORE);
-        getRocks().add(Blocks.EMERALD_ORE);
-        getRocks().add(Blocks.LAPIS_ORE);
-        getRocks().add(Blocks.QUARTZ_ORE);
-        getRocks().add(Blocks.GOLD_ORE);
-        getRocks().add(Blocks.MOSSY_COBBLESTONE);
-        getRocks().add(Blocks.COBBLESTONE);
-        getRocks().add(Blocks.NETHERRACK);
+        addToList(config.getTerrain(), STONES);
+        addToList(config.getRocks(), STONES);
+        addToList(config.getCaveBlocks(), STONES);
+        addToList(config.getSurfaceBlocks(), GROUND);
+        addToList(config.getTerrain(), GROUND);
+        addToList(config.getSurfaceBlocks(), STONES);
+        addToList(config.getRocks(), ORE);
+        addToList(config.getDirtTypes(), GROUND);
+        addToList(config.getPlantTypes(), PLANTS);
+        addToList(config.getIndustrial(), INDUSTRIAL);
 
-        getSurfaceBlocks().add(Blocks.STONE);
-        getSurfaceBlocks().add(Blocks.SAND);
-        getSurfaceBlocks().add(Blocks.DIRT);
-        getSurfaceBlocks().add(Blocks.GRAVEL);
-        getSurfaceBlocks().add(Blocks.NETHERRACK);
-        getSurfaceBlocks().add(Blocks.GRASS);
-        getSurfaceBlocks().add(Blocks.LEAVES);
-        getSurfaceBlocks().add(Blocks.HARDENED_CLAY);
-        getSurfaceBlocks().add(Blocks.STAINED_HARDENED_CLAY);
-        getSurfaceBlocks().add(Blocks.MYCELIUM);
-
-        if(ExplosionCustom.dust!=null) getSurfaceBlocks().add(ExplosionCustom.dust);
-        if(ExplosionCustom.melt!=null) getSurfaceBlocks().add(ExplosionCustom.melt);
-        if(ExplosionCustom.solidmelt!=null) getSurfaceBlocks().add(ExplosionCustom.solidmelt);
-
-        getTerrain().add(Blocks.DIRT);
-        getTerrain().add(Blocks.GRASS);
-        getTerrain().add(Blocks.STONE);
-        getTerrain().add(Blocks.SAND);
-        getTerrain().add(Blocks.GRAVEL);
-        getTerrain().add(Blocks.NETHERRACK);
+        for (Block block : allBlocks)
+        {
+            try
+            {
+                if (block.isWood(null, null))
+                {
+                    addToList(config.getWoodTypes(), block.getRegistryName().toString());
+                }
+                if (block.isLeaves(block.getDefaultState(), null, null))
+                {
+                    addToList(config.getPlantTypes(), block.getRegistryName().toString());
+                }
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log("Error checking if " + block + " is wood or leaves");
+            }
+        }
     }
 
     public void addItems()
@@ -140,127 +103,17 @@ public class Mod_Pokecube_Helper
 
     public void addVillagerTrades()
     {
-        // TODO 1.8 villager trades
-        // FARMER
-        // VillagerRegistry.instance().registerVillageTradeHandler(0, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // // int berryId = random.nextInt(17);
-        //// ItemStack item = berryItems.get(berryId);//TODO get a new way to
-        // make a random berry
-        //// if (item!=null){
-        //// if (random.nextBoolean()){
-        //// recipeList.add(new MerchantRecipe(
-        //// new ItemStack(Items.emerald, 7),
-        //// new ItemStack(berryItems.get(berryId), 1)));
-        //// }
-        //// else {
-        //// recipeList.add(new MerchantRecipe(
-        //// new ItemStack(berryItems.get(berryId), 1),
-        //// new ItemStack(Items.emerald, 3)));
-        //// }
-        //// }
-        //// else {
-        //// recipeList.add(new MerchantRecipe(
-        //// new ItemStack(Items.emerald, 28),
-        //// new ItemStack(repelBlock, 1)));
-        //// }
-        // }
-        // });
-        // // LIBRARIAN
-        // VillagerRegistry.instance().registerVillageTradeHandler(1, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // int rand = random.nextInt(2);
-        // switch (rand) {
-        // case 0:
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 15),
-        // new ItemStack(pokedex, 1)));
-        // break;
-        // default: ;
-        // break;
-        // }
-        // }
-        // });
-        // // PRIEST
-        // VillagerRegistry.instance().registerVillageTradeHandler(2, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // int rand = random.nextInt(2);
-        // switch (rand) {
-        // case 0:
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 14),
-        // new ItemStack(pokecenter, 1)));
-        // break;
-        // case 1:
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 12),
-        // new ItemStack(repelBlock, 1)));
-        // break;
-        // default:
-        // break;
-        // }
-        // }
-        // });
-        // // SMITH
-        // VillagerRegistry.instance().registerVillageTradeHandler(3, new
-        // VillagerRegistry.IVillageTradeHandler() {
-        // @Override
-        // public void manipulateTradesForVillager(EntityVillager villager,
-        // MerchantRecipeList recipeList, Random random) {
-        // int rand = random.nextInt(13);
-        // Item item = null;
-        // switch (rand) {
-        // case 0: item = dawnstone;
-        // break;
-        // case 1: item = duskstone;
-        // break;
-        // case 2: item = everstone;
-        // break;
-        // case 3: item = firestone;
-        // break;
-        // case 4: item = kingsrock;
-        // break;
-        // case 5: item = leafstone;
-        // break;
-        // case 6: item = moonstone;
-        // break;
-        // case 7: item = ovalstone;
-        // break;
-        // case 8: item = shinystone;
-        // break;
-        // case 9: item = sunstone;
-        // break;
-        // case 10: item = thunderstone;
-        // break;
-        // case 11: item = waterstone;
-        // break;
-        // default: item = everstone;
-        // break;
-        // }
-        // recipeList.add(new MerchantRecipe(
-        // new ItemStack(Items.emerald, 5),
-        // new ItemStack(item, 1)));
-        // }
-        // });
+        // TODO decide if I want to add these.
     }
 
     public void initAllBlocks()
     {
         allBlocks.clear();
-        initLists();
         for (int i = 0; i < 4096; i++)
         {
             if (Block.getBlockById(i) != null) allBlocks.add(Block.getBlockById(i));
         }
+        initLists();
     }
 
     public void postInit()
@@ -275,55 +128,16 @@ public class Mod_Pokecube_Helper
         GUIPC_ID = 17;
         GUIDISPLAYTELEPORTINFO_ID = 18;
         GUIPOKEMOB_ID = 19;
-
-        for (Block b : allBlocks)
-        {
-            try
-            {
-                if (getCaveBlocks().contains(b)) continue;
-
-                if (BlockMatcher.forBlock(Blocks.STONE).apply(b.getDefaultState())) getCaveBlocks().add(b);
-                else if (BlockMatcher.forBlock(Blocks.NETHERRACK).apply(b.getDefaultState())) getCaveBlocks().add(b);
-                else if (BlockMatcher.forBlock(Blocks.DIRT).apply(b.getDefaultState())) getCaveBlocks().add(b);
-                else if (BlockMatcher.forBlock(Blocks.SAND).apply(b.getDefaultState())) getCaveBlocks().add(b);
-            }
-            catch (Exception e)
-            {
-            }
-        }
-        for (Block b : getCaveBlocks())
-        {
-            if (b.getDefaultState().getMaterial() == Material.ROCK && !getRocks().contains(b)) getRocks().add(b);
-            if (!getSurfaceBlocks().contains(b)) getSurfaceBlocks().add(b);
-        }
-
         RecipeHandler.initRecipes();
-
-        addToList(PokecubeMod.core.getConfig().getCaveBlocks(), PokecubeMod.core.getConfig().cave);
-        addToList(PokecubeMod.core.getConfig().getSurfaceBlocks(), PokecubeMod.core.getConfig().surface);
-        addToList(PokecubeMod.core.getConfig().getRocks(), PokecubeMod.core.getConfig().rock);
-        addToList(TreeRemover.woodTypes, PokecubeMod.core.getConfig().trees);
-        addToList(TreeRemover.plantTypes, PokecubeMod.core.getConfig().plants);
-        addToList(PokecubeMod.core.getConfig().getTerrain(), PokecubeMod.core.getConfig().terrains);
-
-        for (int i = 0; i < 4096; i++)
-        {
-            Block b = Block.getBlockById(i);
-            if (b != null)
-            {
-                try
-                {
-                    if (b.isWood(getWorld(), new BlockPos(0, 0, 0)) && !TreeRemover.woodTypes.contains(b))
-                    {
-                        TreeRemover.woodTypes.add(b);
-                    }
-                }
-                catch (Exception e)
-                {
-                    System.err.println("not wood " + e + " " + b);
-                }
-            }
-        }
+        addToList(PokecubeMod.core.getConfig().getCaveBlocks(), PokecubeMod.core.getConfig().blockListCaveFloor);
+        addToList(PokecubeMod.core.getConfig().getSurfaceBlocks(), PokecubeMod.core.getConfig().blockListSurface);
+        addToList(PokecubeMod.core.getConfig().getRocks(), PokecubeMod.core.getConfig().blockListRocks);
+        addToList(PokecubeMod.core.getConfig().getWoodTypes(), PokecubeMod.core.getConfig().blockListTreeBlocks);
+        addToList(PokecubeMod.core.getConfig().getPlantTypes(),
+                PokecubeMod.core.getConfig().blockListHarvestablePlants);
+        addToList(PokecubeMod.core.getConfig().getTerrain(), PokecubeMod.core.getConfig().blockListMiscTerrain);
+        addToList(PokecubeMod.core.getConfig().getIndustrial(),
+                PokecubeCore.core.getConfig().blockListIndustrialBlocks);
         removeFromHoldables("tm");
     }
 }

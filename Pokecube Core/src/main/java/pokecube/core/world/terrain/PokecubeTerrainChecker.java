@@ -5,9 +5,9 @@ import static thut.api.terrain.BiomeType.VILLAGE;
 import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 import static thut.api.terrain.TerrainSegment.count;
 
-import java.util.List;
+import com.google.common.base.Predicate;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
@@ -27,6 +27,86 @@ import thut.api.terrain.TerrainSegment.ISubBiomeChecker;
 public class PokecubeTerrainChecker implements ISubBiomeChecker
 {
     public static BiomeType INSIDE = BiomeType.getBiome("inside", true);
+
+    public static boolean isCave(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getCaveBlocks())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isSurface(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getSurfaceBlocks())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isRock(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getRocks())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isTerrain(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getTerrain())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isDirt(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getDirtTypes())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isWood(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getWoodTypes())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isPlant(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getPlantTypes())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
+    public static boolean isIndustrial(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getIndustrial())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
 
     public static void init()
     {
@@ -67,6 +147,7 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                 return BiomeType.CAVE_WATER.getType();
             }
             else if (isCave(v, world)) return BiomeType.CAVE.getType();
+
             return INSIDE.getType();
         }
         int biome = 0;
@@ -75,7 +156,23 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         boolean notLake = BiomeDatabase.contains(b, Type.OCEAN) || BiomeDatabase.contains(b, Type.SWAMP)
                 || BiomeDatabase.contains(b, Type.RIVER) || BiomeDatabase.contains(b, Type.WATER)
                 || BiomeDatabase.contains(b, Type.BEACH);
-        int water = v.blockCount2(world, Blocks.WATER, 3);
+        int industrial = 0;
+        int water = 0;
+        Vector3 temp1 = Vector3.getNewVector();
+        int x0 = segment.chunkX * 16, y0 = segment.chunkY * 16, z0 = segment.chunkZ * 16;
+        int dx = ((v.intX() - x0) / GRIDSIZE) * GRIDSIZE;
+        int dy = ((v.intY() - y0) / GRIDSIZE) * GRIDSIZE;
+        int dz = ((v.intZ() - z0) / GRIDSIZE) * GRIDSIZE;
+        int x1 = x0 + dx, y1 = y0 + dy, z1 = z0 + dz;
+        for (int i = x1; i < x1 + GRIDSIZE; i++)
+            for (int j = y1; j < y1 + GRIDSIZE; j++)
+                for (int k = z1; k < z1 + GRIDSIZE; k++)
+                {
+                    IBlockState state;
+                    if (isIndustrial(state = temp1.set(i, j, k).getBlockState(world))) industrial++;
+                    if (state.getMaterial() == Material.WATER) water++;
+                    if (industrial > 2) return BiomeType.INDUSTRIAL.getType();
+                }
         if (water > 4)
         {
             if (!notLake)
@@ -93,8 +190,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
 
         if (world.villageCollectionObj != null)
         {
-            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(
-                    MathHelper.floor_double(v.x), MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
+            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(MathHelper.floor_double(v.x),
+                    MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
             if (village != null)
             {
                 biome = VILLAGE.getType();
@@ -111,13 +208,10 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
     public boolean isCaveFloor(Vector3 v, World world)
     {
         IBlockState state = v.getBlockState(world);
-        Block b = state.getBlock();
-        List<Block> cave = PokecubeMod.core.getConfig().getCaveBlocks();
-        if (state.getMaterial().isSolid()) { return cave.contains(b); }
+        if (state.getMaterial().isSolid()) { return isCave(state); }
         Vector3 down = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (down == null) return false;
-        b = down.getBlock(world);
-        return cave.contains(b);
+        return isCave(down.getBlockState(world));
     }
 
     public boolean isCaveCeiling(Vector3 v, World world)
@@ -125,12 +219,11 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         double y = v.getMaxY(world);
         if (y <= v.y) return false;
         IBlockState state = v.getBlockState(world);
-        Block b = state.getBlock();
-        if (state.getMaterial().isSolid()) { return PokecubeMod.core.getConfig().getCaveBlocks().contains(b); }
+        if (state.getMaterial().isSolid()) { return isCave(state); }
         Vector3 up = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxis, 255 - v.y);
         if (up == null) return false;
-        b = up.getBlock(world);
-        return PokecubeMod.core.getConfig().getCaveBlocks().contains(b);
+        state = up.getBlockState(world);
+        return isCave(state);
     }
 
     public boolean isInside(Vector3 v, World world)

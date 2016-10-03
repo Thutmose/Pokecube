@@ -429,11 +429,6 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent.RightClickBlock evt)
     {
-        if (evt.getEntityPlayer().getEntityWorld().isRemote
-                || evt.getEntityPlayer().getEntityWorld().rand.nextInt(10) != 0)
-            return;
-        TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(evt.getEntityPlayer());
-        t.checkIndustrial(evt.getEntityPlayer().getEntityWorld());
     }
 
     /** Applies the exp from lucky egg and exp share. TODO move this out of

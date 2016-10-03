@@ -665,7 +665,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void popFromPokecube()
     {
         super.popFromPokecube();
-        healStatus();
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -761,16 +760,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (getStatus() != STATUS_NON) { return false; }
 
-        if (status == STATUS_BRN && (getType1() == PokeType.fire || getType2() == PokeType.fire)) return false;
-        if (status == STATUS_PAR && (getType1() == PokeType.electric || getType2() == PokeType.electric)) return false;
-        if (status == STATUS_FRZ && (getType1() == PokeType.ice || getType2() == PokeType.ice)) return false;
-        if ((status == STATUS_PSN || status == STATUS_PSN2) && (getType1() == PokeType.poison
-                || getType2() == PokeType.poison || getType1() == PokeType.steel || getType2() == PokeType.steel))
-            return false;
-
-        byte value = dataManager.get(STATUSDW);
-        value = (byte) (value | status);
-        dataManager.set(STATUSDW, value);
+        if (status == STATUS_BRN && isType(PokeType.fire)) return false;
+        if (status == STATUS_PAR && isType(PokeType.electric)) return false;
+        if (status == STATUS_FRZ && isType(PokeType.ice)) return false;
+        if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
+        dataManager.set(STATUSDW, status);
         setStatusTimer((short) 100);
         return true;
     }

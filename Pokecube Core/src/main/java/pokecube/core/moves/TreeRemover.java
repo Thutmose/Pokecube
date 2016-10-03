@@ -4,38 +4,34 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 
 public class TreeRemover
 {
-    public static final List<Block> woodTypes  = new ArrayList<Block>();
-    public static final List<Block> plantTypes = new ArrayList<Block>();
-    public static final List<Block> dirtTypes  = new ArrayList<Block>();
 
     static
     {
-        woodTypes.add(Blocks.LOG);
-        woodTypes.add(Blocks.LOG2);
-
-        plantTypes.add(Blocks.DOUBLE_PLANT);
-        plantTypes.add(Blocks.TALLGRASS);
-        plantTypes.add(Blocks.CARROTS);
-        plantTypes.add(Blocks.COCOA);
-        plantTypes.add(Blocks.WHEAT);
-        plantTypes.add(Blocks.POTATOES);
-        plantTypes.add(Blocks.REEDS);
-        plantTypes.add(Blocks.LEAVES);
-        plantTypes.add(Blocks.VINE);
-        plantTypes.add(Blocks.CACTUS);
-        plantTypes.add(Blocks.MELON_BLOCK);
-        plantTypes.add(Blocks.RED_FLOWER);
-        plantTypes.add(Blocks.YELLOW_FLOWER);
-        plantTypes.add(Blocks.PUMPKIN);
-
-        dirtTypes.add(Blocks.DIRT);
+        // woodTypes.add(Blocks.LOG);
+        // woodTypes.add(Blocks.LOG2);
+        //
+        // plantTypes.add(Blocks.DOUBLE_PLANT);
+        // plantTypes.add(Blocks.TALLGRASS);
+        // plantTypes.add(Blocks.CARROTS);
+        // plantTypes.add(Blocks.COCOA);
+        // plantTypes.add(Blocks.WHEAT);
+        // plantTypes.add(Blocks.POTATOES);
+        // plantTypes.add(Blocks.REEDS);
+        // plantTypes.add(Blocks.LEAVES);
+        // plantTypes.add(Blocks.VINE);
+        // plantTypes.add(Blocks.CACTUS);
+        // plantTypes.add(Blocks.MELON_BLOCK);
+        // plantTypes.add(Blocks.RED_FLOWER);
+        // plantTypes.add(Blocks.YELLOW_FLOWER);
+        // plantTypes.add(Blocks.PUMPKIN);
+        //
+        // dirtTypes.add(Blocks.DIRT);
     }
 
     World         worldObj;
@@ -70,7 +66,7 @@ public class TreeRemover
                 for (int k = -1; k < 6; k++)
                 {
                     temp.set(centre).addTo(i, k, j);
-                    if (plantTypes.contains(temp.getBlock(worldObj)))
+                    if (PokecubeTerrainChecker.isPlant(temp.getBlockState(worldObj)))
                     {
                         temp.breakBlock(worldObj, true);
                     }
@@ -111,15 +107,15 @@ public class TreeRemover
         int k = -1;
         Vector3 temp = Vector3.getNewVector();
 
-        if (woodTypes.contains(temp.set(centre).getBlock(worldObj)))
+        if (PokecubeTerrainChecker.isWood(temp.set(centre).getBlockState(worldObj)))
         {
             boolean valid = false;
             while (centre.intY() + k > 0)
             {
-                if (woodTypes.contains(temp.set(centre).addTo(0, k, 0).getBlock(worldObj)))
+                if (PokecubeTerrainChecker.isWood(temp.set(centre).addTo(0, k, 0).getBlockState(worldObj)))
                 {
                 }
-                else if (dirtTypes.contains(temp.set(centre).addTo(0, k, 0).getBlock(worldObj)))
+                else if (PokecubeTerrainChecker.isDirt(temp.set(centre).addTo(0, k, 0).getBlockState(worldObj)))
                 {
                     valid = true;
                 }
@@ -148,7 +144,7 @@ public class TreeRemover
                 for (int k = -1; k <= 1; k++)
                 {
                     temp.set(prev).addTo(i, k, j);
-                    if (woodTypes.contains(temp.getBlock(worldObj)))
+                    if (PokecubeTerrainChecker.isWood(temp.getBlockState(worldObj)))
                     {
                         tempList.add(temp.copy());
                         ret = true;

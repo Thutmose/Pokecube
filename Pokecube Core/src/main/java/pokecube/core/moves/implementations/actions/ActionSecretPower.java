@@ -5,18 +5,17 @@ import java.util.UUID;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import pokecube.core.Mod_Pokecube_Helper;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.moves.TreeRemover;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
@@ -36,8 +35,8 @@ public class ActionSecretPower implements IMoveAction
         long time = ((Entity) attacker).getEntityData().getLong("lastAttackTick");
         if (time + (20 * 3) > ((Entity) attacker).getEntityWorld().getTotalWorldTime()) return false;
         EntityPlayerMP owner = (EntityPlayerMP) attacker.getPokemonOwner();
-        Block b = location.getBlock(owner.worldObj);
-        if (!(Mod_Pokecube_Helper.getTerrain().contains(b) || TreeRemover.woodTypes.contains(b)))
+        IBlockState state = location.getBlockState(owner.worldObj);
+        if (!(PokecubeTerrainChecker.isTerrain(state) || PokecubeTerrainChecker.isWood(state)))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.wrongloc");
             owner.addChatMessage(message);

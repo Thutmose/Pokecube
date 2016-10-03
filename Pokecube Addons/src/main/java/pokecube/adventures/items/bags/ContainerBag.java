@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.adventures.comands.Config;
 import pokecube.adventures.network.packets.PacketBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -30,6 +31,7 @@ public class ContainerBag extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
+        if (Config.instance.bagHoldAll) return true;
         boolean valid = PokecubeItems.isValidHeldItem(itemstack) || itemstack.getItem() instanceof IPokemobUseable;
         valid |= PokecubeItems.getFossilEntry(itemstack) != null;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()

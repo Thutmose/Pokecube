@@ -1,7 +1,5 @@
 package pokecube.core.moves.implementations.actions;
 
-import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -17,6 +15,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
@@ -86,29 +85,24 @@ public class ActionSmash implements IMoveAction
             if (evt.isCanceled()) return 0;
         }
         int fortune = digger.getLevel() / 30;
-
-        ArrayList<Block> list = new ArrayList<Block>();
-        for (Block l : PokecubeMod.core.getConfig().getRocks())
-            list.add(l);
-
         boolean silky = Move_Basic.shouldSilk(digger) && player != null;
-
         Vector3 temp = Vector3.getNewVector();
         temp.set(v);
-        for (int i = -1; i <= 1; i++)
-            for (int j = -1; j <= 1; j++)
-                for (int k = -1; k <= 1; k++)
+        int range = 0;
+        for (int i = -range; i <= range; i++)
+            for (int j = -range; j <= range; j++)
+                for (int k = -range; k <= range; k++)
                 {
                     temp.set(v);
                     IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).getEntityWorld());
-                    Block block = state.getBlock();
-                    if (list.contains(block))
+                    if (PokecubeTerrainChecker.isRock(state))
                     {
                         if (!count)
                         {
                             if (!silky) doFortuneDrop(temp, ((Entity) digger).getEntityWorld(), fortune);
                             else
                             {
+                                Block block = state.getBlock();
                                 if (block.canSilkHarvest(player.getEntityWorld(), temp.getPos(), state, player))
                                 {
                                     Move_Basic.silkHarvest(state, temp.getPos(), player.getEntityWorld(), player);

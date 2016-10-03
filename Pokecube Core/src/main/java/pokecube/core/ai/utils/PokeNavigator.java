@@ -79,6 +79,7 @@ public class PokeNavigator extends PathNavigate
         if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || pokemob.getStatus() == IPokemob.STATUS_SLP
                 || pokemob.getStatus() == IPokemob.STATUS_FRZ)
             return false;
+        if (pokemob.getPokemonAIState(IPokemob.SITTING)) return false;
         return this.theEntity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
     }
 

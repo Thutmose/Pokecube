@@ -26,8 +26,9 @@ import pokecube.core.utils.Tools;
 
 public class TileEntityDaycare extends TileEntityOwnable implements ITickable, IInventory
 {
-    ItemStack[] inventory = new ItemStack[3];
-    int         range     = 4;
+    ItemStack[] inventory  = new ItemStack[3];
+    int         range      = 4;
+    double      multiplier = 1;
 
     public TileEntityDaycare()
     {
@@ -68,11 +69,11 @@ public class TileEntityDaycare extends TileEntityOwnable implements ITickable, I
             if (dist > range * range || pokemob.getLevel() == 100) return;
             if (!consumeShards(Config.instance.daycareCost, true))
             {
-                event.getEntityLiving().playSound(SoundEvents.BLOCK_NOTE_BASS, 1, 1);
+                event.getEntityLiving().playSound(SoundEvents.BLOCK_NOTE_BASS, 0.25f, 1);
                 return;
             }
-            event.getEntityLiving().playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-            int exp = (int) (Config.instance.daycareExp / dist);
+            event.getEntityLiving().playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 0.25f, 1);
+            int exp = (int) (Config.instance.daycareExp * multiplier / dist);
             pokemob.setExp(pokemob.getExp() + exp, true);
         }
     }
@@ -266,6 +267,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements ITickable, I
             }
         }
         range = nbt.getInteger("distance");
+        multiplier = nbt.getDouble("multiplier");
     }
 
     @Override
@@ -287,7 +289,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements ITickable, I
         }
         nbt.setTag("Inventory", itemList);
         nbt.setInteger("distance", range);
-
+        nbt.setDouble("multiplier", multiplier);
         return nbt;
     }
 

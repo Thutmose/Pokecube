@@ -16,6 +16,7 @@ import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -27,6 +28,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.relauncher.Side;
@@ -118,6 +120,45 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public void closeInventory(EntityPlayer player)
     {
+        if (!player.getEntityWorld().isRemote)
+        {
+            if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory[0])))
+            {
+                dropCube(inventory[0], player);
+                this.setInventorySlotContents(0, null);
+            }
+            if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory[1])))
+            {
+                dropCube(inventory[1], player);
+                this.setInventorySlotContents(1, null);
+            }
+        }
+    }
+
+    private void dropCube(ItemStack cube, EntityPlayer player)
+    {
+        if (cube != null)
+        {
+            if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
+            {
+                ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(cube, 0F), null);
+                MinecraftForge.EVENT_BUS.post(toss);
+                if (!toss.isCanceled())
+                {
+                    player.dropItem(cube, true);
+                }
+            }
+            else if (cube.getItem() != null && (player.isDead || !player.inventory.addItemStackToInventory(cube)))
+            {
+                ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(cube, 0F), null);
+                MinecraftForge.EVENT_BUS.post(toss);
+            }
+            else player.dropItem(cube, true);
+            if (player instanceof EntityPlayerMP)
+            {
+                ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
+            }
+        }
     }
 
     @Override

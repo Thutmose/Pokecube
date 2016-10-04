@@ -77,6 +77,8 @@ public class GuiTradingTable extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
     {
+        GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_BLEND);
         ItemStack stack = table.getStackInSlot(0);
         if (PokecubeManager.isFilled(stack))
         {
@@ -87,6 +89,8 @@ public class GuiTradingTable extends GuiContainer
         {
             renderMob(1);
         }
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glPopMatrix();
     }
 
     @Override
@@ -108,6 +112,7 @@ public class GuiTradingTable extends GuiContainer
             GL11.glColor4f(red ? 1 : 0, green ? 1 : 0, blue ? 1 : 0, 1);
             mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/hologram.png"));
             drawTexturedModalRect(x, y, 0, 0, 16, 16);
+            GL11.glColor4f(1, 1, 1, 1);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
         }
@@ -124,6 +129,7 @@ public class GuiTradingTable extends GuiContainer
             GL11.glColor4f(red ? 1 : 0, green ? 1 : 0, blue ? 1 : 0, 1);
             mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/hologram.png"));
             drawTexturedModalRect(x, y, 0, 0, 16, 16);
+            GL11.glColor4f(1, 1, 1, 1);
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
         }

@@ -9,4 +9,6 @@ public interface IParticle
     void setDuration(int duration);
     void setLastTick(long tick);
     void setLifetime(int ticks);
+    void setColour(int colour);
+    void setSize(float size);
 }

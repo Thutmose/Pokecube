@@ -986,20 +986,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
     }
 
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        setPokedexEntry(Database.getEntry(data.readInt()));
-        setSize(data.readFloat());
-        this.uid = data.readInt();
-        this.initRidable();
-        for (int i = 0; i < 4; i++)
-            rgba[i] = data.readByte() + 128;
-        this.entityUniqueID = new UUID(data.readLong(), data.readLong());
-        super.readSpawnData(data);
-    }
-
     @Override
     public void setPokecube(ItemStack pokeballId)
     {
@@ -1180,15 +1166,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             uid = PokecubeSerializer.getInstance().getNextID();
         }
         PokecubeSerializer.getInstance().addPokemob(this);
-        data.writeInt(getPokedexNb());
-        data.writeFloat((float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
-        data.writeInt(uid);
-        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
-                (byte) (rgba[3] - 128) };
-        data.writeBytes(rgbaBytes);
-        data.writeLong(getUniqueID().getMostSignificantBits());
-        data.writeLong(getUniqueID().getLeastSignificantBits());
-
         super.writeSpawnData(data);
 
     }

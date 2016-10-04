@@ -178,7 +178,6 @@ public class EventsHandlerClient
             }
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
             EventsHandler.setFromNBT(pokemob, pokeTag);
-            pokemob.popFromPokecube();
             pokemob.setPokecube(itemStack);
             ((EntityLivingBase) pokemob).setHealth(
                     Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));

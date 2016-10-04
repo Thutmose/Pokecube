@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -24,7 +23,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.handlers.HeldItemHandler;
@@ -667,15 +665,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         super.popFromPokecube();
     }
 
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        int abilityNumber = data.readInt();
-        setAbility(AbilityManager.getAbility(abilityNumber, this));
-        super.readSpawnData(data);
-    };
-
     @Override
     public void removeChanges(int changes)
     {
@@ -793,14 +782,5 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (index == 0) moveInfo.weapon1 = weapon;
         else moveInfo.weapon2 = weapon;
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void writeSpawnData(ByteBuf data)
-    {
-        int abilityNumber = getAbility() == null ? -1 : AbilityManager.getIdForAbility(getAbility());
-        data.writeInt(abilityNumber);
-        super.writeSpawnData(data);
     }
 }

@@ -56,10 +56,10 @@ public class MoveAnimationHelper
                         source.set(target.subtract(source));
                         GL11.glTranslated(source.x, source.y, source.z);
                         // Clear out the jitteryness from rendering
-                        source.x = player.prevPosX - player.posX;
-                        source.y = player.prevPosY - player.posY;
-                        source.z = player.prevPosZ - player.posZ;
-                        source.scalarMultBy(event.getRenderPartialTicks());
+                        double d0 = (-player.posX + player.lastTickPosX) * event.getRenderPartialTicks();
+                        double d1 = (-player.posY + player.lastTickPosY) * event.getRenderPartialTicks();
+                        double d2 = (-player.posZ + player.lastTickPosZ) * event.getRenderPartialTicks();
+                        source.set(d0, d1, d2);
                         GL11.glTranslated(source.x, source.y, source.z);
                         teffect.renderTerrainEffects(event);
                         GL11.glPopMatrix();

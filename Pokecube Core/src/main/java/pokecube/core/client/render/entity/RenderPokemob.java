@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.ItemDye;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -28,6 +29,7 @@ import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.helper.EntityEvolvablePokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
@@ -130,56 +132,53 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
 
+        int ticks = ((Entity) pokemob).ticksExisted;
+        if (ticks > 20) return;
         NBTTagCompound sealTag = PokecubeManager.getSealTag((Entity) pokemob);
-
-        if (!sealTag.hasNoTags())
+        if (sealTag != null && !sealTag.hasNoTags())
         {
             Entity entity = (Entity) pokemob;
             Random rand = new Random();
-            double x;
-            double y;
-            double z;
+            Vector3 loc = Vector3.getNewVector().set(entity);
+            Vector3 vel = Vector3.getNewVector();
             if (sealTag.getBoolean("Bubbles"))
             {
-                x = rand.nextDouble() - 0.5;
-                y = rand.nextDouble();
-                z = rand.nextDouble() - 0.5;
-                entity.getEntityWorld().spawnParticle(EnumParticleTypes.DRIP_WATER, entity.posX + x, entity.posY + y,
-                        entity.posZ + z, 0d, 0d, 0d);
+                System.out.println("bubble");
+                loc.x += rand.nextDouble() - 0.5;
+                loc.y += rand.nextDouble();
+                loc.z += rand.nextDouble() - 0.5;
+                PokecubeMod.core.spawnParticle(EnumParticleTypes.DRIP_WATER.getParticleName(), loc, vel);
             }
             if (sealTag.getBoolean("Flames"))
             {
-                x = rand.nextDouble() - 0.5;
-                y = rand.nextDouble();
-                z = rand.nextDouble() - 0.5;
-                entity.getEntityWorld().spawnParticle(EnumParticleTypes.FLAME, entity.posX, entity.posY, entity.posZ,
-                        x / 10, y / 10, z / 10);
+                loc.x += rand.nextDouble() - 0.5;
+                loc.y += rand.nextDouble();
+                loc.z += rand.nextDouble() - 0.5;
+                PokecubeMod.core.spawnParticle(EnumParticleTypes.FLAME.getParticleName(), loc, vel);
             }
             // *
             if (sealTag.getBoolean("Leaves"))
             {
-                x = rand.nextGaussian();
-                y = rand.nextGaussian();
-                z = rand.nextGaussian();
-                // mod_Pokecube.getProxy().spawnParticle("leaves", entity.posX,
-                // entity.posY, entity.posZ, x/100, y/100, z/100);
+                vel.x = rand.nextGaussian() / 100;
+                vel.y = rand.nextGaussian() / 100;
+                vel.z = rand.nextGaussian() / 100;
+                loc.x += rand.nextGaussian() / 2;
+                loc.y += rand.nextGaussian() / 2;
+                loc.z += rand.nextGaussian() / 2;
+                PokecubeMod.core.spawnParticle("leaf", loc, vel);
             }
             if (sealTag.hasKey("dye"))
             {
-                x = rand.nextGaussian();
-                y = rand.nextGaussian();
-                z = rand.nextGaussian();
-                // TODO find out how to get the dyes again.
-                // mod_Pokecube.getProxy().spawnParticle("powder:"+ItemDye.field_150922_c[sealTag.getInteger("dye")],
-                // entity.posX, entity.posY, entity.posZ, x/100, y/100, z/100);
+                vel.x = rand.nextGaussian() / 100;
+                vel.y = rand.nextGaussian() / 100;
+                vel.z = rand.nextGaussian() / 100;
+                loc.x += rand.nextGaussian() / 2;
+                loc.y += rand.nextGaussian() / 2;
+                loc.z += rand.nextGaussian() / 2;
+                PokecubeMod.core.spawnParticle("powder", loc, vel,
+                        ItemDye.DYE_COLORS[sealTag.getInteger("dye")] | 0xFF000000);
             }
-
-            // */
-
         }
-        int ticks = ((Entity) pokemob).ticksExisted;
-        if (ticks > 20) return;
-
         float f1 = ((float) ticks * 5 + partialTick) / 200.0F;
         float f2 = 0.0F;
         Tessellator tessellator = Tessellator.getInstance();

@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -43,10 +44,16 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
             col[3] = te.transparency;
             ((IMobColourable) mob).setRGBA(col);
         }
-        if(!te.rotates)
+        if (!te.rotates)
         {
             GL11.glRotatef(te.angle, 0, 1, 0);
         }
+        if (te.frozen)
+        {
+            partialTicks = te.animationTime % 1;
+            ((Entity) mob).ticksExisted = (int) te.animationTime;
+        }
+
         EventsHandlerClient.renderMob(mob, partialTicks, te.rotates);
         GL11.glPopMatrix();
         GL11.glTranslatef(0.405f, 0.645f, -0.5f);

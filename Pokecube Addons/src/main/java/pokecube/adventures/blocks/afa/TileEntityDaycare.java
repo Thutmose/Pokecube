@@ -10,7 +10,6 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,7 +23,7 @@ import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.Tools;
 
-public class TileEntityDaycare extends TileEntityOwnable implements ITickable, IInventory
+public class TileEntityDaycare extends TileEntityOwnable implements IInventory
 {
     ItemStack[] inventory  = new ItemStack[3];
     int         range      = 4;
@@ -197,13 +196,6 @@ public class TileEntityDaycare extends TileEntityOwnable implements ITickable, I
         int total = numShard + numEmerald * 9 + numBlocks * 81;
         enough = total <= shards;
         return enough;
-    }
-
-    @Override
-    public void update()
-    {
-        // TODO Auto-generated method stub
-        consumeShards(1, false);
     }
 
     @Override

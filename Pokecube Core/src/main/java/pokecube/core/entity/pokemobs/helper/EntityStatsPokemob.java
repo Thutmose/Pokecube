@@ -622,38 +622,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void readSpawnData(ByteBuf data)
     {
-        personalityValue = data.readInt();
-        int num = data.readInt();
-        byte[] arr = new byte[num];
-        for (int i = 0; i < num; i++)
-            arr[i] = data.readByte();
-        String forme = new String(arr);
-        shiny = data.readBoolean();
-        wasShadow = data.readBoolean();
-        isAncient = data.readBoolean();
-        nature = Nature.values()[data.readByte()];
-        this.setPokedexEntry(Database.getEntry(forme));
-        for (int i = 0; i < ivs.length; i++)
+        PacketBuffer buffer = new PacketBuffer(data);
+        try
         {
-            ivs[i] = data.readByte();
+            this.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
         }
-
-        boolean tags = data.readBoolean();
-        if (tags)
+        catch (IOException e)
         {
-            PacketBuffer buffer = new PacketBuffer(data);
-            try
-            {
-                NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
-                for (Object o : tag.getKeySet())// .func_150296_c())
-                {
-                    getEntityData().setTag((String) o, tag.getTag((String) o));
-                }
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
 
@@ -926,18 +902,21 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void writeSpawnData(ByteBuf data)
     {
-        data.writeInt(personalityValue);
-        data.writeInt(getPokedexEntry().getName().getBytes().length);
-        data.writeBytes(getPokedexEntry().getName().getBytes());
-        data.writeBoolean(shiny);
-        data.writeBoolean(wasShadow);
-        data.writeBoolean(isAncient);
-        data.writeByte((byte) nature.ordinal());
-        data.writeBytes(ivs);
-        boolean noTags = getEntityData().hasNoTags();
-        data.writeBoolean(!noTags);
+//        data.writeInt(personalityValue);
+//        data.writeInt(getPokedexEntry().getName().getBytes().length);
+//        data.writeBytes(getPokedexEntry().getName().getBytes());
+//        data.writeBoolean(shiny);
+//        data.writeBoolean(wasShadow);
+//        data.writeBoolean(isAncient);
+//        data.writeByte((byte) nature.ordinal());
+//        data.writeBytes(ivs);
+//        boolean noTags = getEntityData().hasNoTags();
+//        data.writeBoolean(!noTags);
+//        PacketBuffer buffer = new PacketBuffer(data);
+//        buffer.writeNBTTagCompoundToBuffer(getEntityData());
         PacketBuffer buffer = new PacketBuffer(data);
-        buffer.writeNBTTagCompoundToBuffer(getEntityData());
+        NBTTagCompound tag = writePokemobData();
+        buffer.writeNBTTagCompoundToBuffer(tag);
     }
 
     @Override

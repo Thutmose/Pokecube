@@ -588,11 +588,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             }
 
             worldObj.spawnEntityInWorld((Entity) entity1);
-
+            entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
             entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
-
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {

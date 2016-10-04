@@ -6,7 +6,6 @@ package pokecube.core.entity.pokemobs.helper;
 import java.util.Random;
 import java.util.Vector;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -233,14 +232,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         });
     }
 
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        sexe = data.readByte();
-        super.readSpawnData(data);
-    }
-
     @Override
     public void resetInLove()
     {
@@ -308,13 +299,5 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public boolean tryToBreed()
     {
         return isInLove();
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void writeSpawnData(ByteBuf data)
-    {
-        data.writeByte(sexe);
-        super.writeSpawnData(data);
     }
 }

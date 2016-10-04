@@ -41,7 +41,7 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
 
     public BlockNest()
     {
-        super(Material.LEAVES);
+        super(Material.ROCK);
         setLightOpacity(2);
         this.setHardness(10);
         this.setDefaultState(this.blockState.getBaseState().withProperty(TYPE, Integer.valueOf(0)));

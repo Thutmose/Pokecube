@@ -72,6 +72,10 @@ public class RecipeBag implements IRecipe
                 }
             }
         }
+        if(n==1 && armour)
+        {
+            
+        }
         if (n != 2 || !(bag && armour))
         {
             if (dye && bag)

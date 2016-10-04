@@ -1,7 +1,5 @@
 package pokecube.core.moves.implementations.actions;
 
-import java.util.ArrayList;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -17,6 +15,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
@@ -90,28 +89,20 @@ public class ActionDig implements IMoveAction
         boolean silky = Move_Basic.shouldSilk(digger) && player != null;
         boolean dropAll = shouldDropAll(digger);
         double uselessDrop = Math.pow((100 - digger.getLevel()) / 100d, 3);
-
-        ArrayList<Block> list = new ArrayList<Block>();
-        for (Block l : PokecubeMod.core.getConfig().getCaveBlocks())
-            list.add(l);
-        for (Block l : PokecubeMod.core.getConfig().getSurfaceBlocks())
-            list.add(l);
         Vector3 temp = Vector3.getNewVector();
         temp.set(v);
-        for (int i = -1; i <= 1; i++)
-            for (int j = -1; j <= 1; j++)
-                for (int k = -1; k <= 1; k++)
+        int range = 1;
+        for (int i = -range; i <= range; i++)
+            for (int j = -range; j <= range; j++)
+                for (int k = -range; k <= range; k++)
                 {
                     temp.set(v);
                     IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).getEntityWorld());
                     Block block = state.getBlock();
-                    if (list.contains(block))
+                    if (PokecubeTerrainChecker.isTerrain(state))
                     {
                         boolean drop = true;
-                        if (PokecubeMod.core.getConfig().getTerrain().contains(block) && !dropAll && !silky
-                                && uselessDrop < Math.random())
-                            drop = false;
-
+                        if (!dropAll && !silky && uselessDrop < Math.random()) drop = false;
                         if (!count)
                         {
                             if (!silky) temp.breakBlock(((Entity) digger).getEntityWorld(), drop);

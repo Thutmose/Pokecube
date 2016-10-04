@@ -26,6 +26,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.TimePeriod;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.TickHandler;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
@@ -174,9 +175,9 @@ public class AIHungry extends AIBase
         }
     }
 
-    protected void eatBerry(Block block, double distance)
+    protected void eatBerry(IBlockState b, double distance)
     {
-        ItemStack fruit = ((IBerryFruitBlock) block).getBerryStack(world, foodLoc.getPos());
+        ItemStack fruit = ((IBerryFruitBlock) b.getBlock()).getBerryStack(world, foodLoc.getPos());
 
         if (fruit == null)
         {
@@ -217,14 +218,14 @@ public class AIHungry extends AIBase
         }
     }
 
-    protected void eatPlant(Block plant, Vector3 location, double dist)
+    protected void eatPlant(IBlockState b, Vector3 location, double dist)
     {
         double diff = 2;
         diff = Math.max(diff, entity.width);
         if (dist < diff)
         {
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-            berry.setEntityItemStack(new ItemStack(plant));
+            berry.setEntityItemStack(new ItemStack(b.getBlock()));
             hungrymob.eat(berry);
             if (PokecubeMod.core.getConfig().pokemobsDamageBlocks)
             {
@@ -232,7 +233,8 @@ public class AIHungry extends AIBase
                         location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
                 if (location.getBlockState(world).getMaterial() != Material.GRASS)
                 {
-                    for (ItemStack stack : plant.getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0))
+                    for (ItemStack stack : b.getBlock().getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world),
+                            0))
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));
                 }
             }
@@ -276,7 +278,7 @@ public class AIHungry extends AIBase
                     && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                berry.setEntityItemStack(new ItemStack(plant));
+                berry.setEntityItemStack(new ItemStack(b.getBlock()));
                 hungrymob.noEat(berry);
                 foodLoc.clear();
                 addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
@@ -285,7 +287,7 @@ public class AIHungry extends AIBase
         }
     }
 
-    protected void eatRocks(Block rock, Vector3 location, double dist)
+    protected void eatRocks(IBlockState b, Vector3 location, double dist)
     {
         double diff = 2;
         diff = Math.max(diff, entity.width);
@@ -293,11 +295,11 @@ public class AIHungry extends AIBase
         {
             if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
             {
-                if (rock == Blocks.COBBLESTONE)
+                if (b == Blocks.COBBLESTONE)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.GRAVEL);
                 }
-                else if (rock == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
+                else if (b == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.AIR);
                 }
@@ -308,7 +310,7 @@ public class AIHungry extends AIBase
             }
 
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-            berry.setEntityItemStack(new ItemStack(rock));
+            berry.setEntityItemStack(new ItemStack(b.getBlock()));
             hungrymob.eat(berry);
             foodLoc.clear();
             addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
@@ -347,7 +349,7 @@ public class AIHungry extends AIBase
             if (shouldChangePath && !pathed)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                berry.setEntityItemStack(new ItemStack(rock));
+                berry.setEntityItemStack(new ItemStack(b.getBlock()));
                 hungrymob.noEat(berry);
                 foodLoc.clear();
                 if (pokemob.hasHomeArea())
@@ -380,7 +382,7 @@ public class AIHungry extends AIBase
         {
             Block b = v.getBlock(world, EnumFacing.DOWN);
             IBlockState state = v.offset(EnumFacing.DOWN).getBlockState(world);
-            if (!PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL)
+            if (!PokecubeTerrainChecker.isRock(state))
             {
                 Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
                         PokecubeMod.core.getConfig().getRocks());
@@ -588,27 +590,20 @@ public class AIHungry extends AIBase
             // Go find and eat the block
             double d = foodLoc.addTo(0.5, 0.5, 0.5).distToEntity(entity);
             foodLoc.addTo(-0.5, -0.5, -0.5);
-            Block b = foodLoc.getBlock(world);
+            IBlockState b = foodLoc.getBlockState(world);
 
-            if (b instanceof IBerryFruitBlock)
+            if (b.getBlock() instanceof IBerryFruitBlock)
             {
                 eatBerry(b, d);
             }
-            else if (b != null)
+            if (PokecubeItems.grasses.contains(b))
             {
-                if (PokecubeItems.grasses.contains(b))
-                {
-                    eatPlant(b, foodLoc, d);
-                }
-                else if ((PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL)
-                        && hungrymob.isLithotroph())
-                {
-                    eatRocks(b, foodLoc, d);
-                }
+                eatPlant(b, foodLoc, d);
             }
-            else
+            else if ((PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL)
+                    && hungrymob.isLithotroph())
             {
-
+                eatRocks(b, foodLoc, d);
             }
         }
     }

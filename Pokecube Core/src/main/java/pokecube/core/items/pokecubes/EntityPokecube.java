@@ -346,6 +346,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                 this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
                 PacketSound.sendMessage((EntityPlayer) shootingEntity, Vector3.getNewVector().set(shootingEntity),
                         "pokecube:pokecube_caught");
+                shootingEntity.playSound(new SoundEvent(new ResourceLocation("pokecube:pokecube_caught")), 1, 1);
             }
             CaptureEvent.Post event = new CaptureEvent.Post(this);
             MinecraftForge.EVENT_BUS.post(event);
@@ -587,11 +588,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
             }
 
             worldObj.spawnEntityInWorld((Entity) entity1);
-
+            entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
             entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
-
             Entity owner = entity1.getPokemonOwner();
             if (owner instanceof EntityPlayer)
             {

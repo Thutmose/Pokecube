@@ -10,15 +10,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.commands.CommandTools;
@@ -31,9 +30,9 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 
 /** @author Manchou */
@@ -120,44 +119,10 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     }
 
     @Override
+    @Deprecated
     public IPokemob changeForme(String forme)
     {
-        PokedexEntry newEntry = Database.getEntry(forme);
-        if (newEntry == getPokedexEntry() && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return this;
-        if (newEntry != null)
-        {
-            this.forme = newEntry.getName();
-            this.setPokedexEntry(newEntry);
-            if (FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER) { return this; }
-        }
-        else
-        {
-            newEntry = Database.getEntry(forme);
-            if (newEntry == getPokedexEntry())
-            {
-                newEntry = null;
-                return this;
-            }
-            else if (newEntry != null)
-            {
-                this.setPokedexEntry(newEntry);
-                this.forme = newEntry.getName();
-            }
-            else if (Database.getEntry(getPokedexEntry().getBaseName()) != null)
-            {
-                newEntry = Database.getEntry(getPokedexEntry().getBaseName()).getForm(forme);
-                if (newEntry != null)
-                {
-                    this.forme = newEntry.getName();
-                    this.setPokedexEntry(newEntry);
-                }
-            }
-        }
-        if (newEntry != null && worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-        {
-            PacketChangeForme.sendPacketToNear(this, newEntry.getName(), 128);
-        }
-        return this;
+        return setPokedexEntry(Database.getEntry(forme));
     }
 
     @Override
@@ -359,32 +324,31 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     }
 
     @Override
-    public IPokemob megaEvolve(String forme)
+    public IPokemob megaEvolve(PokedexEntry newEntry)
     {
-        PokedexEntry newEntry = Database.getEntry(forme);
-        if (newEntry == getPokedexEntry()) return this;
         Entity evolution = this;
-        if (newEntry == null)
-        {
-            newEntry = Database.getEntry(forme);
-        }
-        if (newEntry != null)
+        System.out.println(newEntry + " " + getPokedexEntry());
+        if (newEntry != null && newEntry != getPokedexEntry())
         {
             setPokemonAIState(EVOLVING, true);
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
-                evolution = PokecubeMod.core.createEntityByPokedexNb(newEntry.getPokedexNb(), worldObj);
+                evolution = PokecubeMod.core.createEntityByPokedexEntry(newEntry, worldObj);
                 if (evolution == null)
                 {
                     System.err.println("No Entry for " + newEntry);
                     return this;
                 }
+                ((EntityLivingBase) evolution).setHealth(this.getHealth());
                 if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
-                evolution.copyDataFromOld(this);
+                NBTTagCompound tag = writePokemobData();
+                tag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.POKEDEXNB);
+                tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
+                ((IPokemob) evolution).readPokemobData(tag);
+                evolution.setUniqueId(getUniqueID());
                 evolution.copyLocationAndAnglesFrom(this);
                 this.setPokemonOwner((UUID) null);
                 this.setDead();
-                ((IPokemob) evolution).changeForme(forme);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 long evoTime = worldObj.getTotalWorldTime() + 2;
                 if (this.addedToChunk)
@@ -402,9 +366,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             else
             {
                 evolution = this;
-                ((IPokemob) evolution).changeForme(forme);
+                ((IPokemob) evolution).setPokedexEntry(newEntry);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
@@ -413,6 +376,19 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
         }
         return (IPokemob) evolution;
+    }
+
+    @Override
+    @Deprecated
+    public IPokemob megaEvolve(String forme)
+    {
+        PokedexEntry newEntry = Database.getEntry(forme);
+        if (newEntry == getPokedexEntry()) return this;
+        if (newEntry == null)
+        {
+            newEntry = Database.getEntry(forme);
+        }
+        return megaEvolve(newEntry);
     }
 
     @Override

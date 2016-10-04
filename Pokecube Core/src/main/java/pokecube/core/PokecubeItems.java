@@ -8,13 +8,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.ObjectArrays;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
@@ -726,5 +730,58 @@ public class PokecubeItems extends Items
             }
         }
         nbt.setInteger("count", num);
+    }
+
+    public static Predicate<IBlockState> getState(String arguments)
+    {
+        String[] args = arguments.split(" ");
+
+        String[] resource = args[0].split(":");
+        final String modid = resource[0];
+        final String blockName = resource[1];
+        String keyTemp = null;
+        String valTemp = null;
+
+        if (args.length > 1)
+        {
+            String[] state = args[1].split("=");
+            keyTemp = state[0];
+            valTemp = state[1];
+        }
+        final String key = keyTemp;
+        final String val = valTemp;
+        return new Predicate<IBlockState>()
+        {
+            final Pattern modidPattern = Pattern.compile(modid);
+            final Pattern blockPattern = Pattern.compile(blockName);
+
+            @Override
+            public boolean apply(IBlockState input)
+            {
+                if (input == null || input.getBlock() == null) return false;
+                Block block = input.getBlock();
+                ResourceLocation name = block.getRegistryName();
+                if (!modidPattern.matcher(name.getResourceDomain()).matches()) return false;
+                if (!blockPattern.matcher(name.getResourcePath()).matches()) return false;
+                if (key == null) return true;
+                for (IProperty<?> prop : input.getPropertyNames())
+                {
+                    if (prop.getName().equals(key))
+                    {
+                        boolean valid = false;
+                        try
+                        {
+                            valid = input.getValue(prop) == prop.parseValue(val).get();
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                        return valid;
+                    }
+                }
+                return false;
+            }
+        };
     }
 }

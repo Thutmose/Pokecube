@@ -564,7 +564,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             location.y += offset;
         }
         boolean ignoreRange = true;
-
         try
         {
             EnumParticleTypes particle = EnumParticleTypes.getByName(par1Str);
@@ -579,20 +578,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
 
         }
-
-        if (par1Str.toLowerCase(java.util.Locale.ENGLISH).contains("smoke"))
-        {
-            if (par1Str.contains("large"))
-            {
-                Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_LARGE, ignoreRange, location.x,
-                        location.y, location.z, 0, 0, 0, 0);
-                return;
-            }
-            Minecraft.getMinecraft().theWorld.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, ignoreRange, location.x,
-                    location.y, location.z, 0, 0, 0, 0);
-            return;
-        }
-        IParticle particle = ParticleFactory.makeParticle(par1Str, velocity);
+        IParticle particle = ParticleFactory.makeParticle(par1Str, velocity, args);
         ParticleHandler.Instance().addParticle(location, particle);
     }
 }

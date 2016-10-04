@@ -11,6 +11,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.utils.TagNames;
 
 public class RecipePokeseals implements IRecipe
 {
@@ -154,12 +155,20 @@ public class RecipePokeseals implements IRecipe
             {
                 aint1[l2] = ((Integer) arraylist.get(l2)).intValue();
             }
-
-            // toCraft = ();
-            nbttagcompound.setTag("Explosion", nbttagcompound1);
+            nbttagcompound.setTag(TagNames.POKESEAL, nbttagcompound1);
             this.toCraft.setTagCompound(nbttagcompound);
             return true;
         }
         return false;
+    }
+
+    public static ItemStack process(ItemStack cube, ItemStack seal)
+    {
+        if (!seal.hasTagCompound()) return cube;
+        NBTTagCompound cubeTag = cube.getTagCompound().getCompoundTag(TagNames.POKEMOB)
+                .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.VISUALSTAG)
+                .getCompoundTag(TagNames.POKECUBE).getCompoundTag("tag");
+        cubeTag.setTag(TagNames.POKESEAL, seal.getTagCompound().getCompoundTag(TagNames.POKESEAL));
+        return cube;
     }
 }

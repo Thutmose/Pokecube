@@ -2,6 +2,7 @@ package pokecube.core.database.abilities.m;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
@@ -41,13 +42,13 @@ public class Multitype extends Ability
             PokeType type = PokeType.getType(typename);
             if (type != PokeType.unknown)
             {
-                mob.changeForme("arceus" + type);
+                mob.setPokedexEntry(Database.getEntry("arceus" + type));
                 return;
             }
         }
         if (entry.getBaseForme() != null && entry.getBaseName().equals("Arceus"))
         {
-            mob.changeForme(entry.getBaseName());
+            mob.setPokedexEntry(entry);
             return;
         }
 

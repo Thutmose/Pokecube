@@ -972,6 +972,20 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         super.popFromPokecube();
         popped = true;
+        if (worldObj.isRemote) return;
+        this.playSound(this.getSound(), 0.5f, 1);
+
+        if (this.isShiny())
+        {
+            Vector3 particleLoc = Vector3.getNewVector();
+            for (int i = 0; i < 20; ++i)
+            {
+                particleLoc.set(posX + rand.nextFloat() * width * 2.0F - width, posY + 0.5D + rand.nextFloat() * height,
+                        posZ + rand.nextFloat() * width * 2.0F - width);
+                PokecubeMod.core.spawnParticle(EnumParticleTypes.VILLAGER_HAPPY.getParticleName(), particleLoc, null);
+            }
+        }
+
     }
 
     /////////////////////////// Interaction

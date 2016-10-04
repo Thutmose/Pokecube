@@ -200,16 +200,16 @@ public class GuiAnimate extends GuiScreen
             return;
         }
         String form = mob;
-        PokedexEntry e1;
+        PokedexEntry e1 = Database.getEntry(form);
         if (pokemob.getPokedexEntry().hasForm(form))
         {
-            pokemob.changeForme(form);
+            pokemob.setPokedexEntry(e1);
         }
         else if (pokemob.getPokedexEntry().getBaseForme().hasForm(form))
         {
-            pokemob.changeForme(form);
+            pokemob.setPokedexEntry(e1);
         }
-        else if ((e1 = Database.getEntry(form)) != null && e1 != entry)
+        else if (e1 != null && e1 != entry)
         {
             entry = e1;
             pokedexNb = entry.getPokedexNb();
@@ -414,7 +414,7 @@ public class GuiAnimate extends GuiScreen
                 {
                     EventsHandlerClient.renderMobs.put(entry, pokemob = (IPokemob) PokecubeMod.core
                             .createEntityByPokedexNb(entry.getPokedexNb(), mc.theWorld));
-                    pokemob.changeForme(entry.getName());
+                    pokemob.setPokedexEntry(entry);
                     pokemob.specificSpawnInit();
                 }
                 forme.setText(pokemob.getPokedexEntry().getName());

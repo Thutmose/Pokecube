@@ -127,9 +127,8 @@ public class JERCompat
         {
             LootDrop[] drops = getDrops(e);
             if (drops == null) continue;
-            Entity poke = PokecubeMod.core.createEntityByPokedexNb(e.getPokedexNb(), null);
+            Entity poke = PokecubeMod.core.createEntityByPokedexEntry(e, null);
             if (poke == null) continue;
-            ((IPokemob) poke).changeForme(e.getName());
             ((IPokemob) poke).setShiny(false);
             ((IPokemob) poke).setSize(1);
             JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);

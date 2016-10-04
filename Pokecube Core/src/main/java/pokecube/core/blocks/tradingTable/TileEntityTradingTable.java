@@ -15,7 +15,6 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -45,9 +44,11 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.items.pokecubes.RecipePokeseals;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -420,9 +421,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         if (b.hasTagCompound())
         {
-            NBTTagCompound tag = b.getTagCompound().getCompoundTag("Explosion");
-            NBTTagCompound mobtag = ((Entity) mob).getEntityData();
-            mobtag.setTag("sealtag", tag);
+            NBTTagCompound tag = b.getTagCompound().getCompoundTag(TagNames.POKESEAL);
+            a.getTagCompound().setTag(TagNames.POKESEAL, tag.copy());
         }
     }
 
@@ -549,26 +549,32 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
         if (player1 != player2 || player1 == null) return false;
         if (a == b || a == null || b == null) return false;
-
         if (!((PokecubeManager.isFilled(a)) || (PokecubeManager.isFilled(b)))) return false;
-
         if (a.getItem() instanceof IPokecube && b.getItem() instanceof IPokecube)
         {
-            if (((PokecubeManager.isFilled(a)) && (PokecubeManager.isFilled(b)))) return false;
-
-            IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory[0], worldObj)
-                    : PokecubeManager.itemToPokemob(inventory[1], worldObj);
-            int id = PokecubeManager.isFilled(a) ? PokecubeItems.getCubeId(b) : PokecubeItems.getCubeId(b);
-            if (id == 14)
+            boolean aFilled;
+            if (((aFilled = PokecubeManager.isFilled(a)) && (PokecubeManager.isFilled(b)))) return false;
+            ItemStack first = aFilled ? a : b;
+            ItemStack second = aFilled ? b : a;
+            ItemStack stack;
+            int id = PokecubeItems.getCubeId(second);
+            if (id == -2)
             {
-                pokeseal(a, b, mob);
+                stack = RecipePokeseals.process(first, second);
             }
             else
             {
-                mob.setPokemonOwner(player1.getUniqueID());
-                mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(id)));
+                PokecubeManager.setOwner(first, player1.getUniqueID());
+                NBTTagCompound visualsTag = first.getTagCompound().getCompoundTag(TagNames.POKEMOB)
+                        .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.VISUALSTAG);
+                NBTTagCompound cube = new NBTTagCompound();
+                stack = second.copy();
+                second.writeToNBT(cube);
+                visualsTag.setTag(TagNames.POKECUBE, cube);
+                stack.getTagCompound().setTag(TagNames.POKEMOB,
+                        first.getTagCompound().getCompoundTag(TagNames.POKEMOB).copy());
             }
-            player1.inventory.addItemStackToInventory(PokecubeManager.pokemobToItem(mob));
+            player1.inventory.addItemStackToInventory(stack);
             player1 = null;
             player2 = null;
             inventory = new ItemStack[2];

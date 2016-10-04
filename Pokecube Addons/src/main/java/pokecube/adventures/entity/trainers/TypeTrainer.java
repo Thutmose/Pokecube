@@ -217,8 +217,7 @@ public class TypeTrainer
                 }
             }
             ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-
-            entity.changeForme(entry.getName());
+            entity = entity.setPokedexEntry(entry);
             entity.setPokemonOwner(trainer);
             entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
             int exp = Tools.levelToXp(entity.getExperienceMode(), level);

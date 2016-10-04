@@ -2,8 +2,10 @@ package pokecube.core.utils;
 
 public interface TagNames
 {
+    /** The NBTTag name for the root of info */
     public static final String POKEMOBTAG   = "pokemob_tag";
 
+    // Sub tags under POKEMOBTAG
     public static final String BREEDINGTAG  = "sexe_tag";
     public static final String OWNERSHIPTAG = "ownership_tag";
     public static final String STATSTAG     = "stats_tag";
@@ -13,6 +15,7 @@ public interface TagNames
     public static final String INVENTORYTAG = "inventory_tag";
     public static final String MISCTAG      = "misc_tag";
 
+    // Tag names for Pokemob Information
     public static final String OT           = "OTUUID";
     public static final String OWNER        = "OwnerID";
     public static final String ISTRADED     = "traded";
@@ -47,4 +50,8 @@ public interface TagNames
     public static final String HUNGER       = "hunger";
     public static final String HOME         = "home";
     public static final String ITEMS        = "items";
+
+    // Tag names for Pokecubes
+    public static final String POKEMOB      = "Pokemob";
+    public static final String POKESEAL     = "Explosion";
 }

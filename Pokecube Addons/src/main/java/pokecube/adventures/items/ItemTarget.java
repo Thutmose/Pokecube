@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
@@ -175,19 +176,19 @@ public class ItemTarget extends Item
 
                 if (entry.getName().equalsIgnoreCase("deoxys"))
                 {
-                    poke.changeForme("deoxys speed");
+                    poke.setPokedexEntry(Database.getEntry("deoxys speed"));
                 }
                 if (entry.getName().equalsIgnoreCase("deoxys speed"))
                 {
-                    poke.changeForme("deoxys attack");
+                    poke.setPokedexEntry(Database.getEntry("deoxys attack"));
                 }
                 if (entry.getName().equalsIgnoreCase("deoxys attack"))
                 {
-                    poke.changeForme("deoxys defense");
+                    poke.setPokedexEntry(Database.getEntry("deoxys defense"));
                 }
                 if (entry.getName().equalsIgnoreCase("deoxys defense"))
                 {
-                    poke.changeForme("deoxys");
+                    poke.setPokedexEntry(Database.getEntry("deoxys"));
                 }
             }
         }

@@ -190,8 +190,7 @@ public class PokedexEntry
         public Entity getEvolution(World world)
         {
             if (evolution == null) return null;
-            Entity ret = PokecubeMod.core.createEntityByPokedexNb(evolution.getPokedexNb(), world);
-            ret = (Entity) ((IPokemob) ret).changeForme(evolution.getName());
+            Entity ret = PokecubeMod.core.createEntityByPokedexEntry(evolution, world);
             return ret;
         }
 
@@ -528,7 +527,7 @@ public class PokedexEntry
                 if (stack != null)
                 {
                     PokedexEntry forme = formes.get(stack);
-                    pokemob.changeForme(forme.getName());
+                    pokemob.setPokedexEntry(forme);
                     return true;
                 }
                 return false;
@@ -1641,7 +1640,7 @@ public class PokedexEntry
         }
         if (newForme != null)
         {
-            pokemob.changeForme(newForme.getName());
+            pokemob.setPokedexEntry(newForme);
         }
     }
 

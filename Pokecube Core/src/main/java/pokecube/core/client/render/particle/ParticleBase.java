@@ -23,8 +23,8 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     String  name;
     boolean billboard = true;
 
-    Vector3 velocity = Vector3.empty;
-    int[][] tex      = new int[1][2];
+    Vector3 velocity  = Vector3.empty;
+    int[][] tex       = new int[1][2];
 
     public ParticleBase(int x, int y)
     {
@@ -151,5 +151,17 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     public void setVelocity(Vector3 v)
     {
         velocity = v;
+    }
+
+    @Override
+    public void setColour(int colour)
+    {
+        rgba = colour;
+    }
+
+    @Override
+    public void setSize(float size)
+    {
+        this.size = size;
     }
 }

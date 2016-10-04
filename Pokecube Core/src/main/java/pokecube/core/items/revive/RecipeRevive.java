@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.TagNames;
 
 public class RecipeRevive implements IRecipe
 {
@@ -69,7 +70,7 @@ public class RecipeRevive implements IRecipe
             if (seal.hasTagCompound())
             {
                 IPokemob mob = PokecubeManager.itemToPokemob(other, world);
-                NBTTagCompound tag = seal.getTagCompound().getCompoundTag("Explosion");
+                NBTTagCompound tag = seal.getTagCompound().getCompoundTag(TagNames.POKESEAL);
                 NBTTagCompound mobtag = ((Entity) mob).getEntityData();
                 mobtag.setTag("sealtag", tag);
                 other = PokecubeManager.pokemobToItem(mob);

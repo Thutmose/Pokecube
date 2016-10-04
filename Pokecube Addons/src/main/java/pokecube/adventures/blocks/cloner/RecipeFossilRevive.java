@@ -86,7 +86,7 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
             }
             else
             {
-                pokemob.changeForme(pokedexEntry.getName());
+                pokemob.setPokedexEntry(pokedexEntry);
             }
         }
         return pokemob;

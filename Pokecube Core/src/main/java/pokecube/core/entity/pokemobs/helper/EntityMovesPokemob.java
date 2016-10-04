@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -24,7 +23,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.handlers.HeldItemHandler;
@@ -665,17 +663,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void popFromPokecube()
     {
         super.popFromPokecube();
-        healStatus();
     }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        int abilityNumber = data.readInt();
-        setAbility(AbilityManager.getAbility(abilityNumber, this));
-        super.readSpawnData(data);
-    };
 
     @Override
     public void removeChanges(int changes)
@@ -761,16 +749,11 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (getStatus() != STATUS_NON) { return false; }
 
-        if (status == STATUS_BRN && (getType1() == PokeType.fire || getType2() == PokeType.fire)) return false;
-        if (status == STATUS_PAR && (getType1() == PokeType.electric || getType2() == PokeType.electric)) return false;
-        if (status == STATUS_FRZ && (getType1() == PokeType.ice || getType2() == PokeType.ice)) return false;
-        if ((status == STATUS_PSN || status == STATUS_PSN2) && (getType1() == PokeType.poison
-                || getType2() == PokeType.poison || getType1() == PokeType.steel || getType2() == PokeType.steel))
-            return false;
-
-        byte value = dataManager.get(STATUSDW);
-        value = (byte) (value | status);
-        dataManager.set(STATUSDW, value);
+        if (status == STATUS_BRN && isType(PokeType.fire)) return false;
+        if (status == STATUS_PAR && isType(PokeType.electric)) return false;
+        if (status == STATUS_FRZ && isType(PokeType.ice)) return false;
+        if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
+        dataManager.set(STATUSDW, status);
         setStatusTimer((short) 100);
         return true;
     }
@@ -799,14 +782,5 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (index == 0) moveInfo.weapon1 = weapon;
         else moveInfo.weapon2 = weapon;
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void writeSpawnData(ByteBuf data)
-    {
-        int abilityNumber = getAbility() == null ? -1 : AbilityManager.getIdForAbility(getAbility());
-        data.writeInt(abilityNumber);
-        super.writeSpawnData(data);
     }
 }

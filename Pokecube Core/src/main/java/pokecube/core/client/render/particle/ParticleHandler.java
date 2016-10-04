@@ -59,30 +59,22 @@ public class ParticleHandler
             {
                 GL11.glPushMatrix();
                 Set<Vector3> locations = Sets.newHashSet(particles.keySet());
-                for (Vector3 location : locations)
+                for (Vector3 target : locations)
                 {
-                    IParticle particle = particles.get(location);
-
+                    IParticle particle = particles.get(target);
                     if (particle.getDuration() < 0) continue;
-
                     EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-                    Vector3 source = Vector3.getNewVector().set(player);
+                    Vector3 source = Vector3.getNewVector().set(player.lastTickPosX, player.lastTickPosY,
+                            player.lastTickPosZ);
                     GL11.glPushMatrix();
-
-                    source.x = location.x - source.x;
-                    source.y = location.y - source.y;
-                    source.z = location.z - source.z;
-
+                    source.set(target.subtract(source));
+                    // System.out.println(source);
                     GL11.glTranslated(source.x, source.y, source.z);
-                    // Clear out the jitteryness from rendering
-                    source.x = player.prevPosX - player.posX;
-                    source.y = player.prevPosY - player.posY;
-                    source.z = player.prevPosZ - player.posZ;
-                    source.scalarMultBy(event.getRenderPartialTicks());
+                    double d0 = (-player.posX + player.lastTickPosX) * event.getRenderPartialTicks();
+                    double d1 = (-player.posY + player.lastTickPosY) * event.getRenderPartialTicks();
+                    double d2 = (-player.posZ + player.lastTickPosZ) * event.getRenderPartialTicks();
+                    source.set(d0, d1, d2);
                     GL11.glTranslated(source.x, source.y, source.z);
-                    // TODO see about fixing the slight movement that occurs
-                    // when
-                    // the player stops or starts moving
                     particle.render(event.getRenderPartialTicks());
                     GL11.glPopMatrix();
                 }

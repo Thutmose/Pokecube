@@ -5,6 +5,7 @@ package pokecube.core.moves;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -40,8 +41,8 @@ public class PokemobDamageSource extends DamageSource
     @Override
     public ITextComponent getDeathMessage(EntityLivingBase par1EntityPlayer)
     {
-        ItemStack localObject = (this.damageSourceEntity != null)
-                ? this.damageSourceEntity.getHeldItemMainhand() : null;
+        ItemStack localObject = (this.damageSourceEntity != null) ? this.damageSourceEntity.getHeldItemMainhand()
+                : null;
         if ((localObject != null) && (localObject.hasDisplayName()))
             return new TextComponentTranslation("death.attack." + this.damageType,
                     new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName(),
@@ -70,6 +71,11 @@ public class PokemobDamageSource extends DamageSource
     @Override
     public Entity getEntity()
     {
+        if (this.damageSourceEntity instanceof IEntityOwnable)
+        {
+            Entity owner = ((IEntityOwnable) this.damageSourceEntity).getOwner();
+            return owner != null ? owner : this.damageSourceEntity;
+        }
         return this.damageSourceEntity;
     }
 

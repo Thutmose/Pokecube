@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -18,7 +19,7 @@ import pokecube.core.interfaces.PokecubeMod;
 
 public class PacketChangeForme implements IMessage, IMessageHandler<PacketChangeForme, IMessage>
 {
-    public static void sendPacketToServer(Entity mob, String forme)
+    public static void sendPacketToServer(Entity mob, PokedexEntry forme)
     {
         PacketChangeForme packet = new PacketChangeForme();
         packet.entityId = mob.getEntityId();
@@ -26,7 +27,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
-    public static void sendPacketToNear(Entity mob, String forme, int distance)
+    public static void sendPacketToNear(Entity mob, PokedexEntry forme, int distance)
     {
         PacketChangeForme packet = new PacketChangeForme();
         packet.entityId = mob.getEntityId();
@@ -35,8 +36,8 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 new TargetPoint(mob.dimension, mob.posX, mob.posY, mob.posZ, distance));
     }
 
-    int    entityId;
-    String forme;
+    int          entityId;
+    PokedexEntry forme;
 
     public PacketChangeForme()
     {
@@ -61,7 +62,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
     {
         PacketBuffer buffer = new PacketBuffer(buf);
         entityId = buf.readInt();
-        forme = buffer.readStringFromBuffer(20);
+        forme = Database.getEntry(buffer.readStringFromBuffer(20));
     }
 
     @Override
@@ -69,7 +70,8 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
     {
         PacketBuffer buffer = new PacketBuffer(buf);
         buffer.writeInt(entityId);
-        buffer.writeString(forme);
+        if (forme != null) buffer.writeString(forme.getName());
+        else buffer.writeString("");
     }
 
     void processMessage(MessageContext ctx, PacketChangeForme message)
@@ -89,7 +91,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
 
         if (ctx.side == Side.CLIENT)
         {
-            pokemob.changeForme(message.forme);
+            pokemob.setPokedexEntry(message.forme);
         }
         else
         {
@@ -100,7 +102,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 String old = pokemob.getPokemonDisplayName().getFormattedText();
                 if (pokemob.getPokedexEntry() == megaEntry)
                 {
-                    pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                    pokemob.megaEvolve(pokemob.getPokedexEntry());
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
@@ -108,7 +110,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 else
                 {
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
-                    pokemob.megaEvolve(megaEntry.getName());
+                    pokemob.megaEvolve(megaEntry);
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }
@@ -118,7 +120,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME))
                 {
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
-                    pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseName());
+                    pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseForme());
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,

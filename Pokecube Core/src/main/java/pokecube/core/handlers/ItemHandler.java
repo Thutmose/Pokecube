@@ -83,7 +83,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.items.revive.ItemRevive;
 import pokecube.core.items.vitamins.ItemVitamin;
-import pokecube.core.moves.TreeRemover;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -137,7 +136,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
         BerryManager.berryLeaf = new BlockBerryLeaf().setRegistryName("pokecube", "berryleaf")
                 .setUnlocalizedName("berryleaf");
         register(BerryManager.berryLeaf);
-        TreeRemover.plantTypes.add(BerryManager.berryFruit);
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -158,24 +156,15 @@ public class ItemHandler extends Mod_Pokecube_Helper
         BlockBerryLog.currentlyConstructing = 4;
         log1 = new BlockBerryLog(4, names).setHardness(2.0F)// .setStepSound(Block.soundTypeWood)
                 .setUnlocalizedName("log1");
-
         register(log1, ItemBlockMeta.class, "pokecube_log1");
-
         for (int i = 0; i < 4; i++)
             GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i), new ItemStack(log0, 1, i));
-
         for (int i = 0; i < 2; i++)
             GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i + 4), new ItemStack(log1, 1, i));
-
         OreDictionary.registerOre("logWood", new ItemStack(log0, 1, OreDictionary.WILDCARD_VALUE));
         OreDictionary.registerOre("logWood", new ItemStack(log1, 1, OreDictionary.WILDCARD_VALUE));
-
         OreDictionary.registerOre("plankWood", new ItemStack(plank0, 1, OreDictionary.WILDCARD_VALUE));
-
-        TreeRemover.woodTypes.add(log1);
-        TreeRemover.woodTypes.add(log0);
         BerryManager.registerTrees();
-
     }
 
     private static void addFossils()

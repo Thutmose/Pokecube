@@ -671,10 +671,14 @@ public class MovesUtils implements IMoveConstants
     public static void setStatus(Entity attacked, byte status)
     {
         displayStatusMessages(null, attacked, status, true);
-
+        System.out.println("Status " + status);
         if (attacked instanceof IPokemob)
         {
-            ((IPokemob) attacked).setStatus(status);
+            boolean apply = ((IPokemob) attacked).setStatus(status);
+            if (!apply)
+            {
+                // TODO message here about no status effect.
+            }
         }
         else if (attacked instanceof EntityLivingBase)
         {

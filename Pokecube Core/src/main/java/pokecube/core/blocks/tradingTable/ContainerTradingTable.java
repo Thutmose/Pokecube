@@ -169,4 +169,12 @@ public class ContainerTradingTable extends Container
     {
         this.tile.setField(id, data);
     }
+
+    /** Called when the container is closed. */
+    @Override
+    public void onContainerClosed(EntityPlayer player)
+    {
+        super.onContainerClosed(player);
+        this.tile.closeInventory(player);
+    }
 }

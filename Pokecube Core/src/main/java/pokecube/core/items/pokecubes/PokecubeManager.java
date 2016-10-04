@@ -42,7 +42,7 @@ public class PokecubeManager
 
     public static String getOwner(ItemStack itemStack)
     {
-        if (!itemStack.hasTagCompound()) return "";
+        if (itemStack == null || !itemStack.hasTagCompound()) return "";
         NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
                 .getCompoundTag(TagNames.POKEMOBTAG);
         // TODO remove this legacy support.

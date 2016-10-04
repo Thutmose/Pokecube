@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -30,8 +31,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 
 /** @author Manchou */
@@ -326,7 +327,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public IPokemob megaEvolve(PokedexEntry newEntry)
     {
         Entity evolution = this;
-        if (newEntry != null)
+        System.out.println(newEntry + " " + getPokedexEntry());
+        if (newEntry != null && newEntry != getPokedexEntry())
         {
             setPokemonAIState(EVOLVING, true);
             if (newEntry.getPokedexNb() != getPokedexNb())
@@ -337,8 +339,12 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     System.err.println("No Entry for " + newEntry);
                     return this;
                 }
+                ((EntityLivingBase) evolution).setHealth(this.getHealth());
                 if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
-                EntityTools.copy(this, (IPokemob) evolution);
+                NBTTagCompound tag = writePokemobData();
+                tag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.POKEDEXNB);
+                tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
+                ((IPokemob) evolution).readPokemobData(tag);
                 evolution.setUniqueId(getUniqueID());
                 evolution.copyLocationAndAnglesFrom(this);
                 this.setPokemonOwner((UUID) null);
@@ -362,7 +368,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 evolution = this;
                 ((IPokemob) evolution).setPokedexEntry(newEntry);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);

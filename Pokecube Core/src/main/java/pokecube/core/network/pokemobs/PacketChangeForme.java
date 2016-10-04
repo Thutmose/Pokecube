@@ -120,7 +120,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME))
                 {
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
-                    pokemob.megaEvolve(pokemob.getPokedexEntry());
+                    pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseForme());
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,

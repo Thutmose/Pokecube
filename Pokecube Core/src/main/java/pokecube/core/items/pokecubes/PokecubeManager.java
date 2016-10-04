@@ -236,7 +236,8 @@ public class PokecubeManager
         if (!itemStack.hasTagCompound()) return;
         NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag("Pokemob")
                 .getCompoundTag(TagNames.POKEMOBTAG);
-        poketag.getCompoundTag(TagNames.OWNERSHIPTAG).setString(TagNames.OWNER, owner.toString());
+        if (owner == null) poketag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.OWNER);
+        else poketag.getCompoundTag(TagNames.OWNERSHIPTAG).setString(TagNames.OWNER, owner.toString());
     }
 
     public static void setStatus(ItemStack itemStack, byte status)

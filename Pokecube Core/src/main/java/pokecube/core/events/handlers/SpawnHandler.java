@@ -32,6 +32,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.SpawnBiomeMatcher;
@@ -628,6 +629,7 @@ public final class SpawnHandler
 
     public static void refreshTerrain(Vector3 location, World world)
     {
+        if (!PokecubeCore.core.getConfig().autoDetectSubbiomes) return;
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         Vector3 temp1 = Vector3.getNewVector();
         int x0 = t.chunkX * 16, y0 = t.chunkY * 16, z0 = t.chunkZ * 16;

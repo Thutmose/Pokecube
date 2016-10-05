@@ -42,8 +42,8 @@ import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket.Pokecube
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPC;
+import pokecube.core.network.packets.PacketParticle;
 import pokecube.core.network.packets.PacketPokedex;
-import pokecube.core.network.packets.PacketSound;
 import pokecube.core.network.packets.PacketSyncDimIds;
 import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.network.packets.PacketTrade;
@@ -518,8 +518,8 @@ public class PokecubePacketHandler
         // Client only
         PokecubeMod.packetPipeline.registerMessage(PacketPokemobMessage.class, PacketPokemobMessage.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
-        PokecubeMod.packetPipeline.registerMessage(PacketSound.class, PacketSound.class, PokecubeCore.getMessageID(),
-                Side.CLIENT);
+        PokecubeMod.packetPipeline.registerMessage(PacketParticle.class, PacketParticle.class,
+                PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketSyncTerrain.class, PacketSyncTerrain.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
         PokecubeMod.packetPipeline.registerMessage(PacketDataSync.class, PacketDataSync.class,

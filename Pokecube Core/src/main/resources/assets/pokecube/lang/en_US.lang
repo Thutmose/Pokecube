@@ -376,6 +376,7 @@ item.rowapBerry.name=Rowap Berry
 item.rowapBerry.desc=Used to make Repel
 item.berryjuice.name=Berry Juice
 
+item.berry.istree.desc=This grows into a tree.
 item.berry.favourite.desc=%1$s's Favourite.
 item.berry.nomind.desc=%1$s doesn't mind this.
 item.berry.like1.desc=%1$s somewhat likes this.

@@ -30,6 +30,6 @@ public class ParticlesOnSource extends ParticlesOnTarget
     public void spawnClientEntities(MovePacketInfo info)
     {
         if (type == null) return;
-        PokecubeMod.core.spawnParticle(type, info.source, null);
+        PokecubeMod.core.spawnParticle(info.attacked.worldObj, type, info.source, null);
     }
 }

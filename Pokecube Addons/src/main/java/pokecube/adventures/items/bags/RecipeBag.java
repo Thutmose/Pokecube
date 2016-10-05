@@ -1,12 +1,16 @@
 package pokecube.adventures.items.bags;
 
+import java.util.List;
+import java.util.Locale;
+
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemDye;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeBag implements IRecipe
 {
@@ -59,22 +63,34 @@ public class RecipeBag implements IRecipe
                 {
                     armour = true;
                     armourStack = stack;
+                    continue;
                 }
-                else if (stack.getItem() instanceof ItemBag)
+                if (stack.getItem() instanceof ItemBag)
                 {
                     bag = true;
                     bagStack = stack;
+                    continue;
                 }
-                else if (stack.getItem() instanceof ItemDye)
+                List<ItemStack> dyes = OreDictionary.getOres("dye");
+                boolean isDye = false;
+                for (ItemStack dye1 : dyes)
+                {
+                    if (OreDictionary.itemMatches(dye1, stack, false))
+                    {
+                        isDye = true;
+                        break;
+                    }
+                }
+                if (isDye)
                 {
                     dye = true;
                     dyeStack = stack;
                 }
             }
         }
-        if(n==1 && armour)
+        if (n == 1 && armour)
         {
-            
+
         }
         if (n != 2 || !(bag && armour))
         {
@@ -89,7 +105,27 @@ public class RecipeBag implements IRecipe
             {
                 output = armourStack.copy();
                 if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
-                output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
+                int[] ids = OreDictionary.getOreIDs(dyeStack);
+                int colour = dyeStack.getItemDamage();
+                for (int i : ids)
+                {
+                    String name = OreDictionary.getOreName(i);
+                    if (name.startsWith("dye") && name.length() > 3)
+                    {
+                        String val = name.replace("dye", "").toUpperCase(Locale.ENGLISH);
+                        try
+                        {
+                            EnumDyeColor type = EnumDyeColor.valueOf(val);
+                            colour = type.getDyeDamage();
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                output.getTagCompound().setInteger("dyeColour", colour);
             }
             return output != null;
         }
@@ -98,7 +134,27 @@ public class RecipeBag implements IRecipe
         output.getTagCompound().setBoolean("isapokebag", true);
         if (dye)
         {
-            output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
+            int[] ids = OreDictionary.getOreIDs(dyeStack);
+            int colour = dyeStack.getItemDamage();
+            for (int i : ids)
+            {
+                String name = OreDictionary.getOreName(i);
+                if (name.startsWith("dye") && name.length() > 3)
+                {
+                    String val = name.replace("dye", "").toUpperCase(Locale.ENGLISH);
+                    try
+                    {
+                        EnumDyeColor type = EnumDyeColor.valueOf(val);
+                        colour = type.getDyeDamage();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            output.getTagCompound().setInteger("dyeColour", colour);
         }
         else if (bagStack.hasTagCompound() && bagStack.getTagCompound().hasKey("dyeColour"))
         {

@@ -87,10 +87,11 @@ public class SecretBaseCommand extends CommandBase
             }
             else if (args[0].equals("confirm"))
             {
-                if (ActionSecretPower.pendingBaseLocations.containsKey(player.getCachedUniqueIdString()))
+                if (ActionSecretPower.pendingBaseLocations.containsKey(player.getUniqueID()))
                 {
-                    Vector4 loc = ActionSecretPower.pendingBaseLocations.remove(player.getCachedUniqueIdString());
+                    Vector4 loc = ActionSecretPower.pendingBaseLocations.remove(player.getUniqueID());
                     Vector3 pos = Vector3.getNewVector().set(loc.x, loc.y, loc.z);
+                    System.out.println(pos+" "+loc);
                     if (loc.w == player.dimension && pos.distToEntity(player) < 16)
                     {
                         BlockNest nest = (BlockNest) PokecubeItems.getBlock("pokemobNest");

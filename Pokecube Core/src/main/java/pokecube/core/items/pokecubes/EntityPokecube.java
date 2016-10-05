@@ -46,7 +46,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.packets.PacketSound;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -344,8 +343,6 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
                         mob.getPokemonDisplayName());
                 ((EntityPlayer) shootingEntity).addChatMessage(mess);
                 this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
-                PacketSound.sendMessage((EntityPlayer) shootingEntity, Vector3.getNewVector().set(shootingEntity),
-                        "pokecube:pokecube_caught");
                 shootingEntity.playSound(new SoundEvent(new ResourceLocation("pokecube:pokecube_caught")), 1, 1);
             }
             CaptureEvent.Post event = new CaptureEvent.Post(this);

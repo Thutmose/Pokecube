@@ -99,7 +99,7 @@ public class LogicMiscUpdate extends LogicBase
                 particleLoc.set(entity.posX + rand.nextFloat() * entity.width * 2.0F - entity.width,
                         entity.posY + 0.5D + rand.nextFloat() * entity.height,
                         entity.posZ + rand.nextFloat() * entity.width * 2.0F - entity.width);
-                PokecubeMod.core.spawnParticle("heart", particleLoc, null);
+                PokecubeMod.core.spawnParticle(entity.worldObj, "heart", particleLoc, null);
             }
         }
         for (int i = 0; i < 5; i++)
@@ -140,7 +140,7 @@ public class LogicMiscUpdate extends LogicBase
                     rand.nextDouble() - 0.5);
             offset.scalarMultBy(scale);
             particleLoc.addTo(offset);
-            PokecubeMod.core.spawnParticle(particle, particleLoc, null);
+            PokecubeMod.core.spawnParticle(entity.worldObj, particle, particleLoc, null);
             particleCounter = 0;
         }
         particle = null;

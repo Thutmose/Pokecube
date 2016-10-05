@@ -229,7 +229,7 @@ public abstract class PokecubeMod
 
     public abstract void setEntityProvider(IEntityProvider provider);
 
-    public abstract void spawnParticle(String par1Str, Vector3 location, Vector3 velocity, int... args);
+    public abstract void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args);
 
     public static void log(String toLog)
     {

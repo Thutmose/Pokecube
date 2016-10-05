@@ -91,7 +91,7 @@ public class RecallCommand extends CommandBase
             if ((all || cubes) && o instanceof EntityPokecube)
             {
                 EntityPokecube cube = (EntityPokecube) o;
-                if (!cube.addedToChunk) continue;
+                if (!cube.addedToChunk || cube.isLoot) continue;
                 Entity owner = cube.getOwner();
                 boolean owned = owner != null;
                 if (!owned)
@@ -106,7 +106,8 @@ public class RecallCommand extends CommandBase
                 {
                     try
                     {
-                        cube.sendOut().returnToPokecube();
+                        if (PokecubeManager.isFilled(cube.getEntityItem())) cube.sendOut().returnToPokecube();
+                        else cube.setDead();
                     }
                     catch (Exception e)
                     {

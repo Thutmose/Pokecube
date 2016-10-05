@@ -90,6 +90,10 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
     {
         EntityPokecube pokecube = (EntityPokecube) entity;
 
+        long time = pokecube.reset;
+        long world = pokecube.worldObj.getTotalWorldTime();
+        if (time > world) return;
+
         int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
         if (pokecubeRenderers.containsKey(num))
         {

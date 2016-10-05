@@ -1,10 +1,11 @@
 package pokecube.core.items.pokecubes;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.UUID;
 
-import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -12,16 +13,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -29,69 +25,84 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
-import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.HappinessType;
-import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.packets.PacketPokecube;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
-public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
+public class EntityPokecube extends EntityPokecubeBase
 {
+    public static class CollectEntry
+    {
+        static CollectEntry createFromNBT(NBTTagCompound nbt)
+        {
+            String player = nbt.getString("player");
+            long time = nbt.getLong("time");
+            return new CollectEntry(player, time);
+        }
 
-    private static final DataParameter<Optional<ItemStack>> ITEM           = EntityDataManager
-            .<Optional<ItemStack>> createKey(EntityPokecube.class, DataSerializers.OPTIONAL_ITEM_STACK);
-    static final DataParameter<Integer>                     ENTITYID       = EntityDataManager
-            .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
-    static final DataParameter<Boolean>                     RELEASING      = EntityDataManager
-            .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
+        final String player;
+        final long   time;
 
-    public static boolean                                   SEEKING        = true;
+        public CollectEntry(String player, long time)
+        {
+            this.player = player;
+            this.time = time;
+        }
 
-    public static final SoundEvent                          CAUGHT_EVENT   = new SoundEvent(
-            new ResourceLocation(PokecubeMod.ID + ":pokecube_caught"));
+        void writeToNBT(NBTTagCompound nbt)
+        {
+            nbt.setString("player", player);
+            nbt.setLong("time", time);
+        }
+    }
 
-    public int                                              time           = 0;
-    public int                                              tilt           = -1;
-    public EntityLivingBase                                 shootingEntity;
-    public EntityLivingBase                                 targetEntity;
-    public Vector3                                          targetLocation = Vector3.getNewVector();
-    public UUID                                             shooter;
+    public static class LootEntry
+    {
+        final ItemStack loot;
+        final int       rolls;
 
-    private Vector3                                         v0             = Vector3.getNewVector();
-    private Vector3                                         v1             = Vector3.getNewVector();
-    public double                                           speed          = 2;
+        static LootEntry createFromNBT(NBTTagCompound nbt)
+        {
+            ItemStack loot = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("loot"));
+            return new LootEntry(loot, nbt.getInteger("rolls"));
+        }
 
-    private BlockPos                                        tilePos;
-    private Block                                           tile;
-    private int                                             inData;
-    private boolean                                         inGround;
-    /** 1 if the player can pick up the arrow */
-    public int                                              canBePickedUp;
-    /** Seems to be some sort of timer for animating an arrow. */
-    public int                                              arrowShake;
-    /** The owner of this arrow. */
-    private int                                             ticksInGround;
+        public LootEntry(ItemStack loot, int rolls)
+        {
+            this.loot = loot;
+            this.rolls = rolls;
+        }
+
+        void writeToNBT(NBTTagCompound nbt)
+        {
+            NBTTagCompound loot = new NBTTagCompound();
+            this.loot.writeToNBT(loot);
+            nbt.setTag("loot", loot);
+            nbt.setInteger("rolls", rolls);
+        }
+
+    }
+
+    public long                    reset      = 0;
+    public long                    resetTime  = 0;
+    public ArrayList<CollectEntry> players    = Lists.newArrayList();
+    public ArrayList<LootEntry>    loot       = Lists.newArrayList();
+    public ArrayList<ItemStack>    lootStacks = Lists.newArrayList();
 
     public EntityPokecube(World world)
     {
         super(world);
-        this.setSize(0.25F, 0.25F);
-        this.isImmuneToFire = true;
-        this.enablePersistence();
+        resetTime = 10000;
     }
 
     public EntityPokecube(World world, EntityLivingBase shootingEntity, ItemStack entityItem)
@@ -128,63 +139,10 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         }
         if (shootingEntity != null && e instanceof IPokemob
                 && ((IPokemob) e).getPokemonOwner() == shootingEntity) { return; }
-
         if (e instanceof EntityLivingBase && e instanceof IPokemob && ((EntityLivingBase) e).getHealth() > 0
                 && tilt == -1)
         {
-            IPokemob hitten = (IPokemob) e;
-            if (hitten.getPokemonOwner() == shootingEntity) { return; }
-
-            int tiltBak = tilt;
-            CaptureEvent.Pre capturePre = new Pre(hitten, this);
-            MinecraftForge.EVENT_BUS.post(capturePre);
-            if (capturePre.isCanceled() || capturePre.getResult() == Result.DENY)
-            {
-                if (tilt != tiltBak)
-                {
-                    if (tilt == 5)
-                    {
-                        time = 10;
-                    }
-                    else
-                    {
-                        time = 20 * tilt;
-                    }
-                    hitten.setPokecube(getEntityItem());
-                    setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
-                    PokecubeManager.setTilt(getEntityItem(), tilt);
-                    ((Entity) hitten).setDead();
-                    Vector3 v = Vector3.getNewVector();
-                    v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
-                    motionX = 0;
-                    motionY = 0.1;
-                    motionZ = 0;
-                }
-            }
-            else
-            {
-                int n = Tools.computeCatchRate(hitten, PokecubeItems.getCubeId(getEntityItem()));
-                tilt = n;
-
-                if (n == 5)
-                {
-                    time = 10;
-                }
-                else
-                {
-                    time = 20 * n;
-                }
-
-                hitten.setPokecube(getEntityItem());
-                setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
-                PokecubeManager.setTilt(getEntityItem(), n);
-                ((Entity) hitten).setDead();
-                Vector3 v = Vector3.getNewVector();
-                v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
-                motionX = 0;
-                motionY = 0.1;
-                motionZ = 0;
-            }
+            captureAttempt(e);
         }
         else if (PokecubeManager.isFilled(getEntityItem()))
         {
@@ -217,15 +175,12 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         }
         else
         {
-            sendOut();
+            if (e instanceof EntityPlayer)
+            {
+                this.processInteract((EntityPlayer) e, EnumHand.MAIN_HAND,
+                        ((EntityPlayer) e).getHeldItem(EnumHand.MAIN_HAND));
+            }
         }
-    }
-
-    /** Called when the entity is attacked. */
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float damage)
-    {
-        return false;
     }
 
     public Entity getOwner()
@@ -259,47 +214,11 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     }
 
     @Override
-    protected void doBlockCollisions()
-    {
-        super.doBlockCollisions();
-    }
-
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-        this.getDataManager().register(ITEM, Optional.<ItemStack> absent());
-        getDataManager().register(RELEASING, false);
-        getDataManager().register(ENTITYID, -1);
-    }
-
-    /** Returns the ItemStack corresponding to the Entity (Note: if no item
-     * exists, will log an error but still return an ItemStack containing
-     * Block.stone) */
-    public ItemStack getEntityItem()
-    {
-        ItemStack itemstack = (ItemStack) ((Optional<?>) this.getDataManager().get(ITEM)).orNull();
-        return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
-    }
-
-    public Entity getReleased()
-    {
-        int id = getDataManager().get(ENTITYID);
-        Entity ret = worldObj.getEntityByID(id);
-        return ret;
-    }
-
-    public boolean isReleasing()
-    {
-        return getDataManager().get(RELEASING);
-    }
-
-    @Override
     public void onCollideWithPlayer(EntityPlayer entityplayer)
     {
-        if (entityplayer.getName() == PokecubeManager.getOwner(getEntityItem())
-                || entityplayer.getCachedUniqueIdString() == PokecubeManager.getOwner(getEntityItem()))
+        if (isLoot)
         {
+            processInteract(entityplayer, EnumHand.MAIN_HAND, entityplayer.getHeldItemMainhand());
         }
     }
 
@@ -307,6 +226,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     @Override
     public void onUpdate()
     {
+        if (isLoot) motionX = motionZ = 0;
         super.onUpdate();
         boolean releasing = isReleasing();
 
@@ -325,28 +245,11 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
 
         if (time == 0 && tilt >= 4) // Captured the pokemon
         {
-            PokecubeManager.setTilt(getEntityItem(), -1);
-            IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-            if (mob == null)
+            if (captureSucceed())
             {
-                new NullPointerException("Mob is null").printStackTrace();
-                return;
+                CaptureEvent.Post event = new CaptureEvent.Post(this);
+                MinecraftForge.EVENT_BUS.post(event);
             }
-            HappinessType.applyHappiness(mob, HappinessType.TRADE);
-            if (shootingEntity != null && !mob.getPokemonAIState(IMoveConstants.TAMED))
-                mob.setPokemonOwner((shootingEntity));
-            ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
-            this.setEntityItemStack(mobStack);
-            if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
-            {
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
-                        mob.getPokemonDisplayName());
-                ((EntityPlayer) shootingEntity).addChatMessage(mess);
-                this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
-                shootingEntity.playSound(new SoundEvent(new ResourceLocation("pokecube:pokecube_caught")), 1, 1);
-            }
-            CaptureEvent.Post event = new CaptureEvent.Post(this);
-            MinecraftForge.EVENT_BUS.post(event);
             setDead();
             return;
         }
@@ -364,33 +267,7 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         }
         else if (time <= 0 && tilt >= 0) // Missed the pokemon
         {
-            IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-
-            if (entity1 != null)
-            {
-                ((Entity) entity1).setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
-                boolean ret = worldObj.spawnEntityInWorld((Entity) entity1);
-
-                if (ret == false)
-                {
-                    System.err.println(String.format("The pokemob %1$s spawn from pokecube has failed. ",
-                            entity1.getPokemonDisplayName().getFormattedText()));
-                }
-                ((Entity) entity1).getEntityData().setLong("lastCubeTime",
-                        getEntityWorld().getTotalWorldTime() + PokecubeMod.core.getConfig().captureDelayTicks);
-                entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
-                entity1.setPokemonAIState(IMoveConstants.SITTING, false);
-                entity1.setPokemonAIState(IMoveConstants.TAMED, false);
-                entity1.setPokemonOwner((UUID) null);
-
-                if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
-                {
-                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.missed", "red");
-                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
-                    ((EntityCreature) entity1).setAttackTarget(shootingEntity);
-                }
-            }
-
+            captureFailed();
             setDead();
             return;
         }
@@ -495,12 +372,38 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     {
         if (!player.getEntityWorld().isRemote)
         {
+            if (player.isSneaking() && player.capabilities.isCreativeMode)
+            {
+                if (stack != null)
+                {
+                    isLoot = true;
+                    addLoot(new LootEntry(stack, 1));
+                    return true;
+                }
+            }
             if (!isReleasing())
             {
                 IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
                 if (pokemob != null) sendOut();
                 else
                 {
+                    if (isLoot)
+                    {
+                        if (cannotCollect(player) || lootStacks.isEmpty()) return false;
+                        players.add(new CollectEntry(player.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
+                        PacketPokecube.sendMessage(player, getEntityId(), worldObj.getTotalWorldTime() + resetTime);
+                        ItemStack loot = lootStacks.get(new Random().nextInt(lootStacks.size()));
+                        EntityItem entityitem = player.dropItem(loot.copy(), false);
+                        if (entityitem != null)
+                        {
+                            entityitem.setNoPickupDelay();
+                            entityitem.setOwner(player.getName());
+                            entityitem.playSound(new SoundEvent(new ResourceLocation("pokecube:pokecube_caught")), 1,
+                                    1);
+                        }
+                        return true;
+                    }
+
                     EntityItem entityitem = player.dropItem(getEntityItem(), false);
                     if (entityitem != null)
                     {
@@ -515,113 +418,27 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound nbttagcompound)
+    public void readEntityFromNBT(NBTTagCompound nbt)
     {
-        super.readEntityFromNBT(nbttagcompound);
-        tilt = nbttagcompound.getInteger("tilt");
-        time = nbttagcompound.getInteger("time");
-        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
-        this.setEntityItemStack(ItemStack.loadItemStackFromNBT(nbttagcompound1));
-
-        ItemStack item = getEntityItem();
-
-        if (nbttagcompound.hasKey("shooter"))
+        super.readEntityFromNBT(nbt);
+        isLoot = nbt.getBoolean("isLoot");
+        if (nbt.hasKey("resetTime")) resetTime = nbt.getLong("resetTime");
+        players.clear();
+        loot.clear();
+        lootStacks.clear();
+        if (nbt.hasKey("players", 9))
         {
-            shooter = UUID.fromString(nbttagcompound.getString("shooter"));
+            NBTTagList nbttaglist = nbt.getTagList("players", 10);
+            for (int i = 0; i < nbttaglist.tagCount(); i++)
+                players.add(CollectEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
         }
-
-        if (item == null || item.stackSize <= 0)
+        if (nbt.hasKey("loot", 9))
         {
-            this.setDead();
+            NBTTagList nbttaglist = nbt.getTagList("loot", 10);
+            for (int i = 0; i < nbttaglist.tagCount(); i++)
+                addLoot(LootEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
         }
-        this.tilePos = new BlockPos(nbttagcompound.getInteger("xTile"), nbttagcompound.getInteger("yTile"),
-                nbttagcompound.getInteger("zTile"));
-        this.ticksInGround = nbttagcompound.getShort("life");
-        this.tile = Block.getBlockById(nbttagcompound.getByte("inTile") & 255);
-        this.inData = nbttagcompound.getByte("inData") & 255;
-        this.arrowShake = nbttagcompound.getByte("shake") & 255;
-        this.inGround = nbttagcompound.getByte("inGround") == 1;
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf buffer)
-    {
-        motionX = buffer.readDouble();
-        motionY = buffer.readDouble();
-        motionZ = buffer.readDouble();
-    }
-
-    public IPokemob sendOut()
-    {
-        if (worldObj.isRemote || isReleasing()) { return null; }
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
-        if (entity1 != null)
-        {
-            Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
-            Vector3 dv = v1.set(motionX, motionY, motionZ);
-            v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
-            if (v == null) v = v0.set(this);
-            v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
-            IBlockState state = v.getBlockState(worldObj);
-            if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
-            EntityLiving entity = (EntityLiving) entity1;
-            entity.fallDistance = 0;
-            v.moveEntity(((Entity) entity1));
-
-            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, worldObj, entity1);
-            if (MinecraftForge.EVENT_BUS.post(evt))
-            {
-                if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
-                {
-                    EntityItem entityitem = ((EntityPlayer) shootingEntity).dropItem(getEntityItem(), false);
-                    if (entityitem != null)
-                    {
-                        entityitem.setNoPickupDelay();
-                        entityitem.setOwner(shootingEntity.getName());
-                    }
-                    this.setDead();
-                }
-                return null;
-            }
-
-            worldObj.spawnEntityInWorld((Entity) entity1);
-            entity1.popFromPokecube();
-            entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
-            entity1.setPokemonAIState(IMoveConstants.TAMED, true);
-            entity1.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
-            Entity owner = entity1.getPokemonOwner();
-            if (owner instanceof EntityPlayer)
-            {
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.sendout", "green",
-                        entity1.getPokemonDisplayName());
-                entity1.displayMessageToOwner(mess);
-            }
-
-            if (((EntityLiving) entity1).getHealth() <= 0)
-            {
-                // notify the mob is dead
-                this.worldObj.setEntityState((Entity) entity1, (byte) 3);
-            }
-            setReleased((Entity) entity1);
-            motionX = motionY = motionZ = 0;
-            time = 10;
-            setReleasing(true);
-            evt = new SendOut.Post(entity1.getPokedexEntry(), v, worldObj, entity1);
-            MinecraftForge.EVENT_BUS.post(evt);
-        }
-        else
-        {
-            this.entityDropItem(getEntityItem(), 0.5f);
-            this.setDead();
-        }
-        return entity1;
-    }
-
-    /** Sets the ItemStack for this entity */
-    public void setEntityItemStack(ItemStack stack)
-    {
-        this.getDataManager().set(ITEM, Optional.fromNullable(stack));
-        this.getDataManager().setDirty(ITEM);
+        if (loot.isEmpty()) isLoot = false;
     }
 
     /** Sets the position and rotation. Only difference from the other one is no
@@ -634,98 +451,119 @@ public class EntityPokecube extends EntityLiving implements IEntityAdditionalSpa
         this.setRotation(p_70056_7_, p_70056_8_);
     }
 
-    public void setReleased(Entity entity)
-    {
-        getDataManager().set(ENTITYID, entity.getEntityId());
-    }
-
-    public void setReleasing(boolean tag)
-    {
-        getDataManager().set(RELEASING, tag);
-    }
-
-    @Override
-    public void setThrowableHeading(double p_70186_1_, double p_70186_3_, double p_70186_5_, float p_70186_7_,
-            float p_70186_8_)
-    {
-        float f2 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_3_ * p_70186_3_ + p_70186_5_ * p_70186_5_);
-        p_70186_1_ /= f2;
-        p_70186_3_ /= f2;
-        p_70186_5_ /= f2;
-        p_70186_1_ += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
-                * p_70186_8_;
-        p_70186_3_ += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
-                * p_70186_8_;
-        p_70186_5_ += this.rand.nextGaussian() * (this.rand.nextBoolean() ? -1 : 1) * 0.007499999832361937D
-                * p_70186_8_;
-        p_70186_1_ *= p_70186_7_;
-        p_70186_3_ *= p_70186_7_;
-        p_70186_5_ *= p_70186_7_;
-        this.motionX = p_70186_1_;
-        this.motionY = p_70186_3_;
-        this.motionZ = p_70186_5_;
-        float f3 = MathHelper.sqrt_double(p_70186_1_ * p_70186_1_ + p_70186_5_ * p_70186_5_);
-        this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70186_1_, p_70186_5_) * 180.0D / Math.PI);
-        this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70186_3_, f3) * 180.0D / Math.PI);
-        this.ticksInGround = 0;
-    }
-
-    /** Sets the velocity to the args. Args: x, y, z */
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void setVelocity(double p_70016_1_, double p_70016_3_, double p_70016_5_)
-    {
-        this.motionX = p_70016_1_;
-        this.motionY = p_70016_3_;
-        this.motionZ = p_70016_5_;
-
-        if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
-        {
-            float f = MathHelper.sqrt_double(p_70016_1_ * p_70016_1_ + p_70016_5_ * p_70016_5_);
-            this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(p_70016_1_, p_70016_5_) * 180.0D / Math.PI);
-            this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(p_70016_3_, f) * 180.0D / Math.PI);
-            this.prevRotationPitch = this.rotationPitch;
-            this.prevRotationYaw = this.rotationYaw;
-            this.setLocationAndAngles(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
-            this.ticksInGround = 0;
-        }
-    }
-
     public void setVelocity(double speed, Vector3 dir)
     {
         dir = dir.scalarMult(speed);
         dir.setVelocities(this);
     }
 
-    @Override
-    public void writeEntityToNBT(NBTTagCompound nbttagcompound)
+    public void addLoot(LootEntry entry)
     {
-        super.writeEntityToNBT(nbttagcompound);
-        nbttagcompound.setInteger("tilt", tilt);
-        nbttagcompound.setInteger("time", time);
-        if (shooter != null) nbttagcompound.setString("shooter", shooter.toString());
-        if (this.getEntityItem() != null)
-        {
-            nbttagcompound.setTag("Item", this.getEntityItem().writeToNBT(new NBTTagCompound()));
-        }
-        if (tilePos != null)
-        {
-            nbttagcompound.setInteger("xTile", this.tilePos.getX());
-            nbttagcompound.setInteger("yTile", this.tilePos.getY());
-            nbttagcompound.setInteger("zTile", this.tilePos.getZ());
-        }
-        nbttagcompound.setShort("life", (short) this.ticksInGround);
-        nbttagcompound.setByte("inTile", (byte) Block.getIdFromBlock(this.tile));
-        nbttagcompound.setByte("inData", (byte) this.inData);
-        nbttagcompound.setByte("shake", (byte) this.arrowShake);
-        nbttagcompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
+        loot.add(entry);
+        for (int i = 0; i < entry.rolls; i++)
+            lootStacks.add(entry.loot);
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer)
+    public void writeEntityToNBT(NBTTagCompound nbt)
     {
-        buffer.writeDouble(motionX);
-        buffer.writeDouble(motionY);
-        buffer.writeDouble(motionZ);
+        super.writeEntityToNBT(nbt);
+        nbt.setLong("resetTime", resetTime);
+        nbt.setBoolean("isLoot", isLoot);
+        NBTTagList nbttaglist = new NBTTagList();
+        for (CollectEntry entry : players)
+        {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            entry.writeToNBT(nbttagcompound);
+            nbttaglist.appendTag(nbttagcompound);
+        }
+        if (!players.isEmpty()) nbt.setTag("players", nbttaglist);
+        nbttaglist = new NBTTagList();
+        for (LootEntry entry : loot)
+        {
+            NBTTagCompound nbttagcompound = new NBTTagCompound();
+            entry.writeToNBT(nbttagcompound);
+            nbttaglist.appendTag(nbttagcompound);
+        }
+        if (!loot.isEmpty()) nbt.setTag("loot", nbttaglist);
+    }
+
+    protected void captureAttempt(Entity e)
+    {
+        IPokemob hitten = (IPokemob) e;
+        if (hitten.getPokemonOwner() == shootingEntity) { return; }
+        int tiltBak = tilt;
+        CaptureEvent.Pre capturePre = new Pre(hitten, this);
+        MinecraftForge.EVENT_BUS.post(capturePre);
+        if (capturePre.isCanceled() || capturePre.getResult() == Result.DENY)
+        {
+            if (tilt != tiltBak)
+            {
+                if (tilt == 5)
+                {
+                    time = 10;
+                }
+                else
+                {
+                    time = 20 * tilt;
+                }
+                hitten.setPokecube(getEntityItem());
+                setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
+                PokecubeManager.setTilt(getEntityItem(), tilt);
+                ((Entity) hitten).setDead();
+                Vector3 v = Vector3.getNewVector();
+                v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
+                motionX = 0;
+                motionY = 0.1;
+                motionZ = 0;
+            }
+        }
+        else
+        {
+            int n = Tools.computeCatchRate(hitten, PokecubeItems.getCubeId(getEntityItem()));
+            tilt = n;
+
+            if (n == 5)
+            {
+                time = 10;
+            }
+            else
+            {
+                time = 20 * n;
+            }
+
+            hitten.setPokecube(getEntityItem());
+            setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
+            PokecubeManager.setTilt(getEntityItem(), n);
+            ((Entity) hitten).setDead();
+            Vector3 v = Vector3.getNewVector();
+            v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
+            motionX = 0;
+            motionY = 0.1;
+            motionZ = 0;
+        }
+    }
+
+    public boolean cannotCollect(Entity e)
+    {
+        if (e == null) return false;
+        String name = e.getCachedUniqueIdString();
+        for (CollectEntry s : players)
+        {
+            if (s.player.equals(name))
+            {
+                if (resetTime > 0)
+                {
+                    long diff = worldObj.getTotalWorldTime() - s.time;
+                    if (diff > resetTime)
+                    {
+                        players.remove(s);
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

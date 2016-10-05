@@ -158,10 +158,11 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
 
             if (source.isExplosion() && source.getEntity() instanceof IPokemob && isType(ghost)) { return false; }
 
-            if (!(source.getEntity() instanceof IPokemob) && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
+            if (!(source.getEntity() instanceof IPokemob || source instanceof PokemobDamageSource)
+                    && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
                 return false;
 
-            if (source.getEntity() instanceof EntityPlayer)
+            if (source.getEntity() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
                 amount *= PokecubeMod.core.getConfig().playerToPokemobDamageScale;
 
             if (this.getHealth() <= 0.0F)
@@ -902,18 +903,18 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void writeSpawnData(ByteBuf data)
     {
-//        data.writeInt(personalityValue);
-//        data.writeInt(getPokedexEntry().getName().getBytes().length);
-//        data.writeBytes(getPokedexEntry().getName().getBytes());
-//        data.writeBoolean(shiny);
-//        data.writeBoolean(wasShadow);
-//        data.writeBoolean(isAncient);
-//        data.writeByte((byte) nature.ordinal());
-//        data.writeBytes(ivs);
-//        boolean noTags = getEntityData().hasNoTags();
-//        data.writeBoolean(!noTags);
-//        PacketBuffer buffer = new PacketBuffer(data);
-//        buffer.writeNBTTagCompoundToBuffer(getEntityData());
+        // data.writeInt(personalityValue);
+        // data.writeInt(getPokedexEntry().getName().getBytes().length);
+        // data.writeBytes(getPokedexEntry().getName().getBytes());
+        // data.writeBoolean(shiny);
+        // data.writeBoolean(wasShadow);
+        // data.writeBoolean(isAncient);
+        // data.writeByte((byte) nature.ordinal());
+        // data.writeBytes(ivs);
+        // boolean noTags = getEntityData().hasNoTags();
+        // data.writeBoolean(!noTags);
+        // PacketBuffer buffer = new PacketBuffer(data);
+        // buffer.writeNBTTagCompoundToBuffer(getEntityData());
         PacketBuffer buffer = new PacketBuffer(data);
         NBTTagCompound tag = writePokemobData();
         buffer.writeNBTTagCompoundToBuffer(tag);

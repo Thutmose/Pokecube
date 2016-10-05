@@ -87,6 +87,11 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
             list.add(info);
             break;
         }
+        if (TileEntityBerries.trees.containsKey(stack.getItemDamage()))
+        {
+            info = I18n.format("item.berry.istree.desc");
+            list.add(info);
+        }
 
         if (player.openContainer instanceof ContainerPokemob)
         {

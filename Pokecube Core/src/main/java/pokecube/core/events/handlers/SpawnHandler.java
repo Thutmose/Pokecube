@@ -64,6 +64,7 @@ public final class SpawnHandler
                                                                                    @Override
                                                                                    public boolean apply(Integer input)
                                                                                    {
+                                                                                       if (input == -1) return false;
                                                                                        if (input < 256) return true;
                                                                                        return input == BiomeType.SKY
                                                                                                .getType()

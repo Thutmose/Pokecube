@@ -51,8 +51,7 @@ public class ActionSecretPower implements IMoveAction
             owner.addChatMessage(message);
             return false;
         }
-        pendingBaseLocations.put(attacker.getPokemonOwnerID(),
-                new Vector4(location.x, location.y, location.z, owner.dimension));
+        pendingBaseLocations.put(owner.getUniqueID(), new Vector4(location.x, location.y, location.z, owner.dimension));
         TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.confirm",
                 location.set(location.getPos()));
         message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,

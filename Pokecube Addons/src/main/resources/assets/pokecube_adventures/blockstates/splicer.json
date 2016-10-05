@@ -1,5 +1,14 @@
 {
-   "variants": {
-   "normal": { "model": "pokecube_adventures:splicer" }
-    }
+	"forge_marker": 1,
+	"defaults": {
+		"textures": {
+			"#None": "pokecube_adventures:blocks/cloner"
+		},
+		"model": "pokecube_adventures:cloner.obj"
+	},
+	"variants": {
+		"inventory": [{
+			"transform": "forge:default-block"
+		}]
+	}
 }

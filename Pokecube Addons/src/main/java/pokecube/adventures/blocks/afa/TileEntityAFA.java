@@ -49,6 +49,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     private ItemStack[] inventory      = new ItemStack[1];
     public int[]        shift          = { 0, 0, 0 };
     public int          scale          = 1000;
+    public String       animation      = "idle";
     public Ability      ability        = null;
     int                 energy         = 0;
     int                 distance       = 4;
@@ -56,7 +57,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     public boolean      rotates        = true;
     public float        angle          = 0;
     public boolean      noEnergy       = false;
-    public boolean      frozen       = true;
+    public boolean      frozen         = true;
     public float        animationTime  = 0;
 
     protected boolean   addedToNetwork = false;
@@ -295,6 +296,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         energy = nbt.getInteger("energy");
         frozen = nbt.getBoolean("frozen");
         animationTime = nbt.getFloat("animTime");
+        animation = nbt.getString("animation");
     }
 
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
@@ -519,6 +521,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         nbt.setInteger("energy", energy);
         nbt.setBoolean("frozen", frozen);
         nbt.setFloat("animTime", animationTime);
+        nbt.setString("animation", animation);
         return nbt;
     }
 }

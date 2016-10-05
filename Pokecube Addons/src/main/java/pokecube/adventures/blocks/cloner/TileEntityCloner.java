@@ -313,8 +313,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                     // You can give him more XP if you want
                     entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);
                     if (tile.user != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.user);
-                    entity.setLocationAndAngles(tile.pos.getX(), tile.pos.getY() + 1, tile.pos.getZ(),
-                            tile.getWorld().rand.nextFloat() * 360F, 0.0F);
+                    EnumFacing dir = tile.getWorld().getBlockState(tile.getPos()).getValue(BlockCloner.FACING);
+                    entity.setLocationAndAngles(tile.pos.getX() + 0.5 + dir.getFrontOffsetX(), tile.pos.getY() + 1,
+                            tile.pos.getZ() + 0.5 + dir.getFrontOffsetZ(), tile.getWorld().rand.nextFloat() * 360F,
+                            0.0F);
                     tile.getWorld().spawnEntityInWorld(entity);
                     entity.playLivingSound();
                 }
@@ -499,7 +501,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public ItemStack getStackInSlot(int index)
     {
         if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
-
         return inventory[index];
     }
 
@@ -568,6 +569,13 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
             }
         }
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound nbt = new NBTTagCompound();
+        return writeToNBT(nbt);
     }
 
     @Override
@@ -669,9 +677,15 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public void update()
     {
+        checkCollision();
         if (worldObj.isRemote) return;
         if (!PokecubeAdv.hasEnergyAPI) energy += 32;
         checkRecipes();
+    }
+
+    private void checkCollision()
+    {
+        BlockCloner.checkCollision(this);
     }
 
     public void checkRecipes()

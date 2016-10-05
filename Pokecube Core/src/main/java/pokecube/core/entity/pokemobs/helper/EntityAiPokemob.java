@@ -982,7 +982,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 particleLoc.set(posX + rand.nextFloat() * width * 2.0F - width, posY + 0.5D + rand.nextFloat() * height,
                         posZ + rand.nextFloat() * width * 2.0F - width);
-                PokecubeMod.core.spawnParticle(EnumParticleTypes.VILLAGER_HAPPY.getParticleName(), particleLoc, null);
+                PokecubeMod.core.spawnParticle(worldObj, EnumParticleTypes.VILLAGER_HAPPY.getParticleName(),
+                        particleLoc, null);
             }
         }
 

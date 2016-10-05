@@ -44,6 +44,7 @@ import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.adventures.client.gui.GuiDaycare;
 import pokecube.adventures.client.gui.GuiTrainerEdit;
 import pokecube.adventures.client.render.blocks.RenderAFA;
+import pokecube.adventures.client.render.blocks.RenderCloner;
 import pokecube.adventures.client.render.entity.RenderTarget;
 import pokecube.adventures.client.render.entity.RenderTrainer;
 import pokecube.adventures.client.render.item.BadgeTextureHandler;
@@ -140,9 +141,9 @@ public class ClientProxy extends CommonProxy
 
         Item item2 = Item.getItemFromBlock(cloner);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
-                new ModelResourceLocation("pokecube_adventures:reanimator", "inventory"));
+                new ModelResourceLocation(PokecubeAdv.ID + ":reanimator", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 1,
-                new ModelResourceLocation("pokecube_adventures:splicer", "inventory"));
+                new ModelResourceLocation(PokecubeAdv.ID + ":splicer", "inventory"));
 
         item2 = Item.getItemFromBlock(afa);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
@@ -194,6 +195,7 @@ public class ClientProxy extends CommonProxy
         });
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCloner.class, new RenderCloner());
         BadgeTextureHandler.registerItemModels();
     }
 

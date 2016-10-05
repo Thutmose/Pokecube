@@ -122,6 +122,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
     public void spawnClientEntities(MovePacketInfo info)
     {
         if (type == null) return;
-        PokecubeMod.core.spawnParticle(type, info.target, null);
+        PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, info.target, null);
     }
 }

@@ -768,16 +768,8 @@ public class PokecubeItems extends Items
                 {
                     if (prop.getName().equals(key))
                     {
-                        boolean valid = false;
-                        try
-                        {
-                            valid = input.getValue(prop) == prop.parseValue(val).get();
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                        }
-                        return valid;
+                        Object inputVal = input.getValue(prop);
+                        return inputVal.toString().equalsIgnoreCase(val);
                     }
                 }
                 return false;

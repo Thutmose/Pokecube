@@ -29,6 +29,7 @@ import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.CommonProxy;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.packets.PacketParticle;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -160,9 +161,9 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         // unused server side. -- see ClientProxyPokecube for implementation
     }
 
-    public void spawnParticle(String par1Str, Vector3 location, Vector3 velocity, int... args)
+    public void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
-        // TODO send a packet to spawn it on client if sent from here
+        PacketParticle.sendMessage(world, location, velocity, par1Str, args);
     }
 
 }

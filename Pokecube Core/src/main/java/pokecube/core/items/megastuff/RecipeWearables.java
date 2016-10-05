@@ -1,11 +1,15 @@
 package pokecube.core.items.megastuff;
 
+import java.util.List;
+import java.util.Locale;
+
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemDye;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeWearables implements IRecipe
 {
@@ -53,8 +57,19 @@ public class RecipeWearables implements IRecipe
                 {
                     ring = true;
                     ringStack = stack;
+                    continue;
                 }
-                else if (stack.getItem() instanceof ItemDye)
+                List<ItemStack> dyes = OreDictionary.getOres("dye");
+                boolean isDye = false;
+                for (ItemStack dye1 : dyes)
+                {
+                    if (OreDictionary.itemMatches(dye1, stack, false))
+                    {
+                        isDye = true;
+                        break;
+                    }
+                }
+                if (isDye)
                 {
                     dye = true;
                     dyeStack = stack;
@@ -65,7 +80,27 @@ public class RecipeWearables implements IRecipe
         {
             output = ringStack.copy();
             if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
-            output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
+            int[] ids = OreDictionary.getOreIDs(dyeStack);
+            int colour = dyeStack.getItemDamage();
+            for (int i : ids)
+            {
+                String name = OreDictionary.getOreName(i);
+                if (name.startsWith("dye") && name.length() > 3)
+                {
+                    String val = name.replace("dye", "").toUpperCase(Locale.ENGLISH);
+                    try
+                    {
+                        EnumDyeColor type = EnumDyeColor.valueOf(val);
+                        colour = type.getDyeDamage();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            output.getTagCompound().setInteger("dyeColour", colour);
         }
         return output != null;
     }

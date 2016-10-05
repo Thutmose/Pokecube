@@ -9,6 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
+import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.entity.IMobColourable;
@@ -54,7 +56,20 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
             ((Entity) mob).ticksExisted = (int) te.animationTime;
         }
 
+        Object o;
+        if ((o = RenderPokemobs.getInstance().getRenderer(mob.getPokedexEntry())) instanceof RenderAdvancedPokemobModel)
+        {
+            RenderAdvancedPokemobModel<?> render = (RenderAdvancedPokemobModel<?>) o;
+            render.anim = te.animation;
+            render.overrideAnim = true;
+        }
         EventsHandlerClient.renderMob(mob, partialTicks, te.rotates);
+        if ((o = RenderPokemobs.getInstance().getRenderer(mob.getPokedexEntry())) instanceof RenderAdvancedPokemobModel)
+        {
+            RenderAdvancedPokemobModel<?> render = (RenderAdvancedPokemobModel<?>) o;
+            render.anim = "";
+            render.overrideAnim = false;
+        }
         GL11.glPopMatrix();
         GL11.glTranslatef(0.405f, 0.645f, -0.5f);
         GL11.glScaled(0.15, 0.15, 0.15);

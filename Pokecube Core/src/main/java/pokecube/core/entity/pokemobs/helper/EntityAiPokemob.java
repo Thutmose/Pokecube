@@ -408,7 +408,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void jump()
     {
         if (worldObj.isRemote) return;
-        if (!this.isInWater() && !this.isInLava())
+        boolean ladder = this.isOnLadder();
+        if (!ladder && !this.isInWater() && !this.isInLava())
         {
             if (!this.onGround) return;
 
@@ -448,7 +449,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         else
         {
-            this.motionY += 0.03999999910593033D;
+            this.motionY += ladder ? 0.1 : 0.03999999910593033D;
         }
     }
 
@@ -474,10 +475,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
             {
                 p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
-                if (getNavigator().getPath().getCurrentPathIndex() < getNavigator().getPath().getCurrentPathLength()
-                        - 1)
-                {
-                }
                 shouldGoDown = p.yCoord < posY - stepHeight;
                 shouldGoUp = p.yCoord > posY + stepHeight;
                 if (isAbleToFly)
@@ -613,14 +610,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     {
                         this.motionY = -0.05D;
                     }
+                    if (!shouldGoUp)
+                    {
+                        this.motionY -= 0.05;
+                    }
 
                 }
                 this.moveEntity(this.motionX, this.motionY, this.motionZ);
-
-                if (this.isCollidedHorizontally && this.isOnLadder())
-                {
-                    this.motionY = 0.2D;
-                }
 
                 if (this.worldObj.isRemote && (!this.worldObj.isAreaLoaded(getPosition(), 10)
                         || !this.worldObj.getChunkFromBlockCoords(getPosition()).isLoaded()))

@@ -45,13 +45,13 @@ public class PokemobMoveHelper extends EntityMoveHelper
             double d2 = this.posY - this.entity.posY;
             double d3 = d0 * d0 + d2 * d2 + d1 * d1;
             double d4 = d0 * d0 + d1 * d1;
-
+            boolean upLadder = d2 > 0 && entity.isOnLadder();
             if (d3 < 2.500000277905201E-7D)
             {
                 this.entity.setMoveForward(0.0F);
                 return;
             }
-            if (d2 > 0.5 && d4 <= 2 * speed && !(air || water))
+            if (upLadder || (d2 > 0.5 && d4 <= 2 * speed && !(air || water)))
             {
                 this.entity.getJumpHelper().setJumping();
             }

@@ -263,6 +263,14 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
+    @Optional.Method(modid = "soulshardstow")
+    @EventHandler
+    public void SoulShardsCompat(FMLPostInitializationEvent evt)
+    {
+        System.out.println("SoulShards Compat");
+        new pokecube.compat.soulshards.SoulShardsCompat();
+    }
+
     @SideOnly(Side.CLIENT)
     @Optional.Method(modid = "Baubles")
     @EventHandler

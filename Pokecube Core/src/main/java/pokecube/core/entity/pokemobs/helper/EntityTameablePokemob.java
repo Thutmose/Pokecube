@@ -129,31 +129,21 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT) };
 
     protected boolean                               looksWithInterest;
-
-    protected float                                 field_25048_b;
-
-    protected float                                 field_25054_c;
+    protected float                                 headRotation;
+    protected float                                 headRotationOld;
     protected boolean                               isPokemonShaking;
-
-    protected boolean                               field_25052_g;
-
+    protected boolean                               isPokemonWet;
     protected float                                 timePokemonIsShaking;
     protected float                                 prevTimePokemonIsShaking;
-    // protected Integer pokedexNb = 0;
     public float                                    length           = 1;
     protected Vector3                               here             = Vector3.getNewVector();
-
     protected Vector3                               vec              = Vector3.getNewVector();
-
     protected Vector3                               v1               = Vector3.getNewVector();
     protected Vector3                               v2               = Vector3.getNewVector();
     protected Vector3                               vBak             = Vector3.getNewVector();
     boolean                                         named            = false;
-
     boolean                                         initHome         = true;
-
     protected AnimalChest                           pokeChest;
-
     boolean                                         returning        = false;
     protected int                                   abilityIndex     = 0;
     protected boolean                               players          = false;
@@ -285,7 +275,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     @Override
     public float getInterestedAngle(float f)
     {
-        return (field_25054_c + (field_25048_b - field_25054_c) * f) * 0.15F * (float) Math.PI;
+        return (headRotationOld + (headRotation - headRotationOld) * f) * 0.15F * (float) Math.PI;
     }
 
     @Override
@@ -454,7 +444,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     @Override
     protected boolean isMovementBlocked()
     {
-        return field_25052_g || this.getHealth() <= 0.0F;
+        return isPokemonWet || this.getHealth() <= 0.0F;
     }
 
     @Override

@@ -807,23 +807,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         controller.doServerTick(worldObj);
         super.onLivingUpdate();
-
-        if (getPokemonAIState(MATING))
+        if (isServerWorld() && isPokemonShaking && !isPokemonWet && !hasPath() && onGround)
         {
-            if (ticksExisted % 5 == 0)
-            {
-                double d = rand.nextGaussian() * 0.02D;
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle(EnumParticleTypes.HEART, (posX + rand.nextFloat() * width * 2.0F) - width,
-                        posY + 0.5D + rand.nextFloat() * height, (posZ + rand.nextFloat() * width * 2.0F) - width, d,
-                        d1, d2);
-            }
-        }
-
-        if (isServerWorld() && isPokemonShaking && !field_25052_g && !hasPath() && onGround)
-        {
-            field_25052_g = true;
+            isPokemonWet = true;
             timePokemonIsShaking = 0.0F;
             prevTimePokemonIsShaking = 0.0F;
             worldObj.setEntityState(this, (byte) 8);
@@ -859,18 +845,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 setAttackTarget(null);
             }
         }
-
         for (ILogicRunnable logic : aiStuff.aiLogic)
         {
             logic.doServerTick(worldObj);
         }
-
         int state = dataManager.get(AIACTIONSTATESDW);
         if (getAIState(IMoveConstants.TAMED, state) && (getPokemonOwnerID() == null))
         {
             setPokemonAIState(IMoveConstants.TAMED, false);
         }
-
         if (loveTimer > 600)
         {
             resetLoveStatus();
@@ -905,48 +888,41 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             effect.addPokemon(this);
             effect.doEntryEffect(this);
         }
-
         if (egg != null && egg.isDead)
         {
             egg = null;
         }
-
-        field_25054_c = field_25048_b;
-
+        headRotationOld = headRotation;
         if (looksWithInterest)
         {
-            field_25048_b = field_25048_b + (1.0F - field_25048_b) * 0.4F;
+            headRotation = headRotation + (1.0F - headRotation) * 0.4F;
         }
         else
         {
-            field_25048_b = field_25048_b + (0.0F - field_25048_b) * 0.4F;
+            headRotation = headRotation + (0.0F - headRotation) * 0.4F;
         }
-
         if (looksWithInterest)
         {
 
         }
-
         if (isWet() && !(this.canUseSurf()))
         {
             isPokemonShaking = true;
-            field_25052_g = false;
+            isPokemonWet = false;
             timePokemonIsShaking = 0.0F;
             prevTimePokemonIsShaking = 0.0F;
         }
-        else if ((isPokemonShaking || field_25052_g) && field_25052_g)
+        else if ((isPokemonShaking || isPokemonWet) && isPokemonWet)
         {
             prevTimePokemonIsShaking = timePokemonIsShaking;
             timePokemonIsShaking += 0.05F;
-
             if (prevTimePokemonIsShaking >= 2.0F)
             {
                 isPokemonShaking = false;
-                field_25052_g = false;
+                isPokemonWet = false;
                 prevTimePokemonIsShaking = 0.0F;
                 timePokemonIsShaking = 0.0F;
             }
-
             if (timePokemonIsShaking > 0.4F && !swims())
             {
                 float f = (float) posY;
@@ -970,7 +946,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         popped = true;
         if (worldObj.isRemote) return;
         this.playSound(this.getSound(), 0.5f, 1);
-
         if (this.isShiny())
         {
             Vector3 particleLoc = Vector3.getNewVector();
@@ -982,7 +957,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         particleLoc, null);
             }
         }
-
     }
 
     /////////////////////////// Interaction

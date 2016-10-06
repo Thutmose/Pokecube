@@ -730,6 +730,8 @@ public class PokedexEntry
     public boolean                             dyeable          = false;
     @CopyToGender
     SoundEvent                                 event;
+    @CopyToGender
+    public SoundEvent                          replacedEvent;
     /** The relation between xp and level */
     @CopyToGender
     protected int                              evolutionMode    = 1;
@@ -1375,6 +1377,7 @@ public class PokedexEntry
 
     public SoundEvent getSoundEvent()
     {
+        if (replacedEvent != null) return replacedEvent;
         if (sound == null)
         {
             sound = "mobs." + getBaseName();

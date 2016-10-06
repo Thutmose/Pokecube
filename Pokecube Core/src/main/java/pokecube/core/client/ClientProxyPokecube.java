@@ -20,6 +20,8 @@ import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ISound.AttenuationType;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -40,6 +42,7 @@ import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -261,6 +264,27 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     }
 
     @Override
+    public void toggleSound(String sound, BlockPos location)
+    {
+        if (sound != null)
+        {
+            ISound old = Minecraft.getMinecraft().renderGlobal.mapSoundPositions.remove(location);
+            if (old != null)
+            {
+                Minecraft.getMinecraft().getSoundHandler().stopSound(old);
+            }
+            else
+            {
+                ISound isound = new PositionedSoundRecord(new ResourceLocation(sound), SoundCategory.RECORDS, 1, 1,
+                        true, 0, AttenuationType.NONE, location.getX() + 0.5f, location.getY() + 0.5f,
+                        location.getZ() + 0.5f);
+                Minecraft.getMinecraft().getSoundHandler().playSound(isound);
+                Minecraft.getMinecraft().renderGlobal.mapSoundPositions.put(location, isound);
+            }
+        }
+    }
+
+    @Override
     public boolean isSoundPlaying(Vector3 location)
     {
         try
@@ -273,7 +297,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         {
             e.printStackTrace();
         }
-
         return false;
     }
 

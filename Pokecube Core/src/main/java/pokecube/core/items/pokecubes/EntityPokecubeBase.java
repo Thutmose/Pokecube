@@ -21,8 +21,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
@@ -38,6 +36,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.packets.PacketSound;
 import thut.api.maths.Vector3;
 
 public class EntityPokecubeBase extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
@@ -245,7 +244,8 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                     mob.getPokemonDisplayName());
             ((EntityPlayer) shootingEntity).addChatMessage(mess);
             this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
-            shootingEntity.playSound(new SoundEvent(new ResourceLocation("pokecube:pokecube_caught")), 1, 1);
+            PacketSound.sendMessage(Vector3.getNewVector().set(this), dimension, getEntityId(),
+                    "pokecube:pokecube_caught", 1, 1);
         }
         return true;
     }

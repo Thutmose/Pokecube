@@ -19,8 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -36,6 +34,7 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.packets.PacketPokecube;
+import pokecube.core.network.packets.PacketSound;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -398,8 +397,8 @@ public class EntityPokecube extends EntityPokecubeBase
                         {
                             entityitem.setNoPickupDelay();
                             entityitem.setOwner(player.getName());
-                            entityitem.playSound(new SoundEvent(new ResourceLocation("pokecube:pokecube_caught")), 1,
-                                    1);
+                            PacketSound.sendMessage(Vector3.getNewVector().set(entityitem), dimension,
+                                    entityitem.getEntityId(), "pokecube:pokecube_caught", 1, 1);
                         }
                         return true;
                     }

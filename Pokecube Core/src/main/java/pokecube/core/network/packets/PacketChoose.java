@@ -67,10 +67,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
 
     private static void handleChooseFirstClient(PacketChoose packet, EntityPlayer player)
     {
-        if (player == null)
-        {
-            throw new NullPointerException("Null Player while recieving starter packet");
-        }
+        if (player == null) { throw new NullPointerException("Null Player while recieving starter packet"); }
         boolean openGui = packet.data.getBoolean("C");
         if (openGui)
         {
@@ -105,18 +102,18 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         if (pre.isCanceled()) return;
 
         List<ItemStack> items = Lists.newArrayList();
+        // Copy main list from database.
+        for (ItemStack stack : Database.starterPack)
+        {
+            items.add(stack.copy());
+        }
 
-        // 10 Pokecubes
-        ItemStack pokecubesItemStack = new ItemStack(PokecubeItems.getEmptyCube(0), 10);
-        items.add(pokecubesItemStack);
+        // Add healer to it if the config says so.
         if (PokecubePacketHandler.giveHealer)
         {
             ItemStack pokecenterItemStack = new ItemStack(PokecubeItems.pokecenter);
             items.add(pokecenterItemStack);
         }
-        // Pokedex
-        ItemStack pokedexItemStack = new ItemStack(PokecubeItems.pokedex);
-        items.add(pokedexItemStack);
 
         // If they don't actually get the picked starter, then no achievement.
         boolean starterGiven = false;

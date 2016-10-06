@@ -804,7 +804,7 @@ public class PokedexEntryLoader
         }
     }
 
-    public static void handleAddDrop(PokedexEntry entry, Drop d)
+    public static ItemStack getStackFromDrop(Drop d)
     {
         Map<QName, String> values = d.values;
         if (d.tag != null)
@@ -812,7 +812,13 @@ public class PokedexEntryLoader
             QName name = new QName("tag");
             values.put(name, d.tag);
         }
-        ItemStack stack = Tools.getStack(d.values);
+        return Tools.getStack(d.values);
+    }
+
+    public static void handleAddDrop(PokedexEntry entry, Drop d)
+    {
+        Map<QName, String> values = d.values;
+        ItemStack stack = getStackFromDrop(d);
         if (stack != null)
         {
             float chance = 1;

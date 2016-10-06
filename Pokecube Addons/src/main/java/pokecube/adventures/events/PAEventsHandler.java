@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
-import pokecube.core.PokecubeItems;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.SpawnEvent.SendOut;
 import pokecube.core.events.StarterEvent;
@@ -22,13 +21,11 @@ public class PAEventsHandler
     @SubscribeEvent
     public void PlayerLoggin(PlayerLoggedInEvent evt)
     {
-
     }
 
     @SubscribeEvent
     public void PlayerStarter(StarterEvent.Pick evt)
     {
-        evt.starterPack.add(PokecubeItems.getStack("pokecubebag"));
     }
 
     @SubscribeEvent

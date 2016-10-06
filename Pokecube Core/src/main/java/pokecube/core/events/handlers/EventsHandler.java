@@ -23,6 +23,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -49,6 +50,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -85,6 +87,7 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
+import pokecube.core.network.packets.PacketPokecube;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
@@ -696,6 +699,19 @@ public class EventsHandler
             PokecubeSerializer.getInstance().save();
             double dt = (System.nanoTime() - time) / 1000000d;
             if (dt > 20) System.err.println("Took " + dt + "ms to save pokecube data");
+        }
+    }
+
+    @SubscribeEvent
+    public void PokecubeWatchEvent(StartTracking event)
+    {
+        if (event.getTarget() instanceof EntityPokecube && event.getEntityPlayer() instanceof EntityPlayerMP)
+        {
+            EntityPokecube pokecube = (EntityPokecube) event.getTarget();
+            if (pokecube.isLoot && pokecube.cannotCollect(event.getEntityPlayer()))
+            {
+                PacketPokecube.sendMessage(event.getEntityPlayer(), pokecube.getEntityId(), pokecube.worldObj.getTotalWorldTime() + pokecube.resetTime);
+            }
         }
     }
 }

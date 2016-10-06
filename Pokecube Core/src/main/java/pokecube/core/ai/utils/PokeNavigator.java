@@ -233,11 +233,21 @@ public class PokeNavigator extends PathNavigate
         double d1 = end.zCoord - start.zCoord;
         double dy = end.yCoord - start.yCoord;
         double d2 = d0 * d0 + d1 * d1 + dy * dy;
-
-        if (d2 < 1.0E0D || !canFly) { return true; }
+        if (d2 < 1.0E0D) { return true; }
+        if (!canFly && dy != 0) return false;
         v.set(start);
-        v1.set(end);// TODO re-do this using safe checks
-        return v1.isVisible(worldObj, v);
+        v1.set(end);
+        Vector3 dir = v1.subtract(v);
+        double dist = dir.mag();
+        dir.scalarMultBy(1 / dist);
+        IPathingMob pather = (IPathingMob) pokemob;
+        for (int i = 0; i < dist; i++)
+        {
+            v1.set(v).add(dir.x * i, dir.y * i - 1, dir.z * i);
+            if (pather.getBlockPathWeight(worldObj, v1) > 50
+                    || !pather.fits(worldObj, v1.addTo(0, 1, 0), null)) { return false; }
+        }
+        return true;
     }
 
     /** Returns true if the entity is in water or lava, false otherwise */
@@ -292,10 +302,10 @@ public class PokeNavigator extends PathNavigate
                 f = Math.max(f, 0.5f);
                 v.set(theEntity);
                 v1.set(currentPath.getFinalPathPoint());
-
+                double dist;
                 boolean loaded = worldObj.isAreaLoaded(v.getPos(), v1.getPos());
 
-                if (!loaded || v.distTo(v1) < f)
+                if (!loaded || (dist = v.distTo(v1)) < f)
                 {
                     this.clearPathEntity();
                     if (!loaded)
@@ -307,12 +317,20 @@ public class PokeNavigator extends PathNavigate
                     }
                     return;
                 }
-
+                dist = targetLoc.distTo(v);
+                boolean end = targetLoc.sameBlock(v);
+                int mult = end ? 5 : 2;
+                float drop = 0.8f;
                 double speed = this.speed;
                 if (canDive && this.isInLiquid())
                 {
                     speed *= 2;
                 }
+                while (speed * mult > dist)
+                {
+                    speed *= drop;
+                }
+
                 this.theEntity.getMoveHelper().setMoveTo(targetLoc.x, targetLoc.y, targetLoc.z, speed);
             }
         }
@@ -323,14 +341,23 @@ public class PokeNavigator extends PathNavigate
     {
         Vec3d vec3 = this.getEntityPosition();
         int i = this.currentPath.getCurrentPathLength();
-
+        for (int j = this.currentPath.getCurrentPathIndex(); j < i; ++j)
+        {
+            PathPoint point;
+            if ((point = this.currentPath.getPathPointFromIndex(j)) == null) break;
+            if (vec3.squareDistanceTo(point.xCoord, point.yCoord, point.zCoord) < 1)
+            {
+                this.currentPath.setCurrentPathIndex(j);
+                break;
+            }
+        }
         float f = this.theEntity.width * this.theEntity.width;
         f = Math.max(1, 0.15f);
         this.currentPath.setCurrentPathIndex(getNextPoint());
 
         if (!((canFly || canSwim && theEntity.isInWater()) && !theEntity.onGround))
         {
-            for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
+            for (int j = this.currentPath.getCurrentPathIndex(); j < i; ++j)
             {
                 if (this.currentPath.getPathPointFromIndex(j) == null) break;
                 if (this.currentPath.getPathPointFromIndex(j).yCoord != (int) vec3.yCoord)
@@ -350,6 +377,17 @@ public class PokeNavigator extends PathNavigate
                 this.currentPath.setCurrentPathIndex(k + 1);
             }
         }
+
+        for (k = this.currentPath.getCurrentPathIndex() + 1; k < i - 1; ++k)
+        {
+            Vec3d test = this.currentPath.getVectorFromIndex(theEntity, k);
+            if (isDirectPathBetweenPoints(vec3, test, (int) Math.ceil(theEntity.width),
+                    (int) Math.ceil(theEntity.height), (int) Math.ceil(theEntity.width)))
+            {
+                this.currentPath.setCurrentPathIndex(k + 1);
+            }
+        }
+
         float max = 1.5f;
         if (pokemob.getPokemonAIState(IMoveConstants.ANGRY)) max = 0.5f;
         f = Math.max(f, max);

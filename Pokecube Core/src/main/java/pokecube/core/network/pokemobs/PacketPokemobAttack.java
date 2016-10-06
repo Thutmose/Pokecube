@@ -94,8 +94,15 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         CommandAttackEvent event = new CommandAttackEvent(user, target);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
-        
+
         IPokemob pokemob = (IPokemob) user;
+
+        if (player.isSneaking())
+        {
+            ((EntityLiving) user).getNavigator().tryMoveToEntityLiving(player, 1);
+            return;
+        }
+
         Vector3 temp = Vector3.getNewVector().set(user);
         int currentMove = pokemob.getMoveIndex();
         if (currentMove == 5 || !MovesUtils.canUseMove(pokemob)) { return; }

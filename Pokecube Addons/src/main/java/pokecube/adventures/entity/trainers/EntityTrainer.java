@@ -97,7 +97,7 @@ public class EntityTrainer extends EntityHasPokemobs
     boolean                       added        = false;
     protected boolean             trades       = true;
     public GuardAI                guardAI;
-    public boolean                defeated     = false;
+    public long                   visibleTime  = 0;
     public boolean                notifyDefeat = false;
 
     public EntityTrainer(World par1World)
@@ -315,7 +315,7 @@ public class EntityTrainer extends EntityHasPokemobs
             {
                 PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
                 packet.data.setInteger("I", getEntityId());
-                packet.data.setBoolean("V", hasDefeated(defeater));
+                packet.data.setLong("L", worldObj.getTotalWorldTime() + resetTime);
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) defeater);
             }
         }

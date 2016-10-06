@@ -121,8 +121,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         {
             int id = message.data.getInteger("I");
             EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
-            boolean notify = message.data.getBoolean("V");
-            trainer.defeated = notify;
+            trainer.visibleTime = message.data.getLong("L");
             return;
         }
         if (message.message == MESSAGEKILLTRAINER)

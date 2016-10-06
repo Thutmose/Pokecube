@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -47,6 +48,13 @@ import pokecube.core.utils.PokeType;
 
 public class Database
 {
+    @XmlRootElement(name = "Items")
+    public static class XMLStarterItems
+    {
+        @XmlElement(name = "Item")
+        private List<Drop> drops = Lists.newArrayList();
+    }
+
     @XmlRootElement(name = "Spawns")
     public static class XMLSpawns
     {
@@ -116,6 +124,7 @@ public class Database
     }
 
     public static boolean                                  FORCECOPY        = true;
+    public static List<ItemStack>                          starterPack      = Lists.newArrayList();
     public static HashMap<Integer, PokedexEntry>           data             = new HashMap<Integer, PokedexEntry>();
     public static HashMap<String, PokedexEntry>            data2            = new HashMap<String, PokedexEntry>();
     public static HashSet<PokedexEntry>                    allFormes        = new HashSet<PokedexEntry>();
@@ -546,6 +555,7 @@ public class Database
         loadSpawns();
         loadDrops();
         loadHeld();
+        loadStarterPack();
         ProgressBar bar = ProgressManager.push("Removal Checking", baseFormes.size());
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
         for (PokedexEntry p : baseFormes.values())
@@ -733,6 +743,56 @@ public class Database
         }
     }
 
+    private static void loadStarterPack()
+    {
+        File temp = new File(CONFIGLOC);
+        if (!temp.exists())
+        {
+            temp.mkdirs();
+        }
+        String name = "pack.xml";
+        File temp1 = new File(CONFIGLOC + name);
+        if (!temp1.exists())
+        {
+            ArrayList<String> rows = getFile("/assets/pokecube/database/" + name);
+            int n = 0;
+            try
+            {
+                File file = new File(CONFIGLOC + name);
+                Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                for (int i = 0; i < rows.size(); i++)
+                {
+                    out.write(rows.get(i) + "\n");
+                    n++;
+                }
+                out.close();
+            }
+            catch (Exception e)
+            {
+                System.err.println(name + " " + n);
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLStarterItems.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            FileReader reader = new FileReader(temp1);
+            XMLStarterItems database = (XMLStarterItems) unmarshaller.unmarshal(reader);
+            reader.close();
+            for (Drop drop : database.drops)
+            {
+                ItemStack stack = PokedexEntryLoader.getStackFromDrop(drop);
+                if (stack != null) starterPack.add(stack);
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        // TODO load pack.
+    }
+
     private static void writeDefaultConfig()
     {
         try
@@ -742,14 +802,10 @@ public class Database
             {
                 temp.mkdirs();
             }
-
             copyDatabaseFile("moves.json");
-
             for (String s : defaultDatabases)
                 copyDatabaseFile(s);
-
             DBLOCATION = CONFIGLOC;
-
         }
         catch (Exception e)
         {

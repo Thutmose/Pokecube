@@ -27,6 +27,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
@@ -1282,11 +1283,10 @@ public class GuiPokedex extends GuiScreen
             {
                 pokemob = (IPokemob) entity;
             }
-
+            Achievement ach = PokecubeMod.hatchAchievements.get(pokedexEntry);
             if (!(mc.thePlayer.getStatFileWriter()
                     .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokedexEntry))
-                    || mc.thePlayer.getStatFileWriter()
-                            .hasAchievementUnlocked(PokecubeMod.hatchAchievements.get(pokedexEntry))
+                    || (ach != null && mc.thePlayer.getStatFileWriter().hasAchievementUnlocked(ach))
                     || mc.thePlayer.getStatFileWriter()
                             .hasAchievementUnlocked(PokecubeMod.killAchievements.get(pokedexEntry)))
                     && !mc.thePlayer.capabilities.isCreativeMode)

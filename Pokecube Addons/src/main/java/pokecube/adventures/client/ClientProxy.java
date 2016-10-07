@@ -299,17 +299,10 @@ public class ClientProxy extends CommonProxy
         int brightness = wearer.getBrightnessForRender(partialTicks);
         ResourceLocation pass1 = BAG_1;
         ResourceLocation pass2 = BAG_2;
-
-        // First pass of render
         GL11.glPushMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.alphaFunc(516, 0.1F);
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
-                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
-                GlStateManager.DestFactor.ZERO);
-        GlStateManager.pushMatrix();
+
+        // First pass of render
         GL11.glPushMatrix();
         GL11.glRotated(90, 1, 0, 0);
         GL11.glRotated(180, 0, 0, 1);
@@ -318,6 +311,7 @@ public class ClientProxy extends CommonProxy
         Minecraft.getMinecraft().renderEngine.bindTexture(pass1);
         bag1.renderAll();
         GL11.glPopMatrix();
+
         // Second pass with colour.
         GL11.glPushMatrix();
         GL11.glRotated(90, 1, 0, 0);
@@ -334,10 +328,7 @@ public class ClientProxy extends CommonProxy
         bag2.renderAll();
         GL11.glColor3f(1, 1, 1);
         GL11.glPopMatrix();
-        GlStateManager.cullFace(GlStateManager.CullFace.BACK);
-        GlStateManager.popMatrix();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableBlend();
+
         GL11.glPopMatrix();
     }
 }

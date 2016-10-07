@@ -227,7 +227,6 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
             Achievement ach = PokecubeMod.hatchAchievements.get(entry);
             if (ach == null)
             {
-                System.err.println("missing for " + entry);
                 return;
             }
             int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);

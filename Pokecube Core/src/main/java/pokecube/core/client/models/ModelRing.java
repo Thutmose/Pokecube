@@ -71,9 +71,11 @@ public class ModelRing extends ModelBase
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture_1);
         GL11.glPushMatrix();
         GL11.glRotated(90, 0, 1, 0);
-        GL11.glTranslated(-0.275, -0.5, 0);
+        GL11.glTranslated(-0.08, -0.3, 0);
         setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        GL11.glScaled(0.5, 0.5, 0.5);
         Shape2.render(f5);
+        GL11.glScaled(1.01, 1.01, 1.01);
         Minecraft.getMinecraft().getTextureManager().bindTexture(texture_2);
         EnumDyeColor ret = EnumDyeColor.GRAY;
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))

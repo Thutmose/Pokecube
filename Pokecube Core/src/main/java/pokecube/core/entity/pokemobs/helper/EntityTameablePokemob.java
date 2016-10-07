@@ -27,6 +27,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.stats.Achievement;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -641,8 +642,9 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
                 {
                     boolean has = ((EntityPlayer) owner)
                             .hasAchievement(PokecubeMod.catchAchievements.get(getPokedexEntry()));
-                    has = has || ((EntityPlayer) owner)
-                            .hasAchievement(PokecubeMod.hatchAchievements.get(getPokedexEntry()));
+                    Achievement ach = PokecubeMod.hatchAchievements.get(getPokedexEntry());
+                    has = has || (ach != null && ((EntityPlayer) owner)
+                            .hasAchievement(PokecubeMod.hatchAchievements.get(getPokedexEntry())));
                     if (!has)
                     {
                         StatsCollector.addCapture(this);

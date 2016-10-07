@@ -28,6 +28,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Achievement;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -176,11 +177,11 @@ public class RenderHealth
                 GlStateManager.translate(0F, pastTranslate, 0F);
                 ITextComponent nameComp = pokemob.getPokemonDisplayName();
                 boolean nametag = pokemob.getPokemonAIState(IMoveConstants.TAMED);
-                nametag = nametag
-                        || Minecraft.getMinecraft().thePlayer.getStatFileWriter()
-                                .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokemob.getPokedexEntry()))
-                        || Minecraft.getMinecraft().thePlayer.getStatFileWriter()
-                                .hasAchievementUnlocked(PokecubeMod.hatchAchievements.get(pokemob.getPokedexEntry()));
+                nametag = nametag || Minecraft.getMinecraft().thePlayer.getStatFileWriter()
+                        .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokemob.getPokedexEntry()));
+                Achievement ach;
+                if (!nametag && (ach = PokecubeMod.hatchAchievements.get(pokemob.getPokedexEntry())) != null)
+                    nametag = Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(ach);
                 if (!nametag)
                 {
                     nameComp.getStyle().setObfuscated(true);

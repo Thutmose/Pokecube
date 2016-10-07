@@ -19,7 +19,6 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import jeresources.util.ReflectionHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -35,6 +34,7 @@ import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;

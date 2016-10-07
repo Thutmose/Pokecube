@@ -4937,7 +4937,7 @@
             <EXPYIELD>270</EXPYIELD>
             <Drop n="1" r="1" id="minecraft:fish"/>
             <BASEFRIENDSHIP>35</BASEFRIENDSHIP>
-            <LOGIC shoulder="FALSE"/>
+            <LOGIC shoulder="FALSE" fly="true"/>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
             <BASESTATS atk="134" def="95" hp="91" spatk="100" spd="80" spdef="100"/>

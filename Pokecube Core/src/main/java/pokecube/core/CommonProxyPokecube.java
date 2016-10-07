@@ -8,7 +8,9 @@ import java.util.UUID;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
@@ -31,6 +33,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketParticle;
 import thut.api.maths.Vector3;
+import thut.wearables.EnumWearable;
 
 /** @author Manchou */
 public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
@@ -110,6 +113,11 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
         }
         return null;
 
+    }
+    
+    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    {
+        
     }
 
     public World getWorld()

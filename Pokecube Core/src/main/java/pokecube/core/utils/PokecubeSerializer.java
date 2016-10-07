@@ -37,8 +37,8 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.database.stats.StatsCollector;
-import pokecube.core.handlers.PlayerDataHandler;
-import pokecube.core.handlers.PlayerDataHandler.PokecubePlayerData;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -151,20 +151,6 @@ public class PokecubeSerializer
             value = (value << 8) + (stats[i] & 0xff);
         }
         return value;
-    }
-
-    public static File getFileForUUID(String uuid, String fileName)
-    {
-        World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(0);
-        ISaveHandler saveHandler = world.getSaveHandler();
-        String seperator = System.getProperty("file.separator");
-        File file = saveHandler.getMapFileFromName(uuid + seperator + fileName);
-        File dir = new File(file.getParentFile().getAbsolutePath());
-        if (!file.exists())
-        {
-            dir.mkdirs();
-        }
-        return file;
     }
 
     public static PokecubeSerializer getInstance()
@@ -326,7 +312,6 @@ public class PokecubeSerializer
 
     public void clearInstance()
     {
-        PlayerDataHandler.clear();
         if (instance == null) return;
         instance.save();
         PokecubeItems.times = new Vector<Long>();
@@ -345,13 +330,14 @@ public class PokecubeSerializer
 
     public int getTeleIndex(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class).getTeleIndex();
+        return PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .getTeleIndex();
     }
 
     public TeleDest getTeleport(String uuid)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .getTeleDests();
+        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
+                .getData(PokecubePlayerData.class).getTeleDests();
         int index = getTeleIndex(uuid);
         TeleDest d = null;
         if (list.size() > index)
@@ -363,12 +349,14 @@ public class PokecubeSerializer
 
     public List<TeleDest> getTeleports(String uuid)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class).getTeleDests();
+        return PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .getTeleDests();
     }
 
     public boolean hasStarter(EntityPlayer player)
     {
-        return PlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class).hasStarter();
+        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class)
+                .hasStarter();
     }
 
     public void loadData()
@@ -417,8 +405,8 @@ public class PokecubeSerializer
                         String username = pokemobData.getString(USERNAME);
                         ids.add(username);
                         Boolean hasStarter = pokemobData.getBoolean(HASSTARTER);
-                        PlayerDataHandler.getInstance().getPlayerData(username).getData(PokecubePlayerData.class)
-                                .setHasStarter(hasStarter);
+                        PokecubePlayerDataHandler.getInstance().getPlayerData(username)
+                                .getData(PokecubePlayerData.class).setHasStarter(hasStarter);
                     }
                 }
             }
@@ -455,7 +443,7 @@ public class PokecubeSerializer
                     }
             }
             for (String uuid : ids)
-                PlayerDataHandler.getInstance().save(uuid);
+                PokecubePlayerDataHandler.getInstance().save(uuid);
         }
         temp = nbttagcompound.getTag(METEORS);
         if (temp instanceof NBTTagList)
@@ -595,7 +583,7 @@ public class PokecubeSerializer
     {
         try
         {
-            PlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class)
+            PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class)
                     .setHasStarter(value);
         }
         catch (Exception e)
@@ -603,12 +591,13 @@ public class PokecubeSerializer
             System.err.println("UUID null");
         }
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-            PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+            PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 
     public void setTeleIndex(String uuid, int index)
     {
-        PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class).setTeleIndex(index);
+        PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
+                .setTeleIndex(index);
     }
 
     public void setTeleport(String uuid, TeleDest dest)
@@ -618,8 +607,8 @@ public class PokecubeSerializer
 
     public void setTeleport(Vector4 v, String uuid)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .getTeleDests();
+        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
+                .getData(PokecubePlayerData.class).getTeleDests();
         boolean toRemove = false;
         List<TeleDest> old = new ArrayList<TeleDest>();
 
@@ -645,8 +634,8 @@ public class PokecubeSerializer
 
     public void setTeleport(Vector4 v, String uuid, String customName)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .getTeleDests();
+        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
+                .getData(PokecubePlayerData.class).getTeleDests();
         boolean toRemove = false;
         ArrayList<TeleDest> old = new ArrayList<TeleDest>();
 
@@ -691,8 +680,8 @@ public class PokecubeSerializer
 
     public void unsetTeleport(Vector4 v, String uuid)
     {
-        List<TeleDest> list = PlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .getTeleDests();
+        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
+                .getData(PokecubePlayerData.class).getTeleDests();
         boolean toRemove = false;
         ArrayList<TeleDest> old = new ArrayList<TeleDest>();
 

@@ -24,7 +24,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
-import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.handlers.Config;
 import pokecube.core.utils.PokecubeSerializer;
 
@@ -149,12 +148,6 @@ public class BlockHealTable extends Block implements ITileEntityProvider
     public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
-        TileEntity te = world.getTileEntity(pos);
-        if (te instanceof TileEntityOwnable)
-        {
-            TileEntityOwnable tile = (TileEntityOwnable) te;
-            tile.setPlacer(placer);
-        }
         if (!world.isRemote) PokecubeSerializer.getInstance().addChunks(world, pos);
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite())
                 .withProperty(FIXED, ((meta & 8) > 0));

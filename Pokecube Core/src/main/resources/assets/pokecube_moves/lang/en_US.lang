@@ -27,7 +27,8 @@ pokemob.move.stat7=Evasion
 pokemob.move.notify.learn=%1$s Learned %2$s
 pokemob.move.terraindamage=%1$s was hurt by the %2$s
 
-pokemob.move.missed=It missed %1$s!
+pokemob.move.missed.ours=§cIt missed %1$s!
+pokemob.move.missed.theirs=§aIt missed %1$s!
 
 pokemob.move.isfrozen=%1$s is frozen.
 pokemob.move.issleeping=%1$s is sleeping.
@@ -38,6 +39,8 @@ pokemob.move.ispoisoned=%1$s is poisoned.
 pokemob.move.isbadlypoisoned=%1$s is badly poisoned.
 
 pokemob.move.sketched=%1$s Sketched %2$s
+
+pokemob.move.cooldown=%1$s §ccannot use %2$s §cright now.
 
 ##Move Names
 

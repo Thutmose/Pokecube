@@ -33,7 +33,7 @@ import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.handlers.Config;
-import pokecube.core.handlers.PlayerDataHandler;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
@@ -300,7 +300,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             Vector4 location = new Vector4(message.data);
             PokecubeSerializer.getInstance().unsetTeleport(location, player.getCachedUniqueIdString());
             player.addChatMessage(new TextComponentString("Removed The location " + location.toIntString()));
-            PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+            PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;
         }
@@ -311,7 +311,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             PokecubeSerializer.getInstance().setTeleport(location, player.getCachedUniqueIdString(), name);
             player.addChatMessage(
                     new TextComponentString("Set The location " + location.toIntString() + " as " + name));
-            PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+            PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;
         }

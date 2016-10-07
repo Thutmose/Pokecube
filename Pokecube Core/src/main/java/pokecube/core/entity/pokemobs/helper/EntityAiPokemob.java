@@ -28,6 +28,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -66,7 +67,6 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.InitAIEvent;
@@ -80,6 +80,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -408,7 +409,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void jump()
     {
         if (worldObj.isRemote) return;
-        if (!this.isInWater() && !this.isInLava())
+        boolean ladder = this.isOnLadder();
+        if (!ladder && !this.isInWater() && !this.isInLava())
         {
             if (!this.onGround) return;
 
@@ -448,7 +450,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         else
         {
-            this.motionY += 0.03999999910593033D;
+            this.motionY += ladder ? 0.1 : 0.03999999910593033D;
         }
     }
 
@@ -474,10 +476,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
             {
                 p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
-                if (getNavigator().getPath().getCurrentPathIndex() < getNavigator().getPath().getCurrentPathLength()
-                        - 1)
-                {
-                }
                 shouldGoDown = p.yCoord < posY - stepHeight;
                 shouldGoUp = p.yCoord > posY + stepHeight;
                 if (isAbleToFly)
@@ -613,14 +611,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     {
                         this.motionY = -0.05D;
                     }
+                    if (!shouldGoUp)
+                    {
+                        this.motionY -= 0.05;
+                    }
 
                 }
                 this.moveEntity(this.motionX, this.motionY, this.motionZ);
-
-                if (this.isCollidedHorizontally && this.isOnLadder())
-                {
-                    this.motionY = 0.2D;
-                }
 
                 if (this.worldObj.isRemote && (!this.worldObj.isAreaLoaded(getPosition(), 10)
                         || !this.worldObj.getChunkFromBlockCoords(getPosition()).isLoaded()))
@@ -713,12 +710,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             entitylivingbase.addToPlayerScore(this, this.scoreValue);
         }
-
         if (entity != null)
         {
-            entity.onKillEntity(this);
+            if (damageSource instanceof PokemobDamageSource)
+            {
+                ((PokemobDamageSource) damageSource).getActualEntity().onKillEntity(this);
+            }
+            else entity.onKillEntity(this);
         }
-
         this.dead = true;
         this.getCombatTracker().reset();
 
@@ -789,7 +788,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint.own", "red",
+            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
                     getPokemonDisplayName().getFormattedText());
             displayMessageToOwner(mess);
             returnToPokecube();
@@ -811,23 +810,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         controller.doServerTick(worldObj);
         super.onLivingUpdate();
-
-        if (getPokemonAIState(MATING))
+        if (isServerWorld() && isPokemonShaking && !isPokemonWet && !hasPath() && onGround)
         {
-            if (ticksExisted % 5 == 0)
-            {
-                double d = rand.nextGaussian() * 0.02D;
-                double d1 = rand.nextGaussian() * 0.02D;
-                double d2 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle(EnumParticleTypes.HEART, (posX + rand.nextFloat() * width * 2.0F) - width,
-                        posY + 0.5D + rand.nextFloat() * height, (posZ + rand.nextFloat() * width * 2.0F) - width, d,
-                        d1, d2);
-            }
-        }
-
-        if (isServerWorld() && isPokemonShaking && !field_25052_g && !hasPath() && onGround)
-        {
-            field_25052_g = true;
+            isPokemonWet = true;
             timePokemonIsShaking = 0.0F;
             prevTimePokemonIsShaking = 0.0F;
             worldObj.setEntityState(this, (byte) 8);
@@ -863,18 +848,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 setAttackTarget(null);
             }
         }
-
         for (ILogicRunnable logic : aiStuff.aiLogic)
         {
             logic.doServerTick(worldObj);
         }
-
         int state = dataManager.get(AIACTIONSTATESDW);
         if (getAIState(IMoveConstants.TAMED, state) && (getPokemonOwnerID() == null))
         {
             setPokemonAIState(IMoveConstants.TAMED, false);
         }
-
         if (loveTimer > 600)
         {
             resetLoveStatus();
@@ -909,48 +891,41 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             effect.addPokemon(this);
             effect.doEntryEffect(this);
         }
-
         if (egg != null && egg.isDead)
         {
             egg = null;
         }
-
-        field_25054_c = field_25048_b;
-
+        headRotationOld = headRotation;
         if (looksWithInterest)
         {
-            field_25048_b = field_25048_b + (1.0F - field_25048_b) * 0.4F;
+            headRotation = headRotation + (1.0F - headRotation) * 0.4F;
         }
         else
         {
-            field_25048_b = field_25048_b + (0.0F - field_25048_b) * 0.4F;
+            headRotation = headRotation + (0.0F - headRotation) * 0.4F;
         }
-
         if (looksWithInterest)
         {
 
         }
-
         if (isWet() && !(this.canUseSurf()))
         {
             isPokemonShaking = true;
-            field_25052_g = false;
+            isPokemonWet = false;
             timePokemonIsShaking = 0.0F;
             prevTimePokemonIsShaking = 0.0F;
         }
-        else if ((isPokemonShaking || field_25052_g) && field_25052_g)
+        else if ((isPokemonShaking || isPokemonWet) && isPokemonWet)
         {
             prevTimePokemonIsShaking = timePokemonIsShaking;
             timePokemonIsShaking += 0.05F;
-
             if (prevTimePokemonIsShaking >= 2.0F)
             {
                 isPokemonShaking = false;
-                field_25052_g = false;
+                isPokemonWet = false;
                 prevTimePokemonIsShaking = 0.0F;
                 timePokemonIsShaking = 0.0F;
             }
-
             if (timePokemonIsShaking > 0.4F && !swims())
             {
                 float f = (float) posY;
@@ -974,7 +949,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         popped = true;
         if (worldObj.isRemote) return;
         this.playSound(this.getSound(), 0.5f, 1);
-
         if (this.isShiny())
         {
             Vector3 particleLoc = Vector3.getNewVector();
@@ -986,7 +960,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         particleLoc, null);
             }
         }
-
     }
 
     /////////////////////////// Interaction

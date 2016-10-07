@@ -20,9 +20,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import pokecube.core.handlers.PlayerDataHandler;
-import pokecube.core.handlers.PlayerDataHandler.PlayerData;
-import pokecube.core.handlers.PlayerDataHandler.PlayerDataManager;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import thut.core.common.handlers.PlayerDataHandler.PlayerData;
+import thut.core.common.handlers.PlayerDataHandler.PlayerDataManager;
 
 public class CommandNBTEdit extends CommandBase
 {
@@ -107,7 +107,7 @@ public class CommandNBTEdit extends CommandBase
 
             if (args.length == 2)
             {
-                PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
+                PlayerDataManager manager = PokecubePlayerDataHandler.getInstance().getPlayerData(player);
                 Collection<PlayerData> data = manager.data.values();
                 List<String> options = Lists.newArrayList();
                 for (PlayerData d : data)

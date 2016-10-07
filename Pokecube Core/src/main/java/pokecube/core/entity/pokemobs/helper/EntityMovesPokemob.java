@@ -16,6 +16,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -458,7 +459,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if (getPokemonOwner() != null && !this.isDead)
         {
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
+            ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
                     getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(moveName));
             displayMessageToOwner(mess);
         }
@@ -518,7 +519,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         Collections.shuffle(moves);
         if (!worldObj.isRemote)
         {
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.info.levelup", "",
+            ITextComponent mess = new TextComponentTranslation("pokemob.info.levelup",
                     getPokemonDisplayName().getFormattedText(), level + "");
             displayMessageToOwner(mess);
         }

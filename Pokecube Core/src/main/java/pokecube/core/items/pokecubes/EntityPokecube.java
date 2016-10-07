@@ -34,7 +34,6 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.packets.PacketPokecube;
-import pokecube.core.network.packets.PacketSound;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -397,8 +396,7 @@ public class EntityPokecube extends EntityPokecubeBase
                         {
                             entityitem.setNoPickupDelay();
                             entityitem.setOwner(player.getName());
-                            PacketSound.sendMessage(Vector3.getNewVector().set(entityitem), dimension,
-                                    entityitem.getEntityId(), "pokecube:pokecube_caught", 1, 1);
+                            entityitem.playSound(POKECUBESOUND, 1, 1);
                         }
                         return true;
                     }

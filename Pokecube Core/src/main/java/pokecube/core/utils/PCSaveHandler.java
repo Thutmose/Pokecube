@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.blocks.pc.InventoryPC;
+import thut.core.common.handlers.PlayerDataHandler;
 
 public class PCSaveHandler
 {
@@ -41,7 +42,7 @@ public class PCSaveHandler
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         try
         {
-            File file = PokecubeSerializer.getFileForUUID(uuid, "PCInventory");
+            File file = PlayerDataHandler.getFileForUUID(uuid, "PCInventory");
             if (file != null && file.exists())
             {
                 FileInputStream fileinputstream = new FileInputStream(file);
@@ -77,7 +78,7 @@ public class PCSaveHandler
             return;
         try
         {
-            File file = PokecubeSerializer.getFileForUUID(uuid, "PCInventory");
+            File file = PlayerDataHandler.getFileForUUID(uuid, "PCInventory");
             if (file != null)
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();

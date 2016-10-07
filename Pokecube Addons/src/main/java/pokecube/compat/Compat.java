@@ -4,15 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
 
-import com.google.common.collect.Sets;
-
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
@@ -35,7 +30,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.compat.ai.AITeslaInterferance;
 import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
@@ -215,8 +209,6 @@ public class Compat
 
     // GCCompat gccompat;
 
-    boolean                   bagRender    = false;
-
     // @Optional.Method(modid = "PneumaticCraft")
     // @SubscribeEvent
     // public void addPneumaticcraftHeating(EntityJoinWorldEvent evt)
@@ -228,22 +220,10 @@ public class Compat
     // living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
     // }
     // }
-
-    private Set<RenderPlayer> addedBaubles = Sets.newHashSet();
-
     public Compat()
     {
         // gccompat = new GCCompat();
         // MinecraftForge.EVENT_BUS.register(gccompat);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void addBaubleRender(RenderPlayerEvent.Post event)
-    {
-        if (bagRender || addedBaubles.contains(event.getRenderer())) { return; }
-        event.getRenderer().addLayer(new BagRenderer(event.getRenderer()));
-        addedBaubles.add(event.getRenderer());
     }
 
     @Optional.Method(modid = "DynamicLights")
@@ -269,15 +249,6 @@ public class Compat
     {
         System.out.println("SoulShards Compat");
         new pokecube.compat.soulshards.SoulShardsCompat();
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Optional.Method(modid = "Baubles")
-    @EventHandler
-    public void BaublesCompat(FMLPostInitializationEvent evt)
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.baubles.BaublesEventHandler());
-        bagRender = true;
     }
 
     private void doMetastuff()

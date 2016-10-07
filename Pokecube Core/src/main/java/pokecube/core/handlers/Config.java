@@ -95,6 +95,8 @@ public class Config extends ConfigBase
     public boolean                       pcOnDrop                   = true;
     @Configure(category = misc)
     public int                           captureDelayTicks          = 50;
+    @Configure(category = misc)
+    public boolean                       catchOrderRequired         = true;
 
     @Configure(category = misc)
     public boolean                       pcHoldsOnlyPokecubes       = true;

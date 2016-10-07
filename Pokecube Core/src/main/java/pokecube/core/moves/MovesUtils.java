@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.ITextComponent;
@@ -83,13 +84,12 @@ public class MovesUtils implements IMoveConstants
         ITextComponent text;
         if (efficiency == -1)
         {
-            String message = "pokemob.move.missed";
             if (attacked instanceof IPokemob)
             {
-                text = CommandTools.makeTranslatedMessage(message, "green",
+                text = new TextComponentTranslation("pokemob.move.missed.theirs",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = CommandTools.makeTranslatedMessage(message, "red",
+                text = new TextComponentTranslation("pokemob.move.missed.ours",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
                 return;
@@ -100,13 +100,7 @@ public class MovesUtils implements IMoveConstants
                 {
                     attacked = ((EntityLiving) attacker).getAttackTarget();
                     String name = attacked.getName();
-                    text = CommandTools.makeTranslatedMessage(message, "red", name);
-                    attacker.displayMessageToOwner(text);
-                }
-                else if (attacker.getPokemonAIState(IMoveConstants.ANGRY))
-                {
-                    message = "pokemob.move.missed";
-                    text = CommandTools.makeTranslatedMessage(message, "red");
+                    text = new TextComponentTranslation("pokemob.move.missed.ours", name);
                     attacker.displayMessageToOwner(text);
                 }
             }
@@ -136,6 +130,7 @@ public class MovesUtils implements IMoveConstants
                 text = CommandTools.makeTranslatedMessage(message, "red",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
+                attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, 1, 1);
                 return;
             }
         }
@@ -150,6 +145,7 @@ public class MovesUtils implements IMoveConstants
                 text = CommandTools.makeTranslatedMessage(message, "red",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
+                attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, 1, 1);
             }
         }
         else if (efficiency > 1)
@@ -163,6 +159,7 @@ public class MovesUtils implements IMoveConstants
                 text = CommandTools.makeTranslatedMessage(message, "red",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
+                attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, 1, 1);
             }
         }
 
@@ -176,6 +173,7 @@ public class MovesUtils implements IMoveConstants
                 text = CommandTools.makeTranslatedMessage("pokemob.move.critical.hit", "red",
                         ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
+                attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
             }
         }
     }

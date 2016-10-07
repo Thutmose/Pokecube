@@ -9,8 +9,6 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
@@ -130,7 +128,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         super.invalidate();
         if (worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
         {
-            worldObj.playRecord(pos, null);
+            PokecubeMod.getProxy().toggleSound("pokecube:pokecenterloop", getPos());
         }
     }
 
@@ -220,19 +218,21 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void update()
     {
+        if (!worldObj.isRemote) return;
         int power = worldObj.getStrongPower(pos);
-        ticks++;
+        here.set(this);
         if (power == 0)
         {
-            if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here)) worldObj.playRecord(pos, null);
+            if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here))
+                PokecubeMod.getProxy().toggleSound("pokecube:pokecenterloop", getPos());
             return;
         }
-        here.set(this);
-        if (!noSound && worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
+        if (!noSound && !PokecubeMod.getProxy().isSoundPlaying(here) && ticks <= 0)
         {
-            worldObj.playRecord(pos, null);
-            worldObj.playRecord(pos, new SoundEvent(new ResourceLocation("pokecube:pokecenterloop")));
+            PokecubeMod.getProxy().toggleSound("pokecube:pokecenterloop", getPos());
+            ticks = 10;
         }
+        ticks--;
     }
 
     @Override

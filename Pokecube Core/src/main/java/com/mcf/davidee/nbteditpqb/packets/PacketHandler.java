@@ -14,8 +14,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.handlers.PlayerDataHandler;
-import pokecube.core.handlers.PlayerDataHandler.PlayerData;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
 /** Created by Jay113355 on 6/28/2016. */
 public class PacketHandler
@@ -137,7 +137,7 @@ public class PacketHandler
                     else if (entity != null)
                     {
                         NBTTagCompound tag = new NBTTagCompound();
-                        PlayerData data = PlayerDataHandler.getInstance()
+                        PlayerData data = PokecubePlayerDataHandler.getInstance()
                                 .getPlayerData(entity.getCachedUniqueIdString()).getData(customType);
                         if (data == null)
                         {

@@ -25,10 +25,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.compat.baubles.BetterCustomHeadLayer;
 
 public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
 {

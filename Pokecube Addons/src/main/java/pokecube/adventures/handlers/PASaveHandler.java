@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.items.bags.InventoryBag;
-import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.handlers.PlayerDataHandler;
 
 public class PASaveHandler
 {
@@ -44,7 +44,7 @@ public class PASaveHandler
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) return;
         try
         {
-            File file = PokecubeSerializer.getFileForUUID(uuid, "BagInventory");
+            File file = PlayerDataHandler.getFileForUUID(uuid, "BagInventory");
             if (file != null && file.exists())
             {
                 FileInputStream fileinputstream = new FileInputStream(file);
@@ -78,7 +78,7 @@ public class PASaveHandler
         if (FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
         try
         {
-            File file = PokecubeSerializer.getFileForUUID(uuid, "BagInventory");
+            File file = PlayerDataHandler.getFileForUUID(uuid, "BagInventory");
             if (file != null)
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
@@ -104,16 +104,13 @@ public class PASaveHandler
     {
         NBTTagList tagsPC = InventoryBag.saveToNBT();
         nbt.setTag("PC", tagsPC);
-
     }
 
     // TODO call this to send data to clients
     public void writeBagToNBT(NBTTagCompound nbt, String uuid)
     {
         NBTTagList tagsPC = InventoryBag.saveToNBT(uuid);
-
         nbt.setTag("PC", tagsPC);
-
     }
 
 }

@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -42,7 +43,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
@@ -129,31 +129,21 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT) };
 
     protected boolean                               looksWithInterest;
-
-    protected float                                 field_25048_b;
-
-    protected float                                 field_25054_c;
+    protected float                                 headRotation;
+    protected float                                 headRotationOld;
     protected boolean                               isPokemonShaking;
-
-    protected boolean                               field_25052_g;
-
+    protected boolean                               isPokemonWet;
     protected float                                 timePokemonIsShaking;
     protected float                                 prevTimePokemonIsShaking;
-    // protected Integer pokedexNb = 0;
     public float                                    length           = 1;
     protected Vector3                               here             = Vector3.getNewVector();
-
     protected Vector3                               vec              = Vector3.getNewVector();
-
     protected Vector3                               v1               = Vector3.getNewVector();
     protected Vector3                               v2               = Vector3.getNewVector();
     protected Vector3                               vBak             = Vector3.getNewVector();
     boolean                                         named            = false;
-
     boolean                                         initHome         = true;
-
     protected AnimalChest                           pokeChest;
-
     boolean                                         returning        = false;
     protected int                                   abilityIndex     = 0;
     protected boolean                               players          = false;
@@ -285,7 +275,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     @Override
     public float getInterestedAngle(float f)
     {
-        return (field_25054_c + (field_25048_b - field_25054_c) * f) * 0.15F * (float) Math.PI;
+        return (headRotationOld + (headRotation - headRotationOld) * f) * 0.15F * (float) Math.PI;
     }
 
     @Override
@@ -454,7 +444,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     @Override
     protected boolean isMovementBlocked()
     {
-        return field_25052_g || this.getHealth() <= 0.0F;
+        return isPokemonWet || this.getHealth() <= 0.0F;
     }
 
     @Override
@@ -658,7 +648,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
                         StatsCollector.addCapture(this);
                     }
                 }
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
+                ITextComponent mess = new TextComponentTranslation("pokemob.action.return",
                         getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
             }

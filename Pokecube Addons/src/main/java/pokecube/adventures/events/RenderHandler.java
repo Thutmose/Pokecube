@@ -14,7 +14,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.client.ClientProxy;
-import pokecube.adventures.client.render.item.BagRenderer;
 import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
@@ -31,7 +30,7 @@ public class RenderHandler
     public void keyInput(KeyInputEvent evt)
     {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        boolean bag = BagRenderer.getChecker().isWearingBag(player);
+        boolean bag = ClientProxy.getChecker().isWearingBag(player);
         if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
         {
             PacketPokeAdv.sendBagOpenPacket();

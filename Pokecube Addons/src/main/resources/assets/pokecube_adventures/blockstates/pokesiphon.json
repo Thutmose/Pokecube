@@ -1,5 +1,5 @@
 {
    "variants": {
-   "normal": { "model": "pokecube_compat:pokesiphon" }
+   "normal": { "model": "pokecube_adventures:pokesiphon" }
     }
 }

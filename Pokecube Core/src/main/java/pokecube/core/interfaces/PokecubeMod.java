@@ -228,6 +228,8 @@ public abstract class PokecubeMod
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
 
     public abstract void setEntityProvider(IEntityProvider provider);
+    
+    public abstract Achievement getAchievement(String desc);
 
     public abstract void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args);
 

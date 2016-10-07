@@ -28,7 +28,6 @@ pokemob.status.confuse.remove=%1$s is no longer confused
 pokemob.status.confusion=%1$s hurt itself in confusion
 pokemob.status.infatuate=%1$s is immobilized by love
 
-pokemob.move.cooldown=%1$s §ccannot use %2$s §cright now.
 pokecube.recall.fail=§cNothing to recall.
 pokecube.recall.success=%1$s §arecalled.
 
@@ -58,16 +57,16 @@ pokecube.secretBase.exit=Left the Secret Base
 pokecube.secretBase.enter=Use "/pokebase exit" to leave, or create an exit with secret power.
 
 pokemob.action.sendout=%1$s was sent out
-pokemob.action.return=%1$s has returned to the Pokécube
+pokemob.action.return=%1$s §ahas returned to the Pokécube
 pokemob.action.usemove=You tell %1$s to use %2$s
-pokemob.action.faint.enemy=Enemy %1$s has fainted!
-pokemob.action.faint.own=Your %1$s has fainted!
+pokemob.action.faint.enemy=§aEnemy %1$s §ahas fainted!
+pokemob.action.faint.own=§cYour %1$s §chas fainted!
 pokemob.action.denydamageblock=§cpokemobsDamageBlocks is disabled via configs
 pokemob.action.needsberries=§cYour Pokémob needs to eat more Berries to do that
 pokemob.action.denyrepel=§cYour Pokémob is too disgusted by repel to do that
 pokemob.areanotloaded=§cWarning, Unloaded area.
 
-pokemob.info.levelup=%1$s has grown to level %2$s
+pokemob.info.levelup=%1$s §ahas grown to level %2$s
 
 pokemob.info.happy0=§4Your Pokémob is very unhappy
 pokemob.info.happy1=§cYour Pokémob is unhappy
@@ -307,11 +306,11 @@ gui.pokemob.deny=Deny
 gui.pokemob.teleport=Teleports
 gui.pokedex.village=Nearest Village
 
-pokecube.caught=%1$s has been caught!
-pokecube.missed=You missed the Pokémob!
-pokecube.denied=The Pokémob refuses to enter the cube!
-pokecube.noroom=There is not enough room for the Pokémob here.
-pokecube.badaim=I should probably aim more carefully
+pokecube.caught=%1$s §ahas been caught!
+pokecube.missed=%1$s §cbroke out!
+pokecube.denied=§cThe Pokémob refuses to enter the cube!
+pokecube.noroom=§cThere is not enough room for the Pokémob here.
+pokecube.badaim=§cI should probably aim more carefully
 pokecube.mega.noring=§cYou need to be wearing a mega item to initiate Mega Evolution.
 
 pokecube.professor.deny=Professor: §cYou have already recieved a Pokémob

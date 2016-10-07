@@ -31,6 +31,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -42,7 +43,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
@@ -648,7 +648,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
                         StatsCollector.addCapture(this);
                     }
                 }
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.return", "green",
+                ITextComponent mess = new TextComponentTranslation("pokemob.action.return",
                         getPokemonDisplayName().getFormattedText());
                 displayMessageToOwner(mess);
             }

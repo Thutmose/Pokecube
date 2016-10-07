@@ -21,9 +21,11 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -36,11 +38,11 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.packets.PacketSound;
 import thut.api.maths.Vector3;
 
 public class EntityPokecubeBase extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
 {
+    public static SoundEvent POKECUBESOUND;
     static final DataParameter<Integer>                     ENTITYID       = EntityDataManager
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     private static final DataParameter<Optional<ItemStack>> ITEM           = EntityDataManager
@@ -217,7 +219,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
             if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
             {
-                ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.missed", "red");
+                ITextComponent mess = new TextComponentTranslation("pokecube.missed", entity1.getPokemonDisplayName());
                 ((EntityPlayer) shootingEntity).addChatMessage(mess);
                 ((EntityCreature) entity1).setAttackTarget(shootingEntity);
             }
@@ -240,12 +242,10 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         this.setEntityItemStack(mobStack);
         if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
         {
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokecube.caught", "green",
-                    mob.getPokemonDisplayName());
+            ITextComponent mess = new TextComponentTranslation("pokecube.caught", mob.getPokemonDisplayName());
             ((EntityPlayer) shootingEntity).addChatMessage(mess);
             this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
-            PacketSound.sendMessage(Vector3.getNewVector().set(this), dimension, getEntityId(),
-                    "pokecube:pokecube_caught", 1, 1);
+            this.playSound(POKECUBESOUND, 1, 1);
         }
         return true;
     }

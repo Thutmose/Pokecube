@@ -1,5 +1,5 @@
 {
-    "parent": "pokecube_compat:block/pokesiphon",
+    "parent": "pokecube_adventures:block/pokesiphon",
     "display": {
     "thirdperson": {
         "rotation": [ 10, -45, 170 ],

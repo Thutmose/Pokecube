@@ -14,6 +14,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.core.PokecubeCore;
 import pokecube.core.utils.Tools;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
@@ -22,16 +23,16 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
 {
     X3dModel                          model;
     X3dModel                          model2;
-    ResourceLocation                  belt_1 = new ResourceLocation("pokecube_compat:textures/items/belt1.png");
-    ResourceLocation                  belt_2 = new ResourceLocation("pokecube_compat:textures/items/belt2.png");
+    ResourceLocation                  belt_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
+    ResourceLocation                  belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
 
     private final RenderLivingBase<?> livingEntityRenderer;
 
     public TrainerBeltRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
         this.livingEntityRenderer = livingEntityRendererIn;
-        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/belt.x3d"));
-        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/belt.x3d"));
+        model = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
+        model2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
     }
 
     @Override

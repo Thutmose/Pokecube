@@ -30,9 +30,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Achievement;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.achievements.AchievementCatch;
 import pokecube.core.achievements.AchievementHatch;
@@ -711,27 +713,23 @@ public class Database
         }
         ProgressManager.pop(bar);
 
+        bar = ProgressManager.push("Achivements", allFormes.size());
         for (PokedexEntry e : allFormes)
         {
+            bar.step(e.getName());
             if (e.stats == null || e.evs == null)
             {
                 System.err.println(new NullPointerException(e + " is missing stats or evs " + e.stats + " " + e.evs));
             }
             int x = -2 + (e.getPokedexNb() / 16) * 2;
-            int y = -2 + (e.getPokedexNb() % 16) - 1;
-            if (!PokecubeMod.hatchAchievements.containsKey(e))
+            int y = -2 + (e.getPokedexNb() % 16) * 2 - 1;
+            if (!PokecubeMod.hatchAchievements.containsKey(e) && e.evolvesFrom == null)
             {
-                AchievementHatch hatch = new AchievementHatch(e, x, y, PokecubeItems.getEmptyCube(0), null);
-                hatch.registerStat();
-                PokecubeMod.achievementPageHatch.getAchievements().add(hatch);
-                PokecubeMod.hatchAchievements.put(e, hatch);
+                registerHatchAchieve(e);
             }
             if (!PokecubeMod.catchAchievements.containsKey(e))
             {
-                AchievementCatch catc = new AchievementCatch(e, x, y, PokecubeItems.getEmptyCube(0), null);
-                catc.registerStat();
-                PokecubeMod.achievementPageCatch.getAchievements().add(catc);
-                PokecubeMod.catchAchievements.put(e, catc);
+                registerCatchAchieve(e);
             }
             if (!PokecubeMod.killAchievements.containsKey(e))
             {
@@ -741,6 +739,55 @@ public class Database
                 PokecubeMod.killAchievements.put(e, kill);
             }
         }
+        ProgressManager.pop(bar);
+    }
+
+    private static Achievement registerHatchAchieve(PokedexEntry e)
+    {
+        if (PokecubeMod.hatchAchievements.containsKey(e)) return PokecubeMod.hatchAchievements.get(e);
+        int x = -2 + (e.getPokedexNb() / 16) * 2;
+        int y = -2 + (e.getPokedexNb() % 16) * 2 - 1;
+        PokedexEntry actual = e.getBaseForme() != null ? e.getBaseForme() : e;
+        Achievement hatch = actual != e ? registerHatchAchieve(actual)
+                : new AchievementHatch(actual, x, y, PokecubeItems.getEmptyCube(0), null);
+        if (e != actual) PokecubeMod.hatchAchievements.put(e, hatch);
+        if (!PokecubeMod.hatchAchievements.containsKey(actual))
+        {
+            hatch.registerStat();
+            PokecubeMod.achievementPageHatch.getAchievements().add(hatch);
+            PokecubeMod.hatchAchievements.put(actual, hatch);
+        }
+        return hatch;
+    }
+
+    private static Achievement registerCatchAchieve(PokedexEntry e)
+    {
+        if (PokecubeMod.catchAchievements.containsKey(e)) return PokecubeMod.catchAchievements.get(e);
+        int x = -2 + (e.getPokedexNb() / 16) * 2;
+        int y = -4 + (e.getPokedexNb() % 16) * 2 - 1;
+        Achievement parent = null;
+        if (PokecubeCore.core.getConfig().catchOrderRequired && e.evolvesFrom != null && e.getSpawnData() == null)
+        {
+            boolean baseCanSpawn = false;
+            PokedexEntry from = e.evolvesFrom;
+            while (from != null && !baseCanSpawn)
+            {
+                baseCanSpawn = from.getSpawnData() != null;
+                from = from.evolvesFrom;
+            }
+            if (baseCanSpawn) parent = registerCatchAchieve(e.evolvesFrom);
+        }
+        PokedexEntry actual = e.getBaseForme() != null ? e.getBaseForme() : e;
+        Achievement catc = actual != e ? registerCatchAchieve(actual)
+                : new AchievementCatch(actual, x, y, PokecubeItems.getEmptyCube(0), parent);
+        if (e != actual) PokecubeMod.catchAchievements.put(e, catc);
+        if (!PokecubeMod.catchAchievements.containsKey(actual))
+        {
+            catc.registerStat();
+            PokecubeMod.achievementPageCatch.getAchievements().add(catc);
+            PokecubeMod.catchAchievements.put(actual, catc);
+        }
+        return catc;
     }
 
     private static void loadStarterPack()

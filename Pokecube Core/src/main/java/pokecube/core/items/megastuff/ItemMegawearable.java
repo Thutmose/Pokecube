@@ -5,8 +5,6 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import baubles.api.BaubleType;
-import baubles.api.IBauble;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -17,20 +15,20 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
+import thut.wearables.EnumWearable;
 
-@net.minecraftforge.fml.common.Optional.Interface(iface = "baubles.api.IBauble", modid = "Baubles")
-public class ItemMegawearable extends Item implements IBauble, IMegaWearable
+public class ItemMegawearable extends Item implements IMegaWearable
 {
-    public static Map<String, String> wearables = Maps.newHashMap();
+    public static Map<String, EnumWearable> wearables = Maps.newHashMap();
 
     static
     {
-        wearables.put("megaring", "RING");
-        wearables.put("megabelt", "BELT");
-        wearables.put("megahat", "");
+        wearables.put("megaring", EnumWearable.FINGER);
+        wearables.put("megabelt", EnumWearable.WAIST);
+        wearables.put("megahat", EnumWearable.HAT);
     }
 
     public ItemMegawearable()
@@ -54,52 +52,6 @@ public class ItemMegawearable extends Item implements IBauble, IMegaWearable
             String s = I18n.format(colour.getUnlocalizedName());
             list.add(s);
         }
-    }
-
-    @Override
-    @Optional.Method(modid = "Baubles")
-    public boolean canEquip(ItemStack itemstack, EntityLivingBase player)
-    {
-        return true;
-    }
-
-    @Override
-    @Optional.Method(modid = "Baubles")
-    public boolean canUnequip(ItemStack itemstack, EntityLivingBase player)
-    {
-        return true;
-    }
-
-    @Override
-    @Optional.Method(modid = "Baubles")
-    public BaubleType getBaubleType(ItemStack itemstack)
-    {
-        String name = getUnlocalizedName(itemstack).replace("item.", "");
-        String type = wearables.get(name);
-        if (type != null && !type.isEmpty())
-        {
-            return BaubleType.valueOf(type);
-        }
-        else if (type != null && type.isEmpty()) return null;
-        return BaubleType.RING;
-    }
-
-    @Override
-    @Optional.Method(modid = "Baubles")
-    public void onEquipped(ItemStack itemstack, EntityLivingBase player)
-    {
-    }
-
-    @Override
-    @Optional.Method(modid = "Baubles")
-    public void onUnequipped(ItemStack itemstack, EntityLivingBase player)
-    {
-    }
-
-    @Override
-    @Optional.Method(modid = "Baubles")
-    public void onWornTick(ItemStack itemstack, EntityLivingBase player)
-    {
     }
 
     @Override
@@ -152,5 +104,19 @@ public class ItemMegawearable extends Item implements IBauble, IMegaWearable
         String name = getUnlocalizedName(stack).replace("item.", "");
         if (name.equals("megahat")) return armorType == EntityEquipmentSlot.HEAD;
         return false;
+    }
+
+    @Override
+    public EnumWearable getSlot(ItemStack stack)
+    {
+        String name = getUnlocalizedName(stack).replace("item.", "");
+        return wearables.get(name);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    {
+        PokecubeCore.proxy.renderWearable(slot, wearer, stack, partialTicks);
     }
 }

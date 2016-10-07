@@ -28,6 +28,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -66,7 +67,6 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.InitAIEvent;
@@ -80,6 +80,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -709,12 +710,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             entitylivingbase.addToPlayerScore(this, this.scoreValue);
         }
-
         if (entity != null)
         {
-            entity.onKillEntity(this);
+            if (damageSource instanceof PokemobDamageSource)
+            {
+                ((PokemobDamageSource) damageSource).getActualEntity().onKillEntity(this);
+            }
+            else entity.onKillEntity(this);
         }
-
         this.dead = true;
         this.getCombatTracker().reset();
 
@@ -785,7 +788,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.action.faint.own", "red",
+            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
                     getPokemonDisplayName().getFormattedText());
             displayMessageToOwner(mess);
             returnToPokecube();

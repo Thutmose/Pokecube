@@ -15,11 +15,11 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
-import pokecube.core.handlers.PlayerDataHandler;
-import pokecube.core.handlers.PlayerDataHandler.PlayerData;
-import pokecube.core.handlers.PlayerDataHandler.PlayerDataManager;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.handlers.PlayerDataHandler.PlayerData;
+import thut.core.common.handlers.PlayerDataHandler.PlayerDataManager;
 
 public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync, IMessage>
 {
@@ -27,7 +27,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
 
     public static void sendInitPacket(EntityPlayer player, String dataType)
     {
-        PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
+        PlayerDataManager manager = PokecubePlayerDataHandler.getInstance().getPlayerData(player);
         PlayerData data = manager.getData(dataType);
         PacketDataSync packet = new PacketDataSync();
         packet.data.setString("type", dataType);
@@ -35,7 +35,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         data.writeToNBT(tag1);
         packet.data.setTag("data", tag1);
         PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
-        PlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
+        PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 
     public static void sendInitHandshake(EntityPlayer player)
@@ -99,7 +99,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             }
             else
             {
-                PlayerDataManager manager = PlayerDataHandler.getInstance().getPlayerData(player);
+                PlayerDataManager manager = PokecubePlayerDataHandler.getInstance().getPlayerData(player);
                 manager.getData(message.data.getString("type")).readFromNBT(message.data.getCompoundTag("data"));
             }
         }

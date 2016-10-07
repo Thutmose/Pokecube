@@ -9,9 +9,9 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.ai.thread.IAICombat;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -150,7 +150,7 @@ public class AIAttack extends AIBase implements IAICombat
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
             {
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
-                ITextComponent message = CommandTools.makeTranslatedMessage("pokemob.agress", "red",
+                ITextComponent message = new TextComponentTranslation("pokemob.agress",
                         ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 entityTarget.addChatMessage(message);
             }

@@ -1,4 +1,4 @@
-package pokecube.compat.baubles;
+package pokecube.adventures.client.render.entity;
 
 import java.awt.Color;
 import java.util.UUID;
@@ -32,8 +32,8 @@ import thut.core.client.render.x3d.X3dModel;
 
 public class BetterCustomHeadLayer extends LayerCustomHead
 {
-    ResourceLocation belt_1 = new ResourceLocation("pokecube_compat:textures/items/hat.png");
-    ResourceLocation belt_2 = new ResourceLocation("pokecube_compat:textures/items/hat2.png");
+    ResourceLocation belt_1 = new ResourceLocation("pokecube:textures/worn/hat.png");
+    ResourceLocation belt_2 = new ResourceLocation("pokecube:textures/worn/hat2.png");
     X3dModel         model;
     X3dModel         model2;
     ModelRenderer    modelRenderer;
@@ -42,8 +42,8 @@ public class BetterCustomHeadLayer extends LayerCustomHead
     {
         super(renderer);
         this.modelRenderer = renderer;
-        model = new X3dModel(new ResourceLocation("pokecube_compat:models/item/hat.x3d"));
-        model2 = new X3dModel(new ResourceLocation("pokecube_compat:models/item/hat.x3d"));
+        model = new X3dModel(new ResourceLocation("pokecube:models/worn/hat.x3d"));
+        model2 = new X3dModel(new ResourceLocation("pokecube:models/worn/hat.x3d"));
     }
 
     @Override

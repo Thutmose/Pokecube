@@ -1,7 +1,9 @@
 package pokecube.adventures;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -14,6 +16,7 @@ import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.items.bags.ContainerBag;
+import thut.wearables.EnumWearable;
 
 public class CommonProxy implements IGuiHandler
 {
@@ -27,6 +30,11 @@ public class CommonProxy implements IGuiHandler
     public EntityPlayer getPlayer()
     {
         return null;
+    }
+
+    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    {
+
     }
 
     public EntityPlayer getPlayer(String playerName)

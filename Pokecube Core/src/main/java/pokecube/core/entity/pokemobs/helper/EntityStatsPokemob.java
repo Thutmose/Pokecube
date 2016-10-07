@@ -30,7 +30,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -582,7 +581,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 attacker.addEVs(evsToAdd);
             }
             Entity targetOwner = ((IPokemob) attacked).getPokemonOwner();
-            displayMessageToOwner(CommandTools.makeTranslatedMessage("pokemob.action.faint.enemy", "green",
+            displayMessageToOwner(new TextComponentTranslation("pokemob.action.faint.enemy",
                     ((IPokemob) attacked).getPokemonDisplayName()));
             if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
                     && !PokecubeMod.pokemobsDamagePlayers)

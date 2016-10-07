@@ -1,6 +1,7 @@
 package pokecube.core.items.megastuff;
 
-public interface IMegaWearable
-{
+import thut.wearables.IWearable;
 
+public interface IMegaWearable extends IWearable
+{
 }

@@ -20,7 +20,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.events.PokedexInspectEvent;
-import pokecube.core.handlers.PlayerDataHandler.PokecubePlayerCustomData;
+import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
@@ -63,7 +63,7 @@ public class PokedexInspector
                         entityitem.setNoPickupDelay();
                         entityitem.setOwner(entity.getName());
                     }
-                    PlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
+                    PokecubePlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
                 }
                 return true;
             }
@@ -112,7 +112,7 @@ public class PokedexInspector
         if (evt.isCanceled())
         {
             String uuid = evt.getEntity().getCachedUniqueIdString();
-            PlayerDataHandler.getInstance().save(uuid);
+            PokecubePlayerDataHandler.getInstance().save(uuid);
         }
         return evt.isCanceled();
     }
@@ -165,7 +165,7 @@ public class PokedexInspector
     public void inspectEvent(PokedexInspectEvent evt)
     {
         String uuid = evt.getEntity().getCachedUniqueIdString();
-        PokecubePlayerCustomData data = PlayerDataHandler.getInstance().getPlayerData(uuid)
+        PokecubePlayerCustomData data = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
                 .getData(PokecubePlayerCustomData.class);
         boolean done = false;
         for (IInspectReward reward : rewards)

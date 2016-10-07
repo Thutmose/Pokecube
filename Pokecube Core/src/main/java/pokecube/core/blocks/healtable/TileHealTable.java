@@ -1,6 +1,5 @@
 package pokecube.core.blocks.healtable;
 
-import net.minecraft.client.audio.ISound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,22 +10,18 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
-    public static boolean noSound    = false;
-    @SideOnly(Side.CLIENT)
-    public static ISound  pokecenter = null;
+    public static boolean noSound = false;
     private ItemStack[]   inventory;
 
-    Vector3               here       = Vector3.getNewVector();
+    Vector3               here    = Vector3.getNewVector();
 
-    int                   ticks      = 0;
-    boolean               stopped    = false;
+    int                   ticks   = 0;
+    boolean               stopped = false;
 
     public TileHealTable()
     {

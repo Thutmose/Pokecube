@@ -25,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.stats.Achievement;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -42,8 +43,10 @@ import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityHasPokemobs;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
+import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
@@ -302,10 +305,30 @@ public class EntityTrainer extends EntityHasPokemobs
                     }
                     item.setPickupDelay(0);
                 }
+                Achievement stat = null;
+                if (i.getItem() instanceof ItemBadge)
+                {
+                    for (String s : ItemBadge.variants)
+                    {
+                        if (Tools.isSameStack(i, PokecubeItems.getStack(s)))
+                        {
+                            stat = PokecubeCore.core.getAchievement("pokeadv." + s);
+                            break;
+                        }
+                    }
+                }
+                if (stat != null)
+                {
+                    player.addStat(stat);
+                }
                 ITextComponent text = getMessage(MessageState.GIVEITEM, this.getDisplayName(), i.getDisplayName(),
                         player.getDisplayName());
                 defeater.addChatMessage(text);
             }
+            boolean leader = this instanceof EntityLeader;
+            Achievement achieve = PokecubeCore.core
+                    .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
+            player.addStat(achieve);
         }
         if (defeater != null)
         {

@@ -1,4 +1,4 @@
-package pokecube.adventures.client.models.items;
+package pokecube.core.client.models;
 
 import java.awt.Color;
 
@@ -11,11 +11,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import pokecube.core.PokecubeCore;
 
 public class ModelRing extends ModelBase
 {
-    ResourceLocation texture_1 = new ResourceLocation("pokecube_adventures", "textures/megaring_1.png");
-    ResourceLocation texture_2 = new ResourceLocation("pokecube_adventures", "textures/megaring_2.png");
+    ResourceLocation texture_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/megaring_1.png");
+    ResourceLocation texture_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/megaring_2.png");
     // fields
     ModelRenderer    Shape2;
     ModelRenderer    Shape1;

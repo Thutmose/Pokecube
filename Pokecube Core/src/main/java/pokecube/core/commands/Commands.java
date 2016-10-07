@@ -32,8 +32,8 @@ import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
-import pokecube.core.handlers.PlayerDataHandler;
-import pokecube.core.handlers.PlayerDataHandler.PokecubePlayerStats;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -280,7 +280,7 @@ public class Commands extends CommandBase
                 {
                     if (player != null)
                     {
-                        NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
+                        NBTTagCompound tag = PokecubePlayerDataHandler.getCustomDataTag(player);
                         if (check)
                         {
                             boolean has = tag.getBoolean(reward);
@@ -292,7 +292,7 @@ public class Commands extends CommandBase
                             tag.setBoolean(reward, false);
                             cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward",
                                     "", player.getName(), reward));
-                            PlayerDataHandler.saveCustomData(player);
+                            PokecubePlayerDataHandler.saveCustomData(player);
                         }
                     }
                     else
@@ -391,7 +391,7 @@ public class Commands extends CommandBase
         {
             EntityPlayer player = getPlayer(cSender.getServer(), cSender, args[1]);
             InventoryPC pc = InventoryPC.getPC(player);
-            PokecubePlayerStats stats = PlayerDataHandler.getInstance().getPlayerData(player)
+            PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance().getPlayerData(player)
                     .getData(PokecubePlayerStats.class);
             for (ItemStack stack : pc.getContents())
             {

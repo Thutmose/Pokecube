@@ -12,8 +12,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
@@ -22,6 +25,7 @@ import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
+import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -76,11 +80,15 @@ import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData;
+import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
+import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
 import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.animations.EntityMoveUse;
@@ -104,6 +112,7 @@ import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
+import thut.core.common.handlers.PlayerDataHandler;
 
 @Mod( // @formatter:off
         modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
@@ -364,6 +373,11 @@ public class PokecubeCore extends PokecubeMod
         proxy.initClient();
         proxy.registerRenderInformation();
         moveQueues = new MoveQueuer();
+
+        PlayerDataHandler.dataMap.add(PokecubePlayerData.class);
+        PlayerDataHandler.dataMap.add(PokecubePlayerStats.class);
+        PlayerDataHandler.dataMap.add(PokecubePlayerCustomData.class);
+
         EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
                 1, true);
         EntityRegistry.registerModEntity(EntityPokemobPart.class, "pokecube:genericMobPart", getUniqueEntityId(this),
@@ -450,9 +464,12 @@ public class PokecubeCore extends PokecubeMod
             p.getSoundEvent();
             p.updateMoves();
         }
-        SoundEvent.registerSound(PokecubeMod.ID + ":pokecube_caught");
-        SoundEvent.registerSound(PokecubeMod.ID + ":pokecenter");
-        SoundEvent.registerSound(PokecubeMod.ID + ":pokecenterloop");
+        ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
+        GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
+        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenter");
+        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
+        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
+        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
                 + Database.allFormes.size() + " Formes");
     }
@@ -751,6 +768,19 @@ public class PokecubeCore extends PokecubeMod
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
         AISaveHandler.instance();
+        for (Achievement a : AchievementList.ACHIEVEMENTS)
+        {
+            if (a == null) continue;
+            try
+            {
+                String name = a.statId;
+                if (name != null) achievements.put(name, a);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     /** clears PC when server stops
@@ -760,9 +790,18 @@ public class PokecubeCore extends PokecubeMod
     public void WorldUnloadEvent(FMLServerStoppedEvent evt)
     {
         InventoryPC.clearPC();
+        achievements.clear();
         WorldGenStartBuilding.building = false;
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
+    }
+
+    Map<String, Achievement> achievements = Maps.newHashMap();
+
+    @Override
+    public Achievement getAchievement(String desc)
+    {
+        return achievements.get(desc);
     }
 
 }

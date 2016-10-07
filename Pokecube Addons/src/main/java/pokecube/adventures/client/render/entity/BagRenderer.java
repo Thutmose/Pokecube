@@ -1,4 +1,4 @@
-package pokecube.adventures.client.render.item;
+package pokecube.adventures.client.render.entity;
 
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
@@ -56,6 +56,7 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
             ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             if (armour != null) return armour.getItem() instanceof ItemBag
                     || (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag"));
+            
             return false;
         }
 
@@ -86,14 +87,14 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
     X3dModel                          model;
     X3dModel                          model2;
 
-    private ResourceLocation          BAG_1 = new ResourceLocation("pokecube_adventures:textures/bag_1.png");
-    private ResourceLocation          BAG_2 = new ResourceLocation("pokecube_adventures:textures/bag_2.png");
+    private ResourceLocation          BAG_1 = new ResourceLocation("pokecube_adventures:textures/worn/bag_1.png");
+    private ResourceLocation          BAG_2 = new ResourceLocation("pokecube_adventures:textures/worn/bag_2.png");
 
     public BagRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
         renderer = livingEntityRendererIn;
-        model = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/item/bag.x3d"));
-        model2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/item/bag.x3d"));
+        model = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
+        model2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
     }
 
     @Override

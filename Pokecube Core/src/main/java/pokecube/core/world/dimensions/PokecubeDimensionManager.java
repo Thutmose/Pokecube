@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import pokecube.core.handlers.PlayerDataHandler;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketSyncDimIds;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
@@ -95,7 +95,7 @@ public class PokecubeDimensionManager
     public static int getDimensionForPlayer(String player)
     {
         int dim = 0;
-        NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
+        NBTTagCompound tag = PokecubePlayerDataHandler.getCustomDataTag(player);
         if (tag.hasKey("secretPowerDimID"))
         {
             dim = tag.getInteger("secretPowerDimID");
@@ -106,7 +106,7 @@ public class PokecubeDimensionManager
             PokecubeMod.log("Creating Base DimensionID for " + player);
             dim = DimensionManager.getNextFreeDimId();
             tag.setInteger("secretPowerDimID", dim);
-            PlayerDataHandler.saveCustomData(player);
+            PokecubePlayerDataHandler.saveCustomData(player);
             getInstance().dimOwners.put(dim, player);
         }
         return dim;
@@ -120,7 +120,7 @@ public class PokecubeDimensionManager
     public static BlockPos getBaseEntrance(String player, int dim)
     {
         BlockPos ret = null;
-        NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
+        NBTTagCompound tag = PokecubePlayerDataHandler.getCustomDataTag(player);
         if (tag.hasKey("secretBase"))
         {
             NBTTagCompound base = tag.getCompoundTag("secretBase");
@@ -137,7 +137,7 @@ public class PokecubeDimensionManager
 
     public static void setBaseEntrance(String player, int dim, BlockPos pos)
     {
-        NBTTagCompound tag = PlayerDataHandler.getCustomDataTag(player);
+        NBTTagCompound tag = PokecubePlayerDataHandler.getCustomDataTag(player);
         NBTTagCompound base;
         if (tag.hasKey("secretBase"))
         {
@@ -151,7 +151,7 @@ public class PokecubeDimensionManager
         base.setInteger(dim + "Y", pos.getY());
         base.setInteger(dim + "Z", pos.getZ());
         tag.setTag("secretBase", base);
-        PlayerDataHandler.saveCustomData(player);
+        PokecubePlayerDataHandler.saveCustomData(player);
     }
 
     public static boolean initPlayerBase(String player, BlockPos pos, int entranceDimension)

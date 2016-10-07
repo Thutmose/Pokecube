@@ -79,6 +79,11 @@ public class PokemobDamageSource extends DamageSource
         return this.damageSourceEntity;
     }
 
+    public Entity getActualEntity()
+    {
+        return this.damageSourceEntity;
+    }
+
     @Override
     /** Returns true if the damage is projectile based. */
     public boolean isProjectile()

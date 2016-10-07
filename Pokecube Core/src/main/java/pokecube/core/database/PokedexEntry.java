@@ -19,6 +19,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import jeresources.util.ReflectionHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -32,6 +33,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -866,7 +869,7 @@ public class PokedexEntry
     public boolean                             shouldSurf       = false;
 
     @CopyToGender
-    protected String                           sound;
+    protected ResourceLocation                 sound;
 
     @CopyToGender
     /** This is copied to the gender as it will allow specifying where that
@@ -1378,18 +1381,21 @@ public class PokedexEntry
     public SoundEvent getSoundEvent()
     {
         if (replacedEvent != null) return replacedEvent;
-        if (sound == null)
-        {
-            sound = "mobs." + getBaseName();
-            if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 2);
-        }
-        sound = sound.toLowerCase(Locale.US);
         if (event == null)
         {
-            if (getBaseForme() != null && getBaseForme() != this) getBaseForme().getSoundEvent();
-            else SoundEvent.registerSound(getModId() + ":" + sound);
+            if (getBaseForme() != null && getBaseForme() != this)
+            {
+                event = getBaseForme().getSoundEvent();
+                sound = getBaseForme().sound;
+            }
+            else
+            {
+                if (sound == null) setSound(getName());
+                event = new SoundEvent(sound);
+                ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, event, sound, "registryName");
+                GameRegistry.register(event);
+            }
         }
-        event = SoundEvent.REGISTRY.getObject(new ResourceLocation(getModId(), sound));
         return event;
     }
 
@@ -1701,7 +1707,7 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
-        this.sound = sound.toLowerCase(Locale.US);
+        this.sound = new ResourceLocation(getModId() + ":" + sound.toLowerCase(Locale.US));
     }
 
     public void setSpawnData(SpawnData data)

@@ -19,14 +19,11 @@ import pokecube.origin.models.ModelRaichu;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
-@Mod(modid = PokecubeOrigin.MODID, name = "Pokecube Origin", version = PokecubeOrigin.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeOrigin.UPDATEURL, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeOrigin.MCVERSIONS)
+@Mod(modid = PokecubeOrigin.MODID, name = "Pokecube Origin", version = PokecubeOrigin.VERSION)
 public class PokecubeOrigin
 {
-    public static final String MODID      = "pokecube_origin";
-    public static final String VERSION    = "@VERSION@";
-    public static final String UPDATEURL  = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/mobs.json";
-
-    public final static String MCVERSIONS = "[1.9.4]";
+    public static final String MODID   = "pokecube_origin";
+    public static final String VERSION = "@VERSION@";
     private Config             config;
 
     @EventHandler

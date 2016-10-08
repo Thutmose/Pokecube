@@ -512,14 +512,24 @@ public class PokecubeCore extends PokecubeMod
 
         // Init Packets
         PokecubePacketHandler.init();
-
         helper.addItems();
+        if (get1stPokemob == null)
+        {
+            System.out.println("REGISTERING ACHIEVEMENT");
+            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"), null));
+            get1stPokemob.registerStat();
+            AchievementList.ACHIEVEMENTS.add(get1stPokemob);
+            achievementPageCatch = new AchievementPage("Pokecube Captures");
+            AchievementPage.registerAchievementPage(achievementPageCatch);
+            achievementPageHatch = new AchievementPage("Pokecube Hatchs");
+            AchievementPage.registerAchievementPage(achievementPageHatch);
+            achievementPageKill = new AchievementPage("Pokecube Kills");
+            AchievementPage.registerAchievementPage(achievementPageKill);
+        }
         Reader fileIn = null;
         BufferedReader br;
-
         String giftLoc = GIFTURL;
         giftLocations.add(giftLoc);
-
         for (String location : giftLocations)
         {
             try
@@ -644,20 +654,6 @@ public class PokecubeCore extends PokecubeMod
         if (pokedexmap == null)
         {
             pokedexmap = new HashMap();
-        }
-
-        if (get1stPokemob == null)
-        {
-            System.out.println("REGISTERING ACHIEVEMENT");
-            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"), null));
-            get1stPokemob.registerStat();
-            AchievementList.ACHIEVEMENTS.add(get1stPokemob);
-            achievementPageCatch = new AchievementPage("Pokecube Captures");
-            AchievementPage.registerAchievementPage(achievementPageCatch);
-            achievementPageHatch = new AchievementPage("Pokecube Hatchs");
-            AchievementPage.registerAchievementPage(achievementPageHatch);
-            achievementPageKill = new AchievementPage("Pokecube Kills");
-            AchievementPage.registerAchievementPage(achievementPageKill);
         }
         String name = entry.getName();
         if (clazz != null)

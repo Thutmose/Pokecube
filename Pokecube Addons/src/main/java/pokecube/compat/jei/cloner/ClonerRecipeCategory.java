@@ -72,9 +72,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-
         guiItemStacks.init(craftOutputSlot, false, 94, 18);
-
         for (int y = 0; y < 3; ++y)
         {
             for (int x = 0; x < 3; ++x)
@@ -83,7 +81,6 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
                 guiItemStacks.init(index, true, x * 18, y * 18);
             }
         }
-
         if (recipeWrapper != null)
         {
             ICraftingRecipeWrapper wrapper = recipeWrapper;

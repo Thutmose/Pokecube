@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -60,6 +59,7 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -107,12 +107,10 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.handlers.EventsHandlerClient;
-import pokecube.core.events.handlers.EventsHandlerClient.RingChecker;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
-import pokecube.core.items.megastuff.IMegaWearable;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -121,8 +119,6 @@ import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
-import thut.wearables.EnumWearable;
-import thut.wearables.ThutWearables;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -158,33 +154,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             instance = this;
             EventsHandlerClient hndlr = new EventsHandlerClient();
             MinecraftForge.EVENT_BUS.register(hndlr);
-
-            pokecube.core.events.handlers.EventsHandlerClient.checker = new RingChecker()
-            {
-                @Override
-                public boolean hasRing(EntityPlayer player)
-                {
-                    Set<ItemStack> worn = ThutWearables.getWearables(player).getWearables();
-                    for (ItemStack stack : worn)
-                    {
-                        if (stack != null)
-                        {
-                            Item item = stack.getItem();
-                            if (item instanceof IMegaWearable) { return true; }
-                        }
-                    }
-                    for (int i = 0; i < player.inventory.armorInventory.length; i++)
-                    {
-                        ItemStack stack = player.inventory.armorInventory[i];
-                        if (stack != null)
-                        {
-                            Item item = stack.getItem();
-                            if (item instanceof IMegaWearable) { return true; }
-                        }
-                    }
-                    return false;
-                }
-            };
         }
         first = false;
     }
@@ -657,8 +626,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     X3dModel                 hat1;
     X3dModel                 hat2;
 
+    @Method(modid = "thut_wearables")
     @Override
-    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
     {
         if (beltl == null)
         {

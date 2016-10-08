@@ -43,6 +43,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -717,6 +718,13 @@ public class PokecubeCore extends PokecubeMod
                 spawns.clear();
             }
         }
+    }
+
+    @Method(modid = "thut_wearables")
+    @EventHandler
+    public void preInitWearables(FMLPreInitializationEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.core.items.megastuff.WearablesCompat());
     }
 
     @EventHandler

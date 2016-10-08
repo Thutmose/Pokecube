@@ -764,7 +764,7 @@ public class PokecubeItems extends Items
                 if (input == null || input.getBlock() == null) return false;
                 Block block = input.getBlock();
                 ResourceLocation name = block.getRegistryName();
-                if (checks.containsKey(name) && checks.get(name)) return false;
+                if (checks.containsKey(name) && !checks.get(name)) return false;
                 else if (!checks.containsKey(name))
                 {
                     if (!modidPattern.matcher(name.getResourceDomain()).matches())

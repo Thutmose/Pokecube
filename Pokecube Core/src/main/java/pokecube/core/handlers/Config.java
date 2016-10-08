@@ -211,6 +211,8 @@ public class Config extends ConfigBase
     public boolean                       pokemartMerchant           = true;
     @Configure(category = world)
     public boolean                       autoPopulateLists          = true;
+    @Configure(category = world)
+    public boolean                       refreshSubbiomes           = false;
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blockListCaveFloor         = {};
     @Configure(category = world, needsMcRestart = true)
@@ -433,6 +435,7 @@ public class Config extends ConfigBase
         SpawnHandler.capLevel = levelCap;
         SpawnHandler.expFunction = expFunction;
         SpawnHandler.loadFunctionsFromStrings(spawnLevelFunctions);
+        SpawnHandler.refreshSubbiomes = refreshSubbiomes;
 
         PokecubeSerializer.MeteorDistance = meteorDistance * meteorDistance;
 

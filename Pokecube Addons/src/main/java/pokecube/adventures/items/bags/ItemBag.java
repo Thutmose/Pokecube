@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
@@ -16,10 +15,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import thut.wearables.EnumWearable;
-import thut.wearables.IWearable;
 
-public class ItemBag extends Item implements IWearable
+public class ItemBag extends Item
 {
     public ItemBag()
     {
@@ -65,18 +62,5 @@ public class ItemBag extends Item implements IWearable
         if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.getEntityWorld(),
                 InventoryBag.getBag(player).getPage() + 1, 0, 0);
         return super.onItemRightClick(itemstack, world, player, hand);
-    }
-
-    @Override
-    public EnumWearable getSlot(ItemStack stack)
-    {
-        return EnumWearable.BACK;
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
-    {
-        PokecubeAdv.proxy.renderWearable(slot, wearer, stack, partialTicks);
     }
 }

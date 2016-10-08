@@ -1,5 +1,6 @@
 package pokecube.core.items.megastuff;
 
-public interface IMegaWearable
+public interface IMegaCapability
 {
+
 }

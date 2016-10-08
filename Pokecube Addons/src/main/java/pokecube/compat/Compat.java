@@ -327,4 +327,11 @@ public class Compat
     {
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
     }
+
+    @Method(modid = "thut_bling")
+    @EventHandler
+    public void postInitBling(FMLPostInitializationEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.bling.BlingCompat());
+    }
 }

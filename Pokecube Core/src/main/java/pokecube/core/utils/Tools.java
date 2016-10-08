@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
@@ -63,10 +64,7 @@ public class Tools
 
         double a = getCatchRate(HPmax, HP, catchRate, cubeBonus, statusBonus);
 
-        if (a > 255)
-        {
-            return 5;
-        }
+        if (a > 255) { return 5; }
         double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
         int n = 0;
 
@@ -314,10 +312,7 @@ public class Tools
     {
         if (baseValue == 255) { return IPokemob.NOSEXE; }
 
-        if (random.nextInt(255) >= baseValue)
-        {
-            return IPokemob.MALE;
-        }
+        if (random.nextInt(255) >= baseValue) { return IPokemob.MALE; }
         return IPokemob.FEMALE;
     }
 
@@ -468,6 +463,15 @@ public class Tools
                 || b.getItemDamage() == OreDictionary.WILDCARD_VALUE))
             check = false;
         if (check) return false;
+        NBTBase tag;
+        if (a.hasTagCompound() && ((tag = a.getTagCompound().getTag("ForgeCaps")) != null) && tag.hasNoTags())
+        {
+            a.getTagCompound().removeTag("ForgeCaps");
+        }
+        if (b.hasTagCompound() && ((tag = b.getTagCompound().getTag("ForgeCaps")) != null) && tag.hasNoTags())
+        {
+            b.getTagCompound().removeTag("ForgeCaps");
+        }
         return ItemStack.areItemStackTagsEqual(a, b);
     }
 
@@ -484,7 +488,7 @@ public class Tools
             return MathHelper.floor_double(Math.pow(level, 3)) + 1;
 
         case 2:// 1 059 860
-            return MathHelper.floor_double(1.05D * Math.pow(level, 3)) + 1; 
+            return MathHelper.floor_double(1.05D * Math.pow(level, 3)) + 1;
         case 3:// 1 250 000
             return MathHelper.floor_double(1.25D * Math.pow(level, 3)) + 1;
 

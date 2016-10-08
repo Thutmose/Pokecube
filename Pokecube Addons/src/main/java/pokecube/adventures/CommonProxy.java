@@ -8,6 +8,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.ContainerDaycare;
@@ -16,7 +17,6 @@ import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.items.bags.ContainerBag;
-import thut.wearables.EnumWearable;
 
 public class CommonProxy implements IGuiHandler
 {
@@ -32,7 +32,8 @@ public class CommonProxy implements IGuiHandler
         return null;
     }
 
-    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    @Method(modid = "thut_wearables")
+    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
     {
 
     }

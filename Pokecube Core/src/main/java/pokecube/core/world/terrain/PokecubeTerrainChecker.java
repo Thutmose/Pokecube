@@ -174,8 +174,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                 {
                     IBlockState state;
                     if (isIndustrial(state = temp1.set(i, j, k).getBlockState(world))) industrial++;
-                    if (state.getMaterial() == Material.WATER) water++;
                     if (industrial > 2) return BiomeType.INDUSTRIAL.getType();
+                    if (state.getMaterial() == Material.WATER) water++;
                 }
         if (water > 4)
         {

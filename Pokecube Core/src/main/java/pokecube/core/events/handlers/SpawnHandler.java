@@ -58,6 +58,7 @@ public final class SpawnHandler
     public static HashMap<Integer, Integer[]>          subBiomeLevels          = new HashMap<Integer, Integer[]>();
     public static boolean                              doSpawns                = true;
     public static boolean                              onlySubbiomes           = false;
+    public static boolean                              refreshSubbiomes        = false;
     public static HashSet<Integer>                     dimensionBlacklist      = Sets.newHashSet();
     public static HashSet<Integer>                     dimensionWhitelist      = Sets.newHashSet();
     public static Predicate<Integer>                   biomeToRefresh          = new Predicate<Integer>()
@@ -66,7 +67,9 @@ public final class SpawnHandler
                                                                                    public boolean apply(Integer input)
                                                                                    {
                                                                                        if (input == -1) return false;
-                                                                                       if (input < 256) return true;
+                                                                                       if (input < 256
+                                                                                               || refreshSubbiomes)
+                                                                                           return true;
                                                                                        return input == BiomeType.SKY
                                                                                                .getType()
                                                                                                || input == BiomeType.CAVE
@@ -644,7 +647,7 @@ public final class SpawnHandler
                 {
                     temp1.set(i, j, k);
                     int biome = t.getBiome(i, j, k);
-                    if (biomeToRefresh.apply(biome))
+                    if (biomeToRefresh.apply(biome) || refreshSubbiomes)
                     {
                         biome = t.adjustedCaveBiome(world, temp1);
                         if (biome == -1) biome = t.adjustedNonCaveBiome(world, temp1);

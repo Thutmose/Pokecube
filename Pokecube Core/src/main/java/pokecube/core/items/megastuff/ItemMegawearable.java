@@ -8,7 +8,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
@@ -17,18 +16,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
-import thut.wearables.EnumWearable;
 
 public class ItemMegawearable extends Item implements IMegaWearable
 {
-    public static Map<String, EnumWearable> wearables = Maps.newHashMap();
+    public static Map<String, String> wearables = Maps.newHashMap();
 
     static
     {
-        wearables.put("megaring", EnumWearable.FINGER);
-        wearables.put("megabelt", EnumWearable.WAIST);
-        wearables.put("megahat", EnumWearable.HAT);
+        wearables.put("megaring", "FINGER");
+        wearables.put("megabelt", "WAIST");
+        wearables.put("megahat", "HAT");
     }
 
     public ItemMegawearable()
@@ -104,19 +101,5 @@ public class ItemMegawearable extends Item implements IMegaWearable
         String name = getUnlocalizedName(stack).replace("item.", "");
         if (name.equals("megahat")) return armorType == EntityEquipmentSlot.HEAD;
         return false;
-    }
-
-    @Override
-    public EnumWearable getSlot(ItemStack stack)
-    {
-        String name = getUnlocalizedName(stack).replace("item.", "");
-        return wearables.get(name);
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Override
-    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
-    {
-        PokecubeCore.proxy.renderWearable(slot, wearer, stack, partialTicks);
     }
 }

@@ -1,20 +1,14 @@
 package pokecube.adventures.events;
 
-import org.lwjgl.input.Keyboard;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
-import pokecube.adventures.client.ClientProxy;
-import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 @SideOnly(Side.CLIENT)
@@ -24,17 +18,6 @@ public class RenderHandler
 
     public RenderHandler()
     {
-    }
-
-    @SubscribeEvent
-    public void keyInput(KeyInputEvent evt)
-    {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-        boolean bag = ClientProxy.getChecker().isWearingBag(player);
-        if (bag && Keyboard.getEventKey() == ClientProxy.bag.getKeyCode())
-        {
-            PacketPokeAdv.sendBagOpenPacket();
-        }
     }
 
     @SubscribeEvent

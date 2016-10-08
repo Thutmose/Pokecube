@@ -24,7 +24,6 @@ import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.PokecubePacketHandler;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 
@@ -279,11 +278,4 @@ public class PacketPokeAdv
         }
         return new MessageServer(packetData);
     }
-
-    public static void sendBagOpenPacket()
-    {
-        PacketBag packet = new PacketBag(PacketBag.OPEN);
-        PokecubePacketHandler.sendToServer(packet);
-    }
-
 }

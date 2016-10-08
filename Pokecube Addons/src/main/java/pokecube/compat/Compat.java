@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Optional;
@@ -207,23 +208,8 @@ public class Compat
         }
     }
 
-    // GCCompat gccompat;
-
-    // @Optional.Method(modid = "PneumaticCraft")
-    // @SubscribeEvent
-    // public void addPneumaticcraftHeating(EntityJoinWorldEvent evt)
-    // {
-    // if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof
-    // EntityLiving)
-    // {
-    // EntityLiving living = (EntityLiving) evt.getEntity();
-    // living.tasks.addTask(1, new AIThermalInteferance((IPokemob) living));
-    // }
-    // }
     public Compat()
     {
-        // gccompat = new GCCompat();
-        // MinecraftForge.EVENT_BUS.register(gccompat);
     }
 
     @Optional.Method(modid = "DynamicLights")
@@ -297,7 +283,6 @@ public class Compat
     @SubscribeEvent
     public void postPostInit(PostPostInit evt)
     {
-        // gccompat.register();
     }
 
     @EventHandler
@@ -327,21 +312,6 @@ public class Compat
         new pokecube.compat.top.TheOneProbeCompat();
     }
 
-    // @Optional.Method(modid = "Thaumcraft")
-    // @EventHandler
-    // public void Thaumcraft_Compat(FMLPreInitializationEvent evt)
-    // {
-    // System.out.println("Thaumcraft Compat");
-    //
-    // ThaumcraftCompat tccompat;
-    // ThaumiumPokecube thaumiumpokecube;
-    // thaumiumpokecube = new ThaumiumPokecube();
-    // thaumiumpokecube.addThaumiumPokecube();
-    //
-    // tccompat = new ThaumcraftCompat();
-    // MinecraftForge.EVENT_BUS.register(tccompat);
-    // }
-
     @SideOnly(Side.CLIENT)
     @Optional.Method(modid = "Waila")
     @EventHandler
@@ -349,5 +319,19 @@ public class Compat
     {
         System.out.println("Waila Compat");
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.waila.WailaCompat());
+    }
+
+    @Method(modid = "thut_wearables")
+    @EventHandler
+    public void preInitWearables(FMLPreInitializationEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
+    }
+
+    @Method(modid = "thut_bling")
+    @EventHandler
+    public void postInitBling(FMLPostInitializationEvent event)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.bling.BlingCompat());
     }
 }

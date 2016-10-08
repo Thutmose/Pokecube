@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.core.PokecubeCore;
@@ -109,11 +108,6 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
             {
                 bag.boxes[i] = message.data.getString("N" + i);
             }
-        }
-        if (message.message == OPEN)
-        {
-            player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.getEntityWorld(),
-                    InventoryBag.getBag(player).getPage() + 1, 0, 0);
         }
     }
 }

@@ -7,7 +7,6 @@ import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
 import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
 
 import org.lwjgl.opengl.GL11;
 
@@ -18,12 +17,10 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,6 +36,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.LegendaryConditions;
@@ -62,20 +60,14 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.events.RenderHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
-import thut.wearables.EnumWearable;
-import thut.wearables.ThutWearables;
 
 public class ClientProxy extends CommonProxy
 {
-
-    public static KeyBinding bag;
-
     @Override
     public Object getClientGuiElement(int guiID, EntityPlayer player, World world, int x, int y, int z)
     {
@@ -138,79 +130,12 @@ public class ClientProxy extends CommonProxy
     {
         RenderHandler h = new RenderHandler();
         MinecraftForge.EVENT_BUS.register(h);
-        ClientRegistry.registerKeyBinding(bag = new KeyBinding("Open Bag", 23, "Pokecube"));
     }
 
     @Override
     public boolean isOnClientSide()
     {
         return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-    }
-
-    public static class BagChecker
-    {
-        final BagChecker defaults;
-
-        public BagChecker(BagChecker defaults)
-        {
-            this.defaults = defaults;
-        }
-
-        public ItemStack getBag(EntityLivingBase player)
-        {
-            ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            if (armour != null)
-            {
-                if (EnumWearable.getSlot(armour) == EnumWearable.BACK) return armour;
-                if (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag")) return armour;
-            }
-            ItemStack worn = ThutWearables.getWearables(player).getWearable(EnumWearable.BACK);
-            if (worn != null && worn.getItem() instanceof ItemBag) return worn;
-            return null;
-        }
-
-        public EnumDyeColor getBagColour(ItemStack bag)
-        {
-            EnumDyeColor ret = EnumDyeColor.YELLOW;
-            if (bag.hasTagCompound() && bag.getTagCompound().hasKey("dyeColour"))
-            {
-                int damage = bag.getTagCompound().getInteger("dyeColour");
-                ret = EnumDyeColor.byDyeDamage(damage);
-            }
-            return ret;
-        }
-
-        protected boolean hasBag(EntityLivingBase player)
-        {
-            ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            if (armour != null) return EnumWearable.getSlot(armour) == EnumWearable.BACK
-                    || (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag"));
-            ItemStack worn = ThutWearables.getWearables(player).getWearable(EnumWearable.BACK);
-            if (worn != null) return worn.getItem() instanceof ItemBag;
-            return false;
-        }
-
-        public boolean isWearingBag(EntityLivingBase player)
-        {
-            boolean ret;
-            if (!(ret = hasBag(player)) && defaults != null) return defaults.isWearingBag(player);
-            return ret;
-        }
-    }
-
-    private static BagChecker checker = new BagChecker(null);
-
-    public static BagChecker getChecker()
-    {
-        return checker;
-    }
-
-    public static void setChecker(Class<? extends BagChecker> checkerIn)
-            throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-            NoSuchMethodException, SecurityException
-    {
-        BagChecker newchecker = checkerIn.getConstructor(BagChecker.class).newInstance(checker);
-        checker = newchecker;
     }
 
     @Override
@@ -285,8 +210,9 @@ public class ClientProxy extends CommonProxy
     private ResourceLocation BAG_1 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_1.png");
     private ResourceLocation BAG_2 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_2.png");
 
+    @Method(modid = "thut_wearables")
     @Override
-    public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
     {
         if (bag1 == null)
         {
@@ -316,7 +242,13 @@ public class ClientProxy extends CommonProxy
         GL11.glTranslated(0, -0.125, -0.6);
         GL11.glScaled(0.7, 0.7, 0.7);
         Minecraft.getMinecraft().renderEngine.bindTexture(pass2);
-        Color colour = new Color(getChecker().getBagColour(stack).getMapColor().colorValue + 0xFF000000);
+        EnumDyeColor ret = EnumDyeColor.YELLOW;
+        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+        {
+            int damage = stack.getTagCompound().getInteger("dyeColour");
+            ret = EnumDyeColor.byDyeDamage(damage);
+        }
+        Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
         int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
         for (IExtendedModelPart part : bag2.getParts().values())
         {

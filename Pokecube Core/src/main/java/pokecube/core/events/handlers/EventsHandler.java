@@ -28,6 +28,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -59,6 +60,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.event.world.WorldEvent.Load;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -81,6 +83,8 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
+import pokecube.core.items.megastuff.IMegaCapability;
+import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -325,6 +329,20 @@ public class EventsHandler
     {
         CapabilityManager.INSTANCE.register(IGuardAICapability.class, storage = new IGuardAICapability.Storage(),
                 GuardAICapability.class);
+        CapabilityManager.INSTANCE.register(IMegaCapability.class, new Capability.IStorage<IMegaCapability>()
+        {
+            @Override
+            public NBTBase writeNBT(Capability<IMegaCapability> capability, IMegaCapability instance, EnumFacing side)
+            {
+                return null;
+            }
+
+            @Override
+            public void readNBT(Capability<IMegaCapability> capability, IMegaCapability instance, EnumFacing side,
+                    NBTBase nbt)
+            {
+            }
+        }, MegaCapability.class);
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         PokemobAIThread aiTicker = new PokemobAIThread();
         MinecraftForge.EVENT_BUS.register(aiTicker);
@@ -397,6 +415,12 @@ public class EventsHandler
     }
 
     @SubscribeEvent
+    public void onCraft(ItemCraftedEvent event)
+    {
+        // TODO achievemtns for crafting stuff here.
+    }
+
+    @SubscribeEvent
     public void explosionEvents(ExplosionEvent.Detonate evt)
     {
         if (evt.getExplosion() instanceof ExplosionCustom)
@@ -433,10 +457,6 @@ public class EventsHandler
     {
     }
 
-    /** Applies the exp from lucky egg and exp share. TODO move this out of
-     * PCEventsHandler.
-     * 
-     * @param evt */
     @SubscribeEvent
     public void KillEvent(pokecube.core.events.KillEvent evt)
     {
@@ -536,7 +556,7 @@ public class EventsHandler
             }
             effect.doEffect(evt.getEntityLiving(), false);
         }
-        if (evt.getEntityLiving() instanceof EntityPlayer)
+        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntity().ticksExisted % 20 == 0)
         {
             SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
                     evt.getEntity().getEntityWorld());
@@ -580,6 +600,12 @@ public class EventsHandler
                 return;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent.Item event)
+    {
+        event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(event.getItemStack()));
     }
 
     @SubscribeEvent
@@ -710,7 +736,8 @@ public class EventsHandler
             EntityPokecube pokecube = (EntityPokecube) event.getTarget();
             if (pokecube.isLoot && pokecube.cannotCollect(event.getEntityPlayer()))
             {
-                PacketPokecube.sendMessage(event.getEntityPlayer(), pokecube.getEntityId(), pokecube.worldObj.getTotalWorldTime() + pokecube.resetTime);
+                PacketPokecube.sendMessage(event.getEntityPlayer(), pokecube.getEntityId(),
+                        pokecube.worldObj.getTotalWorldTime() + pokecube.resetTime);
             }
         }
     }

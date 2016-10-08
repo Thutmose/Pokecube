@@ -68,9 +68,8 @@ import pokecube.core.PokecubeItems;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
-import thut.core.common.handlers.PlayerDataHandler;
 import thut.wearables.EnumWearable;
-import thut.wearables.inventory.PlayerWearables;
+import thut.wearables.ThutWearables;
 
 public class ClientProxy extends CommonProxy
 {
@@ -165,8 +164,7 @@ public class ClientProxy extends CommonProxy
                 if (EnumWearable.getSlot(armour) == EnumWearable.BACK) return armour;
                 if (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag")) return armour;
             }
-            ItemStack worn = PlayerDataHandler.getInstance().getPlayerData(player.getCachedUniqueIdString())
-                    .getData(PlayerWearables.class).getWearable(EnumWearable.BACK);
+            ItemStack worn = ThutWearables.getWearables(player).getWearable(EnumWearable.BACK);
             if (worn != null && worn.getItem() instanceof ItemBag) return worn;
             return null;
         }
@@ -187,8 +185,7 @@ public class ClientProxy extends CommonProxy
             ItemStack armour = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             if (armour != null) return EnumWearable.getSlot(armour) == EnumWearable.BACK
                     || (armour.hasTagCompound() && armour.getTagCompound().getBoolean("isapokebag"));
-            ItemStack worn = PlayerDataHandler.getInstance().getPlayerData(player.getCachedUniqueIdString())
-                    .getData(PlayerWearables.class).getWearable(EnumWearable.BACK);
+            ItemStack worn = ThutWearables.getWearables(player).getWearable(EnumWearable.BACK);
             if (worn != null) return worn.getItem() instanceof ItemBag;
             return false;
         }

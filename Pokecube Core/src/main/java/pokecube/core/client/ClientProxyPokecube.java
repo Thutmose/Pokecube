@@ -121,9 +121,8 @@ import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
-import thut.core.common.handlers.PlayerDataHandler;
 import thut.wearables.EnumWearable;
-import thut.wearables.inventory.PlayerWearables;
+import thut.wearables.ThutWearables;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -165,8 +164,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 @Override
                 public boolean hasRing(EntityPlayer player)
                 {
-                    Set<ItemStack> worn = PlayerDataHandler.getInstance().getPlayerData(player)
-                            .getData(PlayerWearables.class).getWearables();
+                    Set<ItemStack> worn = ThutWearables.getWearables(player).getWearables();
                     for (ItemStack stack : worn)
                     {
                         if (stack != null)

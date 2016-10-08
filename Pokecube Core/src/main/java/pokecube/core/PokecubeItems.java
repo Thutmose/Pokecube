@@ -6,12 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.ObjectArrays;
 
 import net.minecraft.block.Block;
@@ -752,8 +754,9 @@ public class PokecubeItems extends Items
         final String val = valTemp;
         return new Predicate<IBlockState>()
         {
-            final Pattern modidPattern = Pattern.compile(modid);
-            final Pattern blockPattern = Pattern.compile(blockName);
+            final Pattern                  modidPattern = Pattern.compile(modid);
+            final Pattern                  blockPattern = Pattern.compile(blockName);
+            Map<ResourceLocation, Boolean> checks       = Maps.newHashMap();
 
             @Override
             public boolean apply(IBlockState input)
@@ -761,8 +764,21 @@ public class PokecubeItems extends Items
                 if (input == null || input.getBlock() == null) return false;
                 Block block = input.getBlock();
                 ResourceLocation name = block.getRegistryName();
-                if (!modidPattern.matcher(name.getResourceDomain()).matches()) return false;
-                if (!blockPattern.matcher(name.getResourcePath()).matches()) return false;
+                if (checks.containsKey(name) && checks.get(name)) return false;
+                else if (!checks.containsKey(name))
+                {
+                    if (!modidPattern.matcher(name.getResourceDomain()).matches())
+                    {
+                        checks.put(name, false);
+                        return false;
+                    }
+                    if (!blockPattern.matcher(name.getResourcePath()).matches())
+                    {
+                        checks.put(name, false);
+                        return false;
+                    }
+                    checks.put(name, true);
+                }
                 if (key == null) return true;
                 for (IProperty<?> prop : input.getPropertyNames())
                 {

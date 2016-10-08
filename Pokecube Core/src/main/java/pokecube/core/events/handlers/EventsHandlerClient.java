@@ -265,12 +265,14 @@ public class EventsHandlerClient
                 mob.returnToPokecube();
             }
         }
+        control:
         if (event.player.isRiding())
         {
             Entity e = event.player.getRidingEntity();
             if (e instanceof EntityAiPokemob)
             {
                 LogicMountedControl controller = ((EntityAiPokemob) e).controller;
+                if (controller == null) break control;
                 controller.backInputDown = ((EntityPlayerSP) event.player).movementInput.backKeyDown;
                 controller.forwardInputDown = ((EntityPlayerSP) event.player).movementInput.forwardKeyDown;
                 controller.leftInputDown = ((EntityPlayerSP) event.player).movementInput.leftKeyDown;

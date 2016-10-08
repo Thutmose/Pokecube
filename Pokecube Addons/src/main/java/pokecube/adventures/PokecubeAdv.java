@@ -130,6 +130,15 @@ public class PokecubeAdv
     public void postInit(FMLPostInitializationEvent e)
     {
         PokecubePacketHandler.giveHealer = false;
+    }
+
+    @SubscribeEvent
+    public void postPostInit(PostPostInit e)
+    {
+        conf.postInit();
+        RecipeHandler.register();
+        DBLoader.load();
+        LegendaryConditions.registerSpecialConditions();
         int x = -3;
         int y = -2;
         Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,
@@ -147,15 +156,6 @@ public class PokecubeAdv
             badge.registerStat();
             AchievementPage.getAchievementPage(0).getAchievements().add(badge);
         }
-    }
-
-    @SubscribeEvent
-    public void postPostInit(PostPostInit e)
-    {
-        conf.postInit();
-        RecipeHandler.register();
-        DBLoader.load();
-        LegendaryConditions.registerSpecialConditions();
     }
 
     @EventHandler

@@ -14,12 +14,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandlerClient.RingChecker;
 
 public class WearablesCompat
 {
 
     public WearablesCompat()
+    {
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void postpost(PostPostInit event)
     {
         pokecube.core.events.handlers.EventsHandlerClient.checker = new RingChecker()
         {

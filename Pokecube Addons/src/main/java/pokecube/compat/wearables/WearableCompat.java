@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.core.items.megastuff.IMegaWearable;
+import pokecube.adventures.items.bags.ItemBag;
 
 public class WearableCompat
 {
@@ -22,7 +22,7 @@ public class WearableCompat
     @SubscribeEvent
     public void onItemCapabilityAttach(AttachCapabilitiesEvent.Item event)
     {
-        if (event.getItem() instanceof IMegaWearable)
+        if (event.getItem() instanceof ItemBag)
         {
             event.addCapability(new ResourceLocation("pokecube_adv:wearable"), new WearableBag());
         }

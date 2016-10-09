@@ -2,7 +2,6 @@ package pokecube.core.ai.thread.logicRunnables;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
@@ -19,8 +18,7 @@ public class LogicInLiquid extends LogicBase
     @Override
     public void doLogic()
     {
-        if (!((PokeNavigator) entity.getNavigator()).pathfinder.cacheLock[0])
-            world = TickHandler.getInstance().getWorldCache(entity.dimension);
+        world = TickHandler.getInstance().getWorldCache(entity.dimension);
         if (world == null) return;
         boolean lava = false;
         boolean water = false;

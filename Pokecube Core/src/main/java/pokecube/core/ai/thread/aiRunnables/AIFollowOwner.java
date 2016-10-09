@@ -89,10 +89,7 @@ public class AIFollowOwner extends AIBase
     public boolean shouldRun()
     {
         EntityLivingBase entitylivingbase = (EntityLivingBase) pet.getOwner();
-
         this.petPathfinder = thePet.getNavigator();
-        Vector3 ownerV = Vector3.getNewVector();
-
         if (entitylivingbase == null)
         {
             return false;
@@ -118,7 +115,7 @@ public class AIFollowOwner extends AIBase
         {
             return false;
         }
-        else if ((ownerV.set(entitylivingbase)).distToSq(ownerPos) < this.minDist * this.minDist)
+        else if ((Vector3.getNewVector().set(entitylivingbase)).distToSq(ownerPos) < this.minDist * this.minDist)
         {
             return false;
         }

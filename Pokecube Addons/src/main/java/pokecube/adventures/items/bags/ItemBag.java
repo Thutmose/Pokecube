@@ -52,7 +52,7 @@ public class ItemBag extends Item
     @Override
     public boolean isValidArmor(ItemStack stack, EntityEquipmentSlot armorType, Entity entity)
     {
-        return armorType == EntityEquipmentSlot.CHEST;
+        return false;
     }
 
     @Override

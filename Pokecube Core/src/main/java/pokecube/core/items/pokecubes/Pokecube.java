@@ -283,6 +283,13 @@ public class Pokecube extends Item implements IPokecube
             Entity target = Tools.getPointedEntity(player, 32);
             Vector3 direction = Vector3.getNewVector().set(player.getLook(0));
             Vector3 targetLocation = Tools.getPointedLocation(player, 32);
+
+            if (target instanceof EntityPokecube) target = null;
+            if (target instanceof IPokemob)
+            {
+                if (((IPokemob) target).getPokemonOwner() == entityLiving) target = null;
+            }
+
             boolean filled = PokecubeManager.isFilled(stack);
             if (!filled && !(target instanceof IPokemob)) target = null;
             boolean used = false;

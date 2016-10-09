@@ -14,31 +14,25 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
-import pokecube.core.events.PostPostInit;
-import pokecube.core.events.handlers.EventsHandlerClient.RingChecker;
+import pokecube.core.database.PokedexEntry;
+import pokecube.core.items.megastuff.MegaCapability.RingChecker;
 
 public class WearablesCompat
 {
 
     public WearablesCompat()
     {
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void postpost(PostPostInit event)
-    {
-        pokecube.core.events.handlers.EventsHandlerClient.checker = new RingChecker()
+        MegaCapability.checker = new RingChecker()
         {
             @Override
-            public boolean hasRing(EntityPlayer player)
+            public boolean canMegaEvolve(EntityPlayer player, PokedexEntry toEvolve)
             {
                 Set<ItemStack> worn = thut.wearables.ThutWearables.getWearables(player).getWearables();
                 for (ItemStack stack : worn)
                 {
                     if (stack != null)
                     {
-                        if (stack.hasCapability(MegaCapability.MEGA_CAP, null)) { return true; }
+                        if (MegaCapability.matches(stack, toEvolve)) return true;
                     }
                 }
                 for (int i = 0; i < player.inventory.armorInventory.length; i++)
@@ -46,7 +40,7 @@ public class WearablesCompat
                     ItemStack stack = player.inventory.armorInventory[i];
                     if (stack != null)
                     {
-                        if (stack.hasCapability(MegaCapability.MEGA_CAP, null)) { return true; }
+                        if (MegaCapability.matches(stack, toEvolve)) return true;
                     }
                 }
                 return false;
@@ -57,7 +51,7 @@ public class WearablesCompat
     @SubscribeEvent
     public void onItemCapabilityAttach(AttachCapabilitiesEvent.Item event)
     {
-        if (event.getItem() instanceof IMegaWearable)
+        if (event.getItem() instanceof ItemMegawearable)
         {
             event.addCapability(new ResourceLocation("pokecube:wearable"), new WearableMega());
         }

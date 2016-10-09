@@ -198,7 +198,7 @@ public class Tools
 
     private static int getLevelFromTable(int[] table, int exp)
     {
-        int level = 0;
+        int level = 100;
         for (int i = 0; i < 101; i++)
         {
             if (table[i] <= exp && table[i + 1] > exp)

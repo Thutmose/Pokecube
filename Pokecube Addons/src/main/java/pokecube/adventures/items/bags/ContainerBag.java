@@ -15,6 +15,7 @@ import pokecube.adventures.network.packets.PacketBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
 public class ContainerBag extends Container
@@ -36,7 +37,7 @@ public class ContainerBag extends Container
         valid |= PokecubeItems.getFossilEntry(itemstack) != null;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()
                 && !PokecubeManager.isFilled(itemstack);
-        return valid || cube;
+        return valid || cube || itemstack.hasCapability(MegaCapability.MEGA_CAP, null);
     }
 
     public final InventoryBag    invBag;

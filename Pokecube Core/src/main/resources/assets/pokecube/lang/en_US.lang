@@ -311,7 +311,7 @@ pokecube.missed=%1$s §cbroke out!
 pokecube.denied=§cThe Pokémob refuses to enter the cube!
 pokecube.noroom=§cThere is not enough room for the Pokémob here.
 pokecube.badaim=§cI should probably aim more carefully
-pokecube.mega.noring=§cYou need to be wearing a mega item to initiate Mega Evolution.
+pokecube.mega.noring=§cYou are not wearing anything that will allow %1$s §cto mega evolve!
 
 pokecube.professor.deny=Professor: §cYou have already recieved a Pokémob
 pokedex.setteleport=Pokécenter set as a Teleport Location

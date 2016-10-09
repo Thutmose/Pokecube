@@ -1203,5 +1203,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         super.addEntityCrashInfo(category);
         category.addCrashSection("World:", worldObj == null ? "NULL" : worldObj.toString());
         category.addCrashSection("Owner:", getPokemonOwnerID() == null ? "NULL" : getPokemonOwnerID().toString());
+        Thread.dumpStack();
     }
 }

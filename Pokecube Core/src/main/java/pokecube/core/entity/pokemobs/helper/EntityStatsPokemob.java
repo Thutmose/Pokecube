@@ -6,6 +6,8 @@ package pokecube.core.entity.pokemobs.helper;
 import java.io.IOException;
 import java.util.Random;
 
+import org.nfunk.jep.JEP;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -539,7 +541,24 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void onKillEntity(EntityLivingBase attacked)
     {
         IPokemob attacker = this;
-
+        if (PokecubeCore.core.getConfig().nonPokemobExp && !(attacked instanceof IPokemob))
+        {
+            JEP parser = new JEP();
+            parser.initFunTab(); // clear the contents of the function table
+            parser.addStandardFunctions();
+            parser.initSymTab(); // clear the contents of the symbol table
+            parser.addStandardConstants();
+            parser.addComplex();
+            parser.addVariable("h", 0);
+            parser.addVariable("a", 0);
+            parser.parseExpression(PokecubeCore.core.getConfig().nonPokemobExpFunction);
+            parser.setVarValue("h", attacked.getMaxHealth());
+            parser.setVarValue("a", attacked.getTotalArmorValue());
+            int exp = (int) parser.getValue();
+            if (parser.hasError()) exp = 0;
+            attacker.setExp(attacker.getExp() + exp, true);
+            return;
+        }
         if (attacked instanceof IPokemob && attacked.getHealth() <= 0)
         {
             boolean giveExp = !((IPokemob) attacked).isShadow();

@@ -22,6 +22,7 @@ import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.IAnimals;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -98,7 +99,6 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
-import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
@@ -295,33 +295,6 @@ public class EventsHandler
             pokemob.readPokemobData(pokemobTag);
             return;
         }
-        float scale = tag.getFloat("scale");
-        if (scale > 0)
-        {
-            pokemob.setSize(scale);
-        }
-        pokemob.setSexe((byte) tag.getInteger(PokecubeSerializer.SEXE));
-        boolean shiny = tag.getBoolean("shiny");
-        pokemob.setShiny(shiny);
-        byte[] rgbaBytes = new byte[4];
-        // TODO remove the legacy colour support eventually.
-        if (tag.hasKey("colours", 7))
-        {
-            rgbaBytes = tag.getByteArray("colours");
-        }
-        else
-        {
-            rgbaBytes[0] = tag.getByte("red");
-            rgbaBytes[1] = tag.getByte("green");
-            rgbaBytes[2] = tag.getByte("blue");
-            rgbaBytes[3] = 127;
-        }
-        if (pokemob instanceof IMobColourable)
-        {
-            ((IMobColourable) pokemob).setRGBA(rgbaBytes[0] + 128, rgbaBytes[1] + 128, rgbaBytes[2] + 128,
-                    rgbaBytes[2] + 128);
-        }
-        pokemob.setSpecialInfo(tag.getInteger("specialInfo"));
     }
 
     public MeteorAreaSetter meteorprocessor;
@@ -390,15 +363,26 @@ public class EventsHandler
     @SubscribeEvent
     public void EntityJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (PokecubeMod.core.getConfig().disableMonsters && !(evt.getEntity() instanceof IPokemob)
+        if (PokecubeMod.core.getConfig().disableVanillaMonsters && !(evt.getEntity() instanceof IPokemob)
                 && evt.getEntity() instanceof IMob
-                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart))
+                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart)
+                && evt.getEntity().getClass().getName().contains("net.minecraft"))
         {
             evt.getEntity().setDead();
             // TODO maybe replace stuff here
             evt.setCanceled(true);
+            return;
         }
-        else if (evt.getEntity() instanceof EntityCreeper)
+        if (PokecubeMod.core.getConfig().disableVanillaAnimals && !(evt.getEntity() instanceof IPokemob)
+                && evt.getEntity() instanceof IAnimals && !(evt.getEntity() instanceof IMob)
+                && evt.getEntity().getClass().getName().contains("net.minecraft"))
+        {
+            evt.getEntity().setDead();
+            // TODO maybe replace stuff here
+            evt.setCanceled(true);
+            return;
+        }
+        if (evt.getEntity() instanceof EntityCreeper)
         {
             EntityAIAvoidEntity<EntityPokemobBase> avoidAI;
             EntityCreeper creeper = (EntityCreeper) evt.getEntity();
@@ -506,11 +490,12 @@ public class EventsHandler
     @SubscribeEvent
     public void livingDeath(LivingDeathEvent evt)
     {
-        if (evt.getEntity().worldObj.isRemote) return;
-        // TODO determine if a pokemob died of status effect, and try to give
-        // user of said status effect credit.
-        // System.out.println(evt.getEntity() + "\n" + evt.getSource() + "\n" +
-        // evt.getSource().getEntity());
+        if (evt.getEntity().worldObj.isRemote || evt.getEntityLiving() instanceof IPokemob) return;
+        if (evt.getEntityLiving().getLastAttacker() instanceof IPokemob
+                && evt.getSource().getEntity() != evt.getEntityLiving().getLastAttacker())
+        {
+            evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
+        }
     }
 
     @SubscribeEvent

@@ -11,6 +11,7 @@ import java.util.List;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.CombatRules;
@@ -191,8 +192,12 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                 t.setAttackTarget(this);
             }
         }
+        if (target instanceof EntityLivingBase)
+        {
+            ((EntityLivingBase) target).setLastAttacker(this);
+            this.setLastAttacker(target);
+        }
         int statusChange = getChanges();
-
         if ((statusChange & CHANGE_FLINCH) != 0)
         {
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.flinch", "red",

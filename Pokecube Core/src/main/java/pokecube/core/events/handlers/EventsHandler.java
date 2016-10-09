@@ -36,6 +36,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
@@ -506,7 +507,10 @@ public class EventsHandler
     public void livingDeath(LivingDeathEvent evt)
     {
         if (evt.getEntity().worldObj.isRemote) return;
-        System.out.println(evt.getEntity() + "\n" + evt.getSource() + "\n" + evt.getSource().getEntity());
+        // TODO determine if a pokemob died of status effect, and try to give
+        // user of said status effect credit.
+        // System.out.println(evt.getEntity() + "\n" + evt.getSource() + "\n" +
+        // evt.getSource().getEntity());
     }
 
     @SubscribeEvent
@@ -556,9 +560,17 @@ public class EventsHandler
             }
             effect.doEffect(evt.getEntityLiving(), false);
         }
-        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getEntity().ticksExisted % 20 == 0)
+        if (evt.getEntityLiving() instanceof EntityPlayer)
         {
-            SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
+            EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
+            BlockPos here;
+            BlockPos old;
+            here = new BlockPos(MathHelper.floor_double(player.chasingPosX) >> 4,
+                    MathHelper.floor_double(player.chasingPosY) >> 4, MathHelper.floor_double(player.chasingPosZ) >> 4);
+            old = new BlockPos(MathHelper.floor_double(player.prevChasingPosX) >> 4,
+                    MathHelper.floor_double(player.prevChasingPosY) >> 4,
+                    MathHelper.floor_double(player.prevChasingPosZ) >> 4);
+            if (!here.equals(old)) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
                     evt.getEntity().getEntityWorld());
         }
 

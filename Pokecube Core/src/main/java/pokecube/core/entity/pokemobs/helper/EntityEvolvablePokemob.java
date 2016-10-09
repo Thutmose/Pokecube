@@ -327,7 +327,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public IPokemob megaEvolve(PokedexEntry newEntry)
     {
         Entity evolution = this;
-        System.out.println(newEntry + " " + getPokedexEntry());
         if (newEntry != null && newEntry != getPokedexEntry())
         {
             setPokemonAIState(EVOLVING, true);

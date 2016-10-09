@@ -226,6 +226,7 @@ public class EntityPokecube extends EntityPokecubeBase
     {
         if (isLoot) motionX = motionZ = 0;
         super.onUpdate();
+        if (isLoot) return;
         boolean releasing = isReleasing();
 
         if (shooter != null && shootingEntity == null)

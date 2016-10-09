@@ -13,7 +13,6 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ChunkCache;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -428,26 +427,6 @@ public class PokeNavigator extends PathNavigate
 
     public void refreshCache()
     {
-        if (pathfinder.cacheLock[1]) return;
-        long time = System.nanoTime();
-        pathfinder.cacheLock[0] = true;
-        if (lastCacheUpdate == 0 || (time - lastCacheUpdate > 1000000000))
-        {
-            int i = MathHelper.floor_double(theEntity.posX);
-            int j = MathHelper.floor_double(theEntity.posY + 1.0D);
-            int k = MathHelper.floor_double(theEntity.posZ);
-            int l = (int) (pathSearchRange.getAttributeValue() + 16.0F);
-            int i1 = i - l;
-            int j1 = j - l;
-            int k1 = k - l;
-            int l1 = i + l;
-            int i2 = j + l;
-            int j2 = k + l;
-            pathfinder.chunks = new ChunkCache(worldObj, new BlockPos(i1, j1, k1), new BlockPos(l1, i2, j2), 0);
-            lastCacheUpdate = System.nanoTime();
-
-        }
-        pathfinder.cacheLock[0] = false;
     }
 
     /** Trims path data from the end to the first sun covered block */

@@ -591,7 +591,7 @@ public class AIHungry extends AIBase
             double d = foodLoc.addTo(0.5, 0.5, 0.5).distToEntity(entity);
             foodLoc.addTo(-0.5, -0.5, -0.5);
             IBlockState b = foodLoc.getBlockState(world);
-
+            if (b == null) return;
             if (b.getBlock() instanceof IBerryFruitBlock)
             {
                 eatBerry(b, d);

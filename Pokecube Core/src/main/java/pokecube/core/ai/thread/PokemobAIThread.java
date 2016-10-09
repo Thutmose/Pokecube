@@ -1,15 +1,14 @@
 package pokecube.core.ai.thread;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Queue;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Queues;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -54,7 +53,6 @@ public class PokemobAIThread
 
         public void runServerThreadTasks(World world)
         {
-            // tick();//TODO
             for (IAIRunnable ai : aiTasks)
             {
                 ai.doMainThreadTick(world);
@@ -67,8 +65,9 @@ public class PokemobAIThread
             synchronized (aiTasks)
             {
                 list = aiTasks;
-                if (list != null) for (IAIRunnable ai : (ArrayList<IAIRunnable>) list)
+                if (list != null) for (int i = 0; i < list.size(); i++)
                 {
+                    IAIRunnable ai = (IAIRunnable) list.get(i);
                     try
                     {
                         if (canRun(ai, list))
@@ -87,8 +86,9 @@ public class PokemobAIThread
                 }
             }
             list = aiLogic;
-            if (list != null) for (ILogicRunnable runnable : (ArrayList<ILogicRunnable>) list)
+            if (list != null) for (int i = 0; i < list.size(); i++)
             {
+                ILogicRunnable runnable = (ILogicRunnable) list.get(i);
                 try
                 {
                     runnable.doLogic();
@@ -111,23 +111,24 @@ public class PokemobAIThread
         {
             threadCount = Math.max(1, PokecubeMod.core.getConfig().maxAIThreads);
             threadCount = Math.min(threadCount, Runtime.getRuntime().availableProcessors());
-            aiStuffLists = new Vector[threadCount];
+            aiStuffLists = new Queue[threadCount];
             System.out.println("Creating and starting Pokemob AI Threads.");
             for (int i = 0; i < threadCount; i++)
             {
-                Vector<AIStuff> set = new Vector<AIStuff>();
-                AIThread thread = new AIThread(i, set);
-                aiStuffLists[i] = new Vector();
+                Queue<AIStuff> set = Queues.newConcurrentLinkedQueue();
+                AIThread thread = new AIThread(i, set, new Object());
+                aiStuffLists[i] = set;
                 thread.setPriority(8);
                 thread.start();
             }
             new AIEventHandler();
         }
 
-        public final Vector<AIStuff> aiStuff;
-        final int                    id;
+        public final Queue<AIStuff> aiStuff;
+        public final Object         lock;
+        final int                   id;
 
-        public AIThread(final int number, final Vector<AIStuff> aiStuff)
+        public AIThread(final int number, final Queue<AIStuff> aiStuff, final Object lock)
         {
             super(new Runnable()
             {
@@ -145,43 +146,26 @@ public class PokemobAIThread
                     System.out.println("This is Thread " + id);
                     while (true)
                     {
-                        boolean tick = false;
-                        synchronized (tickLock)
-                        {
-                            tick = tickLock.get(id);
-                        }
-                        if (tick)
-                        {
-                            Set<AIStuff> stuff;
-                            synchronized (aiStuff)
-                            {
-                                stuff = Sets.newHashSet(aiStuff);
-                            }
-                            // TODO
-                            for (AIStuff ai : stuff)
-                            {
-                                ai.tick();
-                            }
-                            aiStuff.clear();
-                            synchronized (tickLock)
-                            {
-                                tickLock.set(id, false);
-                            }
-                        }
-                        else
+                        synchronized (lock)
                         {
                             try
                             {
-                                Thread.sleep(1);
+                                lock.wait();
                             }
-                            catch (InterruptedException e)
+                            catch (Exception e)
                             {
-                                // e.printStackTrace();
+                                e.printStackTrace();
                             }
+                        }
+                        synchronized (aiStuff)
+                        {
+                            while (!aiStuff.isEmpty())
+                                aiStuff.remove().tick();
                         }
                     }
                 }
             });
+            this.lock = lock;
             id = number;
             this.aiStuff = aiStuff;
             this.setName("Netty Server IO - Pokemob AI Thread-" + id);
@@ -190,10 +174,8 @@ public class PokemobAIThread
 
     }
 
-    /** Lock used to unsure that AI tasks run at the correct time. */
-    private static final BitSet                                    tickLock          = new BitSet();
     /** Lists of the AI stuff for each thread. */
-    private static Vector<AIStuff>[]                               aiStuffLists;
+    private static Queue<AIStuff>[]                                aiStuffLists;
     /** Map of dimension to players, used for thread-safe player access. */
     public static final HashMap<Integer, Vector<Object>>           worldPlayers      = new HashMap<Integer, Vector<Object>>();
 
@@ -235,17 +217,6 @@ public class PokemobAIThread
                                                                                                      o2.getModifiers()[5],
                                                                                                      o2.getNature()
                                                                                                              .getStatsMod()[5]);
-                                                                                             // TODO
-                                                                                             // include
-                                                                                             // checks
-                                                                                             // for
-                                                                                             // mob's
-                                                                                             // selected
-                                                                                             // attack
-                                                                                             // and
-                                                                                             // include
-                                                                                             // attack
-                                                                                             // priority.
                                                                                              return speed2 - speed1;
                                                                                          }
                                                                                      };
@@ -264,8 +235,9 @@ public class PokemobAIThread
     {
         int prior = task.getPriority();
         int mutex = task.getMutex();
-        for (IAIRunnable ai : tasks)
+        for (int i = 0; i < tasks.size(); i++)
         {
+            IAIRunnable ai = tasks.get(i);
             if (ai.getPriority() < prior && (mutex & ai.getMutex()) != 0 && ai.shouldRun()) { return false; }
         }
         return task.shouldRun();
@@ -274,13 +246,12 @@ public class PokemobAIThread
     /** Clears things for world unload */
     public static void clear()
     {
-        for (Vector v : aiStuffLists)
+        for (Queue v : aiStuffLists)
         {
             v.clear();
         }
         worldPlayers.clear();
         TickHandler.getInstance().worldCaches.clear();
-        tickLock.clear();
     }
 
     /** Sets the AIStuff to tick on correct thread.
@@ -309,7 +280,6 @@ public class PokemobAIThread
             players.clear();
             players.addAll(evt.world.playerEntities);
             worldPlayers.put(evt.world.provider.getDimension(), players);
-
             Vector<Entity> entities = worldEntities.get(evt.world.provider.getDimension());
             if (entities == null)
             {
@@ -329,11 +299,18 @@ public class PokemobAIThread
     {
         if (evt.phase == Phase.END)
         {
-            synchronized (tickLock)
+            for (AIThread thread : AIThread.threads.values())
             {
-                for (int i = 0; i < AIThread.threadCount; i++)
+                try
                 {
-                    tickLock.set(i);
+                    synchronized (thread.lock)
+                    {
+                        thread.lock.notify();
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
             }
         }

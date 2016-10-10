@@ -28,13 +28,6 @@ repositories {
         url =  "http://dvs1.progwml6.com/files/maven"
     }
     ivy {
-        name = "baubles"
-        url = "https://dl.dropboxusercontent.com/u/47135879/"
-        layout "pattern", {
-            artifact "[module]-${version_minecraft}-[revision]-deobf.[ext]"
-        }
-    }
-    ivy {
         name = "thutcore"
         url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
         layout "pattern", {
@@ -89,9 +82,6 @@ dependencies {
     deobfCompile name: 'thut_bling', version: "${version_bling}", ext: 'jar'
     deobfCompile name: 'thut_wearables', version: "${version_wear}", ext: 'jar'
     deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"
-  //  deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
-  //  deobfCompile name: 'thaumcraft', version: "${version_thaumcraft}", ext: 'jar'
-  //  compile "igwmod:IGW-Mod-1.8.9:1.2.4-4:userdev"
 }
 
 group= "pokecube"

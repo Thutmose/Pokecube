@@ -36,14 +36,28 @@ repositories {
     }
     ivy {
         name = "thutcore"
-        url = "https://github.com/Thutmose/Thut/raw/master/ThutCore/deobf/"
+        url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
         layout "pattern", {
             artifact "[module]-${version_minecraft}-[revision]-dev.[ext]"
         }
     }
     ivy {
+        name = "thutbling"
+        url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
+        layout "pattern", {
+            artifact "[module]-[revision]-dev.[ext]"
+        }
+    }
+    ivy {
+        name = "thutwear"
+        url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
+        layout "pattern", {
+            artifact "[module]-[revision]-dev.[ext]"
+        }
+    }
+    ivy {
         name = "pokecube"
-        url = "https://github.com/Thutmose/Pokecube/raw/master/Pokecube%20Core/deobf"
+        url = "https://github.com/Thutmose/Pokecube/raw/1.9/Pokecube%20Core/deobf"
         layout "pattern", {
             artifact "[module]-${version_minecraft}-[revision]-dev.[ext]"
         }
@@ -70,12 +84,13 @@ dependencies {
     compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
     compile "net.darkhax.tesla:Tesla:${version_tesla}"
     deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
- //   deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
+    deobfCompile name: 'pokecube', version: "${version_pokecube}", ext: 'jar'
+    deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
+    deobfCompile name: 'thut_bling', version: "${version_bling}", ext: 'jar'
+    deobfCompile name: 'thut_wearables', version: "${version_wear}", ext: 'jar'
     deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"
-  //  deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
-  //  deobfCompile name: 'pokecube', version: "${version_pokecube}", ext: 'jar'
+  //  deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
   //  deobfCompile name: 'thaumcraft', version: "${version_thaumcraft}", ext: 'jar'
-    
   //  compile "igwmod:IGW-Mod-1.8.9:1.2.4-4:userdev"
 }
 

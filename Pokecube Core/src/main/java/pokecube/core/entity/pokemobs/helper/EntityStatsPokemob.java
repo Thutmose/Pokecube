@@ -540,6 +540,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void onKillEntity(EntityLivingBase attacked)
     {
+        if (worldObj.isRemote) return;
         IPokemob attacker = this;
         if (PokecubeCore.core.getConfig().nonPokemobExp && !(attacked instanceof IPokemob))
         {
@@ -921,18 +922,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void writeSpawnData(ByteBuf data)
     {
-        // data.writeInt(personalityValue);
-        // data.writeInt(getPokedexEntry().getName().getBytes().length);
-        // data.writeBytes(getPokedexEntry().getName().getBytes());
-        // data.writeBoolean(shiny);
-        // data.writeBoolean(wasShadow);
-        // data.writeBoolean(isAncient);
-        // data.writeByte((byte) nature.ordinal());
-        // data.writeBytes(ivs);
-        // boolean noTags = getEntityData().hasNoTags();
-        // data.writeBoolean(!noTags);
-        // PacketBuffer buffer = new PacketBuffer(data);
-        // buffer.writeNBTTagCompoundToBuffer(getEntityData());
         PacketBuffer buffer = new PacketBuffer(data);
         NBTTagCompound tag = writePokemobData();
         buffer.writeNBTTagCompoundToBuffer(tag);

@@ -34,7 +34,7 @@ public class MoveQueue
         {
             MoveQueue queue = queues.get(move.worldObj);
             if (queue == null) throw new NullPointerException("why is world queue null?");
-            queue.moves.add(move);
+            if (move.getUser() != null) queue.moves.add(move);
         }
 
         @SubscribeEvent
@@ -78,8 +78,10 @@ public class MoveQueue
             {
                 IPokemob user1 = (IPokemob) o1.getUser();
                 IPokemob user2 = (IPokemob) o2.getUser();
+                int speed1 = user1 == null ? 0 : user1.getActualStats()[5];
+                int speed2 = user2 == null ? 0 : user2.getActualStats()[5];
                 // TODO also factor in move priority here.
-                return user2.getActualStats()[5] - user1.getActualStats()[5];
+                return speed1 - speed2;
             }
         });
         for (EntityMoveUse move : moves)

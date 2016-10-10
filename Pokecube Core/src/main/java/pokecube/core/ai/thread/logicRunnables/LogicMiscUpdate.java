@@ -38,15 +38,6 @@ public class LogicMiscUpdate extends LogicBase
     {
         super.doServerTick(world);
         Random rand = new Random(pokemob.getRNGValue());
-        // If health is less than 1, kill the entity.
-        if (entity.getHealth() < 1)
-        {
-            pokemob.returnToPokecube();
-        }
-        else// Else, floor the health.
-        {
-            entity.setHealth((int) entity.getHealth());
-        }
         // check shearable state, this is to refresh to clients if needed.
         if (entity.ticksExisted % 20 == rand.nextInt(20))
         {

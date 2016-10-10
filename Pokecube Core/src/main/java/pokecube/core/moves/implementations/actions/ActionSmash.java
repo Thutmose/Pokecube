@@ -1,13 +1,21 @@
 package pokecube.core.moves.implementations.actions;
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveAction;
@@ -34,7 +42,6 @@ public class ActionSmash implements IMoveAction
         int count = 10;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
-
         EntityLivingBase owner = user.getPokemonOwner();
         boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(),
                 location.intY(), location.intZ());
@@ -51,14 +58,54 @@ public class ActionSmash implements IMoveAction
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return false;
         }
-
-        count = (int) Math.max(1, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)))
+        count = (int) Math.max(0, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)))
                 * hungerValue;
         if (count > 0)
         {
             smashRock(user, location, false);
             used = true;
             mob.setHungerTime(mob.getHungerTime() + count);
+        }
+        System.out.println("test ");
+        if (!used)
+        {
+            World world = ((Entity) user).getEntityWorld();
+            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+            if (!items.isEmpty())
+            {
+                // TODO instead of using reverse smelting, make an event that
+                // can be used to allow pulverizer compatiblity.
+                boolean smelt = false;
+                for (int i = 0; i < items.size(); i++)
+                {
+                    EntityItem item = items.get(i);
+                    ItemStack stack = item.getEntityItem();
+                    if (Block.getBlockFromItem(stack.getItem()) == null) continue;
+                    int num = stack.stackSize;
+                    ItemStack newstack = null;
+                    for (Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet())
+                    {
+                        ItemStack result = entry.getValue();
+                        if (stack.getItem() == result.getItem() && stack.getMetadata() == result.getMetadata())
+                        {
+                            newstack = entry.getKey();
+                            break;
+                        }
+                    }
+                    if (newstack != null && newstack.getItem() instanceof ItemBlock)
+                    {
+                        newstack = newstack.copy();
+                        if (newstack.getItemDamage() == 32767) newstack.setItemDamage(stack.getItemDamage());
+                        newstack.stackSize = num;
+                        int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
+                        hunger = (int) Math.max(1, hunger / (float) user.getLevel());
+                        ((IHungrymob) user).setHungerTime(((IHungrymob) user).getHungerTime() + hunger);
+                        item.setEntityItemStack(newstack);
+                        smelt = true;
+                    }
+                }
+                return smelt;
+            }
         }
         return used;
     }
@@ -72,7 +119,6 @@ public class ActionSmash implements IMoveAction
     private int smashRock(IPokemob digger, Vector3 v, boolean count)
     {
         int ret = 0;
-
         EntityLivingBase owner = digger.getPokemonOwner();
         EntityPlayer player = null;
         if (owner instanceof EntityPlayer)

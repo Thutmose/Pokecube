@@ -718,6 +718,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             else entity.onKillEntity(this);
         }
+        else if (getAttackTarget() != null)
+        {
+            getAttackTarget().onKillEntity(this);
+        }
         this.dead = true;
         this.getCombatTracker().reset();
 

@@ -17,7 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ItemMegawearable extends Item implements IMegaWearable
+public class ItemMegawearable extends Item
 {
     public static Map<String, String> wearables = Maps.newHashMap();
 

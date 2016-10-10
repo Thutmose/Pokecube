@@ -1,5 +1,6 @@
 package pokecube.core.events.handlers;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -11,16 +12,22 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.core.PokecubeCore;
 import pokecube.core.events.MoveUse.MoveWorldAction;
 import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveAction;
@@ -29,6 +36,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class MoveEventsHandler
@@ -54,6 +62,54 @@ public class MoveEventsHandler
         {
             nextBlock.setBlock(world, Blocks.LAVA);
             return true;
+        }
+        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+        if (!items.isEmpty())
+        {
+            boolean smelt = false;
+            for (int i = 0; i < items.size(); i++)
+            {
+                EntityItem item = items.get(i);
+                ItemStack stack = item.getEntityItem();
+                int num = stack.stackSize;
+                ItemStack newstack = FurnaceRecipes.instance().getSmeltingResult(stack);
+                if (newstack != null)
+                {
+                    newstack = newstack.copy();
+                    newstack.stackSize = num;
+                    int i1 = num;
+                    float f = FurnaceRecipes.instance().getSmeltingExperience(newstack);
+                    if (f == 0.0F)
+                    {
+                        i1 = 0;
+                    }
+                    else if (f < 1.0F)
+                    {
+                        int j = MathHelper.floor_float(i1 * f);
+                        if (j < MathHelper.ceiling_float_int(i1 * f) && Math.random() < i1 * f - j)
+                        {
+                            ++j;
+                        }
+
+                        i1 = j;
+                    }
+                    f = i1;
+                    while (i1 > 0)
+                    {
+                        int k = EntityXPOrb.getXPSplit(i1);
+                        i1 -= k;
+                        world.spawnEntityInWorld(
+                                new EntityXPOrb(world, location.x, location.y + 1.5D, location.z + 0.5D, k));
+                    }
+                    int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
+                    hunger = (int) Math.max(1, hunger / (float) attacker.getLevel());
+                    if (f > 0) hunger *= f;
+                    ((IHungrymob) attacker).setHungerTime(((IHungrymob) attacker).getHungerTime() + hunger);
+                    item.setEntityItemStack(newstack);
+                    smelt = true;
+                }
+            }
+            return smelt;
         }
         return false;
     }

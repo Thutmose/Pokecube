@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -16,6 +17,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.megastuff.MegaCapability;
 
 public class PacketChangeForme implements IMessage, IMessageHandler<PacketChangeForme, IMessage>
 {
@@ -96,6 +98,13 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         else
         {
             if (pokemob.getPokemonAIState(IMoveConstants.EVOLVING)) return;
+            boolean hasRing = MegaCapability.canMegaEvolve(player, pokemob);
+            if (!hasRing)
+            {
+                player.addChatMessage(
+                        new TextComponentTranslation("pokecube.mega.noring", pokemob.getPokemonDisplayName()));
+                return;
+            }
             PokedexEntry megaEntry = pokemob.getPokedexEntry().getEvo(pokemob);
             if (megaEntry != null && megaEntry.getPokedexNb() == pokemob.getPokedexEntry().getPokedexNb())
             {

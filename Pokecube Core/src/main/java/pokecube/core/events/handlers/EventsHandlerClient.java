@@ -23,11 +23,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -61,7 +59,6 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.megastuff.IMegaWearable;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
@@ -76,11 +73,6 @@ import thut.core.client.ClientProxy;
 @SideOnly(Side.CLIENT)
 public class EventsHandlerClient
 {
-    public static interface RingChecker
-    {
-        boolean hasRing(EntityPlayer player);
-    }
-
     public static class UpdateNotifier
     {
         public UpdateNotifier()
@@ -138,27 +130,6 @@ public class EventsHandlerClient
     }
 
     public static HashMap<PokedexEntry, IPokemob> renderMobs = new HashMap<PokedexEntry, IPokemob>();
-
-    public static RingChecker                     checker    = new RingChecker()
-                                                             {
-                                                                 @Override
-                                                                 public boolean hasRing(EntityPlayer player)
-                                                                 {
-                                                                     for (int i = 0; i < player.inventory
-                                                                             .getSizeInventory(); i++)
-                                                                     {
-                                                                         ItemStack stack = player.inventory
-                                                                                 .getStackInSlot(i);
-                                                                         if (stack != null)
-                                                                         {
-                                                                             Item item = stack.getItem();
-                                                                             if (item instanceof IMegaWearable) { return true; }
-                                                                         }
-                                                                     }
-                                                                     return false;
-                                                                 }
-                                                             };
-
     static boolean                                notifier   = false;
 
     public static IPokemob getPokemobForRender(ItemStack itemStack, World world)
@@ -323,18 +294,10 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void keyInput(KeyInputEvent evt)
     {
-        EntityPlayer player = FMLClientHandler.instance().getClientPlayerEntity();
         if (ClientProxyPokecube.mobMegavolve.isPressed())
         {
-            boolean ring = checker.hasRing(player);
-
-            if (!ring)
-            {
-                player.addChatMessage(new TextComponentTranslation("pokecube.mega.noring"));
-            }
-
             IPokemob current = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (current != null && ring && !current.getPokemonAIState(IMoveConstants.EVOLVING))
+            if (current != null && !current.getPokemonAIState(IMoveConstants.EVOLVING))
             {
                 PacketChangeForme.sendPacketToServer(((Entity) current), null);
             }

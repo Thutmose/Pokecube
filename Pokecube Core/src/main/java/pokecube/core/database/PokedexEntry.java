@@ -1524,6 +1524,12 @@ public class PokedexEntry
 
     protected void initRelations()
     {
+        List<EvolutionData> stale = Lists.newArrayList();
+        for (EvolutionData d : this.evolutions)
+        {
+            if (Pokedex.getInstance().getEntry(d.evolution.pokedexNb) == null) stale.add(d);
+        }
+        this.evolutions.removeAll(stale);
         addRelation(this);
         for (EvolutionData d : this.evolutions)
         {

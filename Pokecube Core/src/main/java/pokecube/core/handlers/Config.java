@@ -160,6 +160,8 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public boolean                       pokemobsDamageBlocks       = false;
     @Configure(category = mobAI)
+    public int                           baseSmeltingHunger         = 100;
+    @Configure(category = mobAI)
     public boolean                       onlyPokemobsDamagePokemobs = false;
     @Configure(category = mobAI)
     public float                         playerToPokemobDamageScale = 1;
@@ -249,7 +251,9 @@ public class Config extends ConfigBase
     public boolean                       deactivateMonsters         = false;
     @Configure(category = spawning)
     /** do monster spawns get swapped with shadow pokemobs */
-    public boolean                       disableMonsters            = false;
+    public boolean                       disableVanillaMonsters     = false;
+    @Configure(category = spawning)
+    public boolean                       disableVanillaAnimals      = false;
     @Configure(category = spawning, needsMcRestart = true)
     /** do animals not spawn */
     public boolean                       deactivateAnimals          = true;
@@ -340,6 +344,10 @@ public class Config extends ConfigBase
 
     @Configure(category = advanced)
     public int                           evolutionTicks             = 50;
+    @Configure(category = advanced)
+    public String                        nonPokemobExpFunction      = "h*(a+1)";
+    @Configure(category = advanced)
+    public boolean                       nonPokemobExp              = false;
     @Configure(category = database, needsMcRestart = true)
     boolean                              forceDatabase              = true;
 

@@ -26,13 +26,6 @@ repositories {
         url =  "http://dvs1.progwml6.com/files/maven"
     }
     ivy {
-        name = "baubles"
-        url = "https://dl.dropboxusercontent.com/u/47135879/"
-        layout "pattern", {
-            artifact "[module]-${version_minecraft}-[revision]-deobf.[ext]"
-        }
-    }
-    ivy {
         name = "thutcore"
         url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
         layout "pattern", {
@@ -53,10 +46,6 @@ repositories {
             artifact "[module]-[revision]-dev.[ext]"
         }
     }
-    maven {
-        name = "IGW"
-        url = "http://maven.k-4u.nl/"
-    }
     maven { // TOP
         name 'tterrag maven'
         url "http://maven.tterrag.com/"
@@ -65,16 +54,13 @@ repositories {
 }
 
 dependencies {
-    compile "li.cil.oc:OpenComputers:MC${version_oc}:api"
+    compile "li.cil.oc:OpenComputers:MC${version_minecraft}-${version_oc}:api"
     compile "net.darkhax.tesla:Tesla:${version_tesla}"
-    deobfCompile "mezz.jei:jei_${version_jei}"
+    deobfCompile "mezz.jei:jei_${version_minecraft}:${version_jei}"
     deobfCompile "mcjty.theoneprobe:TheOneProbe:${version_top}"
     deobfCompile name: 'thutcore', version: "${version_thutcore}", ext: 'jar'
     deobfCompile name: 'thut_bling', version: "${version_bling}", ext: 'jar'
     deobfCompile name: 'thut_wearables', version: "${version_wear}", ext: 'jar'
-    //deobfCompile name: 'baubles', version: "${version_baubles}", ext: 'jar'
-    
-  //  compile "igwmod:IGW-Mod-1.8.9:1.2.4-4:userdev"
 }
 
 group= "pokecube" // http://maven.apache.org/guides/mini/guide-naming-conventions.html

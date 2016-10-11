@@ -16,6 +16,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IMerchant;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.boss.EntityDragonPart;
@@ -375,6 +377,7 @@ public class EventsHandler
         }
         if (PokecubeMod.core.getConfig().disableVanillaAnimals && !(evt.getEntity() instanceof IPokemob)
                 && evt.getEntity() instanceof IAnimals && !(evt.getEntity() instanceof IMob)
+                && !(evt.getEntity() instanceof INpc) && !(evt.getEntity() instanceof IMerchant)
                 && evt.getEntity().getClass().getName().contains("net.minecraft"))
         {
             evt.getEntity().setDead();

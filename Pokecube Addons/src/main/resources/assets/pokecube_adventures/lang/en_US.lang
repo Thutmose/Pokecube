@@ -70,6 +70,11 @@ msg.team.deny=§cYou are not allowed to do that in land owned by Team %1$s
 msg.team.enterLand=You have entered land owned by Team %1$s
 msg.team.exitLand=You have left land owned by Team %1$s
 
+achievement.pokeadv.defeat.trainer=Defeat a trainer
+achievement.pokeadv.defeat.trainer.desc=Defeat a trainer
+achievement.pokeadv.defeat.leader=Defeat a trainer
+achievement.pokeadv.defeat.leader.desc=Defeat a trainer
+
 #Config Stuff
 
 #Machines

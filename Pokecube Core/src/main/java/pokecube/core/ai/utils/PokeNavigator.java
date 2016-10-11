@@ -17,6 +17,7 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 import thut.api.pathing.Paths;
@@ -325,9 +326,16 @@ public class PokeNavigator extends PathNavigate
                 {
                     speed *= 2;
                 }
-                while (speed * mult > dist)
+                int n = 0;
+                while (speed * mult > dist && n++ < 100)
                 {
                     speed *= drop;
+                }
+                if (n > 90)
+                {
+                    PokecubeMod.log("Error with speed for " + pokemob.getPokemonDisplayName().getFormattedText() + " "
+                            + this.speed + " " + speed + " " + dist + " " + mult);
+                    speed = this.speed;
                 }
 
                 this.theEntity.getMoveHelper().setMoveTo(targetLoc.x, targetLoc.y, targetLoc.z, speed);

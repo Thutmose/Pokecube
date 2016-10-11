@@ -397,7 +397,7 @@ public class Pokecube extends Item implements IPokecube
         if (target instanceof EntityLivingBase || PokecubeManager.isFilled(cube) || thrower.isSneaking()
                 || (thrower instanceof FakePlayer))
         {
-            entity.targetEntity = (EntityLivingBase) target;
+            if (target instanceof EntityLivingBase) entity.targetEntity = (EntityLivingBase) target;
             if (target == null && targetLocation == null && PokecubeManager.isFilled(cube))
             {
                 targetLocation = Vector3.secondAxisNeg;

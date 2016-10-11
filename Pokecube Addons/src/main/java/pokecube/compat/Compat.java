@@ -300,7 +300,7 @@ public class Compat
     @EventHandler
     public void RecComplex_Compat(FMLPostInitializationEvent evt)
     {
-        System.out.println("Recurrent Complex Compat");
+        System.out.println("Initialiing Recurrent Complex Compat");
         pokecube.compat.reccomplex.ReComplexCompat.register();
     }
 

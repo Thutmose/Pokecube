@@ -237,7 +237,7 @@ public class EventsHandlerClient
             }
         }
         control:
-        if (event.player.isRiding())
+        if (event.player.isRiding() && Minecraft.getMinecraft().currentScreen == null)
         {
             Entity e = event.player.getRidingEntity();
             if (e instanceof EntityAiPokemob)

@@ -327,9 +327,13 @@ public class PokeNavigator extends PathNavigate
                     speed *= 2;
                 }
                 int n = 0;
-                while (speed * mult > dist && n++ < 100)
+                if (dist != 0) while (speed * mult > dist && n++ < 100)
                 {
                     speed *= drop;
+                }
+                else
+                {
+                    this.clearPathEntity();
                 }
                 if (n > 90)
                 {

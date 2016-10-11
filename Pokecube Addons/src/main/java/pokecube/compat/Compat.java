@@ -296,14 +296,6 @@ public class Compat
         Database.addHeldData(CUSTOMSPAWNSFILE.replace("spawns.xml", "held.xml"));
     }
 
-    @Optional.Method(modid = "reccomplex")
-    @EventHandler
-    public void RecComplex_Compat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("Recurrent Complex Compat");
-        pokecube.compat.reccomplex.ReComplexCompat.register();
-    }
-
     @Optional.Method(modid = "theoneprobe")
     @EventHandler
     public void TheOneProbe_Compat(FMLPostInitializationEvent evt)

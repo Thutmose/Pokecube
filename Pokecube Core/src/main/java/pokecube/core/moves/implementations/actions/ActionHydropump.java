@@ -1,5 +1,6 @@
 package pokecube.core.moves.implementations.actions;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -10,6 +11,7 @@ import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.MovesUtils;
+import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
 public class ActionHydropump implements IMoveAction
@@ -31,7 +33,25 @@ public class ActionHydropump implements IMoveAction
             if (evt.isCanceled()) return false;
         }
         MoveEventsHandler.doDefaultWater(user, MovesUtils.getMoveFromName(getMoveName()), location);
-        location.setBlock(((Entity) user).getEntityWorld(), Blocks.FLOWING_WATER.getStateFromMeta(1));
+        Vector3 source = Vector3.getNewVector().set(user);
+        double dist = source.distanceTo(location);
+        Vector3 dir = location.subtract(source).norm();
+        Vector3 temp = Vector3.getNewVector();
+        for (int i = 0; i < dist; i++)
+        {
+            Entity player = (Entity) user;
+            temp.set(dir).scalarMultBy(i).addTo(source);
+            IBlockState state = temp.getBlockState(player.getEntityWorld());
+            if (!state.getMaterial().isReplaceable()) continue;
+            if (user.getPokemonOwner() instanceof EntityPlayer)
+            {
+                BreakEvent evt = new BreakEvent(player.getEntityWorld(), temp.getPos(), state,
+                        (EntityPlayer) user.getPokemonOwner());
+                MinecraftForge.EVENT_BUS.post(evt);
+                if (evt.isCanceled()) continue;
+            }
+            TickHandler.addBlockChange(temp, player.dimension, Blocks.FLOWING_WATER, 1);
+        }
         return true;
     }
 

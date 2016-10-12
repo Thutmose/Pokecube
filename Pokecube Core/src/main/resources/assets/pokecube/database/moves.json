@@ -1173,7 +1173,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:splash:0.2"
   },
   {
     "num": 57,

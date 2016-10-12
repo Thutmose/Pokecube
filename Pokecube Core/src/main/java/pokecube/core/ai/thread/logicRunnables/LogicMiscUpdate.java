@@ -37,6 +37,7 @@ public class LogicMiscUpdate extends LogicBase
     public void doServerTick(World world)
     {
         super.doServerTick(world);
+        entry = pokemob.getPokedexEntry();
         Random rand = new Random(pokemob.getRNGValue());
         // check shearable state, this is to refresh to clients if needed.
         if (entity.ticksExisted % 20 == rand.nextInt(20))
@@ -62,40 +63,102 @@ public class LogicMiscUpdate extends LogicBase
                 pokemob.setModifiers(PokecubeSerializer.intAsModifierArray(1717986918));
             }
         }
+        for (int i = 0; i < 5; i++)
+        {
+            flavourAmounts[i] = pokemob.getFlavourAmount(i);
+        }
+        for (int i = 0; i < flavourAmounts.length; i++)
+        {
+            if (flavourAmounts[i] > 0)
+            {
+                pokemob.setFlavourAmount(i, flavourAmounts[i] - 1);
+            }
+        }
+        if (!entity.worldObj.isRemote) return;
 
         // Particle stuff below here, WARNING, RESETTING RNG HERE
         rand = new Random();
         Vector3 particleLoc = Vector3.getNewVector().set(pokemob);
+        boolean randomV = false;
+        Vector3 particleVelo = Vector3.getNewVector();
+        boolean pokedex = false;
         if (pokemob.isShadow())
         {
             particle = "portal";
             particleIntensity = 100;
         }
-        else if (particle == null && pokemob.getPokedexEntry().particleData != null)
+        particles:
+        if (particle == null && entry.particleData != null)
         {
-            particle = pokemob.getPokedexEntry().particleData[0];
-            particleIntensity = Integer.parseInt(pokemob.getPokedexEntry().particleData[1]);
+            pokedex = true;
+            double intensity = Double.parseDouble(entry.particleData[1]);
+            int val = (int) intensity;
+            if (intensity < 1)
+            {
+                if (rand.nextDouble() <= intensity) val = 1;
+            }
+            if (val == 0) break particles;
+            particle = entry.particleData[0];
+            particleIntensity = val;
+            if (entry.particleData.length > 2)
+            {
+                String[] args = entry.particleData[2].split(",");
+                double dx = 0, dy = 0, dz = 0;
+                if (args.length == 1)
+                {
+                    dy = Double.parseDouble(args[0]) * entity.height;
+                }
+                else
+                {
+                    dx = Double.parseDouble(args[0]);
+                    dy = Double.parseDouble(args[1]);
+                    dz = Double.parseDouble(args[2]);
+                }
+                particleLoc.addTo(dx, dy, dz);
+            }
+            if (entry.particleData.length > 3)
+            {
+                String[] args = entry.particleData[3].split(",");
+                double dx = 0, dy = 0, dz = 0;
+                if (args.length == 1)
+                {
+                    switch (args[0])
+                    {
+                    case "r":
+                        randomV = true;
+                        break;
+                    case "v":
+                        particleVelo.setToVelocity(entity);
+                        break;
+                    default:
+                        break;
+                    }
+                }
+                else
+                {
+                    dx = Double.parseDouble(args[0]);
+                    dy = Double.parseDouble(args[1]);
+                    dz = Double.parseDouble(args[2]);
+                    particleVelo.set(dx, dy, dz);
+                }
+            }
         }
         Calendar calendar = Calendar.getInstance();
         if (calendar.get(Calendar.DAY_OF_MONTH) == 25 && calendar.get(Calendar.MONTH) == 11)
         {
             particle = "aurora";// Merry Xmas
-            particleIntensity = 90;
+            particleIntensity = 10;
         }
         if (pokemob.getPokemonAIState(IPokemob.MATING) && entity.ticksExisted % 10 == 0)
         {
-            // System.out.println(pokemob);
+            Vector3 heart = Vector3.getNewVector();
             for (int i = 0; i < 3; ++i)
             {
-                particleLoc.set(entity.posX + rand.nextFloat() * entity.width * 2.0F - entity.width,
+                heart.set(entity.posX + rand.nextFloat() * entity.width * 2.0F - entity.width,
                         entity.posY + 0.5D + rand.nextFloat() * entity.height,
                         entity.posZ + rand.nextFloat() * entity.width * 2.0F - entity.width);
-                PokecubeMod.core.spawnParticle(entity.worldObj, "heart", particleLoc, null);
+                PokecubeMod.core.spawnParticle(entity.worldObj, "heart", heart, null);
             }
-        }
-        for (int i = 0; i < 5; i++)
-        {
-            flavourAmounts[i] = pokemob.getFlavourAmount(i);
         }
         if (flavourAmounts[SWEET] > 0)
         {
@@ -117,23 +180,26 @@ public class LogicMiscUpdate extends LogicBase
         {
             particle = "powder.yellow";
         }
-        for (int i = 0; i < flavourAmounts.length; i++)
+        if (particle != null && particleCounter++ <= particleIntensity)
         {
-            if (flavourAmounts[i] > 0)
+            if (!pokedex)
             {
-                pokemob.setFlavourAmount(i, flavourAmounts[i] - 1);
+                float scale = entity.width * 2;
+                Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5,
+                        rand.nextDouble() + entity.height / 2, rand.nextDouble() - 0.5);
+                offset.scalarMultBy(scale);
+                particleLoc.addTo(offset);
             }
+            if (randomV)
+            {
+                particleVelo.set(rand.nextDouble() - 0.5, rand.nextDouble() + entity.height / 2,
+                        rand.nextDouble() - 0.5);
+                particleVelo.scalarMultBy(0.25);
+            }
+            PokecubeMod.core.spawnParticle(entity.worldObj, particle, particleLoc, particleVelo);
+
         }
-        if (particle != null && particleCounter++ >= 100 - particleIntensity)
-        {
-            float scale = entity.width * 2;
-            Vector3 offset = Vector3.getNewVector().set(rand.nextDouble() - 0.5, rand.nextDouble() + entity.height / 2,
-                    rand.nextDouble() - 0.5);
-            offset.scalarMultBy(scale);
-            particleLoc.addTo(offset);
-            PokecubeMod.core.spawnParticle(entity.worldObj, particle, particleLoc, null);
-            particleCounter = 0;
-        }
+        particleCounter = 0;
         particle = null;
     }
 

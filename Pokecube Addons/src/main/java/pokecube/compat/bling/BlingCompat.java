@@ -11,9 +11,8 @@ public class BlingCompat
 {
     public BlingCompat()
     {
-        for (int i = 0; i < HeldItemHandler.megaVariants.size(); i++)
+        for (int i = 4; i < HeldItemHandler.megaVariants.size(); i++)
         {
-            if (i != 0 && i < 4) continue;
             String s = HeldItemHandler.megaVariants.get(i);
             String tex = null;
             ItemStack stack = PokecubeItems.getStack(s);

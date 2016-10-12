@@ -103,22 +103,24 @@ public class MoveEventsHandler
     {
         if (move.getPWR() <= 0) return false;
         World world = ((Entity) attacker).getEntityWorld();
+        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                .addTo(location);
+        IBlockState nextState = nextBlock.getBlockState(world);
         IBlockState state = location.getBlockState(world);
         Vector3 prevBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).norm().addTo(location);
         IBlockState prevState = prevBlock.getBlockState(world);
-        if (state.getMaterial().isReplaceable())
+        int flamNext = nextState.getBlock().getFlammability(world, nextBlock.getPos(), EnumFacing.UP);// TODO
+        if (state.getMaterial().isReplaceable() && flamNext != 0)
         {
             location.setBlock(world, Blocks.FIRE);
         }
-        else if (prevState.getMaterial().isReplaceable() && state.isFullCube())
+        else if (prevState.getMaterial().isReplaceable()
+                && state.getBlock().getFlammability(world, location.getPos(), EnumFacing.UP) != 0)
         {
             prevBlock.setBlock(world, Blocks.FIRE);
         }
         if (move.getPWR() < FIRESTRONG) { return attemptSmelt(attacker, location); }
         Block block = state.getBlock();
-        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                .addTo(location);
-        IBlockState nextState = nextBlock.getBlockState(world);
         if (block == Blocks.OBSIDIAN)
         {
             location.setBlock(world, Blocks.LAVA);

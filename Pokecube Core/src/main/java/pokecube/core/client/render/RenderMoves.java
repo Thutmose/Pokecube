@@ -29,7 +29,6 @@ public class RenderMoves<T extends EntityMoveUse> extends Render<T>
                 && entity.getUser() != null)
         {
             MovePacketInfo info = entity.getMoveInfo();
-            info.currentTick = animation.getDuration() - entity.getAge();
             animation.clientAnimation(info, Minecraft.getMinecraft().renderGlobal, partialTicks);
         }
         GlStateManager.popMatrix();

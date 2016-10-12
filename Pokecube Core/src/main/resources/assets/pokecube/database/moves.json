@@ -1110,7 +1110,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:flame:0.2"
   },
   {
     "num": 54,
@@ -1215,7 +1215,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:misc:0.2"
   },
   {
     "num": 59,
@@ -1278,7 +1278,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:bubble:0.5"
   },
   {
     "num": 62,
@@ -1299,7 +1299,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:aurora:0.5"
   },
   {
     "num": 63,

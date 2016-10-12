@@ -587,16 +587,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         if (world.provider.getDimension() != Minecraft.getMinecraft().thePlayer.dimension) return;
         if (velocity == null) velocity = Vector3.empty;
-        String[] args1 = par1Str.split(",");
-        if (args1.length == 4)
-        {
-
-        }
-        else if (args1.length == 2)
-        {
-            float offset = Float.parseFloat(args1[1]);
-            location.y += offset;
-        }
         boolean ignoreRange = true;
         EnumParticleTypes particle = null;
         particle = EnumParticleTypes.getByName(par1Str);

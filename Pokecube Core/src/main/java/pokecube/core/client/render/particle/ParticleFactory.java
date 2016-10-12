@@ -53,15 +53,17 @@ public class ParticleFactory
             ParticleNoGravity particle = new ParticleNoGravity(0, 0);
             particle.setVelocity(velocity);
             int[][] textures = new int[2][2];
-            textures[0][0] = 0;
+            textures[0][0] = 6;
             textures[0][1] = 0;
-            textures[1][0] = 0;
+            textures[1][0] = 6;
             textures[1][1] = 0;
             particle.setTex(textures);
             particle.setSize(0.125f);
             particle.name = "powder";
+            int life = 32;
             if (args.length > 0) particle.setColour(args[0]);
-            particle.setLifetime(32);
+            if (args.length > 1) life = args[1];
+            particle.setLifetime(life);
             ret = particle;
         }
         else if (name.equalsIgnoreCase("leaf"))

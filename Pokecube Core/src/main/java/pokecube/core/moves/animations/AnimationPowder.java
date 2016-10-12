@@ -14,6 +14,7 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
@@ -26,7 +27,7 @@ public class AnimationPowder extends MoveAnimationBase
     float   density      = 1;
     boolean reverse      = false;
     boolean customColour = false;
-
+    boolean old          = false;
     int     meshId       = 0;
 
     public AnimationPowder(String particle)
@@ -41,7 +42,6 @@ public class AnimationPowder extends MoveAnimationBase
                 break;
             }
         }
-
         String[] args = particle.split(":");
         for (int i = 1; i < args.length; i++)
         {
@@ -69,6 +69,11 @@ public class AnimationPowder extends MoveAnimationBase
             {
                 duration = Integer.parseInt(val);
             }
+            else if (ident.equals("p"))
+            {
+                old = true;
+                this.particle = val;
+            }
         }
 
     }
@@ -77,6 +82,7 @@ public class AnimationPowder extends MoveAnimationBase
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
+        if (old) return;
         Vector3 source = info.source;
         Vector3 target = info.target;
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
@@ -166,6 +172,23 @@ public class AnimationPowder extends MoveAnimationBase
         else if (!customColour)
         {
             rgba = getColourFromMove(move, 255);
+        }
+    }
+
+    @Override
+    public void spawnClientEntities(MovePacketInfo info)
+    {
+        if (!old) return;
+        Vector3 target = info.target;
+        initColour((info.attacker.getEntityWorld().getWorldTime()) * 20, 0, info.move);
+        Vector3 temp = Vector3.getNewVector();
+        Random rand = new Random();
+        for (int i = 0; i < 100 * density; i++)
+        {
+            temp.set(rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());
+            temp.scalarMult(0.010 * width);
+            temp.addTo(target);
+            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp.copy(), null, rgba, 1);
         }
     }
 

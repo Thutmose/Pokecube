@@ -363,7 +363,6 @@ public class EntityPokecube extends EntityPokecubeBase
     @Override
     public void setDead()
     {
-        Thread.dumpStack();
         super.setDead();
     }
 

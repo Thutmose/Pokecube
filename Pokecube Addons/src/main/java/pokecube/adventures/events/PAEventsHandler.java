@@ -37,7 +37,7 @@ public class PAEventsHandler
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(receiveCanceled = false)
     public void TrainerRecallEvent(pokecube.core.events.RecallEvent evt)
     {
         IPokemob recalled = evt.recalled;

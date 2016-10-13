@@ -294,8 +294,11 @@ ability.wonderskin.name=Wonder Skin
 ability.zenmode.name=Zen Mode
 
 achievement.pokecube.catch=Catch a %1$s
+achievement.pokecube.catch.desc=Catch a %1$s
 achievement.pokecube.hatch=Hatch a %1$s
+achievement.pokecube.hatch.desc=Hatch a %1$s
 achievement.pokecube.kill=Defeat a %1$s
+achievement.pokecube.kill.desc=Defeat a %1$s
 achievement.get1stPokemob=Get 1st Pokémob
 achievement.get1stPokemob.desc=Get your starter
 gui.pokemob.choose1st=Choose your first Pokémob.
@@ -344,7 +347,7 @@ item.everstone.name=Ever Stone
 item.duskstone.name=Dusk Stone
 item.dawnstone.name=Dawn Stone
 item.kingsrock.name=King's Rock
-item.luckyEgg.name=Lucky Egg
+item.luckyegg.name=Lucky Egg
 
 item.berry.desc=Plant on Farmland to grow
 item.cheriBerry.name=Cheri Berry

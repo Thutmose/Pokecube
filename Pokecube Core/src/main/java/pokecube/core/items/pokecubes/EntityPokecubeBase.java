@@ -42,7 +42,7 @@ import thut.api.maths.Vector3;
 
 public class EntityPokecubeBase extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
 {
-    public static SoundEvent POKECUBESOUND;
+    public static SoundEvent                                POKECUBESOUND;
     static final DataParameter<Integer>                     ENTITYID       = EntityDataManager
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     private static final DataParameter<Optional<ItemStack>> ITEM           = EntityDataManager
@@ -87,6 +87,15 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
+        if (source == DamageSource.outOfWorld)
+        {
+            if (PokecubeManager.isFilled(getEntityItem()))
+            {
+                IPokemob mob = this.sendOut();
+                if (mob != null) mob.returnToPokecube();
+            }
+            this.setDead();
+        }
         return false;
     }
 

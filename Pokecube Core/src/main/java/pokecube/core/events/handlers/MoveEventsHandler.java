@@ -45,24 +45,9 @@ public class MoveEventsHandler
     public static int FIRESTRONG     = 100;
     public static int ELECTRICSTRONG = 100;
 
-    public static boolean doDefaultFire(IPokemob attacker, Move_Base move, Vector3 location)
+    public static boolean attemptSmelt(IPokemob attacker, Vector3 location)
     {
         World world = ((Entity) attacker).getEntityWorld();
-        IBlockState state = location.getBlockState(world);
-        Block block = state.getBlock();
-        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
-                .addTo(location);
-        IBlockState nextState = nextBlock.getBlockState(world);
-        if (block == Blocks.OBSIDIAN)
-        {
-            location.setBlock(world, Blocks.LAVA);
-            return true;
-        }
-        else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.OBSIDIAN)
-        {
-            nextBlock.setBlock(world, Blocks.LAVA);
-            return true;
-        }
         List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
         if (!items.isEmpty())
         {
@@ -114,8 +99,45 @@ public class MoveEventsHandler
         return false;
     }
 
+    public static boolean doDefaultFire(IPokemob attacker, Move_Base move, Vector3 location)
+    {
+        if (move.getPWR() <= 0) return false;
+        World world = ((Entity) attacker).getEntityWorld();
+        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+                .addTo(location);
+        IBlockState nextState = nextBlock.getBlockState(world);
+        IBlockState state = location.getBlockState(world);
+        Vector3 prevBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).norm().addTo(location);
+        IBlockState prevState = prevBlock.getBlockState(world);
+        int flamNext = nextState.getBlock().getFlammability(world, nextBlock.getPos(), EnumFacing.UP);// TODO
+        if (state.getMaterial().isReplaceable() && flamNext != 0)
+        {
+            location.setBlock(world, Blocks.FIRE);
+        }
+        else if (prevState.getMaterial().isReplaceable()
+                && state.getBlock().getFlammability(world, location.getPos(), EnumFacing.UP) != 0)
+        {
+            prevBlock.setBlock(world, Blocks.FIRE);
+        }
+        if (move.getPWR() < FIRESTRONG) { return attemptSmelt(attacker, location); }
+        Block block = state.getBlock();
+        if (block == Blocks.OBSIDIAN)
+        {
+            location.setBlock(world, Blocks.LAVA);
+            return true;
+        }
+        else if (block.isReplaceable(world, location.getPos()) && nextState.getBlock() == Blocks.OBSIDIAN)
+        {
+            nextBlock.setBlock(world, Blocks.LAVA);
+            return true;
+        }
+        return attemptSmelt(attacker, location);
+    }
+
     public static boolean doDefaultElectric(IPokemob attacker, Move_Base move, Vector3 location)
     {
+        if (move.getPWR() < ELECTRICSTRONG) { return false; }
+
         World world = ((Entity) attacker).getEntityWorld();
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();
@@ -178,6 +200,17 @@ public class MoveEventsHandler
     {
         World world = ((Entity) attacker).getEntityWorld();
         IBlockState state = location.getBlockState(world);
+        Vector3 prevBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).norm().addTo(location);
+        IBlockState prevState = prevBlock.getBlockState(world);
+        if (state.getBlock() == Blocks.FIRE)
+        {
+            location.setAir(world);
+        }
+        else if (prevState.getBlock() == Blocks.FIRE)
+        {
+            prevBlock.setAir(world);
+        }
+        if (move.getPWR() < WATERSTRONG) { return false; }
         Block block = state.getBlock();
         Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
                 .addTo(location);
@@ -233,12 +266,11 @@ public class MoveEventsHandler
             if (move.getType(attacker) == PokeType.ice
                     && (move.move.attackCategory & IMoveConstants.CATEGORY_DISTANCE) > 0
                     && move.move.power > 0) { return doDefaultIce(attacker, move, location); }
-            if (move.getType(attacker) == PokeType.electric && move.getPWR() >= ELECTRICSTRONG)
+            if (move.getType(attacker) == PokeType.electric)
             {
                 doDefaultElectric(attacker, move, location);
             }
-            if (move.getType(attacker) == PokeType.fire
-                    && move.getPWR() >= FIRESTRONG) { return doDefaultFire(attacker, move, location); }
+            if (move.getType(attacker) == PokeType.fire) { return doDefaultFire(attacker, move, location); }
             return false;
         }
 

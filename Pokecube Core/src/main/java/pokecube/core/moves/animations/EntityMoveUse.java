@@ -135,6 +135,11 @@ public class EntityMoveUse extends Entity
             this.setDead();
             return;
         }
+        Move_Base attack = getMove();
+        Entity user;
+        if ((user = getUser()) == null || this.isDead || user.isDead) return;
+        if (worldObj.isRemote && attack.getAnimation((IPokemob) user) != null)
+            attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
         if (age == 0)
         {
             this.doMoveUse();
@@ -146,6 +151,7 @@ public class EntityMoveUse extends Entity
     public MovePacketInfo getMoveInfo()
     {
         MovePacketInfo info = new MovePacketInfo(getMove(), getUser(), getTarget(), getStart(), getEnd());
+        info.currentTick = info.move.getAnimation((IPokemob) info.attacker).getDuration() - (getAge() - 1);
         return info;
     }
 
@@ -164,10 +170,6 @@ public class EntityMoveUse extends Entity
             {
                 MovesUtils.doAttack(attack.name, (IPokemob) user, getEnd());
             }
-        }
-        else if (attack.getAnimation((IPokemob) user) != null)
-        {
-            attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
         }
     }
 

@@ -1110,7 +1110,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:flame:0.2"
   },
   {
     "num": 54,
@@ -1173,7 +1173,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:splash:0.2"
   },
   {
     "num": 57,
@@ -1215,7 +1215,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:misc:0.2"
   },
   {
     "num": 59,
@@ -1278,7 +1278,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:bubble:0.5"
   },
   {
     "num": 62,
@@ -1299,7 +1299,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "beam"
+    "defaultanimation": "beam:aurora:0.5"
   },
   {
     "num": 63,
@@ -1614,7 +1614,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "powder"
+    "defaultanimation": "powder:pportal"
   },
   {
     "num": 78,
@@ -2265,7 +2265,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "powder:d5:w10:c0"
+    "defaultanimation": "powder:plargesmoke"
   },
   {
     "num": 109,
@@ -2391,7 +2391,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "none"
+    "defaultanimation": "powder:pcloud:d0.2"
   },
   {
     "num": 115,
@@ -2580,7 +2580,7 @@
     "kingsrock": "FALSE",
     "crit": 1,
     "selfDamage": 0,
-    "defaultanimation": "powder"
+    "defaultanimation": "powder:psmoke"
   },
   {
     "num": 124,

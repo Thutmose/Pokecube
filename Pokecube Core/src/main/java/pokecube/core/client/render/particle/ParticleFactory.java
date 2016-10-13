@@ -25,7 +25,27 @@ public class ParticleFactory
             textures[1][1] = 4;
             particle.setTex(textures);
             particle.name = "aurora";
-            particle.setLifetime(32);
+            int life = 32;
+            if (args.length > 0) life = args[0];
+            particle.setLifetime(life);
+            ret = particle;
+        }
+        else if (name.equalsIgnoreCase("misc"))
+        {
+            ParticleNoGravity particle = new ParticleNoGravity(0, 0);
+            particle.setVelocity(velocity);
+            int[][] textures = new int[2][2];
+            textures[0][0] = 2;
+            textures[0][1] = 4;
+            textures[1][0] = 1;
+            textures[1][1] = 4;
+            particle.setTex(textures);
+            particle.name = "misc";
+            int life = 32;
+            if (args.length > 0) life = args[0];
+            if (args.length > 1) particle.setColour(args[1]);
+            particle.setLifetime(life);
+            particle.setSize(0.25f);
             ret = particle;
         }
         else if (name.equalsIgnoreCase("powder"))
@@ -33,15 +53,17 @@ public class ParticleFactory
             ParticleNoGravity particle = new ParticleNoGravity(0, 0);
             particle.setVelocity(velocity);
             int[][] textures = new int[2][2];
-            textures[0][0] = 0;
+            textures[0][0] = 6;
             textures[0][1] = 0;
-            textures[1][0] = 0;
+            textures[1][0] = 6;
             textures[1][1] = 0;
             particle.setTex(textures);
             particle.setSize(0.125f);
             particle.name = "powder";
+            int life = 32;
             if (args.length > 0) particle.setColour(args[0]);
-            particle.setLifetime(32);
+            if (args.length > 1) life = args[1];
+            particle.setLifetime(life);
             ret = particle;
         }
         else if (name.equalsIgnoreCase("leaf"))

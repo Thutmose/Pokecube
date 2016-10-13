@@ -587,33 +587,22 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         if (world.provider.getDimension() != Minecraft.getMinecraft().thePlayer.dimension) return;
         if (velocity == null) velocity = Vector3.empty;
-        String[] args1 = par1Str.split(",");
-        if (args1.length == 4)
-        {
-
-        }
-        else if (args1.length == 2)
-        {
-            float offset = Float.parseFloat(args1[1]);
-            location.y += offset;
-        }
         boolean ignoreRange = true;
-        try
+        EnumParticleTypes particle = null;
+        particle = EnumParticleTypes.getByName(par1Str);
+        if (particle == null)
         {
-            EnumParticleTypes particle = EnumParticleTypes.getByName(par1Str);
-            if (particle != null)
-            {
-                world.spawnParticle(particle, ignoreRange, location.x, location.y, location.z, velocity.x, velocity.y,
-                        velocity.z, args);
-                return;
-            }
+            if (par1Str.contains("smoke"))
+                particle = par1Str.contains("large") ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL;
         }
-        catch (Exception e)
+        if (particle != null)
         {
-
+            world.spawnParticle(particle, ignoreRange, location.x, location.y, location.z, velocity.x, velocity.y,
+                    velocity.z, args);
+            return;
         }
-        IParticle particle = ParticleFactory.makeParticle(par1Str, velocity, args);
-        ParticleHandler.Instance().addParticle(location, particle);
+        IParticle particle2 = ParticleFactory.makeParticle(par1Str, velocity, args);
+        ParticleHandler.Instance().addParticle(location, particle2);
     }
 
     private X3dModel         beltl;
@@ -628,7 +617,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
     @Method(modid = "thut_wearables")
     @Override
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
+            float partialTicks)
     {
         if (beltl == null)
         {

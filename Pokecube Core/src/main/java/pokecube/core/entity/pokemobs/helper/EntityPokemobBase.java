@@ -783,7 +783,19 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Read moves tag
         if (!movesTag.hasNoTags())
         {
-            dataManager.set(MOVESDW, movesTag.getString(MOVES));
+            if (movesTag.hasKey(MOVES))
+            {
+                String[] moves = movesTag.getString(MOVES).split(",");
+                for (int i = 0; i < moves.length; i++)
+                {
+                    setMove(i, moves[i]);
+                }
+            }
+            NBTTagCompound moves = movesTag.getCompoundTag(MOVELIST);
+            for (int i = 0; i < 5; i++)
+            {
+                if (moves.hasKey("" + i)) setMove(i, moves.getString("" + i));
+            }
             getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
         }
         // Read Inventory tag
@@ -1072,6 +1084,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public NBTTagCompound writePokemobData()
     {
         NBTTagCompound pokemobTag = new NBTTagCompound();
+        pokemobTag.setInteger(VERSION, 1);
         // Write Ownership tag
         NBTTagCompound ownerShipTag = new NBTTagCompound();
         ownerShipTag.setInteger(POKEDEXNB, this.getPokedexNb());
@@ -1094,7 +1107,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         // Write moves tag
         NBTTagCompound movesTag = new NBTTagCompound();
-        movesTag.setString(MOVES, dataManager.get(MOVESDW));
+        NBTTagCompound movesList = new NBTTagCompound();
+        for (int i = 0; i < 5; i++)
+        {
+            if (getMove(i) != null) movesList.setString("" + i, getMove(i));
+        }
+        movesTag.setTag(MOVELIST, movesList);
         movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);
 
         // Write Inventory tag

@@ -4,6 +4,7 @@ public interface TagNames
 {
     /** The NBTTag name for the root of info */
     public static final String POKEMOBTAG   = "pokemob_tag";
+    public static final String VERSION      = "version";
 
     // Sub tags under POKEMOBTAG
     public static final String BREEDINGTAG  = "sexe_tag";
@@ -41,6 +42,7 @@ public interface TagNames
     public static final String EVS          = "EVS";
     public static final String IVS          = "IVS";
     public static final String MOVES        = "moves";
+    public static final String MOVELIST     = "movesList";
     public static final String NATURE       = "nature";
     public static final String ABILITY      = "ability";
     public static final String ABILITYINDEX = "abilityIndex";

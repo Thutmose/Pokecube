@@ -138,21 +138,22 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         if (sealTag != null && !sealTag.hasNoTags())
         {
             Random rand = new Random();
-            Vector3 loc = Vector3.getNewVector().set(entity);
+            Vector3 loc = Vector3.getNewVector().set(entity, true);
+            float width = entity.width;
             Vector3 vel = Vector3.getNewVector();
             if (sealTag.getBoolean("Bubbles"))
             {
-                loc.x += rand.nextDouble() - 0.5;
+                loc.x += (rand.nextDouble() - 0.5) * width;
                 loc.y += rand.nextDouble();
-                loc.z += rand.nextDouble() - 0.5;
-                PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.DRIP_WATER.getParticleName(), loc,
+                loc.z += (rand.nextDouble() - 0.5) * width;
+                PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.WATER_BUBBLE.getParticleName(), loc,
                         vel);
             }
             if (sealTag.getBoolean("Flames"))
             {
-                loc.x += rand.nextDouble() - 0.5;
+                loc.x += (rand.nextDouble() - 0.5) * width;
                 loc.y += rand.nextDouble();
-                loc.z += rand.nextDouble() - 0.5;
+                loc.z += (rand.nextDouble() - 0.5) * width;
                 PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.FLAME.getParticleName(), loc, vel);
             }
             // *
@@ -171,9 +172,9 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 vel.x = rand.nextGaussian() / 100;
                 vel.y = rand.nextGaussian() / 100;
                 vel.z = rand.nextGaussian() / 100;
-                loc.x += rand.nextGaussian() / 2;
-                loc.y += rand.nextGaussian() / 2;
-                loc.z += rand.nextGaussian() / 2;
+                loc.x += width * rand.nextGaussian() / 2;
+                loc.y += width * rand.nextGaussian() / 2;
+                loc.z += width * rand.nextGaussian() / 2;
                 PokecubeMod.core.spawnParticle(entity.worldObj, "powder", loc, vel,
                         ItemDye.DYE_COLORS[sealTag.getInteger("dye")] | 0xFF000000);
             }

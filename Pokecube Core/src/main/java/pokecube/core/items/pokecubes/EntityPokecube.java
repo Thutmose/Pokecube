@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -392,22 +391,10 @@ public class EntityPokecube extends EntityPokecubeBase
                         players.add(new CollectEntry(player.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
                         PacketPokecube.sendMessage(player, getEntityId(), worldObj.getTotalWorldTime() + resetTime);
                         ItemStack loot = lootStacks.get(new Random().nextInt(lootStacks.size()));
-                        EntityItem entityitem = player.dropItem(loot.copy(), false);
-                        if (entityitem != null)
-                        {
-                            entityitem.setNoPickupDelay();
-                            entityitem.setOwner(player.getName());
-                            entityitem.playSound(POKECUBESOUND, 1, 1);
-                        }
+                        Tools.giveItem(player, loot.copy());
                         return true;
                     }
-
-                    EntityItem entityitem = player.dropItem(getEntityItem(), false);
-                    if (entityitem != null)
-                    {
-                        entityitem.setNoPickupDelay();
-                        entityitem.setOwner(player.getName());
-                    }
+                    Tools.giveItem(player, getEntityItem());
                     this.setDead();
                 }
             }

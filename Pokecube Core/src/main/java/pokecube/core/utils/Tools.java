@@ -12,7 +12,9 @@ import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
@@ -20,6 +22,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -675,5 +678,35 @@ public class Tools
             }
         }
         return stack;
+    }
+
+    public static void giveItem(EntityPlayer entityplayer, ItemStack itemstack)
+    {
+        boolean flag = entityplayer.inventory.addItemStackToInventory(itemstack);
+        if (flag)
+        {
+            entityplayer.worldObj.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY,
+                    entityplayer.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
+                    ((entityplayer.getRNG().nextFloat() - entityplayer.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+            entityplayer.inventoryContainer.detectAndSendChanges();
+        }
+        if (flag && itemstack.stackSize <= 0)
+        {
+            itemstack.stackSize = 1;
+            EntityItem entityitem1 = entityplayer.dropItem(itemstack, false);
+            if (entityitem1 != null)
+            {
+                entityitem1.makeFakeItem();
+            }
+        }
+        else
+        {
+            EntityItem entityitem = entityplayer.dropItem(itemstack, false);
+            if (entityitem != null)
+            {
+                entityitem.setNoPickupDelay();
+                entityitem.setOwner(entityplayer.getName());
+            }
+        }
     }
 }

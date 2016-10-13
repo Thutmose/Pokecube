@@ -8,7 +8,6 @@ import java.util.Set;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,6 +23,7 @@ import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemTM;
+import pokecube.core.utils.Tools;
 
 public class PokedexInspector
 {
@@ -57,12 +57,8 @@ public class PokedexInspector
                 {
                     tag.setBoolean(tagString, true);
                     entity.addChatMessage(new TextComponentTranslation(message));
-                    EntityItem entityitem = ((EntityPlayer) entity).dropItem(reward, false);
-                    if (entityitem != null)
-                    {
-                        entityitem.setNoPickupDelay();
-                        entityitem.setOwner(entity.getName());
-                    }
+                    EntityPlayer entityPlayer = (EntityPlayer) entity;
+                    Tools.giveItem(entityPlayer, reward);
                     PokecubePlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
                 }
                 return true;

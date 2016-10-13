@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -15,6 +14,7 @@ import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.Tools;
 import pokecube.pokeplayer.PokePlayer;
 
 public class TileEntityTransformer extends TileEntityOwnable implements ITickable
@@ -42,14 +42,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             }
             else
             {
-                EntityItem entityitem = player.dropItem(stack, false);
-
-                if (entityitem != null)
-                {
-                    entityitem.setNoPickupDelay();
-                    entityitem.setOwner(player.getName());
-                }
-                stack = null;
+                Tools.giveItem(player, stack);
             }
         }
     }

@@ -786,13 +786,13 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (movesTag.hasKey(MOVES))
             {
                 String[] moves = movesTag.getString(MOVES).split(",");
-                for (int i = 0; i < moves.length; i++)
+                for (int i = 0; i < Math.min(4, moves.length); i++)
                 {
                     setMove(i, moves[i]);
                 }
             }
             NBTTagCompound moves = movesTag.getCompoundTag(MOVELIST);
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (moves.hasKey("" + i)) setMove(i, moves.getString("" + i));
             }
@@ -1108,7 +1108,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Write moves tag
         NBTTagCompound movesTag = new NBTTagCompound();
         NBTTagCompound movesList = new NBTTagCompound();
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 4; i++)
         {
             if (getMove(i) != null) movesList.setString("" + i, getMove(i));
         }

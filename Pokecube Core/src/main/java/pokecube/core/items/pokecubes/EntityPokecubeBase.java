@@ -12,7 +12,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -38,6 +37,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class EntityPokecubeBase extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
@@ -334,12 +334,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             {
                 if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
                 {
-                    EntityItem entityitem = ((EntityPlayer) shootingEntity).dropItem(getEntityItem(), false);
-                    if (entityitem != null)
-                    {
-                        entityitem.setNoPickupDelay();
-                        entityitem.setOwner(shootingEntity.getName());
-                    }
+                    Tools.giveItem((EntityPlayer) shootingEntity, getEntityItem());
                     this.setDead();
                 }
                 return null;

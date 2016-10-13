@@ -52,11 +52,21 @@ public class ParticleFactory
         {
             ParticleNoGravity particle = new ParticleNoGravity(0, 0);
             particle.setVelocity(velocity);
-            int[][] textures = new int[2][2];
-            textures[0][0] = 6;
+            int[][] textures = new int[7][2];
+            textures[0][0] = 0;
             textures[0][1] = 0;
-            textures[1][0] = 6;
+            textures[1][0] = 1;
             textures[1][1] = 0;
+            textures[2][0] = 2;
+            textures[2][1] = 0;
+            textures[3][0] = 3;
+            textures[3][1] = 0;
+            textures[4][0] = 4;
+            textures[4][1] = 0;
+            textures[5][0] = 5;
+            textures[5][1] = 0;
+            textures[6][0] = 6;
+            textures[6][1] = 0;
             particle.setTex(textures);
             particle.setSize(0.125f);
             particle.name = "powder";

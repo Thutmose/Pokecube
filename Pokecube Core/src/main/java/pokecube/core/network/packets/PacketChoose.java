@@ -31,6 +31,7 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
 import pokecube.core.network.PokecubePacketHandler.StarterInfoContainer;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 
 public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMessage>
 {
@@ -166,7 +167,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         for (ItemStack e : items)
         {
             if (e == null || e.getItem() == null) continue;
-            player.inventory.addItemStackToInventory(e);
+            Tools.giveItem(player, e);
             pokedexNb = PokecubeManager.getPokedexNb(e);
             if (pokedexNb > 0)
             {

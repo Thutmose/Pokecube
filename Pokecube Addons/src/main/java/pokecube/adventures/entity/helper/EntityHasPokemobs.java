@@ -65,7 +65,6 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         }
         long uuidLeastTest = -1;
         long uuidMostTest = -1;
-        boolean existing = false;
         for (int i = 0; i < 6; i++)
         {
             if (pokecubes[i] != null)
@@ -79,7 +78,6 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                         uuidMostTest = nbt.getLong("UUIDMost");
                         if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
                         {
-                            existing = true;
                             if (Config.instance.trainerslevel)
                             {
                                 PokecubeManager.heal(mob);
@@ -91,7 +89,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                 }
             }
         }
-        if (!existing) for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (pokecubes[i] == null)
             {

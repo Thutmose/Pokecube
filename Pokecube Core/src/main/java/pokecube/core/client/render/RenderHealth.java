@@ -347,7 +347,7 @@ public class RenderHealth
         }
     }
 
-    private void renderIcon(int vertexX, int vertexY, ItemStack stack, int intU, int intV)
+    public static void renderIcon(int vertexX, int vertexY, ItemStack stack, int intU, int intV)
     {
         try
         {

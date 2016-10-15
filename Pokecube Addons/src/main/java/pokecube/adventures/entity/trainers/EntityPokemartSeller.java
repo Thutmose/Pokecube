@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.events.handlers.EventsHandler;
@@ -24,6 +25,18 @@ public class EntityPokemartSeller extends EntityTrainer
         super(par1World, merchant, 100);
         this.setAIState(PERMFRIENDLY, true);
         friendlyCooldown = Integer.MAX_VALUE;
+    }
+
+    @Override
+    protected void populateBuyingList()
+    {
+        tradeList = new MerchantRecipeList();
+        if (itemList == null)
+        {
+            itemList = new MerchantRecipeList();
+            addRandomTrades();
+        }
+        tradeList.addAll(itemList);
     }
 
     @Override

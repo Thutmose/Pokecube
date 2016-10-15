@@ -71,8 +71,8 @@ public class GuiTeleport extends Gui
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob == null) return;
         GlStateManager.pushMatrix();
-        int w = PokecubeMod.core.getConfig().guiOffset[0];
-        int h = PokecubeMod.core.getConfig().guiOffset[1];
+        int w = PokecubeMod.core.getConfig().guiPos[0];
+        int h = PokecubeMod.core.getConfig().guiPos[1];
         int scaledWidth = Minecraft.getMinecraft().displayWidth;
         int scaledHeight = Minecraft.getMinecraft().displayHeight;
         float scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().guiSize, true);

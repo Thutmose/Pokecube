@@ -65,6 +65,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         }
         long uuidLeastTest = -1;
         long uuidMostTest = -1;
+        boolean found = false;
         for (int i = 0; i < 6; i++)
         {
             if (pokecubes[i] != null)
@@ -81,6 +82,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                             if (Config.instance.trainerslevel)
                             {
                                 PokecubeManager.heal(mob);
+                                found = true;
                                 pokecubes[i] = mob.copy();
                             }
                             break;
@@ -91,11 +93,15 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         }
         for (int i = 0; i < 6; i++)
         {
-            if (pokecubes[i] == null)
+            if (found) if (pokecubes[i] == null)
             {
                 PokecubeManager.heal(mob);
                 pokecubes[i] = mob.copy();
                 break;
+            }
+            else if(pokecubes[i]!=null)
+            {
+                PokecubeManager.heal(pokecubes[i]);
             }
         }
         for (int i = 0; i < 6; i++)

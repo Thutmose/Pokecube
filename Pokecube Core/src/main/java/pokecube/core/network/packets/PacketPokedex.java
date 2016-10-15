@@ -77,11 +77,12 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         PokecubePacketHandler.sendToServer(packet);
     }
 
-    public static void sendInspectPacket(boolean reward)
+    public static void sendInspectPacket(boolean reward, String lang)
     {
         PacketPokedex packet = new PacketPokedex();
         packet.message = INSPECT;
         packet.data.setBoolean("R", reward);
+        packet.data.setString("L", lang);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -326,6 +327,8 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         if (message.message == INSPECT)
         {
             boolean reward = message.data.getBoolean("R");
+            String lang = message.data.getString("L");
+            PokecubePlayerDataHandler.getCustomDataTag(player).setString("lang", lang);
             boolean inspected = PokedexInspector.inspect(player, reward);
 
             if (!reward)

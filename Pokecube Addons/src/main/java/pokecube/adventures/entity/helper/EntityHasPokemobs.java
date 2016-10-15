@@ -98,6 +98,18 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                 break;
             }
         }
+        for (int i = 0; i < 6; i++)
+        {
+            ItemStack stack = pokecubes[i];
+            if (stack == null)
+            {
+                for (int j = i; j < 5; j++)
+                {
+                    pokecubes[j] = pokecubes[j + 1];
+                    pokecubes[j + 1] = null;
+                }
+            }
+        }
         if (target == null || getAIState(THROWING) || outMob != null || getNextPokemob() != null) return;
         this.setAIState(INBATTLE, false);
         if (outMob == null && !getAIState(THROWING))
@@ -322,6 +334,18 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
     public ItemStack getNextPokemob()
     {
         if (nextSlot < 0) return null;
+        for (int i = 0; i < 6; i++)
+        {
+            ItemStack stack = pokecubes[i];
+            if (stack == null)
+            {
+                for (int j = i; j < 5; j++)
+                {
+                    pokecubes[j] = pokecubes[j + 1];
+                    pokecubes[j + 1] = null;
+                }
+            }
+        }
         return pokecubes[nextSlot];
     }
 

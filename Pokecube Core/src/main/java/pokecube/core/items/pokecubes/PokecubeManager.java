@@ -301,4 +301,12 @@ public class PokecubeManager
         }
     }
 
+    public static UUID getUUID(ItemStack stack)
+    {
+        if (!isFilled(stack)) return null;
+        NBTTagCompound pokeTag = stack.getTagCompound().getCompoundTag(TagNames.POKEMOB);
+        long min = pokeTag.getLong("UUIDLeast");
+        long max = pokeTag.getLong("UUIDMost");
+        return new UUID(max, min);
+    }
 }

@@ -45,20 +45,12 @@ public class GuiArranger
                 GL11.glPushMatrix();
                 Minecraft minecraft = Minecraft.getMinecraft();
                 int texH = minecraft.fontRendererObj.FONT_HEIGHT;
-                int trim = PokecubeCore.core.getConfig().messageWidth;
                 minecraft.entityRenderer.setupOverlayRendering();
-                int w = PokecubeMod.core.getConfig().messageOffset[0];
-                int h = PokecubeMod.core.getConfig().messageOffset[1];
-                int scaledWidth = Minecraft.getMinecraft().displayWidth;
-                int scaledHeight = Minecraft.getMinecraft().displayHeight;
-                float scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().messageSize, true);
-                scaledWidth /= scaleFactor;
-                scaledHeight /= scaleFactor;
-                w = Math.min(scaledWidth, w);
-                h = Math.min(scaledHeight - texH, h);
-                w = Math.max(trim, w);
-                h = Math.max(texH * 7, h);
-                int x = w, y = h;
+                int[] mess = GuiDisplayPokecubeInfo.applyTransform(
+                        PokecubeCore.core.getConfig().messageRef, PokecubeMod.core.getConfig().messagePos, new int[] {
+                                PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
+                        PokecubeMod.core.getConfig().messageSize);
+                int x = 0, y = 0;
                 x = x - 150;
                 Rectangle messRect = new Rectangle(x, y - 7 * texH, 150, 8 * texH);
                 int startColor = 0x22FFFF00;
@@ -68,6 +60,8 @@ public class GuiArranger
                 double right = messRect.getMaxX();// x + 150;
                 double left = messRect.getMinX();// x;
                 float s = PokecubeMod.core.getConfig().messageSize;
+                x += mess[2];
+                y += mess[3];
                 messRect.setBounds((int) (x * s), (int) ((y - 7 * texH) * s), (int) (150 * s), (int) (8 * texH * s));
                 double zLevel = 0;
                 float f = (startColor >> 24 & 255) / 255.0F;
@@ -100,30 +94,26 @@ public class GuiArranger
                 GL11.glPopMatrix();
 
                 // Draw a box for the Info
-                w = PokecubeMod.core.getConfig().guiOffset[0];
-                h = PokecubeMod.core.getConfig().guiOffset[1];
-                scaledWidth = Minecraft.getMinecraft().displayWidth;
-                scaledHeight = Minecraft.getMinecraft().displayHeight;
-                scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().guiSize, true);
-                scaledWidth /= scaleFactor;
-                scaledHeight /= scaleFactor;
-                w = Math.min(scaledWidth - 147, w);
-                h = Math.min(scaledHeight - 42, h);
-                w = Math.max(0, w);
-                h = Math.max(0, h);
-                x = w;
-                y = h;
-                // System.out.println(x+" "+y);
-                startColor = 0x22FF0000;
-                endColor = 0x22FF0000;
-                Rectangle guiRect = new Rectangle(x, y, 147, 42);
+                GL11.glPushMatrix();
+                int[] guiS = GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().guiRef,
+                        PokecubeMod.core.getConfig().guiPos, GuiDisplayPokecubeInfo.guiDims,
+                        PokecubeMod.core.getConfig().guiSize);
+                x = 0;
+                y = 0;
+                startColor = 0x2200ff00;
+                endColor = 0x2200ff00;
+                Rectangle guiRect = new Rectangle(x, y, GuiDisplayPokecubeInfo.guiDims[0],
+                        GuiDisplayPokecubeInfo.guiDims[1]);
                 top = (int) guiRect.getMinY();
                 bottom = (int) guiRect.getMaxY();
                 right = guiRect.getMaxX();
                 left = guiRect.getMinX();
                 zLevel = 0;
                 s = PokecubeMod.core.getConfig().guiSize;
-                guiRect.setBounds((int) (x * s), (int) (y * s), (int) (147 * s), (int) (42 * s));
+                x += guiS[2];
+                y += guiS[3];
+                guiRect.setBounds((int) (x * s), (int) (y * s), (int) (GuiDisplayPokecubeInfo.guiDims[0] * s),
+                        (int) (GuiDisplayPokecubeInfo.guiDims[1] * s));
                 f = (startColor >> 24 & 255) / 255.0F;
                 f1 = (startColor >> 16 & 255) / 255.0F;
                 f2 = (startColor >> 8 & 255) / 255.0F;
@@ -132,7 +122,56 @@ public class GuiArranger
                 f5 = (endColor >> 16 & 255) / 255.0F;
                 f6 = (endColor >> 8 & 255) / 255.0F;
                 f7 = (endColor & 255) / 255.0F;
+                GlStateManager.disableTexture2D();
+                GlStateManager.enableBlend();
+                GlStateManager.disableAlpha();
+                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
+                        GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
+                        GlStateManager.DestFactor.ZERO);
+                GlStateManager.shadeModel(7425);
+                tessellator = Tessellator.getInstance();
+                vertexbuffer = tessellator.getBuffer();
+                vertexbuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+                vertexbuffer.pos(right, top, zLevel).color(f1, f2, f3, f).endVertex();
+                vertexbuffer.pos(left, top, zLevel).color(f1, f2, f3, f).endVertex();
+                vertexbuffer.pos(left, bottom, zLevel).color(f5, f6, f7, f4).endVertex();
+                vertexbuffer.pos(right, bottom, zLevel).color(f5, f6, f7, f4).endVertex();
+                tessellator.draw();
+                GlStateManager.shadeModel(7424);
+                GlStateManager.disableBlend();
+                GlStateManager.enableAlpha();
+                GlStateManager.enableTexture2D();
+                GL11.glPopMatrix();
+
+                // Draw a box for the Target
                 GL11.glPushMatrix();
+                int[] targ = GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().targetRef,
+                        PokecubeMod.core.getConfig().targetPos, GuiDisplayPokecubeInfo.targetDims,
+                        PokecubeMod.core.getConfig().targetSize);
+                x = 0;
+                y = 0;
+                startColor = 0x22FF0000;
+                endColor = 0x22FF0000;
+                Rectangle targRect = new Rectangle(x, y, GuiDisplayPokecubeInfo.targetDims[0],
+                        GuiDisplayPokecubeInfo.targetDims[1]);
+                top = (int) targRect.getMinY();
+                bottom = (int) targRect.getMaxY();
+                right = targRect.getMaxX();
+                left = targRect.getMinX();
+                zLevel = 0;
+                s = PokecubeMod.core.getConfig().targetSize;
+                x += targ[2];
+                y += targ[3];
+                targRect.setBounds((int) (x * s), (int) (y * s), (int) (GuiDisplayPokecubeInfo.targetDims[0] * s),
+                        (int) (GuiDisplayPokecubeInfo.targetDims[1] * s));
+                f = (startColor >> 24 & 255) / 255.0F;
+                f1 = (startColor >> 16 & 255) / 255.0F;
+                f2 = (startColor >> 8 & 255) / 255.0F;
+                f3 = (startColor & 255) / 255.0F;
+                f4 = (endColor >> 24 & 255) / 255.0F;
+                f5 = (endColor >> 16 & 255) / 255.0F;
+                f6 = (endColor >> 8 & 255) / 255.0F;
+                f7 = (endColor & 255) / 255.0F;
                 GlStateManager.disableTexture2D();
                 GlStateManager.enableBlend();
                 GlStateManager.disableAlpha();
@@ -157,6 +196,13 @@ public class GuiArranger
                 int i = ((Mouse.getX() * gui.width / gui.mc.displayWidth));
                 int j = ((gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight)) - 1;
                 int k = 0;
+                if (Mouse.isButtonDown(k))
+                {
+                    i = ((Mouse.getX() * gui.width / gui.mc.displayWidth));
+                    j = ((gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight)) - 1;
+                    i = i - mess[0];
+                    j = j - mess[1];
+                }
                 if (messRect.contains(i, j))
                 {
                     messagesheld = Mouse.isButtonDown(k);
@@ -167,12 +213,20 @@ public class GuiArranger
                     int my = (int) messRect.getCenterY();
                     int dx = mx - i;
                     int dy = my - j;
-                    PokecubeMod.core.getConfig().messageOffset[0] -= dx;
-                    PokecubeMod.core.getConfig().messageOffset[1] -= dy;
+                    PokecubeMod.core.getConfig().messagePos[0] -= dx * mess[4];
+                    PokecubeMod.core.getConfig().messagePos[1] -= dy * mess[5];
                     if (dx != 0 || dy != 0) PokecubeMod.core.getConfig().setSettings();
+                    messagesheld = false;
                 }
                 else
                 {
+                    if (Mouse.isButtonDown(k))
+                    {
+                        i = ((Mouse.getX() * gui.width / gui.mc.displayWidth));
+                        j = ((gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight)) - 1;
+                        i = i - guiS[0];
+                        j = j - guiS[1];
+                    }
                     if (guiRect.contains(i, j))
                     {
                         guiheld = Mouse.isButtonDown(k);
@@ -185,8 +239,38 @@ public class GuiArranger
                         int dy = my - j;
                         if (dx != 0 || dy != 0)
                         {
-                            GuiDisplayPokecubeInfo.instance().moveGui(-dx, -dy);
+                            GuiDisplayPokecubeInfo.instance().moveGui(-dx * guiS[4], -dy * guiS[5]);
                             PokecubeMod.core.getConfig().setSettings();
+                        }
+                        guiheld = false;
+                    }
+                    else
+                    {
+                        boolean targetheld = false;
+                        if (Mouse.isButtonDown(k))
+                        {
+                            i = ((Mouse.getX() * gui.width / gui.mc.displayWidth));
+                            j = ((gui.height - Mouse.getY() * gui.height / gui.mc.displayHeight)) - 1;
+                            i = i - targ[0];
+                            j = j - targ[1];
+                        }
+                        if (targRect.contains(i, j))
+                        {
+                            targetheld = Mouse.isButtonDown(k);
+                        }
+                        if (targetheld)
+                        {
+                            int mx = (int) targRect.getCenterX();
+                            int my = (int) targRect.getCenterY();
+                            int dx = mx - i;
+                            int dy = my - j;
+                            if (dx != 0 || dy != 0)
+                            {
+                                PokecubeMod.core.getConfig().targetPos[0] -= dx * targ[4];
+                                PokecubeMod.core.getConfig().targetPos[1] -= dy * targ[5];
+                                PokecubeMod.core.getConfig().setSettings();
+                            }
+                            targetheld = false;
                         }
                     }
                 }

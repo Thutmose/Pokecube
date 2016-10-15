@@ -8,18 +8,14 @@ import java.util.List;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
-import com.mojang.authlib.GameProfile;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -49,17 +45,6 @@ public class MakeCommand extends CommandBase
     {
         String text = "";
         ITextComponent message;
-        EntityPlayerMP[] targets = null;
-        for (int i = 1; i < args.length; i++)
-        {
-            String s = args[i];
-            if (s.contains("@"))
-            {
-                ArrayList<EntityPlayer> targs = new ArrayList<EntityPlayer>(
-                        EntitySelector.matchEntities(sender, s, EntityPlayer.class));
-                targets = targs.toArray(new EntityPlayerMP[0]);
-            }
-        }
         boolean deobfuscated = PokecubeMod.isDeobfuscated() || server.isDedicatedServer();
         boolean commandBlock = !(sender instanceof EntityPlayer);
         boolean isOp = CommandTools.isOp(sender) || commandBlock;
@@ -72,11 +57,6 @@ public class MakeCommand extends CommandBase
                 int num = 1;
                 int index = 1;
                 EntityPlayer player = null;
-
-                if (targets != null)
-                {
-                    num = targets.length;
-                }
                 for (int i = 0; i < num; i++)
                 {
                     if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
@@ -168,7 +148,7 @@ public class MakeCommand extends CommandBase
                                 {
                                     shiny = true;
                                 }
-                                if (arg.equalsIgnoreCase("sh"))
+                                else if (arg.equalsIgnoreCase("sh"))
                                 {
                                     shadow = true;
                                 }
@@ -218,35 +198,21 @@ public class MakeCommand extends CommandBase
                                 {
                                     asWild = true;
                                 }
+                                else
+                                {
+                                    ownerName = args[j];
+                                }
                             }
                         }
-
-                        if (targets != null)
+                        if (ownerName != null && !ownerName.isEmpty())
                         {
-                            player = targets[i];
-                            if (player != null)
-                            {
-                                owner = targets[i].getUniqueID();
-                            }
-                        }
-                        else
-                        {
-                            EntityPlayer p = sender.getEntityWorld().getPlayerEntityByName(ownerName);
-                            player = p;
-                            if (p != null) owner = p.getUniqueID();
-                            else if (!ownerName.isEmpty())
-                            {
-                                GameProfile profile = new GameProfile(null, ownerName);
-                                profile = TileEntitySkull.updateGameprofile(profile);
-                                if (profile.getId() == null) { throw new CommandException(
-                                        "Error, cannot find profile for " + ownerName); }
-                                owner = profile.getId();
-                            }
+                            player = getPlayer(server, sender, ownerName);
                         }
                         Vector3 temp = Vector3.getNewVector();
                         if (player != null)
                         {
                             offset = offset.add(temp.set(player.getLookVec()));
+                            owner = player.getUniqueID();
                         }
                         temp.set(sender.getPosition()).addTo(offset);
                         temp.moveEntity((Entity) mob);

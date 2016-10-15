@@ -20,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
@@ -28,13 +29,17 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.client.GuiEvent;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -52,7 +57,9 @@ import thut.api.maths.Vector3;
 
 public class GuiDisplayPokecubeInfo extends Gui
 {
-    protected static int                 lightGrey = 0xDDDDDD;
+    protected static int                 lightGrey  = 0xDDDDDD;
+    public static int[]                  guiDims    = { 147, 42 };
+    public static int[]                  targetDims = { 147, 42 };
     public static GuiDisplayPokecubeInfo instance;
 
     public static float scale(float scaled, boolean apply)
@@ -94,6 +101,62 @@ public class GuiDisplayPokecubeInfo extends Gui
         return scaleFactor2;
     }
 
+    public static int[] applyTransform(String ref, int[] shift, int[] dims, float scale)
+    {
+        Minecraft minecraft = Minecraft.getMinecraft();
+        ScaledResolution res = new ScaledResolution(minecraft);
+        int w = shift[0];
+        int h = shift[1];
+        int x = 0;
+        int y = 0;
+        int scaledWidth = res.getScaledWidth();
+        int scaledHeight = res.getScaledHeight();
+        int dx = 1;
+        int dy = 1;
+        switch (ref)
+        {
+        case "top_left":
+            GlStateManager.translate(w, h, 0);
+            GlStateManager.scale(scale, scale, scale);
+            break;
+        case "bottom_left":
+            h = scaledHeight - h - dims[1];
+            GlStateManager.translate(w, h, 0);
+            GlStateManager.scale(scale, scale, scale);
+            dy = -1;
+            break;
+        case "top_right":
+            w = scaledWidth - w;
+            h = Math.min(h + dims[1], scaledHeight);
+            GlStateManager.translate(w, h, 0);
+            GlStateManager.scale(scale, scale, scale);
+            dx = -1;
+            break;
+        case "bottom_right":
+            w = scaledWidth - w - dims[0];
+            h = scaledHeight - h - dims[1];
+            GlStateManager.translate(w, h, 0);
+            GlStateManager.scale(scale, scale, scale);
+            dx = -1;
+            dy = -1;
+            break;
+        case "bottom_middle":
+            x = scaledWidth / 2 - w;
+            y = scaledHeight;
+            w = scaledWidth / 2 - w;
+            h = scaledHeight - h - dims[1];
+            GlStateManager.translate(w, h, 0);
+            h = (int) (-dims[1] / scale - shift[1]);
+            w = 0;
+            dx = -1;
+            dy = -1;
+            GlStateManager.scale(scale, scale, scale);
+            break;
+        }
+        int[] ret = { x, y, w, h, dx, dy };
+        return ret;
+    }
+
     public static GuiDisplayPokecubeInfo instance()
     {
         return instance;
@@ -108,7 +171,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     int                    refreshCounter   = 0;
 
     int                    indexPokemob     = 0;
-    protected int          currentMoveIndex = 0;
+    public int             currentMoveIndex = 0;
 
     /**
      *
@@ -117,10 +180,33 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         fontRenderer = minecraft.fontRendererObj;
+        if (instance != null)
+        {
+            MinecraftForge.EVENT_BUS.unregister(instance);
+        }
         instance = this;
     }
 
     protected void draw(RenderGameOverlayEvent.Post event)
+    {
+        if (indexPokemob > getPokemobsToDisplay().length)
+        {
+            refreshCounter = 0;
+            indexPokemob = 0;
+            arrayRet = getPokemobsToDisplay();
+        }
+        if (indexPokemob >= getPokemobsToDisplay().length)
+        {
+            indexPokemob = 0;
+        }
+        if (indexPokemob >= getPokemobsToDisplay().length) { return; }
+        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
+        MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderSelectedInfo());
+        MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderTargetInfo());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void drawSelected(GuiEvent.RenderSelectedInfo evt)
     {
         int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
         int nameOffsetX = dir == 1 ? 43 : 43;
@@ -137,77 +223,22 @@ public class GuiDisplayPokecubeInfo extends Gui
         int statusOffsetY = 27;
         int confuseOffsetX = 12;
         int confuseOffsetY = 1;
-        if (indexPokemob > getPokemobsToDisplay().length)
-        {
-            refreshCounter = 0;
-            indexPokemob = 0;
-            arrayRet = getPokemobsToDisplay();
-        }
-        if (indexPokemob >= getPokemobsToDisplay().length)
-        {
-            indexPokemob = 0;
-        }
-        if (indexPokemob >= getPokemobsToDisplay().length) { return; }
-        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
-
         int i, j;
         GL11.glPushMatrix();
-        int w = PokecubeMod.core.getConfig().guiOffset[0];
-        int h = PokecubeMod.core.getConfig().guiOffset[1];
-        int scaledWidth = Minecraft.getMinecraft().displayWidth;
-        int scaledHeight = Minecraft.getMinecraft().displayHeight;
-        float scaleFactor = scale(PokecubeMod.core.getConfig().guiSize, true);
-        scaledWidth /= scaleFactor;
-        scaledHeight /= scaleFactor;
-        w = Math.min(scaledWidth - 147, w);
-        h = Math.min(scaledHeight - 42, h);
-        w = Math.max(0, w);
-        h = Math.max(0, h);
+        applyTransform(PokecubeCore.core.getConfig().guiRef, PokecubeMod.core.getConfig().guiPos, guiDims,
+                PokecubeMod.core.getConfig().guiSize);
+        int w = 0;// trans[0];
+        int h = 0;// trans[1];
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
-            // Render Mob
-            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
-            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
-            this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
-            GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             EntityLiving entity = (EntityLiving) pokemob;
-
-            float scale = 1;
-            float size = 0;
-            j = w;
-            int k = h;
-
-            size = Math.max(entity.width, entity.height) * scale;
-
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(j + 25, k + 25, 50F);
-            float zoom = 20f / size;
-            GL11.glScalef(-zoom, zoom, zoom);
-            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f5 = ((k + 75) - 50) - 0;
-            RenderHelper.enableStandardItemLighting();
-            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
-            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-            i = 15728880;
-            int j1 = i % 65536;
-            int k1 = i / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-            GL11.glRotated(entity.rotationYaw - 40, 0, 1, 0);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
-            GL11.glPopMatrix();
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             // Render HP
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             this.drawTexturedModalRect(hpOffsetX + w, hpOffsetY + h, 43, 12, 92, 7);
-            float total = ((EntityLiving) pokemob).getMaxHealth();
-            float ratio = ((EntityLiving) pokemob).getHealth() / total;
+            float total = entity.getMaxHealth();
+            float ratio = entity.getHealth() / total;
             float f = 0.00390625F;
             float f1 = 0.00390625F;
             float x = hpOffsetX + 1 + w;
@@ -286,7 +317,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             this.drawTexturedModalRect(nameOffsetX + w, nameOffsetY + h, 44, 0, 90, 13);
-            String displayName = pokemob.getPokemonDisplayName().getFormattedText();
+            String displayName = entity.getDisplayName().getFormattedText();
             if (fontRenderer.getStringWidth(displayName) > 70)
             {
 
@@ -336,6 +367,175 @@ public class GuiDisplayPokecubeInfo extends Gui
                     GL11.glPopMatrix();
                 }
             }
+
+            // Render Mob
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
+            GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+
+            float scale = 1;
+            float size = 0;
+            j = w;
+            int k = h;
+
+            size = Math.max(entity.width, entity.height) * scale;
+
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(j + 25, k + 25, 50F);
+            float zoom = 20f / size;
+            GL11.glScalef(-zoom, zoom, zoom);
+            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+            float f5 = ((k + 75) - 50) - 0;
+            RenderHelper.enableStandardItemLighting();
+            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
+            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
+
+            i = 15728880;
+            int j1 = i % 65536;
+            int k1 = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
+            GL11.glRotated(entity.rotationYaw - 40, 0, 1, 0);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+            GL11.glPopMatrix();
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        }
+        GL11.glPopMatrix();
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void drawTarget(GuiEvent.RenderTargetInfo evt)
+    {
+        int dir = PokecubeMod.core.getConfig().guiDown ? 1 : -1;
+        int nameOffsetX = dir == 1 ? 43 : 43;
+        int nameOffsetY = dir == 1 ? 0 : 23;
+        int mobOffsetX = 0;
+        int mobOffsetY = 0;
+        int hpOffsetX = 42;
+        int hpOffsetY = 13;
+        int statusOffsetX = 0;
+        int statusOffsetY = 27;
+        int confuseOffsetX = 12;
+        int confuseOffsetY = 1;
+        int i, j;
+        GL11.glPushMatrix();
+        applyTransform(PokecubeCore.core.getConfig().targetRef, PokecubeMod.core.getConfig().targetPos, targetDims,
+                PokecubeMod.core.getConfig().targetSize);
+        int w = 0;
+        int h = 0;
+        IPokemob pokemob = getCurrentPokemob();
+        render:
+        if (pokemob != null)
+        {
+            EntityLivingBase entity = ((EntityLiving) pokemob).getAttackTarget();
+            if (entity == null) break render;
+
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            // Render HP
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(hpOffsetX + w, hpOffsetY + h, 43, 12, 92, 7);
+            float total = entity.getMaxHealth();
+            float ratio = entity.getHealth() / total;
+            float f = 0.00390625F;
+            float f1 = 0.00390625F;
+            float x = hpOffsetX + 1 + w;
+            float y = hpOffsetY + 1 + h;
+            float width = 92 * ratio;
+            float height = 5;
+            int u = 0;
+            int v = 85;
+            Tessellator tessellator = Tessellator.getInstance();
+            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
+            vertexbuffer.pos(x + 0, y + height, this.zLevel).tex((u) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + height, this.zLevel).tex((u + width) * f, (v + height) * f1).endVertex();
+            vertexbuffer.pos(x + width, y + 0, this.zLevel).tex((u + width) * f, (v) * f1).endVertex();
+            vertexbuffer.pos(x + 0, y + 0, this.zLevel).tex((u) * f, (v) * f1).endVertex();
+            tessellator.draw();
+
+            // Render Status
+            if (entity instanceof IPokemob)
+            {
+                pokemob = (IPokemob) entity;
+                byte status = pokemob.getStatus();
+                if (status != IMoveConstants.STATUS_NON)
+                {
+                    int dv = 0;
+                    if ((status & IMoveConstants.STATUS_BRN) != 0)
+                    {
+                        dv = 2 * 14;
+                    }
+                    if ((status & IMoveConstants.STATUS_FRZ) != 0)
+                    {
+                        dv = 1 * 14;
+                    }
+                    if ((status & IMoveConstants.STATUS_PAR) != 0)
+                    {
+                        dv = 3 * 14;
+                    }
+                    if ((status & IMoveConstants.STATUS_PSN) != 0)
+                    {
+                        dv = 4 * 14;
+                    }
+                    this.drawTexturedModalRect(statusOffsetX + w, statusOffsetY + h, 0, 138 + dv, 15, 15);
+                }
+                if ((pokemob.getChanges() & IMoveConstants.CHANGE_CONFUSED) != 0)
+                {
+                    GlStateManager.translate(0, 0, 100);
+                    this.drawTexturedModalRect(confuseOffsetX + w, confuseOffsetY + h, 0, 211, 24, 16);
+                    GlStateManager.translate(0, 0, -100);
+                }
+            }
+
+            // Render Name
+            GL11.glColor4f(1.0F, 0.4F, 0.4F, 1.0F);
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(nameOffsetX + w, nameOffsetY + h, 44, 0, 90, 13);
+            String displayName = entity.getDisplayName().getFormattedText();
+            if (fontRenderer.getStringWidth(displayName) > 70)
+            {
+
+            }
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            fontRenderer.drawString(displayName, nameOffsetX + 3 + w, nameOffsetY + 3 + h, lightGrey);
+
+            // Render Mob
+            GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
+            this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
+            GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+
+            float scale = 1;
+            float size = 0;
+            j = w;
+            int k = h;
+
+            size = Math.max(entity.width, entity.height) * scale;
+
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(j + 25, k + 25, 50F);
+            float zoom = 20f / size;
+            GL11.glScalef(-zoom, zoom, zoom);
+            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+            float f5 = ((k + 75) - 50) - 0;
+            RenderHelper.enableStandardItemLighting();
+            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
+            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
+
+            i = 15728880;
+            int j1 = i % 65536;
+            int k1 = i / 65536;
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
+            GL11.glRotated(entity.rotationYaw - 40, 0, 1, 0);
+            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
+            GL11.glPopMatrix();
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         }
         GL11.glPopMatrix();
     }
@@ -420,19 +620,8 @@ public class GuiDisplayPokecubeInfo extends Gui
      * @param y */
     public void moveGui(int x, int y)
     {
-        PokecubeMod.core.getConfig().guiOffset[0] += x;
-        PokecubeMod.core.getConfig().guiOffset[1] += y;
-        if (PokecubeMod.core.getConfig().guiOffset[0] < 0) PokecubeMod.core.getConfig().guiOffset[0] = 0;
-        if (PokecubeMod.core.getConfig().guiOffset[1] < 0) PokecubeMod.core.getConfig().guiOffset[1] = 0;
-        float scaleFactor2 = scale(PokecubeMod.core.getConfig().guiSize, false);
-        int scaledWidth = Minecraft.getMinecraft().displayWidth;
-        int scaledHeight = Minecraft.getMinecraft().displayHeight;
-        scaledWidth /= scaleFactor2;
-        scaledHeight /= scaleFactor2;
-        PokecubeMod.core.getConfig().guiOffset[0] = Math.min(scaledWidth - 147,
-                PokecubeMod.core.getConfig().guiOffset[0]);
-        PokecubeMod.core.getConfig().guiOffset[1] = Math.min(scaledHeight - 42,
-                PokecubeMod.core.getConfig().guiOffset[1]);
+        PokecubeMod.core.getConfig().guiPos[0] += x;
+        PokecubeMod.core.getConfig().guiPos[1] += y;
         saveConfig();
     }
 

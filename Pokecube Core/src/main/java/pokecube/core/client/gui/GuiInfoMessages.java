@@ -1,14 +1,17 @@
 package pokecube.core.client.gui;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -25,9 +28,9 @@ public class GuiInfoMessages
 
     public static void addMessage(ITextComponent message)
     {
-        instance.messages.add(message.getFormattedText());
+        instance.messages.push(message.getFormattedText());
         instance.time = Minecraft.getMinecraft().thePlayer.ticksExisted;
-        instance.recent.add(message.getFormattedText());
+        instance.recent.push(message.getFormattedText());
         if (instance.messages.size() > 100)
         {
             instance.messages.remove(0);
@@ -43,11 +46,11 @@ public class GuiInfoMessages
         }
     }
 
-    private ArrayList<String> messages = new ArrayList<String>();
-    private ArrayList<String> recent   = new ArrayList<String>();
-    long                      time     = 0;
+    private LinkedList<String> messages = Lists.newLinkedList();
+    private LinkedList<String> recent   = Lists.newLinkedList();
+    long                       time     = 0;
 
-    int                       offset   = 0;
+    int                        offset   = 0;
 
     public GuiInfoMessages()
     {
@@ -66,20 +69,18 @@ public class GuiInfoMessages
         int trim = PokecubeCore.core.getConfig().messageWidth;
         GL11.glPushMatrix();
         minecraft.entityRenderer.setupOverlayRendering();
-        int w = PokecubeMod.core.getConfig().messageOffset[0];
-        int h = PokecubeMod.core.getConfig().messageOffset[1];
-        int scaledWidth = Minecraft.getMinecraft().displayWidth;
-        int scaledHeight = Minecraft.getMinecraft().displayHeight;
-        float scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().messageSize, true);
-        scaledWidth /= scaleFactor;
-        scaledHeight /= scaleFactor;
-        w = Math.min(scaledWidth, w);
-        h = Math.min(scaledHeight - texH, h);
-        w = Math.max(trim, w);
-        h = Math.max(texH * 7, h);
+        GuiDisplayPokecubeInfo
+                .applyTransform(
+                        PokecubeCore.core.getConfig().messageRef, PokecubeMod.core.getConfig().messagePos, new int[] {
+                                PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
+                        PokecubeMod.core.getConfig().messageSize);
+        int w = 0;
+        int h = 0;
         int x = w, y = h;
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.translate(0, -texH * 7, 0);
+        GlStateManager.translate(0, 0, 0);
         int num = -1;
         if (event.getType() == ElementType.CHAT)
         {
@@ -115,13 +116,13 @@ public class GuiInfoMessages
             if (index > size) break;
             String mess = toUse.get(index);
             List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess, trim);
-            for (int j = mess1.size() - 1; j >= 0; j--)
+            for (int j = 0; j < mess1.size(); j++)
             {
-                h = y - texH * l;
+                h = y + texH * (l + j);
                 w = x - trim;
                 GuiScreen.drawRect(w, h, w + trim, h + texH, 0x66000000);
                 minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, h, 0xffffff, true);
-                if (j > 0) l++;
+                if (j != 0) l++;
             }
         }
         GL11.glPopMatrix();

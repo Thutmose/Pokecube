@@ -43,7 +43,6 @@ public class ProxyClient extends Proxy
     public void postInit()
     {
         super.postInit();
-        MinecraftForge.EVENT_BUS.unregister(GuiDisplayPokecubeInfo.instance());
         MinecraftForge.EVENT_BUS.register(new GuiAsPokemob());
     }
 

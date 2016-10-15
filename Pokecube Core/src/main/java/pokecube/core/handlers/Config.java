@@ -308,11 +308,21 @@ public class Config extends ConfigBase
 
     // Gui/client settings
     @Configure(category = client)
-    public int[]                         guiOffset                  = { 0, 0 };
+    public String                        guiRef                     = "top_left";
+    @Configure(category = client)
+    public String                        messageRef                 = "bottom_middle";
+    @Configure(category = client)
+    public String                        targetRef                  = "top_right";
+    @Configure(category = client)
+    public int[]                         guiPos                     = { 0, 0 };
     @Configure(category = client)
     public float                         guiSize                    = 1;
     @Configure(category = client)
-    public int[]                         messageOffset              = { 480, 150 };
+    public int[]                         targetPos                  = { 147, -40 };
+    @Configure(category = client)
+    public float                         targetSize                 = 1;
+    @Configure(category = client)
+    public int[]                         messagePos                 = { -76, -27 };
     @Configure(category = client)
     public int                           messageWidth               = 150;
     @Configure(category = client)

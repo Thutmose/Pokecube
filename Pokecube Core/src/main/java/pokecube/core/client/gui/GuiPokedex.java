@@ -29,6 +29,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.ClientProxyPokecube;
@@ -1237,7 +1238,7 @@ public class GuiPokedex extends GuiScreen
         }
         if (button == 14)
         {
-            PacketPokedex.sendInspectPacket(true);
+            PacketPokedex.sendInspectPacket(true, FMLClientHandler.instance().getCurrentLanguage());
             return;
         }
 
@@ -1371,6 +1372,6 @@ public class GuiPokedex extends GuiScreen
     @Override
     public void onGuiClosed()
     {
-        PacketPokedex.sendInspectPacket(false);
+        PacketPokedex.sendInspectPacket(false, FMLClientHandler.instance().getCurrentLanguage());
     }
 }

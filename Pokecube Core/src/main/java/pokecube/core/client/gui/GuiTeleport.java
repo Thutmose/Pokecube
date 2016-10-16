@@ -68,45 +68,22 @@ public class GuiTeleport extends Gui
 
     private void draw(RenderGameOverlayEvent.Post event)
     {
+        GuiDisplayPokecubeInfo.teleDims[0] = 89;
+        GuiDisplayPokecubeInfo.teleDims[1] = 25;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob == null) return;
         GlStateManager.pushMatrix();
-        int w = PokecubeMod.core.getConfig().guiPos[0];
-        int h = PokecubeMod.core.getConfig().guiPos[1];
-        int scaledWidth = Minecraft.getMinecraft().displayWidth;
-        int scaledHeight = Minecraft.getMinecraft().displayHeight;
-        float scaleFactor = GuiDisplayPokecubeInfo.scale(PokecubeMod.core.getConfig().guiSize, true);
-        scaledWidth /= scaleFactor;
-        scaledHeight /= scaleFactor;
-        w = Math.min(scaledWidth, w);
-        h = Math.min(scaledHeight, h);
-        w = Math.max(0, w);
-        h = Math.max(0, h);
+        GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().teleRef,
+                PokecubeMod.core.getConfig().telePos, GuiDisplayPokecubeInfo.teleDims,
+                PokecubeMod.core.getConfig().teleSize);
         GlStateManager.enableBlend();
+        int h = 0;
+        int w = 0;
         locations = PokecubeSerializer.getInstance().getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
         int i = 0;
-        int xOffset = 43;
-        int yOffset = 73;
+        int xOffset = 0;
+        int yOffset = 0;
         int dir = 1;
-        if (!PokecubeMod.core.getConfig().guiDown)
-        {
-            int moveCount = 0;
-            dir = -1;
-            for (moveCount = 0; moveCount < 4; moveCount++)
-            {
-                if (pokemob.getMove(moveCount) == null) break;
-            }
-            yOffset = -(11 + 14 * (moveCount - 1));
-        }
-        else
-        {
-            int moveCount = 0;
-            for (moveCount = 0; moveCount < 4; moveCount++)
-            {
-                if (pokemob.getMove(moveCount) == null) break;
-            }
-            yOffset = (34 + 13 * (moveCount - 1));
-        }
         // bind texture
         minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
         this.drawTexturedModalRect(xOffset + w, yOffset + h, 44, 0, 90, 13);
@@ -155,7 +132,7 @@ public class GuiTeleport extends Gui
     {
         try
         {
-            if (instance().state && minecraft.currentScreen == null
+            if (instance().state && (minecraft.currentScreen == null || GuiArranger.toggle)
                     && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.getType() == ElementType.HOTBAR)
                 draw(event);

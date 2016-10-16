@@ -2,28 +2,28 @@ package pokecube.pokeplayer;
 
 import java.util.UUID;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventoryChangedListener;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import pokecube.core.events.AttackEvent;
 import pokecube.core.events.MoveMessageEvent;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
-import pokecube.pokeplayer.network.PacketPokePlayer.MessageClient;
+import pokecube.pokeplayer.network.PacketTransform;
 import thut.api.entity.IHungrymob;
 
 public class EventsHandler
@@ -55,7 +55,9 @@ public class EventsHandler
         else if (event.getItemStack() != null)
         {
             ((Entity) pokemob).processInitialInteract(event.getEntityPlayer(), event.getItemStack(), event.getHand());
-            proxy.getMap().get(event.getEntityPlayer().getUniqueID()).save(event.getEntityPlayer());
+            PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
+                    .getData(PokeInfo.class);
+            info.save(event.getEntityPlayer());
         }
     }
 
@@ -98,6 +100,20 @@ public class EventsHandler
     }
 
     @SubscribeEvent
+    public void doRespawn(PlayerRespawnEvent event)
+    {
+        if (event.player != null)
+        {
+            IPokemob pokemob = proxy.getPokemob(event.player);
+            if (pokemob != null)
+            {
+                ((EntityLivingBase) pokemob).setHealth(((EntityLivingBase) pokemob).getMaxHealth());
+                ((IHungrymob) pokemob).setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void PlayerDeath(LivingDeathEvent evt)
     {
         if (evt.getEntityLiving() instanceof EntityPlayer)
@@ -105,7 +121,7 @@ public class EventsHandler
             IPokemob pokemob = proxy.getPokemob((EntityPlayer) evt.getEntityLiving());
             if (pokemob != null)
             {
-                ((EntityLivingBase) pokemob).setHealth(10);
+                ((EntityLivingBase) pokemob).setHealth(((EntityLivingBase) pokemob).getMaxHealth());
                 ((IHungrymob) pokemob).setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
             }
         }
@@ -114,7 +130,7 @@ public class EventsHandler
     @SubscribeEvent
     public void PlayerLogout(PlayerLoggedOutEvent evt)
     {
-        PokeInfo info = proxy.getMap().remove(evt.player.getUniqueID());
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(evt.player).getData(PokeInfo.class);
         if (info != null) info.save(evt.player);
     }
 
@@ -157,30 +173,10 @@ public class EventsHandler
         {
             if (event.player == player)
             {
-                boolean pokemob;
-                PokeInfo info = proxy.getMap().get(player.getUniqueID());
-                if (info == null)
-                {
-                    proxy.getPokemob(player);
-                    info = proxy.getMap().get(player.getUniqueID());
-                    pokemob = info != null;
-                    pokemob = pokemob && player.getEntityData().getBoolean("isPokemob");
-                }
-                else
-                {
-                    pokemob = player.getEntityData().getBoolean("isPokemob");
-                }
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-                MessageClient message = new MessageClient(buffer);
-                buffer.writeByte(MessageClient.SETPOKE);
-                buffer.writeInt(player.getEntityId());
-                buffer.writeBoolean(pokemob);
-                if (pokemob)
-                {
-                    buffer.writeFloat(info.originalHeight);
-                    buffer.writeFloat(info.originalWidth);
-                    buffer.writeNBTTagCompoundToBuffer(player.getEntityData().getCompoundTag("Pokemob"));
-                }
+                PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+                PacketTransform message = new PacketTransform();
+                info.writeToNBT(message.data);
+                message.id = player.getEntityId();
                 PokecubeMod.packetPipeline.sendToDimension(message, player.dimension);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
@@ -204,30 +200,11 @@ public class EventsHandler
             {
                 for (EntityPlayer player1 : player.worldObj.playerEntities)
                 {
-                    boolean pokemob;
-                    PokeInfo info = proxy.getMap().get(player.getUniqueID());
-                    if (info == null)
-                    {
-                        proxy.getPokemob(player);
-                        info = proxy.getMap().get(player.getUniqueID());
-                        pokemob = info != null;
-                        pokemob = pokemob && player.getEntityData().getBoolean("isPokemob");
-                    }
-                    else
-                    {
-                        pokemob = player.getEntityData().getBoolean("isPokemob");
-                    }
-                    PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-                    MessageClient message = new MessageClient(buffer);
-                    buffer.writeByte(MessageClient.SETPOKE);
-                    buffer.writeInt(player1.getEntityId());
-                    buffer.writeBoolean(pokemob);
-                    if (pokemob)
-                    {
-                        buffer.writeFloat(info.originalHeight);
-                        buffer.writeFloat(info.originalWidth);
-                        buffer.writeNBTTagCompoundToBuffer(player1.getEntityData().getCompoundTag("Pokemob"));
-                    }
+                    PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player)
+                            .getData(PokeInfo.class);
+                    PacketTransform message = new PacketTransform();
+                    info.writeToNBT(message.data);
+                    message.id = player1.getEntityId();
                     PokecubeMod.packetPipeline.sendTo(message, (EntityPlayerMP) player);
                     MinecraftForge.EVENT_BUS.unregister(this);
                 }

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiPokedex;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.Proxy;
@@ -27,7 +28,7 @@ public class ProxyClient extends Proxy
         IPokemob ret = super.getPokemob(player);
         if (ret != null)
         {
-            PokeInfo info = getMap().get(player.getUniqueID());
+            PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
             info.setPlayer(player);
         }
         return ret;

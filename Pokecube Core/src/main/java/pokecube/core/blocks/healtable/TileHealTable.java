@@ -126,7 +126,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public void invalidate()
     {
         super.invalidate();
-        if (worldObj.isRemote && !PokecubeMod.getProxy().isSoundPlaying(here))
+        if (worldObj.isRemote && PokecubeMod.getProxy().isSoundPlaying(here))
         {
             PokecubeMod.getProxy().toggleSound("pokecube:pokecenterloop", getPos());
         }

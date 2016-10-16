@@ -36,15 +36,15 @@ import thut.core.common.config.Configure;
 
 public class Config extends ConfigBase
 {
-    public static final String           spawning                   = "spawning";
-    public static final String           database                   = "database";
-    public static final String           world                      = "generation";
-    public static final String           mobAI                      = "ai";
-    public static final String           misc                       = "misc";
-    public static final String           client                     = "client";
-    public static final String           advanced                   = "advanced";
-    public static final String           rewards                    = "rewards";
-    public static final String           healthbars                 = "healthbars";
+    public static final String           spawning                     = "spawning";
+    public static final String           database                     = "database";
+    public static final String           world                        = "generation";
+    public static final String           mobAI                        = "ai";
+    public static final String           misc                         = "misc";
+    public static final String           client                       = "client";
+    public static final String           advanced                     = "advanced";
+    public static final String           rewards                      = "rewards";
+    public static final String           healthbars                   = "healthbars";
 
     public static int                    GUICHOOSEFIRSTPOKEMOB_ID;
     public static int                    GUIDISPLAYPOKECUBEINFO_ID;
@@ -58,188 +58,191 @@ public class Config extends ConfigBase
 
     public static Config                 instance;
 
-    private static Config                defaults                   = null;
+    private static Config                defaults                     = null;
     // Misc Settings
     @Configure(category = misc, needsMcRestart = true)
-    public String[]                      defaultStarters            = {};
-    public String[]                      defaultStarts              = {};
+    public String[]                      defaultStarters              = {};
+    public String[]                      defaultStarts                = {};
     @Configure(category = misc, needsMcRestart = true)
-    public boolean                       contributorStarters        = true;
+    public boolean                       contributorStarters          = true;
     @Configure(category = misc, needsMcRestart = true)
-    public boolean                       loginmessage               = true;
+    public boolean                       loginmessage                 = true;
     @Configure(category = misc)
     /** is there a choose first gui on login */
-    public boolean                       guiOnLogin                 = true;
+    public boolean                       guiOnLogin                   = true;
     @Configure(category = misc)
     /** does defeating a tame pokemob give exp */
-    public boolean                       pvpExp                     = false;
+    public boolean                       pvpExp                       = false;
     @Configure(category = misc)
     /** does defeating a tame pokemob give exp */
-    public double                        pvpExpMultiplier           = 0.5;
+    public double                        pvpExpMultiplier             = 0.5;
     @Configure(category = misc)
     /** does defeating a tame pokemob give exp */
-    public boolean                       trainerExp                 = true;
+    public boolean                       trainerExp                   = true;
     @Configure(category = misc)
-    public boolean                       mysterygift                = true;
+    public boolean                       mysterygift                  = true;
     @Configure(category = misc, needsMcRestart = true)
-    public String                        defaultMobs                = "";
+    public String                        defaultMobs                  = "";
     @Configure(category = misc, needsMcRestart = true)
-    protected boolean                    tableRecipe                = true;
+    protected boolean                    tableRecipe                  = true;
     @Configure(category = misc)
-    public double                        scalefactor                = 1;
+    public double                        scalefactor                  = 1;
     @Configure(category = misc)
-    public double                        contactAttackDistance      = 0;
+    public double                        contactAttackDistance        = 0;
     @Configure(category = misc)
-    public double                        rangedAttackDistance       = 16;
+    public double                        rangedAttackDistance         = 16;
     @Configure(category = misc)
-    public boolean                       pcOnDrop                   = true;
+    public boolean                       pcOnDrop                     = true;
     @Configure(category = misc)
-    public int                           captureDelayTicks          = 50;
+    public int                           captureDelayTicks            = 50;
     @Configure(category = misc)
-    public boolean                       catchOrderRequired         = true;
+    public boolean                       catchOrderRequired           = true;
 
     @Configure(category = misc)
-    public boolean                       pcHoldsOnlyPokecubes       = true;
+    public boolean                       pcHoldsOnlyPokecubes         = true;
     // AI Related settings
     @Configure(category = mobAI)
-    public int                           mateMultiplier             = 1;
+    public int                           mateMultiplier               = 1;
     @Configure(category = mobAI)
-    public int                           breedingDelay              = 4000;
+    public int                           breedingDelay                = 4000;
     @Configure(category = mobAI)
     /** Scaling factor for pokemob explosions */
-    public double                        blastStrength              = 100;
+    public double                        blastStrength                = 100;
     @Configure(category = mobAI)
-    public int                           eggHatchTime               = 10000;
+    public int                           eggHatchTime                 = 10000;
     @Configure(category = mobAI)
     /** do wild pokemobs which leave cullDistance despawn immediately */
-    public boolean                       cull                       = false;
+    public boolean                       cull                         = false;
     @Configure(category = mobAI)
     /** distance for culling */
-    public int                           cullDistance               = 96;
+    public int                           cullDistance                 = 96;
     @Configure(category = mobAI)
     /** Will lithovores eat gravel */
-    public boolean                       pokemobsEatGravel          = false;
+    public boolean                       pokemobsEatGravel            = false;
     @Configure(category = mobAI)
     /** Is there a warning before a wild pokémob attacks the player. */
-    public boolean                       pokemobagresswarning       = true;
+    public boolean                       pokemobagresswarning         = true;
     @Configure(category = mobAI)
     /** Distance to player needed to agress the player */
-    public int                           mobAggroRadius             = 3;
+    public int                           mobAggroRadius               = 3;
     @Configure(category = mobAI)
     /** Approximate number of ticks before pokémob starts taking hunger
      * damage */
-    public int                           pokemobLifeSpan            = 8000;
+    public int                           pokemobLifeSpan              = 8000;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public int                           maxWildPlayerDamage        = 10;
+    public int                           maxWildPlayerDamage          = 10;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public int                           maxOwnedPlayerDamage       = 10;
+    public int                           maxOwnedPlayerDamage         = 10;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public double                        wildPlayerDamageRatio      = 1;
+    public double                        wildPlayerDamageRatio        = 1;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public double                        wildPlayerDamageMagic      = 0.1;
+    public double                        wildPlayerDamageMagic        = 0.1;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public double                        ownedPlayerDamageRatio     = 1;
+    public double                        ownedPlayerDamageRatio       = 1;
     @Configure(category = mobAI)
     /** Capped damage to players by pokémobs */
-    public double                        ownedPlayerDamageMagic     = 0.1;
+    public double                        ownedPlayerDamageMagic       = 0.1;
+    @Configure(category = mobAI)
+    /** Scaling factor for damage against not pokemobs */
+    public double                        pokemobToOtherMobDamageRatio = 1;
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
-    public int                           pokemobagressticks         = 100;
+    public int                           pokemobagressticks           = 100;
     @Configure(category = mobAI, needsMcRestart = true)
     /** Number of threads allowed for AI. */
-    public int                           maxAIThreads               = 1;
+    public int                           maxAIThreads                 = 1;
     @Configure(category = mobAI)
-    public boolean                       pokemobsDamageOwner        = false;
+    public boolean                       pokemobsDamageOwner          = false;
     @Configure(category = mobAI)
-    public boolean                       pokemobsDamagePlayers      = true;
+    public boolean                       pokemobsDamagePlayers        = true;
     @Configure(category = mobAI)
-    public boolean                       pokemobsDamageBlocks       = false;
+    public boolean                       pokemobsDamageBlocks         = false;
     @Configure(category = mobAI)
-    public int                           baseSmeltingHunger         = 100;
+    public int                           baseSmeltingHunger           = 100;
     @Configure(category = mobAI)
-    public boolean                       onlyPokemobsDamagePokemobs = false;
+    public boolean                       onlyPokemobsDamagePokemobs   = false;
     @Configure(category = mobAI)
-    public float                         playerToPokemobDamageScale = 1;
+    public float                         playerToPokemobDamageScale   = 1;
     @Configure(category = mobAI)
-    public float                         expFromDeathDropScale      = 1;
+    public float                         expFromDeathDropScale        = 1;
     @Configure(category = mobAI)
     /** Do explosions occur and cause damage */
-    public boolean                       explosions                 = true;
+    public boolean                       explosions                   = true;
     @Configure(category = mobAI)
-    public int                           attackCooldown             = 20;
+    public int                           attackCooldown               = 20;
     @Configure(category = mobAI)
-    public int                           chaseDistance              = 32;
+    public int                           chaseDistance                = 32;
     @Configure(category = mobAI)
-    public int                           combatDistance             = 8;
+    public int                           combatDistance               = 8;
     @Configure(category = mobAI)
-    public int                           aiDisableDistance          = 32;
+    public int                           aiDisableDistance            = 32;
     @Configure(category = mobAI)
-    public int                           tameGatherDelay            = 20;
+    public int                           tameGatherDelay              = 20;
     @Configure(category = mobAI)
-    public int                           wildGatherDelay            = 200;
+    public int                           wildGatherDelay              = 200;
     @Configure(category = mobAI)
-    public int                           tameGatherDistance         = 16;
+    public int                           tameGatherDistance           = 16;
     @Configure(category = mobAI)
-    public int                           wildGatherDistance         = 8;
+    public int                           wildGatherDistance           = 8;
     @Configure(category = mobAI)
-    public boolean                       tameGather                 = true;
+    public boolean                       tameGather                   = true;
     @Configure(category = mobAI)
-    public boolean                       wildGather                 = false;
+    public boolean                       wildGather                   = false;
     @Configure(category = mobAI)
-    public boolean                       flyEnabled                 = true;
+    public boolean                       flyEnabled                   = true;
     @Configure(category = mobAI)
-    public boolean                       surfEnabled                = true;
+    public boolean                       surfEnabled                  = true;
     @Configure(category = mobAI)
-    public boolean                       diveEnabled                = true;
+    public boolean                       diveEnabled                  = true;
 
     // World Gen and World effect settings
     @Configure(category = world)
     /** do meteors fall. */
-    public boolean                       meteors                    = true;
+    public boolean                       meteors                      = true;
     @Configure(category = world)
-    public int                           meteorDistance             = 3000;
+    public int                           meteorDistance               = 3000;
     @Configure(category = world)
-    public boolean                       doSpawnBuilding            = true;
+    public boolean                       doSpawnBuilding              = true;
     @Configure(category = world)
-    public boolean                       basesLoaded                = false;
+    public boolean                       basesLoaded                  = false;
     @Configure(category = world)
-    public boolean                       pokecenterTorch            = true;
+    public boolean                       pokecenterTorch              = true;
     @Configure(category = world)
-    public boolean                       pokemartMerchant           = true;
+    public boolean                       pokemartMerchant             = true;
     @Configure(category = world)
-    public boolean                       autoPopulateLists          = true;
+    public boolean                       autoPopulateLists            = true;
     @Configure(category = world)
-    public boolean                       refreshSubbiomes           = false;
+    public boolean                       refreshSubbiomes             = false;
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListCaveFloor         = {};
+    public String[]                      blockListCaveFloor           = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListSurface           = {};
+    public String[]                      blockListSurface             = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListRocks             = {};
+    public String[]                      blockListRocks               = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListTreeBlocks        = {};
+    public String[]                      blockListTreeBlocks          = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListHarvestablePlants = {};
+    public String[]                      blockListHarvestablePlants   = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListMiscTerrain       = {};
+    public String[]                      blockListMiscTerrain         = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListIndustrialBlocks  = {};
+    public String[]                      blockListIndustrialBlocks    = {};
     @Configure(category = world)
-    public boolean                       useConfigForBerryLocations = false;
+    public boolean                       useConfigForBerryLocations   = false;
     @Configure(category = world)
-    public int                           cropGrowthTicks            = 2500;
+    public int                           cropGrowthTicks              = 2500;
     @Configure(category = world)
-    public int                           leafBerryTicks             = 7500;
+    public int                           leafBerryTicks               = 7500;
     @Configure(category = world)
-    public boolean                       autoDetectSubbiomes        = true;
+    public boolean                       autoDetectSubbiomes          = true;
 
     @Configure(category = world)
-    public String[]                      berryLocations             = { // @formatter:off
+    public String[]                      berryLocations               = { // @formatter:off
             "cheri:TWplains,Bsavanna'Svillage", "chesto:TWforest,Bconiferous", "pecha:TWforest,Bconiferous",
             "rawst:TWmountain,Whills'TWnether'Scave", "aspear:TWforest,Bconiferous", "leppa:TWplains,Bsavanna",
             "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",
@@ -248,182 +251,182 @@ public class Config extends ConfigBase
     // Mob Spawning settings
     @Configure(category = spawning, needsMcRestart = true)
     /** Do monsters not spawn. */
-    public boolean                       deactivateMonsters         = false;
+    public boolean                       deactivateMonsters           = false;
     @Configure(category = spawning)
     /** do monster spawns get swapped with shadow pokemobs */
-    public boolean                       disableVanillaMonsters     = false;
+    public boolean                       disableVanillaMonsters       = false;
     @Configure(category = spawning)
-    public boolean                       disableVanillaAnimals      = false;
+    public boolean                       disableVanillaAnimals        = false;
     @Configure(category = spawning, needsMcRestart = true)
     /** do animals not spawn */
-    public boolean                       deactivateAnimals          = true;
+    public boolean                       deactivateAnimals            = true;
     @Configure(category = spawning, needsMcRestart = true)
     /** do Pokemobs spawn */
-    public boolean                       pokemonSpawn               = true;
+    public boolean                       pokemonSpawn                 = true;
     @Configure(category = spawning)
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
-    public int                           maxSpawnRadius             = 32;
+    public int                           maxSpawnRadius               = 32;
     @Configure(category = spawning)
     /** closest distance to a player the pokemob can spawn. */
-    public int                           minSpawnRadius             = 16;
+    public int                           minSpawnRadius               = 16;
     @Configure(category = spawning)
     /** Minimum level legendaries can spawn at. */
-    public int                           minLegendLevel             = 1;
+    public int                           minLegendLevel               = 1;
     @Configure(category = spawning)
     /** Will nests spawn */
-    public boolean                       nests                      = false;
+    public boolean                       nests                        = false;
     @Configure(category = spawning)
     /** number of nests per chunk */
-    public int                           nestsPerChunk              = 1;
+    public int                           nestsPerChunk                = 1;
     @Configure(category = spawning)
     /** To be used for nest retrogen. */
-    public boolean                       refreshNests               = false;
+    public boolean                       refreshNests                 = false;
     @Configure(category = spawning)
-    public int                           mobSpawnNumber             = 10;
+    public int                           mobSpawnNumber               = 10;
     @Configure(category = spawning)
-    public double                        mobDensityMultiplier       = 1;
+    public double                        mobDensityMultiplier         = 1;
     @Configure(category = spawning)
-    public int                           levelCap                   = 50;
+    public int                           levelCap                     = 50;
     @Configure(category = spawning)
-    public boolean                       shouldCap                  = true;
+    public boolean                       shouldCap                    = true;
     @Configure(category = spawning)
-    String[]                             spawnLevelFunctions        = { //@formatter:off
+    String[]                             spawnLevelFunctions          = { //@formatter:off
             "-1:abs((25)*(sin(x*8*10^-3)^3 + sin(y*8*10^-3)^3))",
             "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
             "1:1+r/1300;r"
             };//@formatter:on
     @Configure(category = spawning)
-    public boolean                       expFunction                = false;
+    public boolean                       expFunction                  = false;
     @Configure(category = spawning)
-    public boolean                       spawnCentered              = true;
+    public boolean                       spawnCentered                = true;
     @Configure(category = spawning)
-    public int                           levelVariance              = 5;
+    public int                           levelVariance                = 5;
     @Configure(category = spawning)
-    public int[]                         dimensionBlacklist         = {};
+    public int[]                         dimensionBlacklist           = {};
     @Configure(category = spawning)
-    public int[]                         dimensionWhitelist         = {};
+    public int[]                         dimensionWhitelist           = {};
     @Configure(category = spawning)
-    public boolean                       whiteListEnabled           = false;
+    public boolean                       whiteListEnabled             = false;
 
     // Gui/client settings
     @Configure(category = client)
-    public String                        guiRef                     = "top_left";
+    public String                        guiRef                       = "top_left";
     @Configure(category = client)
-    public String                        messageRef                 = "bottom_middle";
+    public String                        messageRef                   = "bottom_middle";
     @Configure(category = client)
-    public String                        targetRef                  = "top_right";
+    public String                        targetRef                    = "top_right";
     @Configure(category = client)
-    public int[]                         guiPos                     = { 0, 0 };
+    public int[]                         guiPos                       = { 0, 0 };
     @Configure(category = client)
-    public float                         guiSize                    = 1;
+    public float                         guiSize                      = 1;
     @Configure(category = client)
-    public int[]                         targetPos                  = { 147, -40 };
+    public int[]                         targetPos                    = { 147, -40 };
     @Configure(category = client)
-    public float                         targetSize                 = 1;
+    public float                         targetSize                   = 1;
     @Configure(category = client)
-    public int[]                         messagePos                 = { -76, -27 };
+    public int[]                         messagePos                   = { -76, -27 };
     @Configure(category = client)
-    public int                           messageWidth               = 150;
+    public int                           messageWidth                 = 150;
     @Configure(category = client)
-    public float                         messageSize                = 1;
+    public float                         messageSize                  = 1;
     @Configure(category = client)
-    public boolean                       guiDown                    = true;
+    public boolean                       guiDown                      = true;
     @Configure(category = client)
-    public boolean                       guiAutoScale               = false;
+    public boolean                       guiAutoScale                 = false;
     @Configure(category = client)
-    public boolean                       autoSelectMoves            = false;
+    public boolean                       autoSelectMoves              = false;
     @Configure(category = client)
-    public boolean                       moveAnimationCallLists     = true;
+    public boolean                       moveAnimationCallLists       = true;
     @Configure(category = client)
-    public boolean                       autoRecallPokemobs         = false;
+    public boolean                       autoRecallPokemobs           = false;
     @Configure(category = client)
-    public int                           autoRecallDistance         = 32;
+    public int                           autoRecallDistance           = 32;
     @Configure(category = advanced)
-    String[]                             mystLocs                   = {};
+    String[]                             mystLocs                     = {};
     @Configure(category = advanced)
-    boolean                              resetTags                  = false;
+    boolean                              resetTags                    = false;
     @Configure(category = advanced)
-    String[]                             extraValues                = { "3", "4.5" };
+    String[]                             extraValues                  = { "3", "4.5" };
     @Configure(category = advanced)
-    public boolean                       debug                      = false;
+    public boolean                       debug                        = false;
     @Configure(category = advanced)
-    public String[]                      damageBlocksWhitelist      = { "flash", "teleport" };
+    public String[]                      damageBlocksWhitelist        = { "flash", "teleport" };
     @Configure(category = advanced)
-    public String[]                      damageBlocksBlacklist      = {};
+    public String[]                      damageBlocksBlacklist        = {};
 
     @Configure(category = advanced)
-    public int                           evolutionTicks             = 50;
+    public int                           evolutionTicks               = 50;
     @Configure(category = advanced)
-    public String                        nonPokemobExpFunction      = "h*(a+1)";
+    public String                        nonPokemobExpFunction        = "h*(a+1)";
     @Configure(category = advanced)
-    public boolean                       nonPokemobExp              = false;
+    public boolean                       nonPokemobExp                = false;
     @Configure(category = database, needsMcRestart = true)
-    boolean                              forceDatabase              = true;
+    boolean                              forceDatabase                = true;
 
     @Configure(category = database, needsMcRestart = true)
-    String[]                             configDatabases            = { "pokemobs", "moves" };
+    String[]                             configDatabases              = { "pokemobs", "moves" };
 
     @Configure(category = rewards)
-    public String                        exp_shareRequirement       = "5";
+    public String                        exp_shareRequirement         = "5";
     @Configure(category = rewards)
-    public String                        cutTMRequirement           = "3%";
+    public String                        cutTMRequirement             = "3%";
     @Configure(category = rewards)
-    public String                        flashTMRequirement         = "6%";
+    public String                        flashTMRequirement           = "6%";
     @Configure(category = rewards)
-    public String                        rocksmashTMRequirement     = "9%";
+    public String                        rocksmashTMRequirement       = "9%";
     @Configure(category = rewards)
-    public String                        mastercubeRequirement      = "20%";
+    public String                        mastercubeRequirement        = "20%";
     @Configure(category = rewards)
-    public String                        shinycharmRequirement      = "100%";
+    public String                        shinycharmRequirement        = "100%";
 
     @Configure(category = healthbars)
-    public boolean                       doHealthBars               = true;
+    public boolean                       doHealthBars                 = true;
     @Configure(category = healthbars)
-    public int                           maxDistance                = 24;
+    public int                           maxDistance                  = 24;
     @Configure(category = healthbars)
-    public boolean                       renderInF1                 = false;
+    public boolean                       renderInF1                   = false;
     @Configure(category = healthbars)
-    public double                        heightAbove                = 0.6;
+    public double                        heightAbove                  = 0.6;
     @Configure(category = healthbars)
-    public boolean                       drawBackground             = true;
+    public boolean                       drawBackground               = true;
     @Configure(category = healthbars)
-    public int                           backgroundPadding          = 2;
+    public int                           backgroundPadding            = 2;
     @Configure(category = healthbars)
-    public int                           backgroundHeight           = 6;
+    public int                           backgroundHeight             = 6;
     @Configure(category = healthbars)
-    public int                           barHeight                  = 4;
+    public int                           barHeight                    = 4;
     @Configure(category = healthbars)
-    public int                           plateSize                  = 25;
+    public int                           plateSize                    = 25;
     @Configure(category = healthbars)
-    public int                           plateSizeBoss              = 50;
+    public int                           plateSizeBoss                = 50;
     @Configure(category = healthbars)
-    public boolean                       showAttributes             = true;
+    public boolean                       showAttributes               = true;
     @Configure(category = healthbars)
-    public boolean                       showArmor                  = true;
+    public boolean                       showArmor                    = true;
     @Configure(category = healthbars)
-    public boolean                       groupArmor                 = true;
+    public boolean                       groupArmor                   = true;
     @Configure(category = healthbars)
-    public int                           hpTextHeight               = 14;
+    public int                           hpTextHeight                 = 14;
     @Configure(category = healthbars)
-    public boolean                       showOnlyFocused            = false;
+    public boolean                       showOnlyFocused              = false;
     @Configure(category = healthbars)
-    public boolean                       enableDebugInfo            = true;
+    public boolean                       enableDebugInfo              = true;
 
     /** List of blocks to be considered for the floor of a cave. */
-    private List<Predicate<IBlockState>> caveBlocks                 = Lists.newArrayList();
+    private List<Predicate<IBlockState>> caveBlocks                   = Lists.newArrayList();
     /** List of blocks to be considered for the surface. */
-    private List<Predicate<IBlockState>> surfaceBlocks              = Lists.newArrayList();
+    private List<Predicate<IBlockState>> surfaceBlocks                = Lists.newArrayList();
     /** List of blocks to be considered to be rocks for the purpose of rocksmash
      * and lithovore eating */
-    private List<Predicate<IBlockState>> rocks                      = Lists.newArrayList();
+    private List<Predicate<IBlockState>> rocks                        = Lists.newArrayList();
     /** List of blocks to be considered to be generic terrain, for dig to reduce
      * drop rates for */
-    private List<Predicate<IBlockState>> terrain                    = Lists.newArrayList();
-    private List<Predicate<IBlockState>> woodTypes                  = Lists.newArrayList();
-    private List<Predicate<IBlockState>> plantTypes                 = Lists.newArrayList();
-    private List<Predicate<IBlockState>> dirtTypes                  = Lists.newArrayList();
-    private List<Predicate<IBlockState>> industrial                 = Lists.newArrayList();
+    private List<Predicate<IBlockState>> terrain                      = Lists.newArrayList();
+    private List<Predicate<IBlockState>> woodTypes                    = Lists.newArrayList();
+    private List<Predicate<IBlockState>> plantTypes                   = Lists.newArrayList();
+    private List<Predicate<IBlockState>> dirtTypes                    = Lists.newArrayList();
+    private List<Predicate<IBlockState>> industrial                   = Lists.newArrayList();
 
     private Config()
     {

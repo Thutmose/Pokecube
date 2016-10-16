@@ -506,6 +506,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             finalAttackStrength *= PokecubeMod.core.getConfig().ownedPlayerDamageRatio;
         }
+        else if (!(attacked instanceof IPokemob))
+        {
+            finalAttackStrength *= PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio;
+        }
 
         if (attacked instanceof IPokemob)
         {

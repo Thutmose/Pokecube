@@ -43,7 +43,7 @@ public class BlockFossilStone extends Block
             ArrayList<ItemStack> fossils = new ArrayList<ItemStack>();
             fossils.addAll(PokecubeItems.fossils.keySet());
             Collections.shuffle(fossils);
-            ret.add(fossils.get(0));
+            ret.add(fossils.get(0).copy());
         }
         else
         {

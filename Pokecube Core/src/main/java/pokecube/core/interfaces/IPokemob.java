@@ -218,6 +218,7 @@ public interface IPokemob extends IMoveConstants
         public int                            newMoves                   = 0;
         // next tick when a move can be used
         public int                            nextMoveTick               = 0;
+        public String[]                       moves                      = new String[4];
     }
 
     /*

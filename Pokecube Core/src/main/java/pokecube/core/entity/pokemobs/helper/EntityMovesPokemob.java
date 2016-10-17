@@ -741,7 +741,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             for (int i = 0; i < moves.length; i++)
             {
                 String move = moves[i];
-
+                getMoveStats().moves[i] = move;
                 if (move != null)
                 {
                     movesString += move + ",";

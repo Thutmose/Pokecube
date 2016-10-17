@@ -1110,7 +1110,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound movesList = new NBTTagCompound();
         for (int i = 0; i < 4; i++)
         {
-            if (getMove(i) != null) movesList.setString("" + i, getMove(i));
+            if (getMoveStats().moves[i] != null) movesList.setString("" + i, getMoveStats().moves[i]);
         }
         movesTag.setTag(MOVELIST, movesList);
         movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);

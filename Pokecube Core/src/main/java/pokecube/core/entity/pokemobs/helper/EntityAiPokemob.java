@@ -1055,7 +1055,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (deny)
         {
             // Add message here about cannot use items right now
-            player.addChatMessage(new TextComponentTranslation("pokemob.action.cannotusew"));
+            player.addChatMessage(new TextComponentTranslation("pokemob.action.cannotuse"));
             return false;
         }
 
@@ -1105,9 +1105,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 if (held.getItem() instanceof IPokemobUseable)
                 {
                     boolean used = ((IPokemobUseable) held.getItem()).itemUse(held, this, player);
+                    this.setPokemonAIState(NOITEMUSE, true);
                     if (used)
                     {
-                        this.setPokemonAIState(NOITEMUSE, true);
                         held.splitStack(1);
                         return true;
                     }
@@ -1123,6 +1123,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     ItemStack toSet = held.copy();
                     toSet.stackSize = 1;
                     setHeldItem(toSet);
+                    this.setPokemonAIState(NOITEMUSE, true);
                     held.stackSize--;
 
                     if (held.stackSize <= 0)

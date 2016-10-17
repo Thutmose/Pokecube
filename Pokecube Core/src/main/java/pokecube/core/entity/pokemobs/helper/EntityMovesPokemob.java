@@ -573,6 +573,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (attacked == this)
         {
             this.getEntityData().setString("lastMoveHitBy", move.attack);
+            this.setPokemonAIState(NOITEMUSE, false);
         }
 
         if (moveInfo.substituteHP > 0 && attacked == this)

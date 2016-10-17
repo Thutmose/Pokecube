@@ -160,25 +160,31 @@ public class LogicMiscUpdate extends LogicBase
                 PokecubeMod.core.spawnParticle(entity.worldObj, "heart", heart, null);
             }
         }
+        int[] args = {};
         if (flavourAmounts[SWEET] > 0)
         {
-            particle = "powder.pink";
+            particle = "powder";
+            args = new int[] { 0xF85888 };
         }
         if (flavourAmounts[BITTER] > 0)
         {
-            particle = "powder.green";
+            particle = "powder";
+            args = new int[] { 0x78C850 };
         }
         if (flavourAmounts[SPICY] > 0)
         {
-            particle = "powder.red";
+            particle = "powder";
+            args = new int[] { 0xFF0000 };
         }
         if (flavourAmounts[DRY] > 0)
         {
-            particle = "powder.blue";
+            particle = "powder";
+            args = new int[] { 0x6890F0 };
         }
         if (flavourAmounts[SOUR] > 0)
         {
-            particle = "powder.yellow";
+            particle = "powder";
+            args = new int[] { 0x78C850 };
         }
         if (particle != null && particleCounter++ <= particleIntensity)
         {
@@ -196,7 +202,7 @@ public class LogicMiscUpdate extends LogicBase
                         rand.nextDouble() - 0.5);
                 particleVelo.scalarMultBy(0.25);
             }
-            PokecubeMod.core.spawnParticle(entity.worldObj, particle, particleLoc, particleVelo);
+            PokecubeMod.core.spawnParticle(entity.worldObj, particle, particleLoc, particleVelo, args);
 
         }
         particleCounter = 0;

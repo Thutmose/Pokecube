@@ -65,6 +65,7 @@ pokemob.action.denydamageblock=§cpokemobsDamageBlocks is disabled via configs
 pokemob.action.needsberries=§cYour Pokémob needs to eat more Berries to do that
 pokemob.action.denyrepel=§cYour Pokémob is too disgusted by repel to do that
 pokemob.areanotloaded=§cWarning, Unloaded area.
+pokemob.action.cannotuse=§cYou cannot use that yet.
 
 pokemob.info.levelup=%1$s §ahas grown to level %2$s
 

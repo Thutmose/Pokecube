@@ -1,17 +1,10 @@
 package pokecube.core.moves.implementations;
 
 import java.util.List;
-import java.util.Random;
 
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IWorldEventListener;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import pokecube.core.client.render.PTezzelator;
 import pokecube.core.database.abilities.AbilityManager.ClassFinder;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.handlers.MoveEventsHandler;
@@ -38,7 +31,6 @@ import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.moves.templates.Move_Terrain;
 import pokecube.core.utils.Tools;
-import thut.api.maths.Vector3;
 
 public class MovesAdder implements IMoveConstants
 {
@@ -455,80 +447,14 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_FLAMETHROWER).setMultiTarget());
         registerMove(new Move_Basic(MOVE_FIREBLAST).setAnimation(new MoveAnimationBase()
         {
-
+            //TODO animations for fire blast
             @Override
             public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
-                Vector3 source = info.source;
-                Vector3 target = info.target;
-                ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
-                FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
-                double dist = source.distanceTo(target);
-                Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
-
-                GlStateManager.translate(temp.x, temp.y, temp.z);
-                double factor = (info.currentTick + partialTick) / (double) getDuration();
-                factor = Math.min(1, factor);
-                temp.set(temp.normalize());
-                temp.scalarMultBy(-dist * factor);
-                Vector3 temp2 = temp.copy();
-
-                initColour(info.currentTick * 300, partialTick, info.move);
-
-                renderPart(temp, temp2, factor);
-
-                temp.set(source).subtractFrom(target).add(0, 0.5, 0);
-                temp2.set(temp);
-
-                renderPart(temp, temp2, factor);
-
-                temp.set(source).subtractFrom(target).add(0.5, 0.5, 0.5);
-                temp2.set(temp);
-
-                renderPart(temp, temp2, factor);
-
-                temp.set(source).subtractFrom(target).add(-0.5, 0.5, -0.5);
-                temp2.set(temp);
-
-                renderPart(temp, temp2, factor);
             }
-
             @Override
             public void initColour(long time, float partialTicks, Move_Base move)
             {
-                rgba = getColourFromMove(move, 255);
-
-            }
-
-            private void renderPart(Vector3 temp, Vector3 temp2, double factor)
-            {
-                PTezzelator tez = PTezzelator.instance;
-
-                GL11.glPushMatrix();
-                int alpha = ((rgba >> 24) / 1 & 255);
-                int red = ((rgba >> 16) / 1 & 255);
-                int green = ((rgba >> 8) / 1 & 255);
-                int blue = (rgba / 1 & 255);
-
-                long hash = (long) (temp.x * 1000000l + temp.z * 1000000000000l);
-                Random rand = new Random(hash);
-                tez.begin(6);
-                GL11.glColor4f(red / 255f, green / 255f, blue / 255f, alpha / 255f);
-                for (int i = 0; i < 500; i++)
-                {
-                    temp.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor, rand.nextGaussian() * factor);
-                    temp.scalarMult(0.001);
-                    temp.addTo(temp2);
-                    double size = 0.01;
-
-                    tez.vertex(temp.x, temp.y + size, temp.z);
-                    tez.vertex(temp.x - size, temp.y - size, temp.z - size);
-                    tez.vertex(temp.x - size, temp.y + size, temp.z - size);
-                    tez.vertex(temp.x, temp.y - size, temp.z);
-                }
-                tez.end();
-
-                GL11.glPopMatrix();
             }
         }).setSound("mob.wither.shoot").setMultiTarget());
 

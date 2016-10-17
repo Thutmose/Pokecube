@@ -60,6 +60,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     protected static int                 lightGrey  = 0xDDDDDD;
     public static int[]                  guiDims    = { 147, 42 };
     public static int[]                  targetDims = { 147, 42 };
+    public static int[]                  teleDims   = { 147, 42 };
     public static GuiDisplayPokecubeInfo instance;
 
     public static float scale(float scaled, boolean apply)
@@ -659,8 +660,8 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         try
         {
-            if (// minecraft.currentScreen == null &&
-            !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
+            if ((minecraft.currentScreen == null || GuiArranger.toggle)
+                    && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                     && event.getType() == ElementType.HOTBAR)
             {
                 draw(event);

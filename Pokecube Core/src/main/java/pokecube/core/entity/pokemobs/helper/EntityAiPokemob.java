@@ -1045,6 +1045,19 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             return true;
         }
+        boolean deny = getPokemonAIState(IMoveConstants.NOITEMUSE);
+        if (deny && getAttackTarget() == null)
+        {
+            deny = false;
+            this.setPokemonAIState(NOITEMUSE, false);
+        }
+
+        if (deny)
+        {
+            // Add message here about cannot use items right now
+            player.addChatMessage(new TextComponentTranslation("pokemob.action.cannotuse"));
+            return false;
+        }
 
         // Owner only interactions.
         if (isOwner && !PokecubeCore.isOnClientSide())
@@ -1071,7 +1084,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 int fav = Nature.getFavouriteBerryIndex(getNature());
                 // Check if favourte berry and sneaking, if so, do breeding
                 // stuff.
-                if (player.isSneaking() && held.getItem() instanceof ItemBerry
+                if (player.isSneaking() && getAttackTarget() == null && held.getItem() instanceof ItemBerry
                         && (fav == -1 || fav == held.getItemDamage()))
                 {
                     if (!player.capabilities.isCreativeMode)
@@ -1092,7 +1105,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 if (held.getItem() instanceof IPokemobUseable)
                 {
                     boolean used = ((IPokemobUseable) held.getItem()).itemUse(held, this, player);
-
+                    this.setPokemonAIState(NOITEMUSE, true);
                     if (used)
                     {
                         held.splitStack(1);
@@ -1110,6 +1123,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     ItemStack toSet = held.copy();
                     toSet.stackSize = 1;
                     setHeldItem(toSet);
+                    this.setPokemonAIState(NOITEMUSE, true);
                     held.stackSize--;
 
                     if (held.stackSize <= 0)

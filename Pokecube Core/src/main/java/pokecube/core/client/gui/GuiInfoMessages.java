@@ -64,6 +64,8 @@ public class GuiInfoMessages
         Minecraft minecraft = Minecraft.getMinecraft();
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
         if (event.getType() != ElementType.CHAT && (minecraft.currentScreen instanceof GuiChat)) return;
+        
+        //TODO only do mouse wheel stuff if it is over the box
         int i = Mouse.getDWheel();
         int texH = minecraft.fontRendererObj.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;

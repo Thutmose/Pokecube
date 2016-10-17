@@ -20,7 +20,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
 import pokecube.pokeplayer.PokePlayer;
-import pokecube.pokeplayer.network.PacketPokePlayer.MessageServer;
+import pokecube.pokeplayer.network.PacketDoActions;
 import thut.api.maths.Vector3;
 
 public class GuiAsPokemob extends GuiDisplayPokecubeInfo
@@ -65,7 +65,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 
         EntityPlayer player = minecraft.thePlayer;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-        buffer.writeByte(MessageServer.MOVEUSE);
+        buffer.writeByte(PacketDoActions.MOVEUSE);
         float range = 16;
 
         float contactRange = Math.max(1.5f, pokemob.getSize() * pokemob.getPokedexEntry().length);
@@ -135,7 +135,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 
         if (range == contactRange && target == null) return;
 
-        MessageServer packet = new MessageServer(buffer);
+        PacketDoActions packet = new PacketDoActions(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -194,9 +194,9 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
                 num = 0;
             }
             PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-            buffer.writeByte(MessageServer.MOVEINDEX);
+            buffer.writeByte(PacketDoActions.MOVEINDEX);
             buffer.writeByte((byte) num);
-            MessageServer packet = new MessageServer(buffer);
+            PacketDoActions packet = new PacketDoActions(buffer);
             PokecubePacketHandler.sendToServer(packet);
         }
     }

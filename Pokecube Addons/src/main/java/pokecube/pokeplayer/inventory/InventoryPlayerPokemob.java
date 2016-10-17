@@ -2,6 +2,7 @@ package pokecube.pokeplayer.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.AnimalChest;
+import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
@@ -10,12 +11,13 @@ public class InventoryPlayerPokemob extends AnimalChest
 {
     final PokeInfo info;
 
-    public InventoryPlayerPokemob(PokeInfo info)
+    public InventoryPlayerPokemob(PokeInfo info, World world)
     {
-        super(info.pokemob.getPokemobInventory().getName(), info.pokemob.getPokemobInventory().getSizeInventory());
-        for (int i = 0; i < info.pokemob.getPokemobInventory().getSizeInventory(); i++)
+        super(info.getPokemob(world).getPokemobInventory().getName(),
+                info.getPokemob(world).getPokemobInventory().getSizeInventory());
+        for (int i = 0; i < info.getPokemob(world).getPokemobInventory().getSizeInventory(); i++)
         {
-            this.setInventorySlotContents(i, info.pokemob.getPokemobInventory().getStackInSlot(i));
+            this.setInventorySlotContents(i, info.getPokemob(world).getPokemobInventory().getStackInSlot(i));
         }
         this.info = info;
     }

@@ -1,29 +1,18 @@
 package pokecube.pokeplayer;
 
-import java.util.Map;
-import java.util.UUID;
-
-import com.google.common.collect.Maps;
-
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.IGuiHandler;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.EntityTools;
 import pokecube.pokeplayer.inventory.ContainerPokemob;
 
 public class Proxy implements IGuiHandler
 {
-    public static final int     POKEMOBGUI      = 0;
-
-    private Map<UUID, PokeInfo> playerMap       = Maps.newHashMap();
-    private Map<UUID, PokeInfo> playerMapClient = Maps.newHashMap();
+    public static final int POKEMOBGUI = 0;
 
     public void setPokemob(EntityPlayer player, IPokemob pokemob)
     {
@@ -36,87 +25,39 @@ public class Proxy implements IGuiHandler
         }
     }
 
-    public Map<UUID, PokeInfo> getMap()
-    {
-        return FMLCommonHandler.instance().getEffectiveSide().isClient() ? playerMapClient : playerMap;
-    }
-
     public void savePokemob(EntityPlayer player)
     {
-        PokeInfo info = getMap().get(player.getUniqueID());
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
         if (info != null) info.save(player);
     }
 
     private void setMapping(EntityPlayer player, IPokemob pokemob)
     {
-        PokeInfo info = new PokeInfo(pokemob, player);
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+        info.set(pokemob, player);
         info.setPlayer(player);
-        EntityTools.copyEntityTransforms((EntityLivingBase) info.pokemob, player);
-        getMap().put(player.getUniqueID(), info);
-        player.getEntityData().setBoolean("isPokemob", true);
-        NBTTagCompound poketag = new NBTTagCompound();
-        poketag.setInteger("pokenum", pokemob.getPokedexNb());
-        ((Entity) pokemob).writeToNBT(poketag);
-        player.getEntityData().setTag("Pokemob", poketag);
+        EntityTools.copyEntityTransforms((EntityLivingBase) info.getPokemob(player.getEntityWorld()), player);
+        info.save(player);
     }
 
     private void removeMapping(EntityPlayer player)
     {
-        PokeInfo info = getMap().remove(player.getUniqueID());
-        if (info != null)
-        {
-            info.resetPlayer(player);
-            System.out.println("Removed");
-        }
-        player.getEntityData().setBoolean("isPokemob", false);
-        player.getEntityData().removeTag("Pokemob");
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+        info.clear();
+        info.save(player);
     }
 
     public IPokemob getPokemob(EntityPlayer player)
     {
         if (player == null || player.getUniqueID() == null) return null;
-        if (getMap().containsKey(player.getUniqueID()))
-        {
-            PokeInfo info = getMap().get(player.getUniqueID());
-            IPokemob ret = info.pokemob;
-            return ret;
-        }
-        else if (player.getEntityData().getBoolean("isPokemob"))
-        {
-            NBTTagCompound poketag = player.getEntityData().getCompoundTag("Pokemob");
-            int num = poketag.getInteger("pokenum");
-            Entity poke = PokecubeMod.core.createEntityByPokedexNb(num, player.worldObj);
-            if (poke == null)
-            {
-                removeMapping(player);
-                return null;
-            }
-            poke.readFromNBT(poketag);
-            IPokemob pokemob = (IPokemob) poke;
-            pokemob.setPokemonOwner(player);
-            if (!((Entity) pokemob).getEntityData().hasKey("oldNickname"))
-                ((Entity) pokemob).getEntityData().setString("oldNickname", pokemob.getPokemonNickname());
-            pokemob.setPokemonNickname(player.getName());
-            setMapping(player, pokemob);
-            return pokemob;
-        }
-        else
-        {
-            removeMapping(player);
-        }
-        return null;
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+        return info.getPokemob(player.getEntityWorld());
     }
 
     public void updateInfo(EntityPlayer player)
     {
-        if (getPokemob(player) != null)
-        {
-            if (getMap().get(player.getUniqueID()) == null)
-            {
-                System.err.println(player.getUniqueID() + " " + getMap());
-            }
-            else getMap().get(player.getUniqueID()).onUpdate(player);
-        }
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+        info.onUpdate(player);
     }
 
     public void init()

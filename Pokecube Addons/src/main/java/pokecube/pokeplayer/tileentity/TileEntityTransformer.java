@@ -11,10 +11,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.Database;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
+import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
 
 public class TileEntityTransformer extends TileEntityOwnable implements ITickable
@@ -43,6 +45,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             else
             {
                 Tools.giveItem(player, stack);
+                stack = null;
             }
         }
     }
@@ -50,7 +53,8 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
     public void onStepped(EntityPlayer player)
     {
         if (worldObj.isRemote || stepTick > 0) return;
-        boolean isPokemob = PokePlayer.PROXY.getMap().get(player.getUniqueID()) != null;
+        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+        boolean isPokemob = info.getPokemob(worldObj) != null;
         if ((stack != null || random) && !isPokemob)
         {
             IPokemob pokemob = getPokemob();
@@ -72,6 +76,11 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             tag.removeTag("isPlayer");
             tag.removeTag("playerID");
             ItemStack pokemob = PokecubeManager.pokemobToItem(poke);
+            if (player.capabilities.isFlying)
+            {
+                player.capabilities.isFlying = false;
+                player.sendPlayerAbilities();
+            }
             PokePlayer.PROXY.setPokemob(player, null);
             stack = pokemob;
             return;

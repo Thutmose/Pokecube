@@ -317,9 +317,15 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public String                        targetRef                    = "top_right";
     @Configure(category = client)
+    public String                        teleRef                      = "top_right";
+    @Configure(category = client)
     public int[]                         guiPos                       = { 0, 0 };
     @Configure(category = client)
     public float                         guiSize                      = 1;
+    @Configure(category = client)
+    public int[]                         telePos                      = { 0, 150 };
+    @Configure(category = client)
+    public float                         teleSize                     = 1;
     @Configure(category = client)
     public int[]                         targetPos                    = { 147, -40 };
     @Configure(category = client)

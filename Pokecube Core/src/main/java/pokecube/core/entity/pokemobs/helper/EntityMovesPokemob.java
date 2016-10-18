@@ -19,6 +19,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -27,7 +29,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -565,105 +567,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void onMoveUse(MovePacket move)
     {
-        Move_Base attack = move.getMove();
-
-        IPokemob attacker = move.attacker;
-        Entity attacked = move.attacked;
-
-        if (attacked == this)
-        {
-            this.getEntityData().setString("lastMoveHitBy", move.attack);
-            this.setPokemonAIState(NOITEMUSE, false);
-        }
-
-        if (moveInfo.substituteHP > 0 && attacked == this)
-        {
-            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().move.category,
-                    move.PWR, move);
-
-            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "green");
-            displayMessageToOwner(mess);
-            mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "red");
-            attacker.displayMessageToOwner(mess);
-            moveInfo.substituteHP -= damage;
-            if (moveInfo.substituteHP < 0)
-            {
-                mess = CommandTools.makeTranslatedMessage("pokemob.substitute.break", "red");
-                displayMessageToOwner(mess);
-                mess = CommandTools.makeTranslatedMessage("pokemob.substitute.break", "green");
-                attacker.displayMessageToOwner(mess);
-            }
-            move.failed = true;
-            move.PWR = 0;
-            move.changeAddition = 0;
-            move.statusChange = 0;
-        }
-
-        if (attacker == this && attack.getName().equals(MOVE_SUBSTITUTE))
-        {
-            moveInfo.substituteHP = getMaxHealth() / 4;
-        }
-
-        if (getHeldItemMainhand() != null)
-        {
-            HeldItemHandler.processHeldItemUse(move, this, getHeldItemMainhand());
-        }
-
-        if (getAbility() != null)
-        {
-            getAbility().onMoveUse(this, move);
-        }
-
-        if (attack.getName().equals(MOVE_FALSESWIPE))
-        {
-            move.noFaint = true;
-        }
-
-        if (attack.getName().equals(MOVE_PROTECT) || attack.getName().equals(MOVE_DETECT) && !moveInfo.blocked)
-        {
-            moveInfo.blockTimer = 30;
-            moveInfo.blocked = true;
-            moveInfo.BLOCKCOUNTER++;
-        }
-        boolean blockMove = false;
-
-        for (String s : MoveEntry.protectionMoves)
-            if (s.equals(move.attack))
-            {
-                blockMove = true;
-                break;
-            }
-
-        if (move.attacker == this && !blockMove && moveInfo.blocked)
-        {
-            moveInfo.blocked = false;
-            moveInfo.blockTimer = 0;
-            moveInfo.BLOCKCOUNTER = 0;
-        }
-
-        boolean unblockable = false;
-        for (String s : MoveEntry.unBlockableMoves)
-            if (s.equals(move.attack))
-            {
-                unblockable = true;
-                System.out.println("Unblockable");
-                break;
-            }
-
-        if (moveInfo.blocked && move.attacked != move.attacker && !unblockable)
-        {
-            float count = Math.min(0, moveInfo.BLOCKCOUNTER - 1);
-            float chance = count != 0 ? Math.max(0.125f, ((1 / (count * 2)))) : 1;
-            if (chance > Math.random())
-            {
-                move.canceled = true;
-            }
-            else
-            {
-                move.failed = true;
-            }
-        }
-        if (moveInfo.BLOCKCOUNTER > 0) moveInfo.BLOCKCOUNTER--;
+        Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == this)
+                : new MoveUse.DuringUse.Post(move, move.attacker == this);
+        MinecraftForge.EVENT_BUS.post(toPost);
     }
 
     @Override

@@ -145,9 +145,6 @@ public class RenderPokemobs extends RenderPokemob
 
             PokedexEntry entry = mob.getPokedexEntry();
             this.scale = (entry.height * mob.getSize());
-            // this.shadowSize = entry.width * mob.getSize()/2;//TODO decide if
-            // shadows are needed.
-            // System.out.println(nbm+" "+renderMap.get(nbm));
             Render render = getRenderer(mob.getPokedexEntry());
             if (render == instance)
             {

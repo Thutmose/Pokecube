@@ -3,7 +3,6 @@ package pokecube.core.client.render.entity;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -66,7 +65,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         }
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslated(d0, d1, d2);
         if (model.getTexturer() == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         float f8 = this.handleRotationFloat(entity, partialTick);
@@ -80,16 +78,6 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         else
         {
             phase = getPhase(entity, partialTick);
-        }
-        if (partialTick <= 1)
-        {
-            int ticks = ((Entity) mob).ticksExisted;
-            if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
-            {
-                float max = 5;
-                float s = (ticks) / max;
-                GL11.glScalef(s, s, s);
-            }
         }
         if (!model.hasPhase(phase)) phase = "idle";
         model.setPhase(phase);

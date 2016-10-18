@@ -87,6 +87,7 @@ public interface IPokemob extends IMoveConstants
         public byte          statusChange;
         public byte          changeAddition;
         public float         stabFactor        = 1.5f;
+        public float         critFactor        = 1.5f;
         public boolean       stab              = false;
         public boolean       hit               = false;
         public int           damageDealt       = 0;

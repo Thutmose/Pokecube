@@ -7,9 +7,7 @@ import pokecube.core.interfaces.IPokemob;
  * @author Thutmose */
 public class EvolveEvent extends LevelUpEvent
 {
-    /** Called after the evolution.<br>
-     * 
-     * @author Thutmose */
+    /** Called after the evolution. */
     public static class Post extends EvolveEvent
     {
         /** @param mob
@@ -20,9 +18,7 @@ public class EvolveEvent extends LevelUpEvent
         }
     }
 
-    /** Called before the evolution, if canceled, it will not evolve.<br>
-     * 
-     * @author Thutmose */
+    /** Called before the evolution, if canceled, it will not evolve. */
     public static class Pre extends EvolveEvent
     {
         public String forme;

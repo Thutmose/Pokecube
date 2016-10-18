@@ -267,21 +267,17 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
         float time = (((Entity) pokemob).ticksExisted + partialTick);
         GL11.glPushMatrix();
-
         float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
-
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
         float var5 = time * speed;
         float var6 = time * speed;
         GL11.glTranslatef(var5, var6, 0.0F);
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
         float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
         GL11.glColor4f(var7, var7, var7, 0.5F);
         var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
         GL11.glScalef(var7, var7, var7);
-
         IMobColourable colour = (IMobColourable) entity;
         int[] col = colour.getRGBA();
         int[] bak = col.clone();
@@ -292,7 +288,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
-
+        GL11.glColor4f(1, 1, 1, 1);
         GL11.glPopMatrix();
     }
 

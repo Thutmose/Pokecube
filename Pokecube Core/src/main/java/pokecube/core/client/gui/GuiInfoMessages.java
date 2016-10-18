@@ -1,5 +1,6 @@
 package pokecube.core.client.gui;
 
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class GuiInfoMessages
     {
         instance.messages.push(message.getFormattedText());
         instance.time = Minecraft.getMinecraft().thePlayer.ticksExisted;
-        instance.recent.push(message.getFormattedText());
+        instance.recent.addFirst(message.getFormattedText());
         if (instance.messages.size() > 100)
         {
             instance.messages.remove(0);
@@ -64,21 +65,37 @@ public class GuiInfoMessages
         Minecraft minecraft = Minecraft.getMinecraft();
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
         if (event.getType() != ElementType.CHAT && (minecraft.currentScreen instanceof GuiChat)) return;
-        
-        //TODO only do mouse wheel stuff if it is over the box
-        int i = Mouse.getDWheel();
+
         int texH = minecraft.fontRendererObj.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;
         GL11.glPushMatrix();
         minecraft.entityRenderer.setupOverlayRendering();
-        GuiDisplayPokecubeInfo
+        int[] messArr = GuiDisplayPokecubeInfo
                 .applyTransform(
                         PokecubeCore.core.getConfig().messageRef, PokecubeMod.core.getConfig().messagePos, new int[] {
                                 PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
                         PokecubeMod.core.getConfig().messageSize);
+        int x = 0, y = 0;
+        float s = PokecubeMod.core.getConfig().messageSize;
+        x += messArr[2];
+        y += messArr[3];
+        Rectangle messRect = new Rectangle((int) (x * s), (int) (y * s), (int) (messArr[0] * s),
+                (int) (messArr[1] * s));
+
+        int i1 = ((Mouse.getX()));
+        int j1 = ((minecraft.displayHeight - Mouse.getY())) - 1;
+        i1 = i1 - messArr[0];
+        j1 = j1 - messArr[1];
+        int i = Mouse.getDWheel();
+        if (!messRect.contains(i1, j1))
+        {
+            i = 0;
+        }
+
         int w = 0;
         int h = 0;
-        int x = w, y = h;
+        x = w;
+        y = h;
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.translate(0, -texH * 7, 0);
@@ -86,31 +103,32 @@ public class GuiInfoMessages
         int num = -1;
         if (event.getType() == ElementType.CHAT)
         {
-            num = 7;
+            num = 9;
             offset += (int) (i != 0 ? Math.signum(i) : 0);
             if (offset < 0) offset = 0;
             if (offset > messages.size() - 7) offset = messages.size() - 7;
         }
         else if (time > minecraft.thePlayer.ticksExisted - 30)
         {
-            num = 6;
+            num = 8;
             offset = 0;
         }
         else
         {
             offset = 0;
-            num = 6;
+            num = 8;
             time = minecraft.thePlayer.ticksExisted;
-            if (recent.size() > 0)
+            if (!recent.isEmpty())
             {
-                recent.remove(0);
+                recent.removeLast();
             }
         }
         while (recent.size() > 8)
-            recent.remove(0);
+            recent.removeLast();
         List<String> toUse = num == 7 ? messages : recent;
         int size = toUse.size() - 1;
         num = Math.min(num, size + 1);
+        int shift = 0;
         for (int l = 0; l < num; l++)
         {
             int index = (l + offset);
@@ -120,12 +138,13 @@ public class GuiInfoMessages
             List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess, trim);
             for (int j = 0; j < mess1.size(); j++)
             {
-                h = y + texH * (l + j);
+                h = y + texH * (shift + j);
                 w = x - trim;
                 GuiScreen.drawRect(w, h, w + trim, h + texH, 0x66000000);
                 minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, h, 0xffffff, true);
-                if (j != 0) l++;
+                if (j != 0) shift++;
             }
+            shift++;
         }
         GL11.glPopMatrix();
     }

@@ -112,7 +112,8 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         if (target != null && target != user)
         {
             ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
-                    pokemob.getPokemonDisplayName(), target.getDisplayName());
+                    pokemob.getPokemonDisplayName(), target.getDisplayName(),
+                    new TextComponentTranslation(MovesUtils.getUnlocalizedMove(move.getName())));
             pokemob.displayMessageToOwner(mess);
         }
         else

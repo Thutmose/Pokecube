@@ -10,28 +10,19 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.AnimationLoader.Model;
-import thut.api.entity.IMobColourable;
+import pokecube.modelloader.client.render.wrappers.ModelWrapper;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
-import thut.core.client.render.animation.AnimationHelper;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
-import thut.core.client.render.model.IModel;
 import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IPartTexturer;
-import thut.core.client.render.model.IRetexturableModel;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.x3d.X3dModel;
 
@@ -94,7 +85,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     public static final String          DEFAULTPHASE   = "idle";
     public String                       name;
     public String                       currentPhase   = "idle";
-    HashMap<String, PartInfo>           parts          = Maps.newHashMap();
+    public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>> global;
     public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
     public Set<String>                  headParts      = Sets.newHashSet();
@@ -106,7 +97,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
 
     public Vector5                      rotations      = new Vector5();
 
-    public IModel                       model;
+    public ModelWrapper                 model;
     public int                          headDir        = 2;
     public int                          headAxis       = 2;
     public int                          headAxis2      = 0;
@@ -118,104 +109,35 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     public float[]                      headCaps       = { -180, 180 };
 
     public float[]                      headCaps1      = { -20, 40 };
-    public float                        rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    public float                        rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
     ResourceLocation                    texture;
 
-    private boolean                     statusRender   = false;
-
+    // Values used to properly reset the GL state after rendering.
     boolean                             blend;
-
     boolean                             light;
-
     int                                 src;
-
     int                                 dst;
 
     public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, Model model)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         name = model.name;
+        this.model = new ModelWrapper(model, this);
+        this.mainModel = this.model;
         this.texture = model.texture;
-        if (model.model.getResourcePath().contains(".x3d")) this.model = new X3dModel(model.model);
-        if (this.model == null) { return; }
+        if (model.model.getResourcePath().contains(".x3d")) this.model.imodel = new X3dModel(model.model);
+        if (this.model.imodel == null) { return; }
         initModelParts();
         if (headDir == 2)
         {
-            headDir = (this.model instanceof X3dModel) ? 1 : -1;
+            headDir = (this.model.imodel instanceof X3dModel) ? 1 : -1;
         }
         this.global = global;
     }
 
     @Override
-    public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
+    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        float f2 = yaw;
-        float f3 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
-        float f4;
-        if (entity.isRiding() && entity.getRidingEntity() instanceof EntityLivingBase)
-        {
-            EntityLivingBase entitylivingbase1 = (EntityLivingBase) entity.getRidingEntity();
-            f2 = this.interpolateRotation(entitylivingbase1.prevRenderYawOffset, entitylivingbase1.renderYawOffset,
-                    partialTick);
-            f4 = MathHelper.wrapDegrees(f3 - f2);
-
-            if (f4 < -85.0F)
-            {
-                f4 = -85.0F;
-            }
-
-            if (f4 >= 85.0F)
-            {
-                f4 = 85.0F;
-            }
-
-            f2 = f3 - f4;
-
-            if (f4 * f4 > 2500.0F)
-            {
-                f2 += f4 * 0.2F;
-            }
-        }
-        float f13 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
-        f4 = this.handleRotationFloat(entity, partialTick);
-        float f6 = entity.prevLimbSwingAmount + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
-
-        if (f6 > 1.0F)
-        {
-            f6 = 1.0F;
-        }
-        GL11.glPushMatrix();
-        if (animator != null) currentPhase = animator.modifyAnimation(entity, partialTick, currentPhase);
-        GlStateManager.disableCull();
-        transformGlobal(currentPhase, entity, x, y, z, partialTick, f3 - f2, f13);
-        updateAnimation(entity, currentPhase, partialTick);
-
-        for (String partName : parts.keySet())
-        {
-            IExtendedModelPart part = model.getParts().get(partName);
-            if (part == null) continue;
-            try
-            {
-                if (texturer != null && part instanceof IRetexturableModel)
-                {
-                    texturer.bindObject(entity);
-                    if (!statusRender) ((IRetexturableModel) part).setTexturer(texturer);
-                    else((IRetexturableModel) part).setTexturer(null);
-                }
-                if (part.getParent() == null)
-                {
-                    GL11.glPushMatrix();
-                    part.renderAll();
-                    GL11.glPopMatrix();
-                }
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-        GL11.glPopMatrix();
+        super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 
     private HashMap<String, PartInfo> getChildren(IExtendedModelPart part)
@@ -306,17 +228,12 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         }
     }
 
-    private boolean isHead(String partName)
-    {
-        return headParts.contains(partName);
-    }
-
     private void postRenderStatus()
     {
         if (light) GL11.glEnable(GL11.GL_LIGHTING);
         if (!blend) GL11.glDisable(GL11.GL_BLEND);
         GL11.glBlendFunc(src, dst);
-        statusRender = false;
+        model.statusRender = false;
     }
 
     private void preRenderStatus()
@@ -328,7 +245,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        statusRender = true;
+        model.statusRender = true;
     }
 
     @Override
@@ -339,80 +256,10 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         postRenderStatus();
     }
 
-    protected void rotate()
-    {
-        GL11.glRotatef(rotateAngle, rotateAngleX, rotateAngleY, rotateAngleZ);
-    }
-
     @Override
     public void setPhase(String phase)
     {
         currentPhase = phase;
-    }
-
-    public void setRotationAngles(Vector4 rotations)
-    {
-        rotateAngle = rotations.w;
-        rotateAngleX = rotations.x;
-        rotateAngleY = rotations.y;
-        rotateAngleZ = rotations.z;
-    }
-
-    public void setRotationPoint(float par1, float par2, float par3)
-    {
-        this.rotationPointX = par1;
-        this.rotationPointY = par2;
-        this.rotationPointZ = par3;
-    }
-
-    public void setRotationPoint(Vector3 point)
-    {
-        setRotationPoint((float) point.x, (float) point.y, (float) point.z);
-    }
-
-    private void transformGlobal(String currentPhase, Entity entity, double x, double y, double z, float partialTick,
-            float rotationYaw, float rotationPitch)
-    {
-        if (rotations == null)
-        {
-            rotations = new Vector5();
-        }
-
-        this.setRotationAngles(rotations.rotations);
-        this.setRotationPoint(offset);
-
-        rotationYaw = -entity.rotationYaw + 180;
-
-        if (entity instanceof IPokemob)
-        {
-            IPokemob mob = (IPokemob) entity;
-            PokedexEntry entry = mob.getPokedexEntry();
-            float scale = (mob.getSize());
-            GL11.glScalef(scale, scale, scale);
-            shadowSize = entry.width * mob.getSize();
-        }
-        Vector4 yaw = new Vector4(0, 1, 0, rotationYaw);
-        this.rotate();
-        yaw.glRotate();
-        GlStateManager.rotate(-90, 1, 0, 0);
-        this.translate();
-
-        if (!scale.isEmpty()) GL11.glScaled(scale.x, scale.y, scale.z);
-
-    }
-
-    public void translate()
-    {
-        GL11.glTranslated(rotationPointX, rotationPointY, rotationPointZ);
-    }
-
-    private void updateAnimation(Entity entity, String currentPhase, float partialTicks)
-    {
-        for (String partName : parts.keySet())
-        {
-            IExtendedModelPart part = model.getParts().get(partName);
-            updateSubParts(entity, currentPhase, partialTicks, part);
-        }
     }
 
     public void updateModel(HashMap<String, ArrayList<Vector5>> global, Model model)
@@ -423,96 +270,9 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         this.global = global;
     }
 
-    private void updateSubParts(Entity entity, String currentPhase, float partialTick, IExtendedModelPart parent)
+    @Override
+    protected boolean canRenderName(T entity)
     {
-        if (parent == null) return;
-
-        parent.resetToInit();
-
-        boolean anim = animations.containsKey(currentPhase);
-
-        if (anim)
-        {
-            if (AnimationHelper.doAnimation(animations.get(currentPhase), entity, parent.getName(), parent,
-                    partialTick))
-            {
-            }
-            else if (animations.containsKey(DEFAULTPHASE))
-            {
-                AnimationHelper.doAnimation(animations.get(DEFAULTPHASE), entity, parent.getName(), parent,
-                        partialTick);
-            }
-        }
-
-        if (isHead(parent.getName()))
-        {
-            float ang;
-            float ang2 = -entity.rotationPitch;
-            float head = (entity.getRotationYawHead()) % 360 + 180;
-            float diff = 0;
-            float body = (entity.rotationYaw) % 360;
-            if (headDir == -1) body *= -1;
-            else head *= -1;
-
-            diff = (head + body) % 360;
-
-            diff = (diff + 360) % 360;
-            diff = (diff - 180) % 360;
-            diff = Math.max(diff, headCaps[0]);
-            diff = Math.min(diff, headCaps[1]);
-
-            ang = diff;
-
-            ang2 = Math.max(ang2, headCaps1[0]);
-            ang2 = Math.min(ang2, headCaps1[1]);
-
-            Vector4 dir;
-
-            if (headAxis == 0)
-            {
-                dir = new Vector4(headDir, 0, 0, ang);
-            }
-            else if (headAxis == 2)
-            {
-                dir = new Vector4(0, 0, headDir, ang);
-            }
-            else
-            {
-                dir = new Vector4(0, headDir, 0, ang);
-            }
-            Vector4 dir2;
-            if (headAxis2 == 2)
-            {
-                dir2 = new Vector4(0, 0, headDir, ang2);
-            }
-            else if (headAxis2 == 1)
-            {
-                dir2 = new Vector4(0, headDir, 0, ang2);
-            }
-            else
-            {
-                dir2 = new Vector4(headDir, 0, 0, ang2);
-            }
-            parent.setPostRotations(dir);
-            parent.setPostRotations2(dir2);
-        }
-
-        int red = 255, green = 255, blue = 255;
-        int brightness = entity.getBrightnessForRender(partialTick);
-        int alpha = 255;
-        if (entity instanceof IMobColourable)
-        {
-            IMobColourable poke = (IMobColourable) entity;
-            red = poke.getRGBA()[0];
-            green = poke.getRGBA()[1];
-            blue = poke.getRGBA()[2];
-            alpha = poke.getRGBA()[3];
-        }
-        parent.setRGBAB(new int[] { red, green, blue, alpha, brightness });
-        for (String partName : parent.getSubParts().keySet())
-        {
-            IExtendedModelPart part = parent.getSubParts().get(partName);
-            updateSubParts(entity, currentPhase, partialTick, part);
-        }
+        return false;
     }
 }

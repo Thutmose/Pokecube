@@ -144,6 +144,8 @@ public class Database
     private static Set<String>                             dropDatabases    = Sets.newHashSet();
     private static Set<String>                             heldDatabases    = Sets.newHashSet();
 
+    public static final PokedexEntry                       missingno        = new PokedexEntry(0, "missingno");
+
     /** These are used for config added databasea <br>
      * Index 0 = pokemon<br>
      * Index 1 = moves<br>

@@ -175,8 +175,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         if (!this.isServerWorld())
         {
             Entity owner = this.getPokemonOwner();
-
-            if (owner instanceof EntityPlayer)
+            if (owner == PokecubeCore.proxy.getPlayer(null))
             {
                 GuiInfoMessages.addMessage(message);
             }

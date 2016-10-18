@@ -1,5 +1,6 @@
 package pokecube.core.client.gui;
 
+import java.awt.Rectangle;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -65,20 +66,36 @@ public class GuiInfoMessages
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
         if (event.getType() != ElementType.CHAT && (minecraft.currentScreen instanceof GuiChat)) return;
 
-        // TODO only do mouse wheel stuff if it is over the box
-        int i = Mouse.getDWheel();
         int texH = minecraft.fontRendererObj.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;
         GL11.glPushMatrix();
         minecraft.entityRenderer.setupOverlayRendering();
-        GuiDisplayPokecubeInfo
+        int[] messArr = GuiDisplayPokecubeInfo
                 .applyTransform(
                         PokecubeCore.core.getConfig().messageRef, PokecubeMod.core.getConfig().messagePos, new int[] {
                                 PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
                         PokecubeMod.core.getConfig().messageSize);
+        int x = 0, y = 0;
+        float s = PokecubeMod.core.getConfig().messageSize;
+        x += messArr[2];
+        y += messArr[3];
+        Rectangle messRect = new Rectangle((int) (x * s), (int) (y * s), (int) (messArr[0] * s),
+                (int) (messArr[1] * s));
+
+        int i1 = ((Mouse.getX()));
+        int j1 = ((minecraft.displayHeight - Mouse.getY())) - 1;
+        i1 = i1 - messArr[0];
+        j1 = j1 - messArr[1];
+        int i = Mouse.getDWheel();
+        if (!messRect.contains(i1, j1))
+        {
+            i = 0;
+        }
+
         int w = 0;
         int h = 0;
-        int x = w, y = h;
+        x = w;
+        y = h;
         GL11.glNormal3f(0.0F, -1.0F, 0.0F);
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.translate(0, -texH * 7, 0);
@@ -103,7 +120,7 @@ public class GuiInfoMessages
             time = minecraft.thePlayer.ticksExisted;
             if (!recent.isEmpty())
             {
-                System.out.println(recent.removeLast());
+                recent.removeLast();
             }
         }
         while (recent.size() > 8)

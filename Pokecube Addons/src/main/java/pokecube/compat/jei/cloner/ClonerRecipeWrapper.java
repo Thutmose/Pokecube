@@ -10,17 +10,18 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
-import mezz.jei.plugins.vanilla.VanillaRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
-public class ClonerRecipeWrapper extends VanillaRecipeWrapper implements ICraftingRecipeWrapper
+public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
 {
 
     @Nonnull
@@ -87,5 +88,40 @@ public class ClonerRecipeWrapper extends VanillaRecipeWrapper implements ICrafti
     {
         if (recipe.energyCost > 0) { return Lists.newArrayList("RF Cost: " + recipe.energyCost); }
         return null;
+    }
+
+    @Override
+    public void getIngredients(IIngredients ingredients)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<FluidStack> getFluidInputs()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<FluidStack> getFluidOutputs()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

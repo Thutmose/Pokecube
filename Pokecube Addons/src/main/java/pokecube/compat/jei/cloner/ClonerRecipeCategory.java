@@ -7,6 +7,7 @@ import mezz.jei.api.gui.ICraftingGridHelper;
 import mezz.jei.api.gui.IDrawable;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
 import mezz.jei.util.Log;
@@ -90,6 +91,13 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         {
             Log.error("RecipeWrapper is not a known crafting wrapper type: {}", recipeWrapper);
         }
+    }
+
+    @Override
+    public void setRecipe(IRecipeLayout recipeLayout, ClonerRecipeWrapper recipeWrapper, IIngredients ingredients)
+    {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -36,9 +36,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.ai.pokemob.PokemobAIDodge;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
-import pokecube.core.ai.pokemob.PokemobAILeapAtTarget;
 import pokecube.core.ai.pokemob.PokemobAILook;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
 import pokecube.core.ai.thread.ILogicRunnable;
@@ -317,8 +315,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
         // Add in the vanilla like AI methods.
-        this.tasks.addTask(1, new PokemobAILeapAtTarget(this, 0.4F));
-        this.tasks.addTask(1, new PokemobAIDodge(this));
         // this.tasks.addTask(4, this.aiSit = new EntityAISit(this));//TODO
         // re-implement a sit AI if needed
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));

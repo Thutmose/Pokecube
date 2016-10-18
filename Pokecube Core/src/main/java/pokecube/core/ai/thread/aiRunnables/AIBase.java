@@ -13,6 +13,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -26,6 +28,35 @@ import thut.api.maths.Vector3;
 
 public abstract class AIBase implements IAIRunnable
 {
+    public static class PlaySound implements IRunnable
+    {
+        final int           dim;
+        final Vector3       loc;
+        final SoundEvent    sound;
+        final SoundCategory cat;
+        final float         volume;
+        final float         pitch;
+
+        public PlaySound(int dim, Vector3 loc, SoundEvent sound, SoundCategory cat, float volume, float pitch)
+        {
+            this.dim = dim;
+            this.sound = sound;
+            this.volume = volume;
+            this.loc = loc;
+            this.pitch = pitch;
+            this.cat = cat;
+        }
+
+        @Override
+        public boolean run(World world)
+        {
+            if (dim != world.provider.getDimension()) return false;
+            world.playSound(null, loc.x, loc.y, loc.z, sound, cat, volume, pitch);
+            return true;
+        }
+
+    }
+
     public static class InventoryChange implements IRunnable
     {
         public final int       entity;

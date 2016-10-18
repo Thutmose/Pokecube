@@ -324,7 +324,7 @@ public class MoveEventsHandler
         if (status == IMoveConstants.STATUS_BRN)
         {
             entity.setFire(1);
-            entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 16f);
+            entity.attackEntityFrom(DamageSource.causeMobDamage(entity), entity.getMaxHealth() / 16f);
         }
         if (status == IMoveConstants.STATUS_FRZ)
         {
@@ -335,13 +335,13 @@ public class MoveEventsHandler
         }
         if (status == IMoveConstants.STATUS_PSN)
         {
-            entity.attackEntityFrom(DamageSource.magic, entity.getMaxHealth() / 8f);
+            entity.attackEntityFrom(DamageSource.causeMobDamage(entity), entity.getMaxHealth() / 8f);
             spawnPoisonParticle(entity);
 
         }
         if (status == IMoveConstants.STATUS_PSN2)
         {
-            entity.attackEntityFrom(DamageSource.magic,
+            entity.attackEntityFrom(DamageSource.causeMobDamage(entity),
                     (pokemob.getMoveStats().TOXIC_COUNTER + 1) * entity.getMaxHealth() / 16f);
             spawnPoisonParticle(entity);
             spawnPoisonParticle(entity);

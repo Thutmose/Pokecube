@@ -30,7 +30,7 @@ public class GuiInfoMessages
     {
         instance.messages.push(message.getFormattedText());
         instance.time = Minecraft.getMinecraft().thePlayer.ticksExisted;
-        instance.recent.push(message.getFormattedText());
+        instance.recent.addFirst(message.getFormattedText());
         if (instance.messages.size() > 100)
         {
             instance.messages.remove(0);
@@ -64,8 +64,8 @@ public class GuiInfoMessages
         Minecraft minecraft = Minecraft.getMinecraft();
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
         if (event.getType() != ElementType.CHAT && (minecraft.currentScreen instanceof GuiChat)) return;
-        
-        //TODO only do mouse wheel stuff if it is over the box
+
+        // TODO only do mouse wheel stuff if it is over the box
         int i = Mouse.getDWheel();
         int texH = minecraft.fontRendererObj.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;
@@ -86,31 +86,32 @@ public class GuiInfoMessages
         int num = -1;
         if (event.getType() == ElementType.CHAT)
         {
-            num = 7;
+            num = 9;
             offset += (int) (i != 0 ? Math.signum(i) : 0);
             if (offset < 0) offset = 0;
             if (offset > messages.size() - 7) offset = messages.size() - 7;
         }
         else if (time > minecraft.thePlayer.ticksExisted - 30)
         {
-            num = 6;
+            num = 8;
             offset = 0;
         }
         else
         {
             offset = 0;
-            num = 6;
+            num = 8;
             time = minecraft.thePlayer.ticksExisted;
-            if (recent.size() > 0)
+            if (!recent.isEmpty())
             {
-                recent.remove(0);
+                System.out.println(recent.removeLast());
             }
         }
         while (recent.size() > 8)
-            recent.remove(0);
+            recent.removeLast();
         List<String> toUse = num == 7 ? messages : recent;
         int size = toUse.size() - 1;
         num = Math.min(num, size + 1);
+        int shift = 0;
         for (int l = 0; l < num; l++)
         {
             int index = (l + offset);
@@ -120,12 +121,13 @@ public class GuiInfoMessages
             List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess, trim);
             for (int j = 0; j < mess1.size(); j++)
             {
-                h = y + texH * (l + j);
+                h = y + texH * (shift + j);
                 w = x - trim;
                 GuiScreen.drawRect(w, h, w + trim, h + texH, 0x66000000);
                 minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, h, 0xffffff, true);
-                if (j != 0) l++;
+                if (j != 0) shift++;
             }
+            shift++;
         }
         GL11.glPopMatrix();
     }

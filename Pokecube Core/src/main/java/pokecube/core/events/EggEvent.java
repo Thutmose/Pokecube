@@ -5,32 +5,40 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 
-public class EggEvent extends Event 
+public class EggEvent extends Event
 {
-	public static class Hatch extends EggEvent
-	{
-		public Hatch(Entity egg)
-		{
-			super((EntityPokemobEgg) egg);
-		}
-	}
+    public static class Hatch extends EggEvent
+    {
+        public Hatch(Entity egg)
+        {
+            super((EntityPokemobEgg) egg);
+        }
+    }
+
     @Cancelable
-	public static class Lay extends EggEvent
-	{
-		public Lay(Entity egg)
-		{
-			super((EntityPokemobEgg) egg);
-		}
-	}
-	public static class Place extends EggEvent
-	{
-		public Place(Entity egg)
-		{
-			super((EntityPokemobEgg) egg);
-		}
-	}
-	
-	@Cancelable
+    /** This is called when a pokemob or nest tries to lay the egg, cancelling
+     * it will prevent the egg from being laid. */
+    public static class Lay extends EggEvent
+    {
+        public Lay(Entity egg)
+        {
+            super((EntityPokemobEgg) egg);
+        }
+    }
+
+    /** This event is fired whenever a player places an egg, it cannot be
+     * cancelled. */
+    public static class Place extends EggEvent
+    {
+        public Place(Entity egg)
+        {
+            super((EntityPokemobEgg) egg);
+        }
+    }
+
+    @Cancelable
+    /** This event is fired right before the egg hatches, cancelling it will
+     * prevent it from hatching. */
     public static class PreHatch extends EggEvent
     {
         public PreHatch(Entity egg)
@@ -39,13 +47,13 @@ public class EggEvent extends Event
         }
     }
 
-	public final Entity placer;
+    public final Entity           placer;
 
-	public final EntityPokemobEgg egg;
-	
-	private EggEvent(EntityPokemobEgg egg)
-	{
-		this.placer = egg.getEggOwner();
-		this.egg = egg;
-	}
+    public final EntityPokemobEgg egg;
+
+    private EggEvent(EntityPokemobEgg egg)
+    {
+        this.placer = egg.getEggOwner();
+        this.egg = egg;
+    }
 }

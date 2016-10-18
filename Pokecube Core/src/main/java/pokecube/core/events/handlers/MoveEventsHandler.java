@@ -12,6 +12,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,19 +23,27 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
+import pokecube.core.commands.CommandTools;
+import pokecube.core.database.moves.MoveEntry;
+import pokecube.core.events.MoveUse;
 import pokecube.core.events.MoveUse.MoveWorldAction;
+import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -301,7 +310,7 @@ public class MoveEventsHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
-    public void doWorldAction(MoveWorldAction.OnAction evt)
+    public void onEvent(MoveWorldAction.OnAction evt)
     {
         IPokemob attacker = evt.getUser();
         Vector3 location = evt.getLocation();
@@ -315,7 +324,7 @@ public class MoveEventsHandler
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
-    public void doStatusEffects(StatusEffectEvent evt)
+    public void onEvent(StatusEffectEvent evt)
     {
         byte status = evt.getStatus();
         EntityLiving entity = (EntityLiving) evt.getEntity();
@@ -363,6 +372,113 @@ public class MoveEventsHandler
             }
 
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void onEvent(MoveUse.DuringUse.Pre evt)
+    {
+        MovePacket move = evt.getPacket();
+        Move_Base attack = move.getMove();
+        boolean user = evt.isFromUser();
+        IPokemob attacker = move.attacker;
+        Entity attacked = move.attacked;
+        IPokemob target = null;
+        if (attacked instanceof IPokemob) target = (IPokemob) attacked;
+        IPokemob applied = user ? attacker : target;
+        if (applied == null) return;
+        if (!user)
+        {
+            ((Entity) applied).getEntityData().setString("lastMoveHitBy", move.attack);
+            applied.setPokemonAIState(IMoveConstants.NOITEMUSE, false);
+        }
+        if (target != null && target.getMoveStats().substituteHP > 0 && !user)
+        {
+            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().move.category,
+                    move.PWR, move);
+            ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "green");
+            target.displayMessageToOwner(mess);
+            mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "red");
+            attacker.displayMessageToOwner(mess);
+            target.getMoveStats().substituteHP -= damage;
+            if (target.getMoveStats().substituteHP < 0)
+            {
+                mess = CommandTools.makeTranslatedMessage("pokemob.substitute.break", "red");
+                target.displayMessageToOwner(mess);
+                mess = CommandTools.makeTranslatedMessage("pokemob.substitute.break", "green");
+                attacker.displayMessageToOwner(mess);
+            }
+            move.failed = true;
+            move.PWR = 0;
+            move.changeAddition = 0;
+            move.statusChange = 0;
+        }
+
+        if (user && attack.getName().equals(IMoveNames.MOVE_SUBSTITUTE))
+        {
+            applied.getMoveStats().substituteHP = ((EntityLivingBase) applied).getMaxHealth() / 4;
+        }
+
+        if (((EntityLivingBase) applied).getHeldItemMainhand() != null)
+        {
+            HeldItemHandler.processHeldItemUse(move, applied, ((EntityLivingBase) applied).getHeldItemMainhand());
+        }
+
+        if (applied.getAbility() != null)
+        {
+            applied.getAbility().onMoveUse(applied, move);
+        }
+
+        if (attack.getName().equals(IMoveNames.MOVE_FALSESWIPE))
+        {
+            move.noFaint = true;
+        }
+
+        if (attack.getName().equals(IMoveNames.MOVE_PROTECT)
+                || attack.getName().equals(IMoveNames.MOVE_DETECT) && !applied.getMoveStats().blocked)
+        {
+            applied.getMoveStats().blockTimer = 30;
+            applied.getMoveStats().blocked = true;
+            applied.getMoveStats().BLOCKCOUNTER++;
+        }
+        boolean blockMove = false;
+
+        for (String s : MoveEntry.protectionMoves)
+            if (s.equals(move.attack))
+            {
+                blockMove = true;
+                break;
+            }
+
+        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked)
+        {
+            applied.getMoveStats().blocked = false;
+            applied.getMoveStats().blockTimer = 0;
+            applied.getMoveStats().BLOCKCOUNTER = 0;
+        }
+
+        boolean unblockable = false;
+        for (String s : MoveEntry.unBlockableMoves)
+            if (s.equals(move.attack))
+            {
+                unblockable = true;
+                System.out.println("Unblockable");
+                break;
+            }
+
+        if (applied.getMoveStats().blocked && move.attacked != move.attacker && !unblockable)
+        {
+            float count = Math.min(0, applied.getMoveStats().BLOCKCOUNTER - 1);
+            float chance = count != 0 ? Math.max(0.125f, ((1 / (count * 2)))) : 1;
+            if (chance > Math.random())
+            {
+                move.canceled = true;
+            }
+            else
+            {
+                move.failed = true;
+            }
+        }
+        if (applied.getMoveStats().BLOCKCOUNTER > 0) applied.getMoveStats().BLOCKCOUNTER--;
     }
 
     protected void spawnSleepParticle(Entity entity)

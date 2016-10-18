@@ -311,6 +311,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         PokeType type = packet.attackType;
         int PWR = packet.PWR;
         int criticalLevel = packet.criticalLevel;
+        float criticalFactor = packet.critFactor;
         byte statusChange = packet.statusChange;
         byte changeAddition = packet.changeAddition;
         float stabFactor = packet.stabFactor;
@@ -359,6 +360,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         type = packet.attackType;
         PWR = packet.PWR;
         criticalLevel = packet.criticalLevel;
+        criticalFactor = packet.critFactor;
         statusChange = packet.statusChange;
         changeAddition = packet.changeAddition;
         boolean toSurvive = packet.noFaint;
@@ -412,7 +414,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if (criticalLevel > 0 && rand.nextInt(critcalRate) == 0)
         {
-            criticalRatio = 1.5f;
+            criticalRatio = criticalFactor;
         }
 
         float attackStrength = attacker.getAttackStrength() * PWR / 150;

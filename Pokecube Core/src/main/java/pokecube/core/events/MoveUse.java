@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import thut.api.maths.Vector3;
 
@@ -45,7 +46,7 @@ public class MoveUse extends Event
 
         @Cancelable
         /** This is called when the move entity is made to start using the move.
-         * Canceling this prevents the move from occuring. */
+         * Cancelling this prevents the move from occurring. */
         public static class Init extends ActualMoveUse
         {
             public Init(IPokemob user, Move_Base move, Entity target)
@@ -74,6 +75,51 @@ public class MoveUse extends Event
         }
     }
 
+    public static class DuringUse extends MoveUse
+    {
+        private final boolean fromUser;
+        private final MovePacket packet;
+
+        public DuringUse(MovePacket packet, boolean fromUser)
+        {
+            super(packet.attacker, packet.getMove());
+            this.fromUser = fromUser;
+            this.packet = packet;
+        }
+
+        public boolean isFromUser()
+        {
+            return fromUser;
+        }
+
+        public MovePacket getPacket()
+        {
+            return packet;
+        }
+
+        @Cancelable
+        /** Cancelling this event prevents the default implementation from being
+         * applied. */
+        public static class Pre extends DuringUse
+        {
+            public Pre(MovePacket packet, boolean fromUser)
+            {
+                super(packet, fromUser);
+            }
+        }
+
+        @Cancelable
+        /** Cancelling this event prevents the default implementation from being
+         * applied. */
+        public static class Post extends DuringUse
+        {
+            public Post(MovePacket packet, boolean fromUser)
+            {
+                super(packet, fromUser);
+            }
+        }
+    }
+
     public static class MoveWorldAction extends MoveUse
     {
         private final Vector3 location;
@@ -90,9 +136,9 @@ public class MoveUse extends Event
         }
 
         /** This event is called to actually do the world action, it is handled
-         * by an event handler if PreAction is not canceled. The default actions
-         * for this will be set to lowest priority, and not recieve canceled, so
-         * if you want to interfer, make sure to cancel this event. */
+         * by an event handler if PreAction is not cancelled. The default actions
+         * for this will be set to lowest priority, and not receive cancelled, so
+         * if you want to interfere, make sure to cancel this event. */
         @Cancelable
         public static class OnAction extends MoveWorldAction
         {

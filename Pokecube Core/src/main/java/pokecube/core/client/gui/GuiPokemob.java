@@ -100,7 +100,7 @@ public class GuiPokemob extends GuiContainer
                     tessellator.draw();
                     return;
                 }
-                ((Entity) renderMob).onGround = false;
+                ((Entity) renderMob).onGround = true;
 
                 int x = xPosition + width / 2 - 2;
                 int y = yPosition + height / 2 + 7;
@@ -112,8 +112,9 @@ public class GuiPokemob extends GuiContainer
                 ((Entity) renderMob).ticksExisted = mc.thePlayer.ticksExisted;
                 ((Entity) renderMob).setRotationYawHead(0);
                 ((Entity) renderMob).rotationYaw = 0;
-                Object o;
-                if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
+                Object o = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject((Entity) renderMob);
+                if (o instanceof RenderAdvancedPokemobModel
+                        || (o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
                 {
                     RenderAdvancedPokemobModel<?> render = (RenderAdvancedPokemobModel<?>) o;
                     if (id == PacketPokemobGui.BUTTONTOGGLESIT)
@@ -132,7 +133,7 @@ public class GuiPokemob extends GuiContainer
                     render.overrideAnim = true;
                 }
                 EventsHandlerClient.renderMob(renderMob, mc.getRenderPartialTicks(), false);
-                if ((o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
+                if (o instanceof RenderAdvancedPokemobModel)
                 {
                     RenderAdvancedPokemobModel<?> render = (RenderAdvancedPokemobModel<?>) o;
                     render.anim = "";
@@ -306,7 +307,7 @@ public class GuiPokemob extends GuiContainer
         current *= scale / 100f;
         int i = 84, j = 37;
         int col = 0xFF555555;
-        this.drawGradientRect(i, j, i + 80, j + 10,col , col);
+        this.drawGradientRect(i, j, i + 80, j + 10, col, col);
         col = 0xFFFFFFFF;
         int col1 = 0xFF00FF77;
         this.drawGradientRect(i, j, i + (int) (80 * current), j + 10, col, col1);

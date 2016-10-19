@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.AnimationLoader.Model;
 import pokecube.modelloader.client.render.wrappers.ModelWrapper;
 import thut.api.maths.Vector3;
@@ -137,6 +138,12 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
+        if (entity instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) entity;
+            float s = (mob.getSize());
+            this.shadowSize = s * mob.getPokedexEntry().width;
+        }
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 

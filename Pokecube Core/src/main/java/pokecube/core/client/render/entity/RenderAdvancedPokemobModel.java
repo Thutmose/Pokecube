@@ -35,16 +35,10 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     int                      src;
     int                      dst;
 
-    @SuppressWarnings("unchecked")
     public RenderAdvancedPokemobModel(String name, RenderManager manager, float par2)
     {
         super(manager, null, par2);
         modelName = name;
-        model = (IModelRenderer<T>) getRenderer(modelName, null);
-        if (model != null && model instanceof RenderLivingBase)
-        {
-            this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
-        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -58,11 +52,12 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         {
             toRender = (T) mob.getTransformedTo();
         }
-        model = (IModelRenderer<T>) getRenderer(modelName, entity);
+        model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getName(), entity);
         if (model != null && model instanceof RenderLivingBase)
         {
             this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
         }
+        if (model == null) return;
         if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, x, y, z))) return;
         GL11.glPushMatrix();
         this.preRenderCallback(entity, partialTick);

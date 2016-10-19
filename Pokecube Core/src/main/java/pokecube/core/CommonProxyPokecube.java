@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -16,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -154,13 +154,13 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     @SuppressWarnings("rawtypes")
     @Override
-    public void registerPokemobRenderer(int nb, Render renderer, Object mod)
+    public void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod)
     {
     }
 
     @SuppressWarnings("rawtypes")
     @Override
-    public void registerPokemobRenderer(String name, Render renderer, Object mod)
+    public void registerPokemobRenderer(String name, IRenderFactory renderer, Object mod)
     {
     }
 

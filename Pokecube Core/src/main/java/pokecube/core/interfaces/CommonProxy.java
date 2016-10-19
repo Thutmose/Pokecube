@@ -3,6 +3,7 @@ package pokecube.core.interfaces;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import thut.api.maths.Vector3;
 
 @SuppressWarnings("rawtypes")
@@ -43,7 +44,7 @@ public abstract class CommonProxy
      *            - the pokedex number
      * @param renderer
      *            - the renderer */
-    public abstract void registerPokemobRenderer(int nb, Render renderer, Object mod);
+    public abstract void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod);
 
-    public abstract void registerPokemobRenderer(String name, Render renderer, Object mod);;
+    public abstract void registerPokemobRenderer(String name, IRenderFactory renderer, Object mod);;
 }

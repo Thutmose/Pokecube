@@ -2,8 +2,8 @@ package pokecube.core.client.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -36,9 +36,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     int                      dst;
 
     @SuppressWarnings("unchecked")
-    public RenderAdvancedPokemobModel(String name, float par2)
+    public RenderAdvancedPokemobModel(String name, RenderManager manager, float par2)
     {
-        super(Minecraft.getMinecraft().getRenderManager(), null, par2);
+        super(manager, null, par2);
         modelName = name;
         model = (IModelRenderer<T>) getRenderer(modelName, null);
         if (model != null && model instanceof RenderLivingBase)

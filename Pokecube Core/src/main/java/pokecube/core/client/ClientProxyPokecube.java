@@ -548,45 +548,26 @@ public class ClientProxyPokecube extends CommonProxyPokecube
      * @param renderer
      *            - the renderer */
     @Override
-    public void registerPokemobRenderer(int nb, final Render renderer, Object mod)
+    public void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod)
     {
-        Mod annotation = mod.getClass().getAnnotation(Mod.class);
-        RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getTrimmedName() + annotation.modid(), renderer);
         RenderingRegistry.registerEntityRenderingHandler(PokecubeCore.instance.getEntityClassFromPokedexNumber(nb),
-                new IRenderFactory<EntityLivingBase>()
-                {
-                    @Override
-                    public Render<? super EntityLivingBase> createRenderFor(RenderManager manager)
-                    {
-                        return renderer;
-                    }
-                });
+                renderer);
     }
 
     @Override
-    public void registerPokemobRenderer(String name, final Render renderer, Object mod)
+    public void registerPokemobRenderer(String name, IRenderFactory renderer, Object mod)
     {
         if (Database.getEntry(name) == null)
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(name + annotation.modid(), renderer);
             Thread.dumpStack();
         }
         else
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
             PokedexEntry entry = Database.getEntry(name);
-            RenderPokemobs.addCustomRenderer(entry.getTrimmedName() + annotation.modid(), renderer);
-            RenderingRegistry.registerEntityRenderingHandler(
-                    PokecubeCore.instance.getEntityClassFromPokedexNumber(entry.getPokedexNb()),
-                    new IRenderFactory<EntityLivingBase>()
-                    {
-                        @Override
-                        public Render<? super EntityLivingBase> createRenderFor(RenderManager manager)
-                        {
-                            return renderer;
-                        }
-                    });
+            Class<? extends Entity> c = PokecubeCore.instance.getEntityClassFromPokedexNumber(entry.getPokedexNb());
+            RenderingRegistry.registerEntityRenderingHandler(c, renderer);
+            Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(c,
+                    renderer.createRenderFor(Minecraft.getMinecraft().getRenderManager()));
         }
     }
 

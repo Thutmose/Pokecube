@@ -548,14 +548,23 @@ public class ClientProxyPokecube extends CommonProxyPokecube
      * @param renderer
      *            - the renderer */
     @Override
-    public void registerPokemobRenderer(int nb, Render renderer, Object mod)
+    public void registerPokemobRenderer(int nb, final Render renderer, Object mod)
     {
         Mod annotation = mod.getClass().getAnnotation(Mod.class);
         RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getTrimmedName() + annotation.modid(), renderer);
+        RenderingRegistry.registerEntityRenderingHandler(PokecubeCore.instance.getEntityClassFromPokedexNumber(nb),
+                new IRenderFactory<EntityLivingBase>()
+                {
+                    @Override
+                    public Render<? super EntityLivingBase> createRenderFor(RenderManager manager)
+                    {
+                        return renderer;
+                    }
+                });
     }
 
     @Override
-    public void registerPokemobRenderer(String name, Render renderer, Object mod)
+    public void registerPokemobRenderer(String name, final Render renderer, Object mod)
     {
         if (Database.getEntry(name) == null)
         {
@@ -566,7 +575,18 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         else
         {
             Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(Database.getEntry(name).getTrimmedName() + annotation.modid(), renderer);
+            PokedexEntry entry = Database.getEntry(name);
+            RenderPokemobs.addCustomRenderer(entry.getTrimmedName() + annotation.modid(), renderer);
+            RenderingRegistry.registerEntityRenderingHandler(
+                    PokecubeCore.instance.getEntityClassFromPokedexNumber(entry.getPokedexNb()),
+                    new IRenderFactory<EntityLivingBase>()
+                    {
+                        @Override
+                        public Render<? super EntityLivingBase> createRenderFor(RenderManager manager)
+                        {
+                            return renderer;
+                        }
+                    });
         }
     }
 

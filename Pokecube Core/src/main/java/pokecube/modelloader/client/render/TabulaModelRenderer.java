@@ -46,6 +46,12 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
             System.err.println(entry);
             set = TabulaPackLoader.modelMap.get(entry.getBaseForme());
         }
+        if (entity instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) entity;
+            float s = (mob.getSize());
+            this.shadowSize = s * mob.getPokedexEntry().width;
+        }
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 
@@ -102,7 +108,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
     {
         model.phase = phase;
     }
-    
+
     @Override
     protected boolean canRenderName(T entity)
     {

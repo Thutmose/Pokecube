@@ -548,25 +548,26 @@ public class ClientProxyPokecube extends CommonProxyPokecube
      * @param renderer
      *            - the renderer */
     @Override
-    public void registerPokemobRenderer(int nb, Render renderer, Object mod)
+    public void registerPokemobRenderer(int nb, IRenderFactory renderer, Object mod)
     {
-        Mod annotation = mod.getClass().getAnnotation(Mod.class);
-        RenderPokemobs.addCustomRenderer(Database.getEntry(nb).getTrimmedName() + annotation.modid(), renderer);
+        RenderingRegistry.registerEntityRenderingHandler(PokecubeCore.instance.getEntityClassFromPokedexNumber(nb),
+                renderer);
     }
 
     @Override
-    public void registerPokemobRenderer(String name, Render renderer, Object mod)
+    public void registerPokemobRenderer(String name, IRenderFactory renderer, Object mod)
     {
         if (Database.getEntry(name) == null)
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(name + annotation.modid(), renderer);
             Thread.dumpStack();
         }
         else
         {
-            Mod annotation = mod.getClass().getAnnotation(Mod.class);
-            RenderPokemobs.addCustomRenderer(Database.getEntry(name).getTrimmedName() + annotation.modid(), renderer);
+            PokedexEntry entry = Database.getEntry(name);
+            Class<? extends Entity> c = PokecubeCore.instance.getEntityClassFromPokedexNumber(entry.getPokedexNb());
+            RenderingRegistry.registerEntityRenderingHandler(c, renderer);
+            Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(c,
+                    renderer.createRenderFor(Minecraft.getMinecraft().getRenderManager()));
         }
     }
 

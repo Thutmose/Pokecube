@@ -85,20 +85,7 @@ public class RenderPokemobs extends RenderPokemob
         return ret;
     }
 
-    private RenderPokemobs(RenderManager m)
-    {
-        super(m, null, 0);
-    }
-
-    /** Actually renders the given argument. This is a synthetic bridge method,
-     * always casting down its argument and then handing it off to a worker
-     * function which does the actual work. In all probabilty, the class Render
-     * is generic (Render<T extends Entity) and this method has signature public
-     * void doRender(T entity, double d, double d1, double d2, float f, float
-     * f1). But JAD is pre 1.5 so doesn't do that. */
-    @SuppressWarnings("unchecked")
-    @Override
-    public void doRender(EntityLiving entity, double x, double y, double z, float par8, float par9)
+    public static boolean shouldRender(EntityLiving entity, double x, double y, double z, float par8, float par9)
     {
         if (entity instanceof IPokemob)
         {
@@ -107,13 +94,9 @@ public class RenderPokemobs extends RenderPokemob
             if (!PokecubeMod.registered.get(nb))
             {
                 System.err.println("attempting to render an un-registed pokemon " + entity);
-                return;
+                return false;
             }
-            if (mob.getTransformedTo() instanceof IPokemob)
-            {
-                mob = (IPokemob) mob.getTransformedTo();
-            }
-            else if (mob.getTransformedTo() != null && mob.getTransformedTo() instanceof EntityLivingBase)
+            if (mob.getTransformedTo() != null && mob.getTransformedTo() instanceof EntityLivingBase)
             {
                 EntityLivingBase from = (EntityLivingBase) mob.getTransformedTo();
                 try
@@ -137,9 +120,31 @@ public class RenderPokemobs extends RenderPokemob
                 {
                     e1.printStackTrace();
                 }
-                return;
+                return false;
             }
+        }
+        return true;
+    }
 
+    private RenderPokemobs(RenderManager m)
+    {
+        super(m, null, 0);
+    }
+
+    /** Actually renders the given argument. This is a synthetic bridge method,
+     * always casting down its argument and then handing it off to a worker
+     * function which does the actual work. In all probabilty, the class Render
+     * is generic (Render<T extends Entity) and this method has signature public
+     * void doRender(T entity, double d, double d1, double d2, float f, float
+     * f1). But JAD is pre 1.5 so doesn't do that. */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTick)
+    {
+        if (!RenderPokemobs.shouldRender(entity, x, y, z, yaw, partialTick)) return;
+        if (entity instanceof IPokemob)
+        {
+            IPokemob mob = (IPokemob) entity;
             GlStateManager.pushMatrix();
             // // Handle held/shoulder, whenever entities can mount players...
 
@@ -155,11 +160,11 @@ public class RenderPokemobs extends RenderPokemob
                     GlStateManager.popMatrix();
                     return;
                 }
-                super.doRender(entity, x, y, z, par8, par9);
+                super.doRender(entity, x, y, z, yaw, partialTick);
             }
             else
             {
-                render.doRender(entity, x, y, z, par8, par9);
+                render.doRender(entity, x, y, z, yaw, partialTick);
             }
             GlStateManager.popMatrix();
         }

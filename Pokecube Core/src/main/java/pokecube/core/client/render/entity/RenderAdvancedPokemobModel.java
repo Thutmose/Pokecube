@@ -2,7 +2,8 @@ package pokecube.core.client.render.entity;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -34,16 +35,23 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     int                      src;
     int                      dst;
 
-    public RenderAdvancedPokemobModel(String name, float par2)
+    @SuppressWarnings("unchecked")
+    public RenderAdvancedPokemobModel(String name, RenderManager manager, float par2)
     {
-        super(Minecraft.getMinecraft().getRenderManager(), null, par2);
+        super(manager, null, par2);
         modelName = name;
+        model = (IModelRenderer<T>) getRenderer(modelName, null);
+        if (model != null && model instanceof RenderLivingBase)
+        {
+            this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
+        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public void doRender(T entity, double d0, double d1, double d2, float yaw, float partialTick)
+    public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
     {
+        if (!RenderPokemobs.shouldRender(entity, x, y, z, yaw, partialTick)) return;
         IPokemob mob = (IPokemob) entity;
         T toRender = entity;
         if (mob.getTransformedTo() instanceof IPokemob)
@@ -51,13 +59,15 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             toRender = (T) mob.getTransformedTo();
         }
         model = (IModelRenderer<T>) getRenderer(modelName, entity);
-
-        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, d0, d1, d2))) return;
-
+        if (model != null && model instanceof RenderLivingBase)
+        {
+            this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
+        }
+        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, x, y, z))) return;
         GL11.glPushMatrix();
         this.preRenderCallback(entity, partialTick);
         GL11.glPushMatrix();
-        GL11.glTranslated(d0, d1, d2);
+        GL11.glTranslated(x, y, z);
         if ((partialTick <= 1))
         {
             RenderPokemob.renderEvolution((IPokemob) entity, yaw);
@@ -81,9 +91,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         }
         if (!model.hasPhase(phase)) phase = "idle";
         model.setPhase(phase);
-        model.doRender(toRender, d0, d1, d2, yaw, partialTick);
-        model.renderStatus(toRender, d0, d1, d2, yaw, partialTick);
-        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, d0, d1, d2));
+        model.doRender(toRender, x, y, z, yaw, partialTick);
+        model.renderStatus(toRender, x, y, z, yaw, partialTick);
+        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, x, y, z));
         GL11.glPopMatrix();
         this.postRenderCallback();
         GL11.glPopMatrix();

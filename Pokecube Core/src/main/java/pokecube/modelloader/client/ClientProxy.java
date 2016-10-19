@@ -12,10 +12,14 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
@@ -188,11 +192,19 @@ public class ClientProxy extends CommonProxy
             Object mod = modelProviders.get(modid);
             if (modModels.containsKey(modid))
             {
-                for (String s : modModels.get(modid))
+                for (final String s : modModels.get(modid))
                 {
                     if (AnimationLoader.models.containsKey(s))
                     {
-                        PokecubeMod.getProxy().registerPokemobRenderer(s, new RenderAdvancedPokemobModel<>(s, 1), mod);
+                        PokecubeMod.getProxy().registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
+                        {
+                            @SuppressWarnings({ "rawtypes", "unchecked" })
+                            @Override
+                            public Render<? super EntityLiving> createRenderFor(RenderManager manager)
+                            {
+                                return new RenderAdvancedPokemobModel(s, manager, 1);
+                            }
+                        }, mod);
                     }
                 }
             }
@@ -212,8 +224,16 @@ public class ClientProxy extends CommonProxy
             }
             if (mod != null)
             {
-                PokecubeMod.getProxy().registerPokemobRenderer(entry.getName(),
-                        new RenderAdvancedPokemobModel<>(entry.getName(), 1), mod);
+                final String s = entry.getName();
+                PokecubeMod.getProxy().registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
+                {
+                    @SuppressWarnings({ "rawtypes", "unchecked" })
+                    @Override
+                    public Render<? super EntityLiving> createRenderFor(RenderManager manager)
+                    {
+                        return new RenderAdvancedPokemobModel(s, manager, 1);
+                    }
+                }, mod);
             }
         }
     }

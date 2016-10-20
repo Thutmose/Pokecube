@@ -350,7 +350,8 @@ public class Config extends ConfigBase
     String[]                             mystLocs                     = {};
     @Configure(category = advanced)
     boolean                              resetTags                    = false;
-    @Configure(category = advanced)
+    @Configure(category = advanced) // TODO find more internal variables to add
+                                    // to this.
     String[]                             extraValues                  = { "3", "4.5" };
     @Configure(category = advanced)
     public boolean                       debug                        = false;
@@ -469,6 +470,8 @@ public class Config extends ConfigBase
             PokecubeMod.giftLocations.add(loc);
         }
 
+        // TODO more internal variables, and ensure that their defaults are
+        // added for old installs.
         EventsHandler.juiceChance = Double.parseDouble(extraValues[0]);
         EventsHandler.candyChance = Double.parseDouble(extraValues[1]);
 

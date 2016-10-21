@@ -3,13 +3,11 @@ package pokecube.core.world.terrain;
 import static thut.api.terrain.BiomeType.LAKE;
 import static thut.api.terrain.BiomeType.VILLAGE;
 import static thut.api.terrain.TerrainSegment.GRIDSIZE;
-import static thut.api.terrain.TerrainSegment.count;
 
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.Village;
@@ -130,6 +128,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
             int dy = ((v.intY() - y0) / GRIDSIZE) * GRIDSIZE;
             int dz = ((v.intZ() - z0) / GRIDSIZE) * GRIDSIZE;
             int x1 = x0 + dx, y1 = y0 + dy, z1 = z0 + dz;
+            int industrial = 0;
+            int water = 0;
             outer:
             for (int i = x1; i < x1 + GRIDSIZE; i++)
                 for (int j = y1; j < y1 + GRIDSIZE; j++)
@@ -141,10 +141,13 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
                             double y = temp1.getMaxY(world);
                             sky = y <= temp1.y;
                         }
+                        IBlockState state;
+                        if (isIndustrial(state = temp1.getBlockState(world))) industrial++;
+                        if (industrial > 2) return BiomeType.INDUSTRIAL.getType();
+                        if (state.getMaterial() == Material.WATER) water++;
                         if (sky) break outer;
                     }
             if (sky) return -1;
-            int water = count(world, Blocks.WATER, v, 3);
             if (water > 4)
             {
                 return BiomeType.CAVE_WATER.getType();

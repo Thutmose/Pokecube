@@ -68,13 +68,13 @@ public class GuiInfoMessages
 
         int texH = minecraft.fontRendererObj.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;
+        int paddingXPos = PokecubeCore.core.getConfig().messagePadding[0];
+        int paddingXNeg = PokecubeCore.core.getConfig().messagePadding[1];
         GL11.glPushMatrix();
+        int[] messSize = new int[] { trim + paddingXPos + paddingXNeg, 7 * texH };
         minecraft.entityRenderer.setupOverlayRendering();
-        int[] messArr = GuiDisplayPokecubeInfo
-                .applyTransform(
-                        PokecubeCore.core.getConfig().messageRef, PokecubeMod.core.getConfig().messagePos, new int[] {
-                                PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
-                        PokecubeMod.core.getConfig().messageSize);
+        int[] messArr = GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().messageRef,
+                PokecubeMod.core.getConfig().messagePos, messSize, PokecubeMod.core.getConfig().messageSize);
         int x = 0, y = 0;
         float s = PokecubeMod.core.getConfig().messageSize;
         x += messArr[2];
@@ -103,20 +103,20 @@ public class GuiInfoMessages
         int num = -1;
         if (event.getType() == ElementType.CHAT)
         {
-            num = 9;
+            num = 7;
             offset += (int) (i != 0 ? Math.signum(i) : 0);
             if (offset < 0) offset = 0;
             if (offset > messages.size() - 7) offset = messages.size() - 7;
         }
         else if (time > minecraft.thePlayer.ticksExisted - 30)
         {
-            num = 8;
+            num = 6;
             offset = 0;
         }
         else
         {
             offset = 0;
-            num = 8;
+            num = 6;
             time = minecraft.thePlayer.ticksExisted;
             if (!recent.isEmpty())
             {
@@ -129,7 +129,7 @@ public class GuiInfoMessages
         int size = toUse.size() - 1;
         num = Math.min(num, size + 1);
         int shift = 0;
-        for (int l = 0; l < num; l++)
+        for (int l = 0; l < num && shift < num; l++)
         {
             int index = (l + offset);
             if (index < 0) index = 0;
@@ -140,7 +140,7 @@ public class GuiInfoMessages
             {
                 h = y + texH * (shift + j);
                 w = x - trim;
-                GuiScreen.drawRect(w, h, w + trim, h + texH, 0x66000000);
+                GuiScreen.drawRect(w - paddingXNeg, h, w + trim + paddingXPos, h + texH, 0x66000000);
                 minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, h, 0xffffff, true);
                 if (j != 0) shift++;
             }

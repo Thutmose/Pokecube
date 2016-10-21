@@ -79,6 +79,12 @@ public class AnimationLoader
         modelMaps.clear();
     }
 
+    public static void remove(PokedexEntry entry)
+    {
+        models.remove(entry.getName());
+        modelMaps.remove(entry.getName());
+    }
+
     public static int getHeadAxis(Node node, int default_)
     {
         int ret = default_;

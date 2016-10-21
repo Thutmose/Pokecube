@@ -54,7 +54,6 @@ public class ClientProxy extends CommonProxy
     public void populateModels()
     {
         TabulaPackLoader.clear();
-
         List<String> modList = Lists.newArrayList(modelProviders.keySet());
         // Sort to prioritise default mod
         Collections.sort(modList, new Comparator<String>()
@@ -160,6 +159,105 @@ public class ClientProxy extends CommonProxy
             }
         }
         ProgressManager.pop(bar);
+        TabulaPackLoader.postProcess();
+        registerRenderInformation();
+    }
+
+    public void reloadModel(PokedexEntry model)
+    {
+        TabulaPackLoader.remove(model);
+        List<String> modList = Lists.newArrayList(modelProviders.keySet());
+        Collections.sort(modList, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                if (o1.equals(PokecubeMod.defaultMod)) return Integer.MAX_VALUE;
+                else if (o2.equals(PokecubeMod.defaultMod)) return Integer.MIN_VALUE;
+                return o1.compareTo(o2);
+            }
+        });
+        for (String mod : modList)
+        {
+            IMobProvider provider = mobProviders.get(mod);
+            PokedexEntry p = model;
+            String name = p.getTrimmedName().toLowerCase(Locale.ENGLISH);
+            boolean xml = false;
+            try
+            {
+                ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                res.close();
+                ArrayList<String> models = modModels.get(mod);
+                if (models == null)
+                {
+                    modModels.put(mod, models = new ArrayList<String>());
+                }
+                xml = true;
+                models.remove(name);
+                if (!models.contains(name)) models.add(name);
+            }
+            catch (Exception e)
+            {
+                try
+                {
+                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
+                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                    res.getInputStream().close();
+                    res.close();
+                    ArrayList<String> models = modModels.get(mod);
+                    if (models == null)
+                    {
+                        modModels.put(mod, models = new ArrayList<String>());
+                    }
+                    models.remove(name);
+                    if (!models.contains(name)) models.add(name);
+                }
+                catch (Exception e1)
+                {
+                    try
+                    {
+                        ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                        res.getInputStream().close();
+                        res.close();
+                        ArrayList<String> models = modModels.get(mod);
+                        if (models == null)
+                        {
+                            modModels.put(mod, models = new ArrayList<String>());
+                        }
+                        models.remove(name);
+                        if (!models.contains(name)) models.add(name);
+                    }
+                    catch (Exception e2)
+                    {
+
+                    }
+                }
+            }
+            if (modModels.containsKey(mod) && xml)
+            {
+                HashSet<String> alternateFormes = Sets.newHashSet();
+                PokedexEntry entry = model;
+                name = entry.getTrimmedName().toLowerCase(Locale.ENGLISH);
+                System.out.println(model + " " + name + " " + xml);
+                if (!AnimationLoader.initModel(provider, mod + ":" + provider.getModelDirectory(entry) + name,
+                        alternateFormes))
+                {
+                    TabulaPackLoader.loadModel(provider, mod + ":" + provider.getModelDirectory(entry) + name,
+                            alternateFormes);
+                }
+                for (String s : alternateFormes)
+                {
+                    String[] args2 = s.toLowerCase(Locale.ENGLISH).split("/");
+                    name = args2[args2.length > 1 ? args2.length - 1 : 0];
+                    if (!AnimationLoader.initModel(provider, s, alternateFormes))
+                    {
+                        TabulaPackLoader.loadModel(provider, s, alternateFormes);
+                    }
+                }
+            }
+        }
         TabulaPackLoader.postProcess();
         registerRenderInformation();
     }

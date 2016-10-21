@@ -180,9 +180,7 @@ public class ModelWrapper extends ModelBase implements IModel
         if (parent == null) return;
 
         parent.resetToInit();
-
         boolean anim = renderer.animations.containsKey(currentPhase);
-
         if (anim)
         {
             if (AnimationHelper.doAnimation(renderer.animations.get(currentPhase), entity, parent.getName(), parent,

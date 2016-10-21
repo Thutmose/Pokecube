@@ -496,6 +496,12 @@ public class TabulaPackLoader extends AnimationLoader
         AnimationLoader.clear();
         modelMap.clear();
     }
+    
+    public static void remove(PokedexEntry entry)
+    {
+        AnimationLoader.remove(entry);
+        modelMap.remove(entry);
+    }
 
     public static boolean loadModel(IMobProvider provider, String path, HashSet<String> toReload)
     {

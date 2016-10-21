@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
@@ -22,6 +23,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.ModPokecubeML;
+import pokecube.modelloader.client.ClientProxy;
 import pokecube.modelloader.client.render.TextureHelper;
 
 public class GuiAnimate extends GuiScreen
@@ -57,9 +59,9 @@ public class GuiAnimate extends GuiScreen
     protected void actionPerformed(GuiButton button) throws IOException
     {
         PokedexEntry entry = null;
+        if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
         if (button.id == 2)
         {
-            if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
             int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getFirstEntry()).getPokedexNb();
@@ -67,7 +69,6 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 1)
         {
-            if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
             int num = (entry = Pokedex.getInstance().getPrevious(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
             else pokedexNb = (entry = Pokedex.getInstance().getLastEntry()).getPokedexNb();
@@ -80,7 +81,7 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 4)
         {
-            ModPokecubeML.proxy.populateModels();
+            ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
         }
         else if (button.id == 5)
         {
@@ -270,14 +271,18 @@ public class GuiAnimate extends GuiScreen
 
         EntityLiving entity = (EntityLiving) pokemob;
         entity.renderYawOffset = 0F;
-        entity.rotationYaw = xRenderAngle;
+        entity.rotationYaw = 0;
+        entity.prevRotationPitch = xHeadRenderAngle;
         entity.rotationPitch = xHeadRenderAngle;
-        if (isAltKeyDown()) yHeadRenderAngle = xRenderAngle;
         entity.rotationYawHead = yHeadRenderAngle;
-        GL11.glRotated(yRenderAngle, 1, 0, 0);
+        entity.prevRotationYawHead = yHeadRenderAngle;
+        GL11.glRotated(-xRenderAngle, 0, 1, 0);
+        if (isAltKeyDown()) GL11.glRotated(yRenderAngle, 1, 0, 0);
         entity.onGround = ground;
 
         ((Entity) pokemob).ticksExisted = mc.thePlayer.ticksExisted;
+        ((EntityLivingBase) pokemob).limbSwing += 0.5;
+        ((EntityLivingBase) pokemob).limbSwingAmount = 0.5f;
 
         String arg = info.getText();
         try

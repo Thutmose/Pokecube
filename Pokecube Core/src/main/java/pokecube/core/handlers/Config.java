@@ -323,17 +323,19 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public float                         guiSize                      = 1;
     @Configure(category = client)
-    public int[]                         telePos                      = { 0, 150 };
+    public int[]                         telePos                      = { 89, 17 };
     @Configure(category = client)
     public float                         teleSize                     = 1;
     @Configure(category = client)
-    public int[]                         targetPos                    = { 147, -40 };
+    public int[]                         targetPos                    = { 147, -42 };
     @Configure(category = client)
     public float                         targetSize                   = 1;
     @Configure(category = client)
-    public int[]                         messagePos                   = { -76, -27 };
+    public int[]                         messagePos                   = { -75, -31 };
     @Configure(category = client)
-    public int                           messageWidth                 = 150;
+    public int                           messageWidth                 = 150;;
+    @Configure(category = client)
+    public int[]                         messagePadding               = { 0, 0 };
     @Configure(category = client)
     public float                         messageSize                  = 1;
     @Configure(category = client)
@@ -350,7 +352,8 @@ public class Config extends ConfigBase
     String[]                             mystLocs                     = {};
     @Configure(category = advanced)
     boolean                              resetTags                    = false;
-    @Configure(category = advanced)
+    @Configure(category = advanced) // TODO find more internal variables to add
+                                    // to this.
     String[]                             extraValues                  = { "3", "4.5" };
     @Configure(category = advanced)
     public boolean                       debug                        = false;
@@ -469,6 +472,8 @@ public class Config extends ConfigBase
             PokecubeMod.giftLocations.add(loc);
         }
 
+        // TODO more internal variables, and ensure that their defaults are
+        // added for old installs.
         EventsHandler.juiceChance = Double.parseDouble(extraValues[0]);
         EventsHandler.candyChance = Double.parseDouble(extraValues[1]);
 

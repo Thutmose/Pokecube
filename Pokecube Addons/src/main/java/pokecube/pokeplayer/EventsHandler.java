@@ -130,8 +130,6 @@ public class EventsHandler
     @SubscribeEvent
     public void PlayerLogout(PlayerLoggedOutEvent evt)
     {
-        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(evt.player).getData(PokeInfo.class);
-        if (info != null) info.save(evt.player);
     }
 
     @SubscribeEvent
@@ -177,7 +175,7 @@ public class EventsHandler
                 PacketTransform message = new PacketTransform();
                 info.writeToNBT(message.data);
                 message.id = player.getEntityId();
-                PokecubeMod.packetPipeline.sendToDimension(message, player.dimension);
+                PokecubeMod.packetPipeline.sendToAll(message);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
@@ -200,14 +198,15 @@ public class EventsHandler
             {
                 for (EntityPlayer player1 : player.worldObj.playerEntities)
                 {
+                    if (player1 == player) continue;
                     PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player)
                             .getData(PokeInfo.class);
                     PacketTransform message = new PacketTransform();
                     info.writeToNBT(message.data);
                     message.id = player1.getEntityId();
                     PokecubeMod.packetPipeline.sendTo(message, (EntityPlayerMP) player);
-                    MinecraftForge.EVENT_BUS.unregister(this);
                 }
+                MinecraftForge.EVENT_BUS.unregister(this);
             }
         }
     }

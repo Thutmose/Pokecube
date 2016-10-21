@@ -39,6 +39,7 @@ public class PokeInfo extends PlayerData
         this.originalWidth = 0.6f;
         ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
         ((Entity) pokemob).getEntityData().setString("playerID", player.getUniqueID().toString());
+        save(player);
     }
 
     public void resetPlayer(EntityPlayer player)
@@ -49,6 +50,7 @@ public class PokeInfo extends PlayerData
         float width = originalWidth;
         player.setSize(width, height);
         setFlying(player, false);
+        save(player);
     }
 
     public void setPlayer(EntityPlayer player)
@@ -60,6 +62,7 @@ public class PokeInfo extends PlayerData
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
         player.setSize(width, height);
         setFlying(player, true);
+        save(player);
     }
 
     public void onUpdate(EntityPlayer player)
@@ -95,7 +98,8 @@ public class PokeInfo extends PlayerData
 
     public void save(EntityPlayer player)
     {
-        PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString(), getIdentifier());
+        if (!player.worldObj.isRemote)
+            PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString(), getIdentifier());
     }
 
     private void setFlying(EntityPlayer player, boolean set)
@@ -175,6 +179,10 @@ public class PokeInfo extends PlayerData
             ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
             stack.writeToNBT(tag);
         }
+        else if (stack != null)
+        {
+            stack.writeToNBT(tag);
+        }
         tag.setFloat("h", originalHeight);
         tag.setFloat("w", originalWidth);
     }
@@ -192,6 +200,7 @@ public class PokeInfo extends PlayerData
         if (pokemob == null && stack != null)
         {
             pokemob = PokecubeManager.itemToPokemob(stack, world);
+            if (pokemob == null) stack = null;
         }
         return pokemob;
     }

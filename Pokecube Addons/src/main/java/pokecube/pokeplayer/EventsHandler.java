@@ -3,10 +3,10 @@ package pokecube.pokeplayer;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -18,13 +18,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import pokecube.core.events.AttackEvent;
 import pokecube.core.events.MoveMessageEvent;
+import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.pokeplayer.network.PacketTransform;
-import thut.api.entity.IHungrymob;
 
 public class EventsHandler
 {
@@ -66,6 +67,7 @@ public class EventsHandler
     {
         if (event.phase == Phase.END)
         {
+            if (event.player.getHealth() <= 0) { return; }
             proxy.updateInfo(event.player);
         }
     }
@@ -102,27 +104,52 @@ public class EventsHandler
     @SubscribeEvent
     public void doRespawn(PlayerRespawnEvent event)
     {
-        if (event.player != null)
+        if (event.player != null && !event.player.worldObj.isRemote)
         {
             IPokemob pokemob = proxy.getPokemob(event.player);
             if (pokemob != null)
             {
-                ((EntityLivingBase) pokemob).setHealth(((EntityLivingBase) pokemob).getMaxHealth());
-                ((IHungrymob) pokemob).setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+                ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
+                PokecubeManager.heal(stack);
+                pokemob = PokecubeManager.itemToPokemob(stack, event.player.worldObj);
+                proxy.setPokemob(event.player, pokemob);
+                new SendPacket(event.player);
+                new SendExsistingPacket(event.player);
             }
         }
     }
 
     @SubscribeEvent
+    public void recall(RecallEvent.Pre evt)
+    {
+        if (((Entity) evt.recalled).getEntityData().getBoolean("isPlayer")) evt.setCanceled(true);
+    }
+
+    @SubscribeEvent
     public void PlayerDeath(LivingDeathEvent evt)
     {
-        if (evt.getEntityLiving() instanceof EntityPlayer)
+        if (evt.getEntityLiving().worldObj.isRemote) return;
+        if (!(evt.getEntityLiving() instanceof EntityPlayer))
         {
-            IPokemob pokemob = proxy.getPokemob((EntityPlayer) evt.getEntityLiving());
+            if (evt.getEntityLiving() instanceof IPokemob
+                    && evt.getEntityLiving().getEntityData().getBoolean("isPlayer"))
+            {
+                evt.setCanceled(true);
+            }
+            return;
+        }
+        EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
+        if (player != null)
+        {
+            IPokemob pokemob = proxy.getPokemob(player);
             if (pokemob != null)
             {
-                ((EntityLivingBase) pokemob).setHealth(((EntityLivingBase) pokemob).getMaxHealth());
-                ((IHungrymob) pokemob).setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+                ItemStack stack = PokecubeManager.pokemobToItem(pokemob);
+                PokecubeManager.heal(stack);
+                pokemob = PokecubeManager.itemToPokemob(stack, player.worldObj);
+                proxy.setPokemob(player, pokemob);
+                new SendPacket(player);
+                new SendExsistingPacket(player);
             }
         }
     }
@@ -144,9 +171,14 @@ public class EventsHandler
                 IPokemob evo = (IPokemob) evt.getEntity();
                 proxy.setPokemob(player, evo);
                 evt.setCanceled(true);
+                if (!player.worldObj.isRemote)
+                {
+                    new SendPacket(player);
+                    new SendExsistingPacket(player);
+                }
+                return;
             }
         }
-
         if (!(evt.getEntity() instanceof EntityPlayer)) return;
         EntityPlayer player = (EntityPlayer) evt.getEntity();
         if (!player.worldObj.isRemote)

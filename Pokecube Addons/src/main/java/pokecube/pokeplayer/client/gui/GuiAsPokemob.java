@@ -59,28 +59,21 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
             super.pokemobAttack();
             return;
         }
-
         if (!useMove) return;
         useMove = false;
-
         EntityPlayer player = minecraft.thePlayer;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeByte(PacketDoActions.MOVEUSE);
         float range = 16;
-
         float contactRange = Math.max(1.5f, pokemob.getSize() * pokemob.getPokedexEntry().length);
-        Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
+        Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(moveIndex));
         if ((move.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) > 0) range = contactRange;
-
         Entity target = Tools.getPointedEntity(player, range);
-        buffer.writeInt(target != null ? target.getEntityId() : 0);
-
+        buffer.writeInt(target != null ? target.getEntityId() : -1);
         if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
         Vector3 look = Vector3.getNewVector().set(player.getLookVec());
         Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
         Vector3 v = pos.findNextSolidBlock(player.worldObj, look, range);
-        boolean attack = false;
-
         if (target != null)
         {
             if (v == null) v = Vector3.getNewVector();
@@ -90,8 +83,6 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         {
             v = pos.add(look.scalarMultBy(range));
         }
-
-        attack = true;
         if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
         {
             if (!GuiTeleport.instance().getState())
@@ -114,27 +105,13 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
                 buffer.writeBoolean(false);
             }
         }
-        else if (!attack)
-        {
-            if ((target != null || v != null))
-            {
-                // String mess =
-                // StatCollector.translateToLocalFormatted("pokemob.action.usemove",
-                // pokemob.getPokemonDisplayName(),
-                // MovesUtils.getTranslatedMove(move.getName()));
-                // pokemob.displayMessageToOwner(mess);//TODO move message
-            }
-            buffer.writeBoolean(false);
-        }
         else buffer.writeBoolean(false);
 
         if (v != null)
         {
             v.writeToBuff(buffer);
         }
-
         if (range == contactRange && target == null) return;
-
         PacketDoActions packet = new PacketDoActions(buffer);
         PokecubePacketHandler.sendToServer(packet);
     }

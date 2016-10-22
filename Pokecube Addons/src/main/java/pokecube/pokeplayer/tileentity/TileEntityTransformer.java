@@ -33,9 +33,6 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
 
     public void onInteract(EntityPlayer player)
     {
-        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
-        System.out.println(info);
-        System.out.println(info.getPokemob(worldObj));
         if (worldObj.isRemote || random) return;
         if (canEdit(player))
         {

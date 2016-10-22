@@ -200,24 +200,16 @@ public class ModelWrapper extends ModelBase implements IModel
             float ang2 = -headPitch;
             float head = headYaw + 180;
             float diff = 0;
-            float body = (entity.rotationYaw) % 360;
-            if (renderer.headDir == -1) body *= -1;
-            else head *= -1;
-
-            diff = (head + body) % 360;
-
+            if (renderer.headDir != -1) head *= -1;
+            diff = (head) % 360;
             diff = (diff + 360) % 360;
             diff = (diff - 180) % 360;
             diff = Math.max(diff, renderer.headCaps[0]);
             diff = Math.min(diff, renderer.headCaps[1]);
-
             ang = diff;
-
             ang2 = Math.max(ang2, renderer.headCaps1[0]);
             ang2 = Math.min(ang2, renderer.headCaps1[1]);
-
             Vector4 dir;
-
             if (renderer.headAxis == 0)
             {
                 dir = new Vector4(renderer.headDir, 0, 0, ang);

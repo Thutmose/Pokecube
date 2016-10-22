@@ -128,8 +128,8 @@ public class BlockCloner extends Block implements ITileEntityProvider
     @Override
     public IBlockState getStateFromMeta(int meta)
     {
-        if (meta >= EnumType.values().length) meta = 0;
         int variant = meta & 3;
+        if (variant >= EnumType.values().length) variant = 0;
         int direction = meta / 4;
         EnumFacing dir = EnumFacing.NORTH;
         switch (direction)

@@ -28,6 +28,12 @@ public class EntityTools
         to.prevLimbSwingAmount = from.prevLimbSwingAmount;
         to.limbSwing = from.limbSwing;
         to.limbSwingAmount = from.limbSwingAmount;
+        to.prevDistanceWalkedModified = from.prevDistanceWalkedModified;
+        to.lastTickPosX = from.lastTickPosX;
+        to.lastTickPosY = from.lastTickPosY;
+        to.lastTickPosZ = from.lastTickPosZ;
+        to.prevRenderYawOffset = from.prevRenderYawOffset;
+        to.renderYawOffset = from.renderYawOffset;
     }
 
     public static void copyEntityData(EntityLivingBase to, EntityLivingBase from)

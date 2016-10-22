@@ -586,6 +586,9 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             {
                 this.setTransformedTo(null);
             }
+            RecallEvent pre = new RecallEvent.Pre(this);
+            MinecraftForge.EVENT_BUS.post(pre);
+            if (pre.isCanceled()) return;
             RecallEvent evtrec = new RecallEvent(this);
             MinecraftForge.EVENT_BUS.post(evtrec);
             if (getHealth() > 0 && evtrec.isCanceled()) { return; }

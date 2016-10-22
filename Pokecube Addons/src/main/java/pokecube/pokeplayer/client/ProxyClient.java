@@ -1,6 +1,7 @@
 package pokecube.pokeplayer.client;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -86,7 +87,7 @@ public class ProxyClient extends Proxy
         IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
         if (pokemob != null && event.getButton() == 0 && event.isButtonstate())
         {
-            if (Minecraft.getMinecraft().thePlayer.getHeldItemMainhand() == null)
+            if (GuiScreen.isAltKeyDown())
             {
                 GuiAsPokemob.useMove = true;
                 GuiDisplayPokecubeInfo.instance().pokemobAttack();

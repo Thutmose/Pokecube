@@ -15,6 +15,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
+import pokecube.pokeplayer.EventsHandler.SendExsistingPacket;
+import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 import thut.api.entity.IHungrymob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
@@ -26,6 +28,7 @@ public class PokeInfo extends PlayerData
     public InventoryPlayerPokemob pokeInventory;
     public float                  originalHeight;
     public float                  originalWidth;
+    public float                  originalHP;
 
     public PokeInfo()
     {
@@ -33,10 +36,12 @@ public class PokeInfo extends PlayerData
 
     public void set(IPokemob pokemob, EntityPlayer player)
     {
+        if (this.pokemob != null) resetPlayer(player);
         this.pokemob = pokemob;
         this.pokeInventory = new InventoryPlayerPokemob(this, player.worldObj);
-        this.originalHeight = 1.8f;
-        this.originalWidth = 0.6f;
+        this.originalHeight = player.height;
+        this.originalWidth = player.width;
+        this.originalHP = player.getMaxHealth();
         ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
         ((Entity) pokemob).getEntityData().setString("playerID", player.getUniqueID().toString());
         save(player);
@@ -44,13 +49,22 @@ public class PokeInfo extends PlayerData
 
     public void resetPlayer(EntityPlayer player)
     {
+        if (pokemob == null && !player.worldObj.isRemote) return;
         player.eyeHeight = player.getDefaultEyeHeight();
-        player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+        player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(originalHP);
         float height = originalHeight;
         float width = originalWidth;
         player.setSize(width, height);
         setFlying(player, false);
         save(player);
+        pokemob = null;
+        stack = null;
+        pokeInventory = null;
+        if (!player.worldObj.isRemote)
+        {
+            new SendPacket(player);
+            new SendExsistingPacket(player);
+        }
     }
 
     public void setPlayer(EntityPlayer player)
@@ -71,8 +85,11 @@ public class PokeInfo extends PlayerData
         EntityLivingBase poke = (EntityLivingBase) pokemob;
         poke.onUpdate();
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(poke.getMaxHealth());
+        if (player.capabilities.isCreativeMode)
+        {
+            poke.setHealth(poke.getMaxHealth());
+        }
         float health = poke.getHealth();
-        if (player.capabilities.isCreativeMode) health = poke.getMaxHealth();
         EntityTools.copyEntityTransforms((EntityLivingBase) pokemob, player);
         player.setHealth(health);
         int num = ((IHungrymob) poke).getHungerTime();
@@ -185,6 +202,7 @@ public class PokeInfo extends PlayerData
         }
         tag.setFloat("h", originalHeight);
         tag.setFloat("w", originalWidth);
+        tag.setFloat("hp", originalHP);
     }
 
     @Override
@@ -193,6 +211,8 @@ public class PokeInfo extends PlayerData
         stack = ItemStack.loadItemStackFromNBT(tag);
         originalHeight = tag.getFloat("h");
         originalWidth = tag.getFloat("w");
+        originalHP = tag.getFloat("hp");
+        if (originalHP <= 0) originalHP = 1;
     }
 
     public IPokemob getPokemob(World world)

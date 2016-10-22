@@ -43,6 +43,7 @@ public class Proxy implements IGuiHandler
     private void removeMapping(EntityPlayer player)
     {
         PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+        info.resetPlayer(player);
         info.clear();
         info.save(player);
     }

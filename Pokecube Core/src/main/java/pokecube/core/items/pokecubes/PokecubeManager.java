@@ -271,6 +271,9 @@ public class PokecubeManager
             try
             {
                 byte oldStatus = PokecubeManager.getStatus(stack);
+                entityTag.setShort("Fire", (short) -1);
+                entityTag.setShort("DeathTime", (short) 0);
+                entityTag.setInteger("HurtByTimestamp", 0);
                 if (oldStatus > IMoveConstants.STATUS_NON)
                 {
                     String itemName = stack.getDisplayName();

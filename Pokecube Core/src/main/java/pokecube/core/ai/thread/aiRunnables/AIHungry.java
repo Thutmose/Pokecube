@@ -137,6 +137,10 @@ public class AIHungry extends AIBase
                         new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
                 else pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
+                if (!pokemob.getPokemonAIState(IPokemob.TAMED))
+                {
+                    toRun.add(new GenBerries(pokemob));
+                }
             }
         }
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
@@ -368,7 +372,7 @@ public class AIHungry extends AIBase
 
     protected void findFood()
     {
-        v.set(entity);
+        v.set(entity).addTo(0, entity.getEyeHeight(), 0);
         if (hungrymob.isPhototroph())
         {
             if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
@@ -596,12 +600,11 @@ public class AIHungry extends AIBase
             {
                 eatBerry(b, d);
             }
-            if (PokecubeItems.grasses.contains(b))
+            if (PokecubeTerrainChecker.isPlant(b))
             {
                 eatPlant(b, foodLoc, d);
             }
-            else if ((PokecubeMod.core.getConfig().getRocks().contains(b) || b == Blocks.GRAVEL)
-                    && hungrymob.isLithotroph())
+            else if ((PokecubeTerrainChecker.isRock(b)) && hungrymob.isLithotroph())
             {
                 eatRocks(b, foodLoc, d);
             }
@@ -612,16 +615,13 @@ public class AIHungry extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
         if (ownedSleepCheck)
         {
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
-
         if (world == null || pokemob.isAncient() || entity.getAttackTarget() != null) return false;
-
         hungrymob.setHungerCooldown(hungrymob.getHungerCooldown() - 1);
         hungrymob.setHungerTime(hungrymob.getHungerTime() + 1);
         boolean hunting = pokemob.getPokemonAIState(IMoveConstants.HUNTING);
@@ -633,9 +633,7 @@ public class AIHungry extends AIBase
         }
         if (foodLoc.distToEntity(entity) > 32) foodLoc.clear();
         if (hungrymob.getHungerCooldown() > 0) return false;
-
         if (!foodLoc.isEmpty()) return true;
-
         return pokemob.getPokemonAIState(IMoveConstants.HUNTING);
     }
 }

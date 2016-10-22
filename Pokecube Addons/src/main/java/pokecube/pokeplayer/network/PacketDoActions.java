@@ -10,7 +10,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
@@ -66,40 +65,27 @@ public class PacketDoActions implements IMessage, IMessageHandler<PacketDoAction
         PacketBuffer dat = buffer;
         int id = dat.readInt();
         Vector3 v = Vector3.getNewVector();
-
         if (pokemob != null)
         {
             int currentMove = pokemob.getMoveIndex();
-
             if (currentMove == 5) { return; }
-
             boolean teleport = dat.readBoolean();
-
             if (teleport)
             {
                 PacketDataSync.sendInitPacket(player, "pokecube-data");
             }
-
-            if (id == 0)
+            Entity owner = player;
+            if (owner != null)
             {
-                pokemob.setPokemonAIState(IMoveConstants.NEWEXECUTEMOVE, true);
-            }
-            else
-            {
-                Entity owner = player;
-                if (owner != null)
+                Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
+                if (closest != null)
                 {
-                    Entity closest = PokecubeMod.core.getEntityProvider().getEntity(owner.worldObj, id, false);
-
-                    if (closest != null)
-                    {
-                        pokemob.executeMove(closest, v.set(closest), closest.getDistanceToEntity((Entity) pokemob));
-                    }
-                    else if (buffer.isReadable(24))
-                    {
-                        v = Vector3.readFromBuff(buffer);
-                        pokemob.executeMove(closest, v, (float) v.distToEntity((Entity) pokemob));
-                    }
+                    pokemob.executeMove(closest, v.set(closest), closest.getDistanceToEntity((Entity) pokemob));
+                }
+                else if (buffer.isReadable(24))
+                {
+                    v = Vector3.readFromBuff(buffer);
+                    pokemob.executeMove(closest, v, (float) v.distToEntity((Entity) pokemob));
                 }
             }
         }

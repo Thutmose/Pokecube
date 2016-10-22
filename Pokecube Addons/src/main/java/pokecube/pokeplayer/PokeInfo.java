@@ -15,6 +15,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
+import pokecube.pokeplayer.EventsHandler.SendExsistingPacket;
+import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 import thut.api.entity.IHungrymob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
@@ -47,6 +49,7 @@ public class PokeInfo extends PlayerData
 
     public void resetPlayer(EntityPlayer player)
     {
+        if (pokemob == null && !player.worldObj.isRemote) return;
         player.eyeHeight = player.getDefaultEyeHeight();
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(originalHP);
         float height = originalHeight;
@@ -57,6 +60,11 @@ public class PokeInfo extends PlayerData
         pokemob = null;
         stack = null;
         pokeInventory = null;
+        if (!player.worldObj.isRemote)
+        {
+            new SendPacket(player);
+            new SendExsistingPacket(player);
+        }
     }
 
     public void setPlayer(EntityPlayer player)

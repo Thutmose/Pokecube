@@ -17,7 +17,6 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
 import pokecube.core.events.handlers.SpawnHandler;
 import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.TerrainManager;
 
 public class ReComplexCompat
@@ -32,9 +31,7 @@ public class ReComplexCompat
     @SubscribeEvent
     public void gen(StructureGenerationEventLite evt)
     {
-        System.out.println(evt.getStructureName());
         if (evt instanceof StructureGenerationEventLite.Suggest) return;
-
         if (evt instanceof StructureGenerationEventLite.Post)
         {
             StructureBoundingBox bounds = evt.getBoundingBox();
@@ -73,13 +70,9 @@ public class ReComplexCompat
             }
             return;
         }
-
         if (!Config.biomeMap.containsKey(evt.getStructureName().toLowerCase(java.util.Locale.ENGLISH))) { return; }
-
         int biome = Config.biomeMap.get(evt.getStructureName().toLowerCase(java.util.Locale.ENGLISH));
         Vector3 pos = Vector3.getNewVector();
-        System.out.println(
-                "Setting " + evt.getStructureName() + " as biome type " + BiomeDatabase.getReadableNameFromType(biome));
         StructureBoundingBox bounds = evt.getBoundingBox();
         for (int i = bounds.minX; i <= bounds.maxX; i++)
         {

@@ -37,7 +37,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -89,6 +88,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         this.setSize(1, 1);
         this.width = 1;
         this.height = 1;
+        this.getDisplayName();
         nextStepDistance = 1;
     }
 
@@ -192,8 +192,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public ITextComponent getDisplayName()
     {
-        TextComponentTranslation textcomponentstring = new TextComponentTranslation(
-                this.getPokedexEntry().getUnlocalizedName());
+        ITextComponent textcomponentstring = getPokemonDisplayName();
         textcomponentstring.getStyle().setHoverEvent(this.getHoverEvent());
         textcomponentstring.getStyle().setInsertion(this.getCachedUniqueIdString());
         return textcomponentstring;

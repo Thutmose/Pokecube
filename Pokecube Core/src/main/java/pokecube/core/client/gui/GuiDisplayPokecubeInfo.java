@@ -239,6 +239,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             EntityLiving entity = (EntityLiving) pokemob;
+            int currentMoveIndex = pokemob.getMoveIndex();
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             // Render HP
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
@@ -553,10 +554,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (indexPokemob < arrayRet.length && indexPokemob >= 0 && arrayRet.length > 0)
         {
             pokemob = arrayRet[indexPokemob];
-        }
-        if (pokemob != null)
-        {
-            currentMoveIndex = pokemob.getMoveIndex();
         }
         return pokemob;
     }

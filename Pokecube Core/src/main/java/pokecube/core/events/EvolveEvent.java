@@ -1,5 +1,6 @@
 package pokecube.core.events;
 
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 
 /** Fired whenever the pokemob evolves.
@@ -21,13 +22,13 @@ public class EvolveEvent extends LevelUpEvent
     /** Called before the evolution, if canceled, it will not evolve. */
     public static class Pre extends EvolveEvent
     {
-        public String forme;
+        public PokedexEntry forme;
 
         /** @param mob
          *            - The mob doing the evolving.
          * @param evolvingTo
          *            - the mob to be evolved to. */
-        public Pre(IPokemob mob, String evolvingTo)
+        public Pre(IPokemob mob, PokedexEntry evolvingTo)
         {
             super(mob);
             forme = evolvingTo;

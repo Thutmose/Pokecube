@@ -12,6 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiPokedex;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
@@ -27,7 +28,7 @@ public class ProxyClient extends Proxy
     public IPokemob getPokemob(EntityPlayer player)
     {
         IPokemob ret = super.getPokemob(player);
-        if (ret != null)
+        if (ret != null && player.worldObj.isRemote)
         {
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
             info.setPlayer(player);
@@ -52,7 +53,9 @@ public class ProxyClient extends Proxy
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
         IPokemob pokemob;
-        if (event.side == Side.SERVER || (pokemob = getPokemob(event.player)) == null) return;
+        if (event.side == Side.SERVER || event.player != PokecubeCore.proxy.getPlayer(null)
+                || (pokemob = getPokemob(event.player)) == null)
+            return;
         if (Minecraft.getMinecraft().currentScreen instanceof GuiPokedex)
         {
             ((GuiPokedex) Minecraft.getMinecraft().currentScreen).pokemob = pokemob;

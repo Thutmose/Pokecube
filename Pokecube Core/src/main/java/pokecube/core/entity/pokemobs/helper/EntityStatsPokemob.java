@@ -769,7 +769,8 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void setPokemonNickname(String nickname)
     {
-        if (PokecubeCore.isOnClientSide() && this.addedToChunk)
+        System.out.println(nickname+" "+getPokemonNickname()+" "+getDisplayName().getFormattedText());
+        if (PokecubeCore.isOnClientSide() && addedToChunk)
         {
             if (!nickname.equals(getPokemonNickname()))
             {

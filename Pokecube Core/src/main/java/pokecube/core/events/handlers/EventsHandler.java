@@ -703,9 +703,9 @@ public class EventsHandler
         if (evt.mob.getPokedexEntry() == Database.getEntry("Tyrogue"))
         {
             int[] stats = evt.mob.getActualStats();
-            if (stats[1] > stats[2]) evt.forme = "Hitmonlee";
-            else if (stats[2] > stats[1]) evt.forme = "Hitmonchan";
-            else evt.forme = "Hitmontop";
+            if (stats[1] > stats[2]) evt.forme = Database.getEntry("Hitmonlee");
+            else if (stats[2] > stats[1]) evt.forme = Database.getEntry("Hitmonchan");
+            else evt.forme = Database.getEntry("Hitmontop");
         }
     }
 

@@ -1,7 +1,5 @@
 package pokecube.core.network.pokemobs;
 
-import java.util.UUID;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,12 +18,12 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     public static void sendPacket(Entity mob, String name)
     {
         PacketNickname packet = new PacketNickname();
-        packet.entityId = mob.getUniqueID();
+        packet.entityId = mob.getEntityId();
         packet.name = name;
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
-    UUID   entityId;
+    int    entityId;
     String name;
 
     public PacketNickname()
@@ -50,7 +48,7 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     public void fromBytes(ByteBuf buf)
     {
         PacketBuffer buffer = new PacketBuffer(buf);
-        entityId = new UUID(buf.readLong(), buf.readLong());
+        entityId = buffer.readInt();
         name = buffer.readStringFromBuffer(20);
     }
 
@@ -58,26 +56,21 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     public void toBytes(ByteBuf buf)
     {
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeLong(entityId.getMostSignificantBits());
-        buffer.writeLong(entityId.getLeastSignificantBits());
+        buffer.writeInt(entityId);
         buffer.writeString(name);
     }
 
-    void processMessage(MessageContext ctx, PacketNickname message)
+    static void processMessage(MessageContext ctx, PacketNickname message)
     {
         EntityPlayer player;
         player = ctx.getServerHandler().playerEntity;
-        Entity orignalMob = ctx.getServerHandler().playerEntity.getServerWorld().getEntityFromUuid(message.entityId);
-        if (orignalMob == null) return;
-        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, orignalMob.getEntityId(), true);
+        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, message.entityId, true);
         if (mob == null || !(mob instanceof IPokemob)) return;
-
         IPokemob pokemob = (IPokemob) mob;
         String name = ChatAllowedCharacters.filterAllowedCharacters(new String(message.name));
         if (pokemob.getPokemonDisplayName().getFormattedText().equals(name)) return;
         boolean OT = pokemob.getPokemonOwnerID() == null || pokemob.getOriginalOwnerUUID() == null
                 || (pokemob.getPokemonOwnerID().equals(pokemob.getOriginalOwnerUUID()));
-
         if (!OT && pokemob.getPokemonOwner() != null)
         {
             OT = pokemob.getPokemonOwner().getUniqueID().equals(pokemob.getOriginalOwnerUUID());

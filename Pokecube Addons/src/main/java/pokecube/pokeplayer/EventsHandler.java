@@ -12,11 +12,11 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import pokecube.core.events.AttackEvent;
+import pokecube.core.events.EvolveEvent;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
@@ -24,7 +24,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.pokeplayer.network.PacketTransform;
 
 public class EventsHandler
@@ -89,16 +88,6 @@ public class EventsHandler
     @SubscribeEvent
     public void pokemobMoveMessage(MoveMessageEvent evt)
     {
-        Entity user = (Entity) evt.sender;
-        if (user.getEntityData().getBoolean("isPlayer") && !user.worldObj.isRemote)
-        {
-            Entity e = user.worldObj.getEntityByID(user.getEntityId());
-            if (e instanceof EntityPlayer)
-            {
-                EntityPlayer owner = (EntityPlayer) e;
-                PacketPokemobMessage.sendMessage(owner, owner.getEntityId(), evt.message);
-            }
-        }
     }
 
     @SubscribeEvent
@@ -114,7 +103,6 @@ public class EventsHandler
                 pokemob = PokecubeManager.itemToPokemob(stack, event.player.worldObj);
                 proxy.setPokemob(event.player, pokemob);
                 new SendPacket(event.player);
-                new SendExsistingPacket(event.player);
             }
         }
     }
@@ -149,14 +137,27 @@ public class EventsHandler
                 pokemob = PokecubeManager.itemToPokemob(stack, player.worldObj);
                 proxy.setPokemob(player, pokemob);
                 new SendPacket(player);
-                new SendExsistingPacket(player);
             }
         }
     }
 
     @SubscribeEvent
-    public void PlayerLogout(PlayerLoggedOutEvent evt)
+    public void evolve(EvolveEvent.Post evt)
     {
+        Entity entity = (Entity) evt.mob;
+        if (entity.getEntityData().getBoolean("isPlayer"))
+        {
+            UUID uuid = UUID.fromString(entity.getEntityData().getString("playerID"));
+            EntityPlayer player = entity.getEntityWorld().getPlayerEntityByUUID(uuid);
+            IPokemob evo = (IPokemob) entity;
+            proxy.setPokemob(player, evo);
+            evt.setCanceled(true);
+            if (!player.worldObj.isRemote)
+            {
+                new SendPacket(player);
+            }
+            return;
+        }
     }
 
     @SubscribeEvent
@@ -174,7 +175,6 @@ public class EventsHandler
                 if (!player.worldObj.isRemote)
                 {
                     new SendPacket(player);
-                    new SendExsistingPacket(player);
                 }
                 return;
             }
@@ -231,7 +231,7 @@ public class EventsHandler
                 for (EntityPlayer player1 : player.worldObj.playerEntities)
                 {
                     if (player1 == player) continue;
-                    PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player)
+                    PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player1)
                             .getData(PokeInfo.class);
                     PacketTransform message = new PacketTransform();
                     info.writeToNBT(message.data);

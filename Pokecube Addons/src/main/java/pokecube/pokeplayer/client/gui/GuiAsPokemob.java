@@ -46,7 +46,6 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     {
         IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
         if (pokemob == null) return super.getCurrentPokemob();
-        currentMoveIndex = moveIndex;
         return pokemob;
     }
 
@@ -66,7 +65,13 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         buffer.writeByte(PacketDoActions.MOVEUSE);
         float range = 16;
         float contactRange = Math.max(1.5f, pokemob.getSize() * pokemob.getPokedexEntry().length);
+        moveIndex = pokemob.getMoveIndex();
         Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(moveIndex));
+        if (move == null)
+        {
+            moveIndex = 0;
+            move = MovesUtils.getMoveFromName(pokemob.getMove(moveIndex));
+        }
         if ((move.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) > 0) range = contactRange;
         Entity target = Tools.getPointedEntity(player, range);
         buffer.writeInt(target != null ? target.getEntityId() : -1);
@@ -129,53 +134,19 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     @Override
     public void nextMove(int i)
     {
-        if (!isPokemob()) super.nextMove(i);
-        else
-        {
-            setMove(moveIndex + i);
-        }
+        super.nextMove(i);
     }
 
     @Override
     public void previousMove(int j)
     {
-        if (!isPokemob()) super.previousMove(j);
-        else
-        {
-            setMove(moveIndex - j);
-        }
+        super.previousMove(j);
     }
 
     @Override
     public void setMove(int num)
     {
-        if (!isPokemob()) super.setMove(num);
-        else
-        {
-            int numMoves = 0;
-            String[] moves = getCurrentPokemob().getMoves();
-            for (int i = 0; i < moves.length; i++)
-            {
-                numMoves++;
-                if (moves[i] == null)
-                {
-                    break;
-                }
-            }
-            if (num < 0)
-            {
-                num = numMoves - 1;
-            }
-            else if (num >= numMoves)
-            {
-                num = 0;
-            }
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-            buffer.writeByte(PacketDoActions.MOVEINDEX);
-            buffer.writeByte((byte) num);
-            PacketDoActions packet = new PacketDoActions(buffer);
-            PokecubePacketHandler.sendToServer(packet);
-        }
+        super.setMove(num);
     }
 
     boolean isPokemob()

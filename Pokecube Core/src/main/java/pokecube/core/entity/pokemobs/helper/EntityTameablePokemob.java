@@ -42,6 +42,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.stats.StatsCollector;
@@ -241,6 +242,14 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         dataManager.register(OWNER_ID, Optional.<UUID> absent());
         // ID of the OT
         dataManager.register(OT_ID, Optional.<UUID> absent());
+        PokemobDataManager manager = new PokemobDataManager(this);
+        dataManager = manager;
+        manager.manualSyncSet.add(EXPDW);
+        manager.manualSyncSet.add(MOVEINDEXDW);
+        manager.manualSyncSet.add(MOVESDW);
+        manager.manualSyncSet.add(TRANSFORMEDTODW);
+        manager.manualSyncSet.add(STATUSDW);
+        manager.manualSyncSet.add(EVOLTICKDW);
     }
 
     /** Used to get the state without continually looking up in dataManager.

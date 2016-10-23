@@ -18,11 +18,6 @@ public class Proxy implements IGuiHandler
     {
         if (pokemob != null) setMapping(player, pokemob);
         else removeMapping(player);
-
-        if (!player.worldObj.isRemote)
-        {
-            new EventsHandler.SendPacket(player);
-        }
     }
 
     public void savePokemob(EntityPlayer player)

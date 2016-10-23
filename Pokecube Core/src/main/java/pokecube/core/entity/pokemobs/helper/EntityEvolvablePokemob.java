@@ -155,7 +155,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             if (evol != null)
             {
                 // Send evolve event.
-                EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
+                EvolveEvent evt = new EvolveEvent.Pre(this, evol);
                 MinecraftForge.EVENT_BUS.post(evt);
                 if (evt.isCanceled()) return null;
                 // change to new forme.
@@ -204,7 +204,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (evol != null)
             {
-                EvolveEvent evt = new EvolveEvent.Pre(this, evol.getName());
+                EvolveEvent evt = new EvolveEvent.Pre(this, evol);
                 MinecraftForge.EVENT_BUS.post(evt);
                 if (evt.isCanceled()) return null;
                 if (delayed)
@@ -344,6 +344,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 tag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.POKEDEXNB);
                 tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
                 ((IPokemob) evolution).readPokemobData(tag);
+                evolution.getEntityData().merge(getEntityData());
                 evolution.setUniqueId(getUniqueID());
                 evolution.copyLocationAndAnglesFrom(this);
                 this.setPokemonOwner((UUID) null);

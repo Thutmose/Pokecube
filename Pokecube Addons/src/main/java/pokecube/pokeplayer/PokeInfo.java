@@ -15,7 +15,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
-import pokecube.pokeplayer.EventsHandler.SendExsistingPacket;
 import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 import thut.api.entity.IHungrymob;
@@ -44,6 +43,7 @@ public class PokeInfo extends PlayerData
         this.originalHP = player.getMaxHealth();
         ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
         ((Entity) pokemob).getEntityData().setString("playerID", player.getUniqueID().toString());
+        pokemob.setPokemonOwner(player);
         save(player);
     }
 
@@ -63,7 +63,6 @@ public class PokeInfo extends PlayerData
         if (!player.worldObj.isRemote)
         {
             new SendPacket(player);
-            new SendExsistingPacket(player);
         }
     }
 
@@ -77,6 +76,10 @@ public class PokeInfo extends PlayerData
         player.setSize(width, height);
         setFlying(player, true);
         save(player);
+        if (!player.worldObj.isRemote)
+        {
+            new SendPacket(player);
+        }
     }
 
     public void onUpdate(EntityPlayer player)

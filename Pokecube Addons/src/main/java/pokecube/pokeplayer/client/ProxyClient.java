@@ -27,7 +27,7 @@ public class ProxyClient extends Proxy
     public IPokemob getPokemob(EntityPlayer player)
     {
         IPokemob ret = super.getPokemob(player);
-        if (ret != null)
+        if (ret != null && player.worldObj.isRemote)
         {
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
             info.setPlayer(player);

@@ -1,6 +1,7 @@
 package pokecube.pokeplayer.tileentity;
 
 import java.util.List;
+import java.util.Random;
 
 import com.google.common.collect.Lists;
 
@@ -22,7 +23,7 @@ import pokecube.pokeplayer.PokePlayer;
 public class TileEntityTransformer extends TileEntityOwnable implements ITickable
 {
     ItemStack stack;
-    int[]     nums;
+    int[]     nums     = {};
     boolean   random   = false;
     int       stepTick = 20;
 
@@ -93,7 +94,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             int num = 0;
             if (nums != null && nums.length > 0)
             {
-                num = nums[worldObj.rand.nextInt(nums.length)];
+                num = nums[new Random().nextInt(nums.length)];
             }
             else
             {

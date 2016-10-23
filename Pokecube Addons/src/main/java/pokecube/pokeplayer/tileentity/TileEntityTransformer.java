@@ -71,8 +71,8 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             stepTick = 50;
             IPokemob poke = PokePlayer.PROXY.getPokemob(player);
             NBTTagCompound tag = ((Entity) poke).getEntityData();
-            poke.setPokemonNickname(tag.getString("oldNickname"));
-            tag.removeTag("oldNickname");
+            poke.setPokemonNickname(tag.getString("oldName"));
+            tag.removeTag("oldName");
             tag.removeTag("isPlayer");
             tag.removeTag("playerID");
             ItemStack pokemob = PokecubeManager.pokemobToItem(poke);

@@ -280,6 +280,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     @Override
     protected boolean canRenderName(T entity)
     {
-        return false;
+        return entity.getEntityData().getBoolean("isPlayer");
     }
 }

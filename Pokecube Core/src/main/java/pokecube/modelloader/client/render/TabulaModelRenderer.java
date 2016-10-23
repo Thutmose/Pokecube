@@ -112,6 +112,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
     @Override
     protected boolean canRenderName(T entity)
     {
-        return false;
+        return entity.getEntityData().getBoolean("isPlayer");
     }
 }

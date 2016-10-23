@@ -35,7 +35,8 @@ public class PokeInfo extends PlayerData
 
     public void set(IPokemob pokemob, EntityPlayer player)
     {
-        if (this.pokemob != null) resetPlayer(player);
+        if (this.pokemob != null || pokemob == null) resetPlayer(player);
+        if (pokemob == null) return;
         this.pokemob = pokemob;
         this.pokeInventory = new InventoryPlayerPokemob(this, player.worldObj);
         this.originalHeight = player.height;
@@ -43,6 +44,8 @@ public class PokeInfo extends PlayerData
         this.originalHP = player.getMaxHealth();
         ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
         ((Entity) pokemob).getEntityData().setString("playerID", player.getUniqueID().toString());
+        ((Entity) pokemob).getEntityData().setString("oldName", pokemob.getPokemonNickname());
+        pokemob.setPokemonNickname(player.getDisplayNameString());
         pokemob.setPokemonOwner(player);
         save(player);
     }
@@ -56,10 +59,10 @@ public class PokeInfo extends PlayerData
         float width = originalWidth;
         player.setSize(width, height);
         setFlying(player, false);
-        save(player);
         pokemob = null;
         stack = null;
         pokeInventory = null;
+        save(player);
         if (!player.worldObj.isRemote)
         {
             new SendPacket(player);

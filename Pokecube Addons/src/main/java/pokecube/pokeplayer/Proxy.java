@@ -16,8 +16,7 @@ public class Proxy implements IGuiHandler
 
     public void setPokemob(EntityPlayer player, IPokemob pokemob)
     {
-        if (pokemob != null) setMapping(player, pokemob);
-        else removeMapping(player);
+        setMapping(player, pokemob);
     }
 
     public void savePokemob(EntityPlayer player)
@@ -30,17 +29,12 @@ public class Proxy implements IGuiHandler
     {
         PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
         info.set(pokemob, player);
-        info.setPlayer(player);
-        EntityTools.copyEntityTransforms((EntityLivingBase) info.getPokemob(player.getEntityWorld()), player);
-        info.save(player);
-    }
-
-    private void removeMapping(EntityPlayer player)
-    {
-        PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
-        info.resetPlayer(player);
-        info.clear();
-        info.save(player);
+        if (pokemob != null)
+        {
+            info.setPlayer(player);
+            EntityTools.copyEntityTransforms((EntityLivingBase) info.getPokemob(player.getEntityWorld()), player);
+            info.save(player);
+        }
     }
 
     public IPokemob getPokemob(EntityPlayer player)

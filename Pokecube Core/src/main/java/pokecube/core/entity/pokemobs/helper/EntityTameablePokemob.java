@@ -250,6 +250,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         manager.manualSyncSet.add(TRANSFORMEDTODW);
         manager.manualSyncSet.add(STATUSDW);
         manager.manualSyncSet.add(EVOLTICKDW);
+        manager.manualSyncSet.add(NICKNAMEDW);
     }
 
     /** Used to get the state without continually looking up in dataManager.

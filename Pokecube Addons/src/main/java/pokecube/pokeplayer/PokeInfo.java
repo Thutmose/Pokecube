@@ -212,7 +212,7 @@ public class PokeInfo extends PlayerData
         originalHeight = tag.getFloat("h");
         originalWidth = tag.getFloat("w");
         originalHP = tag.getFloat("hp");
-        if (originalHP <= 0) originalHP = 1;
+        if (originalHP <= 1) originalHP = 20;
     }
 
     public IPokemob getPokemob(World world)

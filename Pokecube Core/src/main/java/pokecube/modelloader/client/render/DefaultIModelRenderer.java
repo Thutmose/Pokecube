@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IPokemob;
@@ -123,6 +124,9 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         name = model.name;
         this.model = new ModelWrapper(model, this);
+        ModelWrapperEvent evt = new ModelWrapperEvent(this.model, name);
+        MinecraftForge.EVENT_BUS.post(evt);
+        this.model = evt.wrapper;
         this.mainModel = this.model;
         this.texture = model.texture;
         if (model.model.getResourcePath().contains(".x3d")) this.model.imodel = new X3dModel(model.model);

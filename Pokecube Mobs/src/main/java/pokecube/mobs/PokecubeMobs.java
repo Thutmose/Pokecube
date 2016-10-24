@@ -18,12 +18,15 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
+import pokecube.modelloader.client.render.ModelWrapperEvent;
+import pokecube.origin.render.ModelWrapperSpinda;
 import thut.core.client.ClientProxy;
 
 @Mod(modid = PokecubeMobs.MODID, name = "Pokecube Mobs", version = PokecubeMobs.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeMobs.MCVERSIONS)
@@ -117,8 +120,22 @@ public class PokecubeMobs implements IMobProvider
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        if (event.getSide() == Side.CLIENT) new UpdateNotifier();
+        if (event.getSide() == Side.CLIENT)
+        {
+            new UpdateNotifier();
+            MinecraftForge.EVENT_BUS.register(this);
+        }
         ModPokecubeML.proxy.registerModelProvider(MODID, this);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void initModel(ModelWrapperEvent evt)
+    {
+        if (evt.name.equalsIgnoreCase("spinda"))
+        {
+            evt.wrapper = new ModelWrapperSpinda(evt.wrapper.model, evt.wrapper.renderer);
+        }
     }
 
     @Override

@@ -25,12 +25,12 @@ import thut.core.client.render.tabula.components.Animation;
 
 public class ModelWrapper extends ModelBase implements IModel
 {
-    final Model                    model;
-    final DefaultIModelRenderer<?> renderer;
-    public IModel                  imodel;
-    public boolean                 statusRender   = false;
-    private float                  rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    private float                  rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
+    public final Model                    model;
+    public final DefaultIModelRenderer<?> renderer;
+    public IModel                         imodel;
+    public boolean                        statusRender   = false;
+    protected float                       rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
+    protected float                       rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
 
     public ModelWrapper(Model model, DefaultIModelRenderer<?> renderer)
     {
@@ -50,7 +50,7 @@ public class ModelWrapper extends ModelBase implements IModel
         GlStateManager.disableCull();
         transformGlobal(renderer.currentPhase, entityIn, Minecraft.getMinecraft().getRenderPartialTicks(), netHeadYaw,
                 headPitch);
-        updateAnimation(entityIn, renderer.currentPhase, partialTick, netHeadYaw, headPitch);
+        updateAnimation(entityIn, renderer.currentPhase, partialTick, netHeadYaw, headPitch, limbSwing);
         for (String partName : renderer.parts.keySet())
         {
             IExtendedModelPart part = imodel.getParts().get(partName);
@@ -111,7 +111,7 @@ public class ModelWrapper extends ModelBase implements IModel
         imodel.preProcessAnimations(animations);
     }
 
-    private void transformGlobal(String currentPhase, Entity entity, float partialTick, float rotationYaw,
+    protected void transformGlobal(String currentPhase, Entity entity, float partialTick, float rotationYaw,
             float rotationPitch)
     {
         if (renderer.rotations == null)
@@ -165,17 +165,18 @@ public class ModelWrapper extends ModelBase implements IModel
         GlStateManager.translate(rotationPointX, rotationPointY, rotationPointZ);
     }
 
-    private void updateAnimation(Entity entity, String currentPhase, float partialTicks, float headYaw, float headPitch)
+    protected void updateAnimation(Entity entity, String currentPhase, float partialTicks, float headYaw, float headPitch,
+            float limbSwing)
     {
         for (String partName : renderer.parts.keySet())
         {
             IExtendedModelPart part = imodel.getParts().get(partName);
-            updateSubParts(entity, currentPhase, partialTicks, part, headYaw, headPitch);
+            updateSubParts(entity, currentPhase, partialTicks, part, headYaw, headPitch, limbSwing);
         }
     }
 
     private void updateSubParts(Entity entity, String currentPhase, float partialTick, IExtendedModelPart parent,
-            float headYaw, float headPitch)
+            float headYaw, float headPitch, float limbSwing)
     {
         if (parent == null) return;
 
@@ -184,13 +185,13 @@ public class ModelWrapper extends ModelBase implements IModel
         if (anim)
         {
             if (AnimationHelper.doAnimation(renderer.animations.get(currentPhase), entity, parent.getName(), parent,
-                    partialTick))
+                    partialTick, limbSwing))
             {
             }
             else if (renderer.animations.containsKey(DefaultIModelRenderer.DEFAULTPHASE))
             {
                 AnimationHelper.doAnimation(renderer.animations.get(DefaultIModelRenderer.DEFAULTPHASE), entity,
-                        parent.getName(), parent, partialTick);
+                        parent.getName(), parent, partialTick, limbSwing);
             }
         }
 
@@ -254,7 +255,7 @@ public class ModelWrapper extends ModelBase implements IModel
         for (String partName : parent.getSubParts().keySet())
         {
             IExtendedModelPart part = parent.getSubParts().get(partName);
-            updateSubParts(entity, currentPhase, partialTick, part, headYaw, headPitch);
+            updateSubParts(entity, currentPhase, partialTick, part, headYaw, headPitch, limbSwing);
         }
     }
 

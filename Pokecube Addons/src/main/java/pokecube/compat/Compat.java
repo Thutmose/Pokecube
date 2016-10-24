@@ -229,6 +229,20 @@ public class Compat
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 
+    @Optional.Method(modid = "advancedRocketry")
+    @EventHandler
+    public void ARCompatOld(FMLPostInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat());
+    }
+
+    @Optional.Method(modid = "advancedrocketry")
+    @EventHandler
+    public void ARCompat(FMLPostInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat());
+    }
+
     @Optional.Method(modid = "soulshardstow")
     @EventHandler
     public void SoulShardsCompat(FMLPostInitializationEvent evt)

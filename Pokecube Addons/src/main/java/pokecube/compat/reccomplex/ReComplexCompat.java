@@ -70,7 +70,8 @@ public class ReComplexCompat
             }
             return;
         }
-        if (!Config.biomeMap.containsKey(evt.getStructureName().toLowerCase(java.util.Locale.ENGLISH))) { return; }
+        if (evt.getStructureName() == null || !Config.biomeMap
+                .containsKey(evt.getStructureName().toLowerCase(java.util.Locale.ENGLISH))) { return; }
         int biome = Config.biomeMap.get(evt.getStructureName().toLowerCase(java.util.Locale.ENGLISH));
         Vector3 pos = Vector3.getNewVector();
         StructureBoundingBox bounds = evt.getBoundingBox();

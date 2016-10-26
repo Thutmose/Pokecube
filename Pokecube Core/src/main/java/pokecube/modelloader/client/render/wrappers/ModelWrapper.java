@@ -94,7 +94,7 @@ public class ModelWrapper extends ModelBase implements IModel
      * float params here are the same second and third as in the
      * setRotationAngles method. */
     @Override
-    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_,
+    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
             float partialTickTime)
     {
     }

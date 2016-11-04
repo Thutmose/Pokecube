@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -52,8 +53,12 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         }
         if (te.frozen)
         {
-            partialTicks = te.animationTime % 1;
+            // partialTicks = te.animationTime % 1;
+            partialTicks = 0;
             ((Entity) mob).ticksExisted = (int) te.animationTime;
+            ((EntityLivingBase) mob).limbSwing = 0;
+            ((EntityLivingBase) mob).limbSwingAmount = 0;
+            ((EntityLivingBase) mob).prevLimbSwingAmount = 0;
         }
 
         Object o;

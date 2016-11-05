@@ -53,6 +53,11 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             toRender = (T) mob.getTransformedTo();
         }
         model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getName(), entity);
+        if (model == null && mob.getPokedexEntry().getBaseForme() != null)
+        {
+            model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getBaseForme().getName(), entity);
+            AnimationLoader.modelMaps.put(mob.getPokedexEntry().getName(), model);
+        }
         if (model != null && model instanceof RenderLivingBase)
         {
             this.mainModel = ((RenderLivingBase<?>) model).getMainModel();

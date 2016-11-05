@@ -1,10 +1,14 @@
 package pokecube.modelloader.client.gui;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -126,6 +130,62 @@ public class GuiAnimate extends GuiScreen
         {
             entry = Database.getEntry(pokedexNb);
         }
+        else if (button.id == 14)
+        {
+            entry = Database.getEntry(mob);
+            if (entry != null)
+            {
+                PokedexEntry adder = entry.getBaseForme() == null ? entry : entry.getBaseForme();
+                List<PokedexEntry> formes = Lists.newArrayList(adder.forms.values());
+                if (!formes.contains(adder)) formes.add(adder);
+
+                Collections.sort(formes, new Comparator<PokedexEntry>()
+                {
+                    @Override
+                    public int compare(PokedexEntry o1, PokedexEntry o2)
+                    {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
+                for (int i = 0; i < formes.size(); i++)
+                {
+                    if (formes.get(i) == entry)
+                    {
+                        entry = (i + 1 < formes.size()) ? formes.get(i + 1) : formes.get(0);
+                        mob = entry.getName();
+                        break;
+                    }
+                }
+            }
+        }
+        else if (button.id == 15)
+        {
+            entry = Database.getEntry(mob);
+            if (entry != null)
+            {
+                PokedexEntry adder = entry.getBaseForme() == null ? entry : entry.getBaseForme();
+                List<PokedexEntry> formes = Lists.newArrayList(adder.forms.values());
+                if (!formes.contains(adder)) formes.add(adder);
+
+                Collections.sort(formes, new Comparator<PokedexEntry>()
+                {
+                    @Override
+                    public int compare(PokedexEntry o1, PokedexEntry o2)
+                    {
+                        return o2.getName().compareTo(o1.getName());
+                    }
+                });
+                for (int i = 0; i < formes.size(); i++)
+                {
+                    if (formes.get(i) == entry)
+                    {
+                        entry = (i + 1 < formes.size()) ? formes.get(i + 1) : formes.get(0);
+                        mob = entry.getName();
+                        break;
+                    }
+                }
+            }
+        }
         if (entry != null)
         {
             IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
@@ -141,6 +201,7 @@ public class GuiAnimate extends GuiScreen
 
                 pokemob.specificSpawnInit();
             }
+            pokemob.setPokedexEntry(entry);
             forme.setText(pokemob.getPokedexEntry().getName());
             info.setText("" + pokemob.getSpecialInfo());
             if (button.id == 13)
@@ -374,6 +435,9 @@ public class GuiAnimate extends GuiScreen
         buttonList.add(new GuiButton(11, width / 2 - xOffset, yOffset - 100, 20, 20, "\u25b2"));
         buttonList.add(new GuiButton(12, width / 2 - xOffset, yOffset + 40, 40, 20, "normal"));
         buttonList.add(new GuiButton(13, width / 2 - xOffset, yOffset + 60, 40, 20, "sexe:M"));
+
+        buttonList.add(new GuiButton(14, width - 101 + 20, yOffset + 85 - yOffset / 2, 20, 20, "\u25b6"));
+        buttonList.add(new GuiButton(15, width - 101, yOffset + 85 - yOffset / 2, 20, 20, "\u25c0"));
     }
 
     @Override

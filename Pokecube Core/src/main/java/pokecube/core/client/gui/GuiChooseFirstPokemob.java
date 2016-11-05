@@ -395,6 +395,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             entity.rotationYaw = yHeadRenderAngle;
             entity.rotationPitch = xHeadRenderAngle;
             entity.rotationYawHead = entity.rotationYaw;
+            entity.prevRotationYawHead = entity.rotationYaw;
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
             yRenderAngle = yRenderAngle + 0.15F;
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);

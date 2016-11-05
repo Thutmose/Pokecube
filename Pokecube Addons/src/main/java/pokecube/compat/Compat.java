@@ -268,6 +268,13 @@ public class Compat
         }
     }
 
+    @Optional.Method(modid = "thutessentials")
+    @EventHandler
+    public void thutEssentialsCompat(FMLPreInitializationEvent e)
+    {
+        new pokecube.compat.tecompat.EssentialsCompat();
+    }
+
     @Optional.Method(modid = "tesla")
     @EventHandler
     public void TeslaCompat(FMLPreInitializationEvent evt)

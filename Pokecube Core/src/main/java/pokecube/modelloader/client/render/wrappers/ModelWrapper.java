@@ -43,7 +43,7 @@ public class ModelWrapper extends ModelBase implements IModel
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
             float headPitch, float scale)
     {
-        float partialTick = Minecraft.getMinecraft().getRenderPartialTicks();
+        float partialTick = ageInTicks - entityIn.ticksExisted;
         GlStateManager.pushMatrix();
         if (renderer.animator != null) renderer.currentPhase = renderer.animator
                 .modifyAnimation((EntityLiving) entityIn, partialTick, renderer.currentPhase);
@@ -94,7 +94,7 @@ public class ModelWrapper extends ModelBase implements IModel
      * float params here are the same second and third as in the
      * setRotationAngles method. */
     @Override
-    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_,
+    public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
             float partialTickTime)
     {
     }
@@ -165,8 +165,8 @@ public class ModelWrapper extends ModelBase implements IModel
         GlStateManager.translate(rotationPointX, rotationPointY, rotationPointZ);
     }
 
-    protected void updateAnimation(Entity entity, String currentPhase, float partialTicks, float headYaw, float headPitch,
-            float limbSwing)
+    protected void updateAnimation(Entity entity, String currentPhase, float partialTicks, float headYaw,
+            float headPitch, float limbSwing)
     {
         for (String partName : renderer.parts.keySet())
         {

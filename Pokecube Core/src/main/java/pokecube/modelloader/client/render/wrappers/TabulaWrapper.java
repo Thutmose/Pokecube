@@ -1,6 +1,5 @@
 package pokecube.modelloader.client.render.wrappers;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
@@ -40,7 +39,7 @@ public class TabulaWrapper extends ModelBase
         if (!statusRender) modelj.texturer = set.texturer;
         else modelj.texturer = null;
         modelj.changer = set;
-        float partialTick = Minecraft.getMinecraft().getRenderPartialTicks();
+        float partialTick = ageInTicks = entityIn.ticksExisted;
         if (set.animator != null)
         {
             phase = set.modifyAnimation((EntityLiving) entityIn, partialTick, phase);

@@ -98,12 +98,16 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>             HAPPYDW          = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
+    static final DataParameter<Integer>             ATTACKCOOLDOWN   = EntityDataManager
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
     static final DataParameter<String>              MOVESDW          = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
     static final DataParameter<String>              STATSDW          = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
     static final DataParameter<String>              NICKNAMEDW       = EntityDataManager
+            .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
+    static final DataParameter<String>              LASTMOVE         = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
 
     static final DataParameter<Byte>                BOOMSTATEDW      = EntityDataManager
@@ -225,10 +229,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         dataManager.register(STATUSDW, Byte.valueOf((byte) -1));
         dataManager.register(MOVEINDEXDW, Byte.valueOf((byte) -1));
         dataManager.register(STATUSTIMERDW, Integer.valueOf(0));
+        dataManager.register(ATTACKCOOLDOWN, Integer.valueOf(0));
 
         dataManager.register(MOVESDW, "");
         dataManager.register(SPECIALINFO, Integer.valueOf(0));
         dataManager.register(TRANSFORMEDTODW, Integer.valueOf(-1));
+        
+        dataManager.register(LASTMOVE, "");
 
         // Held item sync
         dataManager.register(HELDITEM, Optional.<ItemStack> absent());

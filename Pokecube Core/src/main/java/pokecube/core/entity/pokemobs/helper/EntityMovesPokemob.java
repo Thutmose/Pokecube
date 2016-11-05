@@ -185,7 +185,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         String currentMove = getMove(getMoveIndex());
         if (currentMove == MOVE_NONE || currentMove == null) { return; }
-
+        getDataManager().set(LASTMOVE, currentMove);
         if (target instanceof EntityLiving)
         {
             EntityLiving t = (EntityLiving) target;
@@ -291,6 +291,8 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (here == null) here = Vector3.getNewVector();
         here.set(posX, posY + getEyeHeight(), posZ);
         MovesUtils.useMove(move, this, target, here, targetLocation);
+        this.setAttackCooldown(MovesUtils.getAttackDelay(this, currentMove,
+                (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0, false));
         here.set(this);
     }
 
@@ -695,5 +697,23 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         if (index == 0) moveInfo.weapon1 = weapon;
         else moveInfo.weapon2 = weapon;
+    }
+
+    @Override
+    public int getAttackCooldown()
+    {
+        return this.getDataManager().get(ATTACKCOOLDOWN);
+    }
+
+    @Override
+    public void setAttackCooldown(int timer)
+    {
+        this.getDataManager().set(ATTACKCOOLDOWN, timer);
+    }
+
+    @Override
+    public String getLastMoveUsed()
+    {
+        return this.getDataManager().get(LASTMOVE);
     }
 }

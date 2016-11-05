@@ -43,6 +43,8 @@ public interface TagNames
     public static final String IVS          = "IVS";
     public static final String MOVES        = "moves";
     public static final String MOVELIST     = "movesList";
+    public static final String LASTUSED     = "lastMove";
+    public static final String COOLDOWN     = "cooldown";
     public static final String NATURE       = "nature";
     public static final String ABILITY      = "ability";
     public static final String ABILITYINDEX = "abilityIndex";

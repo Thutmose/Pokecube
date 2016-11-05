@@ -46,7 +46,8 @@ public class PokemobAIUtilityMove extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        return pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE) && entity.getAttackTarget() == null;
+        return pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE) && entity.getAttackTarget() == null
+                && pokemon.getAttackCooldown() <= 0;
     }
 
     /** Execute a one shot task or start executing a continuous task */
@@ -97,6 +98,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         if (dist < var1)
         {
             MovesUtils.useMove(move, entity, null, Vector3.getNewVector().set(entity), destination);
+            pokemon.executeMove(null, destination, 0);
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);
             destination = null;

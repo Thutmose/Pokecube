@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -40,13 +43,21 @@ import thut.api.terrain.TerrainSegment;
 
 public class MovesUtils implements IMoveConstants
 {
-    public static Random                     rand = new Random();
+    public static Random                     rand          = new Random();
 
-    public static HashMap<String, Move_Base> moves;
+    public static HashMap<String, Move_Base> moves         = Maps.newHashMap();
+    public static Set<String>                rechargeMoves = Sets.newHashSet();
 
     static
     {
-        moves = new HashMap<String, Move_Base>();
+        rechargeMoves.add("hyperbeam");
+        rechargeMoves.add("gigaimpact");
+        rechargeMoves.add("solarbeam");
+        rechargeMoves.add("rockwrecker");
+        rechargeMoves.add("blastburn");
+        rechargeMoves.add("frenzyplant");
+        rechargeMoves.add("hydrocannon");
+        rechargeMoves.add("roaroftime");
     }
 
     public static void addChange(Entity attacked, byte change)
@@ -394,19 +405,27 @@ public class MovesUtils implements IMoveConstants
     public static float getDelayMultiplier(IPokemob attacker, String moveName)
     {
         float statusMultiplier = 1F;
-        if (attacker.getStatus() == STATUS_PAR) statusMultiplier = 0.25F;
+        if (attacker.getStatus() == STATUS_PAR) statusMultiplier = 4F;
+        if (rechargeMoves.contains(moveName)) statusMultiplier = 4f;
         Move_Base move = getMoveFromName(moveName);
+        if (move == null) return 0;
         if (moveName == MOVE_NONE)
-        {
-            move = getMoveFromName(MOVE_TACKLE);
-        }
-        else if (move == null)
         {
             move = getMoveFromName(MOVE_TACKLE);
         }
         float pp = move.getPP();
         float ppFactor = (float) Math.sqrt(pp / 40f);
         return ppFactor * statusMultiplier;
+    }
+
+    public static int getAttackDelay(IPokemob attacker, String moveName, boolean distanced, boolean playerTarget)
+    {
+        byte[] mods = attacker.getModifiers();
+        int cd = PokecubeMod.core.getConfig().attackCooldown;
+        if (playerTarget) cd *= 2;
+        double accuracyMod = Tools.modifierToRatio(mods[6], true);
+        double moveMod = MovesUtils.getDelayMultiplier(attacker, moveName);
+        return (int) (cd * moveMod / accuracyMod);
     }
 
     public static ITextComponent getMoveName(String attack)
@@ -825,6 +844,7 @@ public class MovesUtils implements IMoveConstants
         PokecubeCore.moveQueues.queueMove(moveUse);
     }
 
+    @Deprecated
     public static void useMove(@Nonnull String move, @Nonnull Entity user, @Nullable Entity target,
             @Nonnull Vector3 start, @Nonnull Vector3 end)
     {

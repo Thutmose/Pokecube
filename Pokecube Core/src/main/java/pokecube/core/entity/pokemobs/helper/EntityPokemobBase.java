@@ -796,6 +796,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 if (moves.hasKey("" + i)) setMove(i, moves.getString("" + i));
             }
             getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
+            this.getDataManager().set(LASTMOVE, movesTag.getString(LASTUSED));
+            this.setAttackCooldown(movesTag.getInteger(COOLDOWN));
         }
         // Read Inventory tag
         if (!inventoryTag.hasNoTags())
@@ -1113,6 +1115,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
         movesTag.setTag(MOVELIST, movesList);
         movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);
+        movesTag.setString(LASTUSED, getDataManager().get(LASTMOVE));
+        movesTag.setInteger(COOLDOWN, getAttackCooldown());
 
         // Write Inventory tag
         NBTTagCompound inventoryTag = new NBTTagCompound();

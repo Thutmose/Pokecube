@@ -119,13 +119,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     }
 
     @Override
-    @Deprecated
-    public IPokemob changeForme(String forme)
-    {
-        return setPokedexEntry(Database.getEntry(forme));
-    }
-
-    @Override
     public IPokemob evolve(boolean delayed, boolean init)
     {
         return evolve(delayed, init, this.getHeldItemMainhand());
@@ -376,19 +369,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
         }
         return (IPokemob) evolution;
-    }
-
-    @Override
-    @Deprecated
-    public IPokemob megaEvolve(String forme)
-    {
-        PokedexEntry newEntry = Database.getEntry(forme);
-        if (newEntry == getPokedexEntry()) return this;
-        if (newEntry == null)
-        {
-            newEntry = Database.getEntry(forme);
-        }
-        return megaEvolve(newEntry);
     }
 
     @Override

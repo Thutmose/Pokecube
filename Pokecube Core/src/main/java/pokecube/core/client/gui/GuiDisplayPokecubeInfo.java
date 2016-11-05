@@ -360,12 +360,29 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                 if (move != null)
                 {
-                    if (currentMoveIndex == index) GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
-                    else GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     // bind texture
+                    GL11.glPushMatrix();// TODO find out why both needed
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91, 13);
-                    GL11.glPushMatrix();// TODO find out why both needed
+                    if (currentMoveIndex == index)
+                    {
+                        float timer = 1;
+                        Move_Base lastMove;
+                        if ((lastMove = MovesUtils.getMoveFromName(pokemob.getLastMoveUsed())) != null)
+                        {
+                            timer -= (pokemob.getAttackCooldown() / (float) MovesUtils.getAttackDelay(pokemob,
+                                    pokemob.getLastMoveUsed(),
+                                    (lastMove.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0, false));
+                        }
+                        timer = Math.max(0, Math.min(timer, 1));
+                        GL11.glColor4f(0F, 0.1F, 1.0F, 1.0F);
+                        this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1,
+                                (int) (91 * timer), 13);
+                    }
+                    GL11.glPopMatrix();
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+                    GL11.glPushMatrix();
                     Color moveColor = new Color(move.move.type.colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);

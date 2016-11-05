@@ -285,13 +285,6 @@ public interface IPokemob extends IMoveConstants
      * @return whether this mob can be ridden with HMSurf */
     boolean canUseSurf();
 
-    /** Use setPokedexEntry instead.
-     * 
-     * @param forme
-     * @return */
-    @Deprecated
-    IPokemob changeForme(String forme);
-
     /** Displays a message in the console of the owner player (if this pokemob
      * is tamed).
      * 
@@ -576,9 +569,6 @@ public interface IPokemob extends IMoveConstants
      *            the new level */
     IPokemob levelUp(int level);
 
-    @Deprecated
-    IPokemob megaEvolve(String forme);
-
     IPokemob megaEvolve(PokedexEntry forme);
 
     /** Returns modified texture to account for shininess, animation, etc.
@@ -815,4 +805,10 @@ public interface IPokemob extends IMoveConstants
     void readPokemobData(NBTTagCompound tag);
 
     NBTTagCompound writePokemobData();
+
+    int getAttackCooldown();
+
+    void setAttackCooldown(int timer);
+    
+    String getLastMoveUsed();
 }

@@ -99,12 +99,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public IPokemob changeForme(String forme)
-    {
-        return this;
-    }
-
-    @Override
     public void displayMessageToOwner(ITextComponent message)
     {
         parent.displayMessageToOwner(message);
@@ -569,13 +563,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public IPokemob megaEvolve(String forme)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public ResourceLocation modifyTexture(ResourceLocation texture)
     {
         // TODO Auto-generated method stub
@@ -1001,6 +988,27 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public IPokemob megaEvolve(PokedexEntry forme)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getAttackCooldown()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setAttackCooldown(int timer)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public String getLastMoveUsed()
     {
         // TODO Auto-generated method stub
         return null;

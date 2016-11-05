@@ -48,16 +48,6 @@ public class AIAttack extends AIBase implements IAICombat
         this.setMutex(3);
     }
 
-    private void applyDelay(IPokemob attacker, String moveName, boolean distanced)
-    {
-        byte[] mods = attacker.getModifiers();
-        int cd = PokecubeMod.core.getConfig().attackCooldown;
-        if (entityTarget instanceof EntityPlayer) cd *= 2;
-        double accuracyMod = Tools.modifierToRatio(mods[6], true);
-        double moveMod = MovesUtils.getDelayMultiplier(attacker, moveName);
-        delayTime = (int) (cd * moveMod / accuracyMod);
-    }
-
     private void checkMateFight(IPokemob pokemob)
     {
         if (pokemob.getPokemonAIState(IMoveConstants.MATEFIGHT))
@@ -102,6 +92,8 @@ public class AIAttack extends AIBase implements IAICombat
         {
             attacker.getEntityData().setLong("lastAttackTick", attacker.getEntityWorld().getTotalWorldTime());
         }
+        delayTime = ((IPokemob) attacker).getAttackCooldown();
+        ((IPokemob) attacker).setAttackCooldown(--delayTime > 0 ? delayTime : 0);
     }
 
     @Override
@@ -393,7 +385,12 @@ public class AIAttack extends AIBase implements IAICombat
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
             if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
         }
-        delayTime--;
+    }
+
+    private void applyDelay(IPokemob pokemob, String name, boolean distanced)
+    {
+        delayTime = MovesUtils.getAttackDelay(pokemob, name, distanced, entityTarget instanceof EntityPlayer);
+        pokemob.setAttackCooldown(delayTime);
     }
 
     @Override

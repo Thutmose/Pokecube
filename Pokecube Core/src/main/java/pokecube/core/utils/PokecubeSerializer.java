@@ -666,7 +666,7 @@ public class PokecubeSerializer
 
         if (entity != null)
         {
-            entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
+            entity.setForSpawn(Tools.levelToXp(entity.getExperienceMode(), 5));
             ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
             entity.setPokemonOwner(owner.getUniqueID());
             entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));

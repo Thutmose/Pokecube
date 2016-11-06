@@ -303,8 +303,12 @@ public class PokeNavigator extends PathNavigate
                 v.set(theEntity);
                 v1.set(getPath().getFinalPathPoint());
                 double dist;
-                boolean loaded = worldObj.isAreaLoaded(v.getPos(), v1.getPos());
-
+                // Check down at bedrock for loaded to allow flying above or
+                // below loaded area.
+                boolean loaded = worldObj.isAreaLoaded(v.addTo(0, -v.y + 1, 0).getPos(),
+                        v1.addTo(0, -v1.y + 1, 0).getPos());
+                v.set(theEntity);
+                v1.set(getPath().getFinalPathPoint());
                 if (!loaded || (dist = v.distTo(v1)) < f)
                 {
                     this.clearPathEntity();

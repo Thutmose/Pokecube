@@ -240,7 +240,6 @@ public class ClientProxy extends CommonProxy
                 HashSet<String> alternateFormes = Sets.newHashSet();
                 PokedexEntry entry = model;
                 name = entry.getTrimmedName().toLowerCase(Locale.ENGLISH);
-                System.out.println(model + " " + name + " " + xml);
                 if (!AnimationLoader.initModel(provider, mod + ":" + provider.getModelDirectory(entry) + name,
                         alternateFormes))
                 {

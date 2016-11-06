@@ -32,6 +32,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -594,13 +595,11 @@ public class PokedexEntry
         {
             for (SpawnBiomeMatcher matcher : matchers.keySet())
             {
-                if (matcher.matches(checker))
-                {
-                    SpawnEvent.Check evt = new SpawnEvent.Check(entry, checker.location, checker.world, forSpawn);
-                    MinecraftForge.EVENT_BUS.post(evt);
-                    if (evt.isCanceled()) continue;
-                    return matcher;
-                }
+                SpawnEvent.Check evt = new SpawnEvent.Check(entry, checker.location, checker.world, forSpawn);
+                MinecraftForge.EVENT_BUS.post(evt);
+                if (evt.isCanceled()) continue;
+                if (evt.getResult() == Result.ALLOW) return matcher;
+                if (matcher.matches(checker)) return matcher;
             }
             return null;
         }

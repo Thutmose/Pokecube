@@ -56,6 +56,7 @@ public class SpawnEvent extends Event
      * for a valid location. <br>
      * Cancelling this will prevent the spawn. */
     @Cancelable
+    @HasResult
     public static class Check extends SpawnEvent
     {
         /** Is this even actually for spawning, or just checking if something

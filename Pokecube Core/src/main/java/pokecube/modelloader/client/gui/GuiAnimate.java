@@ -85,7 +85,15 @@ public class GuiAnimate extends GuiScreen
         }
         else if (button.id == 4)
         {
+            if (entry.getBaseForme() != null)
+            {
+                entry = entry.getBaseForme();
+            }
             ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
+            for (PokedexEntry e : entry.forms.values())
+            {
+                ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
+            }
         }
         else if (button.id == 5)
         {

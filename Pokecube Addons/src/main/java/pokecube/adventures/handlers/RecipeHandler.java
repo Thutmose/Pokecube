@@ -48,7 +48,7 @@ public class RecipeHandler
         // Ditto
         ItemStack eggOut = ItemPokemobEgg.getEggStack(132);
         RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion),
-                Database.getEntry("ditto"), 10000);
+                Database.getEntry("ditto"), 10000).setSplicer();
         newRecipe.remainIndex.add(0);
         // Low priority
         newRecipe.priority = -1;
@@ -60,8 +60,8 @@ public class RecipeHandler
         // Genesect
         eggOut = ItemPokemobEgg.getEggStack(649);
         newRecipe = new RecipeFossilRevive(eggOut,
-                Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), Database.getEntry(649),
-                30000);
+                Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), Database.getEntry(649), 30000)
+                        .setSplicer();
         newRecipe.tame = false;
         newRecipe.level = 70;
         RecipeFossilRevive.addRecipe(newRecipe);
@@ -69,7 +69,7 @@ public class RecipeHandler
         // Mewtwo
         eggOut = ItemPokemobEgg.getEggStack(150);
         newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion),
-                Database.getEntry("mewtwo"), 30000);
+                Database.getEntry("mewtwo"), 30000).setSplicer();
         newRecipe.tame = false;
         newRecipe.level = 70;
         RecipeFossilRevive.addRecipe(newRecipe);

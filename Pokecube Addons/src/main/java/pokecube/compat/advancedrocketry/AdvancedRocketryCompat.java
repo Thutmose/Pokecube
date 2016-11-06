@@ -7,45 +7,37 @@ import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import pokecube.compat.events.TransferDimension;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import zmaster587.advancedRocketry.api.Configuration;
@@ -54,12 +46,11 @@ import zmaster587.advancedRocketry.api.event.AtmosphereEvent.AtmosphereTickEvent
 
 public class AdvancedRocketryCompat
 {
-    protected static Map<Long, TransitionEntity> transitionMap = new HashMap<Long, TransitionEntity>();
-    public static String                         CUSTOMSPAWNSFILE;
+    public static String       CUSTOMSPAWNSFILE;
 
-    private static PrintWriter                   out;
+    private static PrintWriter out;
 
-    private static FileWriter                    fwriter;
+    private static FileWriter  fwriter;
 
     public static void setSpawnsFile(FMLPreInitializationEvent evt)
     {
@@ -324,103 +315,25 @@ public class AdvancedRocketryCompat
             PokedexEntry entry = (((IPokemob) event.getEntity()).getPokedexEntry());
             if (entry == megaray && event.getEntityLiving().isBeingRidden())
             {
-                if (event.getEntity().posY > 300)
+                if (event.getEntity().posY > Configuration.orbit)
                 {
-                    new RayquazaRocketHandler((EntityPokemob) event.getEntity())
-                            .changeDimension(Configuration.spaceDimId);
+                    Vector3 pos = Vector3.getNewVector().set(event.getEntity());
+                    pos.y = Configuration.orbit - 10;
+                    TransferDimension event2 = new TransferDimension(event.getEntity(), pos, Configuration.spaceDimId);
+                    MinecraftForge.EVENT_BUS.post(event2);
+                    if (!event2.isCanceled()) Transporter.teleportEntity(event.getEntity(), event2.getDesination(),
+                            event2.getDestinationDim(), false);
                 }
                 else if (event.getEntity().posY < 0)
                 {
-                    new RayquazaRocketHandler((EntityPokemob) event.getEntity()).changeDimension(0);
+                    Vector3 pos = Vector3.getNewVector().set(event.getEntity());
+                    pos.y = Configuration.orbit - 10;
+                    TransferDimension event2 = new TransferDimension(event.getEntity(), pos, 0);
+                    MinecraftForge.EVENT_BUS.post(event2);
+                    if (!event2.isCanceled()) Transporter.teleportEntity(event.getEntity(), event2.getDesination(),
+                            event2.getDestinationDim(), false);
                 }
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void tick(TickEvent.ServerTickEvent event)
-    {
-        // Tick satellites
-        if (event.phase == Phase.END)
-        {
-            if (!transitionMap.isEmpty())
-            {
-                Iterator<Entry<Long, TransitionEntity>> itr = transitionMap.entrySet().iterator();
-
-                while (itr.hasNext())
-                {
-                    Entry<Long, TransitionEntity> entry = itr.next();
-                    TransitionEntity ent = entry.getValue();
-                    if (ent.entity.worldObj.getTotalWorldTime() >= entry.getKey())
-                    {
-                        ent.entity.setLocationAndAngles(ent.location.getX(), ent.location.getY(), ent.location.getZ(),
-                                ent.entity.rotationYaw, ent.entity.rotationPitch);
-                        ent.entity.getServer().getPlayerList().transferPlayerToDimension((EntityPlayerMP) ent.entity,
-                                ent.dimId,
-                                new TeleporterNoPortal(ent.entity.getServer().worldServerForDimension(ent.dimId)));
-                        ent.entity.startRiding(ent.entity2);
-
-                        itr.remove();
-                    }
-                }
-            }
-        }
-    }
-
-    public static class TransitionEntity
-    {
-        long            time;
-        public Entity   entity;
-        public int      dimId;
-        public BlockPos location;
-        public Entity   entity2; // the mount
-
-        public TransitionEntity(long time, Entity entity, int dimId, BlockPos location, Entity entity2)
-        {
-            this.time = time;
-            this.entity = entity;
-            this.dimId = dimId;
-            this.location = location;
-            this.entity2 = entity2;
-        }
-    }
-
-    public static class TeleporterNoPortal extends Teleporter
-    {
-
-        public TeleporterNoPortal(WorldServer p_i1963_1_)
-        {
-            super(p_i1963_1_);
-        }
-
-        public void teleport(Entity entity, WorldServer world)
-        {
-
-            if (entity.isEntityAlive())
-            {
-                entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw,
-                        entity.rotationPitch);
-                world.spawnEntityInWorld(entity);
-                world.updateEntityWithOptionalForce(entity, false);
-            }
-            entity.setWorld(world);
-        }
-
-        @Override
-        public boolean placeInExistingPortal(Entity entityIn, float rotationYaw)
-        {
-            return false;
-        }
-
-        @Override
-        public void removeStalePortalLocations(long par1)
-        {
-        }
-
-        @Override
-        public boolean makePortal(Entity p_85188_1_)
-        {
-            return true;
         }
     }
 }

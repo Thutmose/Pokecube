@@ -1,4 +1,4 @@
-package pokecube.compat.jei.cloner;
+package pokecube.compat.jei.fossil;
 
 import javax.annotation.Nonnull;
 
@@ -15,8 +15,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import pokecube.compat.jei.JEICompat;
+import pokecube.compat.jei.cloner.ClonerRecipeWrapper;
 
-public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper>
+public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper>
 {
 
     private static final int          craftOutputSlot = 0;
@@ -29,11 +30,11 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     @Nonnull
     private final ICraftingGridHelper craftingGridHelper;
 
-    public ClonerRecipeCategory(IGuiHelper guiHelper)
+    public FossilRecipeCategory(IGuiHelper guiHelper)
     {
         ResourceLocation location = new ResourceLocation("minecraft", "textures/gui/container/crafting_table.png");
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
-        localizedName = Translator.translateToLocal("tile.cloner.splicer.name");
+        localizedName = Translator.translateToLocal("tile.cloner.reanimator.name");
         craftingGridHelper = guiHelper.createCraftingGridHelper(craftInputSlot1, craftOutputSlot);
     }
 
@@ -66,7 +67,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     @Override
     public String getUid()
     {
-        return JEICompat.CLONER;
+        return JEICompat.REANIMATOR;
     }
 
     @Override

@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import mezz.jei.api.IGuiHelper;
-import mezz.jei.api.IItemRegistry;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -23,24 +22,26 @@ import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.compat.jei.cloner.ClonerRecipeCategory;
 import pokecube.compat.jei.cloner.ClonerRecipeHandler;
+import pokecube.compat.jei.fossil.FossilRecipeCategory;
+import pokecube.compat.jei.fossil.FossilRecipeHandler;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.gui.blocks.GuiPC;
 
 @JEIPlugin
 public class JEICompat implements IModPlugin
 {
-    public static final String CLONER = "pokecube_adventures.cloner";
+    public static final String CLONER     = "pokecube_adventures.splicer";
+    public static final String REANIMATOR = "pokecube_adventures.reanimator";
 
-    static boolean             added  = false;
+    static boolean             added      = false;
 
     public static List<Rectangle> getPCModuleAreas(GuiPC gui)
     {
         List<Rectangle> retList = Lists.newArrayList();
         retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 50, 50));
+        // TODO update this as PC buttons change.
         return retList;
     }
-
-    IItemRegistry itemRegistry;
 
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
@@ -53,6 +54,8 @@ public class JEICompat implements IModPlugin
         IGuiHelper guiHelper = registry.getJeiHelpers().getGuiHelper();
         registry.addRecipeCategories(new ClonerRecipeCategory(guiHelper));
         registry.addRecipeHandlers(new ClonerRecipeHandler());
+        registry.addRecipeCategories(new FossilRecipeCategory(guiHelper));
+        registry.addRecipeHandlers(new FossilRecipeHandler());
         registry.addRecipeClickArea(GuiCloner.class, 88, 32, 28, 23, CLONER);
 
         IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();

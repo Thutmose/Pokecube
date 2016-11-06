@@ -1,4 +1,4 @@
-package pokecube.compat.jei.cloner;
+package pokecube.compat.jei.fossil;
 
 import javax.annotation.Nonnull;
 
@@ -7,15 +7,16 @@ import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.compat.jei.JEICompat;
+import pokecube.compat.jei.cloner.ClonerRecipeWrapper;
 
-public class ClonerRecipeHandler implements IRecipeHandler<RecipeFossilRevive>
+public class FossilRecipeHandler implements IRecipeHandler<RecipeFossilRevive>
 {
 
     @Nonnull
     @Override
     public String getRecipeCategoryUid()
     {
-        return JEICompat.CLONER;
+        return JEICompat.REANIMATOR;
     }
 
     @Override

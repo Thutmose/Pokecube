@@ -57,8 +57,9 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
             EventsHandlerClient.renderMobs.put(entry, pokemob);
         }
         GL11.glPushMatrix();
-        GL11.glTranslated(102, 32, 10);
-        GL11.glScaled(2, 2, 2);
+        GL11.glTranslated(102, 36, 10);
+        double scale = 1.2;
+        GL11.glScaled(scale, scale, scale);
         EventsHandlerClient.renderMob(pokemob, 0);
         GL11.glPopMatrix();
     }
@@ -90,11 +91,11 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        // TODO Auto-generated method stub
-        
+        ingredients.setInputs(ItemStack.class, (List<ItemStack>) getInputs());
     }
 
     @Override
@@ -115,7 +116,7 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override

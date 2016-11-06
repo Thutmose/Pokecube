@@ -137,4 +137,10 @@ public class RecipeClone implements IClonerRecipe
         }
         return aitemstack;
     }
+
+    @Override
+    public boolean splicerRecipe()
+    {
+        return true;
+    }
 }

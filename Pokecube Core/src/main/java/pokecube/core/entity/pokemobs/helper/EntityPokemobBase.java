@@ -677,7 +677,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         long time = System.nanoTime();
         here.set(posX, posY, posZ);
-        boolean loaded = worldObj.isAreaLoaded(this.getPosition(), 8);
+        BlockPos pos = new BlockPos(posX, 1, posZ);
+        boolean loaded = worldObj.isAreaLoaded(pos, 8);
         if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING) || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null))
         {

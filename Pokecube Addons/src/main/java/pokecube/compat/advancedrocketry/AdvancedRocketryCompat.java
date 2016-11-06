@@ -40,9 +40,13 @@ import pokecube.core.interfaces.PokecubeMod;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
+import zmaster587.advancedRocketry.api.AdvancedRocketryAPI;
 import zmaster587.advancedRocketry.api.Configuration;
 import zmaster587.advancedRocketry.api.IAtmosphere;
 import zmaster587.advancedRocketry.api.event.AtmosphereEvent.AtmosphereTickEvent;
+import zmaster587.advancedRocketry.api.stations.ISpaceObject;
+import zmaster587.advancedRocketry.dimension.DimensionManager;
+import zmaster587.advancedRocketry.dimension.DimensionProperties;
 
 public class AdvancedRocketryCompat
 {
@@ -315,24 +319,51 @@ public class AdvancedRocketryCompat
             PokedexEntry entry = (((IPokemob) event.getEntity()).getPokedexEntry());
             if (entry == megaray && event.getEntityLiving().isBeingRidden())
             {
-                if (event.getEntity().posY > Configuration.orbit)
+                boolean goUp = event.getEntity().posY > Configuration.orbit;
+                boolean goDown = event.getEntity().posY < 0;
+                if (!(goUp || goDown)) return;
+                Vector3 pos = Vector3.getNewVector().set(event.getEntity());
+                pos.y = Configuration.orbit - 100;
+                boolean aroundStation = false;
+                ISpaceObject station = AdvancedRocketryAPI.spaceObjectManager
+                        .getSpaceStationFromBlockCoords(event.getEntity().getPosition());
+                aroundStation = station != null;
+                int dim = goUp ? Configuration.spaceDimId : 0;
+                if (aroundStation)
                 {
-                    Vector3 pos = Vector3.getNewVector().set(event.getEntity());
-                    pos.y = Configuration.orbit - 10;
-                    TransferDimension event2 = new TransferDimension(event.getEntity(), pos, Configuration.spaceDimId);
-                    MinecraftForge.EVENT_BUS.post(event2);
-                    if (!event2.isCanceled()) Transporter.teleportEntity(event.getEntity(), event2.getDesination(),
-                            event2.getDestinationDim(), false);
+                    if (goDown)
+                    {
+                        dim = station.getOrbitingPlanetId();
+                        if (dim == -1) dim = 0;
+                    }
                 }
-                else if (event.getEntity().posY < 0)
+                else
                 {
-                    Vector3 pos = Vector3.getNewVector().set(event.getEntity());
-                    pos.y = Configuration.orbit - 10;
-                    TransferDimension event2 = new TransferDimension(event.getEntity(), pos, 0);
-                    MinecraftForge.EVENT_BUS.post(event2);
-                    if (!event2.isCanceled()) Transporter.teleportEntity(event.getEntity(), event2.getDesination(),
-                            event2.getDestinationDim(), false);
+                    DimensionProperties props = DimensionManager.getInstance()
+                            .getDimensionProperties(event.getEntity().worldObj.provider.getDimension());
+                    boolean moon = props.isMoon();
+                    System.out.println(moon + " " + props.getChildPlanets());
+                    if (moon && goUp)
+                    {
+                        dim = props.getParentPlanet();
+                    }
+                    else if (!props.isStation() && !props.getChildPlanets().isEmpty())
+                    {
+                        List<Integer> moons = Lists.newArrayList(props.getChildPlanets());
+                        Collections.sort(moons);
+                        if (!moons.isEmpty())
+                        {
+                            int whichMoon = (int) (moons.size() * (props.rotationalPhi % (2 * Math.PI)) / (2 * Math.PI))
+                                    % moons.size();
+                            dim = moons.get(whichMoon);
+                        }
+                    }
                 }
+                if (!DimensionManager.getInstance().canTravelTo(dim)) return;
+                TransferDimension event2 = new TransferDimension(event.getEntity(), pos, dim);
+                MinecraftForge.EVENT_BUS.post(event2);
+                if (!event2.isCanceled()) Transporter.teleportEntity(event.getEntity(), event2.getDesination(),
+                        event2.getDestinationDim(), false);
             }
         }
     }

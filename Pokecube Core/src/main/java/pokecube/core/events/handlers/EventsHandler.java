@@ -609,9 +609,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
     {
-        if (event.getEntity() instanceof IPokemob || event.getEntity() instanceof EntityProfessor)
+        if (event.getObject() instanceof IPokemob || event.getObject() instanceof EntityProfessor)
         {
             class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
             {

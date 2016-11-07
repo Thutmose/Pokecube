@@ -8,6 +8,7 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 
 public class ModGuiFactory implements IModGuiFactory
 {
+    @SuppressWarnings("deprecation")
     @Override
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element)
     {

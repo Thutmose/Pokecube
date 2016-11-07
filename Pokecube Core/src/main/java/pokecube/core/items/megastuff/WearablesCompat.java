@@ -51,7 +51,7 @@ public class WearablesCompat
     @SubscribeEvent
     public void onItemCapabilityAttach(AttachCapabilitiesEvent.Item event)
     {
-        if (event.getItem() instanceof ItemMegawearable)
+        if (event.getObject() instanceof ItemMegawearable)
         {
             event.addCapability(new ResourceLocation("pokecube:wearable"), new WearableMega());
         }

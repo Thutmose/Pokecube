@@ -17,6 +17,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
@@ -78,6 +80,7 @@ public class TeslaHandler
     {
         ITeslaProducer producer = event.getTile().getCapability(TESLA_PRODUCER, null);
         Map<ITeslaConsumer, Long> tiles = Maps.newHashMap();
+        Map<IEnergyStorage, Integer> tiles2 = Maps.newHashMap();
         long output = producer.takePower(PokecubeAdv.conf.maxOutput, true);
         event.getTile().theoreticalOutput = (int) output;
         event.getTile().currentOutput = 0;
@@ -87,12 +90,21 @@ public class TeslaHandler
         {
             TileEntity te = v.getTileEntity(event.getTile().getWorld(), side);
             ITeslaConsumer cap;
+            IEnergyStorage cap2;
             if (te != null && (cap = te.getCapability(TESLA_CONSUMER, side.getOpposite())) != null)
             {
                 long toSend = cap.givePower(output, true);
                 if (toSend > 0)
                 {
                     tiles.put(cap, toSend);
+                }
+            }
+            else if (te != null && (cap2 = te.getCapability(CapabilityEnergy.ENERGY, side.getOpposite())) != null)
+            {
+                Integer toSend = cap2.receiveEnergy((int) output, true);
+                if (toSend > 0 && cap2.canReceive())
+                {
+                    tiles2.put(cap2, toSend);
                 }
             }
         }
@@ -108,6 +120,19 @@ public class TeslaHandler
             ITeslaConsumer h = entry.getKey();
             output -= request;
             h.givePower(request, false);
+        }
+        for (Map.Entry<IEnergyStorage, Integer> entry : tiles2.entrySet())
+        {
+            Integer fraction = (int) (output / tiles.size());
+            Integer request = entry.getValue();
+            if (request > fraction)
+            {
+                request = fraction;
+            }
+            if (fraction == 0 || output <= 0) continue;
+            IEnergyStorage h = entry.getKey();
+            output -= request;
+            h.receiveEnergy(request, false);
         }
         producer.takePower(start - output, false);
     }

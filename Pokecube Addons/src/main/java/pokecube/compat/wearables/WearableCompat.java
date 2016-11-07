@@ -20,9 +20,9 @@ public class WearableCompat
     }
 
     @SubscribeEvent
-    public void onItemCapabilityAttach(AttachCapabilitiesEvent.Item event)
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent<?> event)
     {
-        if (event.getItem() instanceof ItemBag)
+        if (event.getObject() instanceof ItemBag)
         {
             event.addCapability(new ResourceLocation("pokecube_adv:wearable"), new WearableBag());
         }

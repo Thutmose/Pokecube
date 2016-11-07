@@ -11,7 +11,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import pokecube.core.ai.thread.IAICombat;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -19,6 +18,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.TickHandler;
+import thut.api.entity.ai.IAICombat;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 

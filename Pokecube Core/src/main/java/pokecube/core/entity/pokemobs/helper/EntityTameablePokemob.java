@@ -61,12 +61,13 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
+import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IMob, IInventoryChangedListener,
-        IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob, IEntityOwnable
+        IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob
 {
     public static int                               EXITCUBEDURATION = 40;
 

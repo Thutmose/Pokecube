@@ -58,7 +58,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.achievements.AchievementCatch;
-import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.pc.InventoryPC;
@@ -747,7 +746,6 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void serverStop(FMLServerStoppingEvent event)
     {
-        PokemobAIThread.clear();
         events.meteorprocessor.clear();
         BerryGenManager.berryLocations.clear();
         PokecubeDimensionManager.getInstance().onServerStop(event);

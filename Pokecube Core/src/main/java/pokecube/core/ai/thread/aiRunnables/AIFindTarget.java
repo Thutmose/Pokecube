@@ -13,14 +13,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.PokecubeCore;
-import pokecube.core.ai.thread.IAICombat;
-import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
+import thut.api.entity.ai.AIThreadManager;
+import thut.api.entity.ai.IAICombat;
 import thut.api.maths.Vector3;
 
 public class AIFindTarget extends AIBase implements IAICombat
@@ -70,7 +70,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         double d4 = -1.0D;
         EntityPlayer entityplayer = null;
 
-        Vector<?> playerEntities = PokemobAIThread.worldPlayers.get(dimension);
+        Vector<?> playerEntities = AIThreadManager.worldPlayers.get(dimension);
         ArrayList<?> list = new ArrayList<Object>(playerEntities);
         if (list.isEmpty()) return null;
 

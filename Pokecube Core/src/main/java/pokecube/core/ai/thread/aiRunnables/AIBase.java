@@ -20,10 +20,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.ai.thread.IAIRunnable;
-import pokecube.core.ai.thread.PokemobAIThread;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
+import thut.api.entity.ai.AIThreadManager;
+import thut.api.entity.ai.IAIRunnable;
 import thut.api.maths.Vector3;
 
 public abstract class AIBase implements IAIRunnable
@@ -127,7 +128,7 @@ public abstract class AIBase implements IAIRunnable
                                                                      Entity e1 = world.getEntityByID(o1.attacker);
                                                                      Entity e2 = world.getEntityByID(o2.attacker);
                                                                      if (e1 instanceof IPokemob
-                                                                             && e2 instanceof IPokemob) { return PokemobAIThread.pokemobComparator
+                                                                             && e2 instanceof IPokemob) { return pokemobComparator
                                                                                      .compare((IPokemob) e1,
                                                                                              (IPokemob) e2); }
                                                                  }
@@ -270,15 +271,33 @@ public abstract class AIBase implements IAIRunnable
         }
     }
 
-    IBlockAccess                world;
+    /** Sorts pokemobs by move order. */
+    public static final Comparator<IPokemob> pokemobComparator = new Comparator<IPokemob>()
+                                                               {
+                                                                   @Override
+                                                                   public int compare(IPokemob o1, IPokemob o2)
+                                                                   {
+                                                                       int speed1 = Tools.getStat(o1.getBaseStats()[5],
+                                                                               o1.getIVs()[5], o1.getEVs()[5],
+                                                                               o1.getLevel(), o1.getModifiers()[5],
+                                                                               o1.getNature().getStatsMod()[5]);
+                                                                       int speed2 = Tools.getStat(o2.getBaseStats()[5],
+                                                                               o2.getIVs()[5], o2.getEVs()[5],
+                                                                               o2.getLevel(), o2.getModifiers()[5],
+                                                                               o2.getNature().getStatsMod()[5]);
+                                                                       return speed2 - speed1;
+                                                                   }
+                                                               };
 
-    int                         priority = 0;
+    IBlockAccess                             world;
 
-    int                         mutex    = 0;
+    int                                      priority          = 0;
 
-    protected Vector<IRunnable> toRun    = new Vector<IRunnable>();
+    int                                      mutex             = 0;
 
-    protected Vector<IRunnable> moves    = new Vector<IRunnable>();
+    protected Vector<IRunnable>              toRun             = new Vector<IRunnable>();
+
+    protected Vector<IRunnable>              moves             = new Vector<IRunnable>();
 
     protected void addEntityPath(Entity entity, Path path, double speed)
     {
@@ -356,7 +375,7 @@ public abstract class AIBase implements IAIRunnable
 
     List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
     {
-        Vector<?> entities = PokemobAIThread.worldEntities.get(source.dimension);
+        Vector<?> entities = AIThreadManager.worldEntities.get(source.dimension);
         List<Object> list = new ArrayList<Object>();
         double dsq = distance * distance;
         if (entities != null)
@@ -383,7 +402,7 @@ public abstract class AIBase implements IAIRunnable
 
     List<Object> getEntitiesWithinDistance(Vector3 source, int dimension, float distance, Class<?>... targetClass)
     {
-        Vector<?> entities = PokemobAIThread.worldEntities.get(dimension);
+        Vector<?> entities = AIThreadManager.worldEntities.get(dimension);
         List<Object> list = new ArrayList<Object>();
         if (entities != null)
         {

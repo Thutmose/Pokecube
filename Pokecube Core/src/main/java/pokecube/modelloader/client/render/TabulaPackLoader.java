@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
@@ -106,8 +107,8 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 String name = entry.getBaseName();
                 String old = entry.getName();
-                ResourceLocation test2 = new ResourceLocation(extraData.getResourceDomain(),
-                        extraData.getResourcePath().replace(old, name));
+                ResourceLocation test2 = new ResourceLocation(extraData.getResourceDomain(), extraData.getResourcePath()
+                        .replace(old.toLowerCase(Locale.ENGLISH), name.toLowerCase(Locale.ENGLISH)));
                 try
                 {
                     parse(test2);
@@ -496,7 +497,7 @@ public class TabulaPackLoader extends AnimationLoader
         AnimationLoader.clear();
         modelMap.clear();
     }
-    
+
     public static void remove(PokedexEntry entry)
     {
         AnimationLoader.remove(entry);

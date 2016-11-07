@@ -29,7 +29,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
-import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.cloner.BlockCloner.EnumType;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
@@ -679,7 +678,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     {
         checkCollision();
         if (worldObj.isRemote) return;
-        if (!PokecubeAdv.hasEnergyAPI) energy += 32;
         checkRecipes();
     }
 

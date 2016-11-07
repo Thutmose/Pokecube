@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import pokecube.adventures.LegendaryConditions;
-import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.ItemBlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -51,7 +50,7 @@ public class BlockHandler
         PokecubeItems.addSpecificItemStack("afa", new ItemStack(afa, 1, 0));
 
         siphon = new BlockSiphon().setUnlocalizedName("pokesiphon");
-        if (PokecubeAdv.hasEnergyAPI) siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+        siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(siphon, "pokesiphon");
         GameRegistry.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
 

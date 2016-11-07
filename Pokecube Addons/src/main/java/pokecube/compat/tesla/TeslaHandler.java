@@ -1,5 +1,6 @@
 package pokecube.compat.tesla;
 
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -7,9 +8,12 @@ import com.google.common.collect.Maps;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.api.ITeslaProducer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -39,37 +43,33 @@ public class TeslaHandler
     }
 
     @SubscribeEvent
-    public void onTileEntityCapabilityAttach(AttachCapabilitiesEvent.TileEntity event)
+    public void onTileEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
     {
-        if (event.getTileEntity() instanceof TileEntityAFA)
+        if (event.getObject() instanceof TileEntityAFA)
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderAFA((TileEntityAFA) event.getTileEntity()));
+                    new ProviderAFA((TileEntityAFA) event.getObject()));
         }
-        else if (event.getTileEntity() instanceof TileEntitySiphon)
+        else if (event.getObject() instanceof TileEntitySiphon)
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderSiphon((TileEntitySiphon) event.getTileEntity()));
+                    new ProviderSiphon((TileEntitySiphon) event.getObject()));
         }
-        else if (event.getTileEntity() instanceof TileEntityCloner)
+        else if (event.getObject() instanceof TileEntityCloner)
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderCloner((TileEntityCloner) event.getTileEntity()));
+                    new ProviderCloner((TileEntityCloner) event.getObject()));
         }
-        else if (event.getTileEntity() instanceof TileEntityWarpPad)
+        else if (event.getObject() instanceof TileEntityWarpPad)
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderWarppad((TileEntityWarpPad) event.getTileEntity()));
+                    new ProviderWarppad((TileEntityWarpPad) event.getObject()));
         }
-    }
-
-    @SubscribeEvent
-    public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
-    {
-        if (event.getEntity().worldObj != null && event.getEntity() instanceof IPokemob)
+        else if (event.getObject() instanceof IPokemob)
         {
-            event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderPokemob((IPokemob) event.getEntity()));
+            Entity pokemob = (Entity) event.getObject();
+            if (pokemob.worldObj != null) event.addCapability(new ResourceLocation("pokecube:tesla"),
+                    new ProviderPokemob((IPokemob) event.getObject()));
         }
     }
 
@@ -110,5 +110,36 @@ public class TeslaHandler
             h.givePower(request, false);
         }
         producer.takePower(start - output, false);
+    }
+
+    public static long getOutput(TileEntitySiphon tile, long power, boolean simulated)
+    {
+        if (tile.getWorld() == null || power == 0) return 0;
+        Vector3 v = Vector3.getNewVector().set(tile);
+        AxisAlignedBB box = v.getAABB().expand(10, 10, 10);
+        List<EntityLiving> l = tile.getWorld().getEntitiesWithinAABB(EntityLiving.class, box);
+        long ret = 0;
+        for (EntityLiving living : l)
+        {
+            if (living != null && living instanceof IPokemob)
+            {
+                ITeslaProducer producer = living.getCapability(TeslaHandler.TESLA_PRODUCER, null);
+                if (producer != null)
+                {
+                    double dSq = Math.max(1, living.getDistanceSq(tile.getPos().getX() + 0.5,
+                            tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5));
+                    long input = (long) (producer.takePower(PokecubeAdv.conf.maxOutput, simulated) / dSq);
+                    ret += input;
+                    if (ret >= power)
+                    {
+                        ret = power;
+                        break;
+                    }
+                }
+            }
+        }
+        ret = Math.min(ret, PokecubeAdv.conf.maxOutput);
+        if (!simulated) tile.currentOutput = (int) ret;
+        return ret;
     }
 }

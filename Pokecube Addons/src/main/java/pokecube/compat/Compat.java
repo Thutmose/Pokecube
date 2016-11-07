@@ -32,6 +32,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.ai.AITeslaInterferance;
+import pokecube.compat.forgeenergy.EnergyHandler;
 import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
 import pokecube.core.events.PostPostInit;
@@ -64,11 +65,6 @@ public class Compat
                 if (result.status == Status.OUTDATED)
                 {
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Revival");
-                    (event.player).addChatMessage(mess);
-                }
-                if (!PokecubeAdv.hasEnergyAPI)
-                {
-                    ITextComponent mess = new TextComponentTranslation("pokecube.power.disabled");
                     (event.player).addChatMessage(mess);
                 }
                 if (PokecubeAdv.tesla)
@@ -299,6 +295,10 @@ public class Compat
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
+        if (!PokecubeAdv.tesla)
+        {
+            MinecraftForge.EVENT_BUS.register(new EnergyHandler());
+        }
     }
 
     @SubscribeEvent

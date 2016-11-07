@@ -71,7 +71,6 @@ public class PokecubeAdv
     public static int          GUIBIOMESETTER_ID  = 5;
     public static int          GUIAFA_ID          = 6;
 
-    public static boolean      hasEnergyAPI       = false;
     public static boolean      tesla              = false;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
@@ -162,7 +161,7 @@ public class PokecubeAdv
     public void preInit(FMLPreInitializationEvent e)
     {
         conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
-        hasEnergyAPI = (tesla = Loader.isModLoaded("tesla"));
+        tesla = Loader.isModLoaded("tesla");
         BlockHandler.registerBlocks();
         ItemHandler.registerItems();
         DBLoader.preInit(e);

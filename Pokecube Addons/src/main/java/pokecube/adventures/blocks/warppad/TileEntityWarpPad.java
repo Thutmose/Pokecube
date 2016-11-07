@@ -99,7 +99,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         long lastStepped = stepper.getEntityData().getLong("lastWarpPadUse");
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
-        if (tele && Config.instance.warpPadEnergy && !noEnergy && PokecubeAdv.hasEnergyAPI)
+        if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
             tele = energy > distSq;
 

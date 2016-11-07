@@ -101,9 +101,9 @@ public class TrainerSpawnHandler
     }
 
     @SubscribeEvent
-    public void onEntityCapabilityAttach(AttachCapabilitiesEvent.Entity event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
     {
-        if (event.getEntity() instanceof EntityVillager || event.getEntity() instanceof EntityTrainer)
+        if (event.getObject() instanceof EntityVillager || event.getObject() instanceof EntityTrainer)
         {
             class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
             {

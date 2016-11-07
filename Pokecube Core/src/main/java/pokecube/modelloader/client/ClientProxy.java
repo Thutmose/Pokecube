@@ -177,12 +177,13 @@ public class ClientProxy extends CommonProxy
                 return o1.compareTo(o2);
             }
         });
+        boolean found = false;
         for (String mod : modList)
         {
+            if (found) break;
             IMobProvider provider = mobProviders.get(mod);
             PokedexEntry p = model;
             String name = p.getTrimmedName().toLowerCase(Locale.ENGLISH);
-            boolean xml = false;
             try
             {
                 ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");
@@ -193,7 +194,6 @@ public class ClientProxy extends CommonProxy
                 {
                     modModels.put(mod, models = new ArrayList<String>());
                 }
-                xml = true;
                 models.remove(name);
                 if (!models.contains(name)) models.add(name);
             }
@@ -215,6 +215,7 @@ public class ClientProxy extends CommonProxy
                 }
                 catch (Exception e1)
                 {
+                    e1.printStackTrace();
                     try
                     {
                         ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
@@ -235,7 +236,7 @@ public class ClientProxy extends CommonProxy
                     }
                 }
             }
-            if (modModels.containsKey(mod) && xml)
+            if (modModels.containsKey(mod))
             {
                 HashSet<String> alternateFormes = Sets.newHashSet();
                 PokedexEntry entry = model;
@@ -255,6 +256,7 @@ public class ClientProxy extends CommonProxy
                         TabulaPackLoader.loadModel(provider, s, alternateFormes);
                     }
                 }
+                found = true;
             }
         }
         TabulaPackLoader.postProcess();

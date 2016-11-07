@@ -1,8 +1,11 @@
 package pokecube.compat.jer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Lists;
 
 import jeresources.api.IJERAPI;
 import jeresources.api.JERPlugin;
@@ -19,6 +22,7 @@ import net.minecraft.world.biome.Biome;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -48,7 +52,7 @@ public class JERCompat
                                                                                               * mobScale));
                                                                       float zoom = (float) (1f / Math.sqrt(size));
                                                                       renderInfo.scale = zoom;
-                                                                      GL11.glTranslated(0, 0.5, 0);
+                                                                      GL11.glTranslated(0, 0, 0);
                                                                       GL11.glScalef(zoom, zoom, zoom);
                                                                       return renderInfo;
                                                                   }
@@ -82,6 +86,46 @@ public class JERCompat
 
     private LightLevel getLightLevel(PokedexEntry entry)
     {
+        if (entry.getSpawnData() != null)
+        {
+            List<SpawnBiomeMatcher> matchers = Lists.newArrayList(entry.getSpawnData().matchers.keySet());
+            if (matchers.get(0) != null)
+            {
+//                SpawnRule spawnRule = matchers.get(0).spawnRule;
+//                float maxLight = 1;
+//                float minLight = 0;
+//                boolean day = true;
+//                boolean night = true;
+//                Float.parseFloat(spawnRule.values.get(SpawnBiomeMatcher.MAXLIGHT));
+//                if (spawnRule.values.containsKey(SpawnBiomeMatcher.DAY))
+//                {
+//                    day = Boolean.parseBoolean(spawnRule.values.get(SpawnBiomeMatcher.DAY));
+//                }
+//                if (spawnRule.values.containsKey(SpawnBiomeMatcher.NIGHT))
+//                {
+//                    night = Boolean.parseBoolean(spawnRule.values.get(SpawnBiomeMatcher.NIGHT));
+//                }
+//                if (spawnRule.values.containsKey(SpawnBiomeMatcher.MINLIGHT))
+//                {
+//                    minLight = Float.parseFloat(spawnRule.values.get(SpawnBiomeMatcher.MINLIGHT));
+//                }
+//                if (spawnRule.values.containsKey(SpawnBiomeMatcher.MAXLIGHT))
+//                {
+//                    maxLight = Float.parseFloat(spawnRule.values.get(SpawnBiomeMatcher.MAXLIGHT));
+//                }
+//                Relative relative = Relative.below;
+//                int light = 15;
+//                if (maxLight != 1)
+//                {
+//                    relative = Relative.below;
+//                    light = (int) (maxLight * 15);
+//                }
+                //TODO see about asking JER to open up this constructor.
+//                LightLevel ret = new LightLevel(light, relative);
+//                return ret;
+            }
+        }
+
         return LightLevel.any;
     }
 

@@ -19,7 +19,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import pokecube.core.ai.thread.PokemobAIThread.AIStuff;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
@@ -908,13 +907,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public AIStuff getAIStuff()
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override

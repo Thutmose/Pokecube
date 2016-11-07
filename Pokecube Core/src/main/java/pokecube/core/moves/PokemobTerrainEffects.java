@@ -68,22 +68,12 @@ public class PokemobTerrainEffects implements ITerrainEffect
     {
     }
 
-    public void addPokemon(IPokemob poke)
-    {
-        if (!pokemon.contains(poke)) pokemon.add(poke);
-    }
-
     @Override
     public void bindToTerrain(int x, int y, int z)
     {
         chunkX = x;
         chunkY = y;
         chunkZ = z;
-    }
-
-    public int countPokemon()
-    {
-        return pokemon.size();
     }
 
     public void doEffect(EntityLivingBase entity)
@@ -234,11 +224,6 @@ public class PokemobTerrainEffects implements ITerrainEffect
     @Override
     public void readFromNBT(NBTTagCompound nbt)
     {
-    }
-
-    public void removePokemon(IPokemob poke)
-    {
-        pokemon.remove(poke);
     }
 
     /** Adds the effect, and removes any non-compatible effects if any

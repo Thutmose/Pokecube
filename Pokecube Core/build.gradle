@@ -29,7 +29,7 @@ repositories {
         name = "thutcore"
         url = "https://github.com/Thutmose/Thut/raw/1.9/ThutCore/deobf/"
         layout "pattern", {
-            artifact "[module]-${version_minecraft}-[revision]-dev.[ext]"
+            artifact "[module]-[revision]-dev.[ext]"
         }
     }
     ivy {

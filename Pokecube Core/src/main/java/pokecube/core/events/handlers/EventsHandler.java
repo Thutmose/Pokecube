@@ -74,7 +74,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability;
-import pokecube.core.ai.thread.PokemobAIThread;
+import pokecube.core.ai.utils.AIEventHandler;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.database.Database;
@@ -320,11 +320,10 @@ public class EventsHandler
             }
         }, MegaCapability.class);
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
-        PokemobAIThread aiTicker = new PokemobAIThread();
-        MinecraftForge.EVENT_BUS.register(aiTicker);
         MinecraftForge.EVENT_BUS.register(this);
         meteorprocessor = new MeteorAreaSetter();
         new SpawnEventsHandler();
+        new AIEventHandler();
     }
 
     @SubscribeEvent

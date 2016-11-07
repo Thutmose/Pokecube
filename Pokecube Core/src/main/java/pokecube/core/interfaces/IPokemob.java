@@ -21,7 +21,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.ai.thread.PokemobAIThread.AIStuff;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
@@ -383,8 +382,6 @@ public interface IPokemob extends IMoveConstants
     int getExplosionState();
 
     EntityAIBase getGuardAI();
-
-    AIStuff getAIStuff();
 
     /** @return how happy is the pokemob, see {@link HappinessType} */
     int getHappiness();

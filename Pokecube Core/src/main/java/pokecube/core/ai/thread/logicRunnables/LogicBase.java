@@ -3,9 +3,9 @@ package pokecube.core.ai.thread.logicRunnables;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokecube.core.ai.thread.ILogicRunnable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import thut.api.entity.ai.ILogicRunnable;
 
 public abstract class LogicBase implements ILogicRunnable, IMoveConstants
 {

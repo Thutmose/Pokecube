@@ -608,7 +608,7 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
         if (event.getObject() instanceof IPokemob || event.getObject() instanceof EntityProfessor)
         {

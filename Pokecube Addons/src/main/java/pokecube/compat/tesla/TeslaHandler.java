@@ -45,7 +45,18 @@ public class TeslaHandler
     }
 
     @SubscribeEvent
-    public void onTileEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
+    {
+        if (event.getObject() instanceof IPokemob)
+        {
+            Entity pokemob = (Entity) event.getObject();
+            if (pokemob.worldObj != null) event.addCapability(new ResourceLocation("pokecube:tesla"),
+                    new ProviderPokemob((IPokemob) event.getObject()));
+        }
+    }
+
+    @SubscribeEvent
+    public void onTileEntityCapabilityAttach(AttachCapabilitiesEvent<TileEntity> event)
     {
         if (event.getObject() instanceof TileEntityAFA)
         {
@@ -66,12 +77,6 @@ public class TeslaHandler
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
                     new ProviderWarppad((TileEntityWarpPad) event.getObject()));
-        }
-        else if (event.getObject() instanceof IPokemob)
-        {
-            Entity pokemob = (Entity) event.getObject();
-            if (pokemob.worldObj != null) event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderPokemob((IPokemob) event.getObject()));
         }
     }
 

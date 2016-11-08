@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.properties.IGuardAICapability.GuardState;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.utils.TimePeriod;
 
 /** Guards a given point. Constructor parameters:
@@ -91,13 +92,17 @@ public class GuardAI extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        if (null == entity || entity.isDead || capability.getActiveTime() == null
-                || capability.getPos() == null) { return false; }
-        if (capability.getActiveTime() != TimePeriod.fullDay
-                && !capability.getActiveTime().contains((int) (entity.getEntityWorld().getWorldTime() % 24000L)))
+        if (capability == null)
         {
+            System.out.println(entity.getCapability(EventsHandler.GUARDAI_CAP, null));
+            // capability = entity.getCapability(EventsHandler.GUARDAI_CAP,
+            // null);
             return false;
         }
+        if (null == entity || entity.isDead || capability.getActiveTime() == null
+                || capability.getPos() == null) { return false; }
+        if (capability.getActiveTime() != TimePeriod.fullDay && !capability.getActiveTime()
+                .contains((int) (entity.getEntityWorld().getWorldTime() % 24000L))) { return false; }
         BlockPos pos = capability.getPos();
         if (pos.getX() == 0 && pos.getY() == 0 && pos.getZ() == 0) return false;
         double distanceToGuardPointSq = entity.getDistanceSq(capability.getPos());

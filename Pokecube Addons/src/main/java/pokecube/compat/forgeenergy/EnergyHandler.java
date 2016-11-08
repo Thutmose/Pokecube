@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -99,16 +100,19 @@ public class EnergyHandler
         }
         producer.extractEnergy(start - output, false);
     }
-
     @SubscribeEvent
-    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
         if (event.getObject() instanceof IPokemob)
         {
             event.addCapability(new ResourceLocation("pokecube:energy"),
                     new ProviderPokemob((IPokemob) event.getObject()));
         }
-        else if (event.getObject() instanceof TileEntityAFA)
+    }
+    @SubscribeEvent
+    public void onTileCapabilityAttach(AttachCapabilitiesEvent<TileEntity> event)
+    {
+        if (event.getObject() instanceof TileEntityAFA)
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
                     new ProviderAFA((TileEntityAFA) event.getObject()));

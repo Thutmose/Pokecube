@@ -101,7 +101,7 @@ public class TrainerSpawnHandler
     }
 
     @SubscribeEvent
-    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<?> event)
+    public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
         if (event.getObject() instanceof EntityVillager || event.getObject() instanceof EntityTrainer)
         {

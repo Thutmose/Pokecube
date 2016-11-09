@@ -610,7 +610,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setMoveIndex(int moveIndex)
     {
-        if (moveIndex == getMoveIndex()) return;
+        if (moveIndex == getMoveIndex() || getPokemonAIState(NOMOVESWAP)) return;
         if (getMove(moveIndex) == null)
         {
             setMoveIndex(5);

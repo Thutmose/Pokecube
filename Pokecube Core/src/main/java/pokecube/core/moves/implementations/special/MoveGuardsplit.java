@@ -5,6 +5,7 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.implementations.special.MovePowersplit.Modifier;
 import pokecube.core.moves.templates.Move_Basic;
+import pokecube.core.network.pokemobs.PacketSyncModifier;
 
 public class MoveGuardsplit extends Move_Basic
 {
@@ -38,6 +39,8 @@ public class MoveGuardsplit extends Move_Basic
 
             mods.setModifier(Stats.SPDEFENSE, -spdef + averageSpdef);
             mods2.setModifier(Stats.SPDEFENSE, -spdef2 + averageSpdef);
+            PacketSyncModifier.sendUpdate("powersplit", packet.attacker);
+            PacketSyncModifier.sendUpdate("powersplit", attacked);
         }
     }
 }

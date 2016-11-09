@@ -97,7 +97,6 @@ public class PokemobAIUtilityMove extends EntityAIBase
         }
         if (dist < var1)
         {
-            MovesUtils.useMove(move, entity, null, Vector3.getNewVector().set(entity), destination);
             pokemon.executeMove(null, destination, 0);
             entity.getNavigator().clearPathEntity();
             pokemon.setPokemonAIState(IMoveConstants.EXECUTINGMOVE, false);

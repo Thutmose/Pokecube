@@ -5,6 +5,7 @@ import pokecube.core.interfaces.IPokemob.IStatsModifiers;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.templates.Move_Basic;
+import pokecube.core.network.pokemobs.PacketSyncModifier;
 
 public class MovePowertrick extends Move_Basic
 {
@@ -14,7 +15,7 @@ public class MovePowertrick extends Move_Basic
         {
         }
 
-        float[] modifiers;
+        float[] modifiers = new float[Stats.values().length];
 
         @Override
         public boolean isFlat()
@@ -74,8 +75,11 @@ public class MovePowertrick extends Move_Basic
             Modifier mods = packet.attacker.getModifiers().getModifiers(name, Modifier.class);
             int def = packet.attacker.getStat(Stats.DEFENSE, true);
             int atk = packet.attacker.getStat(Stats.ATTACK, true);
-            mods.setModifier(Stats.DEFENSE, -def + atk);
-            mods.setModifier(Stats.ATTACK, atk - def);
+            float modDef = mods.getModifierRaw(Stats.DEFENSE);
+            float modAtk = mods.getModifierRaw(Stats.ATTACK);
+            mods.setModifier(Stats.DEFENSE, modDef - def + atk);
+            mods.setModifier(Stats.ATTACK, modAtk - atk + def);
+            PacketSyncModifier.sendUpdate("powertrick", packet.attacker);
         }
     }
 }

@@ -42,6 +42,8 @@ public class EntityMoveUse extends Entity
         super(worldIn);
         this.setSize(1f, 1f);
         this.ignoreFrustumCheck = true;
+        if(!worldIn.isRemote)
+            Thread.dumpStack();
     }
 
     public EntityMoveUse setMove(Move_Base move)

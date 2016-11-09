@@ -31,12 +31,14 @@ import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemob.StatModifiers;
 import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
+import pokecube.core.network.pokemobs.PacketSyncModifier;
 import pokecube.core.utils.PokeType;
 import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
@@ -563,7 +565,9 @@ public class MovesUtils implements IMoveConstants
     public static boolean handleStats(IPokemob mob, Entity target, MovePacket atk, boolean attacked)
     {
         int[] stats = attacked ? atk.attackedStatModification : atk.attackerStatModification;
-        DefaultModifiers modifiers = mob.getModifiers().getDefaultMods();
+        if (attacked && !(target instanceof IPokemob)) return false;
+        IPokemob affected = (IPokemob) (attacked ? target : mob);
+        DefaultModifiers modifiers = affected.getModifiers().getDefaultMods();
         float[] mods = modifiers.values;
         float[] old = mods.clone();
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
@@ -590,14 +594,18 @@ public class MovesUtils implements IMoveConstants
                 ret = true;
             }
         }
-        if (ret) for (byte i = 0; i < diff.length; i++)
+        if (ret)
         {
-            if (diff[i] != 0)
+            for (byte i = 0; i < diff.length; i++)
             {
-                if (!attacked) displayStatsMessage(mob, target, 0, i, diff[i]);
-                else if (target instanceof IPokemob)
-                    displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, diff[i]);
+                if (diff[i] != 0)
+                {
+                    if (!attacked) displayStatsMessage(mob, target, 0, i, diff[i]);
+                    else if (target instanceof IPokemob)
+                        displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, diff[i]);
+                }
             }
+            PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, affected);
         }
         return ret;
     }
@@ -624,12 +632,16 @@ public class MovesUtils implements IMoveConstants
                 ret = true;
             }
         }
-        if (ret) for (byte i = 0; i < diff.length; i++)
+        if (ret)
         {
-            if (diff[i] != 0 && attacker instanceof IPokemob)
+            for (byte i = 0; i < diff.length; i++)
             {
-                displayStatsMessage((IPokemob) attacker, (Entity) mob, 0, i, diff[i]);
+                if (diff[i] != 0 && attacker instanceof IPokemob)
+                {
+                    displayStatsMessage((IPokemob) attacker, (Entity) mob, 0, i, diff[i]);
+                }
             }
+            PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, mob);
         }
         return ret;
     }

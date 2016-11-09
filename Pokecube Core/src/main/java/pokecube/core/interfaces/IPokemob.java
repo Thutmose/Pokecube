@@ -3,6 +3,8 @@
  */
 package pokecube.core.interfaces;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,9 +203,10 @@ public interface IPokemob extends IMoveConstants
             else throw new IllegalArgumentException(name + " is already registered as a modifier.");
         }
 
-        Map<String, IStatsModifiers> modifiers       = Maps.newHashMap();
-        List<IStatsModifiers>        sortedModifiers = Lists.newArrayList();
-        DefaultModifiers             defaultmods;
+        final Map<String, IStatsModifiers> modifiers       = Maps.newHashMap();
+        public List<IStatsModifiers>       sortedModifiers = Lists.newArrayList();
+        public Map<String, Integer>        indecies        = Maps.newHashMap();
+        DefaultModifiers                   defaultmods;
 
         public StatModifiers()
         {
@@ -219,6 +222,32 @@ public interface IPokemob extends IMoveConstants
                 }
             }
             defaultmods = getModifiers(DEFAULTMODIFIERS, DefaultModifiers.class);
+            sortedModifiers.addAll(modifiers.values());
+            Collections.sort(sortedModifiers, new Comparator<IStatsModifiers>()
+            {
+                @Override
+                public int compare(IStatsModifiers o1, IStatsModifiers o2)
+                {
+                    int comp = o1.getPriority() - o2.getPriority();
+                    if (comp == 0)
+                    {
+                        comp = o1.getClass().getName().compareTo(o2.getClass().getName());
+                    }
+                    return comp;
+                }
+            });
+            outer:
+            for (int i = 0; i < sortedModifiers.size(); i++)
+            {
+                for (String key : modifiers.keySet())
+                {
+                    if (modifiers.get(key) == sortedModifiers.get(i))
+                    {
+                        indecies.put(key, i);
+                        continue outer;
+                    }
+                }
+            }
         }
 
         public int getStat(IPokemob pokemob, Stats stat, boolean modified)

@@ -25,6 +25,7 @@ import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -100,6 +101,7 @@ public class EnergyHandler
         }
         producer.extractEnergy(start - output, false);
     }
+
     @SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
@@ -109,6 +111,7 @@ public class EnergyHandler
                     new ProviderPokemob((IPokemob) event.getObject()));
         }
     }
+
     @SubscribeEvent
     public void onTileCapabilityAttach(AttachCapabilitiesEvent<TileEntity> event)
     {
@@ -307,8 +310,8 @@ public class EnergyHandler
         {
             if (!canExtract()) return 0;
             EntityLiving living = (EntityLiving) pokemob;
-            int spAtk = pokemob.getActualStats()[3];
-            int atk = pokemob.getActualStats()[1];
+            int spAtk = pokemob.getStat(Stats.SPATTACK, true);
+            int atk = pokemob.getStat(Stats.ATTACK, true);
             int level = pokemob.getLevel();
             int maxEnergy = TileEntitySiphon.getMaxEnergy(level, spAtk, atk, pokemob.getPokedexEntry());
             int pokeEnergy = maxEnergy;

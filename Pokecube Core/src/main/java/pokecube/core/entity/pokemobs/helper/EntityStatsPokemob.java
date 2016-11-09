@@ -54,34 +54,35 @@ import pokecube.core.utils.Tools;
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityTameablePokemob implements IEntityAdditionalSpawnData
 {
-    protected Ability   ability;
+    protected Ability     ability;
 
-    double              moveSpeed;
+    double                moveSpeed;
 
-    byte[]              ivs              = new byte[] { 0, 0, 0, 0, 0, 0 };
-    protected Nature    nature           = Nature.HARDY;
-    public int          oldLevel         = 0;
-    public PokedexEntry entry;
+    byte[]                ivs              = new byte[] { 0, 0, 0, 0, 0, 0 };
+    protected Nature      nature           = Nature.HARDY;
+    public int            oldLevel         = 0;
+    public PokedexEntry   entry;
 
     /** The happiness value of the pokemob */
-    protected int       bonusHappiness   = 0;
+    protected int         bonusHappiness   = 0;
 
-    boolean             wasShadow        = false;
+    boolean               wasShadow        = false;
 
-    boolean             isAncient        = false;
+    boolean               isAncient        = false;
     /** The higher this value, the more likely for mobs to range in colour. It
      * is very sensitive to the size of this number. */
-    private double      colourDiffFactor = 0.25;
+    private double        colourDiffFactor = 0.25;
 
     /** Used for the random colour differences */
-    int[]               rgba             = { 255, 255, 255, 255 };
+    int[]                 rgba             = { 255, 255, 255, 255 };
 
     /** Used for if there is a special texture */
-    public boolean      shiny            = false;
-    PokeType            type1, type2;
-    private int         personalityValue = 0;
-    private int         killCounter      = 0;
-    private int         resetTick        = 0;
+    public boolean        shiny            = false;
+    PokeType              type1, type2;
+    private int           personalityValue = 0;
+    private int           killCounter      = 0;
+    private int           resetTick        = 0;
+    private StatModifiers modifiers        = new StatModifiers();
 
     public EntityStatsPokemob(World world)
     {
@@ -378,7 +379,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public StatModifiers getModifiers()
     {
-        return null;
+        return modifiers;
     }
 
     @Override

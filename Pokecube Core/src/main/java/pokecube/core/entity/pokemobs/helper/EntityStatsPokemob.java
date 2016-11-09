@@ -312,17 +312,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         return mult * ((ATT + ATTSPE) / 6f);
     }
 
-    public int[] getBaseStatsOld()
-    {
-        int[] stats = new int[6];
-        String[] sta = dataManager.get(STATSDW).split(",");
-        for (int i = 0; i < 6; i++)
-        {
-            stats[i] = Integer.parseInt(sta[i].trim());
-        }
-        return stats;
-    }
-
     @Override
     public int getBaseXP()
     {
@@ -834,12 +823,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setShiny(boolean shiny)
     {
         this.shiny = shiny;
-    }
-
-    public void setStatsOld(int[] stats)
-    {
-        String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
-        dataManager.set(STATSDW, sta);
     }
 
     @Override

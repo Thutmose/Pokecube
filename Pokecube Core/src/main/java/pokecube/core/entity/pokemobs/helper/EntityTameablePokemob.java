@@ -75,8 +75,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>             ATTACKTARGETIDDW = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             STATMODDW        = EntityDataManager
-            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>             EXPDW            = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>             HUNGERDW         = EntityDataManager
@@ -103,8 +101,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
     static final DataParameter<String>              MOVESDW          = EntityDataManager
-            .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
-    static final DataParameter<String>              STATSDW          = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
     static final DataParameter<String>              NICKNAMEDW       = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
@@ -204,10 +200,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     {
         super.entityInit();
 
-        // From EntityStatsPokemob
-        dataManager.register(STATSDW, "0,0,0,0,0,0");// Stats
-
-        dataManager.register(STATMODDW, new Integer(1717986918));
         dataManager.register(EXPDW, new Integer(0));// exp for level 1
         dataManager.register(HUNGERDW, new Integer(0));// Hunger time
         // // for sheared status

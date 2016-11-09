@@ -5,6 +5,7 @@ import pokecube.core.interfaces.IPokemob.IStatsModifiers;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.templates.Move_Basic;
+import pokecube.core.network.pokemobs.PacketSyncModifier;
 
 public class MovePowersplit extends Move_Basic
 {
@@ -13,8 +14,8 @@ public class MovePowersplit extends Move_Basic
         public Modifier()
         {
         }
-        
-        float[] modifiers;
+
+        float[] modifiers = new float[Stats.values().length];
 
         @Override
         public boolean isFlat()
@@ -88,6 +89,8 @@ public class MovePowersplit extends Move_Basic
             
             mods.setModifier(Stats.SPATTACK, -spatk + averageSpatk);
             mods2.setModifier(Stats.SPATTACK, -spatk2 + averageSpatk);
+            PacketSyncModifier.sendUpdate("powersplit", packet.attacker);
+            PacketSyncModifier.sendUpdate("powersplit", attacked);
         }
     }
 }

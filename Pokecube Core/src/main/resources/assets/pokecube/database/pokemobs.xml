@@ -12624,7 +12624,7 @@
                 lvl_67="HYPERBEAM" lvl_7="METALCLAW"/>
         </MOVES>
     </Pokemon>
-    <Pokemon base="true" name="Latias" number="380">
+    <Pokemon base="true" name="Latias" number="380" breed="true" legend="true">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>
@@ -12667,7 +12667,7 @@
             <ABILITY normal="Levitate"/>
         </STATS>
     </Pokemon>
-    <Pokemon base="true" name="Latios" number="381">
+    <Pokemon base="true" name="Latios" number="381" breed="true" legend="true">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <CAPTURERATE>3</CAPTURERATE>

@@ -228,6 +228,7 @@ public interface IPokemob extends IMoveConstants
             if (index < 6) nature = pokemob.getNature().stats[index];
             float natureMod = (nature * 10f + 100) / 100f;
             int baseStat = pokemob.getBaseStat(stat);
+            float actualStat = 1;
             if (index < 6)
             {
                 int IV = pokemob.getIVs()[stat.ordinal()];
@@ -237,15 +238,15 @@ public interface IPokemob extends IMoveConstants
                 {
                     if (baseStat != 1)
                     {
-                        baseStat = level + 10 + (2 * baseStat + IV + EV / 4) / 100;
+                        actualStat = level + 10 + (2 * baseStat + IV + EV / 4) / 100;
                     }
                 }
                 else
                 {
-                    baseStat = 5 + level * (2 * baseStat + IV + EV / 4) / 100;
+                    actualStat = 5 + level * (2 * baseStat + IV + EV / 4) / 100;
+                    actualStat *= natureMod;
                 }
             }
-            float actualStat = baseStat * natureMod;
             if (modified) for (IStatsModifiers mods : sortedModifiers)
             {
                 if (mods.isFlat()) actualStat += mods.getModifier(stat);

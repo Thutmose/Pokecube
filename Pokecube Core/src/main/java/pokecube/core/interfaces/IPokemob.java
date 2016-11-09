@@ -188,7 +188,7 @@ public interface IPokemob extends IMoveConstants
         };
 
         public static final String                                  DEFAULTMODIFIERS = "default";
-        public static Map<String, Class<? extends IStatsModifiers>> modifierClasses;
+        public static Map<String, Class<? extends IStatsModifiers>> modifierClasses  = Maps.newHashMap();
 
         static
         {

@@ -43,6 +43,7 @@ import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
@@ -50,7 +51,6 @@ import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
-import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
@@ -166,16 +166,15 @@ public class GuiPokedex extends GuiScreen
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 1, 0xffffff);
             drawCenteredString(fontRendererObj, gender, xOffset - 20, yOffset + 122, genderColor);
             byte[] nature = pokemob.getNature().getStatsMod();
-            int[] stats = Tools.getStats(pokemob);
 
             if (canEditPokemob() || PokecubeMod.debug)
             {
-                int HP = stats[0];
-                int ATT = stats[1];
-                int DEF = stats[2];
-                int ATTSPE = stats[3];
-                int DEFSPE = stats[4];
-                int VIT = stats[5];
+                int HP = pokemob.getStat(Stats.HP, true);
+                int ATT = pokemob.getStat(Stats.ATTACK, true);
+                int DEF = pokemob.getStat(Stats.DEFENSE, true);
+                int ATTSPE = pokemob.getStat(Stats.SPATTACK, true);
+                int DEFSPE = pokemob.getStat(Stats.SPDEFENSE, true);
+                int VIT = pokemob.getStat(Stats.VIT, true);
                 int statYOffSet = yOffset + 15;
                 String[] nat = new String[6];
                 int[] colours = new int[6];

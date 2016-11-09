@@ -35,13 +35,13 @@ import pokecube.core.events.MoveUse.MoveWorldAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.animations.Thunder;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.Tools;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
@@ -427,8 +427,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             int moveAcc = packet.getMove().move.accuracy;
             if (moveAcc > 0)
             {
-                double accuracy = Tools.modifierToRatio(attacker.getModifiers()[6], true);
-                double evasion = Tools.modifierToRatio(((IPokemob) attacked).getModifiers()[7], true);
+                double accuracy = attacker.getModifiers().getDefaultMods().getModifier(Stats.ACCURACY);
+                double evasion = attacker.getModifiers().getDefaultMods().getModifier(Stats.EVASION);
                 double moveAccuracy = (moveAcc) / 100d;
 
                 double hitModifier = moveAccuracy * accuracy / evasion;

@@ -86,6 +86,7 @@ import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
@@ -701,9 +702,10 @@ public class EventsHandler
     {
         if (evt.mob.getPokedexEntry() == Database.getEntry("Tyrogue"))
         {
-            int[] stats = evt.mob.getActualStats();
-            if (stats[1] > stats[2]) evt.forme = Database.getEntry("Hitmonlee");
-            else if (stats[2] > stats[1]) evt.forme = Database.getEntry("Hitmonchan");
+            int atk = evt.mob.getStat(Stats.ATTACK, false);
+            int def = evt.mob.getStat(Stats.DEFENSE, false);
+            if (atk > def) evt.forme = Database.getEntry("Hitmonlee");
+            else if (def > atk) evt.forme = Database.getEntry("Hitmonchan");
             else evt.forme = Database.getEntry("Hitmontop");
         }
     }

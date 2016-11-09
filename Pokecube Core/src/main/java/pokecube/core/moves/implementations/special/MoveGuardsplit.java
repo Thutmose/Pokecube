@@ -2,6 +2,8 @@ package pokecube.core.moves.implementations.special;
 
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemob.Stats;
+import pokecube.core.moves.implementations.special.MovePowersplit.Modifier;
 import pokecube.core.moves.templates.Move_Basic;
 
 public class MoveGuardsplit extends Move_Basic
@@ -19,22 +21,23 @@ public class MoveGuardsplit extends Move_Basic
         if (packet.canceled || packet.failed) return;
         if (packet.attacked instanceof IPokemob)
         {
-            IPokemob target = (IPokemob) packet.attacked;
-            int[] targetStats = target.getBaseStats();
-            int[] attackerStats = packet.attacker.getBaseStats();
-            byte[] targetMods = target.getModifiers();
-            byte[] attackerMods = packet.attacker.getModifiers();
+            IPokemob attacked = (IPokemob) packet.attacked;
+            int spdef = packet.attacker.getStat(Stats.SPDEFENSE, true);
+            int def = packet.attacker.getStat(Stats.DEFENSE, true);
 
-            targetStats[2] = attackerStats[2] = (targetStats[2] + attackerStats[2]) / 2;
-            targetStats[4] = attackerStats[4] = (targetStats[4] + attackerStats[4]) / 2;
+            int spdef2 = attacked.getStat(Stats.SPDEFENSE, true);
+            int def2 = attacked.getStat(Stats.DEFENSE, true);
 
-            targetMods[2] = attackerMods[2] = (byte) ((targetMods[2] + attackerMods[2]) / 2);
-            targetMods[4] = attackerMods[4] = (byte) ((targetMods[4] + attackerMods[4]) / 2);
+            int averageDef = (def + def2) / 2;
+            int averageSpdef = (spdef + spdef2) / 2;
+            Modifier mods = packet.attacker.getModifiers().getModifiers("powersplit", Modifier.class);
+            Modifier mods2 = attacked.getModifiers().getModifiers("powersplit", Modifier.class);
 
-            target.setStats(targetStats);
-            packet.attacker.setStats(attackerStats);
-            target.setModifiers(targetMods);
-            packet.attacker.setModifiers(attackerMods);
+            mods.setModifier(Stats.DEFENSE, -def + averageDef);
+            mods2.setModifier(Stats.DEFENSE, -def2 + averageDef);
+
+            mods.setModifier(Stats.SPDEFENSE, -spdef + averageSpdef);
+            mods2.setModifier(Stats.SPDEFENSE, -spdef2 + averageSpdef);
         }
     }
 }

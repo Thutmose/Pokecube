@@ -9,8 +9,8 @@ import net.minecraftforge.common.IShearable;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 
 public class LogicMiscUpdate extends LogicBase
@@ -60,7 +60,8 @@ public class LogicMiscUpdate extends LogicBase
             lastHadTargetTime--;
             if (lastHadTargetTime <= 0)
             {
-                pokemob.setModifiers(PokecubeSerializer.intAsModifierArray(1717986918));
+                for (Stats stat : Stats.values())
+                    pokemob.getModifiers().getDefaultMods().setModifier(stat, 0);
             }
         }
         for (int i = 0; i < 5; i++)

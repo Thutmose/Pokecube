@@ -4,7 +4,12 @@
 package pokecube.core.interfaces;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -72,6 +77,197 @@ public interface IPokemob extends IMoveConstants
             this.low = low;
             this.mid = mid;
             this.high = high;
+        }
+    }
+
+    public static enum Stats
+    {
+        HP, ATTACK, DEFENSE, SPATTACK, SPDEFENSE, VIT, ACCURACY, EVASION,
+    }
+
+    public static interface IStatsModifiers
+    {
+        /** Is the result of getModifier a percantage or a flat value?
+         * 
+         * @return */
+        boolean isFlat();
+
+        /** Priority of application of these stats modifiers, higher numbers go
+         * later, the default modifiers (such as from growl) will be given
+         * priority of 100, so set your accordingly.
+         * 
+         * @return */
+        int getPriority();
+
+        /** Returns the effective value of the modifier, either a percantage, or
+         * a flat amount, based on isFlat
+         * 
+         * @param stat
+         * @return */
+        float getModifier(Stats stat);
+
+        /** Returns the raw value for the modifier, this should match whatever
+         * is set in setModifier.
+         * 
+         * @param stat
+         * @return */
+        float getModifierRaw(Stats stat);
+
+        void setModifier(Stats stat, float value);
+
+        /** Is this modifier saved with the pokemob
+         * 
+         * @return */
+        boolean persistant();
+    }
+
+    public static class StatModifiers
+    {
+        public static class DefaultModifiers implements IStatsModifiers
+        {
+            public DefaultModifiers()
+            {
+            }
+
+            public float[] values = new float[Stats.values().length];
+
+            @Override
+            public boolean persistant()
+            {
+                return false;
+            }
+
+            @Override
+            public boolean isFlat()
+            {
+                return false;
+            }
+
+            @Override
+            public int getPriority()
+            {
+                return 100;
+            }
+
+            @Override
+            public float getModifier(Stats stat)
+            {
+                return modifierToRatio((byte) values[stat.ordinal()], stat.ordinal() > 5);
+            }
+
+            @Override
+            public void setModifier(Stats stat, float value)
+            {
+                values[stat.ordinal()] = value;
+            }
+
+            @Override
+            public float getModifierRaw(Stats stat)
+            {
+                return values[stat.ordinal()];
+            }
+
+            public float modifierToRatio(byte mod, boolean accuracy)
+            {
+                float modifier = 1;
+                if (mod == 0) modifier = 1;
+                else if (mod == 1) modifier = !accuracy ? 1.5f : 4 / 3f;
+                else if (mod == 2) modifier = !accuracy ? 2 : 5 / 3f;
+                else if (mod == 3) modifier = !accuracy ? 2.5f : 2;
+                else if (mod == 4) modifier = !accuracy ? 3 : 7 / 3f;
+                else if (mod == 5) modifier = !accuracy ? 3.5f : 8 / 3f;
+                else if (mod == 6) modifier = !accuracy ? 4 : 3;
+                else if (mod == -1) modifier = !accuracy ? 2 / 3f : 3 / 4f;
+                else if (mod == -2) modifier = !accuracy ? 1 / 2f : 3 / 5f;
+                else if (mod == -3) modifier = !accuracy ? 2 / 5f : 3 / 6f;
+                else if (mod == -4) modifier = !accuracy ? 1 / 3f : 3 / 7f;
+                else if (mod == -5) modifier = !accuracy ? 2 / 7f : 3 / 8f;
+                else if (mod == -6) modifier = !accuracy ? 1 / 4f : 3 / 9f;
+                return modifier;
+            }
+        };
+
+        public static final String                                  DEFAULTMODIFIERS = "default";
+        public static Map<String, Class<? extends IStatsModifiers>> modifierClasses;
+
+        static
+        {
+            modifierClasses.put(DEFAULTMODIFIERS, DefaultModifiers.class);
+        }
+
+        public static void registerModifier(String name, Class<? extends IStatsModifiers> modclass)
+        {
+            if (!modifierClasses.containsKey(name)) modifierClasses.put(name, modclass);
+            else throw new IllegalArgumentException(name + " is already registered as a modifier.");
+        }
+
+        Map<String, IStatsModifiers> modifiers       = Maps.newHashMap();
+        List<IStatsModifiers>        sortedModifiers = Lists.newArrayList();
+        DefaultModifiers             defaultmods;
+
+        public StatModifiers()
+        {
+            for (String s : modifierClasses.keySet())
+            {
+                try
+                {
+                    modifiers.put(s, modifierClasses.get(s).newInstance());
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+            defaultmods = getModifiers(DEFAULTMODIFIERS, DefaultModifiers.class);
+        }
+
+        public int getStat(IPokemob pokemob, Stats stat, boolean modified)
+        {
+            int index = stat.ordinal();
+            byte nature = 0;
+            if (index < 6) nature = pokemob.getNature().stats[index];
+            float natureMod = (nature * 10f + 100) / 100f;
+            int baseStat = pokemob.getBaseStat(stat);
+            if (index < 6)
+            {
+                int IV = pokemob.getIVs()[stat.ordinal()];
+                int EV = pokemob.getEVs()[stat.ordinal()];
+                int level = pokemob.getLevel();
+                if (stat == Stats.HP)
+                {
+                    if (baseStat != 1)
+                    {
+                        baseStat = level + 10 + (2 * baseStat + IV + EV / 4) / 100;
+                    }
+                }
+                else
+                {
+                    baseStat = 5 + level * (2 * baseStat + IV + EV / 4) / 100;
+                }
+            }
+            float actualStat = baseStat * natureMod;
+            if (modified) for (IStatsModifiers mods : sortedModifiers)
+            {
+                if (mods.isFlat()) actualStat += mods.getModifier(stat);
+                else actualStat *= mods.getModifier(stat);
+            }
+            return (int) actualStat;
+        }
+
+        public IStatsModifiers getModifiers(String name)
+        {
+            return modifiers.get(name);
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T extends IStatsModifiers> T getModifiers(String name, Class<T> type)
+        {
+            return (T) modifiers.get(name);
+        }
+
+        public DefaultModifiers getDefaultMods()
+        {
+            return defaultmods;
         }
     }
 
@@ -331,7 +527,7 @@ public interface IPokemob extends IMoveConstants
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
      * @return the pokedex stats */
-    int[] getActualStats();
+    int getStat(Stats stat, boolean modified);
 
     /** Computes an attack strength from stats. Only used against non-poke-mobs.
      *
@@ -341,7 +537,7 @@ public interface IPokemob extends IMoveConstants
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
      * @return the pokedex stats */
-    int[] getBaseStats();
+    int getBaseStat(Stats stat);
 
     /** To compute exp at the end of a fight.
      *
@@ -404,11 +600,8 @@ public interface IPokemob extends IMoveConstants
     /** @return the level 1-100 */
     int getLevel();
 
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT, Accuracy, Evasion} note: HP is never
-     * used.
-     * 
-     * @return the Modifiers on stats */
-    byte[] getModifiers();
+    /** @return the Modifiers on stats */
+    StatModifiers getModifiers();
 
     /** Gets the {@link String} id of the specified move.
      *
@@ -652,11 +845,6 @@ public interface IPokemob extends IMoveConstants
 
     void setLeaningMoveIndex(int num);
 
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT, Accuracy, Evasion}
-     *
-     * @return the Modifiers on stats */
-    void setModifiers(byte[] modifiers);
-
     /** Sets the {@link String} id of the specified move.
      *
      * @param i
@@ -720,11 +908,6 @@ public interface IPokemob extends IMoveConstants
      * 
      * @return */
     void setSpecialInfo(int info);
-
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @return set stats, for use with moves that cause different effects */
-    void setStats(int[] stats);
 
     /** Statuses: {@link IMoveConstants#STATUS_PSN} for example. The set can
      * fail because the mob is immune against this status (a fire-type Pokemon
@@ -806,6 +989,6 @@ public interface IPokemob extends IMoveConstants
     int getAttackCooldown();
 
     void setAttackCooldown(int timer);
-    
+
     String getLastMoveUsed();
 }

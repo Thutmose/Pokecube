@@ -85,7 +85,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             int armour = 0;
             if (source.isMagicDamage())
             {
-                armour = (int) ((getActualStats()[4]) / 12.5);
+                armour = (int) ((getStat(Stats.SPDEFENSE, true)) / 12.5);
             }
             else
             {
@@ -430,7 +430,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
      * InventoryPlayer.getTotalArmorValue */
     public int getTotalArmorValue()
     {
-        return (int) ((getActualStats()[2]) / 12.5);
+        return (int) ((getStat(Stats.DEFENSE, true)) / 12.5);
     }
 
     @Override

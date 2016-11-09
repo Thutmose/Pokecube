@@ -8,7 +8,6 @@ import pokecube.core.utils.PokeType;
 /** @author Manchou */
 public interface IMoveConstants extends IMoveNames
 {
-
     /*
      * exclusive Status Effects
      */
@@ -120,7 +119,7 @@ public interface IMoveConstants extends IMoveNames
     /** Pokemon is held by the player. */
     static final int NOITEMUSE            = 1 << 9;
     /** Pokemon is on the player's shoulder */
-    // static final int SHOULDER = 1 << 10;//Free value
+    static final int NOMOVESWAP           = 1 << 10;
     /** Pokemon is idle. */
     static final int IDLE                 = 1 << 11;
     /** Has the Pokemon been traded */

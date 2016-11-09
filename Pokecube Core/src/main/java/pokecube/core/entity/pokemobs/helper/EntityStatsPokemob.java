@@ -303,44 +303,21 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public int[] getActualStats()
-    {
-        int[] stats = getBaseStats();
-        int level = getLevel();
-        byte[] evs = getEVs();
-        byte[] mods = getModifiers();
-        stats[0] = Tools.getHP(stats[0], ivs[0], evs[0], level);
-        for (int i = 1; i < stats.length; i++)
-        {
-            stats[i] = Tools.getStat(stats[i], ivs[i], evs[i], level, mods[i], getNature().getStatsMod()[i]);
-        }
-        return stats;
-    }
-
-    @Override
     public float getAttackStrength()
     {
-        int ATT = getPokedexEntry().getStatATT();
-        int ATTSPE = getPokedexEntry().getStatATTSPE();
+        int ATT = getStat(Stats.ATTACK, true);
+        int ATTSPE = getStat(Stats.SPATTACK, true);
         float mult = getPokedexEntry().isShadowForme ? 2 : 1;
-
-        return mult * (Tools.getStat((ATT + ATTSPE) / 2, 0, 0, getLevel(), (getModifiers()[1] + getModifiers()[3]) / 2,
-                (nature.getStatsMod()[1] + nature.getStatsMod()[3]) / 2) / 3);
+        return mult * ((ATT + ATTSPE) / 6f);
     }
 
-    @Override
-    public int[] getBaseStats()
+    public int[] getBaseStatsOld()
     {
         int[] stats = new int[6];
         String[] sta = dataManager.get(STATSDW).split(",");
         for (int i = 0; i < 6; i++)
         {
             stats[i] = Integer.parseInt(sta[i].trim());
-        }
-
-        if (stats[0] == 0)
-        {
-            setStats(getPokedexEntry().getStats());
         }
         return stats;
     }
@@ -399,9 +376,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public byte[] getModifiers()
+    public StatModifiers getModifiers()
     {
-        return PokecubeSerializer.intAsModifierArray(dataManager.get(STATMODDW));
+        return null;
     }
 
     @Override
@@ -630,7 +607,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void onUpdate()
     {
         super.onUpdate();
-        if (getBaseStats()[0] == 0) setStats(getPokedexEntry().getStats());
         if (Math.random() > 0.999 && this.getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.TIME);
@@ -718,7 +694,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                         worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, posX, posY, posZ, 1));
                     }
                 }
-                ret.setStats(getPokedexEntry().getStats());
             }
         }
         return ret;
@@ -736,12 +711,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public void setModifiers(byte[] modifiers)
-    {
-        dataManager.set(STATMODDW, PokecubeSerializer.modifierArrayAsInt(modifiers));
-    }
-
-    @Override
     public void setNature(Nature nature)
     {
         this.nature = nature;
@@ -753,7 +722,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (newEntry == null || newEntry == entry) return this;
         IPokemob ret = this;
         entry = newEntry;
-        this.setStats(entry.getStats());
         if (newEntry.getPokedexNb() != getPokedexNb())
         {
             ret = megaEvolve(newEntry);
@@ -867,8 +835,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         this.shiny = shiny;
     }
 
-    @Override
-    public void setStats(int[] stats)
+    public void setStatsOld(int[] stats)
     {
         String sta = stats[0] + "," + stats[1] + "," + stats[2] + "," + stats[3] + "," + stats[4] + "," + stats[5];
         dataManager.set(STATSDW, sta);
@@ -891,6 +858,19 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setType2(PokeType type2)
     {
         this.type2 = type2;
+    }
+
+    @Override
+    public int getStat(Stats stat, boolean modified)
+    {
+        return getModifiers().getStat(this, stat, modified);
+    }
+
+    @Override
+    public int getBaseStat(Stats stat)
+    {
+        if (stat.ordinal() > 5) return 1;
+        return getPokedexEntry().getStats()[stat.ordinal()];
     }
 
     /** Handles health update.
@@ -954,7 +934,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             ret.dataManager.set(EXPDW, exp);
             ret.levelUp(level);
         }
-        ret.setStats(ret.getPokedexEntry().getStats());
         return ret;
     }
 

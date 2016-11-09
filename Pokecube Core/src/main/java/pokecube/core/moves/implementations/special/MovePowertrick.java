@@ -1,11 +1,63 @@
 package pokecube.core.moves.implementations.special;
 
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.IStatsModifiers;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.templates.Move_Basic;
 
 public class MovePowertrick extends Move_Basic
 {
+    public static class Modifier implements IStatsModifiers
+    {
+        public Modifier()
+        {
+        }
+
+        float[] modifiers;
+
+        @Override
+        public boolean isFlat()
+        {
+            return true;
+        }
+
+        @Override
+        public int getPriority()
+        {
+            return 200;
+        }
+
+        @Override
+        public float getModifier(Stats stat)
+        {
+            return modifiers[stat.ordinal()];
+        }
+
+        @Override
+        public float getModifierRaw(Stats stat)
+        {
+            return modifiers[stat.ordinal()];
+        }
+
+        @Override
+        public void setModifier(Stats stat, float value)
+        {
+            modifiers[stat.ordinal()] = value;
+        }
+
+        @Override
+        public boolean persistant()
+        {
+            return false;
+        }
+
+    }
+
+    static
+    {
+        IPokemob.StatModifiers.registerModifier("powertrick", Modifier.class);
+    }
 
     public MovePowertrick()
     {
@@ -19,19 +71,11 @@ public class MovePowertrick extends Move_Basic
         if (packet.canceled || packet.failed) return;
         if (packet.attacked instanceof IPokemob)
         {
-            int[] attackerStats = packet.attacker.getBaseStats();
-            byte[] attackerMods = packet.attacker.getModifiers();
-
-            int def = attackerStats[2];
-            attackerStats[2] = attackerStats[1];
-            attackerStats[1] = def;
-
-            byte def2 = attackerMods[2];
-            attackerMods[2] = attackerMods[1];
-            attackerMods[1] = def2;
-
-            packet.attacker.setModifiers(attackerMods);
-            packet.attacker.setStats(attackerStats);
+            Modifier mods = packet.attacker.getModifiers().getModifiers(name, Modifier.class);
+            int def = packet.attacker.getStat(Stats.DEFENSE, true);
+            int atk = packet.attacker.getStat(Stats.ATTACK, true);
+            mods.setModifier(Stats.DEFENSE, -def + atk);
+            mods.setModifier(Stats.ATTACK, atk - def);
         }
     }
 }

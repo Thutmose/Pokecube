@@ -31,12 +31,13 @@ import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
@@ -384,13 +385,13 @@ public class MovesUtils implements IMoveConstants
 
         if (type == SPECIAL)
         {
-            ATT = (int) (Tools.getStats(attacker)[3] * movePacket.statMults[3]);
-            DEF = Tools.getStats(attacked)[4];
+            ATT = (int) (attacker.getStat(Stats.SPATTACK, true) * movePacket.statMults[Stats.SPATTACK.ordinal()]);
+            DEF = attacker.getStat(Stats.SPDEFENSE, true);
         }
         else
         {
-            ATT = (int) (Tools.getStats(attacker)[1] * movePacket.statMults[1]);
-            DEF = Tools.getStats(attacked)[2];
+            ATT = (int) (attacker.getStat(Stats.ATTACK, true) * movePacket.statMults[Stats.ATTACK.ordinal()]);
+            DEF = attacker.getStat(Stats.DEFENSE, true);
         }
 
         ATT = (int) (statusMultiplier * ATT);
@@ -420,10 +421,9 @@ public class MovesUtils implements IMoveConstants
 
     public static int getAttackDelay(IPokemob attacker, String moveName, boolean distanced, boolean playerTarget)
     {
-        byte[] mods = attacker.getModifiers();
         int cd = PokecubeMod.core.getConfig().attackCooldown;
         if (playerTarget) cd *= 2;
-        double accuracyMod = Tools.modifierToRatio(mods[6], true);
+        double accuracyMod = attacker.getModifiers().getDefaultMods().getModifier(Stats.ACCURACY);
         double moveMod = MovesUtils.getDelayMultiplier(attacker, moveName);
         return (int) (cd * moveMod / accuracyMod);
     }
@@ -563,30 +563,29 @@ public class MovesUtils implements IMoveConstants
     public static boolean handleStats(IPokemob mob, Entity target, MovePacket atk, boolean attacked)
     {
         int[] stats = attacked ? atk.attackedStatModification : atk.attackerStatModification;
-        byte[] modifiers = mob.getModifiers();
-        byte[] old = modifiers.clone();
-
+        DefaultModifiers modifiers = mob.getModifiers().getDefaultMods();
+        float[] mods = modifiers.values;
+        float[] old = mods.clone();
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + stats[1]));
+            mods[1] = (byte) Math.max(-6, Math.min(6, mods[1] + stats[1]));
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + stats[2]));
+            mods[2] = (byte) Math.max(-6, Math.min(6, mods[2] + stats[2]));
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + stats[3]));
+            mods[3] = (byte) Math.max(-6, Math.min(6, mods[3] + stats[3]));
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + stats[4]));
+            mods[4] = (byte) Math.max(-6, Math.min(6, mods[4] + stats[4]));
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + stats[5]));
+            mods[5] = (byte) Math.max(-6, Math.min(6, mods[5] + stats[5]));
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + stats[6]));
+            mods[6] = (byte) Math.max(-6, Math.min(6, mods[6] + stats[6]));
         if (attacked ? atk.attackedStatModProb / 100f > Math.random() : atk.attackerStatModProb / 100f > Math.random())
-            modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + stats[7]));
-        mob.setModifiers(modifiers);
+            mods[7] = (byte) Math.max(-6, Math.min(6, mods[7] + stats[7]));
         boolean ret = false;
         byte[] diff = new byte[old.length];
         for (int i = 0; i < old.length; i++)
         {
-            diff[i] = (byte) (old[i] - modifiers[i]);
-            if (old[i] != modifiers[i])
+            diff[i] = (byte) (old[i] - mods[i]);
+            if (old[i] != mods[i])
             {
                 ret = true;
             }
@@ -605,22 +604,22 @@ public class MovesUtils implements IMoveConstants
 
     public static boolean handleStats2(IPokemob mob, Entity attacker, int statEffect, int statEffectAmount)
     {
-        byte[] modifiers = mob.getModifiers();
-        byte[] old = modifiers.clone();
-        modifiers[1] = (byte) Math.max(-6, Math.min(6, modifiers[1] + statEffectAmount * (statEffect & 1)));
-        modifiers[2] = (byte) Math.max(-6, Math.min(6, modifiers[2] + statEffectAmount * (statEffect & 2) / 2));
-        modifiers[3] = (byte) Math.max(-6, Math.min(6, modifiers[3] + statEffectAmount * (statEffect & 4) / 4));
-        modifiers[4] = (byte) Math.max(-6, Math.min(6, modifiers[4] + statEffectAmount * (statEffect & 8) / 8));
-        modifiers[5] = (byte) Math.max(-6, Math.min(6, modifiers[5] + statEffectAmount * (statEffect & 16) / 16));
-        modifiers[6] = (byte) Math.max(-6, Math.min(6, modifiers[6] + statEffectAmount * (statEffect & 32) / 32));
-        modifiers[7] = (byte) Math.max(-6, Math.min(6, modifiers[7] + statEffectAmount * (statEffect & 64) / 64));
-        mob.setModifiers(modifiers);
+        DefaultModifiers modifiers = mob.getModifiers().getDefaultMods();
+        float[] mods = modifiers.values;
+        float[] old = mods.clone();
+        mods[1] = (byte) Math.max(-6, Math.min(6, mods[1] + statEffectAmount * (statEffect & 1)));
+        mods[2] = (byte) Math.max(-6, Math.min(6, mods[2] + statEffectAmount * (statEffect & 2) / 2));
+        mods[3] = (byte) Math.max(-6, Math.min(6, mods[3] + statEffectAmount * (statEffect & 4) / 4));
+        mods[4] = (byte) Math.max(-6, Math.min(6, mods[4] + statEffectAmount * (statEffect & 8) / 8));
+        mods[5] = (byte) Math.max(-6, Math.min(6, mods[5] + statEffectAmount * (statEffect & 16) / 16));
+        mods[6] = (byte) Math.max(-6, Math.min(6, mods[6] + statEffectAmount * (statEffect & 32) / 32));
+        mods[7] = (byte) Math.max(-6, Math.min(6, mods[7] + statEffectAmount * (statEffect & 64) / 64));
         boolean ret = false;
         byte[] diff = new byte[old.length];
         for (int i = 0; i < old.length; i++)
         {
-            diff[i] = (byte) (old[i] - modifiers[i]);
-            if (old[i] != modifiers[i])
+            diff[i] = (byte) (old[i] - mods[i]);
+            if (old[i] != mods[i])
             {
                 ret = true;
             }

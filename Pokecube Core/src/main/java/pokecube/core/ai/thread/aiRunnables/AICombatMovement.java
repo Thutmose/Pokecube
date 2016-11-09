@@ -8,10 +8,11 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.SoundCategory;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public class AICombatMovement extends AIBase
@@ -124,8 +125,8 @@ public class AICombatMovement extends AIBase
             }
             if (!shouldDodgeMove) return shouldDodgeMove;
         }
-        byte[] mods = pokemob.getModifiers();
-        double evasionMod = Tools.modifierToRatio(mods[7], true) / 30d;
+        DefaultModifiers mods = pokemob.getModifiers().getDefaultMods();
+        double evasionMod = mods.getModifier(Stats.EVASION) / 30d;
         dodge = Math.random() > (1 - evasionMod);
         return dodge;
     }

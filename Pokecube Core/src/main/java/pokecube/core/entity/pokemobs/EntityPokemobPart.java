@@ -140,21 +140,9 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public int[] getActualStats()
-    {
-        return parent.getActualStats();
-    }
-
-    @Override
     public float getAttackStrength()
     {
         return parent.getAttackStrength();
-    }
-
-    @Override
-    public int[] getBaseStats()
-    {
-        return parent.getBaseStats();
     }
 
     @Override
@@ -265,13 +253,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     {
         // TODO Auto-generated method stub
         return 0;
-    }
-
-    @Override
-    public byte[] getModifiers()
-    {
-        // TODO Auto-generated method stub
-        return parent.getModifiers();
     }
 
     @Override
@@ -681,13 +662,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public void setModifiers(byte[] modifiers)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public void setMove(int i, String moveName)
     {
         // TODO Auto-generated method stub
@@ -773,13 +747,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public void setSpecialInfo(int info)
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setStats(int[] stats)
     {
         // TODO Auto-generated method stub
 
@@ -1001,6 +968,27 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public String getLastMoveUsed()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getStat(Stats stat, boolean modified)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getBaseStat(Stats stat)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public StatModifiers getModifiers()
     {
         // TODO Auto-generated method stub
         return null;

@@ -235,7 +235,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         dataManager.register(MOVESDW, "");
         dataManager.register(SPECIALINFO, Integer.valueOf(0));
         dataManager.register(TRANSFORMEDTODW, Integer.valueOf(-1));
-        
+
         dataManager.register(LASTMOVE, "");
 
         // Held item sync
@@ -621,7 +621,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
                 base.returnToPokecube();
                 return;
             }
-
+            this.setPokemonAIState(IMoveConstants.NOMOVESWAP, false);
             this.setPokemonAIState(IMoveConstants.ANGRY, false);
             this.setAttackTarget(null);
             this.captureDrops = true;

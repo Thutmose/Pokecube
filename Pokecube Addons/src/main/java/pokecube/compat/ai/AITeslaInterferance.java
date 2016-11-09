@@ -10,6 +10,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
@@ -44,7 +45,7 @@ public class AITeslaInterferance extends EntityAIBase
     public void updateTask()
     {
         int range = 4;
-        int statFactor = pokemob.getActualStats()[1] + pokemob.getActualStats()[3];
+        int statFactor = pokemob.getStat(Stats.ATTACK, true) + pokemob.getStat(Stats.SPATTACK, true);
         statFactor /= 2;
         float timescale = 1f;
         int tempFactor = 0;

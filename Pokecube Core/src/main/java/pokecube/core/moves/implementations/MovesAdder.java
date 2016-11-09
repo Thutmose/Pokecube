@@ -12,6 +12,8 @@ import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.Move_Transform;
@@ -30,7 +32,6 @@ import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.moves.templates.Move_Terrain;
-import pokecube.core.utils.Tools;
 
 public class MovesAdder implements IMoveConstants
 {
@@ -146,8 +147,8 @@ public class MovesAdder implements IMoveConstants
             public int getPWR(IPokemob user, Entity target)
             {
                 if (!(target instanceof IPokemob)) return 50;
-                int targetSpeed = Tools.getStats(((IPokemob) target))[5];
-                int userSpeed = Tools.getStats(user)[5];
+                int targetSpeed = ((IPokemob) target).getStat(Stats.VIT, true);
+                int userSpeed = user.getStat(Stats.VIT, true);
                 int pwr = 25 * targetSpeed / userSpeed;
                 return pwr;
             }
@@ -159,8 +160,8 @@ public class MovesAdder implements IMoveConstants
             public int getPWR(IPokemob user, Entity target)
             {
                 if (!(target instanceof IPokemob)) return 50;
-                int targetSpeed = Tools.getStats(((IPokemob) target))[5];
-                int userSpeed = Tools.getStats(user)[5];
+                int targetSpeed = ((IPokemob) target).getStat(Stats.VIT, true);
+                int userSpeed = user.getStat(Stats.VIT, true);
                 int pwr = 60;
                 double var = (double) targetSpeed / (double) userSpeed;
 
@@ -447,11 +448,12 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_FLAMETHROWER).setMultiTarget());
         registerMove(new Move_Basic(MOVE_FIREBLAST).setAnimation(new MoveAnimationBase()
         {
-            //TODO animations for fire blast
+            // TODO animations for fire blast
             @Override
             public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
             {
             }
+
             @Override
             public void initColour(long time, float partialTicks, Move_Base move)
             {
@@ -557,9 +559,10 @@ public class MovesAdder implements IMoveConstants
             public int getPWR(IPokemob user, Entity target)
             {
                 int pwr = 20;
-                byte[] mods = user.getModifiers();
-                for (byte b : mods)
+                DefaultModifiers mods = user.getModifiers().getDefaultMods();
+                for (Stats stat: Stats.values())
                 {
+                    float b = mods.getModifierRaw(stat);
                     if (b > 0)
                     {
                         pwr += 20 * b;

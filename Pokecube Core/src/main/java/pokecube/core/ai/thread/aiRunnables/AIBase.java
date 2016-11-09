@@ -21,8 +21,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.Tools;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAIRunnable;
 import thut.api.maths.Vector3;
@@ -277,14 +277,8 @@ public abstract class AIBase implements IAIRunnable
                                                                    @Override
                                                                    public int compare(IPokemob o1, IPokemob o2)
                                                                    {
-                                                                       int speed1 = Tools.getStat(o1.getBaseStats()[5],
-                                                                               o1.getIVs()[5], o1.getEVs()[5],
-                                                                               o1.getLevel(), o1.getModifiers()[5],
-                                                                               o1.getNature().getStatsMod()[5]);
-                                                                       int speed2 = Tools.getStat(o2.getBaseStats()[5],
-                                                                               o2.getIVs()[5], o2.getEVs()[5],
-                                                                               o2.getLevel(), o2.getModifiers()[5],
-                                                                               o2.getNature().getStatsMod()[5]);
+                                                                       int speed1 = o1.getStat(Stats.VIT, true);
+                                                                       int speed2 = o2.getStat(Stats.VIT, true);
                                                                        return speed2 - speed1;
                                                                    }
                                                                };

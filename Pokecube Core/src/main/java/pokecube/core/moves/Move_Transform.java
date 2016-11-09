@@ -72,14 +72,11 @@ public class Move_Transform extends Move_Basic
             {
                 if (attacked instanceof IPokemob)
                 {
-
                     if (attacked instanceof IPokemob)
                     {
-                        attacker.setStats(((IPokemob) attacked).getBaseStats());
                         if (!(attacked instanceof IBreedingMob) || attacked != ((IBreedingMob) attacker).getLover())
                             ((EntityCreature) attacked).setAttackTarget((EntityLivingBase) attacker);
                     }
-
                 }
                 attacker.setTransformedTo(attacked);
             }

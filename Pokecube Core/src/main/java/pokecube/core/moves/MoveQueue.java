@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.animations.EntityMoveUse;
 
 public class MoveQueue
@@ -78,8 +79,8 @@ public class MoveQueue
             {
                 IPokemob user1 = (IPokemob) o1.getUser();
                 IPokemob user2 = (IPokemob) o2.getUser();
-                int speed1 = user1 == null ? 0 : user1.getActualStats()[5];
-                int speed2 = user2 == null ? 0 : user2.getActualStats()[5];
+                int speed1 = user1 == null ? 0 : user1.getStat(Stats.VIT, true);
+                int speed2 = user2 == null ? 0 : user2.getStat(Stats.VIT, true);
                 // TODO also factor in move priority here.
                 return speed1 - speed2;
             }

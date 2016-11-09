@@ -419,62 +419,6 @@ public class Tools
         return IPokemob.FEMALE;
     }
 
-    public static int getStat(int oldStat, int mod)
-    {
-        int ret = (int) (oldStat * modifierToRatio((byte) mod, false));
-        return Math.max(5, ret);
-    }
-
-    public static int getStat(int BS, int IV, int EV, int level, int nature)
-    {
-        return getStat(BS, IV, EV, level, 0, nature);
-    }
-
-    // This is for getting stats after effects of attack modifiers.
-    public static int getStat(int BS, int IV, int EV, int level, int mod, int nature)
-    {
-        int EP = MathHelper.floor_double((EV + 128) / 4);
-        double natModifier = (((double) 10 * nature) + 100) / 100d;
-        double modifier = modifierToRatio((byte) mod, false);
-        return Math.max(
-                (int) ((((MathHelper.floor_double((2 * BS) + IV + EP) * level / 100) + 5) * modifier * natModifier)),
-                5);
-    }
-
-    public static int[] getStats(IPokemob mob)
-    {
-        int[] ret = new int[6];
-        ret[0] = getHP(mob.getBaseStats()[0], mob.getIVs()[0], mob.getEVs()[0], mob.getLevel());
-        ret[1] = getStat(mob.getBaseStats()[1], mob.getIVs()[1], mob.getEVs()[1], mob.getLevel(), mob.getModifiers()[1],
-                mob.getNature().getStatsMod()[1]);
-        ret[2] = getStat(mob.getBaseStats()[2], mob.getIVs()[2], mob.getEVs()[2], mob.getLevel(), mob.getModifiers()[2],
-                mob.getNature().getStatsMod()[2]);
-        ret[3] = getStat(mob.getBaseStats()[3], mob.getIVs()[3], mob.getEVs()[3], mob.getLevel(), mob.getModifiers()[3],
-                mob.getNature().getStatsMod()[3]);
-        ret[4] = getStat(mob.getBaseStats()[4], mob.getIVs()[4], mob.getEVs()[4], mob.getLevel(), mob.getModifiers()[4],
-                mob.getNature().getStatsMod()[4]);
-        ret[5] = getStat(mob.getBaseStats()[5], mob.getIVs()[5], mob.getEVs()[5], mob.getLevel(), mob.getModifiers()[5],
-                mob.getNature().getStatsMod()[5]);
-        return ret;
-    }
-
-    public static int[] getStatsUnMod(IPokemob mob)
-    {
-        int[] ret = new int[6];
-        ret[0] = getHP(mob.getPokedexEntry().getStatHP(), mob.getIVs()[0], mob.getEVs()[0], mob.getLevel());
-        ret[1] = getStat(mob.getPokedexEntry().getStatATT(), mob.getIVs()[1], mob.getEVs()[1], mob.getLevel(),
-                mob.getNature().getStatsMod()[1]);
-        ret[2] = getStat(mob.getPokedexEntry().getStatDEF(), mob.getIVs()[2], mob.getEVs()[2], mob.getLevel(),
-                mob.getNature().getStatsMod()[2]);
-        ret[3] = getStat(mob.getPokedexEntry().getStatATTSPE(), mob.getIVs()[3], mob.getEVs()[3], mob.getLevel(),
-                mob.getNature().getStatsMod()[3]);
-        ret[4] = getStat(mob.getPokedexEntry().getStatDEFSPE(), mob.getIVs()[4], mob.getEVs()[4], mob.getLevel(),
-                mob.getNature().getStatsMod()[4]);
-        ret[5] = getStat(mob.getPokedexEntry().getStatVIT(), mob.getIVs()[5], mob.getEVs()[5], mob.getLevel(),
-                mob.getNature().getStatsMod()[5]);
-        return ret;
-    }
-
     public static int getType(String name)
     {
         name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
@@ -585,25 +529,6 @@ public class Tools
             index++;
         }
         return expMap[level - 1][index];
-    }
-
-    public static double modifierToRatio(byte mod, boolean accuracy)
-    {
-        double modifier = 1;
-        if (mod == 0) modifier = 1;
-        else if (mod == 1) modifier = !accuracy ? 1.5 : 4 / 3d;
-        else if (mod == 2) modifier = !accuracy ? 2 : 5 / 3d;
-        else if (mod == 3) modifier = !accuracy ? 2.5 : 2;
-        else if (mod == 4) modifier = !accuracy ? 3 : 7 / 3d;
-        else if (mod == 5) modifier = !accuracy ? 3.5 : 8 / 3d;
-        else if (mod == 6) modifier = !accuracy ? 4 : 3;
-        else if (mod == -1) modifier = !accuracy ? 2 / 3d : 3 / 4d;
-        else if (mod == -2) modifier = !accuracy ? 1 / 2d : 3 / 5d;
-        else if (mod == -3) modifier = !accuracy ? 2 / 5d : 3 / 6d;
-        else if (mod == -4) modifier = !accuracy ? 1 / 3d : 3 / 7d;
-        else if (mod == -5) modifier = !accuracy ? 2 / 7d : 3 / 8d;
-        else if (mod == -6) modifier = !accuracy ? 1 / 4d : 3 / 9d;
-        return modifier;
     }
 
     public static int serialize(float f, float g)

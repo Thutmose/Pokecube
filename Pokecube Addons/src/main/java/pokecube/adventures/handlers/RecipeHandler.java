@@ -69,7 +69,7 @@ public class RecipeHandler
             RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, inputs, entry, energy);
             newRecipe.level = level;
             newRecipe.setTame(tame);
-            newRecipe.reanimator = reanimator;
+            if (!reanimator) newRecipe.setSplicer();
             newRecipe.priority = priority;
             if (recipe.values.containsKey(REMAIN))
             {

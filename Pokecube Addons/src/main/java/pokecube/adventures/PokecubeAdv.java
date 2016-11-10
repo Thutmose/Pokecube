@@ -99,7 +99,6 @@ public class PokecubeAdv
     public void load(FMLInitializationEvent evt)
     {
         proxy.initClient();
-        RecipeHandler.preInit();
         PacketPokeAdv.init();
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);
@@ -170,6 +169,7 @@ public class PokecubeAdv
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ItemHandler());
         proxy.preinit();
+        RecipeHandler.preInit();
     }
 
     private void registerMerchant() throws NoSuchMethodException, SecurityException

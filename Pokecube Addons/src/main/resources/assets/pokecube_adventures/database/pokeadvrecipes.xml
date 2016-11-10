@@ -55,13 +55,13 @@
         <Input id="minecraft:iron_block" key="I"/>
     </Recipe>
     <Recipe map=" R ,ROR, E ">//Warp Pad Linker
-        <Output n="1" id="pokecube_adventures:target" d="1"/>
+        <Output n="1" id="pokecube_adventures:pokemobTarget" d="1"/>
         <Input id="minecraft:emerald" key="R"/>
         <Input id="minecraft:stone" key="O"/>
         <Input id="minecraft:ender_eye" key="E"/>
     </Recipe>
     <Recipe map=" R ,ROR, E ">//Target
-        <Output n="1" id="pokecube_adventures:target"/>
+        <Output n="1" id="pokecube_adventures:pokemobTarget"/>
         <Input id="minecraft:redstone" key="R"/>
         <Input id="minecraft:stone" key="O"/>
         <Input id="minecraft:emerald" key="E"/>

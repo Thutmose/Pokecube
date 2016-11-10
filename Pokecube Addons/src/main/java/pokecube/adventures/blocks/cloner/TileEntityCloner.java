@@ -257,12 +257,12 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             {
                 if (!(recipe instanceof RecipeFossilRevive)) return false;
                 RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                return !recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
+                return recipe2.reanimator && recipe.matches(tile.craftMatrix, tile.getWorld());
             }
             if ((recipe instanceof RecipeFossilRevive))
             {
                 RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                return recipe2.pokedexEntry.legendary && recipe.matches(tile.craftMatrix, tile.getWorld());
+                return !recipe2.reanimator && recipe.matches(tile.craftMatrix, tile.getWorld());
             }
             return recipe.matches(tile.craftMatrix, tile.getWorld());
         }

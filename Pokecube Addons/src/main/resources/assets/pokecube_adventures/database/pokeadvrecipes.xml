@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<Recipes>
+    <Recipe handler="cloner" lvl="15" cost="10000" pokemon="Ditto" priority="-1" remain="0">//Ditto 
+        <Input id="pokecube_adventures:mewhair"/>
+        <Input id="pokecube:pokemobegg" d="32767"/>
+        <Input id="minecraft:potion" d="32767"/>
+    </Recipe>
+    <Recipe handler="cloner" lvl="70" cost="30000" pokemon="Mewtwo">//Mewtwo 
+        <Input id="pokecube_adventures:mewhair"/>
+        <Input id="pokecube:pokemobegg" d="32767"/>
+        <Input id="minecraft:potion">
+            <tag>{Potion:"minecraft:strong_regeneration"}</tag>
+        </Input>
+    </Recipe>
+    <Recipe handler="cloner" lvl="70" cost="30000" pokemon="Genesect">//Genesect 
+        <Input id="minecraft:redstone_block"/>
+        <Input id="minecraft:iron_block"/>
+        <Input id="minecraft:diamond_block"/>
+        <Input id="pokecube:fossil">
+            <tag>{pokemon:"kabuto"}</tag>
+        </Input>
+        <Input id="minecraft:potion">
+            <tag>{Potion:"minecraft:strong_regeneration"}</tag>
+        </Input>
+    </Recipe>
+    <Recipe map="III,SRS,SMS">//Reanimator
+        <Output n="1" id="pokecube_adventures:cloner"/>
+        <Input id="pokecube:tradingtable" key="R"/>
+        <Input id="minecraft:gold_block" key="S"/>
+        <Input id="minecraft:golden_apple" key="M"/>
+        <Input id="minecraft:iron_ingot" key="I"/>
+    </Recipe>
+    <Recipe map="III,SRS,SMS">//Splicer
+        <Output n="1" id="pokecube_adventures:cloner" d="1"/>
+        <Input id="pokecube_adventures:cloner" key="R"/>
+        <Input id="minecraft:diamond_block" key="S"/>
+        <Input id="minecraft:golden_apple" d="1" key="M"/>
+        <Input id="minecraft:nether_star" key="I"/>
+    </Recipe>
+    <Recipe map="III,SRS,SMS">//AFA
+        <Output n="1" id="pokecube_adventures:afa"/>
+        <Input id="pokecube:tradingtable" key="R"/>
+        <Input id="minecraft:iron_block" key="S"/>
+        <Input id="minecraft:redstone" key="M"/>
+        <Input id="minecraft:iron_ingot" key="I"/>
+    </Recipe>
+    <Recipe map="BBB,BRB,BBB">//Siphon
+        <Output n="1" id="pokecube_adventures:pokesiphon"/>
+        <Input id="pokecube_adventures:afa" key="R"/>
+        <Input id="minecraft:redstone_block" key="B"/>
+    </Recipe>
+    <Recipe map="IEI,EIE,IEI">//Warp Pad
+        <Output n="2" id="pokecube_adventures:warppad"/>
+        <Input id="minecraft:ender_eye" key="E"/>
+        <Input id="minecraft:iron_block" key="I"/>
+    </Recipe>
+    <Recipe map=" R ,ROR, E ">//Warp Pad Linker
+        <Output n="1" id="pokecube_adventures:target" d="1"/>
+        <Input id="minecraft:emerald" key="R"/>
+        <Input id="minecraft:stone" key="O"/>
+        <Input id="minecraft:ender_eye" key="E"/>
+    </Recipe>
+    <Recipe map=" R ,ROR, E ">//Target
+        <Output n="1" id="pokecube_adventures:target"/>
+        <Input id="minecraft:redstone" key="R"/>
+        <Input id="minecraft:stone" key="O"/>
+        <Input id="minecraft:emerald" key="E"/>
+    </Recipe>
+    <Recipe map=" R ,ROR, E ">//Trader
+        <Output n="1" id="pokecube_adventures:trainerspawner" d="2"/>
+        <Input id="minecraft:emerald" key="R"/>
+        <Input id="minecraft:stone" key="O"/>
+        <Input id="minecraft:emerald" key="E"/>
+    </Recipe>
+    <Recipe map="WWW,WPW,WWW">//Bag
+        <Output n="1" id="pokecube_adventures:pokecubebag"/>
+        <Input id="pokecube:pc" d="8" key="P"/>
+        <Input id="minecraft:wool" d="32767" key="W"/>
+    </Recipe>
+</Recipes>

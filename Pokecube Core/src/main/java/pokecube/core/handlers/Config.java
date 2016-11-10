@@ -27,6 +27,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
+import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
@@ -374,9 +375,14 @@ public class Config extends ConfigBase
     public boolean                       nonPokemobExp                = false;
     @Configure(category = database, needsMcRestart = true)
     boolean                              forceDatabase                = true;
+    @Configure(category = database, needsMcRestart = true)
+    boolean                              forceRecipes                 = true;
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             configDatabases              = { "pokemobs", "moves" };
+
+    @Configure(category = database, needsMcRestart = true)
+    String[]                             recipeDatabases              = { "recipes" };
 
     @Configure(category = rewards)
     public String                        exp_shareRequirement         = "5";
@@ -476,6 +482,9 @@ public class Config extends ConfigBase
             PokecubeMod.giftLocations.add(loc);
         }
 
+        for (String s : recipeDatabases)
+            XMLRecipeHandler.recipeFiles.add(s);
+
         if (extraVars.length < defaults.extraVars.length)
         {
             String[] vals = extraVars.clone();
@@ -540,6 +549,7 @@ public class Config extends ConfigBase
         PokecubeMod.pokemobsDamagePlayers = pokemobsDamagePlayers;
 
         Database.FORCECOPY = forceDatabase;
+        Database.FORCECOPYRECIPES = forceRecipes;
 
         if (configDatabases.length != 2)
         {

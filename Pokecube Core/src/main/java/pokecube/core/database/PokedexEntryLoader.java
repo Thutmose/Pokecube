@@ -96,9 +96,9 @@ public class PokedexEntryLoader
     public static class Drop
     {
         @XmlAnyAttribute
-        Map<QName, String> values = Maps.newHashMap();
+        public Map<QName, String> values = Maps.newHashMap();
         @XmlElement(name = "tag")
-        String             tag;
+        public String             tag;
     }
 
     @XmlRootElement(name = "Interact")

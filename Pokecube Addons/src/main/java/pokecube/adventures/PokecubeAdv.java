@@ -100,6 +100,7 @@ public class PokecubeAdv
     public void load(FMLInitializationEvent evt)
     {
         proxy.initClient();
+        RecipeHandler.preInit();
         PacketPokeAdv.init();
         PokecubeMod.packetPipeline.registerMessage(MessageHandlerClient.class, MessageClient.class,
                 PokecubeCore.getMessageID(), Side.CLIENT);

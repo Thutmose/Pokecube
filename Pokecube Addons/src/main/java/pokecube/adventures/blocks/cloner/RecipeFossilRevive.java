@@ -54,6 +54,7 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     public int           level       = 20;
     public List<Integer> remainIndex = Lists.newArrayList();
     public boolean       tame        = true;
+    public boolean       reanimator  = true;
     private IPokemob     pokemob;
 
     public RecipeFossilRevive(ItemStack output, List<ItemStack> inputList, PokedexEntry entry, int cost)

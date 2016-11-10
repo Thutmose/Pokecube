@@ -1,102 +1,139 @@
 package pokecube.adventures.handlers;
 
-import static pokecube.core.PokecubeItems.getStack;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionType;
-import net.minecraft.potion.PotionUtils;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
+import pokecube.adventures.comands.Config;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.recipes.IRecipeParser;
+import pokecube.core.database.recipes.XMLRecipeHandler;
+import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
+import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipeInput;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
 public class RecipeHandler
 {
+    private static final QName ENERGY     = new QName("cost");
+    private static final QName PRIORITY   = new QName("priority");
+    private static final QName POKEMOB    = new QName("pokemon");
+    private static final QName TAME       = new QName("tame");
+    private static final QName LEVEL      = new QName("lvl");
+    private static final QName REANIMATOR = new QName("reanimator");
+    private static final QName REMAIN     = new QName("remain");
 
-    public static boolean tmRecipe = true;
+    public static boolean      tmRecipe   = true;
+
+    public static class ClonerRecipeParser implements IRecipeParser
+    {
+        @Override
+        public void manageRecipe(XMLRecipe recipe) throws NullPointerException
+        {
+            List<ItemStack> inputs = Lists.newArrayList();
+            for (XMLRecipeInput xml : recipe.inputs)
+            {
+                inputs.add(XMLRecipeHandler.getStack(xml));
+            }
+            PokedexEntry entry = Database.getEntry(recipe.values.get(POKEMOB));
+            if (entry == null) throw new NullPointerException("No Entry for " + recipe.values.get(POKEMOB));
+            ItemStack eggOut = ItemPokemobEgg.getEggStack(entry.getPokedexNb());
+            int energy = Integer.parseInt(recipe.values.get(ENERGY));
+            boolean failed = false;
+            for (Object o : inputs)
+                failed = failed || o == null;
+            if (failed) { throw new NullPointerException("inputs: " + inputs); }
+            int level = Integer.parseInt(recipe.values.get(LEVEL));
+            int priority = 0;
+            boolean reanimator = false;
+            boolean tame = false;
+            if (recipe.values.containsKey(PRIORITY)) priority = Integer.parseInt(recipe.values.get(PRIORITY));
+            if (recipe.values.containsKey(REANIMATOR)) reanimator = Boolean.parseBoolean(recipe.values.get(REANIMATOR));
+            if (recipe.values.containsKey(TAME)) tame = Boolean.parseBoolean(recipe.values.get(TAME));
+            RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, inputs, entry, energy);
+            newRecipe.level = level;
+            newRecipe.setTame(tame);
+            newRecipe.reanimator = reanimator;
+            newRecipe.priority = priority;
+            if (recipe.values.containsKey(REMAIN))
+            {
+                String[] remain = recipe.values.get(REMAIN).split(",");
+                for (String s : remain)
+                {
+                    newRecipe.remainIndex.add(Integer.parseInt(s));
+                }
+            }
+            RecipeFossilRevive.addRecipe(newRecipe);
+        }
+    }
+
+    static
+    {
+        XMLRecipeHandler.recipeParsers.put("cloner", new ClonerRecipeParser());
+        XMLRecipeHandler.recipeFiles.add("pokeadvrecipes");
+    }
+
+    public static void preInit()
+    {
+        File temp = new File(Database.CONFIGLOC);
+        if (!temp.exists())
+        {
+            temp.mkdirs();
+        }
+        String name = "pokeadvrecipes.xml";
+        File temp1 = new File(Database.CONFIGLOC + name);
+        if (!temp1.exists() || Config.instance.forceRecipes)
+        {
+            ArrayList<String> rows = Database.getFile("/assets/pokecube_adventures/database/" + name);
+            int n = 0;
+            try
+            {
+                File file = new File(Database.CONFIGLOC + name);
+                Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                for (int i = 0; i < rows.size(); i++)
+                {
+                    out.write(rows.get(i) + "\n");
+                    n++;
+                }
+                out.close();
+            }
+            catch (Exception e)
+            {
+                System.err.println(name + " " + n);
+                e.printStackTrace();
+            }
+        }
+
+    }
 
     private static void addClonerRecipes()
     {
-        for (ItemStack stack : PokecubeItems.fossils.keySet())
+        if (Config.instance.autoAddFossils) for (ItemStack stack : PokecubeItems.fossils.keySet())
         {
             PokedexEntry i = PokecubeItems.fossils.get(stack);
             if (PokecubeMod.registered.get(i.getPokedexNb()))
             {
-                RecipeFossilRevive newRecipe = new RecipeFossilRevive(stack, Lists.newArrayList(stack), i, 20000);
+                RecipeFossilRevive newRecipe = new RecipeFossilRevive(stack, Lists.newArrayList(stack), i,
+                        Config.instance.fossilReanimateCost);
                 RecipeFossilRevive.addRecipe(newRecipe);
             }
         }
-        ItemStack eggIn = PokecubeItems.getStack("pokemobegg");
-        eggIn.setItemDamage(Short.MAX_VALUE);
-        ItemStack mewhair = PokecubeItems.getStack("mewhair");
-        ItemStack ironBlock = new ItemStack(Blocks.IRON_BLOCK);
-        ItemStack redstoneBlock = new ItemStack(Blocks.REDSTONE_BLOCK);
-        ItemStack diamondBlock = new ItemStack(Blocks.DIAMOND_BLOCK);
-        ItemStack dome = PokecubeItems.getStack("kabuto");
-        ItemStack potion = new ItemStack(Items.POTIONITEM, 1, Short.MAX_VALUE);
-
-        // Ditto
-        ItemStack eggOut = ItemPokemobEgg.getEggStack(132);
-        RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion),
-                Database.getEntry("ditto"), 10000);
-        newRecipe.remainIndex.add(0);
-        // Low priority
-        newRecipe.priority = -1;
-        RecipeFossilRevive.addRecipe(newRecipe);
-
-        potion = new ItemStack(Items.POTIONITEM);
-        PotionUtils.addPotionToItemStack(potion, PotionType.getPotionTypeForName("minecraft:strong_regeneration"));
-
-        // Genesect
-        eggOut = ItemPokemobEgg.getEggStack(649);
-        newRecipe = new RecipeFossilRevive(eggOut,
-                Lists.newArrayList(ironBlock, redstoneBlock, diamondBlock, dome, potion), Database.getEntry(649),
-                30000);
-        newRecipe.tame = false;
-        newRecipe.level = 70;
-        RecipeFossilRevive.addRecipe(newRecipe);
-
-        // Mewtwo
-        eggOut = ItemPokemobEgg.getEggStack(150);
-        newRecipe = new RecipeFossilRevive(eggOut, Lists.newArrayList(mewhair, eggIn, potion),
-                Database.getEntry("mewtwo"), 30000);
-        newRecipe.tame = false;
-        newRecipe.level = 70;
-        RecipeFossilRevive.addRecipe(newRecipe);
-    }
-
-    private static void addLegendarySpawnerRecipes()
-    {
-        GameRegistry.addRecipe(getStack("registeelspawner"),
-                new Object[] { "RSR", "SRS", "RSR", 'S', Blocks.IRON_BLOCK, 'R', Blocks.REDSTONE_BLOCK });
-
-        GameRegistry.addRecipe(getStack("regicespawner"),
-                new Object[] { "III", "IGI", "III", 'I', Blocks.PACKED_ICE, 'G', Blocks.GOLD_BLOCK });
-
-        GameRegistry.addRecipe(getStack("regirockspawner"),
-                new Object[] { "OSO", "OOO", "OSO", 'O', Blocks.OBSIDIAN, 'S', Blocks.STONE });
-
-        GameRegistry.addRecipe(getStack("celebispawner"), new Object[] { "MMM", "SRS", "SIS", 'R', Items.REDSTONE, 'S',
-                Blocks.LOG, 'M', Blocks.GLASS, 'I', Items.IRON_INGOT });
-
-        GameRegistry.addRecipe(getStack("hoohspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Items.FEATHER, 'G',
-                Blocks.GOLD_BLOCK, 'I', Items.GOLD_INGOT });
-
-        GameRegistry.addRecipe(getStack("kyogrespawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.ICE, 'G',
-                Blocks.LAPIS_BLOCK, 'I', PokecubeItems.getStack("waterstone") });
-
-        GameRegistry.addRecipe(getStack("groudonspawner"), new Object[] { "GGG", "FIF", "GGG", 'F', Blocks.COAL_BLOCK,
-                'G', Blocks.REDSTONE_BLOCK, 'I', PokecubeItems.getStack("firestone") });
     }
 
     public static void register()
@@ -104,51 +141,6 @@ public class RecipeHandler
         RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
                 "after:minecraft:shapeless");
         GameRegistry.addRecipe(new RecipeBag());
-        if (tmRecipe) GameRegistry.addRecipe(getStack("tm"), new Object[] { "SS ", "SOS", "SRS", 'S', Items.IRON_INGOT,
-                'O', Blocks.GLASS_PANE, 'R', Items.REDSTONE });
-
-        // Fossil Reanimator
-        GameRegistry.addRecipe(getStack("reanimator"),
-                new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"), 'S', Blocks.GOLD_BLOCK, 'M',
-                        new ItemStack(Items.GOLDEN_APPLE, 1, 0), 'I', Items.IRON_INGOT });
-        // Splicing Device
-        GameRegistry.addRecipe(getStack("cloner"), new Object[] { "III", "SRS", "SMS", 'R', getStack("reanimator"), 'S',
-                Blocks.DIAMOND_BLOCK, 'M', new ItemStack(Items.GOLDEN_APPLE, 1, 1), 'I', Items.NETHER_STAR });
-
-        // AFA
-        GameRegistry.addRecipe(getStack("afa"), new Object[] { "III", "SRS", "SMS", 'R', getStack("tradingtable"), 'S',
-                Blocks.IRON_BLOCK, 'M', Items.REDSTONE, 'I', Items.IRON_INGOT });
-
-        // Energy Siphon
-        GameRegistry.addRecipe(getStack("pokesiphon"),
-                new Object[] { "BBB", "BRB", "BBB", 'R', getStack("afa"), 'B', Blocks.REDSTONE_BLOCK });
-
-        // Target
-        GameRegistry.addRecipe(getStack("pokemobTarget"),
-                new Object[] { " R ", "ROR", " E ", 'R', Items.REDSTONE, 'O', Blocks.STONE, 'E', Items.EMERALD });
-        // Tainer editor
-        GameRegistry.addRecipe(getStack("traderSpawner"),
-                new Object[] { " R ", "ROR", " E ", 'R', Items.EMERALD, 'O', Blocks.STONE, 'E', Items.EMERALD });
-        ItemStack pad = getStack("warppad");
-        pad.stackSize = 2;
-        // Warp Pad
-        GameRegistry.addRecipe(pad, new Object[] { "IEI", "EIE", "IEI", 'I', Blocks.IRON_BLOCK, 'E', Items.ENDER_EYE });
-
-        // Warp Linker
-        GameRegistry.addRecipe(getStack("warplinker"),
-                new Object[] { " R ", "ROR", " E ", 'R', Items.EMERALD, 'O', Blocks.STONE, 'E', Items.ENDER_EYE });
-
-        // Bag
-        GameRegistry.addRecipe(getStack("pokecubebag"),
-                new Object[] { "CCC", "COC", "CCC", 'C', Blocks.WOOL, 'O', getStack("pctop").getItem() });
-
-        ItemStack shards18 = getStack("emerald_shard");
-        ItemStack shards1 = getStack("emerald_shard");
-        shards18.stackSize = 18;
-        GameRegistry.addShapelessRecipe(shards18, new ItemStack(Items.EMERALD), new ItemStack(Items.EMERALD));
-        GameRegistry.addShapelessRecipe(new ItemStack(Items.EMERALD), shards1, shards1, shards1, shards1, shards1,
-                shards1, shards1, shards1, shards1);
-        addLegendarySpawnerRecipes();
         addClonerRecipes();
     }
 }

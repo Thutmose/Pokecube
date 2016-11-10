@@ -15,7 +15,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
-import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.utils.DBLoader;
@@ -86,6 +85,8 @@ public class Config extends ConfigBase
     @Configure(category = machines)
     public int                         warpPadMaxEnergy    = 32000;
     @Configure(category = machines)
+    public int                         fossilReanimateCost = 20000;
+    @Configure(category = machines)
     String[]                           ranchables          = {
             // @formatter:off
             "arceus:nether_star:100000", "chinchou:glowstone_dust:500", "lanturn:glowstone_dust,2:500",
@@ -116,13 +117,15 @@ public class Config extends ConfigBase
     @Configure(category = trainers)
     public int                         trainerSightRange   = 10;
     @Configure(category = misc)
-    protected boolean                  tmRecipe            = true;
-    @Configure(category = misc)
     public boolean                     bagHoldAll          = false;
     @Configure(category = misc)
     public int                         bagPageCount        = 32;
     @Configure(category = database)
     protected boolean                  forceDatabase       = true;
+    @Configure(category = database)
+    public boolean                     forceRecipes        = true;
+    @Configure(category = database)
+    public boolean                     autoAddFossils      = true;
 
     public Config()
     {
@@ -145,7 +148,6 @@ public class Config extends ConfigBase
         TileEntityWarpPad.MAXRANGE = warpPadRange;
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
-        RecipeHandler.tmRecipe = tmRecipe;
         DBLoader.FORCECOPY = forceDatabase;
         InventoryBag.PAGECOUNT = bagPageCount;
     }

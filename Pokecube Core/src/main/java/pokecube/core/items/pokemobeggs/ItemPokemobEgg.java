@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.nfunk.jep.JEP;
+
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
@@ -50,7 +52,33 @@ import thut.api.maths.Vector3;
 /** @author Manchou */
 public class ItemPokemobEgg extends Item
 {
-    static HashMap<PokedexEntry, IPokemob> fakeMobs = new HashMap<PokedexEntry, IPokemob>();
+    public static double                   PLAYERDIST         = 2;
+    public static double                   MOBDIST            = 4;
+    public static double                   HACHANCE           = 0.1;
+    public static double                   SHINYRATE          = 4096;
+    public static double                   SHINYMULTI         = 0.5;
+    public static String                   epigeneticFunction = "(((m + f + 256) * 31) / 512)";
+    private static JEP                     epigeneticParser   = new JEP();
+    static HashMap<PokedexEntry, IPokemob> fakeMobs           = new HashMap<PokedexEntry, IPokemob>();
+
+    public static void initJEP()
+    {
+        epigeneticParser = new JEP();
+        epigeneticParser.initFunTab();
+        epigeneticParser.addStandardFunctions();
+        epigeneticParser.initSymTab(); // clear the contents of the symbol table
+        epigeneticParser.addStandardConstants();
+        epigeneticParser.addComplex();
+        // table
+        epigeneticParser.addVariable("f", 0);
+        epigeneticParser.addVariable("m", 0);
+        epigeneticParser.parseExpression(epigeneticFunction);
+    }
+
+    static
+    {
+        initJEP();
+    }
 
     public static byte[] getColour(int[] fatherColours, int[] motherColours)
     {
@@ -107,12 +135,12 @@ public class ItemPokemobEgg extends Item
         nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
         nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
 
-        int chance = 4096;
-        if (mother.isShiny()) chance = chance / 2;
-        if (father.isShiny()) chance = chance / 2;
-        if (mother.getOriginalOwnerUUID() != father.getOriginalOwnerUUID()) chance = chance / 2;
+        int chance = (int) SHINYRATE;
+        if (mother.isShiny()) chance *= SHINYMULTI;
+        if (father.isShiny()) chance *= SHINYMULTI;
+        if (mother.getOriginalOwnerUUID() != father.getOriginalOwnerUUID()) chance *= SHINYMULTI;
 
-        nbt.setBoolean("shiny", new Random().nextInt(chance) == 0);
+        nbt.setBoolean("shiny", new Random().nextInt(Math.max(1, chance)) == 0);
 
         String motherMoves = "";
         String fatherMoves = "";
@@ -156,12 +184,13 @@ public class ItemPokemobEgg extends Item
             byte fi = fatherIVs[i];
             byte me = motherEVs[i];
             byte fe = fatherEVs[i];
-
-            byte aE = (byte) (((me + fe + 256) * 31) / 512);
-
+            epigeneticParser.setVarValue("f", fe);
+            epigeneticParser.setVarValue("m", me);
+            double value = epigeneticParser.getValue();
+            if (Double.isNaN(value) || Double.isInfinite(value)) value = 0;
+            byte aE = (byte) Math.abs(value);
             byte iv = (byte) ((mi + fi) / 2);
             iv = (byte) Math.min((rand.nextInt(iv + 1) + rand.nextInt(iv + 1) + rand.nextInt(aE + 1)), 31);
-
             ret[i] = iv;
         }
 
@@ -273,9 +302,9 @@ public class ItemPokemobEgg extends Item
 
     private static int getAbility(int motherIndex, int fatherIndex)
     {
-        if (motherIndex == fatherIndex && Math.random() > 0.1) return motherIndex;
+        if (motherIndex == fatherIndex) return Math.random() > HACHANCE ? motherIndex : 2;
         int index = Math.random() > 0.5 ? 0 : 1;
-        return Math.random() > 0.1 ? index : 2;
+        return Math.random() > HACHANCE ? index : 2;
     }
 
     public static int getNumber(ItemStack stack)
@@ -367,10 +396,10 @@ public class ItemPokemobEgg extends Item
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z, 2,
-                false);
+        EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
+                PLAYERDIST, false);
         EntityLivingBase owner = player;
-        AxisAlignedBB box = location.getAABB().expand(4, 4, 4);
+        AxisAlignedBB box = location.getAABB().expand(MOBDIST, MOBDIST, MOBDIST);
         if (owner == null)
         {
             List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,
@@ -379,7 +408,8 @@ public class ItemPokemobEgg extends Item
                         @Override
                         public boolean apply(EntityLivingBase input)
                         {
-                            return !(input instanceof EntityPokemobEgg) && !(input instanceof IEntityOwnable);
+                            return !(input instanceof EntityPokemobEgg) && !(input instanceof IEntityOwnable)
+                                    && !(input instanceof EntityPlayer);
                         }
                     });
             EntityLivingBase closestTo = (EntityLivingBase) mob;

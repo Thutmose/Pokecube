@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ContainerBag;
-import pokecube.core.blocks.pc.InventoryPC;
+import pokecube.adventures.items.bags.InventoryBag;
 import thut.api.maths.Vector3;
 
 public class GuiBag extends GuiContainer
@@ -190,7 +190,7 @@ public class GuiBag extends GuiContainer
             {
                 e.printStackTrace();
             }
-            number = Math.max(1, Math.min(number, InventoryPC.PAGECOUNT));
+            number = Math.max(1, Math.min(number, InventoryBag.PAGECOUNT));
             cont.gotoInventoryPage(number);
             textFieldSelectedBox.setText(cont.getPageNb());
             if (toRename && box != boxName)

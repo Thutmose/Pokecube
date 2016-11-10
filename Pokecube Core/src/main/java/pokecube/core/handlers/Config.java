@@ -30,6 +30,7 @@ import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
@@ -354,7 +355,10 @@ public class Config extends ConfigBase
     boolean                              resetTags                    = false;
     @Configure(category = advanced) // TODO find more internal variables to add
                                     // to this.
-    String[]                             extraValues                  = { "3", "4.5" };
+    String[]                             extraVars                    = { "jc:" + EventsHandler.juiceChance,
+            "rc:" + EventsHandler.candyChance, "eggDpl:" + ItemPokemobEgg.PLAYERDIST,
+            "eggDpm:" + ItemPokemobEgg.MOBDIST, "eggHA:" + ItemPokemobEgg.HACHANCE, "eggSC:" + ItemPokemobEgg.SHINYRATE,
+            "eggSM:" + ItemPokemobEgg.SHINYMULTI, "eggEGF:" + ItemPokemobEgg.epigeneticFunction };
     @Configure(category = advanced)
     public boolean                       debug                        = false;
     @Configure(category = advanced)
@@ -472,10 +476,61 @@ public class Config extends ConfigBase
             PokecubeMod.giftLocations.add(loc);
         }
 
-        // TODO more internal variables, and ensure that their defaults are
-        // added for old installs.
-        EventsHandler.juiceChance = Double.parseDouble(extraValues[0]);
-        EventsHandler.candyChance = Double.parseDouble(extraValues[1]);
+        if (extraVars.length < defaults.extraVars.length)
+        {
+            String[] vals = extraVars.clone();
+            extraVars = defaults.extraVars.clone();
+            for (int i = 0; i < vals.length; i++)
+                extraVars[i] = vals[i];
+        }
+        // TODO more internal variables
+        for (String s : extraVars)
+        {
+            String[] args = s.split(":");
+            String key = args[0];
+            String value = args[1];
+            if (key.equals("jc"))
+            {
+                EventsHandler.juiceChance = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("rc"))
+            {
+                EventsHandler.candyChance = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("eggDpl"))
+            {
+                ItemPokemobEgg.PLAYERDIST = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("eggDpm"))
+            {
+                ItemPokemobEgg.MOBDIST = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("eggHA"))
+            {
+                ItemPokemobEgg.HACHANCE = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("eggSC"))
+            {
+                ItemPokemobEgg.SHINYRATE = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("eggSM"))
+            {
+                ItemPokemobEgg.SHINYMULTI = Double.parseDouble(value);
+                continue;
+            }
+            if (key.equals("eggEGF"))
+            {
+                ItemPokemobEgg.epigeneticFunction = value;
+                ItemPokemobEgg.initJEP();
+                continue;
+            }
+        }
 
         PokecubeItems.resetTimeTags = resetTags;
         if (resetTags) get(advanced, "resetTags", false).set(false);

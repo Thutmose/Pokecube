@@ -193,7 +193,7 @@
         <Input id="pokecube:tm" key="M"/>
     </Recipe>
     <Recipe map="SS ,SOS,SRS">//TM
-        <Output n="1" id="pokecube:tm" d="8"/>
+        <Output n="1" id="pokecube:tm"/>
         <Input id="minecraft:iron_ingot" key="S"/>
         <Input id="minecraft:glass" key="O"/>
         <Input id="minecraft:redstone" key="R"/>

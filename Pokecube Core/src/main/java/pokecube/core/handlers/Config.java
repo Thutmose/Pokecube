@@ -28,6 +28,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.recipes.XMLRecipeHandler;
+import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
@@ -45,7 +46,6 @@ public class Config extends ConfigBase
     public static final String           misc                         = "misc";
     public static final String           client                       = "client";
     public static final String           advanced                     = "advanced";
-    public static final String           rewards                      = "rewards";
     public static final String           healthbars                   = "healthbars";
 
     public static int                    GUICHOOSEFIRSTPOKEMOB_ID;
@@ -377,25 +377,16 @@ public class Config extends ConfigBase
     boolean                              forceDatabase                = true;
     @Configure(category = database, needsMcRestart = true)
     boolean                              forceRecipes                 = true;
+    @Configure(category = database, needsMcRestart = true)
+    boolean                              forceRewards                 = true;
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             configDatabases              = { "pokemobs", "moves" };
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             recipeDatabases              = { "recipes" };
-
-    @Configure(category = rewards)
-    public String                        exp_shareRequirement         = "5";
-    @Configure(category = rewards)
-    public String                        cutTMRequirement             = "3%";
-    @Configure(category = rewards)
-    public String                        flashTMRequirement           = "6%";
-    @Configure(category = rewards)
-    public String                        rocksmashTMRequirement       = "9%";
-    @Configure(category = rewards)
-    public String                        mastercubeRequirement        = "20%";
-    @Configure(category = rewards)
-    public String                        shinycharmRequirement        = "100%";
+    @Configure(category = database, needsMcRestart = true)
+    String[]                             rewardDatabases              = { "rewards" };
 
     @Configure(category = healthbars)
     public boolean                       doHealthBars                 = true;
@@ -484,6 +475,8 @@ public class Config extends ConfigBase
 
         for (String s : recipeDatabases)
             XMLRecipeHandler.recipeFiles.add(s);
+        for (String s : rewardDatabases)
+            XMLRewardsHandler.recipeFiles.add(s);
 
         if (extraVars.length < defaults.extraVars.length)
         {
@@ -550,6 +543,7 @@ public class Config extends ConfigBase
 
         Database.FORCECOPY = forceDatabase;
         Database.FORCECOPYRECIPES = forceRecipes;
+        Database.FORCECOPYREWARDS = forceRewards;
 
         if (configDatabases.length != 2)
         {

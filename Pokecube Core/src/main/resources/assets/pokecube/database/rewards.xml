@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<Rewards>
+    <Reward handler="freebook">//Guide Book
+        <Condition key="inspect-guidebook" mess="pokedex.inspect.guidebook" file="/assets/pokecube/lang/%s.lang" tag="pokecube.infobook1.json"/>
+    </Reward>
+    <Reward>//EXP Share
+        <Item n="1" id="pokecube_adventures:exp_share"/>
+        <Condition key="inspect-exp_share" mess="pokedex.inspect.exp_share" num="5"/>
+    </Reward>
+    <Reward>// Cut TM
+        <Item n="1" id="pokecube:tm" d="1">
+            <tag>{move:"cut",display:{Name:"Cut"}}</tag>
+        </Item>
+        <Condition key="inspect-cutTM" mess="pokedex.inspect.cutTM" num="3" percent="true"/>
+    </Reward>
+    <Reward>// Flash TM
+        <Item n="1" id="pokecube:tm" d="1">
+            <tag>{move:"flash",display:{Name:"Flash"}}</tag>
+        </Item>
+        <Condition key="inspect-flashTM" mess="pokedex.inspect.flashTM" num="6" percent="true"/>
+    </Reward>
+    <Reward>// Rock Smash TM
+        <Item n="1" id="pokecube:tm" d="2">
+            <tag>{move:"rocksmash",display:{Name:"Rock Smash"}}</tag>
+        </Item>
+        <Condition key="inspect-rocksmashTM" mess="pokedex.inspect.rocksmashTM" num="6" percent="true"/>
+    </Reward>
+    <Reward>// Mastercube
+        <Item n="1" id="pokecube:mastercube"/>
+        <Condition key="inspect-mastercube" mess="pokedex.inspect.mastercube" num="20" percent="true"/>
+    </Reward>
+    <Reward>// Shiny Charm
+        <Item n="1" id="pokecube:megastone">
+            <tag>{pokemon:"shiny_charm"}</tag>
+        </Item>
+        <Condition key="inspect-shinycharm" mess="pokedex.inspect.shinycharm" num="100" percent="true"/>
+    </Reward>
+</Rewards>

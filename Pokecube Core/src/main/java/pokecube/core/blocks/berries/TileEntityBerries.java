@@ -15,6 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.terraingen.TerrainGen;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 
@@ -100,6 +101,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
             TreeGrower grower = null;
             if ((grower = trees.get(berryId)) != null)
             {
+                if (!TerrainGen.saplingGrowTree(worldObj, worldObj.rand, pos)) return;
                 grower.growTree(worldObj, getPos(), berryId);
                 return;
             }
@@ -162,15 +164,12 @@ public class TileEntityBerries extends TileEntity implements ITickable
             doCropTick();
             break;
         case FRUIT:
-
             break;
         case LEAF:
             doLeafTick();
             break;
         case LOG:
-
             break;
-
         default:
             break;
         }

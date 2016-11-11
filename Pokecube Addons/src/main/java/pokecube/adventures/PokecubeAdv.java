@@ -47,7 +47,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import thut.api.maths.Vector3;
 
@@ -128,7 +127,6 @@ public class PokecubeAdv
     @EventHandler
     public void postInit(FMLPostInitializationEvent e)
     {
-        PokecubePacketHandler.giveHealer = false;
     }
 
     @SubscribeEvent

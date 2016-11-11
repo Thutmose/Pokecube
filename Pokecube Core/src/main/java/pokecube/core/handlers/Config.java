@@ -243,6 +243,12 @@ public class Config extends ConfigBase
     public int                           leafBerryTicks               = 7500;
     @Configure(category = world)
     public boolean                       autoDetectSubbiomes          = true;
+    @Configure(category = world)
+    public boolean                       generateFossils              = true;
+    @Configure(category = world)
+    public boolean                       villagePokecenters           = true;
+    @Configure(category = world)
+    public boolean                       villagePokemarts             = true;
 
     @Configure(category = world)
     public String[]                      berryLocations               = { // @formatter:off

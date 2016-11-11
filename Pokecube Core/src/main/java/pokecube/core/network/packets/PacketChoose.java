@@ -20,7 +20,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
-import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
@@ -107,13 +106,6 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         for (ItemStack stack : Database.starterPack)
         {
             items.add(stack.copy());
-        }
-
-        // Add healer to it if the config says so.
-        if (PokecubePacketHandler.giveHealer)
-        {
-            ItemStack pokecenterItemStack = new ItemStack(PokecubeItems.pokecenter);
-            items.add(pokecenterItemStack);
         }
 
         // If they don't actually get the picked starter, then no achievement.

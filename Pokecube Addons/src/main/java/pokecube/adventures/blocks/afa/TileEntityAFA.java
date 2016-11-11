@@ -2,6 +2,8 @@ package pokecube.adventures.blocks.afa;
 
 import java.util.Random;
 
+import org.nfunk.jep.JEP;
+
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -30,6 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.comands.Config;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.database.abilities.Ability;
@@ -44,6 +47,8 @@ import thut.api.network.PacketHandler;
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITickable, SimpleComponent, SidedComponent
 {
+    public static JEP   parser;
+    public static JEP   parserS;
     public IPokemob     pokemob        = null;
     boolean             shiny          = false;
     private ItemStack[] inventory      = new ItemStack[1];
@@ -62,9 +67,34 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
 
     protected boolean   addedToNetwork = false;
 
+    private static void initParser()
+    {
+        parser = new JEP();
+        parser.initFunTab(); // clear the contents of the function table
+        parser.addStandardFunctions();
+        parser.initSymTab(); // clear the contents of the symbol table
+        parser.addStandardConstants();
+        parser.addComplex(); // among other things adds i to the symbol
+                             // table
+        parser.addVariable("d", 0);
+        parser.addVariable("l", 0);
+        parser.parseExpression(PokecubeAdv.conf.afaCostFunction);
+
+        parserS = new JEP();
+        parserS.initFunTab(); // clear the contents of the function table
+        parserS.addStandardFunctions();
+        parserS.initSymTab(); // clear the contents of the symbol table
+        parserS.addStandardConstants();
+        parserS.addComplex(); // among other things adds i to the symbol
+                              // table
+        parserS.addVariable("d", 0);
+        parserS.parseExpression(PokecubeAdv.conf.afaCostFunctionShiny);
+    }
+
     public TileEntityAFA()
     {
         super();
+        initParser();
     }
 
     @Override
@@ -161,7 +191,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
 
     public int getMaxEnergyStored(EnumFacing facing)
     {
-        return 3200;
+        return Config.instance.afaMaxEnergy;
     }
 
     @Override
@@ -318,6 +348,8 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
             ability = null;
         }
         if (ability != null) ability.destroy();
+        ItemStack reference = PokecubeItems.getStack("shiny_charm");
+        shiny = Tools.isSameStack(reference, inventory[0]);
         if (inventory[0] == null) return;
         if (ability != null)
         {
@@ -408,8 +440,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @SubscribeEvent
     public void spawnEvent(SpawnEvent.Post evt)
     {
-        ItemStack reference = PokecubeItems.getStack("shiny_charm");
-        shiny = Tools.isSameStack(reference, inventory[0]);
         if (shiny)
         {
             if (evt.location.distanceTo(Vector3.getNewVector().set(this)) <= distance)
@@ -420,7 +450,9 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                 {
                     if (!noEnergy && !worldObj.isRemote)
                     {
-                        int needed = (int) Math.ceil(distance * distance * distance / ((double) 50));
+                        parserS.setVarValue("d", distance);
+                        double value = parserS.getValue();
+                        int needed = (int) Math.ceil(value);
                         if (this.energy < needed)
                         {
                             energy = 0;
@@ -446,7 +478,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         if (!PokecubeAdv.hasEnergyAPI && !worldObj.isRemote)
         {
             energy += 256;
-            energy = Math.min(energy, 3200);
+            energy = Math.min(energy, getMaxEnergyStored(null));
         }
         if (inventory[0] != null && pokemob == null)
         {
@@ -476,7 +508,19 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         {
             if (!noEnergy && !worldObj.isRemote)
             {
-                int needed = (int) Math.ceil(distance * distance * distance / ((double) 50 + 5 * levelFactor));
+                double value;
+                if (shiny)
+                {
+                    parserS.setVarValue("d", distance);
+                    value = parserS.getValue();
+                }
+                else
+                {
+                    parser.setVarValue("l", levelFactor);
+                    parser.setVarValue("d", distance);
+                    value = parser.getValue();
+                }
+                int needed = (int) Math.ceil(value);
                 if (energy < needed)
                 {
                     energy = 0;
@@ -522,6 +566,8 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         nbt.setBoolean("frozen", frozen);
         nbt.setFloat("animTime", animationTime);
         nbt.setString("animation", animation);
+        ItemStack reference = PokecubeItems.getStack("shiny_charm");
+        shiny = Tools.isSameStack(reference, inventory[0]);
         return nbt;
     }
 }

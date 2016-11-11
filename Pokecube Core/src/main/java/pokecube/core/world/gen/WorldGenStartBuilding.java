@@ -133,12 +133,9 @@ public class WorldGenStartBuilding implements IWorldGenerator
         if (building || !PokecubeMod.core.getConfig().doSpawnBuilding) return;
 
         if (world.provider.getDimension() != 0) return;
-
         int x = world.getSpawnPoint().getX() / 16;
         int z = world.getSpawnPoint().getZ() / 16;
-
         if (x != chunkX || z != chunkZ) return;
-        System.out.println("spawn building " + chunkX + " " + chunkZ);
         building = true;
         int y = getAverageHeight(world, chunkX * 16, chunkZ * 16) - 1;
 

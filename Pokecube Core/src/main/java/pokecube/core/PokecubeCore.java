@@ -39,7 +39,6 @@ import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -391,32 +390,28 @@ public class PokecubeCore extends PokecubeMod
         EntityRegistry.registerModEntity(EntityMoveUse.class, "pokecube:moveuse", getUniqueEntityId(this), this, 80, 3,
                 true);
 
-        if (!Loader.isModLoaded("reccomplex"))
-        {
+        if (config.villagePokecenters)
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
+        if (config.villagePokemarts)
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
-            PokecubePacketHandler.giveHealer = false;
-            try
-            {
-                MapGenStructureIO.registerStructureComponent(ComponentPokeCentre.class,
-                        "poke_adventures:PokeCentreStructure");
-                MapGenStructureIO.registerStructureComponent(ComponentPokeMart.class,
-                        "poke_adventures:PokeMartStructure");
-            }
-            catch (Throwable e1)
-            {
-                System.out.println(
-                        "Error registering Structures with Vanilla Minecraft: this is expected in versions earlier than 1.6.4");
-            }
-        }
-        else
+        try
         {
-
+            if (config.villagePokecenters) MapGenStructureIO.registerStructureComponent(ComponentPokeCentre.class,
+                    "poke_adventures:PokeCentreStructure");
+            if (config.villagePokemarts) MapGenStructureIO.registerStructureComponent(ComponentPokeMart.class,
+                    "poke_adventures:PokeMartStructure");
         }
-        GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
+        catch (Throwable e1)
+        {
+            System.out.println("Error registering Structures with Vanilla Minecraft");
+        }
+        if (config.doSpawnBuilding)
+        {
+            GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
+        }
         // TODO figure out good spawn weights, Also config for these
-        GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
-        GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
+        if (config.generateFossils) GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
+        if (config.nests) GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         helper.initAllBlocks();
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);

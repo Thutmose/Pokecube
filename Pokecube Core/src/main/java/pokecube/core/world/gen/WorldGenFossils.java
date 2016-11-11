@@ -9,6 +9,7 @@ import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.fml.common.IWorldGenerator;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import thut.api.terrain.BiomeDatabase;
 
@@ -19,7 +20,7 @@ public class WorldGenFossils implements IWorldGenerator
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
-        if (!world.provider.isSurfaceWorld()) return;
+        if (!world.provider.isSurfaceWorld() || !PokecubeCore.core.getConfig().generateFossils) return;
 
         int fossilchance = random.nextInt(5) + 2;
         for (int i = fossilchance; i > 0; i--)

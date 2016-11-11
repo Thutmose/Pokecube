@@ -24,6 +24,7 @@ import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
+import pokecube.adventures.comands.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.utils.PokeType;
@@ -340,7 +341,7 @@ public class EnergyHandler
                 if (first && living.ticksExisted % 2 == 0)
                 {
                     int time = ((IHungrymob) pokemob).getHungerTime();
-                    ((IHungrymob) pokemob).setHungerTime(time + 1);
+                    ((IHungrymob) pokemob).setHungerTime(time + Config.instance.energyHungerCost);
                 }
             }
             return dE;

@@ -93,6 +93,8 @@ public class Config extends ConfigBase
     @Configure(category = machines)
     public int                         afaMaxEnergy         = 3200;
     @Configure(category = machines)
+    public int                         energyHungerCost     = 5;
+    @Configure(category = machines)
     String[]                           ranchables           = {
             // @formatter:off
             "arceus:nether_star:100000", "chinchou:glowstone_dust:500", "lanturn:glowstone_dust,2:500",

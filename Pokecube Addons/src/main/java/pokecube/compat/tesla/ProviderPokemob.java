@@ -6,6 +6,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
+import pokecube.adventures.comands.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.utils.PokeType;
@@ -68,7 +69,7 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
             if (first && living.ticksExisted % 2 == 0)
             {
                 int time = ((IHungrymob) pokemob).getHungerTime();
-                ((IHungrymob) pokemob).setHungerTime(time + 1);
+                ((IHungrymob) pokemob).setHungerTime(time + Config.instance.energyHungerCost);
             }
         }
         return dE;

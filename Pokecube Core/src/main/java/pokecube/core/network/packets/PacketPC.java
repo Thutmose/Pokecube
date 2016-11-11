@@ -162,7 +162,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         }
         if (message.message == BIND)
         {
-            if (container != null)
+            if (container != null && container.pcTile != null)
             {
                 boolean owned = message.data.getBoolean("O");
                 System.out.println(owned + " " + player);

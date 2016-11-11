@@ -12,6 +12,7 @@ import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
+import static pokecube.core.handlers.Config.GUITMTABLE_ID;
 import static pokecube.core.handlers.Config.GUITRADINGTABLE_ID;
 
 import java.util.HashSet;
@@ -128,6 +129,7 @@ public class Mod_Pokecube_Helper
         GUIPC_ID = 17;
         GUIDISPLAYTELEPORTINFO_ID = 18;
         GUIPOKEMOB_ID = 19;
+        GUITMTABLE_ID = 20;
         RecipeHandler.initRecipes();
         addToList(PokecubeMod.core.getConfig().getCaveBlocks(), PokecubeMod.core.getConfig().blockListCaveFloor);
         addToList(PokecubeMod.core.getConfig().getSurfaceBlocks(), PokecubeMod.core.getConfig().blockListSurface);

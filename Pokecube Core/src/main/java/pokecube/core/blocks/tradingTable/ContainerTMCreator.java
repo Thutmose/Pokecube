@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -24,14 +25,14 @@ public class ContainerTMCreator extends Container
     public ContainerTMCreator(TileEntityTradingTable tile, InventoryPlayer playerInv)
     {
         this.tile = tile;
-        tile.moves(playerInv.player);
+        if (tile != null) tile.moves(playerInv.player);
         bindInventories(playerInv);
     }
 
     public void bindInventories(InventoryPlayer playerInv)
     {
         clearSlots();
-        addSlotToContainer(new SlotTMCreator(tile, 0, 15, 12));
+        addSlotToContainer(new SlotTMCreator(tile == null ? new InventoryBasic("", false, 1) : tile, 0, 15, 12));
         bindPlayerInventory(playerInv);
     }
 

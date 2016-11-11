@@ -5,7 +5,6 @@ package pokecube.core;
 
 import java.util.UUID;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,7 +22,6 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
-import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.ContainerTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
@@ -89,17 +87,17 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
             return new ContainerPokemob(player.inventory, e.getPokemobInventory(), e);
         }
         BlockPos pos = new BlockPos(x, y, z);
+        if (id == Config.GUITMTABLE_ID)
+        {
+            TileEntity tile_entity = world.getTileEntity(pos);
+            if (tile_entity instanceof TileEntityTradingTable) { return new ContainerTMCreator(
+                    (TileEntityTradingTable) tile_entity, player.inventory); }
+        }
         if (id == Config.GUITRADINGTABLE_ID)
         {
             TileEntity tile_entity = world.getTileEntity(pos);
-            IBlockState state = world.getBlockState(pos);
-            if (tile_entity instanceof TileEntityTradingTable)
-            {
-                boolean tmc = state.getValue(BlockTradingTable.TMC);
-
-                if (!tmc) return new ContainerTradingTable((TileEntityTradingTable) tile_entity, player.inventory);
-                return new ContainerTMCreator((TileEntityTradingTable) tile_entity, player.inventory);
-            }
+            if (tile_entity instanceof TileEntityTradingTable) { return new ContainerTradingTable(
+                    (TileEntityTradingTable) tile_entity, player.inventory); }
         }
         if (id == Config.GUIPC_ID)
         {
@@ -116,9 +114,10 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     }
 
     @Method(modid = "thut_wearables")
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
+            float partialTicks)
     {
-        
+
     }
 
     public World getWorld()

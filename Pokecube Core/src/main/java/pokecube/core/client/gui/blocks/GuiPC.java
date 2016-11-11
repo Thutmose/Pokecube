@@ -56,13 +56,13 @@ public class GuiPC extends GuiContainer
     {
         if (mc.thePlayer.getEntityWorld().isRemote)
         {
-            if (guibutton.id == 5)// Toggle Bound
+            if (guibutton.id == 5 && cont.pcTile != null)// Toggle Bound
             {
                 cont.pcTile.toggleBound();
                 mc.thePlayer.closeScreen();
                 return;
             }
-            if (guibutton.id == 8)// Bind PC to self
+            if (guibutton.id == 8 && cont.pcTile != null)// Bind PC to self
             {
                 cont.pcTile.setBoundOwner(mc.thePlayer);
                 mc.thePlayer.closeScreen();
@@ -165,7 +165,7 @@ public class GuiPC extends GuiContainer
         GL11.glPushMatrix();
         GL11.glScaled(0.8, 0.8, 0.8);
 
-        String name = cont.pcTile.getName();
+        String name = (cont.pcTile != null) ? cont.pcTile.getName() : "";
         String pcTitle = bound ? name : I18n.format("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
         fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60,
                 13, 4210752);

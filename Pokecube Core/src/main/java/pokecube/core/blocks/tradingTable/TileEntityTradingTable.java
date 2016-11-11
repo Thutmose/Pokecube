@@ -449,8 +449,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public void openGUI(EntityPlayer player)
     {
-        player.openGui(PokecubeMod.core, Config.GUITRADINGTABLE_ID, worldObj, getPos().getX(), getPos().getY(),
-                getPos().getZ());
+        boolean TMC = worldObj.getBlockState(getPos()).getValue(BlockTradingTable.TMC);
+        player.openGui(PokecubeMod.core, TMC ? Config.GUITMTABLE_ID : Config.GUITRADINGTABLE_ID, worldObj,
+                getPos().getX(), getPos().getY(), getPos().getZ());
     }
 
     @Override

@@ -38,7 +38,7 @@ public class GuiTMCreator extends GuiContainer
     {
         super(container);
         cont = container;
-        this.table = cont.getTile();
+        this.table = cont.getTile() == null ? new TileEntityTradingTable() : cont.getTile();
     }
 
     @Override
@@ -154,7 +154,8 @@ public class GuiTMCreator extends GuiContainer
         if (!textFieldSearch.getText().isEmpty()) for (String s : moves)
         {
             Move_Base move = MovesUtils.getMoveFromName(s.trim());
-            boolean nameMatch = MovesUtils.getMoveName(s.trim()).getFormattedText().toLowerCase(java.util.Locale.ENGLISH)
+            boolean nameMatch = MovesUtils.getMoveName(s.trim()).getFormattedText()
+                    .toLowerCase(java.util.Locale.ENGLISH)
                     .contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH));
             boolean typeMatch = false;
             if (!nameMatch)

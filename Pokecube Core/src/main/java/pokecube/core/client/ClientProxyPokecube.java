@@ -72,7 +72,6 @@ import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
-import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.blocks.tradingTable.ContainerTMCreator;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.client.gui.GuiChooseFirstPokemob;
@@ -180,8 +179,11 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (guiID == Config.GUITRADINGTABLE_ID)
         {
             TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
-            boolean tmc = world.getBlockState(pos).getValue(BlockTradingTable.TMC);
-            if (!tmc) return new GuiTradingTable(player.inventory, tile);
+            return new GuiTradingTable(player.inventory, tile);
+        }
+        if (guiID == Config.GUITMTABLE_ID)
+        {
+            TileEntityTradingTable tile = (TileEntityTradingTable) world.getTileEntity(pos);
             return new GuiTMCreator(new ContainerTMCreator(tile, player.inventory));
         }
         if (guiID == Config.GUIPC_ID)

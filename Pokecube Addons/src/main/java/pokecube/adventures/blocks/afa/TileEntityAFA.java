@@ -475,11 +475,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void update()
     {
-        if (!PokecubeAdv.hasEnergyAPI && !worldObj.isRemote)
-        {
-            energy += 256;
-            energy = Math.min(energy, getMaxEnergyStored(null));
-        }
         if (inventory[0] != null && pokemob == null)
         {
             refreshAbility();

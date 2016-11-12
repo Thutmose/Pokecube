@@ -19,7 +19,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
-@ChestContainer(isLargeChest = true)
+@ChestContainer(isLargeChest = true, showButtons=false)
 public class ContainerBag extends Container
 {
 

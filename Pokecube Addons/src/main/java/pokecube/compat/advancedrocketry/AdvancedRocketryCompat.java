@@ -342,7 +342,6 @@ public class AdvancedRocketryCompat
                     DimensionProperties props = DimensionManager.getInstance()
                             .getDimensionProperties(event.getEntity().worldObj.provider.getDimension());
                     boolean moon = props.isMoon();
-                    System.out.println(moon + " " + props.getChildPlanets());
                     if (moon && goUp)
                     {
                         dim = props.getParentPlanet();
@@ -353,8 +352,8 @@ public class AdvancedRocketryCompat
                         Collections.sort(moons);
                         if (!moons.isEmpty())
                         {
-                            int whichMoon = (int) (moons.size() * (props.rotationalPhi % (2 * Math.PI)) / (2 * Math.PI))
-                                    % moons.size();
+                            float ratio = (event.getEntity().worldObj.getWorldTime() / (float) props.rotationalPeriod);
+                            int whichMoon = (int) (moons.size() * ratio) % moons.size();
                             dim = moons.get(whichMoon);
                         }
                     }

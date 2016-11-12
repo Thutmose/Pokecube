@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
-import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -16,7 +15,6 @@ import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
 
-@ChestContainer(isLargeChest = true)
 public class InventoryBag implements IInventory
 {
     public static HashMap<String, InventoryBag> map       = new HashMap<String, InventoryBag>();

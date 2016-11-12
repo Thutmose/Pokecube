@@ -1,5 +1,6 @@
 package pokecube.core.blocks.pc;
 
+import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ClickType;
@@ -14,6 +15,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.packets.PacketPC;
 
+@ChestContainer(isLargeChest = true)
 public class ContainerPC extends Container
 {
 

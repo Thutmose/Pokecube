@@ -9,6 +9,11 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 
+/** This is used instead of a Swimming AI task. It manages making mobs "jump" to
+ * swim while in water. It also manages making floating mobs float a certain
+ * distance above the ground, and manages terminating wandering paths for
+ * floating, flying and swimming mobs if they get sufficiently close to their
+ * destinations. */
 public class LogicFloatFlySwim extends LogicBase
 {
     final private EntityAnimal entity;

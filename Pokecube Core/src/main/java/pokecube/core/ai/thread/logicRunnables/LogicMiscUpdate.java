@@ -13,6 +13,9 @@ import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
+/** Mostly does visuals updates, such as particle effects, checking that
+ * shearing status is reset properly. It also resets stat modifiers when the mob
+ * is out of combat. */
 public class LogicMiscUpdate extends LogicBase
 {
     private int                lastHadTargetTime = 0;

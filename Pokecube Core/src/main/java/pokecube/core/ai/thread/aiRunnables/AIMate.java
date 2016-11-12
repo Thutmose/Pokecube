@@ -21,6 +21,9 @@ import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
+/** This IAIRunnable is responsible for most of the breeding AI for the
+ * pokemobs. It finds the mates, initiates the fighting over a mate (if
+ * applicable), then tells the mobs to breed if they should. */
 public class AIMate extends AIBase
 {
     IBreedingMob breedingMob;

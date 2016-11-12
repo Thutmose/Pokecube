@@ -32,6 +32,9 @@ import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
+/** This IAIRunnable is responsible for finding food for the mobs. It also is
+ * what adds berries to their inventories based on which biome they are
+ * currently in. */
 public class AIHungry extends AIBase
 {
     private static class GenBerries implements IRunnable

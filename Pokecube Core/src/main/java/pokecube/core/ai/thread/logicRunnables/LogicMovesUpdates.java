@@ -27,6 +27,10 @@ import pokecube.core.moves.templates.Move_Ongoing;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
+/** This applies ongoing moves, applies status effects, and manages sounds when
+ * explosion moves are used. It also deals with setting/resetting the
+ * transformed target accordingly, as well as ticking the abilities, and
+ * activating the held item (like berries) if it should be used. */
 public class LogicMovesUpdates extends LogicBase
 {
     final private EntityAnimal entity;

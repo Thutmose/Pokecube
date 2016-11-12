@@ -7,6 +7,8 @@ import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
+/** This checks if the pokemob is in lava or water. The checks are done on a
+ * seperate thread via doLogic() for performance reasons. */
 public class LogicInLiquid extends LogicBase
 {
 

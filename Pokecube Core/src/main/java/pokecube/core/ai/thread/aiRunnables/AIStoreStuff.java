@@ -20,6 +20,10 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.maths.Vector3;
 
+/** This IAIRunnable will result in the mob occasionally emptying its inventory
+ * into an inventory near its home location. This, along with AIGatherStuff
+ * allows using pokemobs for automatic harvesting and storage of berries and
+ * dropped items. */
 public class AIStoreStuff extends AIBase
 {
     public static int COOLDOWN = 500;
@@ -114,10 +118,7 @@ public class AIStoreStuff extends AIBase
             j = getFirstEmptyStack(inventory, minIndex);
         }
 
-        if (j < 0)
-        {
-            return i;
-        }
+        if (j < 0) { return i; }
         if (inventory.getStackInSlot(j) == null)
         {
             inventory.setInventorySlotContents(j, new ItemStack(item, 0, itemStackIn.getMetadata()));
@@ -140,10 +141,7 @@ public class AIStoreStuff extends AIBase
             k = inventory.getInventoryStackLimit() - inventory.getStackInSlot(j).stackSize;
         }
 
-        if (k == 0)
-        {
-            return i;
-        }
+        if (k == 0) { return i; }
         i = i - k;
         inventory.getStackInSlot(j).stackSize += k;
         inventory.getStackInSlot(j).animationsToGo = 5;

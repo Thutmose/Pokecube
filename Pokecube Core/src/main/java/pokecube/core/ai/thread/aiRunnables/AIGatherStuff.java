@@ -22,6 +22,9 @@ import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
+/** This IAIRunnable gets the mob to look for and collect dropped items and
+ * berries. It requires an AIStoreStuff to have located a suitable storage
+ * before it will run. */
 public class AIGatherStuff extends AIBase
 {
     public static int  COOLDOWN  = 200;
@@ -83,8 +86,8 @@ public class AIGatherStuff extends AIBase
         block = false;
         v.set(pokemob.getHome()).add(0, entity.height, 0);
 
-        int distance = pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                ? PokecubeMod.core.getConfig().tameGatherDistance : PokecubeMod.core.getConfig().wildGatherDistance;
+        int distance = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeMod.core.getConfig().tameGatherDistance
+                : PokecubeMod.core.getConfig().wildGatherDistance;
 
         List<Object> list = getEntitiesWithinDistance(entity, distance, EntityItem.class);
         EntityItem newTarget = null;
@@ -200,7 +203,8 @@ public class AIGatherStuff extends AIBase
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        boolean wildCheck = !PokecubeMod.core.getConfig().wildGather && !pokemob.getPokemonAIState(IMoveConstants.TAMED);
+        boolean wildCheck = !PokecubeMod.core.getConfig().wildGather
+                && !pokemob.getPokemonAIState(IMoveConstants.TAMED);
         if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck)
             return false;
         int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeMod.core.getConfig().tameGatherDelay

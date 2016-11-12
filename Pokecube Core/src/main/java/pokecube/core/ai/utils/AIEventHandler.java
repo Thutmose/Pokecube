@@ -11,6 +11,9 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.TerrainDamageSource;
 import thut.api.maths.Vector3;
 
+/** Misc AI related event handling. Currently does the following:<br>
+ * <br>
+ * Makes pokemobs path out of dangerous materials. */
 public class AIEventHandler
 {
 

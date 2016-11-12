@@ -22,6 +22,11 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 import thut.api.pathing.Paths;
 
+/** This is overridden from the vanilla one to allow using a custom,
+ * multi-threaded pathfinder. It also does some pokemob specific checks for
+ * whether the pokemob can navigate, as well as checks to see if the pathing
+ * should terminate early in certain situations, such as "low priority" paths
+ * which are close enough to the end, like when a mob is just idling around. */
 public class PokeNavigator extends PathNavigate
 {
     private final EntityLiving       theEntity;

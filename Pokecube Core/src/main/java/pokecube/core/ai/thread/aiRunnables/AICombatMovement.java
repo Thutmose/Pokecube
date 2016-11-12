@@ -15,6 +15,9 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
+/** This IAIRunnable manages the movement of the mob while it is in combat, but
+ * on cooldown between attacks. It also manages the leaping at targets, and the
+ * dodging of attacks. */
 public class AICombatMovement extends AIBase
 {
     final EntityLiving attacker;
@@ -50,8 +53,11 @@ public class AICombatMovement extends AIBase
             centre = diff;
             centre.y = Math.min(attackerLoc.y, targetLoc.y);
         }
+        // See if it should dodge or leap.
         tryDodge();
         tryLeap();
+        // If the mob has a path already, check if it is near the end, if not,
+        // return early.
         if (!attacker.getNavigator().noPath())
         {
             Vector3 end = Vector3.getNewVector().set(attacker.getNavigator().getPath().getFinalPathPoint());
@@ -67,6 +73,10 @@ public class AICombatMovement extends AIBase
         int combatDistance = PokecubeMod.core.getConfig().combatDistance;
         combatDistance = Math.max(combatDistance, 2);
         int combatDistanceSq = combatDistance * combatDistance;
+        // If the mob has left the combat radius, try to return to the centre of
+        // combat. Otherwise, find a random spot in a consistant direction
+        // related to the center to run in, this results in the mobs somewhat
+        // circling the middle, and reversing direction every 10 seconds or so.
         if (diff.magSq() > combatDistanceSq)
         {
             pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
@@ -85,6 +95,11 @@ public class AICombatMovement extends AIBase
         }
     }
 
+    /** If the mob should dodge, then make it jump in a random perpendicular
+     * direction to where the current combat target is in. This should result in
+     * whatever attack is incomming from missing, assuming the incomming attack
+     * is dodgeable, and has a thin enough radius of effect. It also make a
+     * sound when it occurs. */
     public void tryDodge()
     {
         if (!shouldDodge()) return;
@@ -106,6 +121,11 @@ public class AICombatMovement extends AIBase
                 SoundEvents.ENTITY_GENERIC_SMALL_FALL, SoundCategory.HOSTILE, 1, 1));
     }
 
+    /** Check if the mob should dodge. It checks that the mob can dodge (ie is
+     * on ground if it can't float or fly), and then factors in evasion for
+     * whether or not the mob should be dodging now.
+     * 
+     * @return */
     boolean shouldDodge()
     {
         boolean dodge = false;
@@ -131,6 +151,8 @@ public class AICombatMovement extends AIBase
         return dodge;
     }
 
+    /** Attempts to leap at the target during combat, make a sound when it
+     * leaps. */
     public void tryLeap()
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.LEAPING)) return;

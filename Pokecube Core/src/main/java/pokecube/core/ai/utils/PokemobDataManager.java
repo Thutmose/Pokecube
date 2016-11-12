@@ -23,6 +23,12 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.pokemobs.PacketPokemobMetadata;
 
+/** This is a custom implementation of the EntityDataManager to allow syncing
+ * certain data values when the entity for the data manager is not the actual
+ * entity in the world.. This is used as some of the data values are not synced
+ * at appropriate times for players who have transformed into pokemobs, and this
+ * was the easiest solution I could come up with for manually syncing only
+ * specific values. */
 public class PokemobDataManager extends EntityDataManager
 {
     final Entity                                       entity;

@@ -6,6 +6,8 @@ import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 
+/** Overriden to allow setting the pokemob's specific jumping state, and calling
+ * the custom jump implementation. */
 public class PokemobJumpHelper extends EntityJumpHelper
 {
 

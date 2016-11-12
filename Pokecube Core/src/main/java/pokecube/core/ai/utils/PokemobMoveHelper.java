@@ -7,6 +7,9 @@ import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 
+/** Overriden to properly support mobs that move in 3D, such as flying or
+ * swimming ones, as well as the make it so if a mob has transformed, it uses
+ * the movement type of who it has transformed to. */
 public class PokemobMoveHelper extends EntityMoveHelper
 {
     public PokemobMoveHelper(EntityLiving entity)

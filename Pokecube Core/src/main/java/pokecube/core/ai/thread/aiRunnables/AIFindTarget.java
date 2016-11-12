@@ -23,6 +23,7 @@ import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAICombat;
 import thut.api.maths.Vector3;
 
+/** This IAIRunnable is to find targets for the pokemob to try to kill. */
 public class AIFindTarget extends AIBase implements IAICombat
 {
     final IPokemob          pokemob;
@@ -129,6 +130,9 @@ public class AIFindTarget extends AIBase implements IAICombat
     @Override
     public void run()
     {
+        // Check if the pokemob is set to follow, and if so, look for mobs
+        // nearby trying to attack the owner of the pokemob, if any such are
+        // found, try to aggress them immediately.
         if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.STAYING)
                 && pokemob.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeCore.isOnClientSide())
         {
@@ -152,6 +156,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             }
         }
 
+        // If hunting, look for valid prey, and if found, agress it.
         if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
                 && hungryMob.isCarnivore() && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
         {
@@ -175,6 +180,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                 }
             }
         }
+        // If guarding, look for mobs not on the same team as you, and if you
+        // find them, try to agress them.
         if (pokemob.getPokemonAIState(IMoveConstants.GUARDING))
         {
             List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
@@ -220,16 +227,18 @@ public class AIFindTarget extends AIBase implements IAICombat
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
         if (world == null) return false;
 
+        // Don't look for targets if you are sitting.
         boolean ret = entity.getAITarget() == null && entity.getAttackTarget() == null
                 && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
-
+        // If target is dead, return false.
         if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)
         {
             setPokemobAIState(pokemob, IMoveConstants.ANGRY, false);
             addTargetInfo(entity, null);
             return false;
         }
-
+        // If your owner is too far away, don't go looking for targets, you
+        // should be trying to walk to your owner instead.
         boolean tame = pokemob.getPokemonAIState(IMoveConstants.TAMED);
         if (tame && entity.getAttackTarget() != null)
         {
@@ -244,6 +253,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                 return false;
             }
         }
+        // If wild, randomly decided to agro a nearby player instead.
+        // TODO make this configurable somehow based on specifics
         if (ret && !tame && entity.getRNG().nextInt(200) == 0)
         {
             EntityPlayer player = getClosestVulnerablePlayerToEntity(entity,

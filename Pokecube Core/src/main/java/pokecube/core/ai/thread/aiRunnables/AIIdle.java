@@ -15,6 +15,8 @@ import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
+/** This IAIRunnable makes the mobs randomly wander around if they have nothing
+ * better to do. */
 public class AIIdle extends AIBase
 {
     final private EntityLiving entity;
@@ -207,10 +209,7 @@ public class AIIdle extends AIBase
                     mob.getPokedexEntry().width * mob.getSize());
 
             diff = Math.max(2, diff);
-            if (v == null || this.v.distToSq(v) < diff)
-            {
-                return false;
-            }
+            if (v == null || this.v.distToSq(v) < diff) { return false; }
             this.xPosition = v.x;
             this.yPosition = Math.round(v.y);
             this.zPosition = v.z;
@@ -234,7 +233,8 @@ public class AIIdle extends AIBase
             int z = (j / (distance * distance)) % (distance) - distance / 2;
             y = Math.max(1, y);
             temp.set(ret).addTo(x, y, z);
-            if (temp.isClearOfBlocks(world) && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }
+            if (temp.isClearOfBlocks(world)
+                    && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }
         }
         return null;
     }

@@ -9,6 +9,9 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 
+/** This attempts to make the mob follow the owner around in the world. It
+ * triggers if the owner gets too far away from the mob, and the mob is set to
+ * follow. */
 public class AIFollowOwner extends AIBase
 {
     final IPokemob               pokemob;

@@ -11,6 +11,9 @@ import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
+/** This deals with setting the list of colliding boxes for the pokemobs.
+ * Attempts were made to make this work on seperate thread, but they did not go
+ * too well. For now this runs on the main thread. */
 public class LogicCollision extends LogicBase
 {
     final EntityPokemobBase collider;

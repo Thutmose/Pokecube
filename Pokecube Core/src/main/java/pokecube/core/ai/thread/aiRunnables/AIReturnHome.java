@@ -10,6 +10,8 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
+/** This makes the mob return to its "home" location if it has strayed too far
+ * away due to one of the other AI tasks. */
 public class AIReturnHome extends AIBase
 {
     final private EntityLiving entity;

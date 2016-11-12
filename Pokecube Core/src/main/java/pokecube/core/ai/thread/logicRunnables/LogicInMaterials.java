@@ -10,6 +10,9 @@ import pokecube.core.moves.TerrainDamageSource;
 import pokecube.core.moves.TerrainDamageSource.TerrainType;
 import thut.api.maths.Vector3;
 
+/** Manages interactions with materials for the pokemob. This is what is used to
+ * make some mobs despawn in high light, or take damage from certain
+ * materials. */
 public class LogicInMaterials extends LogicBase
 {
     final private EntityAnimal entity;

@@ -13,6 +13,10 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.entity.IBreedingMob;
 
+/** This IAIRunnable results in the mother of an egg always staying within 4
+ * blocks of it. It also prevents the mother from breeding, as well as prevents
+ * the mother's breeding cooldown from dropping while an egg is being
+ * guarded. */
 public class AIGuardEgg extends AIBase
 {
     IBreedingMob     breedingMob;

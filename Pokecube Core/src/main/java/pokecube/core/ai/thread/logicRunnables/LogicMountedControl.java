@@ -13,6 +13,9 @@ import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 
+/** This manages the ridden controls of the pokemob. The booleans are set on the
+ * client side, then sent via a packet to the server, and then the mob is moved
+ * accordingly. */
 public class LogicMountedControl extends LogicBase
 {
     public boolean leftInputDown    = false;

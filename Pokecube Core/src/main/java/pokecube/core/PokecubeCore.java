@@ -377,18 +377,15 @@ public class PokecubeCore extends PokecubeMod
         PlayerDataHandler.dataMap.add(PokecubePlayerStats.class);
         PlayerDataHandler.dataMap.add(PokecubePlayerCustomData.class);
 
-        EntityRegistry.registerModEntity(EntityPokemob.class, "pokecube:genericMob", getUniqueEntityId(this), this, 80,
+        EntityRegistry.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
+        EntityRegistry.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80,
                 1, true);
-        EntityRegistry.registerModEntity(EntityPokemobPart.class, "pokecube:genericMobPart", getUniqueEntityId(this),
-                this, 80, 1, true);
-        EntityRegistry.registerModEntity(EntityProfessor.class, "pokecube:Professor", getUniqueEntityId(this), this, 80,
-                3, true);
-        EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokecube:pokemobEgg", getUniqueEntityId(this), this,
-                80, 3, false);
-        EntityRegistry.registerModEntity(EntityPokecube.class, "pokecube:cube", getUniqueEntityId(this), this, 80, 3,
+        EntityRegistry.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3,
                 true);
-        EntityRegistry.registerModEntity(EntityMoveUse.class, "pokecube:moveuse", getUniqueEntityId(this), this, 80, 3,
-                true);
+        EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
+                false);
+        EntityRegistry.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
+        EntityRegistry.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
 
         if (config.villagePokecenters)
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());

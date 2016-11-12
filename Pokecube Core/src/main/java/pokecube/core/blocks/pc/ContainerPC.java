@@ -15,7 +15,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.packets.PacketPC;
 
-@ChestContainer(isLargeChest = true)
+@ChestContainer(isLargeChest = true, showButtons=false)
 public class ContainerPC extends Container
 {
 

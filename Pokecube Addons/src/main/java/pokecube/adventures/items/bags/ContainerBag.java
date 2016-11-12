@@ -1,5 +1,6 @@
 package pokecube.adventures.items.bags;
 
+import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -18,6 +19,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
+@ChestContainer(isLargeChest = true)
 public class ContainerBag extends Container
 {
 

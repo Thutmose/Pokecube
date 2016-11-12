@@ -99,7 +99,7 @@ pokecube.tooltip.evs=EVs: %s
 pokecube.tooltip.nature=N: %s
 pokecube.tooltip.ability=A: %s
 
-entity.pokecube.pokecube:cube.name=Pokécube
+entity.pokecube.cube.name=Pokécube
 
 ability.adaptability.name=Adaptability
 ability.aerilate.name=Aerilate
@@ -565,7 +565,8 @@ item.silkyhair.name=Silky Hair
 
 item.modelreloader.name=Model Reloader
 
-entity.pokecube.pokecube:pokemobEgg.name=Pokémob Egg
+entity.pokecube.pokemobEgg.name=Pokémob Egg
+entity.pokecube.Professor.name=Professor
 
 igwtab.entry.Pokecubes=Pokécubes
 igwtab.entry.Controls=Key Controls

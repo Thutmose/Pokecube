@@ -352,8 +352,21 @@ public class AdvancedRocketryCompat
                         Collections.sort(moons);
                         if (!moons.isEmpty())
                         {
-                            float ratio = (event.getEntity().worldObj.getWorldTime() / (float) props.rotationalPeriod);
-                            int whichMoon = (int) (moons.size() * ratio) % moons.size();
+                            double angle = (event.getEntity().worldObj.getWorldTime() / (double) props.rotationalPeriod)
+                                    * 2 * Math.PI;
+                            double diff = 2 * Math.PI;
+                            int whichMoon = 0;
+                            for (int i = 0; i < moons.size(); i++)
+                            {
+                                DimensionProperties moonProps = DimensionManager.getInstance()
+                                        .getDimensionProperties(moons.get(i));
+                                double moonTheta = moonProps.orbitTheta % (2 * Math.PI);
+                                if (diff > Math.abs(moonTheta - angle))
+                                {
+                                    diff = Math.abs(moonTheta - angle);
+                                    whichMoon = i;
+                                }
+                            }
                             dim = moons.get(whichMoon);
                         }
                     }

@@ -10,7 +10,6 @@ import static pokecube.core.utils.PokeType.getTranslatedName;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -31,6 +30,7 @@ import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -46,7 +46,6 @@ public class GuiChooseFirstPokemob extends GuiScreen
     public static boolean                         fixed              = false;
 
     public static Integer[]                       starters;
-    private static HashMap<Integer, EntityLiving> entityToDisplayMap = new HashMap<Integer, EntityLiving>();
 
     int                                           xSize              = 150;
     int                                           ySize              = 150;
@@ -255,20 +254,19 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
     private EntityLiving getEntityToDisplay()
     {
-        EntityLiving pokemob = entityToDisplayMap.get(pokedexEntry.getPokedexNb());
-
-        if (pokemob == null)
+        IPokemob pokemob = EventsHandlerClient.renderMobs.get(pokedexEntry);
+        if (pokemob == null || pokemob.getPokedexEntry() != pokedexEntry)
         {
-            pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(),
-                    entityPlayer.getEntityWorld());
-
-            if (pokemob != null)
+            EventsHandlerClient.renderMobs.put(pokedexEntry,
+                    pokemob = (IPokemob) PokecubeMod.core.createPokemob(pokedexEntry, mc.theWorld));
+            if (pokemob == null)
             {
-                entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
+                System.out.println("Error with " + pokedexEntry);
+                return null;
             }
+            pokemob.specificSpawnInit();
         }
-
-        return pokemob;
+        return (EntityLiving) pokemob;
     }
 
     @Override

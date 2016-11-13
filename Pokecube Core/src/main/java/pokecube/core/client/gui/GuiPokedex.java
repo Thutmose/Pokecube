@@ -772,7 +772,7 @@ public class GuiPokedex extends GuiScreen
 
         if (pokemob == null)
         {
-            pokemob = (EntityLiving) PokecubeMod.core.createEntityByPokedexEntry(pokedexEntry,
+            pokemob = (EntityLiving) PokecubeMod.core.createPokemob(pokedexEntry,
                     entityPlayer.getEntityWorld());
             if (pokemob != null)
             {

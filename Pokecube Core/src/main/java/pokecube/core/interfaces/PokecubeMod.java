@@ -172,16 +172,14 @@ public abstract class PokecubeMod
     public ArrayList<Integer> starters = new ArrayList<Integer>();
 
     /** Creates a new instance of an entity in the world for the pokemob
-     * specified by its pokedex number.
+     * specified by its pokedex entry.
      * 
-     * @param pokedexNb
-     *            the pokedex number
+     * @param entry
+     *            the pokedexentry
      * @param world
      *            the {@link World} where to spawn
      * @return the {@link Entity} instance or null if a problem occurred */
-    public abstract Entity createEntityByPokedexNb(int pokedexNb, World world);
-
-    public abstract Entity createEntityByPokedexEntry(PokedexEntry entry, World world);
+    public abstract Entity createPokemob(PokedexEntry entry, World world);
 
     public abstract Config getConfig();
 

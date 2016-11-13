@@ -302,7 +302,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                     else tile.decrStackSize(i, 1);
                 }
                 RecipeFossilRevive recipe = (RecipeFossilRevive) this.recipe;
-                EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexEntry(recipe.pokedexEntry,
+                EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(recipe.pokedexEntry,
                         tile.getWorld());
                 if (entity != null)
                 {

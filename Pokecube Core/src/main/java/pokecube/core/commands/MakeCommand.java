@@ -112,7 +112,7 @@ public class MakeCommand extends CommandBase
                             }
                             else entry = Database.getEntry(name);
                         }
-                        mob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, sender.getEntityWorld());
+                        mob = (IPokemob) PokecubeMod.core.createPokemob(entry, sender.getEntityWorld());
 
                         if (mob == null)
                         {

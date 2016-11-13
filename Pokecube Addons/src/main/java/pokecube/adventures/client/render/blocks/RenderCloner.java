@@ -35,7 +35,7 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
         if (pokemob == null)
         {
-            pokemob = (IPokemob) PokecubeCore.instance.createEntityByPokedexEntry(entry, getWorld());
+            pokemob = (IPokemob) PokecubeCore.instance.createPokemob(entry, getWorld());
             if (pokemob == null) return;
             EventsHandlerClient.renderMobs.put(entry, pokemob);
         }

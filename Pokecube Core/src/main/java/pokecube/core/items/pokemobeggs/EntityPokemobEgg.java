@@ -158,7 +158,7 @@ public class EntityPokemobEgg extends EntityLiving
             return null;
         int number = getHeldItemMainhand().getTagCompound().getInteger("pokemobNumber");
         PokedexEntry entry = Database.getEntry(number);
-        IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, worldObj);
+        IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, worldObj);
         if (pokemob == null) return null;
         here.moveEntity((Entity) pokemob);
         ItemPokemobEgg.initPokemobGenetics(pokemob, getHeldItemMainhand().getTagCompound());

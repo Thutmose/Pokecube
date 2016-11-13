@@ -143,7 +143,7 @@ public class EventsHandlerClient
             IPokemob pokemob = renderMobs.get(entry);
             if (pokemob == null)
             {
-                pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
+                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
                 if (pokemob == null) return null;
                 renderMobs.put(entry, pokemob);
             }

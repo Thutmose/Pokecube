@@ -439,8 +439,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 {
                     EntityPokecube cube = (EntityPokecube) evt.pokecube;
 
-                    IPokemob mob = (IPokemob) PokecubeCore.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
-                            cube.getEntityWorld());
+                    IPokemob mob = (IPokemob) PokecubeCore.instance
+                            .createPokemob(evt.caught.getPokedexEntry(), cube.getEntityWorld());
                     cube.tilt = Tools.computeCatchRate(mob, 1);
                     cube.time = cube.tilt * 20;
 
@@ -474,7 +474,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
                 EntityPokecube cube = (EntityPokecube) evt.pokecube;
 
-                IPokemob mob = (IPokemob) PokecubeCore.instance.createEntityByPokedexNb(evt.caught.getPokedexNb(),
+                IPokemob mob = (IPokemob) PokecubeCore.instance.createPokemob(evt.caught.getPokedexEntry(),
                         cube.getEntityWorld());
                 Vector3 v = Vector3.getNewVector();
                 Entity thrower = cube.shootingEntity;

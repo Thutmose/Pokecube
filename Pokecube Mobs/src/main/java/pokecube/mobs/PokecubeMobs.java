@@ -78,6 +78,7 @@ public class PokecubeMobs implements IMobProvider
         HeldItemHandler.megaVariants.add("aerodactylmega");
         HeldItemHandler.megaVariants.add("aggronmega");
         HeldItemHandler.megaVariants.add("alakazammega");
+        HeldItemHandler.megaVariants.add("altariamega");
         HeldItemHandler.megaVariants.add("ampharosmega");
         HeldItemHandler.megaVariants.add("banettemega");
         HeldItemHandler.megaVariants.add("beedrillmega");

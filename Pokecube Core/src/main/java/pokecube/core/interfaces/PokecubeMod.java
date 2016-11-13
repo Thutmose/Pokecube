@@ -90,8 +90,8 @@ public abstract class PokecubeMod
     public static double                             MAX_DENSITY                = 1;
     public static Map<String, String>                gifts                      = Maps.newHashMap();
     public static List<String>                       giftLocations              = Lists.newArrayList();
-    public static Map<Integer, Class<?>>             pokedexmap                 = Maps.newHashMap();
-    public static Map<Integer, Class<?>>             genericMobClasses          = Maps.newHashMap();
+    public static Map<PokedexEntry, Class<?>>        pokedexmap                 = Maps.newHashMap();
+    public static Map<PokedexEntry, Class<?>>        genericMobClasses          = Maps.newHashMap();
 
     public static BitSet                             registered                 = new BitSet();
 

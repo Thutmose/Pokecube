@@ -343,10 +343,10 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 this.setPokemonOwner((UUID) null);
                 this.setDead();
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                long evoTime = worldObj.getTotalWorldTime() + 2;
                 if (this.addedToChunk)
                 {
                     worldObj.removeEntity(this);
+                    long evoTime = worldObj.getTotalWorldTime() + 2;
                     new EvoTicker(worldObj, evoTime, evolution, this.getPokemonDisplayName());
                 }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);

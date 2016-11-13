@@ -398,7 +398,7 @@ public class PokecubePacketHandler
             if (entry != null)
             {
                 World worldObj = owner.getEntityWorld();
-                IPokemob entity = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(entry.getPokedexNb(), worldObj);
+                IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(entry, worldObj);
                 if (entity != null)
                 {
                     ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());

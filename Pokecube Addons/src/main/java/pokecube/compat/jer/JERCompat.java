@@ -198,7 +198,7 @@ public class JERCompat
         {
             LootDrop[] drops = getDrops(e);
             if (drops == null) continue;
-            Entity poke = PokecubeMod.core.createEntityByPokedexEntry(e, PokecubeCore.proxy.getWorld());
+            Entity poke = PokecubeMod.core.createPokemob(e, PokecubeCore.proxy.getWorld());
             if (poke == null) continue;
             ((IPokemob) poke).setShiny(false);
             ((IPokemob) poke).setSize(1);

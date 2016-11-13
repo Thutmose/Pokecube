@@ -36,6 +36,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.healtable.TileHealTable;
+import pokecube.core.database.Database;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
@@ -662,7 +663,8 @@ public class PokecubeSerializer
     public ItemStack starter(int pokedexNb, EntityPlayer owner)
     {
         World worldObj = owner.getEntityWorld();
-        IPokemob entity = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(pokedexNb, worldObj);
+        IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb),
+                worldObj);
 
         if (entity != null)
         {

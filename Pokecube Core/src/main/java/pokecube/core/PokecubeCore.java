@@ -233,9 +233,9 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @Override
-    public Entity createEntityByPokedexEntry(PokedexEntry entry, World world)
+    public Entity createPokemob(PokedexEntry entry, World world)
     {
-        Entity e = createEntityByPokedexNb(entry.getPokedexNb(), world);
+        Entity e = createPokemob(entry.getPokedexNb(), world);
         if (e != null)
         {
             e = (Entity) ((IPokemob) e).setPokedexEntry(entry);
@@ -251,15 +251,11 @@ public class PokecubeCore extends PokecubeMod
      * @param world
      *            the {@link World} where to spawn
      * @return the {@link Entity} instance or null if a problem occurred */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    public Entity createEntityByPokedexNb(int pokedexNb, World world)
+    public Entity createPokemob(int pokedexNb, World world)
     {
         Entity entity = null;
-        Class clazz = null;
-
+        Class<?> clazz = null;
         if (!registered.get(pokedexNb)) return null;
-
         try
         {
             clazz = getEntityClassFromPokedexNumber(pokedexNb);
@@ -278,7 +274,6 @@ public class PokecubeCore extends PokecubeMod
             System.err.println("Problem with entity with pokedexNb: " + pokedexNb);
             System.err.println(clazz + " ");
         }
-
         return entity;
     }
 

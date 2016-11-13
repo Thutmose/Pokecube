@@ -113,7 +113,7 @@ public class PokecubeManager
         int num = getPokedexNb(itemStack);
         if (num != 0)
         {
-            IPokemob pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(num, world);
+            IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(num), world);
             if (pokemob == null) { return null; }
             Entity poke = (Entity) pokemob;
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB);

@@ -52,7 +52,7 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
         pokemob = EventsHandlerClient.renderMobs.get(entry = pokemob.getPokedexEntry());
         if (pokemob == null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, minecraft.theWorld);
+            pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, minecraft.theWorld);
             if (pokemob == null) return;
             EventsHandlerClient.renderMobs.put(entry, pokemob);
         }

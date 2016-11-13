@@ -80,7 +80,7 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     {
         if (pokemob == null && pokedexEntry != null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(pokedexEntry.getPokedexNb(), null);
+            pokemob = (IPokemob) PokecubeMod.core.createPokemob(pokedexEntry, null);
             if (pokemob == null)
             {
                 this.pokedexEntry = null;

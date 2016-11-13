@@ -130,7 +130,7 @@ public class BlockLegendSpawner extends Block implements IMetaBlock
             Vector3 location = Vector3.getNewVector().set(pos);
             if (condition.canSpawn(playerIn, location))
             {
-                EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexNb, worldIn);
+                EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(entry, worldIn);
                 entity.setHealth(entity.getMaxHealth());
                 location.add(0, 1, 0).moveEntity(entity);
                 condition.onSpawn((IPokemob) entity);

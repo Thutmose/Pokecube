@@ -194,7 +194,7 @@ public class PokedexEntry
         public Entity getEvolution(World world)
         {
             if (evolution == null) return null;
-            Entity ret = PokecubeMod.core.createEntityByPokedexEntry(evolution, world);
+            Entity ret = PokecubeMod.core.createPokemob(evolution, world);
             return ret;
         }
 

@@ -58,7 +58,7 @@ public class GuiPokemob extends GuiContainer
                 if (renderMob == null && entry != null)
                 {
                     EventsHandlerClient.renderMobs.put(entry,
-                            renderMob = (IPokemob) PokecubeMod.core.createEntityByPokedexEntry(entry, mc.theWorld));
+                            renderMob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.theWorld));
                 }
                 if (renderMob == null)
                 {

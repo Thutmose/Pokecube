@@ -101,7 +101,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
                 List<Integer> numbers = Lists.newArrayList(Database.data.keySet());
                 num = numbers.get(worldObj.rand.nextInt(numbers.size()));
             }
-            Entity entity = PokecubeMod.core.createEntityByPokedexNb(num, worldObj);
+            Entity entity = PokecubeMod.core.createPokemob(Database.getEntry(num), worldObj);
             if (entity != null)
             {
                 ((IPokemob) entity).specificSpawnInit();

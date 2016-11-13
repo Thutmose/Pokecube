@@ -561,7 +561,7 @@ public final class SpawnHandler
                 {
                     if (dbe.getPokedexNb() > 0)
                     {
-                        entityliving = (EntityLiving) PokecubeMod.core.createEntityByPokedexEntry(dbe, world);
+                        entityliving = (EntityLiving) PokecubeMod.core.createPokemob(dbe, world);
                         entityliving.setHealth(entityliving.getMaxHealth());
                         entityliving.setLocationAndAngles((double) x + 0.5F, (double) y + 0.5F, (double) z + 0.5F,
                                 world.rand.nextFloat() * 360.0F, 0.0F);

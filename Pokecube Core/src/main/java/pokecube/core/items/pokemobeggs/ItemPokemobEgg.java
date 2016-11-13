@@ -117,7 +117,7 @@ public class ItemPokemobEgg extends Item
         IPokemob pokemob = fakeMobs.get(entry);
         if (pokemob == null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
+            pokemob = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(number), world);
             if (pokemob == null) return null;
             fakeMobs.put(entry, pokemob);
         }
@@ -319,7 +319,7 @@ public class ItemPokemobEgg extends Item
         if (stack == null || stack.getTagCompound() == null
                 || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
         int number = stack.getTagCompound().getInteger("pokemobNumber");
-        IPokemob ret = (IPokemob) PokecubeMod.core.createEntityByPokedexNb(number, world);
+        IPokemob ret = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(number), world);
         return ret;
     }
 
@@ -470,7 +470,8 @@ public class ItemPokemobEgg extends Item
         int pokedexNb = getNumber(stack);
         if (!PokecubeMod.pokemobEggs.containsKey(Integer.valueOf(pokedexNb))) { return false; }
 
-        EntityLiving entity = (EntityLiving) PokecubeMod.core.createEntityByPokedexNb(pokedexNb, world);
+        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb),
+                world);
 
         if (entity != null)
         {

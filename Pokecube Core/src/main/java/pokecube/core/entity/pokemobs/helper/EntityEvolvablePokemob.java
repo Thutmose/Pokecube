@@ -294,8 +294,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (hasCube && hasSpace)
             {
-                Entity pokemon = PokecubeMod.core.createEntityByPokedexNb(Database.getEntry("shedinja").getPokedexNb(),
-                        worldObj);
+                Entity pokemon = PokecubeMod.core.createPokemob(Database.getEntry("shedinja"), worldObj);
                 if (pokemon != null)
                 {
                     ItemStack mobCube = cube.copy();
@@ -325,7 +324,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             setPokemonAIState(EVOLVING, true);
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
-                evolution = PokecubeMod.core.createEntityByPokedexEntry(newEntry, worldObj);
+                evolution = PokecubeMod.core.createPokemob(newEntry, worldObj);
                 if (evolution == null)
                 {
                     System.err.println("No Entry for " + newEntry);

@@ -7,6 +7,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 
 import net.minecraftforge.common.MinecraftForge;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.GenericPokemob;
 import pokecube.core.events.ClassGenEvent;
 
@@ -26,7 +27,7 @@ public class ByteClassLoader extends ClassLoader
         super(ucl);
     }
 
-    public Class<?> generatePokemobClass(int pokedexNb) throws ClassNotFoundException
+    public Class<?> generatePokemobClass(PokedexEntry entry) throws ClassNotFoundException
     {
         try
         {
@@ -44,7 +45,7 @@ public class ByteClassLoader extends ClassLoader
         ClassReader reader = new ClassReader(genericMobBytes);
         ClassWriter writer;
         byte[] genericMob = reader.b.clone();
-        int num = pokedexNb;
+        int num = entry.getPokedexNb();
         ClassNode changer = new ClassNode();
         reader.accept(changer, 0);
 

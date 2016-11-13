@@ -296,7 +296,7 @@ public class PokecubeCore extends PokecubeMod
     {
         try
         {
-            return pokedexmap.get(new Integer(pokedexNb));
+            return pokedexmap.get(Database.getEntry(new Integer(pokedexNb)));
         }
         catch (Exception e)
         {
@@ -591,7 +591,7 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry)
     {
-        Class<?> c = genericMobClasses.get(entry.getPokedexNb());
+        Class<?> c = genericMobClasses.get(entry);
         if (c == null)
         {
             if (loader == null)
@@ -600,7 +600,7 @@ public class PokecubeCore extends PokecubeMod
             }
             try
             {
-                c = loader.generatePokemobClass(entry.getPokedexNb());
+                c = loader.generatePokemobClass(entry);
                 registerPokemonByClass(c, createEgg, mod, entry);
             }
             catch (ClassNotFoundException e)
@@ -658,7 +658,9 @@ public class PokecubeCore extends PokecubeMod
                         pokemobEggs.put(new Integer(entry.getPokedexNb()),
                                 new EntityEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                     }
-                    pokedexmap.put(new Integer(entry.getPokedexNb()), clazz);
+                    pokedexmap.put(entry, clazz);
+                    for (PokedexEntry e : entry.forms.values())
+                        pokedexmap.put(e, clazz);
                     registered.set(entry.getPokedexNb());
                     Pokedex.getInstance().registerPokemon(entry);
                 }

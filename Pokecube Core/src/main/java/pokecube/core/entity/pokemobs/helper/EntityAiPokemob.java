@@ -1176,19 +1176,22 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setDead()
     {
-        PokecubeSerializer.getInstance().removePokemob(this);
-        AISaveHandler.instance().removeAI(this);
-        if (getAbility() != null)
+        if (addedToChunk)
         {
-            getAbility().destroy();
-        }
-        if (getHome() != null && getHome().getY() > 0 && worldObj.isAreaLoaded(getHome(), 2))
-        {
-            TileEntity te = worldObj.getTileEntity(getHome());
-            if (te != null && te instanceof TileEntityNest)
+            PokecubeSerializer.getInstance().removePokemob(this);
+            AISaveHandler.instance().removeAI(this);
+            if (getAbility() != null)
             {
-                TileEntityNest nest = (TileEntityNest) te;
-                nest.removeResident(this);
+                getAbility().destroy();
+            }
+            if (getHome() != null && getHome().getY() > 0 && worldObj.isAreaLoaded(getHome(), 2))
+            {
+                TileEntity te = worldObj.getTileEntity(getHome());
+                if (te != null && te instanceof TileEntityNest)
+                {
+                    TileEntityNest nest = (TileEntityNest) te;
+                    nest.removeResident(this);
+                }
             }
         }
         super.setDead();

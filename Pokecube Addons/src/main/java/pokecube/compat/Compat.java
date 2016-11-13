@@ -19,10 +19,10 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -277,19 +277,20 @@ public class Compat
     {
         new TeslaHandler();
     }
-//
-//    @SideOnly(Side.CLIENT)
-//    @Optional.Method(modid = "jeresources")
-//    @SubscribeEvent
-//    public void JERInit(PostPostInit evt)
-//    {
-//        new pokecube.compat.jer.JERCompat().register();
-//    }
 
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "jeresources")
+    @SubscribeEvent
+    public void JERInit(PostPostInit event)
+    {
+        new pokecube.compat.jer.JERCompat().register();
+    }
+
+    @SideOnly(Side.CLIENT)
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) new UpdateNotifier();
+        new UpdateNotifier();
     }
 
     @EventHandler

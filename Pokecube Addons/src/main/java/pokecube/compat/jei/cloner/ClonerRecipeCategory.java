@@ -25,6 +25,8 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     @Nonnull
     private final IDrawable           background;
     @Nonnull
+    private final IDrawable           icon;
+    @Nonnull
     private final String              localizedName;
     @Nonnull
     private final ICraftingGridHelper craftingGridHelper;
@@ -35,6 +37,8 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
         localizedName = Translator.translateToLocal("tile.cloner.splicer.name");
         craftingGridHelper = guiHelper.createCraftingGridHelper(craftInputSlot1, craftOutputSlot);
+        location = new ResourceLocation("pokecube_adventures", "textures/gui/mewhair.png");
+        icon = guiHelper.createDrawable(location, 0, 0, 16, 16);
     }
 
     @Override
@@ -96,6 +100,12 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         {
             Log.error("RecipeWrapper is not a known crafting wrapper type: {}", recipeWrapper);
         }
+    }
+
+    @Override
+    public IDrawable getIcon()
+    {
+        return icon;
     }
 
 }

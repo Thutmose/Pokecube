@@ -75,6 +75,12 @@ public class JEICompat implements IModPlugin
             {
                 return getPCModuleAreas(guiContainer);
             }
+
+            @Override
+            public Object getIngredientUnderMouse(GuiPC guiContainer, int mouseX, int mouseY)
+            {
+                return null;
+            }
         });
     }
 

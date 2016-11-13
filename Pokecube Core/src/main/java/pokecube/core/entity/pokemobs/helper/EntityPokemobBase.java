@@ -88,7 +88,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         this.setSize(1, 1);
         this.width = 1;
         this.height = 1;
-        this.getDisplayName();
         nextStepDistance = 1;
     }
 
@@ -298,6 +297,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.init(nb);
         this.getPokedexEntry();
+        this.getDisplayName();
 
         if (multibox)
         {

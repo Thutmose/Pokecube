@@ -267,14 +267,14 @@ public class Compat
     {
         new TeslaHandler();
     }
-
-    @SideOnly(Side.CLIENT)
-    @Optional.Method(modid = "jeresources")
-    @SubscribeEvent
-    public void JERInit(PostPostInit evt)
-    {
-        new pokecube.compat.jer.JERCompat().register();
-    }
+//
+//    @SideOnly(Side.CLIENT)
+//    @Optional.Method(modid = "jeresources")
+//    @SubscribeEvent
+//    public void JERInit(PostPostInit evt)
+//    {
+//        new pokecube.compat.jer.JERCompat().register();
+//    }
 
     @EventHandler
     public void load(FMLInitializationEvent evt)

@@ -10,12 +10,14 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
@@ -86,13 +88,10 @@ public abstract class PokecubeMod
     public static boolean                            pokemobsDamageBlocks       = false;
 
     public static double                             MAX_DENSITY                = 1;
-    public static Map<String, String>                gifts                      = new HashMap<String, String>();
-
-    public static List<String>                       giftLocations              = new ArrayList<String>();
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<Integer, Class>                pokedexmap                 = new HashMap();
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Map<Integer, Class>                genericMobClasses          = new HashMap();
+    public static Map<String, String>                gifts                      = Maps.newHashMap();
+    public static List<String>                       giftLocations              = Lists.newArrayList();
+    public static Map<Integer, Class<?>>             pokedexmap                 = Maps.newHashMap();
+    public static Map<Integer, Class<?>>             genericMobClasses          = Maps.newHashMap();
 
     public static BitSet                             registered                 = new BitSet();
 
@@ -108,8 +107,7 @@ public abstract class PokecubeMod
     public static CreativeTabs                       creativeTabPokecubeBlocks  = new CreativeTabPokecubeBlocks(
             CreativeTabs.CREATIVE_TAB_ARRAY.length, "Pokecube Blocks");
 
-    @SuppressWarnings("rawtypes")
-    public static HashMap                            pokemobEggs                = new HashMap();
+    public static HashMap<Integer, EntityEggInfo>    pokemobEggs                = Maps.newHashMap();
 
     // Achievements
     public static Achievement                        get1stPokemob;
@@ -228,7 +226,7 @@ public abstract class PokecubeMod
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
 
     public abstract void setEntityProvider(IEntityProvider provider);
-    
+
     public abstract Achievement getAchievement(String desc);
 
     public abstract void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args);

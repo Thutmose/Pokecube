@@ -19,7 +19,7 @@ public class ByteClassLoader extends ClassLoader
 {
     private static byte[] genericMobBytes;
 
-    String resName = "GenericPokemob.class";
+    String                resName = "GenericPokemob.class";
 
     public ByteClassLoader(ClassLoader ucl)
     {
@@ -65,6 +65,14 @@ public class ByteClassLoader extends ClassLoader
         cr.accept(classNode, 0);
 
         Class<?> c = loadClass(classNode.name, genericMob, true);
+        try
+        {
+            c.getField("nb").set(null, num);
+        }
+        catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
+        {
+            e.printStackTrace();
+        }
         return c;
 
     }

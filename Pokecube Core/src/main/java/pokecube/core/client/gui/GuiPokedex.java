@@ -1332,6 +1332,9 @@ public class GuiPokedex extends GuiScreen
             entity.rotationYaw = yHeadRenderAngle;
             entity.rotationPitch = xHeadRenderAngle;
             entity.rotationYawHead = entity.rotationYaw;
+            entity.prevRotationYaw = entity.rotationYaw;
+            entity.prevRotationYawHead = entity.rotationYawHead;
+            entity.prevRotationPitch = entity.prevRotationPitch;
             GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
 
             entity.setPosition(entityPlayer.posX, entityPlayer.posY + 1, entityPlayer.posZ);

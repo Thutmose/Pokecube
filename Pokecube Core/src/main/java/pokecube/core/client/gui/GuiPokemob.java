@@ -110,8 +110,10 @@ public class GuiPokemob extends GuiContainer
                 GL11.glRotated(90, 0, 1, 0);
                 GL11.glScaled(scale, scale, scale);
                 ((Entity) renderMob).ticksExisted = mc.thePlayer.ticksExisted;
-                ((Entity) renderMob).setRotationYawHead(0);
+                ((EntityLiving) renderMob).rotationYawHead = 0;
+                ((EntityLiving) renderMob).prevRotationYawHead = 0;
                 ((Entity) renderMob).rotationYaw = 0;
+                ((Entity) renderMob).prevRotationYaw = 0;
                 Object o = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject((Entity) renderMob);
                 if (o instanceof RenderAdvancedPokemobModel
                         || (o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)

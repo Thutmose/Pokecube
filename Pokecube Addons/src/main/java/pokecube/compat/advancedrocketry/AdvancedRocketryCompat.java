@@ -352,8 +352,8 @@ public class AdvancedRocketryCompat
                         Collections.sort(moons);
                         if (!moons.isEmpty())
                         {
-                            double angle = (event.getEntity().worldObj.getWorldTime() / (double) props.rotationalPeriod)
-                                    * 2 * Math.PI;
+                            double angle = ((event.getEntity().worldObj.getWorldTime() % props.rotationalPeriod)
+                                    / (double) props.rotationalPeriod) * 2 * Math.PI;
                             double diff = 2 * Math.PI;
                             int whichMoon = 0;
                             for (int i = 0; i < moons.size(); i++)

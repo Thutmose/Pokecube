@@ -382,20 +382,24 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     {
         if (entry == null)
         {
-            if (getClass().getName().contains("GenericPokemob"))
+            entry = Database.getEntry(getPokedexNb());
+            if (entry == null)
             {
-                String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
-                entry = Database.getEntry(Integer.parseInt(num));
-                if (entry != null && entry.getPokedexNb() > 0)
+                if (getClass().getName().contains("GenericPokemob"))
                 {
-                    init(entry.getPokedexNb());
-                    return entry;
+                    String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
+                    entry = Database.getEntry(Integer.parseInt(num));
+                    if (entry != null && entry.getPokedexNb() > 0)
+                    {
+                        init(entry.getPokedexNb());
+                        return entry;
+                    }
                 }
+                System.out.println(this.getClass());
+                Thread.dumpStack();
+                this.setDead();
+                return Database.missingno;
             }
-            System.out.println(this.getClass());
-            Thread.dumpStack();
-            this.setDead();
-            return Database.missingno;
         }
         return entry.getForGender(getSexe());
     }

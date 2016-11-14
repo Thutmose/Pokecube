@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.animations.EntityMoveUse;
 
 public class MoveQueue
@@ -56,7 +57,14 @@ public class MoveQueue
             if (evt.phase == Phase.END && evt.side == Side.SERVER)
             {
                 MoveQueue queue = queues.get(evt.world);
-                if (queue == null) throw new NullPointerException("why is world queue null?");
+                if (queue == null)
+                {
+                    System.err.println(evt.world);
+                    Thread.dumpStack();
+                    PokecubeMod.log("Critical Error with world for dimension " + evt.world.provider.getDimension()
+                            + " It is somehow ticking when not loaded, this should not happen.");
+                    return;
+                }
                 queue.executeMoves();
             }
         }

@@ -4,6 +4,9 @@ import java.io.InputStream;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -55,6 +58,23 @@ public class ByteClassLoader extends ClassLoader
         writer = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 
         changer.accept(writer);
+
+        // ASM in the pokedex number.
+        ClassWriter cw = writer;
+        MethodVisitor mv;
+        mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "getPokedexNb", "()Ljava/lang/Integer;", null, null);
+        mv.visitCode();
+        Label l0 = new Label();
+        mv.visitLabel(l0);
+        if (num <= Byte.MAX_VALUE) mv.visitIntInsn(Opcodes.BIPUSH, num);
+        else mv.visitIntInsn(Opcodes.SIPUSH, num);
+        mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
+        mv.visitInsn(Opcodes.ARETURN);
+        Label l1 = new Label();
+        mv.visitLabel(l1);
+        mv.visitMaxs(1, 1);
+        mv.visitEnd();
+
         ClassGenEvent evt = new ClassGenEvent(writer, changer, num);
         MinecraftForge.EVENT_BUS.post(evt);
         writer.visitEnd();
@@ -66,14 +86,6 @@ public class ByteClassLoader extends ClassLoader
         cr.accept(classNode, 0);
 
         Class<?> c = loadClass(classNode.name, genericMob, true);
-        try
-        {
-            c.getField("nb").set(null, num);
-        }
-        catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e)
-        {
-            e.printStackTrace();
-        }
         return c;
 
     }

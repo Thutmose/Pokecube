@@ -50,20 +50,23 @@ public class StatsCollector
 
     public static int getCaptured(PokedexEntry dbe, EntityPlayer player)
     {
-        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+        Integer n = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
                 .getCaptures(player).get(dbe);
+        return n == null ? 0 : n;
     }
 
     public static int getKilled(PokedexEntry dbe, EntityPlayer player)
     {
-        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+        Integer n = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
                 .getKills(player).get(dbe);
+        return n == null ? 0 : n;
     }
 
     public static int getHatched(PokedexEntry dbe, EntityPlayer player)
     {
-        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+        Integer n = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
                 .getHatches(player).get(dbe);
+        return n == null ? 0 : n;
     }
 
     public static void addHatched(EntityPokemobEgg hatched)

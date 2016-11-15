@@ -27,7 +27,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.PokecubeCore;
@@ -41,6 +40,7 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
+import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
@@ -772,8 +772,7 @@ public class GuiPokedex extends GuiScreen
 
         if (pokemob == null)
         {
-            pokemob = (EntityLiving) PokecubeMod.core.createPokemob(pokedexEntry,
-                    entityPlayer.getEntityWorld());
+            pokemob = (EntityLiving) PokecubeMod.core.createPokemob(pokedexEntry, entityPlayer.getEntityWorld());
             if (pokemob != null)
             {
                 ((IPokemob) pokemob).specificSpawnInit();
@@ -1283,12 +1282,9 @@ public class GuiPokedex extends GuiScreen
             {
                 pokemob = (IPokemob) entity;
             }
-            Achievement ach = PokecubeMod.hatchAchievements.get(pokedexEntry);
-            if (!(mc.thePlayer.getStatFileWriter()
-                    .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokedexEntry))
-                    || (ach != null && mc.thePlayer.getStatFileWriter().hasAchievementUnlocked(ach))
-                    || mc.thePlayer.getStatFileWriter()
-                            .hasAchievementUnlocked(PokecubeMod.killAchievements.get(pokedexEntry)))
+            if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
+                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
+                    || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0)
                     && !mc.thePlayer.capabilities.isCreativeMode)
             {
 

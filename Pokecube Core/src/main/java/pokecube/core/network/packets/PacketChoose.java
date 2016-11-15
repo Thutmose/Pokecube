@@ -155,7 +155,6 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         items.clear();
         items.addAll(pick.starterPack);
         player.addStat(PokecubeMod.get1stPokemob, 1);
-        if (starterGiven) player.addStat(PokecubeMod.catchAchievements.get(Database.getEntry(pokedexNb)), 1);
         for (ItemStack e : items)
         {
             if (e == null || e.getItem() == null) continue;

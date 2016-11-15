@@ -28,7 +28,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -40,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -177,11 +177,9 @@ public class RenderHealth
                 GlStateManager.translate(0F, pastTranslate, 0F);
                 ITextComponent nameComp = pokemob.getPokemonDisplayName();
                 boolean nametag = pokemob.getPokemonAIState(IMoveConstants.TAMED);
-                nametag = nametag || Minecraft.getMinecraft().thePlayer.getStatFileWriter()
-                        .hasAchievementUnlocked(PokecubeMod.catchAchievements.get(pokemob.getPokedexEntry()));
-                Achievement ach;
-                if (!nametag && (ach = PokecubeMod.hatchAchievements.get(pokemob.getPokedexEntry())) != null)
-                    nametag = Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(ach);
+                nametag = nametag
+                        || StatsCollector.getCaptured(pokemob.getPokedexEntry(), Minecraft.getMinecraft().thePlayer) > 0
+                        || StatsCollector.getHatched(pokemob.getPokedexEntry(), Minecraft.getMinecraft().thePlayer) > 0;
                 if (!nametag)
                 {
                     nameComp.getStyle().setObfuscated(true);

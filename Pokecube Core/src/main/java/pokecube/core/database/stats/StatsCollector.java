@@ -48,6 +48,24 @@ public class StatsCollector
         }
     }
 
+    public static int getCaptured(PokedexEntry dbe, EntityPlayer player)
+    {
+        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+                .getCaptures(player).get(dbe);
+    }
+
+    public static int getKilled(PokedexEntry dbe, EntityPlayer player)
+    {
+        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+                .getKills(player).get(dbe);
+    }
+
+    public static int getHatched(PokedexEntry dbe, EntityPlayer player)
+    {
+        return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+                .getHatches(player).get(dbe);
+    }
+
     public static void addHatched(EntityPokemobEgg hatched)
     {
         String owner;

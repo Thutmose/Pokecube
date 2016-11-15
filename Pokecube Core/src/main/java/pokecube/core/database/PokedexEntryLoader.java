@@ -197,20 +197,10 @@ public class PokedexEntryLoader
         @XmlElement(name = "SPECIALEGGSPECIESRULES")
         String          specialEggRules;
         // Drops and items
-        @XmlElement(name = "FOODDROP")
-        String          foodDrop;
-        @XmlElement(name = "COMMONDROP")
-        String          commonDrop;
-        @XmlElement(name = "RAREDROP")
-        String          rareDrop;
-
         @XmlElement(name = "Drop")
         List<Drop>      drops          = Lists.newArrayList();
         @XmlElement(name = "Held")
         List<Drop>      held           = Lists.newArrayList();
-
-        @XmlElement(name = "HELDITEM")
-        String          heldItems;
         // Spawn Rules
         @XmlElement(name = "Spawn")
         List<SpawnRule> spawnRules     = Lists.newArrayList();

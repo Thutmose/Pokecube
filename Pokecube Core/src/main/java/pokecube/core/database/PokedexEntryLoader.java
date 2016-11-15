@@ -889,7 +889,14 @@ public class PokedexEntryLoader
                 }
             }
         }
-        if (xmlStats.expMode != null) entry.evolutionMode = Tools.getType(xmlStats.expMode);
+        try
+        {
+            if (xmlStats.expMode != null) entry.evolutionMode = Tools.getType(xmlStats.expMode);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error in expmode for " + entry);
+        }
         if (xmlStats.shadowReplacements != null)
         {
             String[] replaces = xmlStats.shadowReplacements.split(":");

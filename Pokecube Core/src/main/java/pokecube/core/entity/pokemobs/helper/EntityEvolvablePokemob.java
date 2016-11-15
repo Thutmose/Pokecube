@@ -25,6 +25,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -305,8 +306,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true);
                     ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
                     ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
-                    player.addStat(PokecubeMod.get1stPokemob, 0);
-                    player.addStat(PokecubeMod.catchAchievements.get(poke.getPokedexEntry()), 1);
+                    StatsCollector.addCapture(poke);
                     cube.stackSize--;
                     if (cube.stackSize <= 0) inv.setInventorySlotContents(m, null);
                     inv.addItemStackToInventory(shedinja);

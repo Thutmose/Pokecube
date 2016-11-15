@@ -6,12 +6,15 @@ package pokecube.core.entity.pokemobs.helper;
 import java.io.IOException;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import org.nfunk.jep.JEP;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -26,6 +29,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -923,6 +927,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             ret.levelUp(level);
         }
         return ret;
+    }
+
+    @Override
+    @Nullable
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
+    {
+        specificSpawnInit();
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 
 }

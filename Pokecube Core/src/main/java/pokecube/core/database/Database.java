@@ -274,7 +274,7 @@ public class Database
 
     public static PokedexEntry getEntry(IPokemob mob)
     {
-        return data.get(mob.getPokedexNb());
+        return mob.getPokedexEntry();
     }
 
     public static PokedexEntry getEntry(String name)

@@ -1,12 +1,9 @@
 package pokecube.compat.jei.cloner;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 
@@ -17,9 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 
 public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
 {
@@ -46,27 +41,11 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     @Override
     public void drawInfo(@Nonnull Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
     {
-        IPokemob pokemob = getPokemob();
-        if (pokemob == null) return;
-        PokedexEntry entry;
-        pokemob = EventsHandlerClient.renderMobs.get(entry = pokemob.getPokedexEntry());
-        if (pokemob == null)
-        {
-            pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, minecraft.theWorld);
-            if (pokemob == null) return;
-            EventsHandlerClient.renderMobs.put(entry, pokemob);
-        }
-        GL11.glPushMatrix();
-        GL11.glTranslated(102, 36, 10);
-        double scale = 1.2;
-        GL11.glScaled(scale, scale, scale);
-        EventsHandlerClient.renderMob(pokemob, 0);
-        GL11.glPopMatrix();
     }
 
     @Nonnull
     @Override
-    public List<?> getInputs()
+    public List<ItemStack> getInputs()
     {
         return recipe.recipeItems;
     }
@@ -75,7 +54,7 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     @Override
     public List<ItemStack> getOutputs()
     {
-        return Collections.singletonList(recipe.getRecipeOutput());
+        return null;
     }
 
     public IPokemob getPokemob()
@@ -91,38 +70,34 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        ingredients.setInputs(ItemStack.class, (List<ItemStack>) getInputs());
+        ingredients.setInputs(ItemStack.class, getInputs());
+        ingredients.setOutput(PokedexEntry.class, recipe.pokedexEntry);
     }
 
     @Override
     public List<FluidStack> getFluidInputs()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public List<FluidStack> getFluidOutputs()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
     {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
     {
-        // TODO Auto-generated method stub
         return false;
     }
 }

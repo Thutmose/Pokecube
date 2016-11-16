@@ -733,6 +733,7 @@ public class PokedexEntryLoader
                         if (data == null)
                         {
                             data = new EvolutionData(evol, evolData[i], s2);
+                            data.preEvolution = entry;
                             entry.addEvolution(data);
                         }
                         else

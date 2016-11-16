@@ -49,6 +49,21 @@ tile.registeel.name=Registeel Core
 gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer
 
+gui.jei.pokemobs=Pokemob Evolution
+gui.jei.pokemob.evo.level=Level %s
+gui.jei.pokemob.evo.traded=When Traded
+gui.jei.pokemob.evo.night=At Night
+gui.jei.pokemob.evo.day=At Daytime
+gui.jei.pokemob.evo.biome=In %s
+gui.jei.pokemob.evo.happy=When Happy
+gui.jei.pokemob.evo.move=If it knows %s
+gui.jei.pokemob.evo.rain=During Rain
+gui.jei.pokemob.evo.gender=When %s
+gui.jei.pokemob.evo.chance=With chance %s
+
+gui.jei.pokemob.gender.male=Male
+gui.jei.pokemob.gender.female=Female
+
 msg.nohere.txt=%s §cwill not spawn here.
 msg.noregi.txt=§cThis does not seem to be the correct location to build this.
 msg.noknowhowmakeregi.txt=§cNothing happened
@@ -135,7 +150,6 @@ pokecube.config.trainerBox.tooltip=Roughly how close more than two trainers can 
 #teams
 pokecube.config.teams=Team Options
 pokecube.config.teamLandPerPlayer.tooltip=Amount of land claimable per member of a team
-
 
 #World
 pokecube.config.structureBiomes.tooltip=Special biomes to assign to structures made in Ruins or RecurrentComplex

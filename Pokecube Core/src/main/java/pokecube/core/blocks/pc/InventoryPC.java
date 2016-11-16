@@ -365,16 +365,10 @@ public class InventoryPC implements IInventory
     @Override
     public ItemStack decrStackSize(int i, int j)
     {
-        if (contents.get(i) != null)
+        if (CompatWrapper.isValid(contents.get(i)))
         {
-            ItemStack itemstack;
-            if (contents.get(i).stackSize <= j)
-            {
-                itemstack = contents.remove(i);
-                return itemstack;
-            }
-            itemstack = contents.get(i).splitStack(j);
-            if (contents.get(i).stackSize == 0)
+            ItemStack itemstack = contents.get(i).splitStack(j);
+            if (!CompatWrapper.isValid(contents.get(i)))
             {
                 contents.remove(i);
             }
@@ -388,7 +382,7 @@ public class InventoryPC implements IInventory
         HashSet<ItemStack> ret = new HashSet<ItemStack>();
         for (int i : contents.keySet())
         {
-            if (contents.get(i) != null) ret.add(contents.get(i));
+            if (CompatWrapper.isValid(contents.get(i))) ret.add(contents.get(i));
         }
         return ret;
     }
@@ -449,9 +443,7 @@ public class InventoryPC implements IInventory
     @Override
     public ItemStack getStackInSlot(int i)
     {
-        ItemStack ret = contents.get(i);
-        if (ret == null) ret = CompatWrapper.nullStack;
-        return ret;
+        return CompatWrapper.validate(contents.get(i));
     }
 
     @Override
@@ -487,9 +479,7 @@ public class InventoryPC implements IInventory
     @Override
     public ItemStack removeStackFromSlot(int i)
     {
-        ItemStack ret = contents.remove(i);
-        if (ret == null) ret = CompatWrapper.nullStack;
-        return ret;
+        return CompatWrapper.validate(contents.remove(i));
     }
 
     @Override
@@ -501,7 +491,8 @@ public class InventoryPC implements IInventory
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-        contents.put(i, itemstack);
+        if (CompatWrapper.isValid(itemstack)) contents.put(i, itemstack);
+        else contents.remove(i);
     }
 
     public void setPage(int page)
@@ -515,7 +506,7 @@ public class InventoryPC implements IInventory
         String ret = "Owner: " + owner + ", Current Page, " + (getPage() + 1) + ": Auto Move, " + autoToPC + ": ";
         String eol = System.getProperty("line.separator");
         ret += eol;
-        for (Integer i : contents.keySet())
+        for (int i : contents.keySet())
         {
             if (this.getStackInSlot(i) != CompatWrapper.nullStack)
             {

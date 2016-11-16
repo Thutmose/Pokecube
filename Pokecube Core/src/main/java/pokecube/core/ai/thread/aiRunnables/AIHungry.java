@@ -31,6 +31,8 @@ import thut.api.TickHandler;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
+import thut.lib.ItemStackTools;
 
 /** This IAIRunnable is responsible for finding food for the mobs. It also is
  * what adds berries to their inventories based on which biome they are
@@ -52,7 +54,7 @@ public class AIHungry extends AIBase
             ItemStack stack = BerryGenManager.getRandomBerryForBiome(world, ((Entity) pokemob).getPosition());
             if (stack != null)
             {
-                AIStoreStuff.addItemStackToInventory(stack, pokemob.getPokemobInventory(), 2);
+                ItemStackTools.addItemStackToInventory(stack, pokemob.getPokemobInventory(), 2);
                 ((IHungrymob) pokemob).eat(new EntityItem(world, 0, 0, 0, stack));
             }
             return true;
@@ -122,10 +124,10 @@ public class AIHungry extends AIBase
                 ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof ItemBerry)
                 {
-                    stack.stackSize--;
-                    if (stack.stackSize <= 0)
+                    CompatWrapper.increment(stack, -1);
+                    if (!CompatWrapper.isValid(stack))
                     {
-                        pokemob.getPokemobInventory().setInventorySlotContents(i, null);
+                        pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
                     }
                     setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                     hungrymob.eat(berry);
@@ -448,12 +450,12 @@ public class AIHungry extends AIBase
         for (int i = 2; i < 7; i++)
         {
             ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
-            if (stack != null && stack.getItem() instanceof ItemBerry)
+            if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry)
             {
-                stack.stackSize--;
-                if (stack.stackSize <= 0)
+                CompatWrapper.increment(stack, -1);
+                if (!CompatWrapper.isValid(stack))
                 {
-                    pokemob.getPokemobInventory().setInventorySlotContents(i, null);
+                    pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
                 }
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 berry.setEntityItemStack(stack.copy());
@@ -478,12 +480,12 @@ public class AIHungry extends AIBase
                 for (int i1 = 0; i1 < 27; i1++)
                 {
                     ItemStack stack = container.getStackInSlot(i1);
-                    if (stack != null && stack.getItem() instanceof ItemBerry)
+                    if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry)
                     {
-                        stack.stackSize--;
-                        if (stack.stackSize <= 0)
+                        CompatWrapper.increment(stack, -1);
+                        if (!CompatWrapper.isValid(stack))
                         {
-                            container.setInventorySlotContents(i1, null);
+                            container.setInventorySlotContents(i1, CompatWrapper.nullStack);
                         }
                         setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
 

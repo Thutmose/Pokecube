@@ -39,6 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class BlockCloner extends Block implements ITileEntityProvider
 {
@@ -190,26 +191,23 @@ public class BlockCloner extends Block implements ITileEntityProvider
         for (int i = 0; i < inventory.getSizeInventory(); i++)
         {
             ItemStack item = inventory.getStackInSlot(i);
-
-            if (item != null && item.stackSize > 0)
+            if (CompatWrapper.isValid(item))
             {
                 float rx = rand.nextFloat() * 0.6F + 0.1F;
                 float ry = rand.nextFloat() * 0.6F + 0.1F;
                 float rz = rand.nextFloat() * 0.6F + 0.1F;
                 EntityItem entity_item = new EntityItem(world, pos.getX() + rx, pos.getY() + ry, pos.getZ() + rz,
-                        new ItemStack(item.getItem(), item.stackSize, item.getItemDamage()));
-
+                        new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
                     entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
-
-                float factor = 0.5F;
+                float factor = 0.005F;
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
                 world.spawnEntityInWorld(entity_item);
-                item.stackSize = 0;
+                CompatWrapper.setStackSize(item, 0);
             }
         }
     }

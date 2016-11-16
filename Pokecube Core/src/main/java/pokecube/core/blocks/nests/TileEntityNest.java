@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -34,7 +32,7 @@ import thut.lib.CompatWrapper;
 public class TileEntityNest extends TileEntity implements ITickable, IInventory
 {
 
-    private List<ItemStack> inventory = Lists.newArrayList();
+    private List<ItemStack> inventory = CompatWrapper.makeList(27);
 
     int                     pokedexNb = 0;
 
@@ -43,10 +41,6 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public TileEntityNest()
     {
-        for (int i = 0; i < 27; i++)
-        {
-            inventory.add(CompatWrapper.nullStack);
-        }
     }
 
     public boolean addForbiddenSpawningCoord()
@@ -62,7 +56,8 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public void clear()
     {
-
+        for (int i = 0; i < inventory.size(); i++)
+            inventory.set(i, CompatWrapper.nullStack);
     }
 
     @Override
@@ -71,13 +66,16 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack decrStackSize(int slot, int count)
     {
-        if (this.inventory.get(index) != CompatWrapper.nullStack)
+        if (CompatWrapper.isValid(getStackInSlot(slot)))
         {
             ItemStack itemStack;
-            itemStack = inventory.get(index).splitStack(count);
-            if (inventory.get(index).stackSize <= 0) inventory.set(index, CompatWrapper.nullStack);
+            itemStack = getStackInSlot(slot).splitStack(count);
+            if (!CompatWrapper.isValid(getStackInSlot(slot)))
+            {
+                setInventorySlotContents(slot, CompatWrapper.nullStack);
+            }
             return itemStack;
         }
         return CompatWrapper.nullStack;
@@ -116,7 +114,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public int getSizeInventory()
     {
-        return 27;
+        return inventory.size();
     }
 
     @Override
@@ -196,12 +194,12 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeStackFromSlot(int slot)
     {
-        if (inventory.get(index) != CompatWrapper.nullStack)
+        if (CompatWrapper.isValid(getStackInSlot(slot)))
         {
-            ItemStack stack = inventory.get(index);
-            inventory.set(index, CompatWrapper.nullStack);
+            ItemStack stack = getStackInSlot(slot);
+            setInventorySlotContents(slot, CompatWrapper.nullStack);
             return stack;
         }
         return CompatWrapper.nullStack;
@@ -215,6 +213,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
+        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
         inventory.set(index, stack);
     }
 
@@ -289,8 +288,8 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         NBTTagList itemList = new NBTTagList();
         for (int i = 0; i < inventory.size(); i++)
         {
-            ItemStack stack = inventory.get(i);
-            if (stack != CompatWrapper.nullStack)
+            ItemStack stack;
+            if (CompatWrapper.isValid(stack = inventory.get(i)))
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);

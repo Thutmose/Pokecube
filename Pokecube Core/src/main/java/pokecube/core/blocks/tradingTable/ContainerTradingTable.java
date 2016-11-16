@@ -26,8 +26,8 @@ public class ContainerTradingTable extends Container
     {
         return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound()
                 && PokecubeItems.getCubeId(itemstack) == 14)
-                || (itemstack.getItem() == Items.EMERALD && itemstack.stackSize == 64)
-                || (itemstack.getItem() instanceof IPokecube && itemstack.stackSize == 1);
+                || (itemstack.getItem() == Items.EMERALD && CompatWrapper.getStackSize(itemstack) == 64)
+                || (itemstack.getItem() instanceof IPokecube && CompatWrapper.getStackSize(itemstack) == 1);
     }
 
     TileEntityTradingTable tile;
@@ -114,19 +114,17 @@ public class ContainerTradingTable extends Container
     {
         ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
-
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-
             if (index < 2)
             {
-                if (!this.mergeItemStack(itemstack1, 2, this.inventorySlots.size(), false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, 2, this.inventorySlots.size(),
+                        false)) { return CompatWrapper.nullStack; }
             }
             else if (!this.mergeItemStack(itemstack1, 0, 2, false)) { return CompatWrapper.nullStack; }
-
-            if (itemstack1.stackSize == 0)
+            if (!CompatWrapper.isValid(itemstack1))
             {
                 slot.putStack(CompatWrapper.nullStack);
             }

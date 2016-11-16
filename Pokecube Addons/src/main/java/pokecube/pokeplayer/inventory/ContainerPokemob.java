@@ -13,6 +13,7 @@ import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
+import thut.lib.CompatWrapper;
 
 public class ContainerPokemob extends Container
 {
@@ -136,7 +137,7 @@ public class ContainerPokemob extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer player, int slotId)
 	{
-		ItemStack itemstack = null;
+		ItemStack itemstack = CompatWrapper.nullStack;
 		Slot slot = this.inventorySlots.get(slotId);
 
 		if (slot != null && slot.getHasStack())
@@ -147,7 +148,7 @@ public class ContainerPokemob extends Container
 			if (slotId < this.pokemobInv.getSizeInventory())
 			{
 				if (!this.mergeItemStack(itemstack1, this.pokemobInv.getSizeInventory(), this.inventorySlots.size(),
-						true)) { return null; }
+						true)) { return CompatWrapper.nullStack; }
 			}
 			else if (this.getSlot(1).isItemValid(itemstack1) && !this.getSlot(1).getHasStack())
 			{
@@ -155,14 +156,14 @@ public class ContainerPokemob extends Container
 			}
 			else if (this.getSlot(0).isItemValid(itemstack1))
 			{
-				if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return null; }
+				if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
 			}
 			else if (this.pokemobInv.getSizeInventory() <= 2
-					|| !this.mergeItemStack(itemstack1, 2, this.pokemobInv.getSizeInventory(), false)) { return null; }
+					|| !this.mergeItemStack(itemstack1, 2, this.pokemobInv.getSizeInventory(), false)) { return CompatWrapper.nullStack; }
 
-			if (itemstack1.stackSize == 0)
+            if (!CompatWrapper.isValid(itemstack1))
 			{
-				slot.putStack((ItemStack) null);
+				slot.putStack(CompatWrapper.nullStack);
 			}
 			else
 			{

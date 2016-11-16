@@ -1,5 +1,6 @@
 package pokecube.adventures.blocks.afa;
 
+import java.util.List;
 import java.util.Random;
 
 import org.nfunk.jep.JEP;
@@ -48,25 +49,25 @@ import thut.lib.CompatWrapper;
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITickable, SimpleComponent, SidedComponent
 {
-    public static JEP   parser;
-    public static JEP   parserS;
-    public IPokemob     pokemob        = null;
-    boolean             shiny          = false;
-    private ItemStack[] inventory      = new ItemStack[1];
-    public int[]        shift          = { 0, 0, 0 };
-    public int          scale          = 1000;
-    public String       animation      = "idle";
-    public Ability      ability        = null;
-    int                 energy         = 0;
-    int                 distance       = 4;
-    public int          transparency   = 128;
-    public boolean      rotates        = true;
-    public float        angle          = 0;
-    public boolean      noEnergy       = false;
-    public boolean      frozen         = true;
-    public float        animationTime  = 0;
+    public static JEP parser;
+    public static JEP parserS;
+    public IPokemob   pokemob        = null;
+    boolean           shiny          = false;
+    List<ItemStack>   inventory      = CompatWrapper.makeList(1);
+    public int[]      shift          = { 0, 0, 0 };
+    public int        scale          = 1000;
+    public String     animation      = "idle";
+    public Ability    ability        = null;
+    int               energy         = 0;
+    int               distance       = 4;
+    public int        transparency   = 128;
+    public boolean    rotates        = true;
+    public float      angle          = 0;
+    public boolean    noEnergy       = false;
+    public boolean    frozen         = true;
+    public float      animationTime  = 0;
 
-    protected boolean   addedToNetwork = false;
+    protected boolean addedToNetwork = false;
 
     private static void initParser()
     {
@@ -107,7 +108,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void clear()
     {
-        inventory[0] = null;
+        inventory.set(0, CompatWrapper.nullStack);
     }
 
     @Override
@@ -118,20 +119,29 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public ItemStack decrStackSize(int slot, int count)
     {
-        if (this.inventory[slot] != null)
+        if (CompatWrapper.isValid(inventory.get(slot)))
         {
             ItemStack itemStack;
-
-            itemStack = inventory[slot].splitStack(count);
-
-            if (inventory[slot].stackSize <= 0)
+            itemStack = inventory.get(slot).splitStack(count);
+            if (!CompatWrapper.isValid(inventory.get(slot)))
             {
-                inventory[slot] = null;
-                pokemob = null;
+                inventory.set(slot, CompatWrapper.nullStack);
             }
             return itemStack;
         }
-        return null;
+        return CompatWrapper.nullStack;
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        if (CompatWrapper.isValid(inventory.get(slot)))
+        {
+            ItemStack stack = inventory.get(slot);
+            inventory.set(slot, CompatWrapper.nullStack);
+            return stack;
+        }
+        return CompatWrapper.nullStack;
     }
 
     @Callback(doc = "Returns the current loaded ability")
@@ -219,15 +229,13 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public int getSizeInventory()
     {
-        return inventory.length;
+        return inventory.size();
     }
 
     @Override
     public ItemStack getStackInSlot(int index)
     {
-        if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
-
-        return inventory[index];
+        return inventory.get(index);
     }
 
     /** Overriden in a sign to provide the text. */
@@ -311,9 +319,9 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
                 byte slot = tag.getByte("Slot");
 
-                if (slot >= 0 && slot < inventory.length)
+                if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory[slot] = CompatWrapper.fromTag(tag);
+                    inventory.set(slot, CompatWrapper.fromTag(tag));
                 }
             }
         }
@@ -328,6 +336,8 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         frozen = nbt.getBoolean("frozen");
         animationTime = nbt.getFloat("animTime");
         animation = nbt.getString("animation");
+        ItemStack reference = PokecubeItems.getStack("shiny_charm");
+        shiny = Tools.isSameStack(reference, inventory.get(0));
     }
 
     public int receiveEnergy(EnumFacing facing, int maxReceive, boolean simulate)
@@ -350,14 +360,14 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         }
         if (ability != null) ability.destroy();
         ItemStack reference = PokecubeItems.getStack("shiny_charm");
-        shiny = Tools.isSameStack(reference, inventory[0]);
-        if (inventory[0] == null) return;
+        shiny = Tools.isSameStack(reference, inventory.get(0));
+        if (!CompatWrapper.isValid(inventory.get(0))) return;
         if (ability != null)
         {
             ability.destroy();
             ability = null;
         }
-        pokemob = PokecubeManager.itemToPokemob(inventory[0], getWorld());
+        pokemob = PokecubeManager.itemToPokemob(inventory.get(0), getWorld());
         if (pokemob != null && pokemob.getAbility() != null)
         {
             ability = pokemob.getAbility();
@@ -365,19 +375,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
             ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
             ability.init(pokemob, distance);
         }
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (inventory[slot] != null)
-        {
-            ItemStack stack = inventory[slot];
-            inventory[slot] = null;
-            pokemob = null;
-            return stack;
-        }
-        return null;
     }
 
     @Override
@@ -421,9 +418,8 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        if (stack == null || stack.stackSize <= 0) inventory[index] = null;
-        else inventory[index] = stack;
-        refreshAbility();
+        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        inventory.set(index, stack);
     }
 
     @Callback(doc = "function(range:number) - sets the radius of affect")
@@ -476,11 +472,11 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void update()
     {
-        if (inventory[0] != null && pokemob == null)
+        if (CompatWrapper.isValid(inventory.get(0)) && pokemob == null)
         {
             refreshAbility();
         }
-        else if (inventory[0] == null)
+        else if (!CompatWrapper.isValid(inventory.get(0)))
         {
             refreshAbility();
         }
@@ -538,11 +534,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     {
         super.writeToNBT(nbt);
         NBTTagList itemList = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++)
+        for (int i = 0; i < inventory.size(); i++)
         {
-            ItemStack stack = inventory[i];
-
-            if (stack != null)
+            ItemStack stack;
+            if (CompatWrapper.isValid(stack = inventory.get(i)))
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);
@@ -562,8 +557,6 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         nbt.setBoolean("frozen", frozen);
         nbt.setFloat("animTime", animationTime);
         nbt.setString("animation", animation);
-        ItemStack reference = PokecubeItems.getStack("shiny_charm");
-        shiny = Tools.isSameStack(reference, inventory[0]);
         return nbt;
     }
 }

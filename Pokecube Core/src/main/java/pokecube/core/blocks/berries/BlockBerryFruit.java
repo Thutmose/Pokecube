@@ -24,6 +24,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.items.berries.BerryManager;
+import thut.lib.CompatWrapper;
 
 /** @author Oracion
  * @author Manchou */
@@ -129,8 +130,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
         ItemStack stack = getBerryStack(world, pos);
-        if (stack == null) return ret;
-        stack.stackSize = count;
+        if (!CompatWrapper.isValid(stack)) return ret;
+        CompatWrapper.setStackSize(stack, count);
         ret.add(stack);
         return ret;
     }

@@ -16,7 +16,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.packets.PacketPC;
 import thut.lib.CompatWrapper;
 
-@ChestContainer(isLargeChest = true, showButtons=false)
+@ChestContainer(isLargeChest = true, showButtons = false)
 public class ContainerPC extends Container
 {
 
@@ -254,7 +254,6 @@ public class ContainerPC extends Container
     {
         ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
-
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
@@ -263,11 +262,12 @@ public class ContainerPC extends Container
             int numRows = 6;
             if (index < numRows * 9)
             {
-                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(),
+                        false)) { return CompatWrapper.nullStack; }
             }
             else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return CompatWrapper.nullStack; }
 
-            if (itemstack1.stackSize == 0)
+            if (!CompatWrapper.isValid(itemstack1))
             {
                 slot.putStack(CompatWrapper.nullStack);
             }

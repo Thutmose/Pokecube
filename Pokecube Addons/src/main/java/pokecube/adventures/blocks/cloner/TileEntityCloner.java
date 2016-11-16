@@ -1,6 +1,7 @@
 package pokecube.adventures.blocks.cloner;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -340,7 +341,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     protected ClonerProcess     cloneProcess   = null;
     public CraftMatrix          craftMatrix;
     public InventoryCraftResult result;
-    private ItemStack[]         inventory      = new ItemStack[10];
+    List<ItemStack>             inventory      = CompatWrapper.makeList(10);
 
     EntityPlayer                user;
 
@@ -354,32 +355,61 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public void clear()
     {
-        for (int i = 0; i < 10; i++)
-            inventory[i] = null;
+        for (int i = 0; i < inventory.size(); i++)
+            inventory.set(i, CompatWrapper.nullStack);
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return inventory.size();
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int index)
+    {
+        return inventory.get(index);
+    }
+
+    @Override
+    public ItemStack decrStackSize(int slot, int count)
+    {
+        if (CompatWrapper.isValid(inventory.get(slot)))
+        {
+            ItemStack itemStack;
+            itemStack = inventory.get(slot).splitStack(count);
+            if (!CompatWrapper.isValid(inventory.get(slot)))
+            {
+                inventory.set(slot, CompatWrapper.nullStack);
+            }
+            return itemStack;
+        }
+        return CompatWrapper.nullStack;
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        if (CompatWrapper.isValid(inventory.get(slot)))
+        {
+            ItemStack stack = inventory.get(slot);
+            inventory.set(slot, CompatWrapper.nullStack);
+            return stack;
+        }
+        return CompatWrapper.nullStack;
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        inventory.set(index, stack);
     }
 
     @Override
     public void closeInventory(EntityPlayer player)
     {
         user = null;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int count)
-    {
-        if (this.inventory[slot] != null)
-        {
-            ItemStack itemStack;
-
-            itemStack = inventory[slot].splitStack(count);
-
-            if (inventory[slot].stackSize <= 0)
-            {
-                inventory[slot] = null;
-            }
-            return itemStack;
-        }
-        return null;
     }
 
     @Override
@@ -427,8 +457,8 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         ArrayList<Object> ret = new ArrayList<>();
         int i = args.checkInteger(0);
         int j = args.checkInteger(1);
-        if (i < 0 || i > inventory.length) throw new Exception("index out of bounds");
-        ItemStack stack = inventory[i];
+        if (i < 0 || i > inventory.size()) throw new Exception("index out of bounds");
+        ItemStack stack = inventory.get(i);
         if (stack != null)
         {
             if (j == 0) ret.add(stack.getDisplayName());
@@ -489,19 +519,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public String getName()
     {
         return "cloner";
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.length;
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    {
-        if (inventory[index] != null && inventory[index].stackSize <= 0) inventory[index] = null;
-        return inventory[index];
     }
 
     /** Overriden in a sign to provide the text. */
@@ -597,9 +614,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
                 byte slot = tag.getByte("Slot");
 
-                if (slot >= 0 && slot < inventory.length)
+                if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory[slot] = CompatWrapper.fromTag(tag);
+                    inventory.set(slot, CompatWrapper.fromTag(tag));
                 }
             }
         }
@@ -643,35 +660,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (inventory[slot] != null)
-        {
-            ItemStack stack = inventory[slot];
-            inventory[slot] = null;
-            return stack;
-        }
-        return null;
-    }
-
-    @Override
     public void setField(int id, int value)
     {
         if (id == 0) progress = value;
         else total = value;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        boolean refresh = false;
-        if (!Tools.isSameStack(stack, inventory[index])) refresh = true;
-        if (stack == null || stack.stackSize <= 0) inventory[index] = null;
-        else inventory[index] = stack;
-        if (refresh)
-        {
-            checkRecipes();
-        }
     }
 
     @Override
@@ -730,11 +722,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     {
         super.writeToNBT(nbt);
         NBTTagList itemList = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++)
+        for (int i = 0; i < inventory.size(); i++)
         {
-            ItemStack stack = inventory[i];
-
-            if (stack != null)
+            ItemStack stack;
+            if (CompatWrapper.isValid(stack = inventory.get(i)))
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);

@@ -18,8 +18,9 @@ import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.lib.CompatWrapper;
 
-@ChestContainer(isLargeChest = true, showButtons=false)
+@ChestContainer(isLargeChest = true, showButtons = false)
 public class ContainerBag extends Container
 {
 
@@ -216,7 +217,7 @@ public class ContainerBag extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
@@ -228,13 +229,14 @@ public class ContainerBag extends Container
 
             if (index < numRows * 9)
             {
-                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), false)) { return null; }
+                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(),
+                        false)) { return CompatWrapper.nullStack; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return CompatWrapper.nullStack; }
 
-            if (itemstack1.stackSize == 0)
+            if (!CompatWrapper.isValid(itemstack1))
             {
-                slot.putStack((ItemStack) null);
+                slot.putStack(CompatWrapper.nullStack);
             }
             else
             {

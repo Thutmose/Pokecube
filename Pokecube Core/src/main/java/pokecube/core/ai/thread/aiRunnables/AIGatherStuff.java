@@ -21,6 +21,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
+import thut.lib.ItemStackTools;
 
 /** This IAIRunnable gets the mob to look for and collect dropped items and
  * berries. It requires an AIStoreStuff to have located a suitable storage
@@ -66,7 +67,7 @@ public class AIGatherStuff extends AIBase
                     close = Math.max(close, 2);
                     if (stuff.getDistanceToEntity(entity) < close)
                     {
-                        AIStoreStuff.addItemStackToInventory(stuff.getEntityItem(), pokemob.getPokemobInventory(), 2);
+                        ItemStackTools.addItemStackToInventory(stuff.getEntityItem(), pokemob.getPokemobInventory(), 2);
                         stuff.setDead();
                         reset();
                     }

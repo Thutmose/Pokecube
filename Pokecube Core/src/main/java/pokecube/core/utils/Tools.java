@@ -609,11 +609,11 @@ public class Tools
             item = Item.REGISTRY.getObject(new ResourceLocation(id));
         }
         else stack = PokecubeItems.getStack(id, false);
-        if (stack != CompatWrapper.nullStack && item == null) item = stack.getItem();
+        if (CompatWrapper.isValid(stack)) item = stack.getItem();
         if (item == null) return CompatWrapper.nullStack;
         if (meta == -1) meta = 0;
-        if (stack == CompatWrapper.nullStack) stack = new ItemStack(item, 1, meta);
-        stack.stackSize = size;
+        if (!CompatWrapper.isValid(stack)) stack = new ItemStack(item, 1, meta);
+        CompatWrapper.setStackSize(stack, size);
         if (!tag.isEmpty())
         {
             try

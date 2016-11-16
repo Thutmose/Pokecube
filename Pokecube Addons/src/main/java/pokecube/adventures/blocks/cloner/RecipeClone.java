@@ -12,6 +12,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import thut.lib.CompatWrapper;
 
 public class RecipeClone implements IClonerRecipe
 {
@@ -102,7 +103,7 @@ public class RecipeClone implements IClonerRecipe
             IPokemob mob = PokecubeManager.itemToPokemob(cube, worldIn);
             if (mob.isShiny() && egg.hasTagCompound()) egg.getTagCompound().setBoolean("shiny", true);
             egg.getTagCompound().setByte("gender", mob.getSexe());
-            egg.stackSize = 1;
+            CompatWrapper.setStackSize(egg, 1);
             output = egg;
             return true;
         }

@@ -46,13 +46,25 @@ public class CompatWrapper
 
     public static int getStackSize(ItemStack stack)
     {
-        if (stack == nullStack || stack.stackSize < 0) { return 0; }
+        if (stack == nullStack || stack.stackSize < 0 || stack.getItem() == null) { return 0; }
         return stack.stackSize;
     }
 
     public static boolean isValid(ItemStack stack)
     {
         return getStackSize(stack) > 0;
+    }
+
+    public static ItemStack validate(ItemStack in)
+    {
+        if (!isValid(in)) return nullStack;
+        return in;
+    }
+
+    public static int increment(ItemStack in, int amt)
+    {
+        in.stackSize += amt;
+        return in.stackSize;
     }
 
     public static List<ItemStack> makeList(int size)

@@ -76,20 +76,17 @@ public class ContainerTMCreator extends Container
     {
         ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
-
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-
             if (index < 1)
             {
                 if (!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(),
                         false)) { return CompatWrapper.nullStack; }
             }
             else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
-
-            if (itemstack1.stackSize == 0)
+            if (!CompatWrapper.isValid(itemstack1))
             {
                 slot.putStack(CompatWrapper.nullStack);
             }

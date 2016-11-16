@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import thut.lib.CompatWrapper;
 
 public class ContainerCloner extends Container
 {
@@ -59,21 +60,21 @@ public class ContainerCloner extends Container
                 ItemStack itemstack = cloner.craftMatrix.getStackInSlot(i);
                 ItemStack itemstack1 = aitemstack[i];
 
-                if (itemstack != null)
+                if (CompatWrapper.isValid(itemstack))
                 {
                     cloner.craftMatrix.decrStackSize(i, 1);
                     itemstack = cloner.craftMatrix.getStackInSlot(i);
                 }
-                if (itemstack1 != null)
+                if (CompatWrapper.isValid(itemstack1))
                 {
-                    if (itemstack == null || itemstack.stackSize <= 0)
+                    if (!CompatWrapper.isValid(itemstack))
                     {
                         cloner.craftMatrix.setInventorySlotContents(i, itemstack1);
                     }
                     else if (ItemStack.areItemsEqual(itemstack, itemstack1)
                             && ItemStack.areItemStackTagsEqual(itemstack, itemstack1))
                     {
-                        itemstack1.stackSize += itemstack.stackSize;
+                        CompatWrapper.increment(itemstack1, CompatWrapper.getStackSize(itemstack));
                         cloner.craftMatrix.setInventorySlotContents(i, itemstack1);
                     }
                     else if (!playerIn.inventory.addItemStackToInventory(itemstack1))
@@ -211,7 +212,7 @@ public class ContainerCloner extends Container
      * slot. */
     public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
@@ -220,31 +221,30 @@ public class ContainerCloner extends Container
             itemstack = itemstack1.copy();
             if (index == 0)
             {
-                if (!this.mergeItemStack(itemstack1, 10, 46, true)) { return null; }
+                if (!this.mergeItemStack(itemstack1, 10, 46, true)) { return CompatWrapper.nullStack; }
 
                 slot.onSlotChange(itemstack1, itemstack);
             }
             else if (index >= 10 && index < 37)
             {
-                if (!this.mergeItemStack(itemstack1, 37, 46, false)) { return null; }
+                if (!this.mergeItemStack(itemstack1, 37, 46, false)) { return CompatWrapper.nullStack; }
             }
             else if (index >= 37 && index < 46)
             {
-                if (!this.mergeItemStack(itemstack1, 10, 37, false)) { return null; }
+                if (!this.mergeItemStack(itemstack1, 10, 37, false)) { return CompatWrapper.nullStack; }
             }
-            else if (!this.mergeItemStack(itemstack1, 10, 46, false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, 10, 46, false)) { return CompatWrapper.nullStack; }
 
-            if (itemstack1.stackSize == 0)
+            if (!CompatWrapper.isValid(itemstack1))
             {
-                slot.putStack((ItemStack) null);
+                slot.putStack(CompatWrapper.nullStack);
             }
             else
             {
                 slot.onSlotChanged();
             }
-
-            if (itemstack1.stackSize == itemstack.stackSize) { return null; }
-
+            if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper
+                    .getStackSize(itemstack)) { return CompatWrapper.nullStack; }
             slot.onPickupFromSlot(playerIn, itemstack1);
         }
         return itemstack;

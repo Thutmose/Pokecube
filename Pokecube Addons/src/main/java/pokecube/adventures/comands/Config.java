@@ -24,6 +24,7 @@ import pokecube.core.events.handlers.SpawnHandler;
 import thut.api.terrain.BiomeType;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
+import thut.lib.CompatWrapper;
 
 public class Config extends ConfigBase
 {
@@ -213,7 +214,7 @@ public class Config extends ConfigBase
         else
         {
             toAdd = stack;
-            toAdd.stackSize = count;
+            CompatWrapper.setStackSize(toAdd, count);
         }
         return toAdd;
     }

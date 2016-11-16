@@ -1010,7 +1010,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (pokeballId != CompatWrapper.nullStack)
         {
             pokeballId = pokeballId.copy();
-            pokeballId.stackSize = 1;
+            CompatWrapper.setStackSize(pokeballId, 1);
             if (pokeballId.hasTagCompound() && pokeballId.getTagCompound().hasKey("Pokemob"))
                 pokeballId.getTagCompound().removeTag("Pokemob");
         }

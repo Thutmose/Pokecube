@@ -968,7 +968,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (hand != EnumHand.MAIN_HAND) return false;
         ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
         // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && held != CompatWrapper.nullStack
+        if (getPokedexEntry().interact(key) && CompatWrapper.isValid(held)
                 && Tools.isSameStack(key, held)) { return false; }
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
@@ -980,7 +980,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         // Either push pokemob around, or if sneaking, make it try to climb on
         // shoulder
-        if (isOwner && held != CompatWrapper.nullStack && (held.getItem() == Items.STICK || held.getItem() == torch))
+        if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
         {
             Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
             look.y = 0.2;
@@ -990,7 +990,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             return false;
         }
         // Debug thing to maximize happiness
-        if (isOwner && held != CompatWrapper.nullStack && held.getItem() == Items.APPLE)
+        if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
@@ -998,7 +998,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         // Debug thing to increase hunger time
-        if (isOwner && held != CompatWrapper.nullStack && held.getItem() == Items.GOLDEN_HOE)
+        if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
@@ -1006,7 +1006,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         // Use shiny charm to make shiny
-        if (isOwner && held != CompatWrapper.nullStack
+        if (isOwner && CompatWrapper.isValid(held)
                 && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
         {
             if (player.isSneaking())
@@ -1018,20 +1018,19 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // is Dyeable
-        if (held != CompatWrapper.nullStack && getPokedexEntry().dyeable)
+        if (CompatWrapper.isValid(held) && getPokedexEntry().dyeable)
         {
             if (held.getItem() == Items.DYE)
             {
                 setSpecialInfo(held.getItemDamage());
-                System.out.println(getSpecialInfo());
-                held.stackSize--;
+                CompatWrapper.increment(held, -1);
                 return true;
             }
             else if (held.getItem() == Items.SHEARS) { return false; }
         }
 
         // Open Pokedex Gui
-        if (held != CompatWrapper.nullStack && held.getItem() == PokecubeItems.pokedex)
+        if (CompatWrapper.isValid(held) && held.getItem() == PokecubeItems.pokedex)
         {
             if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {
@@ -1057,23 +1056,21 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Owner only interactions.
         if (isOwner && !PokecubeCore.isOnClientSide())
         {
-            if (held != CompatWrapper.nullStack)
+            if (CompatWrapper.isValid(held))
             {
                 // Check if it should evolve from item, do so if yes.
                 if (PokecubeItems.isValidEvoItem(held) && canEvolve(held))
                 {
                     IPokemob evolution = evolve(true, false, held);
-
                     if (evolution != null)
                     {
-                        held.stackSize--;
-
-                        if (held.stackSize <= 0)
+                        CompatWrapper.increment(held, -1);
+                        if (!CompatWrapper.isValid(held))
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                    CompatWrapper.nullStack);
                         }
                     }
-
                     return true;
                 }
                 int fav = Nature.getFavouriteBerryIndex(getNature());
@@ -1084,11 +1081,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 {
                     if (!player.capabilities.isCreativeMode)
                     {
-                        --held.stackSize;
-
-                        if (held.stackSize <= 0)
+                        CompatWrapper.increment(held, -1);
+                        if (!CompatWrapper.isValid(held))
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, CompatWrapper.nullStack);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                    CompatWrapper.nullStack);
                         }
                     }
                     this.loveTimer = 10;
@@ -1116,14 +1113,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         dropItem();
                     }
                     ItemStack toSet = held.copy();
-                    toSet.stackSize = 1;
+                    CompatWrapper.setStackSize(toSet, 1);
                     setHeldItem(toSet);
                     this.setPokemonAIState(NOITEMUSE, true);
-                    held.stackSize--;
-
-                    if (held.stackSize <= 0)
+                    CompatWrapper.increment(held, -1);
+                    if (!CompatWrapper.isValid(held))
                     {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, CompatWrapper.nullStack);
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                CompatWrapper.nullStack);
                     }
                     return true;
                 }

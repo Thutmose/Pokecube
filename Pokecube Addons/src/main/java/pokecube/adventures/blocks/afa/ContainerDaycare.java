@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import thut.lib.CompatWrapper;
 
 public class ContainerDaycare extends Container
 {
@@ -99,10 +100,10 @@ public class ContainerDaycare extends Container
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-        if (slotId < 0) return null;
+        if (slotId < 0) return CompatWrapper.nullStack;
         if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
         {
-            ItemStack itemstack = null;
+            ItemStack itemstack = CompatWrapper.nullStack;
             Slot slot = inventorySlots.get(slotId);
 
             if (slot != null && slot.getHasStack())
@@ -112,36 +113,36 @@ public class ContainerDaycare extends Container
 
                 if (slotId < 6)
                 {
-                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return null; }
+                    if (!mergeItemStack(itemstack1, 1, 37, true)) { return CompatWrapper.nullStack; }
                 }
                 else
                 {
-                    if (itemstack != null && !tile.isItemValidForSlot(36, itemstack1)) { return null; }
-
-                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return null; }
+                    if (itemstack != null
+                            && !tile.isItemValidForSlot(36, itemstack1)) { return CompatWrapper.nullStack; }
+                    if (!mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
                 }
 
-                if (itemstack1.stackSize == 0)
+                if (!CompatWrapper.isValid(itemstack1))
                 {
-                    slot.putStack(null);
+                    slot.putStack(CompatWrapper.nullStack);
                 }
                 else
                 {
                     slot.onSlotChanged();
                 }
 
-                if (itemstack1.stackSize != itemstack.stackSize)
+                if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper.getStackSize(itemstack))
                 {
                     // slot.onPickupFromSlot(itemstack1);
                 }
                 else
                 {
-                    return null;
+                    return CompatWrapper.nullStack;
                 }
             }
 
-            if (itemstack != null) { return itemstack; }
-            return null;
+            if (CompatWrapper.isValid(itemstack)) { return itemstack; }
+            return CompatWrapper.nullStack;
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
     }

@@ -300,7 +300,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             shooter = UUID.fromString(nbttagcompound.getString("shooter"));
         }
 
-        if (item == null || item.stackSize <= 0)
+        if (!CompatWrapper.isValid(item))
         {
             this.setDead();
         }

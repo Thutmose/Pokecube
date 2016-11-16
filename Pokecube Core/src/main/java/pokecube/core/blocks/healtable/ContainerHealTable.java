@@ -165,7 +165,7 @@ public class ContainerHealTable extends Container implements IHealer
                     if (!mergeItemStack(itemstack1, 0, 6, false)) { return CompatWrapper.nullStack; }
                 }
 
-                if (itemstack1.stackSize == 0)
+                if (!CompatWrapper.isValid(itemstack1))
                 {
                     slot.putStack(CompatWrapper.nullStack);
                 }
@@ -174,7 +174,7 @@ public class ContainerHealTable extends Container implements IHealer
                     slot.onSlotChanged();
                 }
 
-                if (itemstack1.stackSize != itemstack.stackSize)
+                if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper.getStackSize(itemstack))
                 {
                     // slot.onPickupFromSlot(itemstack1);
                 }

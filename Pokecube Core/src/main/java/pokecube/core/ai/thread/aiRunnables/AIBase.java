@@ -26,6 +26,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAIRunnable;
 import thut.api.maths.Vector3;
+import thut.lib.ItemStackTools;
 
 public abstract class AIBase implements IAIRunnable
 {
@@ -95,7 +96,7 @@ public abstract class AIBase implements IAIRunnable
             Entity e = world.getEntityByID(entity);
             if (e == null || !(e instanceof IPokemob)) return false;
             if (slot > 0) ((IPokemob) e).getPokemobInventory().setInventorySlotContents(slot, stack);
-            else AIStoreStuff.addItemStackToInventory(stack, ((IPokemob) e).getPokemobInventory(), minSlot);
+            else ItemStackTools.addItemStackToInventory(stack, ((IPokemob) e).getPokemobInventory(), minSlot);
             return true;
         }
 

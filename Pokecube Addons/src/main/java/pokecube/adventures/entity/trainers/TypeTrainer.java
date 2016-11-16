@@ -37,6 +37,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
 import thut.api.terrain.BiomeType;
+import thut.lib.CompatWrapper;
 
 public class TypeTrainer
 {
@@ -92,7 +93,7 @@ public class TypeTrainer
             if (min != -1 && max != -1)
             {
                 if (max < min) max = min;
-                sell.stackSize = min + new Random().nextInt(1 + max - min);
+                CompatWrapper.setStackSize(sell, min + new Random().nextInt(1 + max - min));
             }
             MerchantRecipe ret = new MerchantRecipe(buy1, buy2, sell);
             return ret;
@@ -342,7 +343,7 @@ public class TypeTrainer
                     try
                     {
                         int count = Integer.parseInt(stackinfo[1]);
-                        stack.stackSize = count;
+                        CompatWrapper.setStackSize(stack, count);
                     }
                     catch (NumberFormatException e)
                     {

@@ -60,9 +60,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 {
     public static boolean                     theftEnabled = false;
 
-    private List<ItemStack>                   inventory    = Lists.newArrayList(CompatWrapper.nullStack,
-            CompatWrapper.nullStack);
-    private List<ItemStack>                   inventory2   = Lists.newArrayList(CompatWrapper.nullStack);
+    private List<ItemStack>                   inventory    = CompatWrapper.makeList(2);
 
     public EntityPlayer                       player1;
     public EntityPlayer                       player2;
@@ -83,7 +81,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public void addMoveToTM(String move)
     {
-        ItemStack tm = inventory2.get(0);
+        ItemStack tm = inventory.get(0);
         if (tm != null && tm.getItem() instanceof ItemTM)
         {
             ItemTM.addMoveToStack(move, tm);
@@ -111,12 +109,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         }
         if (!hasPC()) throw new Exception("no connected PC");
         throw new Exception("connected PC is not bound to a player");
-    }
-
-    @Override
-    public void clear()
-    {
-
     }
 
     @Override
@@ -164,26 +156,57 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     }
 
     @Override
+    public void clear()
+    {
+        for (int i = 0; i < inventory.size(); i++)
+            inventory.set(i, CompatWrapper.nullStack);
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return inventory.size();
+    }
+
+    @Override
+    public ItemStack getStackInSlot(int index)
+    {
+        return inventory.get(index);
+    }
+
+    @Override
     public ItemStack decrStackSize(int slot, int count)
     {
-        if (trade)
-        {
-            if (this.inventory.get(slot) != CompatWrapper.nullStack)
-            {
-                ItemStack itemStack;
-                itemStack = inventory.get(slot).splitStack(count);
-                if (inventory.get(slot).stackSize <= 0) inventory.set(slot, CompatWrapper.nullStack);
-                return itemStack;
-            }
-        }
-        else if (slot < inventory2.size() && this.inventory2.get(slot) != CompatWrapper.nullStack)
+        if (CompatWrapper.isValid(getStackInSlot(slot)))
         {
             ItemStack itemStack;
-            itemStack = inventory2.get(slot).splitStack(count);
-            if (inventory2.get(slot).stackSize <= 0) inventory2.set(slot, CompatWrapper.nullStack);
+            itemStack = getStackInSlot(slot).splitStack(count);
+            if (!CompatWrapper.isValid(getStackInSlot(slot)))
+            {
+                setInventorySlotContents(slot, CompatWrapper.nullStack);
+            }
             return itemStack;
         }
         return CompatWrapper.nullStack;
+    }
+
+    @Override
+    public ItemStack removeStackFromSlot(int slot)
+    {
+        if (CompatWrapper.isValid(getStackInSlot(slot)))
+        {
+            ItemStack stack = getStackInSlot(slot);
+            setInventorySlotContents(slot, CompatWrapper.nullStack);
+            return stack;
+        }
+        return CompatWrapper.nullStack;
+    }
+
+    @Override
+    public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
+        inventory.set(index, stack);
     }
 
     @Override
@@ -322,21 +345,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return "tradingtable";
     }
 
-    @Override
-    public int getSizeInventory()
-    {
-        if (trade) return inventory.size();
-        return inventory2.size();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int i)
-    {
-        if (trade) return inventory.get(i);
-        if (i < inventory2.size()) return inventory2.get(i);
-        return CompatWrapper.nullStack;
-    }
-
     /** Overriden in a sign to provide the text. */
     @Override
     public SPacketUpdateTileEntity getUpdatePacket()
@@ -364,6 +372,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         boolean pc = false;
         IBlockState state = worldObj.getBlockState(getPos());
+        trade = !state.getValue(BlockTradingTable.TMC);
+        inventory = CompatWrapper.makeList(trade ? 2 : 1);
         if (!(Boolean) state.getValue(BlockTradingTable.TMC)) { return false; }
         this.pc = null;
         for (EnumFacing side : EnumFacing.values())
@@ -470,8 +480,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         NBTBase temp = tagCompound.getTag("Inventory");
 
         trade = tagCompound.getBoolean("trade");
-
-        ItemStack[] both = new ItemStack[3];
+        inventory = CompatWrapper.makeList(trade ? 2 : 1);
         if (temp instanceof NBTTagList)
         {
             NBTTagList tagList = (NBTTagList) temp;
@@ -480,38 +489,13 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
                 byte slot = tag.getByte("Slot");
 
-                if (slot >= 0 && slot < both.length)
+                if (slot >= 0 && slot < inventory.size())
                 {
-                    both[slot] = CompatWrapper.fromTag(tag);
+                    inventory.set(slot, CompatWrapper.fromTag(tag));
                 }
             }
         }
-        inventory.set(0, both[0]);
-        inventory.set(1, both[1]);
-        inventory2.set(0, both[2]);
         init = false;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (trade)
-        {
-            if (inventory.get(slot) != CompatWrapper.nullStack)
-            {
-                ItemStack stack = inventory.get(slot);
-                inventory.set(slot, CompatWrapper.nullStack);
-                return stack;
-            }
-        }
-        else if (slot < inventory2.size() && inventory2.get(slot) != CompatWrapper.nullStack)
-        {
-            ItemStack stack = inventory2.get(slot);
-            inventory2.set(slot, CompatWrapper.nullStack);
-            return stack;
-        }
-
-        return null;
     }
 
     @Override
@@ -519,13 +503,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         if (id == 0) player1 = (EntityPlayer) worldObj.getEntityByID(value);
         if (id == 1) player2 = (EntityPlayer) worldObj.getEntityByID(value);
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack)
-    {
-        if (trade) inventory.set(i, itemstack);
-        else if (i < inventory2.size()) inventory2.set(i, itemstack);
     }
 
     public void trade()
@@ -637,15 +614,10 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         super.writeToNBT(tagCompound);
         NBTTagList itemList = new NBTTagList();
-        ItemStack[] both = new ItemStack[3];
-        both[0] = inventory.get(0);
-        both[1] = inventory.get(1);
-        both[2] = inventory2.get(0);
-
-        for (int i = 0; i < both.length; i++)
+        for (int i = 0; i < inventory.size(); i++)
         {
-            ItemStack stack = both[i];
-            if (stack != CompatWrapper.nullStack)
+            ItemStack stack;
+            if (CompatWrapper.isValid(stack = inventory.get(i)))
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);

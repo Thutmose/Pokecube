@@ -540,7 +540,7 @@ public class PokedexEntry
             List<ItemStack> results = stacks.get(stack);
             int index = player.getRNG().nextInt(results.size());
             ItemStack result = results.get(index).copy();
-            if (held.stackSize-- == 1)
+            if (CompatWrapper.increment(held, -1) == 1)
             {
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
             }
@@ -1337,7 +1337,8 @@ public class PokedexEntry
             if (Math.random() < chance)
             {
                 ItemStack newStack = stack.copy();
-                newStack.stackSize = 1 + rand.nextInt(stack.stackSize + looting);
+                int size = 1 + rand.nextInt(CompatWrapper.getStackSize(newStack) + looting);
+                CompatWrapper.setStackSize(newStack, size);
                 ret.add(newStack);
             }
         }
@@ -1359,7 +1360,7 @@ public class PokedexEntry
             if (rn < chance)
             {
                 ItemStack newStack = stack.copy();
-                newStack.stackSize = 1;
+                CompatWrapper.setStackSize(newStack, 1);
                 list.add(newStack);
             }
         }
@@ -1688,7 +1689,7 @@ public class PokedexEntry
         else
         {
             toAdd = stack;
-            toAdd.stackSize = count;
+            CompatWrapper.setStackSize(toAdd, count);
         }
         return toAdd;
     }

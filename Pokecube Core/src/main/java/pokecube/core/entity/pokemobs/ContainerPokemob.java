@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
+import thut.lib.CompatWrapper;
 
 public class ContainerPokemob extends Container
 {
@@ -134,7 +135,7 @@ public class ContainerPokemob extends Container
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_)
 	{
-		ItemStack itemstack = null;
+		ItemStack itemstack = CompatWrapper.nullStack;
 		Slot slot = this.inventorySlots.get(p_82846_2_);
 
 		if (slot != null && slot.getHasStack())
@@ -145,7 +146,7 @@ public class ContainerPokemob extends Container
 			if (p_82846_2_ < this.pokemobInv.getSizeInventory())
 			{
 				if (!this.mergeItemStack(itemstack1, this.pokemobInv.getSizeInventory(), this.inventorySlots.size(),
-						true)) { return null; }
+						true)) { return CompatWrapper.nullStack; }
 			}
 			else if (this.getSlot(1).isItemValid(itemstack1) && !this.getSlot(1).getHasStack())
 			{
@@ -153,14 +154,14 @@ public class ContainerPokemob extends Container
 			}
 			else if (this.getSlot(0).isItemValid(itemstack1))
 			{
-				if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return null; }
+				if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
 			}
 			else if (this.pokemobInv.getSizeInventory() <= 2
-					|| !this.mergeItemStack(itemstack1, 2, this.pokemobInv.getSizeInventory(), false)) { return null; }
+					|| !this.mergeItemStack(itemstack1, 2, this.pokemobInv.getSizeInventory(), false)) { return CompatWrapper.nullStack; }
 
-			if (itemstack1.stackSize == 0)
+			if (!CompatWrapper.isValid(itemstack1))
 			{
-				slot.putStack((ItemStack) null);
+				slot.putStack(CompatWrapper.nullStack);
 			}
 			else
 			{

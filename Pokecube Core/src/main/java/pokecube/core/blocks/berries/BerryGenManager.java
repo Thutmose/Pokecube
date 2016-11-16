@@ -24,6 +24,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatWrapper;
 
 public class BerryGenManager
 {
@@ -96,10 +97,7 @@ public class BerryGenManager
                     }
                 }
                 flag = true;
-                if (!flag)
-                {
-                    return;
-                }
+                if (!flag) { return; }
                 temp = pos.down();
                 Block soil = world.getBlockState(temp).getBlock();
                 boolean isSoil = true;// (soil != null &&
@@ -130,8 +128,7 @@ public class BerryGenManager
                             {
                                 int i3 = l2 - z;
 
-                                if (Math.abs(k2) != i2 || Math.abs(i3) != i2
-                                        || world.rand.nextInt(2) != 0 && k1 != 0)
+                                if (Math.abs(k2) != i2 || Math.abs(i3) != i2 || world.rand.nextInt(2) != 0 && k1 != 0)
                                 {
                                     temp = new BlockPos(j2, j1, l2);
                                     Block block = world.getBlockState(temp).getBlock();
@@ -383,7 +380,8 @@ public class BerryGenManager
         if (options != null && !options.isEmpty())
         {
             ItemStack ret = options.get(world.rand.nextInt(options.size())).copy();
-            ret.stackSize = 1 + world.rand.nextInt(ret.stackSize + 10);
+            int size = 1 + world.rand.nextInt(CompatWrapper.getStackSize(ret) + 10);
+            CompatWrapper.setStackSize(ret, size);
             return ret;
         }
         return null;

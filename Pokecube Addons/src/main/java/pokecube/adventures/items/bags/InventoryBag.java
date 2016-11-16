@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -235,20 +236,14 @@ public class InventoryBag implements IInventory
         return nbttag;
     }
 
-    private int                         page      = 0;
-
-    public boolean                      autoToPC  = false;
-
-    public boolean[]                    opened    = new boolean[PAGECOUNT];
-
-    public String[]                     boxes     = new String[PAGECOUNT];
-
-    private HashMap<Integer, ItemStack> contents  = new HashMap<Integer, ItemStack>();
-
-    public final String                 owner;
-    public boolean                      seenOwner = false;
-
-    boolean                             dirty     = false;
+    private int                              page      = 0;
+    public boolean                           autoToPC  = false;
+    public boolean[]                         opened    = new boolean[PAGECOUNT];
+    public String[]                          boxes     = new String[PAGECOUNT];
+    private Int2ObjectOpenHashMap<ItemStack> contents  = new Int2ObjectOpenHashMap<>();
+    public final String                      owner;
+    public boolean                           seenOwner = false;
+    boolean                                  dirty     = false;
 
     public InventoryBag(String player)
     {
@@ -297,33 +292,24 @@ public class InventoryBag implements IInventory
     @Override
     public ItemStack decrStackSize(int i, int j)
     {
-        if (contents.get(i) != null)
+        if (CompatWrapper.isValid(contents.get(i)))
         {
-            ItemStack itemstack;
-
-            if (contents.get(i).stackSize <= j)
+            ItemStack itemstack = contents.get(i).splitStack(j);
+            if (!CompatWrapper.isValid(contents.get(i)))
             {
-                itemstack = contents.get(i);
-                contents.put(i, null);
-                return itemstack;
-            }
-            itemstack = contents.get(i).splitStack(j);
-
-            if (contents.get(i).stackSize == 0)
-            {
-                contents.put(i, null);
+                contents.remove(i);
             }
             return itemstack;
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     public HashSet<ItemStack> getContents()
     {
         HashSet<ItemStack> ret = new HashSet<ItemStack>();
-        for (Integer i : contents.keySet())
+        for (int i : contents.keySet())
         {
-            if (contents.get(i) != null) ret.add(contents.get(i));
+            if (CompatWrapper.isValid(contents.get(i))) ret.add(contents.get(i));
         }
         return ret;
     }
@@ -373,7 +359,7 @@ public class InventoryBag implements IInventory
     @Override
     public ItemStack getStackInSlot(int i)
     {
-        return contents.get(i);
+        return CompatWrapper.validate(contents.get(i));
     }
 
     @Override
@@ -410,7 +396,7 @@ public class InventoryBag implements IInventory
     @Override
     public ItemStack removeStackFromSlot(int i)
     {
-        return contents.get(i);
+        return CompatWrapper.validate(contents.remove(i));
     }
 
     @Override
@@ -422,7 +408,8 @@ public class InventoryBag implements IInventory
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-        contents.put(i, itemstack);
+        if (CompatWrapper.isValid(itemstack)) contents.put(i, itemstack);
+        else contents.remove(i);
     }
 
     public void setPage(int page)
@@ -436,7 +423,7 @@ public class InventoryBag implements IInventory
         String ret = "Owner: " + owner + ", Current Page, " + (getPage() + 1) + ": Auto Move, " + autoToPC + ": ";
         String eol = System.getProperty("line.separator");
         ret += eol;
-        for (Integer i : contents.keySet())
+        for (int i : contents.keySet())
         {
             if (this.getStackInSlot(i) != null)
             {

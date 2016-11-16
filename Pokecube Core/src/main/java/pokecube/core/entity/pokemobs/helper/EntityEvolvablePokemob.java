@@ -100,7 +100,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean canEvolve(ItemStack itemstack)
     {
-        if (itemstack != CompatWrapper.nullStack && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
+        if (itemstack != CompatWrapper.nullStack && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone")))
+            return false;
 
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
@@ -187,7 +188,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     if (d.shouldEvolve(this, stack))
                     {
                         evol = d.evolution;
-                        if (!d.shouldEvolve(this, CompatWrapper.nullStack) && stack == getHeldItemMainhand()) neededItem = true;
+                        if (!d.shouldEvolve(this, CompatWrapper.nullStack) && stack == getHeldItemMainhand())
+                            neededItem = true;
                         data = d;
                         break;
                     }
@@ -300,7 +302,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (pokemon != null)
                 {
                     ItemStack mobCube = cube.copy();
-                    mobCube.stackSize = 1;
+                    CompatWrapper.setStackSize(mobCube, 1);
                     IPokemob poke = (IPokemob) pokemon;
                     poke.setPokecube(mobCube);
                     poke.setPokemonOwner(player);
@@ -308,8 +310,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
                     ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
                     StatsCollector.addCapture(poke);
-                    cube.stackSize--;
-                    if (cube.stackSize <= 0) inv.setInventorySlotContents(m, CompatWrapper.nullStack);
+                    CompatWrapper.increment(cube, -1);
+                    if (!CompatWrapper.isValid(cube)) inv.setInventorySlotContents(m, CompatWrapper.nullStack);
                     inv.addItemStackToInventory(shedinja);
                 }
             }

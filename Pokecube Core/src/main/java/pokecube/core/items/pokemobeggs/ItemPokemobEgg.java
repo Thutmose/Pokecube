@@ -48,6 +48,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public class ItemPokemobEgg extends Item
@@ -470,8 +471,7 @@ public class ItemPokemobEgg extends Item
         int pokedexNb = getNumber(stack);
         if (!PokecubeMod.pokemobEggs.containsKey(Integer.valueOf(pokedexNb))) { return false; }
 
-        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb),
-                world);
+        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb), world);
 
         if (entity != null)
         {
@@ -573,7 +573,7 @@ public class ItemPokemobEgg extends Item
 
         if (dropEgg(worldIn, stack, loc, playerIn) && !playerIn.capabilities.isCreativeMode)
         {
-            stack.stackSize--;
+            CompatWrapper.increment(stack, -1);
         }
         return EnumActionResult.SUCCESS;
     }

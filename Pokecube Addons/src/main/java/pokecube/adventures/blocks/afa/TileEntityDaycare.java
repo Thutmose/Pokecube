@@ -132,7 +132,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
             else
             {
                 stack = PokecubeItems.getStack("emerald_shard");
-                stack.stackSize = 9;
+                CompatWrapper.setStackSize(stack, 9);
                 setInventorySlotContents(0, stack);
             }
         }
@@ -225,12 +225,6 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
         return new TextComponentString("daycare");
     }
 
-    @Override
-    public int getSizeInventory()
-    {
-        return 3;
-    }
-
     /** Overriden in a sign to provide the text. */
     @Override
     public SPacketUpdateTileEntity getUpdatePacket()
@@ -294,6 +288,19 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     }
 
     @Override
+    public void clear()
+    {
+        for (int i = 0; i < inventory.size(); i++)
+            inventory.set(i, CompatWrapper.nullStack);
+    }
+    
+    @Override
+    public int getSizeInventory()
+    {
+        return inventory.size();
+    }
+    
+    @Override
     public ItemStack getStackInSlot(int index)
     {
         return inventory.get(index);
@@ -312,7 +319,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
             }
             return itemStack;
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override
@@ -324,7 +331,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
             inventory.set(slot, CompatWrapper.nullStack);
             return stack;
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override
@@ -382,10 +389,5 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     public int getFieldCount()
     {
         return 1;
-    }
-
-    @Override
-    public void clear()
-    {
     }
 }

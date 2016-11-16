@@ -36,6 +36,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
+import thut.lib.CompatWrapper;
 
 public class JERCompat
 {
@@ -88,7 +89,7 @@ public class JERCompat
             float chance = entry.drops.get(stack);
             drops.add(drop = new LootDrop(stack, chance));
             drop.minDrop = 1;
-            drop.maxDrop = stack.stackSize;
+            drop.maxDrop = CompatWrapper.getStackSize(stack);
         }
         for (ItemStack stack : entry.held.keySet())
         {

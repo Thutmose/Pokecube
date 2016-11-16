@@ -312,13 +312,13 @@ public class Pokecube extends Item implements IPokecube
             if (used)
             {
                 stack.splitStack(1);
-                if (stack.stackSize <= 0)
+                if (!CompatWrapper.isValid(stack))
                 {
                     for (int i = 0; i < player.inventory.getSizeInventory(); i++)
                     {
                         if (player.inventory.getStackInSlot(i) == stack)
                         {
-                            player.inventory.setInventorySlotContents(i, null);
+                            player.inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
                             break;
                         }
                     }
@@ -360,7 +360,7 @@ public class Pokecube extends Item implements IPokecube
         int id = PokecubeItems.getCubeId(cube.getItem());
         if (id < 0) return false;
         ItemStack stack = CompatWrapper.copy(cube);
-        stack.stackSize = 1;
+        CompatWrapper.setStackSize(stack, 1);
         entity = new EntityPokecube(world, thrower, stack);
         Vector3 temp = Vector3.getNewVector().set(thrower).add(0, thrower.getEyeHeight(), 0);
         Vector3 temp1 = Vector3.getNewVector().set(thrower.getLookVec()).scalarMultBy(1.5);
@@ -390,7 +390,7 @@ public class Pokecube extends Item implements IPokecube
         int id = PokecubeItems.getCubeId(cube.getItem());
         if (id < 0) return false;
         ItemStack stack = CompatWrapper.copy(cube);
-        stack.stackSize = 1;
+        CompatWrapper.setStackSize(stack, 1);
         entity = new EntityPokecube(world, thrower, stack);
         boolean rightclick = target == thrower;
         if (rightclick) target = null;

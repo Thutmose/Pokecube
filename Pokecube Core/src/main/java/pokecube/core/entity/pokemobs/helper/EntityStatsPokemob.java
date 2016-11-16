@@ -51,6 +51,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
+import pokecube.core.utils.Helpers;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -679,7 +680,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                 if (notifyLevelUp)
                 {
                     ItemStack held = getHeldItemMainhand();
-                    if (!this.isDead && (canEvolve(null) || canEvolve(held)))
+                    if (!this.isDead && (canEvolve(Helpers.nullStack) || canEvolve(held)))
                     {
                         levelUp(newLvl);
                         IPokemob evo = this.evolve(true, false, held);

@@ -32,6 +32,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.utils.Helpers;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
@@ -70,7 +71,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         }
     }
 
-    ItemStack stack     = null;
+    ItemStack stack     = Helpers.nullStack;
     String    evolution = "";
     boolean   evolving  = false;
 
@@ -99,7 +100,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean canEvolve(ItemStack itemstack)
     {
-        if (itemstack != null && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
+        if (itemstack != Helpers.nullStack && Tools.isSameStack(itemstack, PokecubeItems.getStack("everstone"))) return false;
 
         if (this.getPokedexEntry().canEvolve() && !PokecubeCore.isOnClientSide())
         {
@@ -141,7 +142,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (d.shouldEvolve(this, stack))
                 {
                     evol = d.evolution;
-                    if (!d.shouldEvolve(this, null)) neededItem = true;
+                    if (!d.shouldEvolve(this, Helpers.nullStack)) neededItem = true;
                     data = d;
                     break;
                 }
@@ -157,7 +158,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 // Remove held item if it had one.
                 if (neededItem)
                 {
-                    ((EntityEvolvablePokemob) evo).setHeldItem(null);
+                    ((EntityEvolvablePokemob) evo).setHeldItem(Helpers.nullStack);
                 }
                 // Init things like moves.
                 evo.specificSpawnInit();
@@ -186,7 +187,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     if (d.shouldEvolve(this, stack))
                     {
                         evol = d.evolution;
-                        if (!d.shouldEvolve(this, null) && stack == getHeldItemMainhand()) neededItem = true;
+                        if (!d.shouldEvolve(this, Helpers.nullStack) && stack == getHeldItemMainhand()) neededItem = true;
                         data = d;
                         break;
                     }
@@ -205,7 +206,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 {
                     // If delayed, set the pokemob as starting to evolve, and
                     // set the evolution for display effects.
-                    if (stack != null) this.stack = stack.copy();
+                    if (stack != Helpers.nullStack) this.stack = stack.copy();
                     this.setEvolutionTicks(PokecubeMod.core.getConfig().evolutionTicks + 50);
                     this.setEvol(evol.getPokedexNb());
                     this.setPokemonAIState(EVOLVING, true);
@@ -220,7 +221,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 // Clear held item if used for evolving.
                 if (neededItem)
                 {
-                    ((EntityEvolvablePokemob) evo).setHeldItem(null);
+                    ((EntityEvolvablePokemob) evo).setHeldItem(Helpers.nullStack);
                 }
                 if (evo != null)
                 {
@@ -278,12 +279,12 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             InventoryPlayer inv = player.inventory;
             boolean hasCube = false;
             boolean hasSpace = false;
-            ItemStack cube = null;
+            ItemStack cube = Helpers.nullStack;
             int m = -1;
             for (int n = 0; n < inv.getSizeInventory(); n++)
             {
                 ItemStack item = inv.getStackInSlot(n);
-                if (item == null) hasSpace = true;
+                if (item == Helpers.nullStack) hasSpace = true;
                 if (!hasCube && PokecubeItems.getCubeId(item) >= 0 && !PokecubeManager.isFilled(item))
                 {
                     hasCube = true;
@@ -308,7 +309,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
                     StatsCollector.addCapture(poke);
                     cube.stackSize--;
-                    if (cube.stackSize <= 0) inv.setInventorySlotContents(m, null);
+                    if (cube.stackSize <= 0) inv.setInventorySlotContents(m, Helpers.nullStack);
                     inv.addItemStackToInventory(shedinja);
                 }
             }
@@ -398,8 +399,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onUpdate()
     {
         super.onUpdate();
-        if (getHeldItemMainhand() != null
-                && Tools.isSameStack(getHeldItemMainhand(), PokecubeItems.getStack("everstone")))
+        if (Tools.isSameStack(getHeldItemMainhand(), PokecubeItems.getStack("everstone")))
         {
             setPokemonAIState(TRADED, false);
         }

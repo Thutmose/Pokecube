@@ -19,7 +19,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.AnimalChest;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -45,6 +44,7 @@ import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
@@ -57,6 +57,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.utils.Helpers;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
@@ -393,7 +394,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     {
         if (worldObj != null && !this.worldObj.isRemote)
         {
-            setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != null);
+            setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != Helpers.nullStack);
             if (this.pokeChest.getStackInSlot(1) != null)
             {
                 dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
@@ -429,7 +430,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             {
                 ItemStack itemstack = animalchest.getStackInSlot(j);
 
-                if (itemstack != null)
+                if (itemstack != Helpers.nullStack)
                 {
                     this.pokeChest.setInventorySlotContents(j, itemstack.copy());
                 }
@@ -547,7 +548,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         for (int i = 0; i < this.pokeChest.getSizeInventory(); i++)
         {
             ItemStack stack;
-            if ((stack = this.pokeChest.getStackInSlot(i)) != null)
+            if ((stack = this.pokeChest.getStackInSlot(i)) != Helpers.nullStack)
             {
                 stack.getItem().onUpdate(stack, worldObj, this, i, false);
             }
@@ -729,7 +730,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             ItemStack oldStack = getHeldItemMainhand();
             pokeChest.setInventorySlotContents(1, itemStack);
             getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
-            if (itemStack != null)
+            if (itemStack != Helpers.nullStack)
             {
                 dataManager.set(HELDITEM, Optional.of(itemStack));
             }

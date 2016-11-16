@@ -78,6 +78,7 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.PokemobTerrainEffects;
+import pokecube.core.utils.Helpers;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -794,7 +795,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!getPokemonAIState(IMoveConstants.TAMED))
         {
             AISaveHandler.instance().removeAI(this);
-            if (this.getHeldItemMainhand() != null) PokecubeItems.deValidate(getHeldItemMainhand());
+            if (this.getHeldItemMainhand() != Helpers.nullStack) PokecubeItems.deValidate(getHeldItemMainhand());
         }
         super.onDeathUpdate();
     }
@@ -967,7 +968,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (hand != EnumHand.MAIN_HAND) return false;
         ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
         // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && held != null && Tools.isSameStack(key, held)) { return false; }
+        if (getPokedexEntry().interact(key) && held != Helpers.nullStack
+                && Tools.isSameStack(key, held)) { return false; }
         // Check Pokedex Entry defined Interaction for player.
         if (getPokedexEntry().interact(player, this, true)) return true;
         Item torch = Item.getItemFromBlock(Blocks.TORCH);
@@ -978,7 +980,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         // Either push pokemob around, or if sneaking, make it try to climb on
         // shoulder
-        if (isOwner && held != null && (held.getItem() == Items.STICK || held.getItem() == torch))
+        if (isOwner && held != Helpers.nullStack && (held.getItem() == Items.STICK || held.getItem() == torch))
         {
             Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
             look.y = 0.2;
@@ -988,7 +990,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             return false;
         }
         // Debug thing to maximize happiness
-        if (isOwner && held != null && held.getItem() == Items.APPLE)
+        if (isOwner && held != Helpers.nullStack && held.getItem() == Items.APPLE)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
@@ -996,7 +998,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         // Debug thing to increase hunger time
-        if (isOwner && held != null && held.getItem() == Items.GOLDEN_HOE)
+        if (isOwner && held != Helpers.nullStack && held.getItem() == Items.GOLDEN_HOE)
         {
             if (player.capabilities.isCreativeMode && player.isSneaking())
             {
@@ -1004,7 +1006,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
         }
         // Use shiny charm to make shiny
-        if (isOwner && held != null && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
+        if (isOwner && held != Helpers.nullStack
+                && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
         {
             if (player.isSneaking())
             {
@@ -1015,7 +1018,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // is Dyeable
-        if (held != null && getPokedexEntry().dyeable)
+        if (held != Helpers.nullStack && getPokedexEntry().dyeable)
         {
             if (held.getItem() == Items.DYE)
             {
@@ -1028,7 +1031,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Open Pokedex Gui
-        if (held != null && held.getItem() == PokecubeItems.pokedex)
+        if (held != Helpers.nullStack && held.getItem() == PokecubeItems.pokedex)
         {
             if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {
@@ -1054,7 +1057,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Owner only interactions.
         if (isOwner && !PokecubeCore.isOnClientSide())
         {
-            if (held != null)
+            if (held != Helpers.nullStack)
             {
                 // Check if it should evolve from item, do so if yes.
                 if (PokecubeItems.isValidEvoItem(held) && canEvolve(held))
@@ -1085,7 +1088,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                         if (held.stackSize <= 0)
                         {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem, (ItemStack) null);
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem, Helpers.nullStack);
                         }
                     }
                     this.loveTimer = 10;
@@ -1108,7 +1111,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 if (canBeHeld(held))
                 {
                     ItemStack heldItem = getHeldItemMainhand();
-                    if (heldItem != null)
+                    if (heldItem != Helpers.nullStack)
                     {
                         dropItem();
                     }
@@ -1120,7 +1123,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     if (held.stackSize <= 0)
                     {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                        player.inventory.setInventorySlotContents(player.inventory.currentItem, Helpers.nullStack);
                     }
                     return true;
                 }
@@ -1128,7 +1131,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             // Check saddle for riding.
             if (getPokemonAIState(SADDLED) && !player.isSneaking() && isOwner
-                    && (held == null || held.getItem() != PokecubeItems.pokedex))
+                    && (held == Helpers.nullStack || held.getItem() != PokecubeItems.pokedex))
             {
                 if (!handleHmAndSaddle(player, new ItemStack(Items.SADDLE)))
                 {

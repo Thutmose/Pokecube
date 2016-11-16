@@ -14,6 +14,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.utils.Helpers;
 
 /** @author sebastien */
 public abstract class EntityDropPokemob extends EntityMovesPokemob
@@ -44,8 +45,8 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             for (int i = 2; i < pokeChest.getSizeInventory(); i++)
             {
                 ItemStack stack = pokeChest.getStackInSlot(i);
-                if (stack != null) entityDropItem(stack, 0.5f);
-                pokeChest.setInventorySlotContents(i, null);
+                if (stack != Helpers.nullStack) entityDropItem(stack, 0.5f);
+                pokeChest.setInventorySlotContents(i, Helpers.nullStack);
             }
         }
 
@@ -54,29 +55,29 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         List<ItemStack> drops = getPokedexEntry().getRandomDrops(lootingModifier);
         for (ItemStack stack : drops)
         {
-            if (isBurning() && stack != null)
+            if (isBurning() && stack != Helpers.nullStack)
             {
                 ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(stack);
-                if (newDrop != null) stack = newDrop.copy();
+                if (newDrop != Helpers.nullStack) stack = newDrop.copy();
             }
-            if (stack != null) entityDropItem(stack, 0.5f);
+            if (stack != Helpers.nullStack) entityDropItem(stack, 0.5f);
         }
         dropItem();
         for (int i = 2; i < this.pokeChest.getSizeInventory(); i++)
         {
             ItemStack stack = this.pokeChest.getStackInSlot(i);
-            if (stack != null) entityDropItem(stack, 0.5f);
+            if (stack != Helpers.nullStack) entityDropItem(stack, 0.5f);
         }
     }
 
     public void dropItem()
     {
         ItemStack toDrop = this.getHeldItemMainhand();
-        if (toDrop == null) return;
+        if (toDrop == Helpers.nullStack) return;
 
         EntityItem drop = new EntityItem(this.worldObj, this.posX, this.posY + 0.5, this.posZ, toDrop);
         this.worldObj.spawnEntityInWorld(drop);
-        this.setHeldItem(null);
+        this.setHeldItem(Helpers.nullStack);
     }
 
     @Override

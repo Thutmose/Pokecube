@@ -10,7 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.boss.EntityDragonPart;
-import net.minecraft.inventory.AnimalChest;
+import pokecube.core.entity.pokemobs.AnimalChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.scoreboard.Team;

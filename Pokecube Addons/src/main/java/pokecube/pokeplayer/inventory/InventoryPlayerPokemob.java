@@ -1,8 +1,8 @@
 package pokecube.pokeplayer.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.AnimalChest;
 import net.minecraft.world.World;
+import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;

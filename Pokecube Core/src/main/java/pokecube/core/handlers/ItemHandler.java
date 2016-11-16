@@ -83,6 +83,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.items.revive.ItemRevive;
 import pokecube.core.items.vitamins.ItemVitamin;
+import pokecube.core.utils.Helpers;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -96,7 +97,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
     {
         berries = new ItemBerry().setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry");
         register(berries, "berry");
-        GameRegistry.registerTileEntity(TileEntityBerries.class, "pokecube:berries");
+        Helpers.registerTileEntity(TileEntityBerries.class, "pokecube:berries");
         BerryManager.addBerry("cheri", 1, 10, 0, 0, 0, 0);// Cures Paralysis
         BerryManager.addBerry("chesto", 2, 0, 10, 0, 0, 0);// Cures sleep
         BerryManager.addBerry("pecha", 3, 0, 0, 10, 0, 0);// Cures poison
@@ -196,7 +197,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addVitamins();
         addFossils();
 
-        GameRegistry.registerTileEntity(TileEntityRepel.class, "repel");
+        Helpers.registerTileEntity(TileEntityRepel.class, "repel");
         repelBlock = new BlockRepel();
         repelBlock.setUnlocalizedName("repel");
         repelBlock.setCreativeTab(creativeTabPokecubeBerries);
@@ -205,7 +206,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
             registerItemTexture(Item.getItemFromBlock(repelBlock), 0,
                     new ModelResourceLocation("pokecube:repel", "inventory"));
 
-        GameRegistry.registerTileEntity(TileEntityPokecubeTable.class, "pokecube:pokecube_table");
+        Helpers.registerTileEntity(TileEntityPokecubeTable.class, "pokecube:pokecube_table");
         tableBlock = new BlockPokecubeTable();
         tableBlock.setUnlocalizedName("pokecube_table");
         tableBlock.setCreativeTab(creativeTabPokecubeBlocks);
@@ -232,8 +233,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
         Block nest = new BlockNest().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
                 .setUnlocalizedName("pokemobnest");
         PokecubeItems.register(nest, ItemBlockMeta.class, "pokemobnest");
-        GameRegistry.registerTileEntity(TileEntityNest.class, "pokemobnest");
-        GameRegistry.registerTileEntity(TileEntityBasePortal.class, "pokecubebaseportal");
+        Helpers.registerTileEntity(TileEntityNest.class, "pokemobnest");
+        Helpers.registerTileEntity(TileEntityBasePortal.class, "pokecubebaseportal");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             for (int i = 0; i < BlockNest.types.size(); i++)
@@ -241,7 +242,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                         new ModelResourceLocation("minecraft:stone", "inventory"));
         }
 
-        GameRegistry.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecenter");
+        Helpers.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecenter");
         PokecubeItems.pokecenter = pokecenter;
 
         pokemobEgg = new ItemPokemobEgg().setUnlocalizedName("pokemobegg");
@@ -291,12 +292,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         tradingtable = (new BlockTradingTable()).setUnlocalizedName("tradingtable");
         tradingtable.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        GameRegistry.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
+        Helpers.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
         PokecubeItems.register(tradingtable, ItemBlockTradingTable.class, "tradingtable");
         PokecubeItems.addSpecificItemStack("tmtable", new ItemStack(tradingtable, 1, 8));
 
         pc = (new BlockPC()).setUnlocalizedName("pc");
-        GameRegistry.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");
+        Helpers.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");
         pc.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(pc, ItemBlockPC.class, "pc");
         PokecubeItems.addSpecificItemStack("pctop", new ItemStack(pc, 1, 8));

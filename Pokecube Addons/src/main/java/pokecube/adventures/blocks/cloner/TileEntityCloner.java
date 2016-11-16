@@ -744,4 +744,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         nbt.setTag("Inventory", itemList);
         return nbt;
     }
+
+    // 1.11
+    public boolean func_191420_l()
+    {
+        return true;
+    }
 }

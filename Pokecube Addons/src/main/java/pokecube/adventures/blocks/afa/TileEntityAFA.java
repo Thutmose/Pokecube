@@ -559,4 +559,10 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         nbt.setString("animation", animation);
         return nbt;
     }
+
+    // 1.11
+    public boolean func_191420_l()
+    {
+        return true;
+    }
 }

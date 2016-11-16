@@ -14,7 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
+import thut.lib.CompatWrapper;
 
 public class InventoryBag implements IInventory
 {

@@ -1,4 +1,8 @@
-package pokecube.core.utils;
+package thut.lib;
+
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -31,6 +35,32 @@ public class CompatWrapper
     {
         EntityRegistry.registerModEntity(entityClass, entityName, id, mod, trackingRange, updateFrequency,
                 sendsVelocityUpdates);
+    }
+
+    public static ItemStack setStackSize(ItemStack stack, int amount)
+    {
+        if (amount <= 0) { return nullStack; }
+        stack.stackSize = amount;
+        return stack;
+    }
+
+    public static int getStackSize(ItemStack stack)
+    {
+        if (stack == nullStack || stack.stackSize < 0) { return 0; }
+        return stack.stackSize;
+    }
+
+    public static boolean isValid(ItemStack stack)
+    {
+        return getStackSize(stack) > 0;
+    }
+
+    public static List<ItemStack> makeList(int size)
+    {
+        List<ItemStack> ret = Lists.newArrayList();
+        for (int i = 0; i < size; i++)
+            ret.add(nullStack);
+        return ret;
     }
 
 }

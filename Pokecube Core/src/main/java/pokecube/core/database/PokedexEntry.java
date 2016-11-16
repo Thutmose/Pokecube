@@ -51,7 +51,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
@@ -60,6 +59,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public class PokedexEntry
@@ -83,7 +83,7 @@ public class PokedexEntry
         public boolean            happy        = false;
         // the item it must be holding, if null, any item is fine, or no items
         // is fine
-        public ItemStack          item         = null;
+        public ItemStack          item         = CompatWrapper.nullStack;
         // does it need to grow a level for the item to work
         public boolean            itemLevel    = false;
         public int                level        = -1;
@@ -297,7 +297,7 @@ public class PokedexEntry
             {
                 item = PokecubeItems.getStack(itemName);
             }
-            if (item != null)
+            if (item != CompatWrapper.nullStack)
             {
                 PokecubeItems.addToHoldables(itemName);
                 PokecubeItems.addToEvos(itemName);
@@ -345,16 +345,16 @@ public class PokedexEntry
                 if (!rain) return false;
             }
             boolean correctItem = item == null;
-            if (item != null && mob instanceof EntityLiving)
+            if (item != CompatWrapper.nullStack && mob instanceof EntityLiving)
             {
-                if (mobs != null)
+                if (mobs != CompatWrapper.nullStack)
                 {
                     correctItem = Tools.isSameStack(mobs, item);
                 }
             }
-            if (mob instanceof EntityLiving && ((EntityLiving) mob).getHeldItemMainhand() != null && Tools.isSameStack(
-                    ((EntityLiving) mob).getHeldItemMainhand(), PokecubeItems.getStack("everstone"))) { return false; }
-            if (mobs != null && Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
+            if (mob instanceof EntityLiving && Tools.isSameStack(((EntityLiving) mob).getHeldItemMainhand(),
+                    PokecubeItems.getStack("everstone"))) { return false; }
+            if (Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
             ret = ret && correctLevel;
@@ -383,8 +383,6 @@ public class PokedexEntry
             {
                 Entity poke = (Entity) mob;
                 rightTime = dayOnly ? poke.getEntityWorld().isDaytime() : !poke.getEntityWorld().isDaytime();
-                // System.out.println("Is it
-                // Day?"+poke.getEntityWorld().isDaytime());
             }
             ret = ret && rightTime;
             if (happy)
@@ -479,7 +477,7 @@ public class PokedexEntry
                             values.put(name, d.tag);
                         }
                         ItemStack stack = Tools.getStack(values);
-                        if (stack != null) stacks.add(stack);
+                        if (stack != CompatWrapper.nullStack) stacks.add(stack);
                     }
                     entry.interactionLogic.stacks.put(keyStack, stacks);
                 }
@@ -491,7 +489,7 @@ public class PokedexEntry
 
         boolean canInteract(ItemStack key)
         {
-            return getStackKey(key) != null;
+            return getStackKey(key) != CompatWrapper.nullStack;
         }
 
         private ItemStack getFormeKey(ItemStack held)
@@ -500,7 +498,7 @@ public class PokedexEntry
             {
                 if (Tools.isSameStack(stack, held)) { return stack; }
             }
-            return null;
+            return CompatWrapper.nullStack;
         }
 
         private ItemStack getStackKey(ItemStack held)
@@ -509,7 +507,7 @@ public class PokedexEntry
             {
                 if (Tools.isSameStack(stack, held)) { return stack; }
             }
-            return null;
+            return CompatWrapper.nullStack;
         }
 
         boolean interact(EntityPlayer player, IPokemob pokemob, boolean doInteract)
@@ -525,11 +523,11 @@ public class PokedexEntry
             }
             ItemStack stack = getStackKey(held);
 
-            if (stack == null)
+            if (stack == CompatWrapper.nullStack)
             {
                 stack = getFormeKey(held);
-                if (!doInteract) return stack != null;
-                if (stack != null)
+                if (!doInteract) return stack != CompatWrapper.nullStack;
+                if (stack != CompatWrapper.nullStack)
                 {
                     PokedexEntry forme = formes.get(stack);
                     pokemob.setPokedexEntry(forme);
@@ -990,7 +988,7 @@ public class PokedexEntry
 
     public boolean canEvolve(int level)
     {
-        return canEvolve(level, null);
+        return canEvolve(level, CompatWrapper.nullStack);
     }
 
     public boolean canEvolve(int level, ItemStack stack)
@@ -998,8 +996,8 @@ public class PokedexEntry
         for (EvolutionData d : evolutions)
         {
 
-            boolean itemCheck = d.item == null;
-            if (!itemCheck && stack != null)
+            boolean itemCheck = d.item == CompatWrapper.nullStack;
+            if (!itemCheck && stack != CompatWrapper.nullStack)
             {
                 itemCheck = stack.isItemEqual(d.item);
             }
@@ -1624,9 +1622,9 @@ public class PokedexEntry
      * @param pokemob */
     public void onHeldItemChange(ItemStack oldStack, ItemStack newStack, IPokemob pokemob)
     {
-        if (newStack == null && oldStack == null) return;
+        if (newStack == CompatWrapper.nullStack && oldStack == CompatWrapper.nullStack) return;
         PokedexEntry newForme = null;
-        if (newStack != null)
+        if (newStack != CompatWrapper.nullStack)
         {
             for (ItemStack stack : formeItems.keySet())
                 if (Tools.isSameStack(stack, newStack))
@@ -1644,7 +1642,7 @@ public class PokedexEntry
                     }
             }
         }
-        else if (oldStack != null && getBaseForme() != null)
+        else if (oldStack != CompatWrapper.nullStack && getBaseForme() != null)
         {
             for (ItemStack stack : getBaseForme().formeItems.keySet())
                 if (Tools.isSameStack(stack, newStack))
@@ -1678,7 +1676,7 @@ public class PokedexEntry
         Item item = PokecubeItems.getItem(name);
         ItemStack stack = PokecubeItems.getStack(name);
         ItemStack toAdd;
-        if (item == null && stack == null)
+        if (item == null && stack == CompatWrapper.nullStack)
         {
             System.err.println("Problem with item " + name + " for " + this.getName());
             return null;

@@ -46,9 +46,9 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
         modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = PokecubeAdv.DEPSTRING, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS) // @formatter:on

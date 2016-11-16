@@ -14,6 +14,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.packets.PacketPC;
+import thut.lib.CompatWrapper;
 
 @ChestContainer(isLargeChest = true, showButtons=false)
 public class ContainerPC extends Container
@@ -31,7 +32,7 @@ public class ContainerPC extends Container
     public static boolean isItemValid(ItemStack itemstack)
     {
         // System.out.println(ConfigHandler.ONLYPOKECUBES);
-        if (itemstack == null) return false;
+        if (itemstack == CompatWrapper.nullStack) return false;
         boolean eggorCube = !PokecubeMod.core.getConfig().pcHoldsOnlyPokecubes || PokecubeManager.isFilled(itemstack)
                 || itemstack.getItem() == PokecubeItems.pokemobEgg;
         return eggorCube;
@@ -251,7 +252,7 @@ public class ContainerPC extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
@@ -262,13 +263,13 @@ public class ContainerPC extends Container
             int numRows = 6;
             if (index < numRows * 9)
             {
-                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), false)) { return null; }
+                if (!this.mergeItemStack(itemstack1, numRows * 9, this.inventorySlots.size(), false)) { return CompatWrapper.nullStack; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, 0, numRows * 9, false)) { return CompatWrapper.nullStack; }
 
             if (itemstack1.stackSize == 0)
             {
-                slot.putStack((ItemStack) null);
+                slot.putStack(CompatWrapper.nullStack);
             }
             else
             {

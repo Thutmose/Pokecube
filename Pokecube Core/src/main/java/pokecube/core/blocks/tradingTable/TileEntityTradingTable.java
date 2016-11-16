@@ -50,18 +50,19 @@ import pokecube.core.items.pokecubes.RecipePokeseals;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
 {
     public static boolean                     theftEnabled = false;
 
-    private ItemStack[]                       inventory    = new ItemStack[2];
-    private ItemStack[]                       inventory2   = new ItemStack[1];
+    private List<ItemStack>                   inventory    = Lists.newArrayList(CompatWrapper.nullStack,
+            CompatWrapper.nullStack);
+    private List<ItemStack>                   inventory2   = Lists.newArrayList(CompatWrapper.nullStack);
 
     public EntityPlayer                       player1;
     public EntityPlayer                       player2;
@@ -82,7 +83,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public void addMoveToTM(String move)
     {
-        ItemStack tm = inventory2[0];
+        ItemStack tm = inventory2.get(0);
         if (tm != null && tm.getItem() instanceof ItemTM)
         {
             ItemTM.addMoveToStack(move, tm);
@@ -123,22 +124,22 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         if (!player.getEntityWorld().isRemote)
         {
-            if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory[0])))
+            if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory.get(0))))
             {
-                dropCube(inventory[0], player);
-                this.setInventorySlotContents(0, null);
+                dropCube(inventory.get(0), player);
+                this.setInventorySlotContents(0, CompatWrapper.nullStack);
             }
-            if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory[1])))
+            if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory.get(1))))
             {
-                dropCube(inventory[1], player);
-                this.setInventorySlotContents(1, null);
+                dropCube(inventory.get(1), player);
+                this.setInventorySlotContents(1, CompatWrapper.nullStack);
             }
         }
     }
 
     private void dropCube(ItemStack cube, EntityPlayer player)
     {
-        if (cube != null)
+        if (cube != CompatWrapper.nullStack)
         {
             if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
             {
@@ -167,29 +168,22 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         if (trade)
         {
-            if (this.inventory[slot] != null)
+            if (this.inventory.get(slot) != CompatWrapper.nullStack)
             {
                 ItemStack itemStack;
-
-                itemStack = inventory[slot].splitStack(count);
-
-                if (inventory[slot].stackSize <= 0) inventory[slot] = null;
-
+                itemStack = inventory.get(slot).splitStack(count);
+                if (inventory.get(slot).stackSize <= 0) inventory.set(slot, CompatWrapper.nullStack);
                 return itemStack;
             }
         }
-        else if (slot < inventory2.length && this.inventory2[slot] != null)
+        else if (slot < inventory2.size() && this.inventory2.get(slot) != CompatWrapper.nullStack)
         {
             ItemStack itemStack;
-
-            itemStack = inventory2[slot].splitStack(count);
-
-            if (inventory2[slot].stackSize <= 0) inventory2[slot] = null;
-
+            itemStack = inventory2.get(slot).splitStack(count);
+            if (inventory2.get(slot).stackSize <= 0) inventory2.set(slot, CompatWrapper.nullStack);
             return itemStack;
         }
-
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override
@@ -331,16 +325,16 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public int getSizeInventory()
     {
-        if (trade) return inventory.length;
-        return inventory2.length;
+        if (trade) return inventory.size();
+        return inventory2.size();
     }
 
     @Override
     public ItemStack getStackInSlot(int i)
     {
-        if (trade) return inventory[i];
-        if (i < inventory2.length) return inventory2[i];
-        return null;
+        if (trade) return inventory.get(i);
+        if (i < inventory2.size()) return inventory2.get(i);
+        return CompatWrapper.nullStack;
     }
 
     /** Overriden in a sign to provide the text. */
@@ -492,9 +486,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 }
             }
         }
-        inventory[0] = both[0];
-        inventory[1] = both[1];
-        inventory2[0] = both[2];
+        inventory.set(0, both[0]);
+        inventory.set(1, both[1]);
+        inventory2.set(0, both[2]);
         init = false;
     }
 
@@ -503,17 +497,17 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     {
         if (trade)
         {
-            if (inventory[slot] != null)
+            if (inventory.get(slot) != CompatWrapper.nullStack)
             {
-                ItemStack stack = inventory[slot];
-                inventory[slot] = null;
+                ItemStack stack = inventory.get(slot);
+                inventory.set(slot, CompatWrapper.nullStack);
                 return stack;
             }
         }
-        else if (slot < inventory2.length && inventory2[slot] != null)
+        else if (slot < inventory2.size() && inventory2.get(slot) != CompatWrapper.nullStack)
         {
-            ItemStack stack = inventory2[slot];
-            inventory2[slot] = null;
+            ItemStack stack = inventory2.get(slot);
+            inventory2.set(slot, CompatWrapper.nullStack);
             return stack;
         }
 
@@ -530,17 +524,17 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public void setInventorySlotContents(int i, ItemStack itemstack)
     {
-        if (trade) inventory[i] = itemstack;
-        else if (i < inventory2.length) inventory2[i] = itemstack;
+        if (trade) inventory.set(i, itemstack);
+        else if (i < inventory2.size()) inventory2.set(i, itemstack);
     }
 
     public void trade()
     {
-        ItemStack poke1 = inventory[0];
-        ItemStack poke2 = inventory[1];
-        if (poke1 == null || poke2 == null || player1 == player2)
+        ItemStack poke1 = inventory.get(0);
+        ItemStack poke2 = inventory.get(1);
+        if (poke1 == CompatWrapper.nullStack || poke2 == CompatWrapper.nullStack || player1 == player2)
         {
-            if (player1 == player2 && (poke1 != null && poke2 != null))
+            if (player1 == player2 && (poke1 != CompatWrapper.nullStack && poke2 != CompatWrapper.nullStack))
             {
                 tryChange();
             }
@@ -563,9 +557,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         {
             mon2.setPokemonOwner(trader1);
             mon1.setPokemonOwner(trader2);
-            boolean mon1everstone = PokecubeManager.getHeldItemMainhand(poke1) != null && Tools
+            boolean mon1everstone = PokecubeManager.getHeldItemMainhand(poke1) != CompatWrapper.nullStack && Tools
                     .isSameStack(PokecubeManager.getHeldItemMainhand(poke1), PokecubeItems.getStack("everstone"));
-            boolean mon2everstone = PokecubeManager.getHeldItemMainhand(poke2) != null && Tools
+            boolean mon2everstone = PokecubeManager.getHeldItemMainhand(poke2) != CompatWrapper.nullStack && Tools
                     .isSameStack(PokecubeManager.getHeldItemMainhand(poke2), PokecubeItems.getStack("everstone"));
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);
@@ -579,7 +573,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             else InventoryPC.addPokecubeToPC(to2, worldObj);
             MinecraftForge.EVENT_BUS.post(new TradeEvent(worldObj, to1));
             MinecraftForge.EVENT_BUS.post(new TradeEvent(worldObj, to2));
-            inventory = new ItemStack[2];
+            inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
         }
         player1 = null;
         player2 = null;
@@ -587,11 +581,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
     public boolean tryChange()
     {
-        ItemStack a = inventory[0];
-        ItemStack b = inventory[1];
+        ItemStack a = inventory.get(0);
+        ItemStack b = inventory.get(1);
 
         if (player1 != player2 || player1 == null) return false;
-        if (a == b || a == null || b == null) return false;
+        if (a == b || a == CompatWrapper.nullStack || b == CompatWrapper.nullStack) return false;
         if (!((PokecubeManager.isFilled(a)) || (PokecubeManager.isFilled(b)))) return false;
         if (a.getItem() instanceof IPokecube && b.getItem() instanceof IPokecube)
         {
@@ -620,7 +614,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
             player1.inventory.addItemStackToInventory(stack);
             player1 = null;
             player2 = null;
-            inventory = new ItemStack[2];
+            inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
             return true;
         }
 
@@ -628,13 +622,13 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
         int index = PokecubeManager.isFilled(a) ? 0 : 1;
 
-        IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory[0], worldObj)
-                : PokecubeManager.itemToPokemob(inventory[1], worldObj);
+        IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory.get(0), worldObj)
+                : PokecubeManager.itemToPokemob(inventory.get(1), worldObj);
         if (theftEnabled) return false;
         mob.setTraded(true);
         mob.setPokemonOwner(player1.getUniqueID());
-        player1.inventory.addItemStackToInventory(inventory[index]);
-        inventory = new ItemStack[2];
+        player1.inventory.addItemStackToInventory(inventory.get(index));
+        inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
         return true;
     }
 
@@ -644,15 +638,14 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         super.writeToNBT(tagCompound);
         NBTTagList itemList = new NBTTagList();
         ItemStack[] both = new ItemStack[3];
-        both[0] = inventory[0];
-        both[1] = inventory[1];
-        both[2] = inventory2[0];
+        both[0] = inventory.get(0);
+        both[1] = inventory.get(1);
+        both[2] = inventory2.get(0);
 
         for (int i = 0; i < both.length; i++)
         {
             ItemStack stack = both[i];
-
-            if (stack != null)
+            if (stack != CompatWrapper.nullStack)
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);

@@ -39,10 +39,10 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
+import thut.lib.CompatWrapper;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })

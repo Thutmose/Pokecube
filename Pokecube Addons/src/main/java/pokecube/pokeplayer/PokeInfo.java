@@ -14,12 +14,12 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.EntityTools;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 import thut.api.entity.IHungrymob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
+import thut.lib.CompatWrapper;
 
 public class PokeInfo extends PlayerData
 {

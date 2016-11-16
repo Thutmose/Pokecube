@@ -33,9 +33,9 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.packets.PacketPokecube;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class EntityPokecube extends EntityPokecubeBase
 {

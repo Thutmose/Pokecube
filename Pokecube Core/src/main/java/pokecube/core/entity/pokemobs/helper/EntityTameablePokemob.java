@@ -57,13 +57,13 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.CompatWrapper;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IMob, IInventoryChangedListener,

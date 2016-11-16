@@ -1,7 +1,10 @@
 package pokecube.core.blocks.nests;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -25,18 +28,26 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class TileEntityNest extends TileEntity implements ITickable, IInventory
 {
 
-    private ItemStack[] inventory = new ItemStack[27];
+    private List<ItemStack> inventory = Lists.newArrayList();
 
-    int                 pokedexNb = 0;
+    int                     pokedexNb = 0;
 
-    HashSet<IPokemob>   residents = new HashSet<IPokemob>();
-    int                 time      = 0;
+    HashSet<IPokemob>       residents = new HashSet<IPokemob>();
+    int                     time      = 0;
+
+    public TileEntityNest()
+    {
+        for (int i = 0; i < 27; i++)
+        {
+            inventory.add(CompatWrapper.nullStack);
+        }
+    }
 
     public boolean addForbiddenSpawningCoord()
     {
@@ -62,17 +73,14 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public ItemStack decrStackSize(int index, int count)
     {
-        if (this.inventory[index] != null)
+        if (this.inventory.get(index) != CompatWrapper.nullStack)
         {
             ItemStack itemStack;
-
-            itemStack = inventory[index].splitStack(count);
-
-            if (inventory[index].stackSize <= 0) inventory[index] = null;
-
+            itemStack = inventory.get(index).splitStack(count);
+            if (inventory.get(index).stackSize <= 0) inventory.set(index, CompatWrapper.nullStack);
             return itemStack;
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override
@@ -114,7 +122,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public ItemStack getStackInSlot(int index)
     {
-        return inventory[index];
+        return inventory.get(index);
     }
 
     @Override
@@ -125,7 +133,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public void init()
     {
-        //TODO init spawn for nest here.
+        // TODO init spawn for nest here.
     }
 
     @Override
@@ -169,9 +177,9 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
                 NBTTagCompound tag = tagList.getCompoundTagAt(i);
                 byte slot = tag.getByte("Slot");
 
-                if (slot >= 0 && slot < inventory.length)
+                if (slot >= 0 && slot < inventory.size())
                 {
-                    inventory[slot] = CompatWrapper.fromTag(tag);
+                    inventory.set(slot, CompatWrapper.fromTag(tag));
                 }
             }
         }
@@ -190,13 +198,13 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public ItemStack removeStackFromSlot(int index)
     {
-        if (inventory[index] != null)
+        if (inventory.get(index) != CompatWrapper.nullStack)
         {
-            ItemStack stack = inventory[index];
-            inventory[index] = null;
+            ItemStack stack = inventory.get(index);
+            inventory.set(index, CompatWrapper.nullStack);
             return stack;
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override
@@ -207,7 +215,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     @Override
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        inventory[index] = stack;
+        inventory.set(index, stack);
     }
 
     @Override
@@ -279,12 +287,10 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         nbt.setInteger("pokedexNb", pokedexNb);
         nbt.setInteger("time", time);
         NBTTagList itemList = new NBTTagList();
-
-        for (int i = 0; i < inventory.length; i++)
+        for (int i = 0; i < inventory.size(); i++)
         {
-            ItemStack stack = inventory[i];
-
-            if (stack != null)
+            ItemStack stack = inventory.get(i);
+            if (stack != CompatWrapper.nullStack)
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);

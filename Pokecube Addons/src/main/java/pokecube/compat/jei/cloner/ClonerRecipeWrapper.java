@@ -15,6 +15,7 @@ import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import thut.lib.CompatWrapper;
 
 public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
 {
@@ -30,9 +31,9 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
             if (input instanceof ItemStack)
             {
                 ItemStack itemStack = (ItemStack) input;
-                if (itemStack.stackSize != 1)
+                if (CompatWrapper.getStackSize(itemStack) != 1)
                 {
-                    itemStack.stackSize = 1;
+                    CompatWrapper.setStackSize(itemStack, 1);
                 }
             }
         }

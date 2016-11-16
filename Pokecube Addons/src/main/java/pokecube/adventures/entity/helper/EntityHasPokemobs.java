@@ -22,8 +22,8 @@ import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public abstract class EntityHasPokemobs extends EntityHasMessages
 {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,8 +19,8 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PCSaveHandler;
+import thut.lib.CompatWrapper;
 
 public class InventoryPC implements IInventory
 {
@@ -67,7 +68,7 @@ public class InventoryPC implements IInventory
 
     public static void addStackToPC(String uuid, ItemStack mob)
     {
-        if (uuid == null || mob == null)
+        if (uuid == null || mob == CompatWrapper.nullStack)
         {
             System.err.println("Could not find the owner of this item " + mob + " " + uuid);
             return;
@@ -238,7 +239,7 @@ public class InventoryPC implements IInventory
                 ItemStack itemstack = map.get(uuid).getStackInSlot(i);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
 
-                if (itemstack != null)
+                if (itemstack != CompatWrapper.nullStack)
                 {
                     nbttagcompound.setShort("Slot", (short) i);
                     itemstack.writeToNBT(nbttagcompound);
@@ -282,7 +283,7 @@ public class InventoryPC implements IInventory
                 ItemStack itemstack = map.get(player).getStackInSlot(i);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
 
-                if (itemstack != null)
+                if (itemstack != CompatWrapper.nullStack)
                 {
                     nbttagcompound.setShort("Slot", (short) i);
                     itemstack.writeToNBT(nbttagcompound);
@@ -296,18 +297,18 @@ public class InventoryPC implements IInventory
         return nbttag;
     }
 
-    private int                         page      = 0;
+    private int                              page      = 0;
 
-    public boolean                      autoToPC  = false;
+    public boolean                           autoToPC  = false;
 
-    public boolean[]                    opened    = new boolean[PAGECOUNT];
+    public boolean[]                         opened    = new boolean[PAGECOUNT];
 
-    public String[]                     boxes     = new String[PAGECOUNT];
-    private HashMap<Integer, ItemStack> contents  = new HashMap<Integer, ItemStack>();
+    public String[]                          boxes     = new String[PAGECOUNT];
+    private Int2ObjectOpenHashMap<ItemStack> contents  = new Int2ObjectOpenHashMap<>();
 
-    public final String                 owner;
+    public final String                      owner;
 
-    public boolean                      seenOwner = false;
+    public boolean                           seenOwner = false;
 
     public InventoryPC(InventoryPC from)
     {
@@ -333,7 +334,7 @@ public class InventoryPC implements IInventory
     {
         for (int i = page * 54; i < getSizeInventory(); i++)
         {
-            if (this.getStackInSlot(i) == null)
+            if (this.getStackInSlot(i) == CompatWrapper.nullStack)
             {
                 this.setInventorySlotContents(i, stack);
                 return;
@@ -341,7 +342,7 @@ public class InventoryPC implements IInventory
         }
         for (int i = 0; i < page * 54; i++)
         {
-            if (this.getStackInSlot(i) == null)
+            if (this.getStackInSlot(i) == CompatWrapper.nullStack)
             {
                 this.setInventorySlotContents(i, stack);
                 return;
@@ -367,28 +368,25 @@ public class InventoryPC implements IInventory
         if (contents.get(i) != null)
         {
             ItemStack itemstack;
-
             if (contents.get(i).stackSize <= j)
             {
-                itemstack = contents.get(i);
-                contents.put(i, null);
+                itemstack = contents.remove(i);
                 return itemstack;
             }
             itemstack = contents.get(i).splitStack(j);
-
             if (contents.get(i).stackSize == 0)
             {
-                contents.put(i, null);
+                contents.remove(i);
             }
             return itemstack;
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     public HashSet<ItemStack> getContents()
     {
         HashSet<ItemStack> ret = new HashSet<ItemStack>();
-        for (Integer i : contents.keySet())
+        for (int i : contents.keySet())
         {
             if (contents.get(i) != null) ret.add(contents.get(i));
         }
@@ -451,7 +449,9 @@ public class InventoryPC implements IInventory
     @Override
     public ItemStack getStackInSlot(int i)
     {
-        return contents.get(i);
+        ItemStack ret = contents.get(i);
+        if (ret == null) ret = CompatWrapper.nullStack;
+        return ret;
     }
 
     @Override
@@ -487,7 +487,9 @@ public class InventoryPC implements IInventory
     @Override
     public ItemStack removeStackFromSlot(int i)
     {
-        return contents.get(i);
+        ItemStack ret = contents.remove(i);
+        if (ret == null) ret = CompatWrapper.nullStack;
+        return ret;
     }
 
     @Override
@@ -515,7 +517,7 @@ public class InventoryPC implements IInventory
         ret += eol;
         for (Integer i : contents.keySet())
         {
-            if (this.getStackInSlot(i) != null)
+            if (this.getStackInSlot(i) != CompatWrapper.nullStack)
             {
                 ret += "Slot " + i + ", " + this.getStackInSlot(i).getDisplayName() + "; ";
             }

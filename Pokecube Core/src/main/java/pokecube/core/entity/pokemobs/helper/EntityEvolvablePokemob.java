@@ -32,10 +32,10 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob

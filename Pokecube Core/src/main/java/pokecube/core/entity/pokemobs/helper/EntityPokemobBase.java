@@ -55,13 +55,13 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou, Thutmose */
 public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart, TagNames

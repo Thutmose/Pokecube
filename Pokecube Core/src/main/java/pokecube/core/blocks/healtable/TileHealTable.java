@@ -1,5 +1,9 @@
 package pokecube.core.blocks.healtable;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -11,22 +15,24 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
-    public static boolean noSound = false;
-    private ItemStack[]   inventory;
+    public static boolean   noSound = false;
+    private List<ItemStack> inventory;
 
-    Vector3               here    = Vector3.getNewVector();
+    Vector3                 here    = Vector3.getNewVector();
 
-    int                   ticks   = 0;
-    boolean               stopped = false;
+    int                     ticks   = 0;
+    boolean                 stopped = false;
 
     public TileHealTable()
     {
-        this.inventory = new ItemStack[9];
+        this.inventory = Lists.newArrayList();
+        for (int i = 0; i < 9; i++)
+            inventory.add(CompatWrapper.nullStack);
     }
 
     @Override
@@ -44,11 +50,11 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     {
         ItemStack stack = getStackInSlot(slotIndex);
 
-        if (stack != null)
+        if (stack != CompatWrapper.nullStack)
         {
             if (stack.stackSize <= amount)
             {
-                setInventorySlotContents(slotIndex, null);
+                setInventorySlotContents(slotIndex, CompatWrapper.nullStack);
             }
             else
             {
@@ -56,7 +62,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
 
                 if (stack.stackSize == 0)
                 {
-                    setInventorySlotContents(slotIndex, null);
+                    setInventorySlotContents(slotIndex, CompatWrapper.nullStack);
                 }
             }
         }
@@ -97,13 +103,13 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public int getSizeInventory()
     {
-        return this.inventory.length;
+        return this.inventory.size();
     }
 
     @Override
     public ItemStack getStackInSlot(int slotIndex)
     {
-        return this.inventory[slotIndex];
+        return this.inventory.get(slotIndex);
     }
 
     /** Overriden in a sign to provide the text. */
@@ -174,15 +180,13 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     {
         super.readFromNBT(tagCompound);
         NBTTagList tagList = (NBTTagList) tagCompound.getTag("Inventory");
-        // ticks = tagCompound.getInteger("time");
         if (tagList != null) for (int i = 0; i < tagList.tagCount(); i++)
         {
             NBTTagCompound tag = tagList.getCompoundTagAt(i);
             byte slot = tag.getByte("Slot");
-
-            if (slot >= 0 && slot < inventory.length)
+            if (slot >= 0 && slot < inventory.size())
             {
-                inventory[slot] = CompatWrapper.fromTag(tag);
+                inventory.set(slot, CompatWrapper.fromTag(tag));
             }
         }
     }
@@ -191,12 +195,10 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public ItemStack removeStackFromSlot(int slotIndex)
     {
         ItemStack stack = getStackInSlot(slotIndex);
-
-        if (stack != null)
+        if (stack != CompatWrapper.nullStack)
         {
-            setInventorySlotContents(slotIndex, null);
+            setInventorySlotContents(slotIndex, CompatWrapper.nullStack);
         }
-
         return stack;
     }
 
@@ -208,9 +210,8 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void setInventorySlotContents(int slot, ItemStack stack)
     {
-        this.inventory[slot] = stack;
-
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
+        this.inventory.set(slot, stack);
+        if (stack != CompatWrapper.nullStack && stack.stackSize > getInventoryStackLimit())
         {
             stack.stackSize = getInventoryStackLimit();
         }
@@ -242,11 +243,10 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         super.writeToNBT(tagCompound);
         NBTTagList itemList = new NBTTagList();
         tagCompound.setInteger("time", ticks);
-        for (int i = 0; i < inventory.length; i++)
+        for (int i = 0; i < inventory.size(); i++)
         {
-            ItemStack stack = inventory[i];
-
-            if (stack != null)
+            ItemStack stack = inventory.get(i);
+            if (stack != CompatWrapper.nullStack)
             {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte) i);
@@ -254,7 +254,6 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
                 itemList.appendTag(tag);
             }
         }
-
         tagCompound.setTag("Inventory", itemList);
         return tagCompound;
     }

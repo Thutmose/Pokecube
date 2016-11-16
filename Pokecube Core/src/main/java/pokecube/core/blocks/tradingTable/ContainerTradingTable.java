@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.lib.CompatWrapper;
 
 public class ContainerTradingTable extends Container
 {
@@ -111,7 +112,7 @@ public class ContainerTradingTable extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
@@ -121,13 +122,13 @@ public class ContainerTradingTable extends Container
 
             if (index < 2)
             {
-                if (!this.mergeItemStack(itemstack1, 2, this.inventorySlots.size(), false)) { return null; }
+                if (!this.mergeItemStack(itemstack1, 2, this.inventorySlots.size(), false)) { return CompatWrapper.nullStack; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, 2, false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, 0, 2, false)) { return CompatWrapper.nullStack; }
 
             if (itemstack1.stackSize == 0)
             {
-                slot.putStack((ItemStack) null);
+                slot.putStack(CompatWrapper.nullStack);
             }
             else
             {

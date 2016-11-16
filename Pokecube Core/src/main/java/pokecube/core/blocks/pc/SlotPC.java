@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thut.lib.CompatWrapper;
 
 public class SlotPC extends Slot
 {
@@ -32,7 +33,8 @@ public class SlotPC extends Slot
     @Override
     public void onSlotChanged()
     {
-        if (this.getStack() == null) inventory.setInventorySlotContents(getSlotIndex(), null);
+        if (this.getStack() == CompatWrapper.nullStack)
+            inventory.setInventorySlotContents(getSlotIndex(), CompatWrapper.nullStack);
         this.inventory.markDirty();
     }
 
@@ -41,9 +43,6 @@ public class SlotPC extends Slot
     public void putStack(ItemStack par1ItemStack)
     {
         this.inventory.setInventorySlotContents(this.getSlotIndex(), par1ItemStack);
-        // if(this.getStack()!=null && par1ItemStack!=null)
-        // {
         this.onSlotChanged();
-        // }
     }
 }

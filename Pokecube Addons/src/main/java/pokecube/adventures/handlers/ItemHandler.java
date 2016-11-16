@@ -42,6 +42,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.items.ItemTM;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class ItemHandler
 {
@@ -166,22 +167,22 @@ public class ItemHandler
                         itemstack = lootfunction.apply(itemstack, rand, context);
                     }
                 }
-
-                if (itemstack.stackSize > 0)
+                int size = CompatWrapper.getStackSize(itemstack);
+                if (size > 0)
                 {
-                    if (itemstack.stackSize < itemstack.getItem().getItemStackLimit(itemstack))
+                    if (size < itemstack.getItem().getItemStackLimit(itemstack))
                     {
                         stacks.add(itemstack);
                     }
                     else
                     {
-                        i = itemstack.stackSize;
-
+                        i = size;
                         while (i > 0)
                         {
                             ItemStack itemstack1 = itemstack.copy();
-                            itemstack1.stackSize = Math.min(itemstack.getMaxStackSize(), i);
-                            i -= itemstack1.stackSize;
+                            int size1 = Math.min(itemstack.getMaxStackSize(), i);
+                            CompatWrapper.setStackSize(itemstack1, size1);
+                            i -= size1;
                             stacks.add(itemstack1);
                         }
                     }

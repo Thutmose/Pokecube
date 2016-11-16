@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import pokecube.core.interfaces.IHealer;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.lib.CompatWrapper;
 
 public class ContainerHealTable extends Container implements IHealer
 {
@@ -92,13 +93,13 @@ public class ContainerHealTable extends Container implements IHealer
             {
                 ItemStack var3 = this.inventoryHealTable.removeStackFromSlot(var2);
 
-                if (var3 != null)
+                if (var3 != CompatWrapper.nullStack)
                 {
                     if (player.isDead || player.getHealth() <= 0 || player.inventory.getFirstEmptyStack() == -1)
                     {
                         ItemTossEvent toss = new ItemTossEvent(player.entityDropItem(var3, 0F), null);
                         MinecraftForge.EVENT_BUS.post(toss);
-                        if(!toss.isCanceled())
+                        if (!toss.isCanceled())
                         {
                             player.dropItem(var3, true);
                         }
@@ -128,35 +129,24 @@ public class ContainerHealTable extends Container implements IHealer
         {
             ItemStack stack_in_slot = slot_object.getStack();
 
-            // if (slot_index == 0) {
-            // if (!mergeItemStack(stack_in_slot, 1, inventorySlots.size(),
-            // true)) {
-            // return;
-            // }
-            // } else if (!mergeItemStack(stack_in_slot, 0, 1, false)) {
-            // return;
-            // }
-
             if (stack_in_slot.stackSize == 0)
             {
-                slot_object.putStack(null);
+                slot_object.putStack(CompatWrapper.nullStack);
             }
             else
             {
                 slot_object.onSlotChanged();
             }
         }
-
-        // return stack;
     }
 
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
     {
-        if (slotId < 0) return null;
+        if (slotId < 0) return CompatWrapper.nullStack;
         if (clickTypeIn != ClickType.PICKUP && clickTypeIn != ClickType.PICKUP_ALL)
         {
-            ItemStack itemstack = null;
+            ItemStack itemstack = CompatWrapper.nullStack;
             Slot slot = inventorySlots.get(slotId);
 
             if (slot != null && slot.getHasStack())
@@ -166,18 +156,18 @@ public class ContainerHealTable extends Container implements IHealer
 
                 if (slotId < 6)
                 {
-                    if (!mergeItemStack(itemstack1, 6, 42, true)) { return null; }
+                    if (!mergeItemStack(itemstack1, 6, 42, true)) { return CompatWrapper.nullStack; }
                 }
                 else
                 {
-                    if (itemstack != null && !isItemValid(itemstack1)) { return null; }
+                    if (itemstack != null && !isItemValid(itemstack1)) { return CompatWrapper.nullStack; }
 
-                    if (!mergeItemStack(itemstack1, 0, 6, false)) { return null; }
+                    if (!mergeItemStack(itemstack1, 0, 6, false)) { return CompatWrapper.nullStack; }
                 }
 
                 if (itemstack1.stackSize == 0)
                 {
-                    slot.putStack(null);
+                    slot.putStack(CompatWrapper.nullStack);
                 }
                 else
                 {
@@ -190,15 +180,12 @@ public class ContainerHealTable extends Container implements IHealer
                 }
                 else
                 {
-                    return null;
+                    return CompatWrapper.nullStack;
                 }
             }
 
-            if (itemstack != null && isItemValid(itemstack))
-            {
-                return itemstack;
-            }
-            return null;
+            if (itemstack != CompatWrapper.nullStack && isItemValid(itemstack)) { return itemstack; }
+            return CompatWrapper.nullStack;
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
     }

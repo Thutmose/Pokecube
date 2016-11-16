@@ -15,7 +15,7 @@ import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
+import thut.lib.CompatWrapper;
 
 public class BlockHandler
 {

@@ -14,7 +14,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.utils.CompatWrapper;
+import thut.lib.CompatWrapper;
 
 /** @author sebastien */
 public abstract class EntityDropPokemob extends EntityMovesPokemob

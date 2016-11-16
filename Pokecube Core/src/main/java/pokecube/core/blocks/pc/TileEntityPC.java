@@ -24,6 +24,7 @@ import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.packets.PacketPC;
 import thut.api.network.PacketHandler;
+import thut.lib.CompatWrapper;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
@@ -97,7 +98,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
-                if (stack != null) items.add(stack.getDisplayName());
+                if (stack != CompatWrapper.nullStack) items.add(stack.getDisplayName());
             }
             return items.toArray();
         }

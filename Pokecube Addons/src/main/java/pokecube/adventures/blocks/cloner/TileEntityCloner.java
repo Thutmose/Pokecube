@@ -33,9 +33,9 @@ import pokecube.adventures.blocks.cloner.BlockCloner.EnumType;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.network.PacketHandler;
+import thut.lib.CompatWrapper;
 
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityCloner extends TileEntity implements IInventory, ITickable, SimpleComponent

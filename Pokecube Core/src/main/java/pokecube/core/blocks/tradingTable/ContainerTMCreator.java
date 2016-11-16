@@ -7,6 +7,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import thut.lib.CompatWrapper;
 
 public class ContainerTMCreator extends Container
 {
@@ -73,7 +74,7 @@ public class ContainerTMCreator extends Container
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index)
     {
-        ItemStack itemstack = null;
+        ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
 
         if (slot != null && slot.getHasStack())
@@ -83,13 +84,14 @@ public class ContainerTMCreator extends Container
 
             if (index < 1)
             {
-                if (!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(), false)) { return null; }
+                if (!this.mergeItemStack(itemstack1, 1, this.inventorySlots.size(),
+                        false)) { return CompatWrapper.nullStack; }
             }
-            else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return null; }
+            else if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
 
             if (itemstack1.stackSize == 0)
             {
-                slot.putStack((ItemStack) null);
+                slot.putStack(CompatWrapper.nullStack);
             }
             else
             {

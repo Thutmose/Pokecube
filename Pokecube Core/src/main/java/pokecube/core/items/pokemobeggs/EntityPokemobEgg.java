@@ -26,6 +26,7 @@ import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public class EntityPokemobEgg extends EntityLiving
@@ -84,22 +85,19 @@ public class EntityPokemobEgg extends EntityLiving
             if (this.delayBeforeCanPickup > 0) { return false; }
 
             ItemStack itemstack = this.getHeldItemMainhand();
-            int i = itemstack.stackSize;
+            int i = CompatWrapper.getStackSize(itemstack);
             EntityPlayer player = (EntityPlayer) e;
             if (this.delayBeforeCanPickup <= 0 && (i <= 0 || player.inventory.addItemStackToInventory(itemstack)))
             {
                 player.onItemPickup(this, i);
-                if (itemstack.stackSize <= 0)
+                if (CompatWrapper.getStackSize(itemstack) <= 0)
                 {
                     this.setDead();
                 }
                 return true;
             }
         }
-        if (this.isEntityInvulnerable(source))
-        {
-            return false;
-        }
+        if (this.isEntityInvulnerable(source)) { return false; }
         this.setBeenAttacked();
         return false;
     }

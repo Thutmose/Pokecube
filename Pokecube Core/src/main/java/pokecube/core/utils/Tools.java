@@ -38,6 +38,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class Tools
 {
@@ -428,7 +429,7 @@ public class Tools
         if (name.equalsIgnoreCase("medium slow")) return 2;
         if (name.equalsIgnoreCase("slow")) return 3;
         if (name.equalsIgnoreCase("fluctuating")) return 5;
-        throw new IllegalArgumentException("Error parsing "+name);
+        throw new IllegalArgumentException("Error parsing " + name);
     }
 
     public static boolean hasMove(String move, IPokemob mob)
@@ -474,7 +475,9 @@ public class Tools
 
     public static boolean isSameStack(ItemStack a, ItemStack b)
     {
-        if ((a == CompatWrapper.nullStack || a.getItem() == null) || (b == CompatWrapper.nullStack || b.getItem() == null)) return false;
+        if ((a == CompatWrapper.nullStack || a.getItem() == null)
+                || (b == CompatWrapper.nullStack || b.getItem() == null))
+            return false;
         int[] aID = OreDictionary.getOreIDs(a);
         int[] bID = OreDictionary.getOreIDs(b);
         boolean check = a.getItem() == b.getItem();
@@ -597,19 +600,19 @@ public class Tools
                 tag = values.get(key);
             }
         }
-        if (id.isEmpty()) return null;
+        if (id.isEmpty()) return CompatWrapper.nullStack;
         resource = id.contains(":");
-        ItemStack stack = null;
+        ItemStack stack = CompatWrapper.nullStack;
         Item item = null;
         if (resource)
         {
             item = Item.REGISTRY.getObject(new ResourceLocation(id));
         }
         else stack = PokecubeItems.getStack(id, false);
-        if (stack != null && item == null) item = stack.getItem();
-        if (item == null) return null;
+        if (stack != CompatWrapper.nullStack && item == null) item = stack.getItem();
+        if (item == null) return CompatWrapper.nullStack;
         if (meta == -1) meta = 0;
-        if (stack == null) stack = new ItemStack(item, 1, meta);
+        if (stack == CompatWrapper.nullStack) stack = new ItemStack(item, 1, meta);
         stack.stackSize = size;
         if (!tag.isEmpty())
         {

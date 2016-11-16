@@ -51,10 +51,10 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityTameablePokemob implements IEntityAdditionalSpawnData

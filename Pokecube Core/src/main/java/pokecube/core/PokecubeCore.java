@@ -97,7 +97,6 @@ import pokecube.core.network.EntityProvider;
 import pokecube.core.network.NetworkWrapper;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.LogFormatter;
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
@@ -113,6 +112,7 @@ import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 import thut.core.common.handlers.PlayerDataHandler;
+import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
         modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"

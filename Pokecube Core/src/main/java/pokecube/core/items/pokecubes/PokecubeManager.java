@@ -14,9 +14,9 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class PokecubeManager
 {

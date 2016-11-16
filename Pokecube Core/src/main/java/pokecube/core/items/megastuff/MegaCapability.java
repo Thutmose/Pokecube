@@ -9,7 +9,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.utils.CompatWrapper;
+import thut.lib.CompatWrapper;
 
 public class MegaCapability implements ICapabilityProvider, IMegaCapability
 {

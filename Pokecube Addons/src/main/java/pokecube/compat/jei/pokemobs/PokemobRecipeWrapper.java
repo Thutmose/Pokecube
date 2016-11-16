@@ -86,70 +86,14 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
         {
             String[] biomes = recipe.data.biome.split(",");
 
-            class Checker
-            {
-                boolean checkPerType(Biome actualBiome, String biome)
-                {
-                    boolean specific = false;
-                    if (biome.startsWith("T")) biome = biome.substring(1);
-                    else specific = true;
-
-                    if (specific) { return Database.convertMoveName(biome)
-                            .equals(Database.convertMoveName(actualBiome.getBiomeName())); }
-
-                    String[] args = biome.split("\'");
-                    List<BiomeDictionary.Type> neededTypes = Lists.newArrayList();
-                    List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
-                    for (String s : args)
-                    {
-                        String name = s.substring(1);
-                        if (s.startsWith("B"))
-                        {
-                            for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                            {
-                                if (t.toString().equalsIgnoreCase(name))
-                                {
-                                    bannedTypes.add(t);
-                                }
-                            }
-                        }
-                        else if (s.startsWith("W"))
-                        {
-                            for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                            {
-                                if (t.toString().equalsIgnoreCase(name))
-                                {
-                                    neededTypes.add(t);
-                                }
-                            }
-                        }
-                    }
-                    Biome b = actualBiome;
-                    boolean correctType = true;
-                    boolean bannedType = false;
-                    boolean found = false;
-                    for (BiomeDictionary.Type t : neededTypes)
-                    {
-                        if (!found) found = BiomeDictionary.isBiomeOfType(b, t);
-                        correctType = correctType && BiomeDictionary.isBiomeOfType(b, t);
-                    }
-                    for (BiomeDictionary.Type t : bannedTypes)
-                    {
-                        bannedType = bannedType || BiomeDictionary.isBiomeOfType(b, t);
-                    }
-                    return correctType && found && !bannedType;
-                }
-            }
-
             List<String> biomeNames = Lists.newArrayList();
-            Checker check = new Checker();
             for (String biome : biomes)
             {
                 Iterator<Biome> it = Biome.REGISTRY.iterator();
                 while (it.hasNext())
                 {
                     Biome test = it.next();
-                    boolean valid = check.checkPerType(test, biome);
+                    boolean valid = checkPerType(test, biome);
                     if (valid)
                     {
                         biomeNames.add(test.getBiomeName());
@@ -183,6 +127,58 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
             tooltips.add(I18n.format("gui.jei.pokemob.evo.chance", var));
         }
         return tooltips;
+    }
+
+    boolean checkPerType(Biome actualBiome, String biome)
+    {
+        boolean specific = false;
+        if (biome.startsWith("T")) biome = biome.substring(1);
+        else specific = true;
+
+        if (specific) { return Database.convertMoveName(biome)
+                .equals(Database.convertMoveName(actualBiome.getBiomeName())); }
+
+        String[] args = biome.split("\'");
+        List<BiomeDictionary.Type> neededTypes = Lists.newArrayList();
+        List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
+        for (String s : args)
+        {
+            String name = s.substring(1);
+            if (s.startsWith("B"))
+            {
+                for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
+                {
+                    if (t.toString().equalsIgnoreCase(name))
+                    {
+                        bannedTypes.add(t);
+                    }
+                }
+            }
+            else if (s.startsWith("W"))
+            {
+                for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
+                {
+                    if (t.toString().equalsIgnoreCase(name))
+                    {
+                        neededTypes.add(t);
+                    }
+                }
+            }
+        }
+        Biome b = actualBiome;
+        boolean correctType = true;
+        boolean bannedType = false;
+        boolean found = false;
+        for (BiomeDictionary.Type t : neededTypes)
+        {
+            if (!found) found = BiomeDictionary.isBiomeOfType(b, t);
+            correctType = correctType && BiomeDictionary.isBiomeOfType(b, t);
+        }
+        for (BiomeDictionary.Type t : bannedTypes)
+        {
+            bannedType = bannedType || BiomeDictionary.isBiomeOfType(b, t);
+        }
+        return correctType && found && !bannedType;
     }
 
     @Override

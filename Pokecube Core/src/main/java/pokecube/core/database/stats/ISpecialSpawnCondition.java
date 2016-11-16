@@ -2,14 +2,17 @@ package pokecube.core.database.stats;
 
 import java.util.HashMap;
 
+import com.google.common.collect.Maps;
+
 import net.minecraft.entity.Entity;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 
 public interface ISpecialSpawnCondition
 {
 
-	public static final HashMap<Integer, ISpecialSpawnCondition> spawnMap = new HashMap<Integer, ISpecialSpawnCondition>();
+	public static final HashMap<PokedexEntry, ISpecialSpawnCondition> spawnMap = Maps.newHashMap();
 	
 	/**
 	 * Whether or not the pokemon can spawn, given the trainer is nearby, or is causing the spawn to occur

@@ -57,7 +57,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.Helpers;
+import pokecube.core.utils.CompatWrapper;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
@@ -394,7 +394,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     {
         if (worldObj != null && !this.worldObj.isRemote)
         {
-            setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != Helpers.nullStack);
+            setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != CompatWrapper.nullStack);
             if (this.pokeChest.getStackInSlot(1) != null)
             {
                 dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
@@ -430,7 +430,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             {
                 ItemStack itemstack = animalchest.getStackInSlot(j);
 
-                if (itemstack != Helpers.nullStack)
+                if (itemstack != CompatWrapper.nullStack)
                 {
                     this.pokeChest.setInventorySlotContents(j, itemstack.copy());
                 }
@@ -548,7 +548,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         for (int i = 0; i < this.pokeChest.getSizeInventory(); i++)
         {
             ItemStack stack;
-            if ((stack = this.pokeChest.getStackInSlot(i)) != Helpers.nullStack)
+            if ((stack = this.pokeChest.getStackInSlot(i)) != CompatWrapper.nullStack)
             {
                 stack.getItem().onUpdate(stack, worldObj, this, i, false);
             }
@@ -730,7 +730,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             ItemStack oldStack = getHeldItemMainhand();
             pokeChest.setInventorySlotContents(1, itemStack);
             getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
-            if (itemStack != Helpers.nullStack)
+            if (itemStack != CompatWrapper.nullStack)
             {
                 dataManager.set(HELDITEM, Optional.of(itemStack));
             }

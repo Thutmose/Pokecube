@@ -14,6 +14,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 
@@ -30,7 +31,7 @@ public class PokecubeManager
             {
                 byte slot = equipmentTags.getCompoundTagAt(i).getByte("Slot");
                 if (slot != 1) continue;
-                ItemStack held = ItemStack.loadItemStackFromNBT(equipmentTags.getCompoundTagAt(i));
+                ItemStack held = CompatWrapper.fromTag(equipmentTags.getCompoundTagAt(i));
                 return held;
             }
         }

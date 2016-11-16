@@ -50,6 +50,7 @@ import pokecube.core.items.pokecubes.RecipePokeseals;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -487,7 +488,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
 
                 if (slot >= 0 && slot < both.length)
                 {
-                    both[slot] = ItemStack.loadItemStackFromNBT(tag);
+                    both[slot] = CompatWrapper.fromTag(tag);
                 }
             }
         }

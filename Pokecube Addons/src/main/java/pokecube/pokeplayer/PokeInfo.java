@@ -14,6 +14,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.EntityTools;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
@@ -214,7 +215,7 @@ public class PokeInfo extends PlayerData
     @Override
     public void readFromNBT(NBTTagCompound tag)
     {
-        stack = ItemStack.loadItemStackFromNBT(tag);
+        stack = CompatWrapper.fromTag(tag);
         originalHeight = tag.getFloat("h");
         originalWidth = tag.getFloat("w");
         originalHP = tag.getFloat("hp");

@@ -25,6 +25,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
 
 public class TileEntityNest extends TileEntity implements ITickable, IInventory
@@ -170,7 +171,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
                 if (slot >= 0 && slot < inventory.length)
                 {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                    inventory[slot] = CompatWrapper.fromTag(tag);
                 }
             }
         }

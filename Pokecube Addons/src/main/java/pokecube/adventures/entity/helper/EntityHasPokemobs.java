@@ -22,6 +22,7 @@ import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
 
 public abstract class EntityHasPokemobs extends EntityHasMessages
@@ -207,7 +208,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {
-                pokecubes[i] = ItemStack.loadItemStackFromNBT(nbttaglist.getCompoundTagAt(i));
+                pokecubes[i] = CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i));
             }
         }
         if (nbt.hasKey("reward", 9))
@@ -217,7 +218,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             reward.clear();
             for (int i = 0; i < nbttaglist.tagCount(); ++i)
             {
-                this.reward.add(ItemStack.loadItemStackFromNBT(nbttaglist.getCompoundTagAt(i)));
+                this.reward.add(CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
             }
         }
         type = TypeTrainer.getTrainer(nbt.getString("type"));

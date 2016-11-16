@@ -33,6 +33,7 @@ import pokecube.adventures.blocks.cloner.BlockCloner.EnumType;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.network.PacketHandler;
 
@@ -598,7 +599,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
 
                 if (slot >= 0 && slot < inventory.length)
                 {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                    inventory[slot] = CompatWrapper.fromTag(tag);
                 }
             }
         }

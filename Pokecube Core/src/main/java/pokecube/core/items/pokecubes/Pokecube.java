@@ -30,6 +30,7 @@ import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -358,7 +359,7 @@ public class Pokecube extends Item implements IPokecube
         EntityPokecube entity = null;
         int id = PokecubeItems.getCubeId(cube.getItem());
         if (id < 0) return false;
-        ItemStack stack = ItemStack.copyItemStack(cube);
+        ItemStack stack = CompatWrapper.copy(cube);
         stack.stackSize = 1;
         entity = new EntityPokecube(world, thrower, stack);
         Vector3 temp = Vector3.getNewVector().set(thrower).add(0, thrower.getEyeHeight(), 0);
@@ -388,7 +389,7 @@ public class Pokecube extends Item implements IPokecube
         EntityPokecube entity = null;
         int id = PokecubeItems.getCubeId(cube.getItem());
         if (id < 0) return false;
-        ItemStack stack = ItemStack.copyItemStack(cube);
+        ItemStack stack = CompatWrapper.copy(cube);
         stack.stackSize = 1;
         entity = new EntityPokecube(world, thrower, stack);
         boolean rightclick = target == thrower;

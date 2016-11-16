@@ -18,7 +18,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.achievements.AchievementDefeatLeader;
 import pokecube.adventures.achievements.AchievementDefeatTrainer;
@@ -47,6 +46,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
 import thut.api.maths.Vector3;
 
@@ -115,10 +115,10 @@ public class PokecubeAdv
             e.printStackTrace();
         }
 
-        EntityRegistry.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
-        EntityRegistry.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
-        EntityRegistry.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
-        EntityRegistry.registerModEntity(EntityPokemartSeller.class, "pokecube:trainermerchant", 4, this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
+        CompatWrapper.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityPokemartSeller.class, "pokecube:trainermerchant", 4, this, 80, 3, true);
         PAEventsHandler events = new PAEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();
@@ -135,7 +135,6 @@ public class PokecubeAdv
         conf.postInit();
         RecipeHandler.register();
         DBLoader.load();
-        LegendaryConditions.registerSpecialConditions();
         int x = -3;
         int y = -2;
         Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,

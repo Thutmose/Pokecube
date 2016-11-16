@@ -51,7 +51,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
-import pokecube.core.utils.Helpers;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
@@ -1348,8 +1348,8 @@ public class PokedexEntry
 
     public ItemStack getRandomHeldItem()
     {
-        if (held.isEmpty()) return Helpers.nullStack;
-        ItemStack ret = Helpers.nullStack;
+        if (held.isEmpty()) return CompatWrapper.nullStack;
+        ItemStack ret = CompatWrapper.nullStack;
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         items.addAll(held.keySet());

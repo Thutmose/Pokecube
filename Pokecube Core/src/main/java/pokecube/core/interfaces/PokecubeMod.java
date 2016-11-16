@@ -16,8 +16,8 @@ import com.mojang.authlib.GameProfile;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityList.EntityEggInfo;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;

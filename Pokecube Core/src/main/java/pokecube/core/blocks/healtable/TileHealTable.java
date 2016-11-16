@@ -11,6 +11,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
 
 public class TileHealTable extends TileEntity implements IInventory, ITickable
@@ -181,7 +182,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
 
             if (slot >= 0 && slot < inventory.length)
             {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                inventory[slot] = CompatWrapper.fromTag(tag);
             }
         }
     }

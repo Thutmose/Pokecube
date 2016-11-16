@@ -97,6 +97,7 @@ import pokecube.core.network.EntityProvider;
 import pokecube.core.network.NetworkWrapper;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.LogFormatter;
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
@@ -372,15 +373,13 @@ public class PokecubeCore extends PokecubeMod
         PlayerDataHandler.dataMap.add(PokecubePlayerStats.class);
         PlayerDataHandler.dataMap.add(PokecubePlayerCustomData.class);
 
-        EntityRegistry.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
-        EntityRegistry.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80,
-                1, true);
-        EntityRegistry.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3,
+        CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
+        CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
                 true);
-        EntityRegistry.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
-                false);
-        EntityRegistry.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
-        EntityRegistry.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3, false);
+        CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
 
         if (config.villagePokecenters)
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());

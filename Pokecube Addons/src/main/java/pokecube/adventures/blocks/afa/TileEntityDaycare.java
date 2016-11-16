@@ -21,6 +21,7 @@ import pokecube.adventures.comands.Config;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 
 public class TileEntityDaycare extends TileEntityOwnable implements IInventory
@@ -254,7 +255,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
 
                 if (slot >= 0 && slot < inventory.length)
                 {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                    inventory[slot] = CompatWrapper.fromTag(tag);
                 }
             }
         }

@@ -33,6 +33,7 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.packets.PacketPokecube;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -70,7 +71,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
         static LootEntry createFromNBT(NBTTagCompound nbt)
         {
-            ItemStack loot = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("loot"));
+            ItemStack loot = CompatWrapper.fromTag(nbt.getCompoundTag("loot"));
             return new LootEntry(loot, nbt.getInteger("rolls"));
         }
 

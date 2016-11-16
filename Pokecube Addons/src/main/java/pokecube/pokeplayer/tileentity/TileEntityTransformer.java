@@ -16,6 +16,7 @@ import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
@@ -119,7 +120,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
         if (tagCompound.hasKey("stack"))
         {
             NBTTagCompound tag = tagCompound.getCompoundTag("stack");
-            stack = ItemStack.loadItemStackFromNBT(tag);
+            stack = CompatWrapper.fromTag(tag);
         }
         if (tagCompound.hasKey("nums"))
         {

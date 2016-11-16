@@ -55,7 +55,7 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.Helpers;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
@@ -70,7 +70,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public static boolean       multibox       = true;
 
     private int                 uid            = -1;
-    private ItemStack           pokecube       = Helpers.nullStack;
+    private ItemStack           pokecube       = CompatWrapper.nullStack;
     private int                 despawntimer   = 0;
 
     private float               scale;
@@ -811,9 +811,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 int j = nbttagcompound1.getByte("Slot") & 255;
                 if (j < this.pokeChest.getSizeInventory())
                 {
-                    this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+                    this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-                if (this.pokeChest.getStackInSlot(1) != Helpers.nullStack)
+                if (this.pokeChest.getStackInSlot(1) != CompatWrapper.nullStack)
                 {
                     dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
                 }
@@ -846,7 +846,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (visualsTag.hasKey(POKECUBE))
             {
                 NBTTagCompound pokecubeTag = visualsTag.getCompoundTag(POKECUBE);
-                this.setPokecube(ItemStack.loadItemStackFromNBT(pokecubeTag));
+                this.setPokecube(CompatWrapper.fromTag(pokecubeTag));
             }
         }
 
@@ -930,7 +930,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             int j = nbttagcompound1.getByte("Slot") & 255;
             if (j < this.pokeChest.getSizeInventory())
             {
-                this.pokeChest.setInventorySlotContents(j, ItemStack.loadItemStackFromNBT(nbttagcompound1));
+                this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
             }
         }
         handleArmourAndSaddle();
@@ -1007,7 +1007,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void setPokecube(ItemStack pokeballId)
     {
-        if (pokeballId != Helpers.nullStack)
+        if (pokeballId != CompatWrapper.nullStack)
         {
             pokeballId = pokeballId.copy();
             pokeballId.stackSize = 1;
@@ -1127,7 +1127,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         for (int i = 0; i < this.pokeChest.getSizeInventory(); ++i)
         {
             ItemStack itemstack = this.pokeChest.getStackInSlot(i);
-            if (itemstack != Helpers.nullStack)
+            if (itemstack != CompatWrapper.nullStack)
             {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("Slot", (byte) i);
@@ -1152,7 +1152,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
         visualsTag.setFloat(SCALE, (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);
-        if (getPokecube() != Helpers.nullStack)
+        if (getPokecube() != CompatWrapper.nullStack)
         {
             NBTTagCompound pokecubeTag = pokecube.writeToNBT(new NBTTagCompound());
             visualsTag.setTag(POKECUBE, pokecubeTag);

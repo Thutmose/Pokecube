@@ -9,6 +9,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.utils.CompatWrapper;
 
 public class MegaCapability implements ICapabilityProvider, IMegaCapability
 {
@@ -82,7 +83,7 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
         if (stack.getItem() instanceof ItemMegawearable) return true;
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("gemTag"))
         {
-            ItemStack stack2 = ItemStack.loadItemStackFromNBT(stack.getSubCompound("gemTag", false));
+            ItemStack stack2 = CompatWrapper.fromTag(stack.getSubCompound("gemTag", false));
             if (stack2 != null) return getEntry(stack2) != null;
         }
         return false;
@@ -127,7 +128,7 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
                 && stack.hasTagCompound()) { return Database.getEntry(stack.getTagCompound().getString("pokemon")); }
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("gemTag"))
         {
-            ItemStack stack2 = ItemStack.loadItemStackFromNBT(stack.getSubCompound("gemTag", false));
+            ItemStack stack2 = CompatWrapper.fromTag(stack.getSubCompound("gemTag", false));
             if (stack2 != null) return getEntry(stack2);
         }
         return null;

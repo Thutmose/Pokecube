@@ -14,6 +14,7 @@ import net.minecraft.util.text.ITextComponent;
 import pokecube.adventures.handlers.PASaveHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.CompatWrapper;
 
 public class InventoryBag implements IInventory
 {
@@ -120,7 +121,7 @@ public class InventoryBag implements IInventory
                 if (j >= 0 && j < load.getSizeInventory())
                 {
                     if (load.contents.containsKey(j)) continue;
-                    ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound);
+                    ItemStack itemstack = CompatWrapper.fromTag(nbttagcompound);
                     load.setInventorySlotContents(j, itemstack);
                 }
             }

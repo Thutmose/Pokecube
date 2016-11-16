@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.berries.ItemBerry;
+import pokecube.core.utils.CompatWrapper;
 import thut.api.maths.Vector3;
 
 /** This IAIRunnable will result in the mob occasionally emptying its inventory
@@ -42,7 +43,7 @@ public class AIStoreStuff extends AIBase
 
                     if (j >= 0)
                     {
-                        toAddTo.setInventorySlotContents(j, ItemStack.copyItemStack(itemStackIn));
+                        toAddTo.setInventorySlotContents(j, CompatWrapper.copy(itemStackIn));
                         toAddTo.getStackInSlot(j).animationsToGo = 5;
                         itemStackIn.stackSize = 0;
                         return true;
@@ -82,7 +83,7 @@ public class AIStoreStuff extends AIBase
     {
         for (int i = minIndex; i < inventory.getSizeInventory(); ++i)
         {
-            if (inventory.getStackInSlot(i) == null) { return i; }
+            if (inventory.getStackInSlot(i) == CompatWrapper.nullStack) { return i; }
         }
 
         return -1;
@@ -93,7 +94,7 @@ public class AIStoreStuff extends AIBase
     {
         for (int i = minIndex; i < inventory.getSizeInventory(); ++i)
         {
-            if (inventory.getStackInSlot(i) != null && inventory.getStackInSlot(i).getItem() == itemStackIn.getItem()
+            if (inventory.getStackInSlot(i) != CompatWrapper.nullStack && inventory.getStackInSlot(i).getItem() == itemStackIn.getItem()
                     && inventory.getStackInSlot(i).isStackable()
                     && inventory.getStackInSlot(i).stackSize < inventory.getStackInSlot(i).getMaxStackSize()
                     && inventory.getStackInSlot(i).stackSize < inventory.getInventoryStackLimit()
@@ -119,7 +120,7 @@ public class AIStoreStuff extends AIBase
         }
 
         if (j < 0) { return i; }
-        if (inventory.getStackInSlot(j) == null)
+        if (inventory.getStackInSlot(j) == CompatWrapper.nullStack)
         {
             inventory.setInventorySlotContents(j, new ItemStack(item, 0, itemStackIn.getMetadata()));
 

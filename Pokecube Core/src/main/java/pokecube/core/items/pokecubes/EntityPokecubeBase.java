@@ -37,6 +37,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -290,7 +291,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         tilt = nbttagcompound.getInteger("tilt");
         time = nbttagcompound.getInteger("time");
         NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
-        this.setEntityItemStack(ItemStack.loadItemStackFromNBT(nbttagcompound1));
+        this.setEntityItemStack(CompatWrapper.fromTag(nbttagcompound1));
 
         ItemStack item = getEntityItem();
 

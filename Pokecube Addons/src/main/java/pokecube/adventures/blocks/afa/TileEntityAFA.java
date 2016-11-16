@@ -39,6 +39,7 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.CompatWrapper;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
@@ -312,7 +313,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
 
                 if (slot >= 0 && slot < inventory.length)
                 {
-                    inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+                    inventory[slot] = CompatWrapper.fromTag(tag);
                 }
             }
         }

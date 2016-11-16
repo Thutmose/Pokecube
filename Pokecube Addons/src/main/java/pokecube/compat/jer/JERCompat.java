@@ -60,10 +60,12 @@ public class JERCompat
                                                                                               * mobScale,
                                                                                       pokemob.getPokedexEntry().length
                                                                                               * mobScale));
-                                                                      float zoom = (float) (1f / Math.sqrt(size));
+                                                                      float zoom = (float) (1f / Math.pow(size, 0.7));
                                                                       renderInfo.scale = zoom;
                                                                       GL11.glTranslated(0, 0, 0);
                                                                       GL11.glScalef(zoom, zoom, zoom);
+                                                                      renderInfo.pitch = 0;
+                                                                      renderInfo.yaw = 0;
                                                                       return renderInfo;
                                                                   }
                                                               };

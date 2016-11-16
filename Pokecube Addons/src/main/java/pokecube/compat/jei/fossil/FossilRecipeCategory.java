@@ -33,8 +33,7 @@ public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         ResourceLocation location = new ResourceLocation("minecraft", "textures/gui/container/crafting_table.png");
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
         localizedName = Translator.translateToLocal("tile.cloner.reanimator.name");
-        location = new ResourceLocation("pokecube_adventures", "textures/gui/fossilhelix.png");
-        icon = guiHelper.createDrawable(location, 0, 0, 16, 16);
+        icon = guiHelper.createDrawable(JEICompat.TABS, 0, 0, 16, 16);
     }
 
     @Override

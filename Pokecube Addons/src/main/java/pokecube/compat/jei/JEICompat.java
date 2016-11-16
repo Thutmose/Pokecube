@@ -29,6 +29,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.cloner.ContainerCloner;
 import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
 import pokecube.adventures.client.gui.GuiCloner;
@@ -54,6 +56,9 @@ public class JEICompat implements IModPlugin
     public static final String                            CLONER             = "pokecube_adventures.splicer";
     public static final String                            REANIMATOR         = "pokecube_adventures.reanimator";
     public static final String                            POKEMOB            = "pokecube_adventures.pokemobs";
+
+    public static final ResourceLocation                  TABS               = new ResourceLocation(PokecubeAdv.ID,
+            "textures/gui/jeitabs.png");
 
     public static final IIngredientHelper<PokedexEntry>   ingredientHelper   = new IIngredientHelper<PokedexEntry>()
                                                                              {

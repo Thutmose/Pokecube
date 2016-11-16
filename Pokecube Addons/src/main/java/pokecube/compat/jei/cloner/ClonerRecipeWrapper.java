@@ -66,7 +66,7 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     @Override
     public List<String> getTooltipStrings(int mouseX, int mouseY)
     {
-        if (recipe.energyCost > 0) { return Lists.newArrayList("RF Cost: " + recipe.energyCost); }
+        if (recipe.energyCost > 0) { return Lists.newArrayList("Energy: " + recipe.energyCost); }
         return null;
     }
 

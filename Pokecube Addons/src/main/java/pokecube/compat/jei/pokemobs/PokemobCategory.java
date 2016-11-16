@@ -25,15 +25,10 @@ public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
 
     public PokemobCategory(IGuiHelper guiHelper)
     {
-        ResourceLocation location = new ResourceLocation("minecraft", "textures/gui/container/crafting_table.png");// TODO
-                                                                                                                   // make
-                                                                                                                   // better
-                                                                                                                   // for
-                                                                                                                   // this.
+        ResourceLocation location = new ResourceLocation("minecraft", "textures/gui/container/crafting_table.png");
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
         localizedName = Translator.translateToLocal("gui.jei.pokemobs");
-        location = new ResourceLocation("pokecube_adventures", "textures/gui/mewhair.png");
-        icon = guiHelper.createDrawable(location, 0, 0, 16, 16);
+        icon = guiHelper.createDrawable(JEICompat.TABS, 32, 0, 16, 16);
     }
 
     @Override

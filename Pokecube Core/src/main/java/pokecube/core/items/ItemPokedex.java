@@ -38,7 +38,13 @@ public class ItemPokedex extends Item
         super();
     }
 
-    @Override
+    // 1.11
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
+        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
+    }
+
+    // 1.10
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
@@ -51,7 +57,14 @@ public class ItemPokedex extends Item
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
     }
 
-    @Override
+    // 1.11
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
+    }
+
+    // 1.10
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {

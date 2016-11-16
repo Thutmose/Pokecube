@@ -25,6 +25,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.pokeplayer.network.PacketTransform;
+import thut.lib.CompatWrapper;
 
 public class EventsHandler
 {
@@ -54,7 +55,8 @@ public class EventsHandler
         }
         else if (event.getItemStack() != null)
         {
-            ((Entity) pokemob).processInitialInteract(event.getEntityPlayer(), event.getItemStack(), event.getHand());
+            CompatWrapper.processInitialInteract(((Entity) pokemob), event.getEntityPlayer(), event.getHand(),
+                    event.getItemStack());
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
                     .getData(PokeInfo.class);
             info.save(event.getEntityPlayer());

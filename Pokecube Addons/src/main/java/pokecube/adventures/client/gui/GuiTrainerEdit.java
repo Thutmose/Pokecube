@@ -31,6 +31,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class GuiTrainerEdit extends GuiScreen
 {
@@ -70,7 +71,7 @@ public class GuiTrainerEdit extends GuiScreen
         else if (guibutton.id == 2)
         {
             sendChooseToServer();
-            mc.thePlayer.addChatComponentMessage(new TextComponentString(I18n.format("gui.trainer.saved")));
+            CompatWrapper.sendChatMessage(mc.thePlayer, new TextComponentString(I18n.format("gui.trainer.saved")));
         }
         else if (guibutton.id == 5)
         {

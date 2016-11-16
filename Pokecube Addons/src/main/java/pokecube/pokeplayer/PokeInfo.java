@@ -19,6 +19,7 @@ import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
 import thut.api.entity.IHungrymob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
+import thut.lib.Accessor;
 import thut.lib.CompatWrapper;
 
 public class PokeInfo extends PlayerData
@@ -58,7 +59,7 @@ public class PokeInfo extends PlayerData
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(originalHP);
         float height = originalHeight;
         float width = originalWidth;
-        player.setSize(width, height);
+        Accessor.size(player, width, height);
         setFlying(player, false);
         pokemob = null;
         stack = null;
@@ -77,7 +78,7 @@ public class PokeInfo extends PlayerData
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
-        player.setSize(width, height);
+        Accessor.size(player, width, height);
         setFlying(player, true);
         save(player);
         if (!player.worldObj.isRemote)
@@ -107,7 +108,7 @@ public class PokeInfo extends PlayerData
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
-        player.setSize(width, height);
+        Accessor.size(player, width, height);
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);

@@ -314,7 +314,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getExplosionState()
     {
-        return dataManager.get(BOOMSTATEDW);
+        return (int) dataManager.get(BOOMSTATEDW);
     }
 
     public String[] getLearnableMoves()
@@ -370,7 +370,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getMoveIndex()
     {
-        int ret = dataManager.get(MOVEINDEXDW);
+        int ret = (int) dataManager.get(MOVEINDEXDW);
         return Math.max(0, ret);
     }
 
@@ -416,7 +416,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public byte getStatus()
     {
-        return (byte) Math.max(0, dataManager.get(STATUSDW));
+        return (byte) Math.max(0, (int) dataManager.get(STATUSDW));
     }
 
     @Override

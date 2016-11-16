@@ -119,7 +119,15 @@ public class BlockHealTable extends Block implements ITileEntityProvider
         return this.getDefaultState().withProperty(FACING, enumfacing).withProperty(FIXED, Boolean.valueOf(top));
     }
 
-    @Override
+    // 1.11
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
+                hitZ);
+    }
+
+    // 1.10
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {

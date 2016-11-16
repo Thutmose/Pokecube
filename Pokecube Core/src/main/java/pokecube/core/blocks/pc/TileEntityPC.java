@@ -296,4 +296,10 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
         par1NBTTagCompound.setString("boundName", boundName);
         return par1NBTTagCompound;
     }
+
+    // 1.11
+    public boolean func_191420_l()
+    {
+        return true;
+    }
 }

@@ -18,6 +18,7 @@ import pokecube.core.moves.animations.Thunder;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
+import thut.lib.Accessor;
 
 public class MoveMagnitude extends Move_Basic
 {
@@ -71,7 +72,7 @@ public class MoveMagnitude extends Move_Basic
                         EntityCreeper creeper = (EntityCreeper) attacked;
                         if (move.type == PokeType.psychic && creeper.getHealth() > 0)
                         {
-                            creeper.explode();
+                            Accessor.explode(creeper);
                         }
                     }
                     if (sound != null)

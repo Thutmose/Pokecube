@@ -49,11 +49,11 @@ public class ItemTrainer extends Item
     @Override
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
-        par3List.add(new ItemStack(par1, 1, 0));
-        par3List.add(new ItemStack(par1, 1, 1));
-        par3List.add(new ItemStack(par1, 1, 2));
+        subItems.add(new ItemStack(itemIn, 1, 0));
+        subItems.add(new ItemStack(itemIn, 1, 1));
+        subItems.add(new ItemStack(itemIn, 1, 2));
     }
 
     /** Returns the unlocalized name of this item. This version accepts an
@@ -96,7 +96,7 @@ public class ItemTrainer extends Item
         return true;
     }
 
-    @Override
+    // 1.10
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
@@ -165,7 +165,7 @@ public class ItemTrainer extends Item
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 
-    @Override
+    // 1.10
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
@@ -185,6 +185,19 @@ public class ItemTrainer extends Item
         Block b = v.getBlock(worldIn);
         b.rotateBlock(worldIn, pos, EnumFacing.DOWN);
         return EnumActionResult.FAIL;
+    }
+
+    // 1.11
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
+        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
+    }
+
+    // 1.11
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
     }
 
 }

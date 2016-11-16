@@ -553,10 +553,14 @@ public class ItemPokemobEgg extends Item
         return s;
     }
 
-    /** Callback for item usage. If the item does something special on right
-     * clicking, he will have one of those. Return True if something happen and
-     * false if it don't. This is for ITEMS, not BLOCKS */
-    @Override
+    // 1.11
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
+    }
+
+    // 1.10
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {

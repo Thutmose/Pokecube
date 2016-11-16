@@ -219,7 +219,15 @@ public class BlockCloner extends Block implements ITileEntityProvider
         return BlockRenderLayer.TRANSLUCENT;
     }
 
-    @Override
+    // 1.11
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
+                hitZ);
+    }
+
+    // 1.10
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
@@ -360,7 +368,7 @@ public class BlockCloner extends Block implements ITileEntityProvider
                 // entity.posY,
                 // (float) entity.posZ));
                 // entity.setPosition(temp1.x, temp1.y, temp1.z);
-                entity.moveEntity(temp1.x, temp1.y, temp1.z);
+                CompatWrapper.moveEntitySelf(entity, temp1.x, temp1.y, temp1.z);
             }
             // Extra stuff to do with players.
             if (entity instanceof EntityPlayer)

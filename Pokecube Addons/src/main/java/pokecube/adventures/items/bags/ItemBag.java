@@ -10,6 +10,7 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -55,12 +56,16 @@ public class ItemBag extends Item
         return false;
     }
 
-    @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
         if (!world.isRemote) player.openGui(PokecubeAdv.instance, PokecubeAdv.GUIBAG_ID, player.getEntityWorld(),
                 InventoryBag.getBag(player).getPage() + 1, 0, 0);
-        return super.onItemRightClick(itemstack, world, player, hand);
+        return new ActionResult<>(EnumActionResult.PASS, itemstack);
+    }
+
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
+        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
     }
 }

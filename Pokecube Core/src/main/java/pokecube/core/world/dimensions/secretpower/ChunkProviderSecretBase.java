@@ -46,8 +46,14 @@ public class ChunkProviderSecretBase implements IChunkGenerator
         return Lists.newArrayList();
     }
 
-    @Override
+    // 1.10
     public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position)
+    {
+        return null;
+    }
+
+    // 1.11
+    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position, boolean p_180513_4_)
     {
         return null;
     }

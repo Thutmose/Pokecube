@@ -300,4 +300,10 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         nbt.setTag("Inventory", itemList);
         return nbt;
     }
+
+    // 1.11
+    public boolean func_191420_l()
+    {
+        return true;
+    }
 }

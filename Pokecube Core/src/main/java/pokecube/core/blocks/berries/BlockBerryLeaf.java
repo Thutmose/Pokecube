@@ -159,7 +159,13 @@ public class BlockBerryLeaf extends BlockLeaves implements ITileEntityProvider
         return false;
     }
 
-    @Override
+    // 1.11
+    public boolean isVisuallyOpaque(IBlockState state)
+    {
+        return false;
+    }
+
+    // 1.10
     public boolean isVisuallyOpaque()
     {
         return false;

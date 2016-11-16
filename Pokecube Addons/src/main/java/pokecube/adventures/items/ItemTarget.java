@@ -126,11 +126,11 @@ public class ItemTarget extends Item
     @Override
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
-        par3List.add(new ItemStack(par1, 1, 0));
-        par3List.add(new ItemStack(par1, 1, 1));
-        par3List.add(new ItemStack(par1, 1, 3));
+        subItems.add(new ItemStack(itemIn, 1, 0));
+        subItems.add(new ItemStack(itemIn, 1, 1));
+        subItems.add(new ItemStack(itemIn, 1, 3));
     }
 
     /** Returns the unlocalized name of this item. This version accepts an
@@ -155,7 +155,6 @@ public class ItemTarget extends Item
         return true;
     }
 
-    @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
@@ -279,7 +278,6 @@ public class ItemTarget extends Item
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
 
-    @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
@@ -382,6 +380,17 @@ public class ItemTarget extends Item
             return EnumActionResult.SUCCESS;
         }
         return EnumActionResult.FAIL;
+    }
+
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
+        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
+    }
+
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
     }
 
 }

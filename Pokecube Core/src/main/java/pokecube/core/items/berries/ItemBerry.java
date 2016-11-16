@@ -157,11 +157,11 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     @Override
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
         for (Integer i : BerryManager.berryNames.keySet())
         {
-            par3List.add(new ItemStack(par1, 1, i));
+            subItems.add(new ItemStack(itemIn, 1, i));
         }
     }
 
@@ -187,7 +187,14 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
         return false;
     }
 
-    @Override
+    // 1.11
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
+            EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
+    }
+
+    // 1.10
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {

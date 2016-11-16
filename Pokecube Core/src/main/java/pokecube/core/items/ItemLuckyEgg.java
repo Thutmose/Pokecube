@@ -27,7 +27,13 @@ public class ItemLuckyEgg extends Item
         this.setHasSubtypes(true);
     }
 
-    @Override
+    // 1.11
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
+        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
+    }
+
+    // 1.10
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {

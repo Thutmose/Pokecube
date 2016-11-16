@@ -141,13 +141,27 @@ public final class BlockAFA extends Block implements ITileEntityProvider
         return false;
     }
 
-    @Override
+    // 1.11
+    public boolean isVisuallyOpaque(IBlockState state)
+    {
+        return false;
+    }
+
+    // 1.10
     public boolean isVisuallyOpaque()
     {
         return false;
     }
 
-    @Override
+    // 1.11
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
+            EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
+    {
+        return onBlockActivated(worldIn, pos, state, playerIn, hand, playerIn.getHeldItem(hand), side, hitX, hitY,
+                hitZ);
+    }
+
+    // 1.10
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
@@ -155,5 +169,4 @@ public final class BlockAFA extends Block implements ITileEntityProvider
             playerIn.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
-
 }

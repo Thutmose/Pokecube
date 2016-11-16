@@ -75,7 +75,7 @@ public class PokecubeManager
         IPokemob poke = (IPokemob) pokemob;
         ItemStack cube;
         if ((cube = poke.getPokecube()) == null) return null;
-        return cube.getSubCompound(TagNames.POKESEAL, false);
+        return CompatWrapper.getTag(cube, TagNames.POKESEAL, false);
     }
 
     public static NBTTagCompound getSealTag(ItemStack stack)

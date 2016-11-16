@@ -366,7 +366,13 @@ public class EntityPokecube extends EntityPokecubeBase
         super.setDead();
     }
 
-    @Override
+    // 1.11
+    public boolean processInteract(EntityPlayer player, EnumHand hand)
+    {
+        return processInteract(player, hand, player.getHeldItem(hand));
+    }
+
+    // 1.10
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (!player.getEntityWorld().isRemote)

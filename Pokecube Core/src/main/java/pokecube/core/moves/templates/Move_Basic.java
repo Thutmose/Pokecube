@@ -46,6 +46,7 @@ import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.Accessor;
 
 /** @author Manchou */
 public class Move_Basic extends Move_Base implements IMoveConstants
@@ -134,7 +135,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             EntityCreeper creeper = (EntityCreeper) attacked;
             if (move.type == PokeType.psychic && creeper.getHealth() > 0)
             {
-                creeper.explode();
+                Accessor.explode(creeper);
             }
         }
         if (sound != null)

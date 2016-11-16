@@ -241,4 +241,10 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
         tagCompound.setTag("Inventory", itemList);
         return tagCompound;
     }
+
+    // 1.11
+    public boolean func_191420_l()
+    {
+        return true;
+    }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 
 public class WorldGenFossils implements IWorldGenerator
@@ -28,7 +29,8 @@ public class WorldGenFossils implements IWorldGenerator
             int randPosX = chunkX * 16 + random.nextInt(16);
             int randPosY = random.nextInt(40) + 5;
             int randPosZ = chunkZ * 16 + random.nextInt(16);
-            Biome bgb = world.getBiomeGenForCoords(new BlockPos(randPosX, 0, randPosZ));
+            Vector3 v = Vector3.getNewVector().set(randPosX, 0, randPosZ);
+            Biome bgb = v.getBiome(world);
             if (bgb == BiomeDatabase.getBiome("desertHills") || bgb == BiomeDatabase.getBiome("desert")
                     || bgb == BiomeDatabase.getBiome("jungle") || bgb == BiomeDatabase.getBiome("jungleHills")
                     || bgb == BiomeDatabase.getBiome("ocean"))

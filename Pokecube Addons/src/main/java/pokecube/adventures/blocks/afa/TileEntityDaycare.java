@@ -390,4 +390,10 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     {
         return 1;
     }
+
+    // 1.11
+    public boolean func_191420_l()
+    {
+        return true;
+    }
 }

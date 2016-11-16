@@ -19,6 +19,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -477,7 +478,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         return false;
     }
 
-    @Override
+    // 1.11
+    public void onInventoryChanged(IInventory inventory)
+    {
+        handleArmourAndSaddle();
+    }
+
+    // 1.10
     public void onInventoryChanged(InventoryBasic inventory)
     {
         handleArmourAndSaddle();

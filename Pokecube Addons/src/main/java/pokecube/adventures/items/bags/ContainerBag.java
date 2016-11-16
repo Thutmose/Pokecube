@@ -1,5 +1,7 @@
 package pokecube.adventures.items.bags;
 
+import java.util.List;
+
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -196,10 +198,18 @@ public class ContainerBag extends Container
         this.getSlot(par1).putStack(par2ItemStack);
     }
 
-    @Override
+    // 1.11
     @SideOnly(Side.CLIENT)
+    public void func_190896_a(List<ItemStack> stacks)
+    {
+        for (int i = 0; i < stacks.size(); ++i)
+        {
+            this.getSlot(i).putStack((ItemStack) stacks.get(i));
+        }
+    }
 
-    /** places itemstacks in first x slots, x being aitemstack.lenght */
+    // 1.10
+    @SideOnly(Side.CLIENT)
     public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
     {
         for (int i = 0; i < par1ArrayOfItemStack.length; ++i)

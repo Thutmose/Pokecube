@@ -435,7 +435,6 @@ public class EntityTrainer extends EntityHasPokemobs
         }
     }
 
-    @Override
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (player.capabilities.isCreativeMode && player.isSneaking())
@@ -612,5 +611,22 @@ public class EntityTrainer extends EntityHasPokemobs
         }
         nbt.setTag("DefeatList", nbttaglist);
         nbt.setBoolean("notifyDefeat", notifyDefeat);
+    }
+
+    //TODO new mechant method names.
+    public World func_190670_t_()
+    {
+        return this.worldObj;
+    }
+
+    //TODO new mechant method names.
+    public BlockPos func_190671_u_()
+    {
+        return new BlockPos(this);
+    }
+
+    public boolean processInteract(EntityPlayer player, EnumHand hand)
+    {
+        return processInteract(player, hand, player.getHeldItem(hand));
     }
 }

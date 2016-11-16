@@ -249,6 +249,7 @@ public class Commands extends CommandBase
     }
 
     private boolean doRecall(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
+            throws CommandException
     {
         if (args[0].equalsIgnoreCase("recall")) {
 
@@ -257,7 +258,7 @@ public class Commands extends CommandBase
     }
 
     private boolean doReset(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-            throws PlayerNotFoundException
+            throws CommandException
     {
         if (args[0].equalsIgnoreCase("resetreward"))
         {
@@ -297,7 +298,7 @@ public class Commands extends CommandBase
                     }
                     else
                     {
-                        throw new PlayerNotFoundException();
+                        throw new PlayerNotFoundException(args[1]);
                     }
                 }
                 else
@@ -385,7 +386,7 @@ public class Commands extends CommandBase
     }
 
     private boolean doFixAcievements(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
-            throws PlayerNotFoundException
+            throws CommandException
     {
         if (args[0].equalsIgnoreCase("fixFromPC") && args.length == 2)
         {

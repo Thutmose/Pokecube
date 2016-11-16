@@ -506,7 +506,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 f4 = Math.min(f1 * f3, f1);
 
                 this.moveRelative(f, f1, f4);
-                this.moveEntity(this.motionX, this.motionY, this.motionZ);
+                CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.800000011920929D;
                 this.motionY *= 0.800000011920929D;
                 this.motionZ *= 0.800000011920929D;
@@ -525,7 +525,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 d0 = this.posY;
                 this.moveRelative(f, f1, 0.02F);
-                this.moveEntity(this.motionX, this.motionY, this.motionZ);
+                CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.5D;
                 this.motionY *= 0.5D;
                 this.motionZ *= 0.5D;
@@ -612,7 +612,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     }
 
                 }
-                this.moveEntity(this.motionX, this.motionY, this.motionZ);
+                CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
 
                 if (this.worldObj.isRemote && (!this.worldObj.isAreaLoaded(getPosition(), 10)
                         || !this.worldObj.getChunkFromBlockCoords(getPosition()).isLoaded()))
@@ -961,8 +961,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     /////////////////////////// Interaction
     /////////////////////////// logic/////////////////////////////////////////////////////
+    // 1.11
+    public boolean processInteract(EntityPlayer player, EnumHand hand)
+    {
+        return processInteract(player, hand, player.getHeldItem(hand));
+    }
 
-    @Override
+    // 1.10
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
         if (hand != EnumHand.MAIN_HAND) return false;

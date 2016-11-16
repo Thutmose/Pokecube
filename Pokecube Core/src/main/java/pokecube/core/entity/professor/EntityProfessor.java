@@ -128,7 +128,13 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
         super.onUpdate();
     }
 
-    @Override
+    // 1.11
+    public boolean processInteract(EntityPlayer player, EnumHand hand)
+    {
+        return processInteract(player, hand, player.getHeldItem(hand));
+    }
+
+    // 1.10
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
         if (!worldObj.isRemote && hand == EnumHand.MAIN_HAND)
@@ -149,7 +155,8 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
                     {
                         boolean special = false;
                         if (PokecubePacketHandler.specialStarters.containsKey(player.getCachedUniqueIdString())
-                                || PokecubePacketHandler.specialStarters.containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
+                                || PokecubePacketHandler.specialStarters
+                                        .containsKey(player.getName().toLowerCase(java.util.Locale.ENGLISH)))
                         {
                             special = true;
                         }

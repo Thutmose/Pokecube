@@ -182,11 +182,11 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
     /** returns a list of blocks with the same ID, but different meta (eg: wood
      * returns 4 blocks) */
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
     {
         for (int i = 0; i < woodType.length; i++)
         {
-            par3List.add(new ItemStack(par1, 1, i));
+            list.add(new ItemStack(itemIn, 1, i));
         }
     }
 

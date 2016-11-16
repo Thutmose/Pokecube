@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
@@ -377,7 +376,8 @@ public class PokecubeCore extends PokecubeMod
         CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
                 true);
         CompatWrapper.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3, false);
+        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
+                false);
         CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
         CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
 
@@ -655,7 +655,7 @@ public class PokecubeCore extends PokecubeMod
                     if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                     {
                         pokemobEggs.put(new Integer(entry.getPokedexNb()),
-                                new EntityEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
+                                CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                     }
                     pokedexmap.put(entry, clazz);
                     for (PokedexEntry e : entry.forms.values())

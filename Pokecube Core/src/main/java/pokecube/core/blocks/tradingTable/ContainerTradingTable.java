@@ -1,5 +1,7 @@
 package pokecube.core.blocks.tradingTable;
 
+import java.util.List;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
@@ -91,10 +93,18 @@ public class ContainerTradingTable extends Container
         if (this.getSlot(par1) != null) this.getSlot(par1).putStack(par2ItemStack);
     }
 
-    @Override
+    // 1.11
     @SideOnly(Side.CLIENT)
+    public void func_190896_a(List<ItemStack> stacks)
+    {
+        for (int i = 0; i < stacks.size(); ++i)
+        {
+            this.getSlot(i).putStack((ItemStack) stacks.get(i));
+        }
+    }
 
-    /** places itemstacks in first x slots, x being aitemstack.lenght */
+    // 1.10
+    @SideOnly(Side.CLIENT)
     public void putStacksInSlots(ItemStack[] par1ArrayOfItemStack)
     {
         for (int i = 0; i < par1ArrayOfItemStack.length; ++i)

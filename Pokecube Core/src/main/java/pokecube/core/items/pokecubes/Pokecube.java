@@ -253,9 +253,13 @@ public class Pokecube extends Item implements IPokecube
         return x;
     }
 
-    @Override
-    /** Called whenever this item is equipped and the right mouse button is
-     * pressed. Args: itemStack, world, entityPlayer */
+    // 1.11
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
+    {
+        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
+    }
+
+    // 1.10
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {

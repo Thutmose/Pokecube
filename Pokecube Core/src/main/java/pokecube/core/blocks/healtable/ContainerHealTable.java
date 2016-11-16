@@ -129,7 +129,7 @@ public class ContainerHealTable extends Container implements IHealer
         {
             ItemStack stack_in_slot = slot_object.getStack();
 
-            if (stack_in_slot.stackSize == 0)
+            if (!CompatWrapper.isValid(stack_in_slot))
             {
                 slot_object.putStack(CompatWrapper.nullStack);
             }

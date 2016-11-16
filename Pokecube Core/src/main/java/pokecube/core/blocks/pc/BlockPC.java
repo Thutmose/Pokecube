@@ -124,10 +124,7 @@ public class BlockPC extends Block implements ITileEntityProvider
 
         if (inventoryPC != null)
         {
-            if (worldIn.isRemote)
-            {
-                return true;
-            }
+            if (worldIn.isRemote) { return true; }
             playerIn.openGui(PokecubeMod.core, Config.GUIPC_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
             return true;
         }
@@ -135,10 +132,10 @@ public class BlockPC extends Block implements ITileEntityProvider
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-            int meta, EntityLivingBase placer)
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
+            float hitZ, int meta, EntityLivingBase placer, ItemStack stack)
     {
-        TileEntity te = worldIn.getTileEntity(pos);
+        TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityOwnable)
         {
             TileEntityOwnable tile = (TileEntityOwnable) te;

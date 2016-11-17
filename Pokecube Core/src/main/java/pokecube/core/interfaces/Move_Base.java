@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import pokecube.core.database.moves.MoveEntry;
+import pokecube.core.database.moves.MoveEntry.Category;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
@@ -261,5 +262,15 @@ public abstract class Move_Base
     {
         this.sound = new SoundEvent(new ResourceLocation(sound));
         return this;
+    }
+
+    public Category getCategory(IPokemob user)
+    {
+        return getCategory();
+    }
+
+    public Category getCategory()
+    {
+        return Category.values()[move.category];
     }
 }

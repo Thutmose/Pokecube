@@ -421,7 +421,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if (attacked instanceof IPokemob)
         {
-            attackStrength = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, packet.getMove().move.category,
+            attackStrength = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, packet.getMove().getCategory(attacker),
                     PWR, packet);
 
             int moveAcc = packet.getMove().move.accuracy;

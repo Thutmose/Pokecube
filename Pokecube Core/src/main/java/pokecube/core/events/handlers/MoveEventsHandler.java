@@ -393,7 +393,7 @@ public class MoveEventsHandler
         }
         if (target != null && target.getMoveStats().substituteHP > 0 && !user)
         {
-            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().move.category,
+            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().getCategory(attacker),
                     move.PWR, move);
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "green");
             target.displayMessageToOwner(mess);

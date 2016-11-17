@@ -1,5 +1,6 @@
 package pokecube.compat.jei.pokemobs;
 
+import java.awt.Rectangle;
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,6 +67,8 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
     public List<String> getTooltipStrings(int mouseX, int mouseY)
     {
         List<String> tooltips = Lists.newArrayList();
+        Rectangle arrow = new Rectangle(44, 18, 32, 17);
+        if (!arrow.contains(mouseX, mouseY)) return tooltips;
         if (recipe.data.level > 0)
         {
             tooltips.add(I18n.format("gui.jei.pokemob.evo.level", recipe.data.level));

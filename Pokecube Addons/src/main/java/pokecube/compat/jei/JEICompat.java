@@ -136,7 +136,7 @@ public class JEICompat implements IModPlugin
                                                                                  }
                                                                              };
 
-    public static final IIngredientRenderer<PokedexEntry> ingredientRenderer = new IIngredientRenderer<PokedexEntry>()
+    public static final IIngredientRenderer<PokedexEntry> ingredientRendererInput = new IIngredientRenderer<PokedexEntry>()
                                                                              {
 
                                                                                  @Override
@@ -161,6 +161,97 @@ public class JEICompat implements IModPlugin
                                                                                      GL11.glTranslated(xPosition + 8,
                                                                                              yPosition + 17, 10);
                                                                                      double scale = 1.1;
+                                                                                     GL11.glScaled(scale, scale, scale);
+                                                                                     EntityLiving entity = (EntityLiving) pokemob;
+
+                                                                                     float size = 0;
+
+                                                                                     float mobScale = pokemob.getSize();
+                                                                                     size = Math.max(
+                                                                                             pokemob.getPokedexEntry().width
+                                                                                                     * mobScale,
+                                                                                             Math.max(
+                                                                                                     pokemob.getPokedexEntry().height
+                                                                                                             * mobScale,
+                                                                                                     pokemob.getPokedexEntry().length
+                                                                                                             * mobScale));
+
+                                                                                     GL11.glPushMatrix();
+                                                                                     float zoom = (float) (12f
+                                                                                             / Math.pow(size, 0.7));
+                                                                                     GL11.glScalef(-zoom, zoom, zoom);
+                                                                                     GL11.glRotatef(180F, 0.0F, 0.0F,
+                                                                                             1.0F);
+                                                                                     entity.rotationYawHead = entity.prevRotationYawHead;
+                                                                                     RenderHelper
+                                                                                             .enableStandardItemLighting();
+
+                                                                                     GL11.glTranslatef(0.0F,
+                                                                                             (float) entity
+                                                                                                     .getYOffset(),
+                                                                                             0.0F);
+
+                                                                                     int i = 15728880;
+                                                                                     int j1 = i % 65536;
+                                                                                     int k1 = i / 65536;
+                                                                                     OpenGlHelper
+                                                                                             .setLightmapTextureCoords(
+                                                                                                     OpenGlHelper.lightmapTexUnit,
+                                                                                                     j1 / 1.0F,
+                                                                                                     k1 / 1.0F);
+                                                                                     Minecraft.getMinecraft()
+                                                                                             .getRenderManager()
+                                                                                             .doRenderEntity(entity, 0,
+                                                                                                     0, 0, 0, 1.5F,
+                                                                                                     false);
+                                                                                     RenderHelper
+                                                                                             .disableStandardItemLighting();
+                                                                                     GL11.glPopMatrix();
+                                                                                     GL11.glPopMatrix();
+                                                                                 }
+
+                                                                                 @Override
+                                                                                 public List<String> getTooltip(
+                                                                                         Minecraft minecraft,
+                                                                                         PokedexEntry ingredient)
+                                                                                 {
+                                                                                     return Lists.newArrayList(
+                                                                                             ingredient.getName());
+                                                                                 }
+
+                                                                                 @Override
+                                                                                 public FontRenderer getFontRenderer(
+                                                                                         Minecraft minecraft,
+                                                                                         PokedexEntry ingredient)
+                                                                                 {
+                                                                                     return minecraft.fontRendererObj;
+                                                                                 }
+                                                                             };
+    public static final IIngredientRenderer<PokedexEntry> ingredientRendererOutput = new IIngredientRenderer<PokedexEntry>()
+                                                                             {
+
+                                                                                 @Override
+                                                                                 public void render(Minecraft minecraft,
+                                                                                         int xPosition, int yPosition,
+                                                                                         PokedexEntry entry)
+                                                                                 {
+                                                                                     if (entry == null) return;
+
+                                                                                     IPokemob pokemob = EventsHandlerClient.renderMobs
+                                                                                             .get(entry);
+                                                                                     if (pokemob == null)
+                                                                                     {
+                                                                                         pokemob = (IPokemob) PokecubeMod.core
+                                                                                                 .createPokemob(entry,
+                                                                                                         minecraft.theWorld);
+                                                                                         if (pokemob == null) return;
+                                                                                         EventsHandlerClient.renderMobs
+                                                                                                 .put(entry, pokemob);
+                                                                                     }
+                                                                                     GL11.glPushMatrix();
+                                                                                     GL11.glTranslated(xPosition + 12,
+                                                                                             yPosition + 22, 10);
+                                                                                     double scale = 1.375;
                                                                                      GL11.glScaled(scale, scale, scale);
                                                                                      EntityLiving entity = (EntityLiving) pokemob;
 
@@ -356,6 +447,6 @@ public class JEICompat implements IModPlugin
         {
             relevant.add(r.pokedexEntry);
         }
-        registry.register(PokedexEntry.class, relevant, ingredientHelper, ingredientRenderer);
+        registry.register(PokedexEntry.class, relevant, ingredientHelper, ingredientRendererInput);
     }
 }

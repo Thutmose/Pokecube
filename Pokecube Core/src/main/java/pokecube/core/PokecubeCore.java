@@ -114,7 +114,7 @@ import thut.core.common.handlers.PlayerDataHandler;
 import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
-        modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:Forge@"
+        modid = PokecubeMod.ID, name = "Pokecube", version = PokecubeMod.VERSION, dependencies = "required-after:forge@"
                 + PokecubeMod.MINFORGEVERSION
                 + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = PokecubeMod.MCVERSIONS, acceptableRemoteVersions = PokecubeMod.MINVERSION, updateJSON = PokecubeMod.UPDATEURL, guiFactory = "pokecube.core.client.gui.config.ModGuiFactory") // @formatter:on
 public class PokecubeCore extends PokecubeMod

@@ -438,6 +438,7 @@ public class MovesUtils implements IMoveConstants
 
     public static Move_Base getMoveFromName(String moveName)
     {
+        if (moveName == null) return null;
         Move_Base ret = moves.get(moveName);
         return ret;
     }

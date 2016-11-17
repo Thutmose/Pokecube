@@ -62,7 +62,7 @@ public class PokecubeMobs implements IMobProvider
     public static final String VERSION    = "@VERSION@";
     public static final String UPDATEURL  = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/mobs.json";
 
-    public final static String MCVERSIONS = "[1.9.4]";
+    public final static String MCVERSIONS = "[1.9.4,1.12]";
 
     public PokecubeMobs()
     {

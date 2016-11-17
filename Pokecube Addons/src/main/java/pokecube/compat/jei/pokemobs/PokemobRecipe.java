@@ -30,7 +30,7 @@ public class PokemobRecipe implements IRecipe
     @Override
     public int getRecipeSize()
     {
-        return 9;
+        return 2;
     }
 
     @Override

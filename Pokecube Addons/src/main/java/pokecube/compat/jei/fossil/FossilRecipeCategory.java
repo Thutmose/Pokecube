@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.IRecipeCategory;
 import mezz.jei.util.Translator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.compat.jei.JEICompat;
 import pokecube.compat.jei.cloner.ClonerRecipeWrapper;
 import pokecube.core.database.PokedexEntry;
@@ -30,7 +31,7 @@ public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
 
     public FossilRecipeCategory(IGuiHelper guiHelper)
     {
-        ResourceLocation location = new ResourceLocation("minecraft", "textures/gui/container/crafting_table.png");
+        ResourceLocation location = new ResourceLocation(PokecubeAdv.ID, "textures/gui/clonergui.png");
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
         localizedName = Translator.translateToLocal("tile.cloner.reanimator.name");
         icon = guiHelper.createDrawable(JEICompat.TABS, 0, 0, 16, 16);
@@ -76,7 +77,7 @@ public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     public void setRecipe(IRecipeLayout recipeLayout, ClonerRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        recipeLayout.getIngredientsGroup(PokedexEntry.class).init(craftOutputSlot, false, JEICompat.ingredientRenderer,
+        recipeLayout.getIngredientsGroup(PokedexEntry.class).init(craftOutputSlot, false, JEICompat.ingredientRendererInput,
                 94, 18, 16, 16, 0, 0);
         for (int y = 0; y < 3; ++y)
         {

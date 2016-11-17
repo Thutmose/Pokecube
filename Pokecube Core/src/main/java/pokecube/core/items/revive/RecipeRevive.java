@@ -12,10 +12,11 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TagNames;
+import thut.lib.CompatWrapper;
 
 public class RecipeRevive implements IRecipe
 {
-    private ItemStack healed;
+    private ItemStack healed = CompatWrapper.nullStack;
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting p_77572_1_)
@@ -44,17 +45,17 @@ public class RecipeRevive implements IRecipe
     @Override
     public boolean matches(InventoryCrafting craftMatrix, World world)
     {
-        healed = null;
+        healed = CompatWrapper.nullStack;
         boolean revive = false;
         boolean pokeseal = false;
-        ItemStack other = null;
-        ItemStack seal = null;
+        ItemStack other = CompatWrapper.nullStack;
+        ItemStack seal = CompatWrapper.nullStack;
 
         int n = 0;
         for (int i = 0; i < craftMatrix.getSizeInventory(); i++)
         {
             ItemStack stack = craftMatrix.getStackInSlot(i);
-            if (stack != null)
+            if (CompatWrapper.isValid(stack))
             {
                 n++;
                 if (stack.hasTagCompound() && PokecubeManager.isFilled(stack)) other = stack;
@@ -62,8 +63,8 @@ public class RecipeRevive implements IRecipe
                 if (stack.getItem() == PokecubeItems.getEmptyCube(-2)) seal = stack;
             }
         }
-        revive = revive && other != null;
-        pokeseal = seal != null && other != null;
+        revive = revive && CompatWrapper.isValid(other);
+        pokeseal = CompatWrapper.isValid(seal) && CompatWrapper.isValid(other);
         if (n != 2) return false;
 
         if (pokeseal)
@@ -81,15 +82,15 @@ public class RecipeRevive implements IRecipe
         else if (revive)
         {
             ItemStack stack = other;
-            if (stack != null && stack.hasTagCompound() && PokecubeManager.isFilled(stack))
+            if (CompatWrapper.isValid(stack) && stack.hasTagCompound() && PokecubeManager.isFilled(stack))
             {
                 if (stack.getItemDamage() != 32767) return false;
                 healed = stack.copy();
                 if (stack.getItemDamage() == 32767) PokecubeManager.heal(healed);
             }
-            return healed != null;
+            return CompatWrapper.isValid(healed);
         }
-        return healed != null;
+        return CompatWrapper.isValid(healed);
     }
 
 }

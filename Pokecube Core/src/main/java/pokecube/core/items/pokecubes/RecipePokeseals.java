@@ -14,10 +14,11 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import pokecube.core.PokecubeItems;
 import pokecube.core.utils.TagNames;
+import thut.lib.CompatWrapper;
 
 public class RecipePokeseals implements IRecipe
 {
-    private ItemStack toCraft;
+    private ItemStack toCraft = CompatWrapper.nullStack;
     // private static final String __OBFID = "CL_00000083";
 
     /** Returns an Item that is the result of this recipe */
@@ -51,7 +52,7 @@ public class RecipePokeseals implements IRecipe
     @Override
     public boolean matches(InventoryCrafting craft, World world)
     {
-        this.toCraft = null;
+        this.toCraft = CompatWrapper.nullStack;
         int cube = 0;
         int paper = 0;
         int gunpowder = 0;
@@ -65,7 +66,7 @@ public class RecipePokeseals implements IRecipe
         {
             ItemStack itemstack = craft.getStackInSlot(k1);
 
-            if (itemstack != null)
+            if (CompatWrapper.isValid(itemstack))
             {
                 if (itemstack.getItem() == PokecubeItems.getEmptyCube(-2)
                         && PokecubeManager.isFilled(itemstack) == false)
@@ -128,7 +129,7 @@ public class RecipePokeseals implements IRecipe
             {
                 ItemStack itemstack2 = craft.getStackInSlot(l1);
 
-                if (itemstack2 != null)
+                if (CompatWrapper.isValid(itemstack2))
                 {
                     if (itemstack2.getItem() == Items.COAL)
                     {

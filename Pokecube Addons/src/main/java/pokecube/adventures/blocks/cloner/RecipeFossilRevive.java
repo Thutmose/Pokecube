@@ -10,11 +10,14 @@ import com.google.common.collect.Maps;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecipe
 {
@@ -135,28 +138,24 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
         if (remainIndex.isEmpty()) return super.getRemainingItems(inv);
-        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
-        for (int i = 0; i < aitemstack.length; ++i)
+        NonNullList<ItemStack> aitemstack = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+        for (int i = 0; i < aitemstack.size(); ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
 
             boolean remain = false;
-            if (itemstack != null) for (Integer i1 : remainIndex)
+            if (CompatWrapper.isValid(itemstack)) for (Integer i1 : remainIndex)
             {
                 ItemStack stack = recipeItems.get(i1);
                 if (stack.getMetadata() == 32767) remain = itemstack.getItem() == stack.getItem();
                 else remain = Tools.isSameStack(itemstack, stack);
             }
-            if (!remain)
+            if (remain)
             {
-                aitemstack[i] = null;
-            }
-            else
-            {
-                aitemstack[i] = itemstack.copy();
+                aitemstack.set(i, itemstack.copy());
             }
         }
         return aitemstack;

@@ -9,7 +9,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import pokecube.core.PokecubeItems;
 import pokecube.core.utils.TagNames;
 
@@ -39,10 +41,9 @@ public class RecipePokeseals implements IRecipe
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
-        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-        return ret;
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
     /** Used to check if a recipe matches current crafting inventory */

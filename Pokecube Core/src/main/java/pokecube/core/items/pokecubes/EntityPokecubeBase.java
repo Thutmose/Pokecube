@@ -2,8 +2,6 @@ package pokecube.core.items.pokecubes;
 
 import java.util.UUID;
 
-import com.google.common.base.Optional;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -43,38 +41,38 @@ import thut.lib.CompatWrapper;
 
 public class EntityPokecubeBase extends EntityLiving implements IEntityAdditionalSpawnData, IProjectile
 {
-    public static SoundEvent                                POKECUBESOUND;
-    static final DataParameter<Integer>                     ENTITYID       = EntityDataManager
+    public static SoundEvent                      POKECUBESOUND;
+    static final DataParameter<Integer>           ENTITYID       = EntityDataManager
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
-    private static final DataParameter<Optional<ItemStack>> ITEM           = EntityDataManager
-            .<Optional<ItemStack>> createKey(EntityPokecube.class, DataSerializers.OPTIONAL_ITEM_STACK);
-    static final DataParameter<Boolean>                     RELEASING      = EntityDataManager
+    private static final DataParameter<ItemStack> ITEM           = EntityDataManager
+            .<ItemStack> createKey(EntityPokecube.class, DataSerializers.OPTIONAL_ITEM_STACK);
+    static final DataParameter<Boolean>           RELEASING      = EntityDataManager
             .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
 
-    public static boolean                                   SEEKING        = true;
+    public static boolean                         SEEKING        = true;
 
     /** Seems to be some sort of timer for animating an arrow. */
-    public int                                              arrowShake;
+    public int                                    arrowShake;
     /** 1 if the player can pick up the arrow */
-    public int                                              canBePickedUp;
-    public boolean                                          isLoot         = false;
-    protected int                                           inData;
-    protected boolean                                       inGround;
-    public UUID                                             shooter;
-    public EntityLivingBase                                 shootingEntity;
+    public int                                    canBePickedUp;
+    public boolean                                isLoot         = false;
+    protected int                                 inData;
+    protected boolean                             inGround;
+    public UUID                                   shooter;
+    public EntityLivingBase                       shootingEntity;
 
-    public double                                           speed          = 2;
-    public EntityLivingBase                                 targetEntity;
-    public Vector3                                          targetLocation = Vector3.getNewVector();
+    public double                                 speed          = 2;
+    public EntityLivingBase                       targetEntity;
+    public Vector3                                targetLocation = Vector3.getNewVector();
 
     /** The owner of this arrow. */
-    protected int                                           ticksInGround;
-    protected Block                                         tile;
-    protected BlockPos                                      tilePos;
-    public int                                              tilt           = -1;
-    public int                                              time           = 0;
-    protected Vector3                                       v0             = Vector3.getNewVector();
-    protected Vector3                                       v1             = Vector3.getNewVector();
+    protected int                                 ticksInGround;
+    protected Block                               tile;
+    protected BlockPos                            tilePos;
+    public int                                    tilt           = -1;
+    public int                                    time           = 0;
+    protected Vector3                             v0             = Vector3.getNewVector();
+    protected Vector3                             v1             = Vector3.getNewVector();
 
     public EntityPokecubeBase(World worldIn)
     {
@@ -104,7 +102,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     protected void entityInit()
     {
         super.entityInit();
-        this.getDataManager().register(ITEM, Optional.<ItemStack> absent());
+        this.getDataManager().register(ITEM, CompatWrapper.nullStack);
         getDataManager().register(RELEASING, false);
         getDataManager().register(ENTITYID, -1);
     }
@@ -114,7 +112,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
      * Block.stone) */
     public ItemStack getEntityItem()
     {
-        ItemStack itemstack = (ItemStack) ((Optional<?>) this.getDataManager().get(ITEM)).orNull();
+        ItemStack itemstack = this.getDataManager().get(ITEM);
         return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
     }
 
@@ -141,7 +139,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     /** Sets the ItemStack for this entity */
     public void setEntityItemStack(ItemStack stack)
     {
-        this.getDataManager().set(ITEM, Optional.fromNullable(stack));
+        this.getDataManager().set(ITEM, stack);
         this.getDataManager().setDirty(ITEM);
     }
 

@@ -35,9 +35,9 @@ public class WearablesCompat
                         if (MegaCapability.matches(stack, toEvolve)) return true;
                     }
                 }
-                for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                for (int i = 0; i < player.inventory.armorInventory.size(); i++)
                 {
-                    ItemStack stack = player.inventory.armorInventory[i];
+                    ItemStack stack = player.inventory.armorInventory.get(i);
                     if (stack != null)
                     {
                         if (MegaCapability.matches(stack, toEvolve)) return true;

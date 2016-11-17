@@ -9,8 +9,6 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -19,6 +17,7 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityMultiPart;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.effect.EntityLightningBolt;
@@ -484,7 +483,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     /** Tries to moves the entity by the passed in displacement. Args: x, y,
      * z */
     @Override
-    public void moveEntity(double x, double y, double z)
+    public void moveEntity(MoverType type, double x, double y, double z)
     {
         if (!this.addedToChunk) return;
         boolean normalSize = this.height > 0.5 && this.width < 1 && this.width > 0.25 && this.length < 1
@@ -492,7 +491,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!multibox || normalSize)
         {
             this.noClip = false;
-            super.moveEntity(x, y, z);
+            super.moveEntity(type, x, y, z);
             return;
         }
         else if (aabbs != null)
@@ -813,14 +812,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 {
                     this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-                if (this.pokeChest.getStackInSlot(1) != CompatWrapper.nullStack)
-                {
-                    dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
-                }
-                else
-                {
-                    dataManager.set(HELDITEM, Optional.<ItemStack> absent());
-                }
+                dataManager.set(HELDITEM, this.pokeChest.getStackInSlot(1));
             }
             handleArmourAndSaddle();
         }

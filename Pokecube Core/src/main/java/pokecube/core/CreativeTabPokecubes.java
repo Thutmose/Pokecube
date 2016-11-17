@@ -5,7 +5,7 @@ package pokecube.core;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -21,9 +21,9 @@ public class CreativeTabPokecubes extends CreativeTabs
     /** the itemID for the item to be displayed on the tab */
     @Override
     @SideOnly(Side.CLIENT)
-    public Item getTabIconItem()
+    public ItemStack getTabIconItem()
     {
-        return PokecubeItems.getItem("pokecube");
+        return PokecubeItems.getStack("pokecube");
     }
 
     @Override

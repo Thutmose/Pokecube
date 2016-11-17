@@ -11,6 +11,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -39,26 +40,22 @@ public class ContainerCloner extends Container
         }
 
         @Override
-        public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack)
+        public ItemStack func_190901_a(EntityPlayer playerIn, ItemStack stack)
         {
             ItemStack vanilla = CraftingManager.getInstance().findMatchingRecipe(cloner.craftMatrix, cloner.getWorld());
-            if (vanilla != null)
-            {
-                super.onPickupFromSlot(playerIn, stack);
-                return;
-            }
+            if (vanilla != null) { return super.func_190901_a(playerIn, stack); }
             if (cloner.currentProcess != null) cloner.currentProcess.reset();
             else cloner.currentProcess = cloner.cloneProcess;
             net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack,
                     cloner.craftMatrix);
             this.onCrafting(stack);
             net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
-            ItemStack[] aitemstack = cloner.currentProcess.recipe.getRemainingItems(cloner.craftMatrix);
+            NonNullList<ItemStack> aitemstack = cloner.currentProcess.recipe.getRemainingItems(cloner.craftMatrix);
             net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
-            for (int i = 0; i < aitemstack.length; ++i)
+            for (int i = 0; i < aitemstack.size(); ++i)
             {
                 ItemStack itemstack = cloner.craftMatrix.getStackInSlot(i);
-                ItemStack itemstack1 = aitemstack[i];
+                ItemStack itemstack1 = aitemstack.get(i);
 
                 if (CompatWrapper.isValid(itemstack))
                 {
@@ -79,11 +76,13 @@ public class ContainerCloner extends Container
                     }
                     else if (!playerIn.inventory.addItemStackToInventory(itemstack1))
                     {
-                        playerIn.dropItem(itemstack1, false);
+                        cloner.setField(0, 0);
+                        return itemstack1;
                     }
                 }
             }
             cloner.setField(0, 0);
+            return CompatWrapper.nullStack;
         }
 
     }
@@ -245,7 +244,12 @@ public class ContainerCloner extends Container
             }
             if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper
                     .getStackSize(itemstack)) { return CompatWrapper.nullStack; }
-            slot.onPickupFromSlot(playerIn, itemstack1);
+            ItemStack itemstack2 = slot.func_190901_a(playerIn, itemstack1);
+
+            if (index == 0)
+            {
+                playerIn.dropItem(itemstack2, false);
+            }
         }
         return itemstack;
     }

@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.layers.LayerCustomHead;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.monster.EntityZombieVillager;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -64,7 +64,7 @@ public class BetterCustomHeadLayer extends LayerCustomHead
             }
 
             boolean flag = entitylivingbaseIn instanceof EntityVillager
-                    || entitylivingbaseIn instanceof EntityZombie && ((EntityZombie) entitylivingbaseIn).isVillager();
+                    || entitylivingbaseIn instanceof EntityZombieVillager;
 
             if (entitylivingbaseIn.isChild() && !(entitylivingbaseIn instanceof EntityVillager))
             {

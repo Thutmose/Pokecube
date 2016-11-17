@@ -1,7 +1,5 @@
 package pokecube.core.blocks.berries;
 
-import java.util.List;
-
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.BlockLog;
@@ -12,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
@@ -182,7 +181,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
     /** returns a list of blocks with the same ID, but different meta (eg: wood
      * returns 4 blocks) */
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, List<ItemStack> list)
+    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (int i = 0; i < woodType.length; i++)
         {

@@ -468,7 +468,7 @@ public class EventsHandlerClient
 
             for (int l = 0; l < 9; l++)
             {
-                ItemStack stack = player.inventory.mainInventory[l];
+                ItemStack stack = player.inventory.mainInventory.get(l);
                 if (stack != null && PokecubeManager.isFilled(stack))
                 {
                     IPokemob pokemob = getPokemobForRender(stack, player.getEntityWorld());

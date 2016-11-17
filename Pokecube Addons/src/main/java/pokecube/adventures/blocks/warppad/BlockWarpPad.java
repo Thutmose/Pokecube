@@ -6,7 +6,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +32,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
     /** Called when the block is placed in the world. */
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-            float hitZ, int meta, EntityLivingBase placer, ItemStack stack)
+            float hitZ, int meta, EntityLivingBase placer)
     {
         Vector3 loc = Vector3.getNewVector().set(pos);
         TileEntity te = loc.getTileEntity(world);
@@ -42,7 +41,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
             TileEntityWarpPad pad = (TileEntityWarpPad) te;
             pad.setPlacer(placer);
         }
-        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, stack);
+        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
     }
 
     @Override

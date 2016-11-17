@@ -28,7 +28,7 @@ public class BiomeProviderSecretBase extends BiomeProvider
      * Returns the biome generator
      */
     @Override
-    public Biome getBiomeGenerator(BlockPos pos)
+    public Biome getBiome(BlockPos pos)
     {
         return this.biomeGenerator;
     }
@@ -53,7 +53,7 @@ public class BiomeProviderSecretBase extends BiomeProvider
      * WorldChunkManager.
      */
     @Override
-    public Biome[] loadBlockGeneratorData(@Nullable Biome[] oldBiomeList, int x, int z, int width, int depth)
+    public Biome[] getBiomes(@Nullable Biome[] oldBiomeList, int x, int z, int width, int depth)
     {
         if (oldBiomeList == null || oldBiomeList.length < width * depth)
         {
@@ -68,9 +68,9 @@ public class BiomeProviderSecretBase extends BiomeProvider
      * Gets a list of biomes for the specified blocks.
      */
     @Override
-    public Biome[] getBiomeGenAt(@Nullable Biome[] listToReuse, int x, int z, int width, int length, boolean cacheFlag)
+    public Biome[] getBiomes(@Nullable Biome[] listToReuse, int x, int z, int width, int length, boolean cacheFlag)
     {
-        return this.loadBlockGeneratorData(listToReuse, x, z, width, length);
+        return this.getBiomes(listToReuse, x, z, width, length);
     }
 
     @Override

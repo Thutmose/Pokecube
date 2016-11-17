@@ -61,14 +61,14 @@ public class ContainerPokemob extends Container
 			}
 		    
 			@Override
-            public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack)
+            public ItemStack func_190901_a(EntityPlayer playerIn, ItemStack stack)
             {
                 ItemStack old = getStack();
-                super.onPickupFromSlot(playerIn, stack);
                 if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
                 {
                     e.getPokedexEntry().onHeldItemChange(stack, old, e);
                 }
+                return super.func_190901_a(playerIn, stack);
             }
 
 			/**

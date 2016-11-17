@@ -8,7 +8,9 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class RecipeWearables implements IRecipe
@@ -34,10 +36,9 @@ public class RecipeWearables implements IRecipe
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
-        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-        return ret;
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
     @Override

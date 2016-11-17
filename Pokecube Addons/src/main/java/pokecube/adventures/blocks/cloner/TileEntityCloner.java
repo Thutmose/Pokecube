@@ -25,6 +25,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional;
@@ -296,10 +297,10 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             if (recipe instanceof RecipeFossilRevive)
             {
-                ItemStack[] remaining = recipe.getRemainingItems(tile.craftMatrix);
-                for (int i = 0; i < remaining.length; i++)
+                NonNullList<ItemStack> remaining = recipe.getRemainingItems(tile.craftMatrix);
+                for (int i = 0; i < remaining.size(); i++)
                 {
-                    if (remaining[i] != null) tile.setInventorySlotContents(i, remaining[i]);
+                    if (CompatWrapper.isValid(remaining.get(i))) tile.setInventorySlotContents(i, remaining.get(i));
                     else tile.decrStackSize(i, 1);
                 }
                 RecipeFossilRevive recipe = (RecipeFossilRevive) this.recipe;

@@ -53,7 +53,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                 badHeadRenderer = (LayerRenderer<?>) o;
             }
         }
-        removeLayer(badHeadRenderer);
+        layerRenderers.remove(badHeadRenderer);
         addLayer(new BetterCustomHeadLayer(male.bipedHead));
     }
 

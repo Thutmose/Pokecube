@@ -55,9 +55,9 @@ public class MegaCapability implements ICapabilityProvider, IMegaCapability
                                                                              if (matches(stack, toEvolve)) return true;
                                                                          }
                                                                      }
-                                                                     for (int i = 0; i < player.inventory.armorInventory.length; i++)
+                                                                     for (int i = 0; i < player.inventory.armorInventory.size(); i++)
                                                                      {
-                                                                         ItemStack stack = player.inventory.armorInventory[i];
+                                                                         ItemStack stack = player.inventory.armorInventory.get(i);
                                                                          if (stack != null)
                                                                          {
                                                                              if (matches(stack, toEvolve)) return true;

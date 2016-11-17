@@ -216,7 +216,7 @@ public class EntityPokemobEgg extends EntityLiving
         {
             TileEntityHopper hopper = (TileEntityHopper) te;
             EntityItem item = new EntityItem(worldObj, posX, posY, posZ, getHeldItemMainhand());
-            boolean added = TileEntityHopper.putDropInInventoryAllSlots(hopper, item);
+            boolean added = TileEntityHopper.putDropInInventoryAllSlots(null, hopper, item);
             if (added)
             {
                 this.setDead();

@@ -6,7 +6,9 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -117,23 +119,23 @@ public class RecipeClone implements IClonerRecipe
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
     {
-        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
-        for (int i = 0; i < aitemstack.length; ++i)
+        NonNullList<ItemStack> aitemstack = ForgeHooks.defaultRecipeGetRemainingItems(inv);
+        for (int i = 0; i < aitemstack.size(); ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            if (star == null)
+            if (!CompatWrapper.isValid(star))
             {
-                aitemstack[i] = null;
+                aitemstack.set(i, CompatWrapper.nullStack);
             }
             else if (!PokecubeManager.isFilled(itemstack))
             {
-                aitemstack[i] = null;
+                aitemstack.set(i, CompatWrapper.nullStack);
             }
             else
             {
-                aitemstack[i] = itemstack.copy();
+                aitemstack.set(i, itemstack.copy());
             }
         }
         return aitemstack;

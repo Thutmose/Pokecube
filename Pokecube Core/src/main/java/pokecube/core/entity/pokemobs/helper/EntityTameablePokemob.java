@@ -70,87 +70,87 @@ import thut.lib.CompatWrapper;
 public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IMob, IInventoryChangedListener,
         IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob
 {
-    public static int                               EXITCUBEDURATION = 40;
+    public static int                          EXITCUBEDURATION = 40;
 
-    static final DataParameter<Integer>             AIACTIONSTATESDW = EntityDataManager
+    static final DataParameter<Integer>        AIACTIONSTATESDW = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             ATTACKTARGETIDDW = EntityDataManager
+    static final DataParameter<Integer>        ATTACKTARGETIDDW = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             EXPDW            = EntityDataManager
+    static final DataParameter<Integer>        EXPDW            = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             HUNGERDW         = EntityDataManager
+    static final DataParameter<Integer>        HUNGERDW         = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Byte>                STATUSDW         = EntityDataManager
+    static final DataParameter<Byte>           STATUSDW         = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
-    static final DataParameter<Integer>             STATUSTIMERDW    = EntityDataManager
+    static final DataParameter<Integer>        STATUSTIMERDW    = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Byte>                MOVEINDEXDW      = EntityDataManager
+    static final DataParameter<Byte>           MOVEINDEXDW      = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
-    static final DataParameter<Integer>             EVS1DW           = EntityDataManager
+    static final DataParameter<Integer>        EVS1DW           = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             EVS2DV           = EntityDataManager
+    static final DataParameter<Integer>        EVS2DV           = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             SPECIALINFO      = EntityDataManager
+    static final DataParameter<Integer>        SPECIALINFO      = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             EVOLNBDW         = EntityDataManager
+    static final DataParameter<Integer>        EVOLNBDW         = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             EVOLTICKDW       = EntityDataManager
+    static final DataParameter<Integer>        EVOLTICKDW       = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             HAPPYDW          = EntityDataManager
+    static final DataParameter<Integer>        HAPPYDW          = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             ATTACKCOOLDOWN   = EntityDataManager
+    static final DataParameter<Integer>        ATTACKCOOLDOWN   = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
-    static final DataParameter<String>              MOVESDW          = EntityDataManager
+    static final DataParameter<String>         MOVESDW          = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
-    static final DataParameter<String>              NICKNAMEDW       = EntityDataManager
+    static final DataParameter<String>         NICKNAMEDW       = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
-    static final DataParameter<String>              LASTMOVE         = EntityDataManager
+    static final DataParameter<String>         LASTMOVE         = EntityDataManager
             .<String> createKey(EntityTameablePokemob.class, DataSerializers.STRING);
 
-    static final DataParameter<Byte>                BOOMSTATEDW      = EntityDataManager
+    static final DataParameter<Byte>           BOOMSTATEDW      = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
 
-    static final DataParameter<Float>               DIRECTIONPITCHDW = EntityDataManager
+    static final DataParameter<Float>          DIRECTIONPITCHDW = EntityDataManager
             .<Float> createKey(EntityTameablePokemob.class, DataSerializers.FLOAT);
 
-    static final DataParameter<Integer>             TRANSFORMEDTODW  = EntityDataManager
+    static final DataParameter<Integer>        TRANSFORMEDTODW  = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
-    static final DataParameter<Optional<ItemStack>> HELDITEM         = EntityDataManager
-            .<Optional<ItemStack>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_ITEM_STACK);
-    static final DataParameter<Optional<UUID>>      OWNER_ID         = EntityDataManager
+    static final DataParameter<ItemStack>      HELDITEM         = EntityDataManager
+            .<ItemStack> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_ITEM_STACK);
+    static final DataParameter<Optional<UUID>> OWNER_ID         = EntityDataManager
             .<Optional<UUID>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_UNIQUE_ID);
-    static final DataParameter<Optional<UUID>>      OT_ID            = EntityDataManager
+    static final DataParameter<Optional<UUID>> OT_ID            = EntityDataManager
             .<Optional<UUID>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     @SuppressWarnings("unchecked")
-    static final DataParameter<Integer>[]           FLAVOURS         = new DataParameter[] {
+    static final DataParameter<Integer>[]      FLAVOURS         = new DataParameter[] {
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT) };
 
-    protected boolean                               looksWithInterest;
-    protected float                                 headRotation;
-    protected float                                 headRotationOld;
-    protected boolean                               isPokemonShaking;
-    protected boolean                               isPokemonWet;
-    protected float                                 timePokemonIsShaking;
-    protected float                                 prevTimePokemonIsShaking;
-    public float                                    length           = 1;
-    protected Vector3                               here             = Vector3.getNewVector();
-    protected Vector3                               vec              = Vector3.getNewVector();
-    protected Vector3                               v1               = Vector3.getNewVector();
-    protected Vector3                               v2               = Vector3.getNewVector();
-    protected Vector3                               vBak             = Vector3.getNewVector();
-    boolean                                         named            = false;
-    boolean                                         initHome         = true;
-    protected AnimalChest                           pokeChest;
-    boolean                                         returning        = false;
-    protected int                                   abilityIndex     = 0;
-    protected boolean                               players          = false;
+    protected boolean                          looksWithInterest;
+    protected float                            headRotation;
+    protected float                            headRotationOld;
+    protected boolean                          isPokemonShaking;
+    protected boolean                          isPokemonWet;
+    protected float                            timePokemonIsShaking;
+    protected float                            prevTimePokemonIsShaking;
+    public float                               length           = 1;
+    protected Vector3                          here             = Vector3.getNewVector();
+    protected Vector3                          vec              = Vector3.getNewVector();
+    protected Vector3                          v1               = Vector3.getNewVector();
+    protected Vector3                          v2               = Vector3.getNewVector();
+    protected Vector3                          vBak             = Vector3.getNewVector();
+    boolean                                    named            = false;
+    boolean                                    initHome         = true;
+    protected AnimalChest                      pokeChest;
+    boolean                                    returning        = false;
+    protected int                              abilityIndex     = 0;
+    protected boolean                          players          = false;
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -232,7 +232,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         dataManager.register(LASTMOVE, "");
 
         // Held item sync
-        dataManager.register(HELDITEM, Optional.<ItemStack> absent());
+        dataManager.register(HELDITEM, CompatWrapper.nullStack);
 
         // Flavours for various berries eaten.
         for (int i = 0; i < 5; i++)
@@ -267,7 +267,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     @Override
     public ItemStack getHeldItemMainhand()
     {
-        return dataManager.get(HELDITEM).orNull();
+        return dataManager.get(HELDITEM);
     }
 
     @Override
@@ -396,14 +396,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         if (worldObj != null && !this.worldObj.isRemote)
         {
             setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != CompatWrapper.nullStack);
-            if (this.pokeChest.getStackInSlot(1) != null)
-            {
-                dataManager.set(HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
-            }
-            else
-            {
-                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
-            }
+            dataManager.set(HELDITEM, this.pokeChest.getStackInSlot(1));
         }
     }
 
@@ -737,14 +730,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             ItemStack oldStack = getHeldItemMainhand();
             pokeChest.setInventorySlotContents(1, itemStack);
             getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
-            if (itemStack != CompatWrapper.nullStack)
-            {
-                dataManager.set(HELDITEM, Optional.of(itemStack));
-            }
-            else
-            {
-                dataManager.set(HELDITEM, Optional.<ItemStack> absent());
-            }
+            dataManager.set(HELDITEM, itemStack);
         }
         catch (Exception e)
         {

@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
+import pokecube.core.database.moves.MoveEntry.Category;
 import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -370,7 +371,7 @@ public class MovesUtils implements IMoveConstants
         }
     }
 
-    public static float getAttackStrength(IPokemob attacker, IPokemob attacked, byte type, int PWR,
+    public static float getAttackStrength(IPokemob attacker, IPokemob attacked, Category type, int PWR,
             MovePacket movePacket)
     {
         Move_Base move = movePacket.getMove();
@@ -385,7 +386,7 @@ public class MovesUtils implements IMoveConstants
         int ATT;
         int DEF;
 
-        if (type == SPECIAL)
+        if (type == Category.SPECIAL)
         {
             ATT = (int) (attacker.getStat(Stats.SPATTACK, true) * movePacket.statMults[Stats.SPATTACK.ordinal()]);
             DEF = attacker.getStat(Stats.SPDEFENSE, true);
@@ -437,6 +438,7 @@ public class MovesUtils implements IMoveConstants
 
     public static Move_Base getMoveFromName(String moveName)
     {
+        if (moveName == null) return null;
         Move_Base ret = moves.get(moveName);
         return ret;
     }

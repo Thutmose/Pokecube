@@ -10,10 +10,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import thut.lib.CompatWrapper;
 
 public class RecipeWearables implements IRecipe
 {
-    private ItemStack output;
+    private ItemStack output = CompatWrapper.nullStack;
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
@@ -43,15 +44,15 @@ public class RecipeWearables implements IRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        output = null;
+        output = CompatWrapper.nullStack;
         boolean ring = false;
         boolean dye = false;
-        ItemStack dyeStack = null;
-        ItemStack ringStack = null;
+        ItemStack dyeStack = CompatWrapper.nullStack;
+        ItemStack ringStack = CompatWrapper.nullStack;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
             ItemStack stack = inv.getStackInSlot(i);
-            if (stack != null)
+            if (CompatWrapper.isValid(stack))
             {
                 if (stack.getItem() instanceof ItemMegawearable)
                 {
@@ -102,7 +103,7 @@ public class RecipeWearables implements IRecipe
             }
             output.getTagCompound().setInteger("dyeColour", colour);
         }
-        return output != null;
+        return CompatWrapper.isValid(output);
     }
 
 }

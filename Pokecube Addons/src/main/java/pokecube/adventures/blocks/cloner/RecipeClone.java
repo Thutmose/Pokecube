@@ -16,10 +16,10 @@ import thut.lib.CompatWrapper;
 
 public class RecipeClone implements IClonerRecipe
 {
-    ItemStack output;
-    ItemStack cube = null;
-    ItemStack egg  = null;
-    ItemStack star = null;
+    ItemStack output = CompatWrapper.nullStack;
+    ItemStack cube   = CompatWrapper.nullStack;
+    ItemStack egg    = CompatWrapper.nullStack;
+    ItemStack star   = CompatWrapper.nullStack;
 
     public RecipeClone()
     {
@@ -36,7 +36,7 @@ public class RecipeClone implements IClonerRecipe
     @Nullable
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        if (output == null) return null;
+        if (!CompatWrapper.isValid(output)) return CompatWrapper.nullStack;
         return this.output.copy();
     }
 
@@ -50,19 +50,19 @@ public class RecipeClone implements IClonerRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        output = null;
+        output = CompatWrapper.nullStack;
         ItemStack item;
-        cube = null;
-        egg = null;
-        star = null;
+        cube = CompatWrapper.nullStack;
+        egg = CompatWrapper.nullStack;
+        star = CompatWrapper.nullStack;
         boolean wrongnum = false;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
             item = inv.getStackInSlot(i);
-            if (item == null) continue;
+            if (!CompatWrapper.isValid(item)) continue;
             if (PokecubeManager.isFilled(item))
             {
-                if (cube != null)
+                if (CompatWrapper.isValid(cube))
                 {
                     wrongnum = true;
                     break;
@@ -72,7 +72,7 @@ public class RecipeClone implements IClonerRecipe
             }
             else if (item.getItem() instanceof ItemPokemobEgg)
             {
-                if (egg != null)
+                if (CompatWrapper.isValid(egg))
                 {
                     wrongnum = true;
                     break;
@@ -82,7 +82,7 @@ public class RecipeClone implements IClonerRecipe
             }
             else if (item.getItem() == Items.NETHER_STAR)
             {
-                if (star != null)
+                if (CompatWrapper.isValid(star))
                 {
                     wrongnum = true;
                     break;
@@ -93,7 +93,7 @@ public class RecipeClone implements IClonerRecipe
             wrongnum = true;
             break;
         }
-        if (!wrongnum && cube != null && egg != null)
+        if (!wrongnum && CompatWrapper.isValid(cube) && CompatWrapper.isValid(egg))
         {
             int pokenb = PokecubeManager.getPokedexNb(cube);
             PokedexEntry entry = Database.getEntry(pokenb);

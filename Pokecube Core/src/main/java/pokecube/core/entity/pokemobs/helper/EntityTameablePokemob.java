@@ -110,6 +110,8 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
 
     static final DataParameter<Byte>           BOOMSTATEDW      = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
+    static final DataParameter<Integer>             ZMOVECD          = EntityDataManager
+            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
     static final DataParameter<Float>          DIRECTIONPITCHDW = EntityDataManager
             .<Float> createKey(EntityTameablePokemob.class, DataSerializers.FLOAT);
@@ -230,6 +232,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         dataManager.register(TRANSFORMEDTODW, Integer.valueOf(-1));
 
         dataManager.register(LASTMOVE, "");
+        dataManager.register(ZMOVECD, Integer.valueOf(-1));
 
         // Held item sync
         dataManager.register(HELDITEM, CompatWrapper.nullStack);

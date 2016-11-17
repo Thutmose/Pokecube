@@ -13,13 +13,14 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.mobs.PokecubeMobs;
 import pokecube.origin.models.ModelPichu;
 import pokecube.origin.models.ModelPikachu;
 import pokecube.origin.models.ModelRaichu;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
-@Mod(modid = PokecubeOrigin.MODID, name = "Pokecube Origin", version = PokecubeOrigin.VERSION)
+@Mod(modid = PokecubeOrigin.MODID, name = "Pokecube Origin", version = PokecubeOrigin.VERSION, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeMobs.MCVERSIONS)
 public class PokecubeOrigin
 {
     public static final String MODID   = "pokecube_origin";

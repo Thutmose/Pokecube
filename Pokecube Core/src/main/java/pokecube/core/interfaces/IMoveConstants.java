@@ -155,5 +155,7 @@ public interface IMoveConstants extends IMoveNames
     static final int SHEARED              = 1 << 26;
     /** is the pokemob megaevolved */
     static final int MEGAFORME            = 1 << 27;
+    /** has the pokemob used a zmove this "battle" */
+    static final int USEDZMOVE            = 1 << 28;
 
 }

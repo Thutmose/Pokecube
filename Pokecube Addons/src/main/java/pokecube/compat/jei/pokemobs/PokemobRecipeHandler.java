@@ -14,12 +14,6 @@ public class PokemobRecipeHandler implements IRecipeHandler<PokemobRecipe>
     }
 
     @Override
-    public String getRecipeCategoryUid()
-    {
-        return JEICompat.POKEMOB;
-    }
-
-    @Override
     public String getRecipeCategoryUid(PokemobRecipe recipe)
     {
         return JEICompat.POKEMOB;

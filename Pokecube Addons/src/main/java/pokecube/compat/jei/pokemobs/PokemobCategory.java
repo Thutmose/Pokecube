@@ -64,16 +64,6 @@ public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
     }
 
     @Override
-    public void drawAnimations(Minecraft minecraft)
-    {
-    }
-
-    @Override
-    public void setRecipe(IRecipeLayout recipeLayout, PokemobRecipeWrapper recipeWrapper)
-    {
-    }
-
-    @Override
     public void setRecipe(IRecipeLayout recipeLayout, PokemobRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
         int out = 24;

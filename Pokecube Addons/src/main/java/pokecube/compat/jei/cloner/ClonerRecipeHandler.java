@@ -11,13 +11,6 @@ import pokecube.compat.jei.JEICompat;
 public class ClonerRecipeHandler implements IRecipeHandler<RecipeFossilRevive>
 {
 
-    @Nonnull
-    @Override
-    public String getRecipeCategoryUid()
-    {
-        return JEICompat.CLONER;
-    }
-
     @Override
     public String getRecipeCategoryUid(RecipeFossilRevive recipe)
     {

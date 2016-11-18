@@ -38,11 +38,6 @@ public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     }
 
     @Override
-    public void drawAnimations(Minecraft minecraft)
-    {
-    }
-
-    @Override
     public void drawExtras(Minecraft minecraft)
     {
     }
@@ -65,12 +60,6 @@ public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     public String getUid()
     {
         return JEICompat.REANIMATOR;
-    }
-
-    @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
-    {
-
     }
 
     @Override

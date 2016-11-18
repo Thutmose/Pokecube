@@ -37,12 +37,6 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     }
 
     @Override
-    public void drawAnimations(Minecraft minecraft)
-    {
-
-    }
-
-    @Override
     public void drawExtras(Minecraft minecraft)
     {
 
@@ -66,12 +60,6 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     public String getUid()
     {
         return JEICompat.CLONER;
-    }
-
-    @Override
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
-    {
-
     }
 
     @Override

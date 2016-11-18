@@ -18,6 +18,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.utils.Tools;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
+import thut.lib.CompatWrapper;
 
 public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
 {
@@ -59,7 +60,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         GL11.glRotated(180, 0, 0, 1);
         GL11.glTranslatef(dx, dy, dz);
         float s = 0.525f;
-        if (entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.LEGS) == null)
+        if (!CompatWrapper.isValid(entitylivingbaseIn.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
         {
             s = 0.465f;
         }
@@ -92,7 +93,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         for (int i = 0; i < 6; i++)
         {
             ItemStack stack = trainer.pokecubes[i];
-            if (stack != null && !Tools.isSameStack(stack, trainer.getHeldItemMainhand()))
+            if (CompatWrapper.isValid(stack) && !Tools.isSameStack(stack, trainer.getHeldItemMainhand()))
             {
                 GlStateManager.pushMatrix();
                 if (i < 3)

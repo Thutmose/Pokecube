@@ -44,6 +44,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 /** This health renderer is directly based on Neat vy Vaziki, which can be found
  * here: https://github.com/Vazkii/Neat This version has been modified to only
@@ -163,7 +164,7 @@ public class RenderHealth
                 int r = 0;
                 int g = 255;
                 int b = 0;
-                ItemStack stack = null;
+                ItemStack stack = CompatWrapper.nullStack;
                 if (pokemob.getPokemonOwner() == renderManager.renderViewEntity)
                 {
                     stack = entity.getHeldItemMainhand();
@@ -300,7 +301,7 @@ public class RenderHealth
                 GlStateManager.scale(s1, s1, s1);
                 GlStateManager.translate(size / (s * s1) * 2 - 16, 0F, 0F);
                 mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                if (stack != null && PokecubeMod.core.getConfig().showAttributes)
+                if (CompatWrapper.isValid(stack) && PokecubeMod.core.getConfig().showAttributes)
                 {
                     renderIcon(off, 0, stack, 16, 16);
                     off -= 16;

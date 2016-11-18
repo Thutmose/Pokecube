@@ -8,10 +8,11 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
+import thut.lib.CompatWrapper;
 
 public class RecipeBag implements IRecipe
 {
-    private ItemStack output;
+    private ItemStack output = CompatWrapper.nullStack;
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
@@ -41,16 +42,16 @@ public class RecipeBag implements IRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        output = null;
+        output = CompatWrapper.nullStack;
         boolean bag = false;
         boolean dye = false;
-        ItemStack dyeStack = null;
-        ItemStack bagStack = null;
+        ItemStack dyeStack = CompatWrapper.nullStack;
+        ItemStack bagStack = CompatWrapper.nullStack;
         int n = 0;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
             ItemStack stack = inv.getStackInSlot(i);
-            if (stack != null)
+            if (CompatWrapper.isValid(stack))
             {
                 n++;
                 if (stack.getItem() instanceof ItemBag)
@@ -84,9 +85,9 @@ public class RecipeBag implements IRecipe
                 if (!output.hasTagCompound()) output.setTagCompound(new NBTTagCompound());
                 output.getTagCompound().setInteger("dyeColour", dyeStack.getItemDamage());
             }
-            return output != null;
+            return CompatWrapper.isValid(output);
         }
-        return output != null;
+        return CompatWrapper.isValid(output);
     }
 
 }

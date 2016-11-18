@@ -116,9 +116,9 @@ public class PokecubeAdv
         }
 
         CompatWrapper.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
-        CompatWrapper.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityPokemartSeller.class, "pokecube:trainermerchant", 4, this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityTrainer.class, "trainer", 1, this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityLeader.class, "leader", 2, this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityPokemartSeller.class, "trainermerchant", 4, this, 80, 3, true);
         PAEventsHandler events = new PAEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();

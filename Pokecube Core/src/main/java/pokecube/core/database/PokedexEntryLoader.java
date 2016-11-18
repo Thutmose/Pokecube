@@ -382,7 +382,7 @@ public class PokedexEntryLoader
     {
         Map<Integer, ArrayList<String>> lvlUpMoves = new HashMap<Integer, ArrayList<String>>();
         ArrayList<String> allMoves = new ArrayList<String>();
-        if (xmlMoves.misc != null)
+        if (xmlMoves.misc != null && xmlMoves.misc.moves != null)
         {
             String[] misc = xmlMoves.misc.moves.split(",");
             for (String s : misc)

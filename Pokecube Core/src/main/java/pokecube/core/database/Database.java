@@ -668,8 +668,7 @@ public class Database
             if (e.mobType == null)
             {
                 e.mobType = PokecubeMod.Type.NORMAL;
-                System.out.println(e + " Has no Mob Type");
-                Thread.dumpStack();
+                PokecubeMod.log(e + " Has no Mob Type");
             }
             if (e.type2 == null) e.type2 = PokeType.unknown;
             if (e.interactionLogic.stacks.isEmpty())

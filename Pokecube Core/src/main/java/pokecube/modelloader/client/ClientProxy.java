@@ -201,7 +201,7 @@ public class ClientProxy extends CommonProxy
             {
                 try
                 {
-                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
+                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
                     IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                     res.getInputStream().close();
                     res.close();
@@ -218,7 +218,7 @@ public class ClientProxy extends CommonProxy
                     e1.printStackTrace();
                     try
                     {
-                        ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
+                        ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
                         IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                         res.getInputStream().close();
                         res.close();

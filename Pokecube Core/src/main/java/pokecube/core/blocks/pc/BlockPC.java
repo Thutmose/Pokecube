@@ -146,7 +146,7 @@ public class BlockPC extends Block implements ITileEntityProvider
 
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-            float hitZ, int meta, EntityLivingBase placer)
+            float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         TileEntity te = world.getTileEntity(pos);
         if (te instanceof TileEntityOwnable)

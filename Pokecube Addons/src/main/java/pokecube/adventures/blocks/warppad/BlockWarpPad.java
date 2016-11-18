@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.PokecubeMod;
@@ -32,7 +33,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
     /** Called when the block is placed in the world. */
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY,
-            float hitZ, int meta, EntityLivingBase placer)
+            float hitZ, int meta, EntityLivingBase placer, EnumHand hand)
     {
         Vector3 loc = Vector3.getNewVector().set(pos);
         TileEntity te = loc.getTileEntity(world);
@@ -41,7 +42,7 @@ public class BlockWarpPad extends Block implements ITileEntityProvider
             TileEntityWarpPad pad = (TileEntityWarpPad) te;
             pad.setPlacer(placer);
         }
-        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+        return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.world.IWorldEventListener;
-import pokecube.core.database.abilities.AbilityManager.ClassFinder;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
@@ -32,6 +31,7 @@ import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.moves.templates.Move_Terrain;
+import thut.lib.CompatParser.ClassFinder;
 
 public class MovesAdder implements IMoveConstants
 {

@@ -4326,7 +4326,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow:vflame"
+      "defaultanimation": "flow:vflame:d0.05"
     },
     {
       "name": "encore",

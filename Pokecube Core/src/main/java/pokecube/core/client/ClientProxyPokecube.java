@@ -118,6 +118,7 @@ import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
+import thut.lib.CompatWrapper;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -640,7 +641,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             GL11.glRotated(180, 0, 0, 1);
             GL11.glTranslatef(dx, dy, dz);
             float s = 0.525f;
-            if (wearer.getItemStackFromSlot(EntityEquipmentSlot.LEGS) == null)
+            if (!CompatWrapper.isValid(wearer.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
             {
                 s = 0.465f;
             }

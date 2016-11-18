@@ -51,7 +51,6 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -650,7 +649,7 @@ public class PokecubeCore extends PokecubeMod
                 // config.
                 if (!registered.get(entry.getPokedexNb()))
                 {
-                    EntityRegistry.registerModEntity(clazz, name, 25 + entry.getPokedexNb(), mod, 80, 3, true);
+                    CompatWrapper.registerModEntity(clazz, name, 25 + entry.getPokedexNb(), mod, 80, 3, true);
 
                     if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                     {

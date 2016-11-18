@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import thut.lib.CompatWrapper;
 
 public class PokemobRecipe implements IRecipe
 {
@@ -24,7 +25,7 @@ public class PokemobRecipe implements IRecipe
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override
@@ -36,7 +37,7 @@ public class PokemobRecipe implements IRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     @Override

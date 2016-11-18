@@ -10,6 +10,9 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
@@ -17,6 +20,13 @@ import thut.api.maths.Vector3;
 
 public class SoulShardsCompat implements IEntityHandler
 {
+    @Optional.Method(modid = "soulshardstow")
+    @CompatClass(phase = Phase.POST)
+    public static void doSoulShardsCompat()
+    {
+        System.out.println("SoulShards Compat");
+        new pokecube.compat.soulshards.SoulShardsCompat();
+    }
 
     public SoulShardsCompat()
     {

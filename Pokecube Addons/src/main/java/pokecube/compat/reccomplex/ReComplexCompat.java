@@ -9,9 +9,12 @@ import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
@@ -21,6 +24,14 @@ import thut.api.terrain.TerrainManager;
 
 public class ReComplexCompat
 {
+
+    @Optional.Method(modid = "reccomplex")
+    @CompatClass(phase = Phase.POST)
+    public static void RecComplex_Compat()
+    {
+        System.out.println("Initialiing Recurrent Complex Compat");
+        pokecube.compat.reccomplex.ReComplexCompat.register();
+    }
 
     public static void register()
     {

@@ -24,6 +24,11 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
@@ -70,6 +75,14 @@ public class JERCompat
                                                                       return renderInfo;
                                                                   }
                                                               };
+
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "jeresources")
+    @CompatClass(phase = Phase.POSTPOST)
+    public static void JERInit()
+    {
+        new pokecube.compat.jer.JERCompat().register();
+    }
 
     public JERCompat()
     {

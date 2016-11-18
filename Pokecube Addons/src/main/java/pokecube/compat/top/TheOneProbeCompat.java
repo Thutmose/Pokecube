@@ -17,6 +17,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.Optional;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.CaptureStats;
@@ -101,6 +104,14 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
             buffer.writeString(entry.getName());
         }
 
+    }
+
+    @Optional.Method(modid = "theoneprobe")
+    @CompatClass(phase = Phase.POST)
+    public static void TheOneProbe_Compat()
+    {
+        System.out.println("TheOneProbe Compat");
+        new pokecube.compat.top.TheOneProbeCompat();
     }
     private static ITheOneProbe probe;
     private static int          ELEMENT;

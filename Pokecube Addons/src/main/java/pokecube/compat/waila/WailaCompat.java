@@ -20,8 +20,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.compat.CompatClass;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
@@ -29,6 +27,8 @@ import pokecube.core.database.stats.KillStats;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.utils.PokeType;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class WailaCompat implements IWailaEntityProvider
 {

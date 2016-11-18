@@ -27,8 +27,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.compat.CompatClass;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
@@ -41,7 +39,9 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
+import thut.lib.CompatClass;
 import thut.lib.CompatWrapper;
+import thut.lib.CompatClass.Phase;
 
 public class JERCompat
 {

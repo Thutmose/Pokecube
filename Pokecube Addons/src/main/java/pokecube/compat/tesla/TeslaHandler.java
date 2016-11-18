@@ -29,11 +29,11 @@ import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
-import pokecube.compat.CompatClass;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.compat.ai.AITeslaInterferance;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class TeslaHandler
 {

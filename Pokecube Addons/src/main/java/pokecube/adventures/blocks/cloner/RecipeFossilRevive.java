@@ -108,7 +108,7 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
             {
                 ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
 
-                if (itemstack != null)
+                if (CompatWrapper.isValid(itemstack))
                 {
                     boolean flag = false;
 

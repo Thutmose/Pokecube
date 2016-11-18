@@ -15,6 +15,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecipe
 {
@@ -105,7 +106,7 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
             {
                 ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
 
-                if (itemstack != null)
+                if (CompatWrapper.isValid(itemstack))
                 {
                     boolean flag = false;
 

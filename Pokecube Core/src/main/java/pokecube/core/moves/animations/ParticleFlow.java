@@ -144,20 +144,18 @@ public class ParticleFlow extends MoveAnimationBase
     public void spawnClientEntities(MovePacketInfo info)
     {
         if (type == null) return;
-        Vector3 source = info.source;
-        Vector3 target = info.target;
+        Vector3 source = reverse ? info.target : info.source;
+        Vector3 target = reverse ? info.source : info.target;
         initColour((info.attacker.getEntityWorld().getWorldTime()) * 20, 0, info.move);
         double dist = source.distanceTo(target);
         double frac = dist * info.currentTick / getDuration();
-        // TODO make reversing work.
-        double dir = reverse ? -1 : 1;
-
         Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
         Random rand = new Random();
         Vector3 temp1 = Vector3.getNewVector();
         double yF = flat ? 0 : 1;
         for (double i = frac; i < dist; i += 0.1)
         {
+            if (density < 1 && Math.random() > density) continue;
             double factor = frac;
             factor *= width * 0.2;
             for (int j = 0; j < density; j++)
@@ -165,7 +163,7 @@ public class ParticleFlow extends MoveAnimationBase
                 temp1.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor * yF,
                         rand.nextGaussian() * factor);
                 PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, type,
-                        source.add(temp.scalarMult(i).addTo(temp1)), null, 5, rgba);
+                        source.add(temp.scalarMult(i).addTo(temp1)), null, 1, rgba);
             }
         }
     }

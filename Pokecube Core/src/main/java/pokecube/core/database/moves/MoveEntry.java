@@ -87,6 +87,9 @@ public class MoveEntry implements IMoveConstants
     public float                   selfDamage               = 0;
     public int                     selfDamageType;
     public int                     priority                 = 0;
+    public boolean                 defrosts                 = false;
+    public boolean                 mirrorcoated             = false;
+    
 
     /** Status, Special, Physical */
     public byte                    category                 = -1;

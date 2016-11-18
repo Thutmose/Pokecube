@@ -23,9 +23,12 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.compat.events.TransferDimension;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -113,6 +116,20 @@ public class AdvancedRocketryCompat
     Set<PokedexEntry>    vacuumBreathers = Sets.newHashSet();
     List<PokedexEntry>   moonmon         = Lists.newArrayList();
     PokedexEntry         megaray;
+
+    @Optional.Method(modid = "advancedRocketry")
+    @CompatClass(takesEvent = true, phase = Phase.PRE)
+    public static void ARCompatOld(FMLPreInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat(evt));
+    }
+
+    @Optional.Method(modid = "advancedrocketry")
+    @CompatClass(takesEvent = true, phase = Phase.PRE)
+    public static void ARCompat(FMLPreInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat(evt));
+    }
 
     public AdvancedRocketryCompat(FMLPreInitializationEvent event)
     {

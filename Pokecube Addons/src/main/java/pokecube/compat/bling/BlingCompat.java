@@ -3,12 +3,31 @@ package pokecube.compat.bling;
 import java.util.Locale;
 
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional.Method;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.core.PokecubeItems;
 import pokecube.core.handlers.HeldItemHandler;
 import thut.bling.recipe.RecipeLoader;
 
 public class BlingCompat
 {
+
+    @Method(modid = "thut_wearables")
+    @CompatClass(phase = Phase.PRE)
+    public static void preInitWearables()
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
+    }
+
+    @Method(modid = "thut_bling")
+    @CompatClass(phase = Phase.POST)
+    public static void postInitBling()
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.bling.BlingCompat());
+    }
+
     public BlingCompat()
     {
         for (int i = 4; i < HeldItemHandler.megaVariants.size(); i++)

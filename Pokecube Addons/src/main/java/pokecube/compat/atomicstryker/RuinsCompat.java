@@ -1,12 +1,24 @@
 package pokecube.compat.atomicstryker;
 
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.comands.Config;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 
 public class RuinsCompat
 {
+    @Optional.Method(modid = "AS_Ruins")
+    @CompatClass(phase = Phase.POST)
+    public static void AS_RuinsCompat()
+    {
+        System.out.println("AS_Ruins Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
+    }
+
     @SubscribeEvent
     public void RuinsSpawnEvent(atomicstryker.ruins.common.EventRuinTemplateSpawn event)
     {

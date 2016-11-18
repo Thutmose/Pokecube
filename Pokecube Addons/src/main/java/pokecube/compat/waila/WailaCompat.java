@@ -16,6 +16,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
@@ -77,6 +83,15 @@ public class WailaCompat implements IWailaEntityProvider
         {
             return new Dimension(DisplayUtil.getDisplayWidth(""), 8);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Optional.Method(modid = "Waila")
+    @CompatClass(phase = Phase.POST)
+    public static void WAILA_Compat()
+    {
+        System.out.println("Waila Compat");
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.waila.WailaCompat());
     }
 
     public WailaCompat()

@@ -4,15 +4,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import net.minecraft.entity.EntityLiving;
+import com.google.common.collect.Maps;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
 import net.minecraftforge.common.ForgeVersion.Status;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -21,8 +26,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ModMetadata;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -31,12 +34,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.compat.ai.AITeslaInterferance;
+import pokecube.compat.CompatClass.Phase;
 import pokecube.compat.forgeenergy.EnergyHandler;
-import pokecube.compat.tesla.TeslaHandler;
 import pokecube.core.database.Database;
+import pokecube.core.database.abilities.AbilityManager.ClassFinder;
 import pokecube.core.events.PostPostInit;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.core.client.ClientProxy;
 
@@ -204,86 +206,20 @@ public class Compat
         }
     }
 
+    Map<CompatClass.Phase, Set<java.lang.reflect.Method>> initMethods = Maps.newHashMap();
+
     public Compat()
     {
-    }
-
-    @Optional.Method(modid = "DynamicLights")
-    @EventHandler
-    public void AS_DLCompat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("DynamicLights Compat");
-        // MinecraftForge.EVENT_BUS.register(new
-        // pokecube.compat.atomicstryker.DynamicLightsCompat());
-    }
-
-    @Optional.Method(modid = "AS_Ruins")
-    @EventHandler
-    public void AS_RuinsCompat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("AS_Ruins Compat");
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
-    }
-
-    @Optional.Method(modid = "advancedRocketry")
-    @EventHandler
-    public void ARCompatOld(FMLPreInitializationEvent evt)
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat(evt));
-    }
-
-    @Optional.Method(modid = "advancedrocketry")
-    @EventHandler
-    public void ARCompat(FMLPreInitializationEvent evt)
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat(evt));
-    }
-
-    @Optional.Method(modid = "soulshardstow")
-    @EventHandler
-    public void SoulShardsCompat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("SoulShards Compat");
-        new pokecube.compat.soulshards.SoulShardsCompat();
+        for (Phase phase : Phase.values())
+        {
+            initMethods.put(phase, new HashSet<java.lang.reflect.Method>());
+        }
     }
 
     private void doMetastuff()
     {
         ModMetadata meta = FMLCommonHandler.instance().findContainerFor(this).getMetadata();
         meta.parent = PokecubeMod.ID;
-    }
-
-    @Optional.Method(modid = "tesla")
-    @SubscribeEvent
-    public void addTeslaInterferance(EntityJoinWorldEvent evt)
-    {
-        if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
-        {
-            EntityLiving living = (EntityLiving) evt.getEntity();
-            living.tasks.addTask(1, new AITeslaInterferance((IPokemob) living));
-        }
-    }
-
-    @Optional.Method(modid = "thutessentials")
-    @EventHandler
-    public void thutEssentialsCompat(FMLPreInitializationEvent e)
-    {
-        new pokecube.compat.tecompat.EssentialsCompat();
-    }
-
-    @Optional.Method(modid = "tesla")
-    @EventHandler
-    public void TeslaCompat(FMLPreInitializationEvent evt)
-    {
-        new TeslaHandler();
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Optional.Method(modid = "jeresources")
-    @SubscribeEvent
-    public void JERInit(PostPostInit event)
-    {
-        new pokecube.compat.jer.JERCompat().register();
     }
 
     @SideOnly(Side.CLIENT)
@@ -293,6 +229,11 @@ public class Compat
         new UpdateNotifier();
     }
 
+    public void init(FMLInitializationEvent evt)
+    {
+        doPhase(Phase.INIT, evt);
+    }
+
     @EventHandler
     public void postInit(FMLPostInitializationEvent evt)
     {
@@ -300,11 +241,13 @@ public class Compat
         {
             MinecraftForge.EVENT_BUS.register(new EnergyHandler());
         }
+        doPhase(Phase.POST, evt);
     }
 
     @SubscribeEvent
     public void postPostInit(PostPostInit evt)
     {
+        doPhase(Phase.POSTPOST, evt);
     }
 
     @EventHandler
@@ -316,44 +259,48 @@ public class Compat
         Database.addSpawnData(CUSTOMSPAWNSFILE);
         Database.addDropData(CUSTOMSPAWNSFILE.replace("spawns.xml", "drops.xml"));
         Database.addHeldData(CUSTOMSPAWNSFILE.replace("spawns.xml", "held.xml"));
+        findClasses();
+        doPhase(Phase.PRE, evt);
     }
 
-    @Optional.Method(modid = "reccomplex")
-    @EventHandler
-    public void RecComplex_Compat(FMLPostInitializationEvent evt)
+    private void doPhase(Phase pre, Object event)
     {
-        System.out.println("Initialiing Recurrent Complex Compat");
-        pokecube.compat.reccomplex.ReComplexCompat.register();
+        for (java.lang.reflect.Method m : initMethods.get(pre))
+        {
+            try
+            {
+                CompatClass comp = m.getAnnotation(CompatClass.class);
+                if (comp.takesEvent()) m.invoke(null, event);
+                else m.invoke(null);
+            }
+            catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
-    @Optional.Method(modid = "theoneprobe")
-    @EventHandler
-    public void TheOneProbe_Compat(FMLPostInitializationEvent evt)
+    public void findClasses()
     {
-        System.out.println("TheOneProbe Compat");
-        new pokecube.compat.top.TheOneProbeCompat();
-    }
-
-    @SideOnly(Side.CLIENT)
-    @Optional.Method(modid = "Waila")
-    @EventHandler
-    public void WAILA_Compat(FMLPostInitializationEvent evt)
-    {
-        System.out.println("Waila Compat");
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.waila.WailaCompat());
-    }
-
-    @Method(modid = "thut_wearables")
-    @EventHandler
-    public void preInitWearables(FMLPreInitializationEvent event)
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
-    }
-
-    @Method(modid = "thut_bling")
-    @EventHandler
-    public void postInitBling(FMLPostInitializationEvent event)
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.bling.BlingCompat());
+        List<Class<?>> foundClasses;
+        try
+        {
+            foundClasses = ClassFinder.find(getClass().getPackage().getName());
+            for (Class<?> c : foundClasses)
+            {
+                CompatClass comp = null;
+                for (java.lang.reflect.Method m : c.getMethods())
+                {
+                    if ((comp = m.getAnnotation(CompatClass.class)) != null)
+                    {
+                        initMethods.get(comp.phase()).add(m);
+                    }
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

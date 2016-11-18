@@ -20,6 +20,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -27,6 +29,9 @@ import pokecube.adventures.blocks.cloner.TileEntityCloner;
 import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
+import pokecube.compat.CompatClass;
+import pokecube.compat.CompatClass.Phase;
+import pokecube.compat.ai.AITeslaInterferance;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 
@@ -39,9 +44,26 @@ public class TeslaHandler
     @CapabilityInject(ITeslaHolder.class)
     public static Capability<ITeslaHolder>   TESLA_HOLDER   = null;
 
+    @Optional.Method(modid = "tesla")
+    @CompatClass(phase = Phase.PRE)
+    public static void TeslaCompat()
+    {
+        new TeslaHandler();
+    }
+
     public TeslaHandler()
     {
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @SubscribeEvent
+    public void addTeslaInterferance(EntityJoinWorldEvent evt)
+    {
+        if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
+        {
+            EntityLiving living = (EntityLiving) evt.getEntity();
+            living.tasks.addTask(1, new AITeslaInterferance((IPokemob) living));
+        }
     }
 
     @SubscribeEvent

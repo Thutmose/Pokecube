@@ -144,7 +144,7 @@ public class PokedexEntryLoader
         public static class LvlUp
         {
             @XmlAnyAttribute
-            Map<QName, String> values;
+            Map<QName, String> values = Maps.newHashMap();
         }
 
         @XmlRootElement(name = "MISC")
@@ -173,7 +173,7 @@ public class PokedexEntryLoader
         public static class Stats
         {
             @XmlAnyAttribute
-            Map<QName, String> values;
+            Map<QName, String> values = Maps.newHashMap();
         }
 
         @XmlAttribute
@@ -382,7 +382,7 @@ public class PokedexEntryLoader
     {
         Map<Integer, ArrayList<String>> lvlUpMoves = new HashMap<Integer, ArrayList<String>>();
         ArrayList<String> allMoves = new ArrayList<String>();
-        if (xmlMoves.misc != null)
+        if (xmlMoves.misc != null && xmlMoves.misc.moves != null)
         {
             String[] misc = xmlMoves.misc.moves.split(",");
             for (String s : misc)
@@ -1146,12 +1146,40 @@ public class PokedexEntryLoader
                 entry.isStarter = xmlEntry.starter;
                 entry.legendary = xmlEntry.legend;
                 entry.hasShiny = xmlEntry.hasShiny;
-                postIniStats(entry, stats);
-                parseSpawns(entry, stats);
-                parseEvols(entry, stats, true);
+                try
+                {
+                    postIniStats(entry, stats);
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log("Error with stats for " + entry);
+                }
+                try
+                {
+                    parseSpawns(entry, stats);
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log("Error with spawns for " + entry);
+                }
+                try
+                {
+                    parseEvols(entry, stats, true);
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log("Error with evols for " + entry);
+                }
                 if (xmlEntry.special != null)
                 {
-                    parseSpecial(xmlEntry.special, entry);
+                    try
+                    {
+                        parseSpecial(xmlEntry.special, entry);
+                    }
+                    catch (Exception e)
+                    {
+                        PokecubeMod.log("Error with special for " + entry);
+                    }
                 }
             }
         }

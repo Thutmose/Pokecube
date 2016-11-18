@@ -13,14 +13,14 @@ import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.trainers.EntityTrainer;
-import pokecube.compat.CompatClass;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.core.ai.properties.IGuardAICapability;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
 import pokecube.core.events.handlers.SpawnHandler;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class ReComplexCompat
 {

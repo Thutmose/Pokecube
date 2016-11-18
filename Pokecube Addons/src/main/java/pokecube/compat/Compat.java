@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,13 +33,14 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.compat.forgeenergy.EnergyHandler;
 import pokecube.core.database.Database;
-import pokecube.core.database.abilities.AbilityManager.ClassFinder;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.core.client.ClientProxy;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
+import thut.lib.CompatParser;
 
 @Mod(modid = "pokecube_compat", name = "Pokecube Compat", version = "1.0", acceptedMinecraftVersions = "*")
 public class Compat
@@ -259,7 +259,7 @@ public class Compat
         Database.addSpawnData(CUSTOMSPAWNSFILE);
         Database.addDropData(CUSTOMSPAWNSFILE.replace("spawns.xml", "drops.xml"));
         Database.addHeldData(CUSTOMSPAWNSFILE.replace("spawns.xml", "held.xml"));
-        findClasses();
+        CompatParser.findClasses(getClass().getPackage().getName(), initMethods);
         doPhase(Phase.PRE, evt);
     }
 
@@ -277,30 +277,6 @@ public class Compat
             {
                 e.printStackTrace();
             }
-        }
-    }
-
-    public void findClasses()
-    {
-        List<Class<?>> foundClasses;
-        try
-        {
-            foundClasses = ClassFinder.find(getClass().getPackage().getName());
-            for (Class<?> c : foundClasses)
-            {
-                CompatClass comp = null;
-                for (java.lang.reflect.Method m : c.getMethods())
-                {
-                    if ((comp = m.getAnnotation(CompatClass.class)) != null)
-                    {
-                        initMethods.get(comp.phase()).add(m);
-                    }
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
         }
     }
 }

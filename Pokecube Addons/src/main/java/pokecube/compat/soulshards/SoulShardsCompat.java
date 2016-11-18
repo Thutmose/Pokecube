@@ -11,12 +11,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Optional;
-import pokecube.compat.CompatClass;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class SoulShardsCompat implements IEntityHandler
 {

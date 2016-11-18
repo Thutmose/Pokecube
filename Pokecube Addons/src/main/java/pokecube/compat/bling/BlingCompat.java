@@ -5,11 +5,11 @@ import java.util.Locale;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional.Method;
-import pokecube.compat.CompatClass;
-import pokecube.compat.CompatClass.Phase;
 import pokecube.core.PokecubeItems;
 import pokecube.core.handlers.HeldItemHandler;
 import thut.bling.recipe.RecipeLoader;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class BlingCompat
 {

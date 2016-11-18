@@ -66,8 +66,11 @@ public class MovesParser
         boolean defrosts = yes.equals(entry.defrosts);
         boolean protect = yes.equals(entry.protect);
         boolean mirror = yes.equals(entry.mirrormove);
-        boolean wideArea = yes.equals(entry.wideArea);
-        boolean zMove = yes.equals(entry.zMove);
+        // boolean wideArea = yes.equals(entry.wideArea);//TODO decide what to
+        // do with these.
+        // boolean zMove = yes.equals(entry.zMove);
+        move.defrosts = defrosts;
+        move.mirrorcoated = mirror;
         move.attackCategory += contact ? IMoveConstants.CATEGORY_CONTACT : IMoveConstants.CATEGORY_DISTANCE;
         move.soundType = sound;
         move.isPunch = punch;
@@ -158,7 +161,6 @@ public class MovesParser
             }
             move.selfDamage = damage;
             move.selfDamageType = MoveEntry.DAMAGEDEALT;
-            System.out.println(entry.readableName);
             return;
         }
         boolean userFaint = var.contains("user faints");
@@ -177,7 +179,6 @@ public class MovesParser
         boolean ratioHeal = var.contains("user recovers") && var.contains(" the damage inflicted.");
         if (ratioHeal)
         {
-            System.out.println(entry.readableName);
             var = var.replace("user recovers ", "");
             var = var.replace(" the damage inflicted.", "");
             var = var.trim();
@@ -302,7 +303,6 @@ public class MovesParser
         {
             move.attackCategory += IMoveConstants.CATEGORY_SELF;
         }
-
     }
 
 }

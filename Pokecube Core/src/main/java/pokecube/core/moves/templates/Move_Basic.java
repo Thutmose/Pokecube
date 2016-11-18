@@ -421,8 +421,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if (attacked instanceof IPokemob)
         {
-            attackStrength = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, packet.getMove().getCategory(attacker),
-                    PWR, packet);
+            attackStrength = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked,
+                    packet.getMove().getCategory(attacker), PWR, packet);
 
             int moveAcc = packet.getMove().move.accuracy;
             if (moveAcc > 0)
@@ -522,7 +522,13 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             }
         }
 
-        if (!(move.attackCategory == CATEGORY_SELF && PWR == 0) && finalAttackStrength > 0)
+        if ((move.attackCategory & CATEGORY_SELF) == 0 && move.defrosts && attacked instanceof IPokemob
+                && (((IPokemob) attacked).getStatus() & IMoveConstants.STATUS_FRZ) > 0)
+        {
+            ((IPokemob) attacked).healStatus();
+        }
+
+        if (!((move.attackCategory & CATEGORY_SELF) > 0 && PWR == 0) && finalAttackStrength > 0)
         {
             if (attacked instanceof EntityPlayer)
             {

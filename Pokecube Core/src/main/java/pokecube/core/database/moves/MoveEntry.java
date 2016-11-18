@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.utils.PokeType;
 
@@ -11,7 +12,7 @@ public class MoveEntry implements IMoveConstants
 {
     public static enum Category
     {
-        STATUS, SPECIAL, PHYSICAL;
+        OTHER, SPECIAL, PHYSICAL;
     }
 
     private static HashMap<String, MoveEntry> movesNames       = new HashMap<String, MoveEntry>();
@@ -55,40 +56,42 @@ public class MoveEntry implements IMoveConstants
         return movesNames.values();
     }
 
-    public final String name;
-    public final int    index;
-    public PokeType     type;
+    public final String            name;
+    public final int               index;
+    public PokeType                type;
     /** Distance, contact, etc. */
-    public int          attackCategory;
-    public int          power                    = 0;
-    public int          accuracy;
-    public int          pp;
-    public byte         statusChange;
-    public float        statusChance;
-    public byte         change                   = CHANGE_NONE;
-    public int          chanceChance             = 0;
-    public int[]        attackerStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    public int          attackerStatModProb      = 100;
-    public int[]        attackedStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
-    public int          attackedStatModProb      = 100;
-    public float        damageHealRatio          = 0;
-    public float        selfHealRatio            = 0;
-    public boolean      multiTarget;
-    public boolean      notIntercepable;
-    public boolean      protect;
-    public boolean      magiccoat;
-    public boolean      snatch;
-    public boolean      kingsrock;
-    public int          crit;
-
-    public float        selfDamage               = 0;
-
-    public int          selfDamageType;
+    public int                     attackCategory;
+    public int                     power                    = 0;
+    public int                     accuracy;
+    public int                     pp;
+    public byte                    statusChange;
+    public float                   statusChance;
+    public byte                    change                   = CHANGE_NONE;
+    public int                     chanceChance             = 0;
+    public int[]                   attackerStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    public int                     attackerStatModProb      = 100;
+    public int[]                   attackedStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
+    public int                     attackedStatModProb      = 100;
+    public float                   damageHealRatio          = 0;
+    public float                   selfHealRatio            = 0;
+    public boolean                 multiTarget;
+    public boolean                 notIntercepable;
+    public boolean                 protect;
+    public boolean                 magiccoat;
+    public boolean                 snatch;
+    public boolean                 kingsrock;
+    public int                     crit;
+    public boolean                 soundType                = false;
+    public boolean                 isPunch                  = false;
+    public boolean                 fixed                    = false;
+    public float                   selfDamage               = 0;
+    public int                     selfDamageType;
+    public int                     priority                 = 0;
 
     /** Status, Special, Physical */
-    public byte         category                 = -1;
-
-    public String       animDefault              = "none";
+    public byte                    category                 = -1;
+    public String                  animDefault              = "none";
+    public JsonMoves.MoveJsonEntry baseEntry;
 
     public MoveEntry(String name, int index)
     {

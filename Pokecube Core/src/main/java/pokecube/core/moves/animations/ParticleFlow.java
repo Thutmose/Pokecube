@@ -13,12 +13,14 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.PTezzelator;
 import pokecube.core.interfaces.Move_Base;
 import thut.api.maths.Vector3;
 
 public class ParticleFlow extends MoveAnimationBase
 {
+    String  type    = null;
     float   width   = 1;
     float   density = 1;
     boolean flat    = false;
@@ -48,7 +50,12 @@ public class ParticleFlow extends MoveAnimationBase
             {
                 reverse = Boolean.parseBoolean(val);
             }
+            else if (ident.equals("v"))
+            {
+                type = val;
+            }
         }
+        if (type == null) type = "misc";// TODO test this.
     }
 
     public ParticleFlow(String particle, float width)
@@ -61,6 +68,7 @@ public class ParticleFlow extends MoveAnimationBase
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
+        if (type != null) return;
         Vector3 source = info.source;
         Vector3 target = info.target;
         ResourceLocation texture = new ResourceLocation("pokecube", "textures/blank.png");
@@ -129,6 +137,36 @@ public class ParticleFlow extends MoveAnimationBase
         else
         {
             rgba = getColourFromMove(move, 255);
+        }
+    }
+
+    @Override
+    public void spawnClientEntities(MovePacketInfo info)
+    {
+        if (type == null) return;
+        Vector3 source = info.source;
+        Vector3 target = info.target;
+        initColour((info.attacker.getEntityWorld().getWorldTime()) * 20, 0, info.move);
+        double dist = source.distanceTo(target);
+        double frac = dist * info.currentTick / getDuration();
+        // TODO make reversing work.
+        double dir = reverse ? -1 : 1;
+
+        Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
+        Random rand = new Random();
+        Vector3 temp1 = Vector3.getNewVector();
+        double yF = flat ? 0 : 1;
+        for (double i = frac; i < dist; i += 0.1)
+        {
+            double factor = frac;
+            factor *= width * 0.2;
+            for (int j = 0; j < density; j++)
+            {
+                temp1.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor * yF,
+                        rand.nextGaussian() * factor);
+                PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, type,
+                        source.add(temp.scalarMult(i).addTo(temp1)), null, 5, rgba);
+            }
         }
     }
 }

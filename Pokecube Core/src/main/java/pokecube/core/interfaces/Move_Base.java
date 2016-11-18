@@ -37,7 +37,7 @@ public abstract class Move_Base
         this.name = name;
         this.move = MoveEntry.get(name);
         this.index = move.index;
-
+        this.fixedDamage = move.fixed;
         boolean mod = false;
         for (int i : move.attackedStatModification)
         {

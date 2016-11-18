@@ -35,6 +35,11 @@ public class ParticleBeam extends MoveAnimationBase
         {
             tick = Float.parseFloat(args[2]);
         }
+        if (old)
+        {
+            old = false;
+            particle = "misc";
+        }
         rgba = 0xFFFFFFFF;
     }
 

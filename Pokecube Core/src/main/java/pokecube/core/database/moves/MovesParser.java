@@ -144,7 +144,7 @@ public class MovesParser
     {
         if (entry.secondaryEffect == null) return;
         String var = entry.secondaryEffect.toLowerCase(Locale.ENGLISH).trim();
-        boolean recoils = var.contains("User takes recoil damage equal to ")
+        boolean recoils = var.contains("user takes recoil damage equal to ")
                 && var.contains(" of the damage inflicted.");
         if (recoils)
         {

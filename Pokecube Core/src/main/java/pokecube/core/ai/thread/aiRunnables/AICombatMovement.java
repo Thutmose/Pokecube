@@ -166,10 +166,13 @@ public class AICombatMovement extends AIBase
                 targ.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }
-        double d0 = this.attacker.getDistanceSqToEntity(this.target);
+        double d0 = this.attacker.posX - this.target.posX;
+        double d2 = this.attacker.posZ - this.target.posZ;
+        // Use horizontal distance to allow floating things to leap downwards.
+        double dist = d0 * d0 + d2 * d2;
         float diff = attacker.width + target.width;
         diff = diff * diff;
-        if (!(d0 >= diff && d0 <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false))
+        if (!(dist >= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false))
         {
             // TODO see if need to path to target
             return;
@@ -184,6 +187,7 @@ public class AICombatMovement extends AIBase
             new Exception().printStackTrace();
             dir.clear();
         }
+        if (!attacker.onGround) dir.y *= 2;
         dir.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker),
                 SoundEvents.ENTITY_GENERIC_SMALL_FALL, SoundCategory.HOSTILE, 1, 1));

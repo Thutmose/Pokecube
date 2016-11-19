@@ -1,5 +1,6 @@
 package pokecube.core.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,8 @@ import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.moves.MovesParser;
+import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
@@ -496,8 +499,18 @@ public class Commands extends CommandBase
         }
         if (args[0].equals("reloadAnims"))
         {
-            for (String s : Database.configDatabases.get(1))
-                Database.loadMoves(Database.DBLOCATION + s);
+            try
+            {
+                File moves = new File(Database.DBLOCATION + args[1]+".json");
+                File anims = new File(Database.DBLOCATION + args[2]+".json");
+                JsonMoves.loadMoves(moves);
+                JsonMoves.merge(anims, moves);
+                MovesParser.load(moves);
+            }
+            catch (Exception e)
+            {
+                throw new CommandException("Error loading animations");
+            }
             for (Move_Base move : MovesUtils.moves.values())
             {
                 if (move.move.baseEntry != null && move.move.baseEntry.animations != null

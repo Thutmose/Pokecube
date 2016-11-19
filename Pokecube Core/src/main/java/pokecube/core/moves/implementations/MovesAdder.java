@@ -85,6 +85,10 @@ public class MovesAdder implements IMoveConstants
         {
             animation = new ThrowParticle(anim);
         }
+        if (anim.startsWith("thunder"))
+        {
+            animation = new Thunder();
+        }
         return animation;
     }
 

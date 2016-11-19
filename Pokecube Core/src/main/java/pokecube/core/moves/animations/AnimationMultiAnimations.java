@@ -68,7 +68,7 @@ public class AnimationMultiAnimations extends MoveAnimationBase
             info.currentTick = tick;
             WrappedAnimation toRun = components.get(i);
             if (tick > toRun.start + toRun.wrapped.getDuration()) continue;
-            if (toRun.start < tick) break;
+            if (toRun.start > tick) continue;
             info.currentTick = tick - toRun.start;
             toRun.wrapped.spawnClientEntities(info);
         }

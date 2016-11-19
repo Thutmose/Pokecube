@@ -263,7 +263,7 @@ public class PokecubeManager
 
     public static void heal(ItemStack stack)
     {
-        if (CompatWrapper.isValid(stack))
+        if (isFilled(stack))
         {
             int serialization = Tools.getHealedPokemobSerialization();
             NBTTagCompound entityTag = stack.getTagCompound().getCompoundTag(TagNames.POKEMOB);

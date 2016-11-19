@@ -157,7 +157,7 @@ public class TypeTrainer
         TypeTrainer type = trainer.getType();
 
         for (int i = 0; i < 6; i++)
-            team[i] = null;
+            team[i] = CompatWrapper.nullStack;
 
         if (level == 0) level = 5;
         int variance = PokecubeMod.core.getConfig().levelVariance;
@@ -167,7 +167,7 @@ public class TypeTrainer
         for (int i = 0; i < number; i++)
         {
             Collections.shuffle(type.pokemon);
-            ItemStack item = null;
+            ItemStack item = CompatWrapper.nullStack;
             for (PokedexEntry s : type.pokemon)
             {
                 if (s != null)
@@ -175,7 +175,7 @@ public class TypeTrainer
                     variance = new Random().nextInt(Math.max(1, variance));
                     item = makeStack(s, trainer, world, level + variance);
                 }
-                if (item != null) break;
+                if (CompatWrapper.isValid(item)) break;
             }
             team[i] = item;
         }
@@ -194,7 +194,7 @@ public class TypeTrainer
     public static ItemStack makeStack(PokedexEntry entry, EntityLivingBase trainer, World world, int level)
     {
         int num = entry.getPokedexNb();
-        if (Pokedex.getInstance().getEntry(num) == null) return null;
+        if (Pokedex.getInstance().getEntry(num) == null) return CompatWrapper.nullStack;
 
         IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
         if (entity != null)
@@ -228,7 +228,7 @@ public class TypeTrainer
             return item;
         }
 
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     public static void postInitTrainers()
@@ -327,7 +327,7 @@ public class TypeTrainer
 
     private void initLoot()
     {
-        if (loot[0] != null) return;
+        if (CompatWrapper.isValid(loot[0])) return;
 
         if (!drops.equals(""))
         {
@@ -364,7 +364,7 @@ public class TypeTrainer
                 num++;
             }
         }
-        if (loot[0] == null) loot[0] = new ItemStack(Items.EMERALD);
+        if (!CompatWrapper.isValid(loot[0])) loot[0] = new ItemStack(Items.EMERALD);
     }
 
     public void initTrainerItems(EntityTrainer trainer)

@@ -28,7 +28,7 @@ import thut.lib.CompatWrapper;
 public abstract class EntityHasPokemobs extends EntityHasMessages
 {
     protected int            battleCooldown   = -1;
-    public ItemStack[]       pokecubes        = new ItemStack[6];
+    public ItemStack[]       pokecubes        = CompatWrapper.makeList(6).toArray(new ItemStack[6]);
     public List<ItemStack>   reward           = Lists.newArrayList(new ItemStack(Items.EMERALD));
     // Cooldown between sending out pokemobs
     public int               attackCooldown   = 0;
@@ -69,7 +69,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         boolean found = false;
         for (int i = 0; i < 6; i++)
         {
-            if (pokecubes[i] != null)
+            if (CompatWrapper.isValid(pokecubes[i]))
             {
                 if (pokecubes[i].hasTagCompound())
                 {
@@ -94,13 +94,13 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         }
         for (int i = 0; i < 6; i++)
         {
-            if (found) if (pokecubes[i] == null)
+            if (found) if (!CompatWrapper.isValid(pokecubes[i]))
             {
                 PokecubeManager.heal(mob);
                 pokecubes[i] = mob.copy();
                 break;
             }
-            else if(pokecubes[i]!=null)
+            else if (CompatWrapper.isValid(pokecubes[i]))
             {
                 PokecubeManager.heal(pokecubes[i]);
             }
@@ -108,16 +108,16 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         for (int i = 0; i < 6; i++)
         {
             ItemStack stack = pokecubes[i];
-            if (stack == null)
+            if (!CompatWrapper.isValid(stack))
             {
                 for (int j = i; j < 5; j++)
                 {
                     pokecubes[j] = pokecubes[j + 1];
-                    pokecubes[j + 1] = null;
+                    pokecubes[j + 1] = CompatWrapper.nullStack;
                 }
             }
         }
-        if (target == null || getAIState(THROWING) || outMob != null || getNextPokemob() != null) return;
+        if (target == null || getAIState(THROWING) || outMob != null || CompatWrapper.isValid(getNextPokemob())) return;
         this.setAIState(INBATTLE, false);
         if (outMob == null && !getAIState(THROWING))
         {
@@ -135,7 +135,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         int ret = 0;
         for (ItemStack i : pokecubes)
         {
-            if (i != null && PokecubeManager.getPokedexNb(i) != 0) ret++;
+            if (PokecubeManager.getPokedexNb(i) != 0) ret++;
         }
         return ret;
     }
@@ -242,7 +242,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         for (ItemStack i : pokecubes)
         {
             NBTTagCompound nbttagcompound = new NBTTagCompound();
-            if (i != null)
+            if (CompatWrapper.isValid(i))
             {
                 i.writeToNBT(nbttagcompound);
             }
@@ -259,7 +259,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         nbttaglist = new NBTTagList();
         if (reward != null) for (int i = 0; i < this.reward.size(); ++i)
         {
-            if (this.reward.get(i) != null)
+            if (CompatWrapper.isValid(this.reward.get(i)))
             {
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
                 this.reward.get(i).writeToNBT(nbttagcompound);
@@ -296,7 +296,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
     {
         if (target == null || getAIState(THROWING)) return;
         ItemStack i = getNextPokemob();
-        if (i != null)
+        if (CompatWrapper.isValid(i))
         {
             this.setAIState(INBATTLE, true);
             IPokecube cube = (IPokecube) i.getItem();
@@ -340,16 +340,16 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
 
     public ItemStack getNextPokemob()
     {
-        if (nextSlot < 0) return null;
+        if (nextSlot < 0) return CompatWrapper.nullStack;
         for (int i = 0; i < 6; i++)
         {
             ItemStack stack = pokecubes[i];
-            if (stack == null)
+            if (!CompatWrapper.isValid(stack))
             {
                 for (int j = i; j < 5; j++)
                 {
                     pokecubes[j] = pokecubes[j + 1];
-                    pokecubes[j + 1] = null;
+                    pokecubes[j + 1] = CompatWrapper.nullStack;
                 }
             }
         }

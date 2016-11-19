@@ -68,7 +68,7 @@ public class InventoryPC implements IInventory
 
     public static void addStackToPC(String uuid, ItemStack mob)
     {
-        if (uuid == null || mob == CompatWrapper.nullStack)
+        if (uuid == null || !CompatWrapper.isValid(mob))
         {
             System.err.println("Could not find the owner of this item " + mob + " " + uuid);
             return;
@@ -86,7 +86,6 @@ public class InventoryPC implements IInventory
         }
         pc.addItem(mob.copy());
         PCSaveHandler.getInstance().savePC(uuid);
-        mob = null;
     }
 
     public static void clearPC()

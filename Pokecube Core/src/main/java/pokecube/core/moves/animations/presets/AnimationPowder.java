@@ -20,60 +20,11 @@ public class AnimationPowder extends MoveAnimationBase
 
     String  particle;
     float   width        = 1;
-    float   density      = 1;
     boolean reverse      = false;
     int     meshId       = 0;
 
-    public AnimationPowder(String particle)
+    public AnimationPowder()
     {
-        this.particle = "powder";
-        duration = 50;
-        particleLife = 1;
-        for (EnumDyeColor colour : EnumDyeColor.values())
-        {
-            if (colour.getName().equalsIgnoreCase(particle))
-            {
-                rgba = colour.getMapColor().colorValue + 0xFF000000;
-                break;
-            }
-        }
-        String[] args = particle.split(":");
-        for (int i = 1; i < args.length; i++)
-        {
-            String ident = args[i].substring(0, 1);
-            String val = args[i].substring(1);
-            if (ident.equals("w"))
-            {
-                width = Float.parseFloat(val);
-            }
-            else if (ident.equals("d"))
-            {
-                density = Float.parseFloat(val);
-            }
-            else if (ident.equals("r"))
-            {
-                reverse = Boolean.parseBoolean(val);
-            }
-            else if (ident.equals("c"))
-            {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
-            }
-            else if (ident.equals("t"))
-            {
-                duration = Integer.parseInt(val);
-            }
-            else if (ident.equals("l"))
-            {
-                particleLife = Integer.parseInt(val);
-            }
-            else if (ident.equals("p"))
-            {
-                this.particle = val;
-            }
-        }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -123,8 +74,46 @@ public class AnimationPowder extends MoveAnimationBase
     @Override
     public IMoveAnimation init(String preset)
     {
-        // TODO Auto-generated method stub
-        return null;
+        this.particle = "powder";
+        duration = 50;
+        particleLife = 1;
+        String[] args = preset.split(":");
+        for (int i = 1; i < args.length; i++)
+        {
+            String ident = args[i].substring(0, 1);
+            String val = args[i].substring(1);
+            if (ident.equals("w"))
+            {
+                width = Float.parseFloat(val);
+            }
+            else if (ident.equals("d"))
+            {
+                density = Float.parseFloat(val);
+            }
+            else if (ident.equals("r"))
+            {
+                reverse = Boolean.parseBoolean(val);
+            }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
+            else if (ident.equals("t"))
+            {
+                duration = Integer.parseInt(val);
+            }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
+            }
+            else if (ident.equals("p"))
+            {
+                this.particle = val;
+            }
+        }
+        return this;
     }
 
 }

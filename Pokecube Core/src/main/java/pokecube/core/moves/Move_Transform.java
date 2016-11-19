@@ -34,6 +34,12 @@ public class Move_Transform extends Move_Basic
         }
 
         @Override
+        public int getApplicationTick()
+        {
+            return 0;
+        }
+
+        @Override
         public void setDuration(int arg0)
         {
 

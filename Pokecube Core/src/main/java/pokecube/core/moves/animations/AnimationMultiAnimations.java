@@ -30,7 +30,9 @@ public class AnimationMultiAnimations extends MoveAnimationBase
         int            start;
     }
 
-    List<WrappedAnimation> components = Lists.newArrayList();
+    List<WrappedAnimation> components      = Lists.newArrayList();
+
+    private int            applicationTick = 0;
 
     public AnimationMultiAnimations(MoveEntry move)
     {
@@ -43,12 +45,17 @@ public class AnimationMultiAnimations extends MoveAnimationBase
             if (animation == null) continue;
             int start = Integer.parseInt(anim.starttick);
             int dur = Integer.parseInt(anim.duration);
+            if (anim.applyAfter != null && Boolean.parseBoolean(anim.applyAfter))
+            {
+                applicationTick = Math.max(start + dur, applicationTick);
+            }
             duration = Math.max(duration, start + dur);
             WrappedAnimation wrapped = new WrappedAnimation();
             wrapped.wrapped = animation;
             wrapped.start = start;
             components.add(wrapped);
         }
+        if (applicationTick == 0) applicationTick = duration;
         components.sort(new Comparator<WrappedAnimation>()
         {
             @Override
@@ -67,6 +74,12 @@ public class AnimationMultiAnimations extends MoveAnimationBase
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+    }
+
+    @Override
+    public int getApplicationTick()
+    {
+        return applicationTick;
     }
 
     @Override

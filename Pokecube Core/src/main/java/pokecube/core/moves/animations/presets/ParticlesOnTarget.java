@@ -17,7 +17,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
     String type    = null;
     String particle;
     float  width   = 1;
-    float  density = 1;
     int    meshId  = 0;
 
     public ParticlesOnTarget()

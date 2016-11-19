@@ -20,7 +20,6 @@ public class ParticleFlow extends MoveAnimationBase
     String  type    = null;
     float   width   = 1;
     float   angle   = 0;
-    float   density = 1;
     boolean flat    = false;
     boolean reverse = false;
 

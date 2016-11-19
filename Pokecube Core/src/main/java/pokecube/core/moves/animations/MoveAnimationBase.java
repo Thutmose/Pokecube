@@ -7,9 +7,11 @@ public abstract class MoveAnimationBase implements IMoveAnimation
 {
     protected String  particle;
     protected int     rgba;
-    protected int     duration     = 5;
-    protected int     particleLife = 5;
-    protected boolean customColour = false;
+    protected int     duration        = 5;
+    protected int     applicationTick = -1;
+    protected int     particleLife    = 5;
+    protected boolean customColour    = false;
+    protected float   density         = 1;
 
     public int getColourFromMove(Move_Base move, int alpha)
     {
@@ -25,6 +27,12 @@ public abstract class MoveAnimationBase implements IMoveAnimation
 
     @Override
     public int getDuration()
+    {
+        return duration;
+    }
+
+    @Override
+    public int getApplicationTick()
     {
         return duration;
     }

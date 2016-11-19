@@ -38,6 +38,7 @@ public class JsonMoves
         public String preset;
         public String duration  = "5";
         public String starttick = "0";
+        public String applyAfter;
     }
 
     public static class MoveJsonEntry

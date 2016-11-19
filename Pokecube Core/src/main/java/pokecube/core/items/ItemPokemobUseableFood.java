@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
+import thut.lib.CompatWrapper;
 
 public class ItemPokemobUseableFood extends ItemFood implements IPokemobUseable
 {
@@ -65,7 +66,7 @@ public class ItemPokemobUseableFood extends ItemFood implements IPokemobUseable
 
             if (applyEffect(mob, stack))
             {
-                mob.setHeldItem(EnumHand.MAIN_HAND, null);
+                mob.setHeldItem(EnumHand.MAIN_HAND, CompatWrapper.nullStack);
                 return true;
             }
         }

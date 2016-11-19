@@ -44,7 +44,6 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -588,21 +587,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         if (world.provider.getDimension() != Minecraft.getMinecraft().thePlayer.dimension) return;
         if (velocity == null) velocity = Vector3.empty;
-        boolean ignoreRange = true;
-        EnumParticleTypes particle = null;
-        particle = EnumParticleTypes.getByName(par1Str);
-        if (particle == null)
-        {
-            if (par1Str.contains("smoke"))
-                particle = par1Str.contains("large") ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL;
-        }
-        if (particle != null)
-        {
-            world.spawnParticle(particle, ignoreRange, location.x, location.y, location.z, velocity.x, velocity.y,
-                    velocity.z, args);
-            return;
-        }
-        IParticle particle2 = ParticleFactory.makeParticle(par1Str, velocity, args);
+        IParticle particle2 = ParticleFactory.makeParticle(par1Str, location, velocity, args);
         ParticleHandler.Instance().addParticle(location, particle2);
     }
 

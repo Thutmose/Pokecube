@@ -52,6 +52,7 @@ public class ParticleHandler
 
     public void addParticle(Vector3 location, IParticle particle)
     {
+        if (particle == null) return;
         synchronized (particles)
         {
             particles.add(new ParticlePacket(location, particle));

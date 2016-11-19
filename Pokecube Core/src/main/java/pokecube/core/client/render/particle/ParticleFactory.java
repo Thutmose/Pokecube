@@ -1,12 +1,49 @@
 package pokecube.core.client.render.particle;
 
+import java.util.Map;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import pokecube.core.PokecubeCore;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
 public class ParticleFactory
 {
-    public static IParticle makeParticle(String name, Vector3 velocity, int... args)
+    static final Map<Integer, IParticleFactory> particleTypes = ReflectionHelper.getPrivateValue(
+            net.minecraft.client.particle.ParticleManager.class, Minecraft.getMinecraft().effectRenderer,
+            "field_178932_g", "particleTypes");
+    static final Object                         lock          = ReflectionHelper.getPrivateValue(
+            net.minecraft.client.particle.ParticleManager.class, Minecraft.getMinecraft().effectRenderer,
+            "field_187241_h", "queueEntityFX");
+
+    public static IParticle makeParticle(String name, Vector3 location, Vector3 velocity, int... args)
     {
+        EnumParticleTypes vanilla = null;
+        vanilla = EnumParticleTypes.getByName(name);
+        if (vanilla == null)
+        {
+            if (name.contains("smoke"))
+                vanilla = name.contains("large") ? EnumParticleTypes.SMOKE_LARGE : EnumParticleTypes.SMOKE_NORMAL;
+        }
+        if (vanilla != null)
+        {
+            IParticleFactory fact = particleTypes.get(vanilla.getParticleID());
+            Particle par = fact.getEntityFX(vanilla.getParticleID(), PokecubeCore.getWorld(), location.x, location.y,
+                    location.z, velocity.x, velocity.y, velocity.z, args);
+            if (par != null)
+            {
+                if (args.length > 1) par.setMaxAge(Math.max(2, args[1]));
+                synchronized (lock)
+                {
+                    Minecraft.getMinecraft().effectRenderer.addEffect(par);
+                }
+            }
+            return null;
+        }
         IParticle ret = null;
         if (name.equalsIgnoreCase("string"))
         {

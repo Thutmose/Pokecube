@@ -34,6 +34,10 @@ public class ParticleBeam extends MoveAnimationBase
             {
                 this.particle = val;
             }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
+            }
             else if (ident.equals("c"))
             {
                 int alpha = 255;
@@ -83,6 +87,6 @@ public class ParticleBeam extends MoveAnimationBase
         Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
         for (double i = frac; i < dist; i += 0.1)
             PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, source.add(temp.scalarMult(i)), null,
-                    rgba, 5);
+                    rgba, particleLife);
     }
 }

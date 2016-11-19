@@ -310,14 +310,14 @@ public class ItemPokemobEgg extends Item
 
     public static int getNumber(ItemStack stack)
     {
-        if (stack == null || stack.getTagCompound() == null
+        if (!CompatWrapper.isValid(stack) || stack.getTagCompound() == null
                 || !stack.getTagCompound().hasKey("pokemobNumber")) { return -1; }
         return stack.getTagCompound().getInteger("pokemobNumber");
     }
 
     public static IPokemob getPokemob(World world, ItemStack stack)
     {
-        if (stack == null || stack.getTagCompound() == null
+        if (!CompatWrapper.isValid(stack) || stack.getTagCompound() == null
                 || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
         int number = stack.getTagCompound().getInteger("pokemobNumber");
         IPokemob ret = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(number), world);
@@ -448,7 +448,7 @@ public class ItemPokemobEgg extends Item
             mob.setPokemonOwner(owner);
             mob.setPokemonAIState(IMoveConstants.TAMED, true);
             mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
-            mob.setHeldItem(null);
+            mob.setHeldItem(CompatWrapper.nullStack);
         }
     }
 
@@ -508,7 +508,7 @@ public class ItemPokemobEgg extends Item
                             entity.getRNG().nextInt(7) + 1));
                 }
             }
-            entity.setHeldItem(EnumHand.MAIN_HAND, null);
+            entity.setHeldItem(EnumHand.MAIN_HAND, CompatWrapper.nullStack);
             entity.playLivingSound();
         }
 

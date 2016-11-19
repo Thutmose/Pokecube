@@ -22,7 +22,7 @@ public class PokecubeManager
 {
     public static ItemStack getHeldItemMainhand(ItemStack stack)
     {
-        if (!isFilled(stack)) return null;
+        if (!isFilled(stack)) return CompatWrapper.nullStack;
         try
         {
             NBTTagList equipmentTags = (NBTTagList) stack.getTagCompound().getCompoundTag(TagNames.POKEMOBTAG)
@@ -38,12 +38,12 @@ public class PokecubeManager
         catch (Exception e)
         {
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     public static String getOwner(ItemStack itemStack)
     {
-        if (itemStack == null || !itemStack.hasTagCompound()) return "";
+        if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return "";
         NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
                 .getCompoundTag(TagNames.POKEMOBTAG);
         // TODO remove this legacy support.
@@ -60,7 +60,7 @@ public class PokecubeManager
 
     public static int getPokedexNb(ItemStack itemStack)
     {
-        if (itemStack == null || !itemStack.hasTagCompound()) return 0;
+        if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return 0;
         NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
                 .getCompoundTag(TagNames.POKEMOBTAG);
         int number = poketag.getCompoundTag(TagNames.OWNERSHIPTAG).getInteger(TagNames.POKEDEXNB);
@@ -74,7 +74,7 @@ public class PokecubeManager
     {
         IPokemob poke = (IPokemob) pokemob;
         ItemStack cube;
-        if ((cube = poke.getPokecube()) == null) return null;
+        if (!CompatWrapper.isValid((cube = poke.getPokecube()))) return null;
         return CompatWrapper.getTag(cube, TagNames.POKESEAL, false);
     }
 
@@ -120,7 +120,7 @@ public class PokecubeManager
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB);
             poke.readFromNBT(pokeTag);
             ItemStack cubeStack = pokemob.getPokecube();
-            if (cubeStack == null)
+            if (!CompatWrapper.isValid(cubeStack))
             {
                 cubeStack = itemStack.copy();
                 cubeStack.getTagCompound().removeTag(TagNames.POKEMOB);
@@ -160,7 +160,7 @@ public class PokecubeManager
         ItemStack itemStack = pokemob.getPokecube();
         int damage = Tools.serialize(((EntityLivingBase) pokemob).getMaxHealth(),
                 ((EntityLivingBase) pokemob).getHealth());
-        if (itemStack == null)
+        if (!CompatWrapper.isValid(itemStack))
         {
             itemStack = new ItemStack(PokecubeItems.getFilledCube(0), 1, damage);
         }
@@ -263,7 +263,7 @@ public class PokecubeManager
 
     public static void heal(ItemStack stack)
     {
-        if (stack != null)
+        if (CompatWrapper.isValid(stack))
         {
             int serialization = Tools.getHealedPokemobSerialization();
             NBTTagCompound entityTag = stack.getTagCompound().getCompoundTag(TagNames.POKEMOB);

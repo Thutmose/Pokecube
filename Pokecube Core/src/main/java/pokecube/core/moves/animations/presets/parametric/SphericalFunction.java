@@ -138,9 +138,7 @@ public class SphericalFunction extends MoveAnimationBase
             }
             else if (ident.equals("c"))
             {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
+                initRGBA(val);
             }
             else if (ident.equals("f"))
             {

@@ -1,5 +1,6 @@
 package pokecube.core.moves.animations;
 
+import net.minecraft.item.EnumDyeColor;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
 
@@ -48,5 +49,36 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     @Override
     public void spawnClientEntities(MovePacketInfo info)
     {
+    }
+
+    protected void initRGBA(String val)
+    {
+        int alpha = 255;
+        EnumDyeColor colour = null;
+        try
+        {
+            colour = EnumDyeColor.byDyeDamage(Integer.parseInt(val));
+        }
+        catch (NumberFormatException e)
+        {
+            try
+            {
+                colour = EnumDyeColor.valueOf(val);
+            }
+            catch (Exception e1)
+            {
+                for (EnumDyeColor col : EnumDyeColor.values())
+                {
+                    if (col.getName().equals(val))
+                    {
+                        colour = col;
+                        break;
+                    }
+                }
+            }
+        }
+        if (colour == null) return;
+        rgba = colour.getMapColor().colorValue + 0x01000000 * alpha;
+        customColour = true;
     }
 }

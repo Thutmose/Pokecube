@@ -2,7 +2,6 @@ package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.world.IWorldEventListener;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
@@ -76,9 +75,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
             }
             else if (ident.equals("c"))
             {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
+                initRGBA(val);
             }
         }
         if (type == null) type = "powder";

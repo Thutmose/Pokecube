@@ -1,8 +1,10 @@
 package pokecube.core.moves.animations;
 
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.world.IWorldEventListener;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.api.maths.Vector3;
 
 public class ParticlesOnTarget extends MoveAnimationBase
 {
@@ -32,6 +34,12 @@ public class ParticlesOnTarget extends MoveAnimationBase
             {
                 type = val;
             }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
         }
         if (type == null) type = "powder";
     }
@@ -39,6 +47,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        if (customColour) return;
         rgba = getColourFromMove(move, 255);
     }
 
@@ -46,7 +55,9 @@ public class ParticlesOnTarget extends MoveAnimationBase
     public void spawnClientEntities(MovePacketInfo info)
     {
         if (type == null || Math.random() > density) return;
-        PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, info.target, null);
+        initColour((info.attacker.getEntityWorld().getWorldTime()), 0, info.move);
+        Vector3 temp = Vector3.getNewVector().set(info.target);
+        PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, temp, null, rgba);
     }
 
     @Override

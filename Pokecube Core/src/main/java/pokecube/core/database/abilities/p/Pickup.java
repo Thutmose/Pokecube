@@ -11,6 +11,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
+import thut.lib.CompatWrapper;
 
 public class Pickup extends Ability
 {
@@ -31,7 +32,7 @@ public class Pickup extends Ability
         EntityLivingBase poke = (EntityLivingBase) mob;
         if (poke.ticksExisted % 200 == 0 && Math.random() < 0.1)
         {
-            if (poke.getHeldItemMainhand() == null)
+            if (!CompatWrapper.isValid(poke.getHeldItemMainhand()))
             {
                 List<?> items = new ArrayList<Object>(PokecubeItems.heldItems);
                 Collections.shuffle(items);

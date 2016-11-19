@@ -26,6 +26,7 @@ import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.moves.templates.Move_Ongoing;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 /** This applies ongoing moves, applies status effects, and manages sounds when
  * explosion moves are used. It also deals with setting/resetting the
@@ -169,7 +170,7 @@ public class LogicMovesUpdates extends LogicBase
                     }
                 }
                 HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
-                pokemob.setHeldItem(null);
+                pokemob.setHeldItem(CompatWrapper.nullStack);
             }
         }
 

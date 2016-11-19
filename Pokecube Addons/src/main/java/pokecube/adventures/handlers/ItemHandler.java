@@ -28,6 +28,7 @@ import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -208,7 +209,7 @@ public class ItemHandler
         table.addPool(pool);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority=EventPriority.HIGHEST)
     public void initLootTables(LootTableLoadEvent event)
     {
         final ItemStack share = PokecubeItems.getStack("exp_share");

@@ -18,6 +18,7 @@ public class MovesParser
 {
     public static void load(File file) throws IOException
     {
+        JsonMoves.loadMoves(file);
         MovesJson moves = JsonMoves.getMoves(file);
         for (int i = 0; i < moves.moves.size(); i++)
         {
@@ -53,7 +54,9 @@ public class MovesParser
             return;
         }
         String yes = "Yes";
-        MoveEntry move = new MoveEntry(name, index);
+        MoveEntry move = MoveEntry.get(name);
+        move = move == null ? new MoveEntry(name, index) : move;
+        move.attackCategory = 0;
         move.power = power;
         move.pp = pp;
         move.accuracy = accuracy;

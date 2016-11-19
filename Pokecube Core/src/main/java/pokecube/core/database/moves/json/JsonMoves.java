@@ -23,8 +23,9 @@ public class JsonMoves
 
     public static class AnimationsJson
     {
-        public String name;
-        public String defaultanimation;
+        public String              name;
+        public String              defaultanimation;
+        public List<AnimationJson> animations = new ArrayList<>();
     }
 
     public static class AnimsJson
@@ -32,47 +33,55 @@ public class JsonMoves
         public List<AnimationsJson> moves = new ArrayList<>();
     }
 
+    public static class AnimationJson
+    {
+        public String preset;
+        public String duration  = "5";
+        public String starttick = "0";
+    }
+
     public static class MoveJsonEntry
     {
-        public String name;
-        public String readableName;
-        public String type;
-        public String category;
+        public String              name;
+        public String              readableName;
+        public String              type;
+        public String              category;
 
-        public String pp;
-        public String pwr;
-        public String acc;
+        public String              pp;
+        public String              pwr;
+        public String              acc;
 
-        public String battleEffect;
-        public String secondaryEffect;
-        public String inDepthEffect;
-        public String detailedEffect;
+        public String              battleEffect;
+        public String              secondaryEffect;
+        public String              inDepthEffect;
+        public String              detailedEffect;
 
-        public String effectRate;
+        public String              effectRate;
 
-        public String zMovesTo;
-        public String zMovePower;
-        public String zEffect;
+        public String              zMovesTo;
+        public String              zMovePower;
+        public String              zEffect;
 
-        public String tmNum;
-        public String speedPriority;
-        public String target;
+        public String              tmNum;
+        public String              speedPriority;
+        public String              target;
 
-        public String contact;
-        public String soundType;
-        public String punchType;
-        public String snatchable;
-        public String zMove;
+        public String              contact;
+        public String              soundType;
+        public String              punchType;
+        public String              snatchable;
+        public String              zMove;
 
-        public String defrosts;
-        public String wideArea;
-        public String magiccoat;
-        public String protect;
-        public String mirrormove;
+        public String              defrosts;
+        public String              wideArea;
+        public String              magiccoat;
+        public String              protect;
+        public String              mirrormove;
 
-        public String zVersion;
+        public String              zVersion;
 
-        public String defaultanimation;
+        public String              defaultanimation;
+        public List<AnimationJson> animations;
     }
 
     public static class MovesJson
@@ -188,7 +197,14 @@ public class JsonMoves
             List<AnimationsJson> movesList = new ArrayList<>(animations.moves);
             for (AnimationsJson anim : movesList)
             {
-                if (anim.defaultanimation == null) animations.moves.remove(anim);
+                if (anim.defaultanimation == null && anim.animations.isEmpty()) animations.moves.remove(anim);
+                else if (anim.defaultanimation != null)
+                {
+                    AnimationJson animation = new AnimationJson();
+                    animation.preset = anim.defaultanimation;
+                    anim.defaultanimation = null;
+                    anim.animations.add(animation);
+                }
             }
 
             animations.moves.sort(new Comparator<AnimationsJson>()
@@ -207,18 +223,17 @@ public class JsonMoves
                     if (convertMoveName(anims.name).equals(convertMoveName(entry.name)))
                     {
                         entry.defaultanimation = anims.defaultanimation;
+                        entry.animations = anims.animations;
                         anims.name = entry.name;
-                        if (entry.defaultanimation != null)
-                            System.out.println("merged " + entry.defaultanimation + " for " + entry.readableName);
                         break;
                     }
                 }
             }
             write(movesFile);
-             String output = prettyGson.toJson(animations);
-             FileWriter writer = new FileWriter(animationFile);
-             writer.append(output);
-             writer.close();
+            String output = prettyGson.toJson(animations);
+            FileWriter writer = new FileWriter(animationFile);
+            writer.append(output);
+            writer.close();
         }
         catch (Exception e)
         {

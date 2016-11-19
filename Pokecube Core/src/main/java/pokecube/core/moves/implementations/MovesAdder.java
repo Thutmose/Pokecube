@@ -8,6 +8,7 @@ import net.minecraft.world.IWorldEventListener;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -18,6 +19,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.Move_Transform;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
+import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.moves.animations.AnimationPowder;
 import pokecube.core.moves.animations.MoveAnimationBase;
 import pokecube.core.moves.animations.ParticleBeam;
@@ -42,42 +44,52 @@ public class MovesAdder implements IMoveConstants
         {
             if (move.getAnimation() == null)
             {
+                if (move.move.baseEntry != null && move.move.baseEntry.animations != null
+                        && !move.move.baseEntry.animations.isEmpty())
+                {
+                    move.setAnimation(new AnimationMultiAnimations(move.move));
+                    continue;
+                }
                 String anim = move.move.animDefault;
                 if (anim == null) continue;
-                if (anim.contains("beam"))
-                {
-                    move.setAnimation(new ParticleBeam(anim));
-                }
-                if (anim.contains("flow"))
-                {
-                    move.setAnimation(new ParticleFlow(anim));
-                }
-                if (anim.contains("pont"))
-                {
-                    move.setAnimation(new ParticlesOnTarget(anim));
-                }
-                if (anim.contains("pons"))
-                {
-                    move.setAnimation(new ParticlesOnSource(anim));
-                }
-                if (anim.contains("powder"))
-                {
-                    move.setAnimation(new AnimationPowder(anim));
-                }
-                if (anim.contains("throw"))
-                {
-                    move.setAnimation(new ThrowParticle(anim));
-                }
-                else
-                {
-                    if ((move.getAttackCategory() & IMoveConstants.CATEGORY_SELF) > 0)
-                    {
-                        anim += "d:0.1";
-                        move.setAnimation(new ParticlesOnSource(anim));
-                    }
-                }
+                IMoveAnimation animation = getAnimationPreset(anim);
+                if (animation != null) move.setAnimation(animation);
             }
         }
+    }
+
+    public static IMoveAnimation getAnimationPreset(String anim)
+    {
+        IMoveAnimation animation = null;
+        if (anim.startsWith("beam"))
+        {
+            animation = new ParticleBeam(anim);
+        }
+        if (anim.startsWith("flow"))
+        {
+            animation = new ParticleFlow(anim);
+        }
+        if (anim.startsWith("pont"))
+        {
+            animation = new ParticlesOnTarget(anim);
+        }
+        if (anim.startsWith("pons"))
+        {
+            animation = new ParticlesOnSource(anim);
+        }
+        if (anim.startsWith("powder"))
+        {
+            animation = new AnimationPowder(anim);
+        }
+        if (anim.startsWith("throw"))
+        {
+            animation = new ThrowParticle(anim);
+        }
+        if (anim.startsWith("thunder"))
+        {
+            animation = new Thunder();
+        }
+        return animation;
     }
 
     static void registerDrainMoves()
@@ -560,7 +572,7 @@ public class MovesAdder implements IMoveConstants
             {
                 int pwr = 20;
                 DefaultModifiers mods = user.getModifiers().getDefaultMods();
-                for (Stats stat: Stats.values())
+                for (Stats stat : Stats.values())
                 {
                     float b = mods.getModifierRaw(stat);
                     if (b > 0)

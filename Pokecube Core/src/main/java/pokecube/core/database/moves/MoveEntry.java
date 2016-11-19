@@ -36,7 +36,7 @@ public class MoveEntry implements IMoveConstants
         MoveEntry confusion = new MoveEntry("pokemob.status.confusion", -1);
         confusion.type = PokeType.unknown;
         confusion.category = PHYSICAL;
-        confusion.attackCategory = CATEGORY_CONTACT;
+        confusion.attackCategory = CATEGORY_CONTACT + CATEGORY_SELF;
         confusion.power = 40;
         confusion.protect = false;
         confusion.magiccoat = false;
@@ -89,7 +89,6 @@ public class MoveEntry implements IMoveConstants
     public int                     priority                 = 0;
     public boolean                 defrosts                 = false;
     public boolean                 mirrorcoated             = false;
-    
 
     /** Status, Special, Physical */
     public byte                    category                 = -1;

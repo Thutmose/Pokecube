@@ -1,4 +1,4 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
@@ -6,9 +6,13 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.world.IWorldEventListener;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.animations.AnimPreset;
+import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
+@AnimPreset(getPreset="beam")
 public class ParticleBeam extends MoveAnimationBase
 {
     Vector3 v    = Vector3.getNewVector();
@@ -16,35 +20,8 @@ public class ParticleBeam extends MoveAnimationBase
     float   tick = 0.5f;
     Vector3 v1   = Vector3.getNewVector();
 
-    public ParticleBeam(String particle)
+    public ParticleBeam()
     {
-        this.particle = particle;
-        rgba = 0xFFFFFFFF;
-        String[] args = particle.split(":");
-        this.particle = "misc";
-        for (int i = 1; i < args.length; i++)
-        {
-            String ident = args[i].substring(0, 1);
-            String val = args[i].substring(1);
-            if (ident.equals("d"))
-            {
-                tick = Float.parseFloat(val);
-            }
-            else if (ident.equals("p"))
-            {
-                this.particle = val;
-            }
-            else if (ident.equals("l"))
-            {
-                particleLife = Integer.parseInt(val);
-            }
-            else if (ident.equals("c"))
-            {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
-            }
-        }
     }
 
     @Override
@@ -88,5 +65,38 @@ public class ParticleBeam extends MoveAnimationBase
         for (double i = frac; i < dist; i += 0.1)
             PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, source.add(temp.scalarMult(i)), null,
                     rgba, particleLife);
+    }
+
+    @Override
+    public IMoveAnimation init(String preset)
+    {
+        this.particle = preset;
+        rgba = 0xFFFFFFFF;
+        String[] args = preset.split(":");
+        this.particle = "misc";
+        for (int i = 1; i < args.length; i++)
+        {
+            String ident = args[i].substring(0, 1);
+            String val = args[i].substring(1);
+            if (ident.equals("d"))
+            {
+                tick = Float.parseFloat(val);
+            }
+            else if (ident.equals("p"))
+            {
+                this.particle = val;
+            }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
+            }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
+        }
+        return this;
     }
 }

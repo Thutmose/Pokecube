@@ -1,4 +1,4 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
@@ -6,13 +6,15 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.moves.animations.AnimPreset;
 import thut.api.maths.Vector3;
 
+@AnimPreset(getPreset="pons")
 public class ParticlesOnSource extends ParticlesOnTarget
 {
-    public ParticlesOnSource(String particles)
+    public ParticlesOnSource()
     {
-        super(particles);
+        super();
     }
 
     @SideOnly(Side.CLIENT)

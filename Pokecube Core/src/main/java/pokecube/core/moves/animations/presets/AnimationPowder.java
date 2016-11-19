@@ -1,4 +1,4 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
@@ -8,9 +8,13 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.animations.AnimPreset;
+import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
+@AnimPreset(getPreset="powder")
 public class AnimationPowder extends MoveAnimationBase
 {
 
@@ -114,6 +118,13 @@ public class AnimationPowder extends MoveAnimationBase
             temp.addTo(target);
             PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp.copy(), null, rgba, particleLife);
         }
+    }
+
+    @Override
+    public IMoveAnimation init(String preset)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

@@ -5,10 +5,10 @@ import pokecube.core.interfaces.Move_Base;
 
 public abstract class MoveAnimationBase implements IMoveAnimation
 {
-    String            particle;
+    protected String  particle;
     protected int     rgba;
-    int               duration     = 5;
-    int               particleLife = 5;
+    protected int     duration     = 5;
+    protected int     particleLife = 5;
     protected boolean customColour = false;
 
     public int getColourFromMove(Move_Base move, int alpha)
@@ -16,6 +16,11 @@ public abstract class MoveAnimationBase implements IMoveAnimation
         alpha = Math.min(255, alpha);
         int colour = move.getType(null).colour + 0x01000000 * alpha;
         return colour;
+    }
+
+    public IMoveAnimation init(String preset)
+    {
+        return this;
     }
 
     @Override

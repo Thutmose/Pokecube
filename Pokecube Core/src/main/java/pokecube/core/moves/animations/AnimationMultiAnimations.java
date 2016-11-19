@@ -10,7 +10,7 @@ import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.json.JsonMoves.AnimationJson;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.moves.implementations.MovesAdder;
+import pokecube.core.moves.animations.presets.Thunder;
 
 public class AnimationMultiAnimations extends MoveAnimationBase
 {
@@ -39,7 +39,7 @@ public class AnimationMultiAnimations extends MoveAnimationBase
         if (animations == null || animations.isEmpty()) return;
         for (AnimationJson anim : animations)
         {
-            IMoveAnimation animation = MovesAdder.getAnimationPreset(anim.preset);
+            IMoveAnimation animation = MoveAnimationHelper.getAnimationPreset(anim.preset);
             if (animation == null) continue;
             int start = Integer.parseInt(anim.starttick);
             int dur = Integer.parseInt(anim.duration);

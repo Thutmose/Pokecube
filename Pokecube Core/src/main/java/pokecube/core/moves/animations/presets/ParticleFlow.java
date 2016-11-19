@@ -1,4 +1,4 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
@@ -8,9 +8,13 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.animations.AnimPreset;
+import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
+@AnimPreset(getPreset="flow")
 public class ParticleFlow extends MoveAnimationBase
 {
     String  type    = null;
@@ -20,53 +24,8 @@ public class ParticleFlow extends MoveAnimationBase
     boolean flat    = false;
     boolean reverse = false;
 
-    public ParticleFlow(String particle)
+    public ParticleFlow()
     {
-        this.particle = particle;
-        String[] args = particle.split(":");
-        for (int i = 1; i < args.length; i++)
-        {
-            String ident = args[i].substring(0, 1);
-            String val = args[i].substring(1);
-            if (ident.equals("w"))
-            {
-                width = Float.parseFloat(val);
-            }
-            else if (ident.equals("d"))
-            {
-                density = Float.parseFloat(val);
-            }
-            else if (ident.equals("f"))
-            {
-                flat = true;
-                angle = (float) (Float.parseFloat(val) * Math.PI) / 180f;
-            }
-            else if (ident.equals("r"))
-            {
-                reverse = Boolean.parseBoolean(val);
-            }
-            else if (ident.equals("p"))
-            {
-                type = val;
-            }
-            else if (ident.equals("l"))
-            {
-                particleLife = Integer.parseInt(val);
-            }
-            else if (ident.equals("c"))
-            {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
-            }
-        }
-        if (type == null) type = "misc";// TODO test this.
-    }
-
-    public ParticleFlow(String particle, float width)
-    {
-        this(particle);
-        this.width = width;
     }
 
     @SideOnly(Side.CLIENT)
@@ -142,5 +101,50 @@ public class ParticleFlow extends MoveAnimationBase
                         source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, particleLife);
             }
         }
+    }
+
+    @Override
+    public IMoveAnimation init(String preset)
+    {
+        this.particle = preset;
+        String[] args = preset.split(":");
+        for (int i = 1; i < args.length; i++)
+        {
+            String ident = args[i].substring(0, 1);
+            String val = args[i].substring(1);
+            if (ident.equals("w"))
+            {
+                width = Float.parseFloat(val);
+            }
+            else if (ident.equals("d"))
+            {
+                density = Float.parseFloat(val);
+            }
+            else if (ident.equals("f"))
+            {
+                flat = true;
+                angle = (float) (Float.parseFloat(val) * Math.PI) / 180f;
+            }
+            else if (ident.equals("r"))
+            {
+                reverse = Boolean.parseBoolean(val);
+            }
+            else if (ident.equals("p"))
+            {
+                type = val;
+            }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
+            }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
+        }
+        if (type == null) type = "misc";// TODO test this.
+        return this;
     }
 }

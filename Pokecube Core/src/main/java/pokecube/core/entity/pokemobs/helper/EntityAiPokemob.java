@@ -135,7 +135,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean canBreatheUnderwater()
     {
-        return (getType1() == PokeType.water || getType2() == PokeType.water || getPokedexEntry().shouldDive);
+        return (getType1() == PokeType.water || getType2() == PokeType.water || getPokedexEntry().shouldDive || getPokedexEntry().swims());
     }
 
     @Override

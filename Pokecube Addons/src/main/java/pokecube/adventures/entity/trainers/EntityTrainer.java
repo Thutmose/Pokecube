@@ -58,6 +58,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class EntityTrainer extends EntityHasPokemobs
 {
@@ -163,7 +164,7 @@ public class EntityTrainer extends EntityHasPokemobs
         for (int i = 0; i < pokecubes.length; i++)
         {
             ItemStack stack = pokecubes[i];
-            if (stack != null && PokecubeManager.isFilled(stack))
+            if (PokecubeManager.isFilled(stack))
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
                 IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
@@ -370,16 +371,16 @@ public class EntityTrainer extends EntityHasPokemobs
         ItemStack next;
         if (cooldown > worldObj.getTotalWorldTime()) next = null;
         else next = getNextPokemob();
-        if (next != null)
+        if (CompatWrapper.isValid(next))
         {
             this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, next);
         }
         else
         {
-            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, null);
+            this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, CompatWrapper.nullStack);
         }
 
-        if (type.held != null)
+        if (CompatWrapper.isValid(type.held))
         {
             this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, type.held);
         }
@@ -429,7 +430,7 @@ public class EntityTrainer extends EntityHasPokemobs
         }
         if (Config.instance.trainersTradeItems) tradeList.addAll(itemList);
         ItemStack buy = buyingPlayer.getHeldItemMainhand();
-        if (buy != null && PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
+        if (PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
         {
             addMobTrades(buy);
         }
@@ -439,12 +440,12 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
-            if (getType() != null && !worldObj.isRemote && player.getHeldItemMainhand() == null)
+            if (getType() != null && !worldObj.isRemote && !CompatWrapper.isValid(player.getHeldItemMainhand()))
             {
                 String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
                 for (ItemStack i : pokecubes)
                 {
-                    if (i != null) message += i.getDisplayName() + " ";
+                    if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";
                 }
                 player.addChatMessage(new TextComponentString(message));
             }
@@ -452,17 +453,19 @@ public class EntityTrainer extends EntityHasPokemobs
             {
                 throwCubeAt(player);
             }
-            else if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Items.STICK)
+            else if (CompatWrapper.isValid(player.getHeldItemMainhand())
+                    && player.getHeldItemMainhand().getItem() == Items.STICK)
                 setTarget(player);
 
-            if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
+            if (CompatWrapper.isValid(player.getHeldItemMainhand())
+                    && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
             {
                 player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getEntityId(), 0, 0);
             }
         }
         else
         {
-            if (player.getHeldItemMainhand() != null && friendlyCooldown <= 0)
+            if (CompatWrapper.isValid(player.getHeldItemMainhand()) && friendlyCooldown <= 0)
             {
                 if (player.getHeldItemMainhand().getItem() == Item.REGISTRY
                         .getObject(new ResourceLocation("minecraft:emerald")))
@@ -613,13 +616,13 @@ public class EntityTrainer extends EntityHasPokemobs
         nbt.setBoolean("notifyDefeat", notifyDefeat);
     }
 
-    //TODO new mechant method names.
+    // TODO new mechant method names.
     public World func_190670_t_()
     {
         return this.worldObj;
     }
 
-    //TODO new mechant method names.
+    // TODO new mechant method names.
     public BlockPos func_190671_u_()
     {
         return new BlockPos(this);

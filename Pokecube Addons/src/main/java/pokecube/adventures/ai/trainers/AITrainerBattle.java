@@ -18,6 +18,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 public class AITrainerBattle extends EntityAIBase
 {
@@ -95,7 +96,7 @@ public class AITrainerBattle extends EntityAIBase
         if (trainer.attackCooldown > 0)
         {
             // If no next pokemob, reset trainer and return early.
-            if (trainer.getNextPokemob() == null)
+            if (!CompatWrapper.isValid(trainer.getNextPokemob()))
             {
                 trainer.setAIState(EntityHasAIStates.INBATTLE, false);
                 trainer.onDefeated(trainer.getTarget());
@@ -107,7 +108,7 @@ public class AITrainerBattle extends EntityAIBase
             if (trainer.attackCooldown == Config.instance.trainerSendOutDelay / 2)
             {
                 ItemStack nextStack = trainer.getNextPokemob();
-                if (nextStack != null)
+                if (CompatWrapper.isValid(nextStack))
                 {
                     IPokemob next = PokecubeManager.itemToPokemob(nextStack, world);
                     if (next != null) trainer.getTarget()

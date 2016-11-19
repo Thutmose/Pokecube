@@ -258,8 +258,8 @@ public class GuiTrainerEdit extends GuiScreen
 
     private PokedexEntry getEntry(int num)
     {
-        ItemStack stack;
-        if ((stack = trainer.getPokemob(num)) != null && PokecubeManager.isFilled(stack))
+        ItemStack stack = trainer.getPokemob(num);
+        if (PokecubeManager.isFilled(stack))
         {
             int number = PokecubeManager.getPokedexNb(stack);
             PokedexEntry ret = null;
@@ -331,7 +331,7 @@ public class GuiTrainerEdit extends GuiScreen
                     }
                     else if (entry == null)
                     {
-                        trainer.setPokemob(i, null);
+                        trainer.setPokemob(i, CompatWrapper.nullStack);
                         textFieldPokemobs[i].setText("");
                     }
                 }
@@ -404,7 +404,7 @@ public class GuiTrainerEdit extends GuiScreen
                 }
                 else if (entry == null)
                 {
-                    trainer.setPokemob(i, null);
+                    trainer.setPokemob(i, CompatWrapper.nullStack);
                     textFieldPokemobs[i].setText("");
                 }
             }

@@ -261,7 +261,7 @@ public class InventoryBag implements IInventory
     {
         for (int i = page * 54; i < getSizeInventory(); i++)
         {
-            if (this.getStackInSlot(i) == null)
+            if (!CompatWrapper.isValid(this.getStackInSlot(i)))
             {
                 this.setInventorySlotContents(i, stack);
                 return;
@@ -269,7 +269,7 @@ public class InventoryBag implements IInventory
         }
         for (int i = 0; i < page * 54; i++)
         {
-            if (this.getStackInSlot(i) == null)
+            if (!CompatWrapper.isValid(this.getStackInSlot(i)))
             {
                 this.setInventorySlotContents(i, stack);
                 return;
@@ -425,7 +425,7 @@ public class InventoryBag implements IInventory
         ret += eol;
         for (int i : contents.keySet())
         {
-            if (this.getStackInSlot(i) != null)
+            if (CompatWrapper.isValid(this.getStackInSlot(i)))
             {
                 ret += "Slot " + i + ", " + this.getStackInSlot(i).getDisplayName() + "; ";
             }

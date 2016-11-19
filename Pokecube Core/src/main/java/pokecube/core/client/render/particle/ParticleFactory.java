@@ -26,7 +26,7 @@ public class ParticleFactory
             particle.setTex(textures);
             particle.name = "aurora";
             int life = 32;
-            if (args.length > 0) life = args[0];
+            if (args.length > 1) life = args[1];
             particle.setLifetime(life);
             ret = particle;
         }
@@ -42,8 +42,8 @@ public class ParticleFactory
             particle.setTex(textures);
             particle.name = "misc";
             int life = 32;
-            if (args.length > 0) life = args[0];
-            if (args.length > 1) particle.setColour(args[1]);
+            if (args.length > 0) particle.setColour(args[0]);
+            if (args.length > 0) life = args[1];
             particle.setLifetime(life);
             particle.setSize(0.25f);
             ret = particle;

@@ -23,7 +23,7 @@ public class ThrowParticle extends MoveAnimationBase
     public ThrowParticle(String particle)
     {
         this.particle = particle;
-
+        rgba = 0xFFFFFFFF;
         String[] args = particle.split(":");
         for (int i = 1; i < args.length; i++)
         {
@@ -33,8 +33,13 @@ public class ThrowParticle extends MoveAnimationBase
             {
                 width = Float.parseFloat(val);
             }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
         }
-        rgba = 0xFFFFFFFF;
     }
 
     public ThrowParticle(String particle, float width)

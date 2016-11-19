@@ -19,6 +19,7 @@ public class ParticleBeam extends MoveAnimationBase
     public ParticleBeam(String particle)
     {
         this.particle = particle;
+        rgba = 0xFFFFFFFF;
         String[] args = particle.split(":");
         this.particle = "misc";
         for (int i = 1; i < args.length; i++)
@@ -33,8 +34,13 @@ public class ParticleBeam extends MoveAnimationBase
             {
                 this.particle = val;
             }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
         }
-        rgba = 0xFFFFFFFF;
     }
 
     @Override
@@ -46,6 +52,7 @@ public class ParticleBeam extends MoveAnimationBase
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        if (customColour) return;
         if (particle.equals("airbubble"))
         {
 
@@ -75,7 +82,7 @@ public class ParticleBeam extends MoveAnimationBase
         double frac = dist * info.currentTick / getDuration();
         Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
         for (double i = frac; i < dist; i += 0.1)
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, source.add(temp.scalarMult(i)), null, 5,
-                    rgba);
+            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, source.add(temp.scalarMult(i)), null,
+                    rgba, 5);
     }
 }

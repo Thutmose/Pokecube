@@ -1,6 +1,5 @@
 package pokecube.core.moves.animations;
 
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,18 +17,14 @@ public class ParticlesOnSource extends ParticlesOnTarget
     @Override
     public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
     {
-        if (type != null) return;
-        Vector3 source = info.source;
-        Vector3 target = info.target;
-        Vector3 temp = Vector3.getNewVector().set(source).subtractFrom(target);
-        GlStateManager.translate(temp.x, temp.y, temp.z);
-        super.clientAnimation(info, world, partialTick);
     }
 
     @Override
     public void spawnClientEntities(MovePacketInfo info)
     {
-        if (type == null) return;
-        PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, info.source, null);
+        if (type == null || Math.random() > density) return;
+        initColour((info.attacker.getEntityWorld().getWorldTime()), 0, info.move);
+        Vector3 temp = Vector3.getNewVector().set(info.source);
+        PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, temp, null, rgba);
     }
 }

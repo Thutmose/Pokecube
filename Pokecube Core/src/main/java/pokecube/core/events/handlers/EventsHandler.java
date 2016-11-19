@@ -106,6 +106,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatWrapper;
 
 public class EventsHandler
 {
@@ -271,7 +272,7 @@ public class EventsHandler
             else if (o instanceof EntityPokecube)
             {
                 EntityPokecube mob = (EntityPokecube) o;
-                if (mob.getEntityItem() != null)
+                if (CompatWrapper.isValid(mob.getEntityItem()))
                 {
                     String name = PokecubeManager.getOwner(mob.getEntityItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
@@ -333,7 +334,7 @@ public class EventsHandler
         if (evt.getState().getBlock() == Blocks.MOB_SPAWNER)
         {
             ItemStack stack = PokecubeItems.getRandomSpawnerDrop();
-            if (stack == null) return;
+            if (!CompatWrapper.isValid(stack)) return;
             EntityItem item = new EntityItem(evt.getWorld(), evt.getPos().getX() + 0.5, evt.getPos().getY() + 0.5,
                     evt.getPos().getZ() + 0.5, stack);
             evt.getWorld().spawnEntityInWorld(item);
@@ -422,7 +423,7 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEventLeftClick(PlayerInteractEvent.LeftClickBlock evt)
     {
-        if (evt.getEntityPlayer().getHeldItemMainhand() != null
+        if (CompatWrapper.isValid(evt.getEntityPlayer().getHeldItemMainhand())
                 && evt.getEntityPlayer().getHeldItemMainhand().getItem() == Items.STICK)
         {
             TileEntity te = evt.getWorld().getTileEntity(evt.getPos());
@@ -456,7 +457,7 @@ public class EventsHandler
             EntityLivingBase owner = killer.getPokemonOwner();
 
             ItemStack stack = ((EntityLivingBase) killer).getHeldItemMainhand();
-            if (stack != null && PokecubeItems.getStack("luckyegg").isItemEqual(stack))
+            if (PokecubeItems.getStack("luckyegg").isItemEqual(stack))
             {
                 int exp = killer.getExp() + Tools.getExp(1, killed.getBaseXP(), killed.getLevel());
                 killer.setExp(exp, true);
@@ -569,7 +570,7 @@ public class EventsHandler
             if (evt.getEntityLiving().getEntityWorld().isRemote) return;
 
             ItemStack item = evt.getEntityLiving().getHeldItemMainhand();
-            if (item == null) return;
+            if (!CompatWrapper.isValid(item)) return;
             Item itemId = item.getItem();
             boolean berry = item.isItemEqual(BerryManager.getBerryItem("oran"));
             Random r = new Random();
@@ -588,7 +589,7 @@ public class EventsHandler
             if (berry && (r.nextGaussian() > candyChance))
             {
                 ItemStack candy = PokecubeItems.makeCandyStack();
-                if (candy == null) return;
+                if (!CompatWrapper.isValid(candy)) return;
 
                 if (shuckle.getPokemonOwner() != null)
                 {

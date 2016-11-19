@@ -326,6 +326,7 @@ pokedex.locationinfo3=%1$s Spawn here
 pokedex.inspect.nothing=§cThere are no new rewards from the Pokédex
 pokedex.inspect.available=§aYou have a new Pokédex reward available, click the Blue light in the Pokédex to get it!
 
+pokedex.inspect.guidebook=§aYou recieved a Guide Book from the Pokédex.
 pokedex.inspect.exp_share=§aCongratulations, you have recieved an Exp. Share from the inspection of your Pokédex.
 pokedex.inspect.cutTM=§aCongratulations, you have recieved a Cut TM from the inspection of your Pokédex.
 pokedex.inspect.flashTM=§aCongratulations, you have recieved a Flash TM from the inspection of your Pokédex.

@@ -112,8 +112,8 @@ public class ParticleFlow extends MoveAnimationBase
         for (double i = frac; i < dist; i += 0.1)
         {
             if (density < 1 && Math.random() > density) continue;
-            double factor = frac;
-            factor *= width * 0.2;
+            double factor = Math.min(frac, 1);
+            factor *= width * 0.1;
             for (int j = 0; j < density; j++)
             {
                 temp1.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor * yF,

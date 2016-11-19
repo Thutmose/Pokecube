@@ -265,10 +265,10 @@ public class TypeTrainer
     public List<PokedexEntry> pokemon       = Lists.newArrayList();
     public TrainerTrades      trades;
 
-    private ItemStack[]       loot          = new ItemStack[4];
+    private ItemStack[]       loot          = CompatWrapper.makeList(4).toArray(new ItemStack[4]);
 
     public String             drops         = "";
-    public ItemStack          held;
+    public ItemStack          held          = CompatWrapper.nullStack;
 
     public TypeTrainer(String name)
     {

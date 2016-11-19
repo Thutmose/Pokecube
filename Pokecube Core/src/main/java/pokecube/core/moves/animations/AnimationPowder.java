@@ -24,6 +24,7 @@ public class AnimationPowder extends MoveAnimationBase
     {
         this.particle = "powder";
         duration = 50;
+        particleLife = 1;
         for (EnumDyeColor colour : EnumDyeColor.values())
         {
             if (colour.getName().equalsIgnoreCase(particle))
@@ -58,6 +59,10 @@ public class AnimationPowder extends MoveAnimationBase
             else if (ident.equals("t"))
             {
                 duration = Integer.parseInt(val);
+            }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
             }
             else if (ident.equals("p"))
             {
@@ -107,7 +112,7 @@ public class AnimationPowder extends MoveAnimationBase
             temp.set(rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());
             temp.scalarMult(0.010 * width);
             temp.addTo(target);
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp.copy(), null, rgba, 1);
+            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp.copy(), null, rgba, particleLife);
         }
     }
 

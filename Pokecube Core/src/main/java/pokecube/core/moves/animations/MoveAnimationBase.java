@@ -8,6 +8,7 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     String            particle;
     protected int     rgba;
     int               duration     = 5;
+    int               particleLife = 5;
     protected boolean customColour = false;
 
     public int getColourFromMove(Move_Base move, int alpha)

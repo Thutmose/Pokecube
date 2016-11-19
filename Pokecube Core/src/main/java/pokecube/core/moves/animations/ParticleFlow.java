@@ -15,6 +15,7 @@ public class ParticleFlow extends MoveAnimationBase
 {
     String  type    = null;
     float   width   = 1;
+    float   angle   = 0;
     float   density = 1;
     boolean flat    = false;
     boolean reverse = false;
@@ -37,7 +38,8 @@ public class ParticleFlow extends MoveAnimationBase
             }
             else if (ident.equals("f"))
             {
-                flat = Boolean.parseBoolean(val);
+                flat = true;
+                angle = (float) (Float.parseFloat(val) * Math.PI) / 180f;
             }
             else if (ident.equals("r"))
             {
@@ -46,6 +48,10 @@ public class ParticleFlow extends MoveAnimationBase
             else if (ident.equals("p"))
             {
                 type = val;
+            }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
             }
             else if (ident.equals("c"))
             {
@@ -104,22 +110,36 @@ public class ParticleFlow extends MoveAnimationBase
         Vector3 target = reverse ? info.source : info.target;
         initColour((info.attacker.getEntityWorld().getWorldTime()) * 20, 0, info.move);
         double dist = source.distanceTo(target);
-        double frac = dist * info.currentTick / getDuration();
+        double frac2 = info.currentTick / (float) getDuration();
+        double frac = dist * frac2;
+        double frac3 = dist * (info.currentTick + 1) / getDuration();
         Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
         Random rand = new Random();
         Vector3 temp1 = Vector3.getNewVector();
-        double yF = flat ? 0 : 1;
-        for (double i = frac; i < dist; i += 0.1)
+        Vector3 angleF = temp.horizonalPerp();
+        if (flat)
+        {
+            angleF.rotateAboutLine(temp.normalize(), angle, temp1);
+            angleF.set(temp1);
+        }
+        for (double i = frac; i < frac3; i += 0.1)
         {
             if (density < 1 && Math.random() > density) continue;
-            double factor = Math.min(frac, 1);
-            factor *= width * 0.1;
+            double factor = Math.min(frac2, 1);
+            factor *= width * 2;
             for (int j = 0; j < density; j++)
             {
-                temp1.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor * yF,
-                        rand.nextGaussian() * factor);
+                if (flat)
+                {
+                    temp1.set(angleF.scalarMult(factor * (0.5 - rand.nextDouble())));
+                }
+                else
+                {
+                    temp1.set(factor * (0.5 - rand.nextDouble()), factor * (0.5 - rand.nextDouble()),
+                            factor * (0.5 - rand.nextDouble()));
+                }
                 PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, type,
-                        source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, 5);
+                        source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, particleLife);
             }
         }
     }

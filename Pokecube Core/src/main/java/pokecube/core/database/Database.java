@@ -142,7 +142,7 @@ public class Database
     public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
 
     public static List<PokedexEntry>                       spawnables       = new ArrayList<PokedexEntry>();
-    static String                                          DBLOCATION       = "/assets/pokecube/database/";
+    public static String                                   DBLOCATION       = "/assets/pokecube/database/";
 
     public static String                                   CONFIGLOC        = "";
 
@@ -159,7 +159,7 @@ public class Database
      * Index 1 = moves<br>
     */
     @SuppressWarnings("unchecked")
-    private static List<ArrayList<String>>                 configDatabases  = Lists
+    public static List<ArrayList<String>>                  configDatabases  = Lists
             .newArrayList(new ArrayList<String>(), new ArrayList<String>());
 
     public static void addDatabase(String file, EnumDatabase database)

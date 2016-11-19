@@ -1,6 +1,31 @@
 {
   "moves": [
     {
+      "name": "10000000voltthunderbolt",
+      "readableName": "10,000,000 Volt Thunderbolt",
+      "type": "Electric",
+      "category": "Special",
+      "pp": "1",
+      "pwr": "195",
+      "acc": "0",
+      "battleEffect": "The user, Pikachu wearing a cap, powers up a jolt of electricity using its Z-Power and unleashes it. Critical hits land more easily.",
+      "secondaryEffect": "No effect.",
+      "effectRate": "-- %",
+      "tmNum": "None",
+      "speedPriority": "0",
+      "target": "Selected Target",
+      "contact": "No",
+      "soundType": "No",
+      "punchType": "No",
+      "snatchable": "No",
+      "zMove": "Yes",
+      "defrosts": "No",
+      "wideArea": "No",
+      "magiccoat": "No",
+      "protect": "No",
+      "mirrormove": "No"
+    },
+    {
       "name": "absorb",
       "readableName": "Absorb",
       "type": "Grass",
@@ -24,7 +49,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "accelerock",
@@ -75,7 +106,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "acidarmor",
@@ -153,7 +190,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "acrobatics",
@@ -256,7 +299,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "afteryou",
@@ -361,7 +410,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "alloutpummeling",
@@ -491,7 +546,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "aquajet",
@@ -751,7 +812,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "attract",
@@ -804,7 +871,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "aurorabeam",
@@ -830,7 +903,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam:aurora:0.5"
+      "animations": [
+        {
+          "preset": "beam:aurora:0.5",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "auroraveil",
@@ -1118,7 +1197,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "No",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bellydrum",
@@ -1198,7 +1283,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "No",
-      "defaultanimation": "pons"
+      "animations": [
+        {
+          "preset": "pons",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bind",
@@ -1349,7 +1440,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "block",
@@ -1502,7 +1599,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bonemerang",
@@ -1528,7 +1631,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bonerush",
@@ -1704,7 +1813,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "brutalswing",
@@ -1755,7 +1870,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow:bubble"
+      "animations": [
+        {
+          "preset": "flow:bubble",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bubblebeam",
@@ -1781,7 +1902,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam:bubble:0.5"
+      "animations": [
+        {
+          "preset": "beam:bubble:0.5",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bugbite",
@@ -1832,7 +1959,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "bulkup",
@@ -1935,7 +2068,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "burnup",
@@ -2139,7 +2278,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "charm",
@@ -2448,7 +2593,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Special Attack ?",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "confusion",
@@ -3016,7 +3167,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "darkestlariat",
@@ -3067,7 +3224,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "darkvoid",
@@ -3120,7 +3283,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "defendorder",
@@ -3410,7 +3579,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "dive",
@@ -3638,7 +3813,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "dragonascent",
@@ -3689,7 +3870,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "dragonclaw",
@@ -3792,7 +3979,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "dragonrage",
@@ -4068,7 +4261,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "earthquake",
@@ -4172,7 +4371,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw:w0.2"
+      "animations": [
+        {
+          "preset": "throw:w0.2",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "electricterrain",
@@ -4248,7 +4453,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "electroweb",
@@ -4326,7 +4537,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow:vflame:d0.05"
+      "animations": [
+        {
+          "preset": "flow:vflame:d0.05",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "encore",
@@ -4433,7 +4650,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "entrainment",
@@ -5020,7 +5243,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vflame"
+      "animations": [
+        {
+          "preset": "pont:vflame",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "firespin",
@@ -5046,7 +5275,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vflame"
+      "animations": [
+        {
+          "preset": "pont:vflame",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "firstimpression",
@@ -5148,7 +5383,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vflame"
+      "animations": [
+        {
+          "preset": "pont:vflame",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "flamecharge",
@@ -5199,7 +5440,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam:flame:0.2"
+      "animations": [
+        {
+          "preset": "beam:flame:0.2",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "flamewheel",
@@ -5225,7 +5472,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pons:vflame"
+      "animations": [
+        {
+          "preset": "pons:vflame",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "flareblitz",
@@ -5303,7 +5556,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "flatter",
@@ -5381,7 +5640,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "floralhealing",
@@ -5506,7 +5771,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "focusenergy",
@@ -5534,7 +5805,13 @@
       "protect": "No",
       "mirrormove": "No",
       "zVersion": "Accuracy ?",
-      "defaultanimation": "pons"
+      "animations": [
+        {
+          "preset": "pons",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "focuspunch",
@@ -5689,7 +5966,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "freezeshock",
@@ -5918,7 +6201,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "futuresight",
@@ -6101,7 +6390,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "gigaimpact",
@@ -6518,7 +6813,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "gunkshot",
@@ -6544,7 +6845,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "gust",
@@ -6570,7 +6877,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "gyroball",
@@ -6730,7 +7043,13 @@
       "protect": "No",
       "mirrormove": "No",
       "zVersion": "Restores HP",
-      "defaultanimation": "powder:pcloud:d0.2"
+      "animations": [
+        {
+          "preset": "powder:pcloud:d0.2",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "headbutt",
@@ -7145,7 +7464,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "highhorsepower",
@@ -7453,7 +7778,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam:splash:0.2"
+      "animations": [
+        {
+          "preset": "beam:splash:0.2",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "hydrovortex",
@@ -7504,7 +7835,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "hyperfang",
@@ -7682,7 +8019,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam:misc:0.2"
+      "animations": [
+        {
+          "preset": "beam:misc:0.2",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "iceburn",
@@ -7708,7 +8051,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "icefang",
@@ -7784,7 +8133,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "iceshard",
@@ -7810,7 +8165,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "iciclecrash",
@@ -7836,7 +8197,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "iciclespear",
@@ -7887,7 +8254,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "imprison",
@@ -8173,7 +8546,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "judgment",
@@ -8387,7 +8766,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "leafage",
@@ -8463,7 +8848,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "leaftornado",
@@ -8514,7 +8905,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "leechseed",
@@ -8542,7 +8939,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Reset Stats",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "leer",
@@ -8620,7 +9023,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "lightscreen",
@@ -8998,7 +9407,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "vlow"
+      "animations": [
+        {
+          "preset": "vlow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "magnetbomb",
@@ -9024,7 +9439,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "magneticflux",
@@ -9262,7 +9683,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "megahorn",
@@ -9390,7 +9817,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "metalclaw",
@@ -9708,7 +10141,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "mist",
@@ -9920,7 +10359,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "muddywater",
@@ -10292,7 +10737,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "nightslash",
@@ -10318,7 +10769,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "nobleroar",
@@ -10396,7 +10853,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "oceanicoperetta",
@@ -10499,7 +10962,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "originpulse",
@@ -10627,7 +11096,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "partingshot",
@@ -10807,7 +11282,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "phantomforce",
@@ -10858,7 +11339,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw:w0.1"
+      "animations": [
+        {
+          "preset": "throw:w0.1",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "playnice",
@@ -10988,7 +11475,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Defense ?",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "poisonjab",
@@ -11041,7 +11534,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Defense ?",
-      "defaultanimation": "powder:pportal"
+      "animations": [
+        {
+          "preset": "powder:pportal",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "poisonsting",
@@ -11067,7 +11566,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw:w0.1"
+      "animations": [
+        {
+          "preset": "throw:w0.1",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "poisontail",
@@ -11195,7 +11700,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "powergem",
@@ -11221,7 +11732,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "powersplit",
@@ -11506,7 +12023,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "psychic",
@@ -11634,7 +12157,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "psychoshift",
@@ -11714,7 +12243,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "psystrike",
@@ -11765,7 +12300,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "pulverizingpancake",
@@ -12105,7 +12646,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "razorshell",
@@ -12156,7 +12703,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow:vsweepAttack"
+      "animations": [
+        {
+          "preset": "flow:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "recover",
@@ -12522,7 +13075,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "rockblast",
@@ -12548,7 +13107,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "rockclimb",
@@ -12626,7 +13191,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "rocksmash",
@@ -12677,7 +13248,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw:w0.2"
+      "animations": [
+        {
+          "preset": "throw:w0.2",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "rocktomb",
@@ -12703,7 +13280,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "rockwrecker",
@@ -12729,7 +13312,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "roleplay",
@@ -12913,7 +13502,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow:vflame:d10"
+      "animations": [
+        {
+          "preset": "flow:vflame:d10",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sacredsword",
@@ -13045,7 +13640,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "savagespinout",
@@ -13096,7 +13697,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "scaryface",
@@ -13221,7 +13828,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "secretsword",
@@ -13297,7 +13910,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "seismictoss",
@@ -13373,7 +13992,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "shadowbone",
@@ -13785,7 +14410,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Special Attack ?",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sing",
@@ -14070,7 +14701,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont:vsweepAttack"
+      "animations": [
+        {
+          "preset": "pont:vsweepAttack",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sleeppowder",
@@ -14098,7 +14735,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Speed ?",
-      "defaultanimation": "powder"
+      "animations": [
+        {
+          "preset": "powder",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sleeptalk",
@@ -14151,7 +14794,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sludgebomb",
@@ -14177,7 +14826,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sludgewave",
@@ -14203,7 +14858,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "smackdown",
@@ -14304,7 +14965,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "powder:psmoke"
+      "animations": [
+        {
+          "preset": "powder:psmoke",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "smokescreen",
@@ -14332,7 +14999,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Evasiveness ?",
-      "defaultanimation": "powder:plargesmoke"
+      "animations": [
+        {
+          "preset": "powder:plargesmoke",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "snarl",
@@ -14489,7 +15162,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "solarblade",
@@ -14540,7 +15219,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "soulstealing7starstrike",
@@ -14591,7 +15276,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "spark",
@@ -14617,7 +15308,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pons"
+      "animations": [
+        {
+          "preset": "pons",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "sparklingaria",
@@ -14747,7 +15444,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "spikes",
@@ -14934,7 +15637,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Reset Stats",
-      "defaultanimation": "powder"
+      "animations": [
+        {
+          "preset": "powder",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "spotlight",
@@ -15218,7 +15927,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "storedpower",
@@ -15426,7 +16141,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Special Defense ?",
-      "defaultanimation": "powder"
+      "animations": [
+        {
+          "preset": "powder",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "submission",
@@ -15658,7 +16379,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Speed ?",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "supersonicskystrike",
@@ -15897,7 +16624,13 @@
       "protect": "No",
       "mirrormove": "No",
       "zVersion": "Reset Stats",
-      "defaultanimation": "pons"
+      "animations": [
+        {
+          "preset": "pons",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "synchronoise",
@@ -16392,7 +17125,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pons"
+      "animations": [
+        {
+          "preset": "pons",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "throatchop",
@@ -16444,7 +17183,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "thunderbolt",
@@ -16470,7 +17215,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "thunderfang",
@@ -16521,7 +17272,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "thundershock",
@@ -16547,7 +17304,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "thunderwave",
@@ -16575,7 +17338,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Special Defense ?",
-      "defaultanimation": "beam"
+      "animations": [
+        {
+          "preset": "beam",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "tickle",
@@ -16684,7 +17453,13 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Defense ?",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "toxicspikes",
@@ -16966,7 +17741,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw:w0.1"
+      "animations": [
+        {
+          "preset": "throw:w0.1",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "twinkletackle",
@@ -17092,7 +17873,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "flow"
+      "animations": [
+        {
+          "preset": "flow",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "vcreate",
@@ -17170,7 +17957,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "pont"
+      "animations": [
+        {
+          "preset": "pont",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "vicegrip",
@@ -17371,7 +18164,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "beam:splash"
+      "animations": [
+        {
+          "preset": "beam:splash",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "waterpledge",
@@ -17448,7 +18247,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "watersport",
@@ -17972,7 +18777,13 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "defaultanimation": "throw"
+      "animations": [
+        {
+          "preset": "throw",
+          "duration": "5",
+          "starttick": "0"
+        }
+      ]
     },
     {
       "name": "zenheadbutt",

@@ -1,5 +1,6 @@
 package pokecube.core.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +33,18 @@ import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.moves.MovesParser;
+import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
@@ -492,6 +498,33 @@ public class Commands extends CommandBase
             CommandTools.sendBadArgumentsTryTab(sender);
             return;
         }
+        if (args[0].equals("reloadAnims"))
+        {
+            try
+            {
+                File moves = new File(Database.DBLOCATION + args[1]+".json");
+                File anims = new File(Database.DBLOCATION + args[2]+".json");
+                JsonMoves.loadMoves(moves);
+                JsonMoves.merge(anims, moves);
+                MovesParser.load(moves);
+            }
+            catch (Exception e)
+            {
+                throw new CommandException("Error loading animations");
+            }
+            for (Move_Base move : MovesUtils.moves.values())
+            {
+                if (move.move.baseEntry != null && move.move.baseEntry.animations != null
+                        && !move.move.baseEntry.animations.isEmpty())
+                {
+                    move.setAnimation(new AnimationMultiAnimations(move.move));
+                    continue;
+                }
+            }
+            CommandTools.sendMessage(sender, "Reloaded move animations.");
+            return;
+        }
+
         EntityPlayerMP[] targets = null;
         for (int i = 1; i < args.length; i++)
         {

@@ -28,7 +28,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
             {
                 density = Float.parseFloat(val);
             }
-            else if (ident.equals("v"))
+            else if (ident.equals("p"))
             {
                 type = val;
             }
@@ -45,7 +45,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
     @Override
     public void spawnClientEntities(MovePacketInfo info)
     {
-        if (type == null) return;
+        if (type == null || Math.random() > density) return;
         PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, info.target, null);
     }
 

@@ -14,6 +14,16 @@ import pokecube.core.moves.implementations.MovesAdder;
 
 public class AnimationMultiAnimations extends MoveAnimationBase
 {
+    public static boolean isThunderAnimation(IMoveAnimation input)
+    {
+        if (input == null) return false;
+        if (!(input instanceof AnimationMultiAnimations)) return input instanceof Thunder;
+        AnimationMultiAnimations anim = (AnimationMultiAnimations) input;
+        for (WrappedAnimation a : anim.components)
+            if (a.wrapped instanceof Thunder) return true;
+        return false;
+    }
+
     public static class WrappedAnimation
     {
         IMoveAnimation wrapped;

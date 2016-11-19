@@ -36,6 +36,10 @@ public class ParticlesOnTarget extends MoveAnimationBase
             {
                 type = val;
             }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
+            }
             else if (ident.equals("c"))
             {
                 int alpha = 255;

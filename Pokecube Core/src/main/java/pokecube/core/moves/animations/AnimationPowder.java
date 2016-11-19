@@ -18,7 +18,6 @@ public class AnimationPowder extends MoveAnimationBase
     float   width        = 1;
     float   density      = 1;
     boolean reverse      = false;
-    boolean customColour = false;
     int     meshId       = 0;
 
     public AnimationPowder(String particle)

@@ -47,6 +47,12 @@ public class ParticleFlow extends MoveAnimationBase
             {
                 type = val;
             }
+            else if (ident.equals("c"))
+            {
+                int alpha = 255;
+                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
+                customColour = true;
+            }
         }
         if (type == null) type = "misc";// TODO test this.
     }
@@ -66,6 +72,7 @@ public class ParticleFlow extends MoveAnimationBase
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        if (customColour) return;
         if (particle.equals("airbubble"))
         {
             rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
@@ -112,7 +119,7 @@ public class ParticleFlow extends MoveAnimationBase
                 temp1.set(rand.nextGaussian() * factor, rand.nextGaussian() * factor * yF,
                         rand.nextGaussian() * factor);
                 PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, type,
-                        source.add(temp.scalarMult(i).addTo(temp1)), null, 1, rgba);
+                        source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, 5);
             }
         }
     }

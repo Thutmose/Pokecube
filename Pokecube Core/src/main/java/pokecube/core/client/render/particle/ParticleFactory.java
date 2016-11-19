@@ -32,7 +32,7 @@ public class ParticleFactory
         if (vanilla != null)
         {
             IParticleFactory fact = particleTypes.get(vanilla.getParticleID());
-            Particle par = fact.getEntityFX(vanilla.getParticleID(), PokecubeCore.getWorld(), location.x, location.y,
+            Particle par = fact.createParticle(vanilla.getParticleID(), PokecubeCore.getWorld(), location.x, location.y,
                     location.z, velocity.x, velocity.y, velocity.z, args);
             if (par != null)
             {

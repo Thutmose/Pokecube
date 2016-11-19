@@ -412,7 +412,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -905,7 +905,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam:aurora:0.5",
+          "preset": "beam:paurora:d0.5",
           "duration": "5",
           "starttick": "0"
         }
@@ -1904,7 +1904,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam:bubble:0.5",
+          "preset": "beam:pbubble:d0.5",
           "duration": "5",
           "starttick": "0"
         }
@@ -3169,7 +3169,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -4539,7 +4539,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "flow:vflame:d0.05",
+          "preset": "flow:pflame:d0.05",
           "duration": "5",
           "starttick": "0"
         }
@@ -5245,7 +5245,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vflame",
+          "preset": "pont:pflame",
           "duration": "5",
           "starttick": "0"
         }
@@ -5277,7 +5277,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vflame",
+          "preset": "pont:pflame",
           "duration": "5",
           "starttick": "0"
         }
@@ -5385,7 +5385,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vflame",
+          "preset": "pont:pflame",
           "duration": "5",
           "starttick": "0"
         }
@@ -5442,7 +5442,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam:flame:0.2",
+          "preset": "beam:pflame:d0.2",
           "duration": "5",
           "starttick": "0"
         }
@@ -5474,7 +5474,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pons:vflame",
+          "preset": "pons:pflame",
           "duration": "5",
           "starttick": "0"
         }
@@ -6815,7 +6815,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -7780,7 +7780,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam:splash:0.2",
+          "preset": "beam:psplash:d0.2",
           "duration": "5",
           "starttick": "0"
         }
@@ -8021,7 +8021,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam:misc:0.2",
+          "preset": "beam",
           "duration": "5",
           "starttick": "0"
         }
@@ -8548,7 +8548,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -10771,7 +10771,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -12159,7 +12159,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -12705,7 +12705,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "flow:vsweepAttack",
+          "preset": "flow:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -13504,7 +13504,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "flow:vflame:d10",
+          "preset": "flow:pflame:d10",
           "duration": "5",
           "starttick": "0"
         }
@@ -14703,7 +14703,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "pont:vsweepAttack",
+          "preset": "pont:psweepAttack",
           "duration": "5",
           "starttick": "0"
         }
@@ -17185,8 +17185,8 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam",
-          "duration": "5",
+          "preset": "thunder",
+          "duration": "0",
           "starttick": "0"
         }
       ]
@@ -17217,8 +17217,8 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam",
-          "duration": "5",
+          "preset": "thunder",
+          "duration": "0",
           "starttick": "0"
         }
       ]
@@ -17306,8 +17306,8 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam",
-          "duration": "5",
+          "preset": "thunder",
+          "duration": "0",
           "starttick": "0"
         }
       ]
@@ -17340,8 +17340,8 @@
       "zVersion": "Special Defense ?",
       "animations": [
         {
-          "preset": "beam",
-          "duration": "5",
+          "preset": "thunder",
+          "duration": "0",
           "starttick": "0"
         }
       ]
@@ -18166,7 +18166,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "beam:splash",
+          "preset": "beam:psplash",
           "duration": "5",
           "starttick": "0"
         }

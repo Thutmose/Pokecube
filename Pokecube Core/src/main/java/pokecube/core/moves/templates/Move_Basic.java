@@ -40,7 +40,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
-import pokecube.core.moves.animations.Thunder;
+import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -124,7 +124,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
             return;
         }
-        if (getAnimation(attacker) instanceof Thunder)
+        if (AnimationMultiAnimations.isThunderAnimation(getAnimation(attacker)))
         {
             EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0, false);
             attacked.onStruckByLightning(lightning);

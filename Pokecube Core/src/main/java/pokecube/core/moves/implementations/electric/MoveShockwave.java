@@ -11,7 +11,7 @@ import net.minecraft.util.math.Vec3d;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.animations.Thunder;
+import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -52,7 +52,7 @@ public class MoveShockwave extends Move_Basic
                 if (e != null)
                 {
                     Entity attacked = e;
-                    if (getAnimation(attacker) instanceof Thunder)
+                    if (AnimationMultiAnimations.isThunderAnimation(getAnimation(attacker)))
                     {
                         EntityLightningBolt lightning = new EntityLightningBolt(attacked.getEntityWorld(), 0, 0, 0,
                                 false);

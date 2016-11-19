@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.world.IWorldEventListener;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
@@ -21,7 +20,6 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.moves.animations.AnimationPowder;
-import pokecube.core.moves.animations.MoveAnimationBase;
 import pokecube.core.moves.animations.ParticleBeam;
 import pokecube.core.moves.animations.ParticleFlow;
 import pokecube.core.moves.animations.ParticlesOnSource;
@@ -322,15 +320,10 @@ public class MovesAdder implements IMoveConstants
         });
 
         registerMove(new Move_Ongoing(MOVE_WRAP));
-
         registerMove(new Move_Ongoing(MOVE_WHIRLPOOL));
-
         registerMove(new Move_Ongoing(MOVE_MAGMASTORM));
-
         registerMove(new Move_Ongoing(MOVE_BIND));
-
         registerMove(new Move_Ongoing(MOVE_CLAMP));
-
         registerMove(new Move_Ongoing(MOVE_SANDTOMB));
     }
 
@@ -338,7 +331,6 @@ public class MovesAdder implements IMoveConstants
     {
 
         registerMove(new Move_Basic(MOVE_TAKEDOWN).setSound("game.neutral.hurt.fall.big"));
-
         registerMove(new Move_Basic(MOVE_DOUBLEEDGE).setSound("game.neutral.hurt.fall.big"));
         registerMove(new Move_Basic(MOVE_FLAREBLITZ).setSound("game.neutral.hurt.fall.big"));
     }
@@ -379,53 +371,7 @@ public class MovesAdder implements IMoveConstants
      * occuring IF the attack did damage. */
     static void registerSelfStatReducingMoves()
     {
-        registerMove(new Move_Basic(MOVE_LEAFSTORM)
-        {
-            // @Override
-            // public void postAttack(IPokemob attacker, Entity attacked, int
-            // pwr, int finalAttackStrength)
-            // {
-            // System.out.println("Test " + finalAttackStrength);
-            // if (finalAttackStrength > 0)
-            // {
-            // MovesUtils.handleStats2(attacker, attacked, SPATACK, HARSH);
-            // }
-            // }//TODO
-        });// );//setAnimtion(new ParticleFlow("leavesBig")));
-
-        registerMove(new Move_Basic(MOVE_OVERHEAT)
-        {
-            // @Override
-            // public void postAttack(IPokemob attacker, Entity attacked, int
-            // pwr, int finalAttackStrength)
-            // {
-            // if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker,
-            // attacked, SPATACK, HARSH);
-            // }//TODO
-        });// );//setAnimtion(new ParticleFlow("flame")));
-
-        registerMove(new Move_Basic(MOVE_DRACOMETEOR)
-        {
-            // @Override
-            // public void postAttack(IPokemob attacker, Entity attacked, int
-            // pwr, int finalAttackStrength)
-            // {
-            // if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker,
-            // attacked, SPATACK, HARSH);
-            // }//TODO
-        });// );//setAnimtion(new ParticlesOnTarget("largeexplode")));
-
-        registerMove(new Move_Basic(MOVE_PSYCHOBOOST)
-        {
-            // @Override
-            // public void postAttack(IPokemob attacker, Entity attacked, int
-            // pwr, int finalAttackStrength)
-            // {
-            // if (finalAttackStrength > 0) MovesUtils.handleStats2(attacker,
-            // attacked, SPATACK, HARSH);
-            // }//TODO
-        }.setNotInterceptable());// setAnimtion(new
-                                 // ParticlesOnTarget("aurora")));
+        registerMove(new Move_Basic(MOVE_PSYCHOBOOST).setNotInterceptable());
     }
 
     static void registerStandardDragonMoves()
@@ -436,15 +382,14 @@ public class MovesAdder implements IMoveConstants
 
     static void registerStandardElectricMoves()
     {
-        registerMove(new Move_Basic(MOVE_THUNDERSHOCK).setSound("ambient.weather.thunder").setAnimation(new Thunder()));
-        registerMove(new Move_Basic(MOVE_THUNDERBOLT).setSound("ambient.weather.thunder").setAnimation(new Thunder()));
-        registerMove(new Move_Basic(MOVE_THUNDER).setSound("ambient.weather.thunder").setAnimation(new Thunder()));
+        registerMove(new Move_Basic(MOVE_THUNDERSHOCK).setSound("ambient.weather.thunder"));
+        registerMove(new Move_Basic(MOVE_THUNDERBOLT).setSound("ambient.weather.thunder"));
+        registerMove(new Move_Basic(MOVE_THUNDER).setSound("ambient.weather.thunder"));
     }
 
     static void registerStandardFairyMoves()
     {
-        registerMove(new Move_Basic(MOVE_DAZZLINGGLEAM));// setAnimtion(new
-                                                         // ParticleBeam("white")).setMultiTarget());
+        registerMove(new Move_Basic(MOVE_DAZZLINGGLEAM));
     }
 
     static void registerStandardFightingMoves()
@@ -455,22 +400,9 @@ public class MovesAdder implements IMoveConstants
     static void registerStandardFireMoves()
     {
 
-        registerMove(new Move_Basic(MOVE_EMBER));// setAnimtion(new
-                                                 // ParticleFlow("flame")));
+        registerMove(new Move_Basic(MOVE_EMBER));
         registerMove(new Move_Basic(MOVE_FLAMETHROWER).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_FIREBLAST).setAnimation(new MoveAnimationBase()
-        {
-            // TODO animations for fire blast
-            @Override
-            public void clientAnimation(MovePacketInfo info, IWorldEventListener world, float partialTick)
-            {
-            }
-
-            @Override
-            public void initColour(long time, float partialTicks, Move_Base move)
-            {
-            }
-        }).setSound("mob.wither.shoot").setMultiTarget());
+        registerMove(new Move_Basic(MOVE_FIREBLAST).setSound("mob.wither.shoot").setMultiTarget());
 
     }
 
@@ -508,14 +440,12 @@ public class MovesAdder implements IMoveConstants
             // EntityWhip(attacked.worldObj, (EntityPokemob) attacker, 2));
             // }
         }.setSound("random.bow"));
-
         registerMove(new Move_Basic(MOVE_RAZORLEAF).setMultiTarget());
     }
 
     static void registerStandardIceMoves()
     {
-        registerMove(new Move_Basic(MOVE_AURORABEAM).setAnimation(new ParticleBeam("aurora")).setMultiTarget());
-
+        registerMove(new Move_Basic(MOVE_AURORABEAM).setMultiTarget());
         registerMove(new Move_Basic(MOVE_ICEBEAM).setMultiTarget());
     }
 
@@ -527,32 +457,12 @@ public class MovesAdder implements IMoveConstants
 
     static void registerStandardPoisonMoves()
     {
-
-        registerMove(new Move_Basic(MOVE_ACID));// setAnimtion(new
-                                                // ParticleFlow("poison")));
-
-        registerMove(new Move_Basic(MOVE_SLUDGE));// setAnimtion(new
-                                                  // ParticleFlow("poison")));
-
-        registerMove(new Move_Basic(MOVE_SLUDGEBOMB));// setAnimtion(new
-                                                      // ParticleFlow("poison")));
-
-        registerMove(new Move_Basic(MOVE_SMOG));// setAnimtion(new
-                                                // ParticleFlow("largesmoke")));
-
-        registerMove(new Move_Basic(MOVE_POISONJAB));// setAnimtion(new
-                                                     // ParticlesOnTarget("poison")));
-
-        registerMove(new Move_Basic(MOVE_POISONSTING));// setAnimtion(new
-                                                       // ThrowParticle("sting")));
     }
 
     static void registerStandardPsychicMoves()
     {
         registerMove(new Move_Basic(MOVE_CONFUSION).setSound("mob.guardian.curse").setNotInterceptable());
-
         registerMove(new Move_Basic(MOVE_PSYBEAM).setSound("mob.guardian.curse"));
-
         registerMove(new Move_Basic(MOVE_PSYWAVE)
         {
             @Override
@@ -564,7 +474,6 @@ public class MovesAdder implements IMoveConstants
                 return pwr;
             }
         }.setSound("mob.guardian.curse"));
-
         registerMove(new Move_Basic(MOVE_STOREDPOWER)
         {
             @Override
@@ -583,12 +492,7 @@ public class MovesAdder implements IMoveConstants
                 return pwr;
             }
         }.setSound("mob.guardian.curse"));
-
         registerMove(new Move_Basic(MOVE_PSYCHIC).setSound("mob.guardian.curse").setNotInterceptable());
-
-        registerMove(new Move_Basic(MOVE_PSYCHOCUT));
-
-        registerMove(new Move_Basic(MOVE_ZENHEADBUTT));
     }
 
     static void registerStandardSteelMoves()
@@ -620,7 +524,7 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_SLEEPPOWDER).setMultiTarget());
         registerMove(new Move_Basic(MOVE_STUNSPORE).setMultiTarget());
         registerMove(new Move_Basic(MOVE_SPORE).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_THUNDERWAVE).setAnimation(new Thunder()).setSound("ambient.weather.thunder"));
+        registerMove(new Move_Basic(MOVE_THUNDERWAVE).setSound("ambient.weather.thunder"));
     }
 
     /** Any move that affects the terrain or weather. */

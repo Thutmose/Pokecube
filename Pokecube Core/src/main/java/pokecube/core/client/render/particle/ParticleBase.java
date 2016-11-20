@@ -16,6 +16,7 @@ public class ParticleBase implements IParticle, IAnimatedParticle
 {
     int     duration  = 10;
     int     lifetime  = 10;
+    int     initTime  = 0;
     long    lastTick  = 0;
     int     animSpeed = 2;
     double  size      = 1;
@@ -112,9 +113,8 @@ public class ParticleBase implements IParticle, IAnimatedParticle
         if (name.equalsIgnoreCase("aurora"))
         {
             rgba = 0xFF000000;
-            int num = (getDuration() / 5) % 16;
+            int num = ((getDuration() + initTime) / animSpeed) % 16;
             rgba += EnumDyeColor.byMetadata(num).getMapColor().colorValue;
-            size = 0.2;
         }
     }
 
@@ -139,7 +139,7 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     @Override
     public void setSpeed(int speed)
     {
-        animSpeed = speed;
+        animSpeed = Math.max(speed, 5);
     }
 
     @Override
@@ -163,5 +163,11 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     public void setSize(float size)
     {
         this.size = size;
+    }
+
+    @Override
+    public void setStartTime(int start)
+    {
+        initTime = start;
     }
 }

@@ -13,6 +13,10 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     protected int     particleLife    = 5;
     protected boolean customColour    = false;
     protected float   density         = 1;
+    protected float   width           = 1;
+    protected float   angle           = 0;
+    protected boolean flat            = false;
+    protected boolean reverse         = false;
 
     public int getColourFromMove(Move_Base move, int alpha)
     {

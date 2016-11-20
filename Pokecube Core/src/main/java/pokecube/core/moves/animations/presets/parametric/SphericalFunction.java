@@ -66,16 +66,16 @@ public class SphericalFunction extends MoveAnimationBase
         Vector3 source = reverse ? info.source : info.target;
         initColour((info.attacker.getEntityWorld().getWorldTime()) * 20, 0, info.move);
         Vector3 temp = Vector3.getNewVector();
-        double scale = 1;
+        double scale = this.width;
         if (!absolute)
         {
             if (reverse && info.attacker != null)
             {
-                scale = info.attacker.width;
+                scale *= info.attacker.width;
             }
             else if (!reverse && info.attacked != null)
             {
-                scale = info.attacked.width;
+                scale *= info.attacked.width;
             }
         }
         for (double i = info.currentTick; i < info.currentTick + 1; i += density)
@@ -119,6 +119,10 @@ public class SphericalFunction extends MoveAnimationBase
             if (ident.equals("d"))
             {
                 density = Float.parseFloat(val);
+            }
+            else if (ident.equals("w"))
+            {
+                width = Float.parseFloat(val);
             }
             else if (ident.equals("r"))
             {

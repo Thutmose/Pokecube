@@ -10,14 +10,9 @@ import pokecube.core.moves.animations.AnimPreset;
 import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
-@AnimPreset(getPreset="pont")
+@AnimPreset(getPreset = "pont")
 public class ParticlesOnTarget extends MoveAnimationBase
 {
-    String type    = null;
-    String particle;
-    float  width   = 1;
-    int    meshId  = 0;
-
     public ParticlesOnTarget()
     {
     }
@@ -32,7 +27,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
     @Override
     public void spawnClientEntities(MovePacketInfo info)
     {
-        if (type == null || Math.random() > density) return;
+        if (Math.random() > density) return;
         initColour((info.attacker.getEntityWorld().getWorldTime()), 0, info.move);
         Vector3 temp = Vector3.getNewVector().set(info.target);
         Random rand = new Random();
@@ -40,7 +35,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
         if (info.attacked != null) dw = info.attacked.width;
         float width = this.width * dw;
         temp.addTo(rand.nextGaussian() * width, rand.nextGaussian() * width, rand.nextGaussian() * width);
-        PokecubeMod.core.spawnParticle(info.attacker.worldObj, type, temp, null, rgba);
+        PokecubeMod.core.spawnParticle(info.attacker.worldObj, particle, temp, null, rgba);
     }
 
     @Override
@@ -67,7 +62,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
             }
             else if (ident.equals("p"))
             {
-                type = val;
+                particle = val;
             }
             else if (ident.equals("l"))
             {
@@ -78,7 +73,6 @@ public class ParticlesOnTarget extends MoveAnimationBase
                 initRGBA(val);
             }
         }
-        if (type == null) type = "powder";
         return this;
     }
 }

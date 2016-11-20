@@ -17,12 +17,6 @@ import thut.api.maths.Vector3;
 @AnimPreset(getPreset="flow")
 public class ParticleFlow extends MoveAnimationBase
 {
-    String  type    = null;
-    float   width   = 1;
-    float   angle   = 0;
-    boolean flat    = false;
-    boolean reverse = false;
-
     public ParticleFlow()
     {
     }
@@ -63,7 +57,6 @@ public class ParticleFlow extends MoveAnimationBase
     @Override
     public void spawnClientEntities(MovePacketInfo info)
     {
-        if (type == null) return;
         Vector3 source = reverse ? info.target : info.source;
         Vector3 target = reverse ? info.source : info.target;
         initColour((info.attacker.getEntityWorld().getWorldTime()) * 20, 0, info.move);
@@ -96,7 +89,7 @@ public class ParticleFlow extends MoveAnimationBase
                     temp1.set(factor * (0.5 - rand.nextDouble()), factor * (0.5 - rand.nextDouble()),
                             factor * (0.5 - rand.nextDouble()));
                 }
-                PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, type,
+                PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle,
                         source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, particleLife);
             }
         }
@@ -130,7 +123,7 @@ public class ParticleFlow extends MoveAnimationBase
             }
             else if (ident.equals("p"))
             {
-                type = val;
+                particle = val;
             }
             else if (ident.equals("l"))
             {
@@ -141,7 +134,6 @@ public class ParticleFlow extends MoveAnimationBase
                 initRGBA(val);
             }
         }
-        if (type == null) type = "misc";// TODO test this.
         return this;
     }
 }

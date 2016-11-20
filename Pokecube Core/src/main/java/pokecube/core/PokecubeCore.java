@@ -435,7 +435,6 @@ public class PokecubeCore extends PokecubeMod
         postInitPokemobs();
         helper.addVillagerTrades();
         SpecialCaseRegister.register();
-        MoveAnimationHelper.Instance();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
         MovesAdder.postInitMoves();
     }
@@ -463,6 +462,7 @@ public class PokecubeCore extends PokecubeMod
     private void preInit(FMLPreInitializationEvent evt)
     {
         PokecubeTerrainChecker.init();
+        MoveAnimationHelper.Instance();
         config = new Config(getPokecubeConfig(evt).getConfigFile());
 
         helper = new Mod_Pokecube_Helper();

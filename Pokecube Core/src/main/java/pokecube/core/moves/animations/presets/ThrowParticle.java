@@ -1,4 +1,4 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
@@ -12,40 +12,20 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.render.PTezzelator;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.animations.AnimPreset;
+import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
+@AnimPreset(getPreset="throw")
 public class ThrowParticle extends MoveAnimationBase
 {
 
     float width = 1;
 
-    public ThrowParticle(String particle)
+    public ThrowParticle()
     {
-        this.particle = particle;
-        rgba = 0xFFFFFFFF;
-        String[] args = particle.split(":");
-        for (int i = 1; i < args.length; i++)
-        {
-            String ident = args[i].substring(0, 1);
-            String val = args[i].substring(1);
-            if (ident.equals("w"))
-            {
-                width = Float.parseFloat(val);
-            }
-            else if (ident.equals("c"))
-            {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
-            }
-        }
-    }
-
-    public ThrowParticle(String particle, float width)
-    {
-        this(particle);
-        this.width = width;
     }
 
     @SideOnly(Side.CLIENT)
@@ -126,5 +106,27 @@ public class ThrowParticle extends MoveAnimationBase
         {
             rgba = getColourFromMove(move, 255);
         }
+    }
+
+    @Override
+    public IMoveAnimation init(String preset)
+    {
+        this.particle = preset;
+        rgba = 0xFFFFFFFF;
+        String[] args = preset.split(":");
+        for (int i = 1; i < args.length; i++)
+        {
+            String ident = args[i].substring(0, 1);
+            String val = args[i].substring(1);
+            if (ident.equals("w"))
+            {
+                width = Float.parseFloat(val);
+            }
+            else if (ident.equals("c"))
+            {
+                initRGBA(val);
+            }
+        }
+        return this;
     }
 }

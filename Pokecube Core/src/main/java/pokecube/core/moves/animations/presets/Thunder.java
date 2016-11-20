@@ -1,11 +1,14 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.animations.AnimPreset;
+import pokecube.core.moves.animations.MoveAnimationBase;
 
+@AnimPreset(getPreset="thunder")
 public class Thunder extends MoveAnimationBase
 {
 

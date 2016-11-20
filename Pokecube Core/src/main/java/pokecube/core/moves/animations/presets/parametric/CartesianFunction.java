@@ -146,10 +146,6 @@ public class CartesianFunction extends MoveAnimationBase
                 fy = funcs[1];
                 fz = funcs[2];
             }
-            else if (ident.equals("d"))
-            {
-                density = Float.parseFloat(val);
-            }
         }
         initJEP(fx, x = new JEP());
         initJEP(fy, y = new JEP());

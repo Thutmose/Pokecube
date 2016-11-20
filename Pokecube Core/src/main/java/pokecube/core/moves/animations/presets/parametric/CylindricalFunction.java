@@ -20,10 +20,8 @@ public class CylindricalFunction extends MoveAnimationBase
     JEP     radial;
     JEP     angular;
 
-    Vector3 v    = Vector3.getNewVector();
-    boolean old  = false;
-    float   tick = 0.5f;
-    Vector3 v1   = Vector3.getNewVector();
+    Vector3 v  = Vector3.getNewVector();
+    Vector3 v1 = Vector3.getNewVector();
 
     public CylindricalFunction()
     {
@@ -105,11 +103,7 @@ public class CylindricalFunction extends MoveAnimationBase
         {
             String ident = args[i].substring(0, 1);
             String val = args[i].substring(1);
-            if (ident.equals("d"))
-            {
-                tick = Float.parseFloat(val);
-            }
-            else if (ident.equals("p"))
+            if (ident.equals("p"))
             {
                 this.particle = val;
             }

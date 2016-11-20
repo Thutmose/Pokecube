@@ -502,8 +502,8 @@ public class Commands extends CommandBase
         {
             try
             {
-                File moves = new File(Database.DBLOCATION + args[1]+".json");
-                File anims = new File(Database.DBLOCATION + args[2]+".json");
+                File moves = new File(Database.DBLOCATION + args[1] + ".json");
+                File anims = new File(Database.DBLOCATION + args[2] + ".json");
                 JsonMoves.loadMoves(moves);
                 JsonMoves.merge(anims, moves);
                 MovesParser.load(moves);
@@ -586,6 +586,10 @@ public class Commands extends CommandBase
                 ret.add("reset");
             }
             return ret;
+        }
+        if (ret.isEmpty() && args.length == 1)
+        {
+            ret.add("reloadAnims moves animations");
         }
         return ret;
     }

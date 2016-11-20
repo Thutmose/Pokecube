@@ -98,10 +98,6 @@ public class AnimationPowder extends MoveAnimationBase
             {
                 initRGBA(val);
             }
-            else if (ident.equals("t"))
-            {
-                duration = Integer.parseInt(val);
-            }
             else if (ident.equals("l"))
             {
                 particleLife = Integer.parseInt(val);

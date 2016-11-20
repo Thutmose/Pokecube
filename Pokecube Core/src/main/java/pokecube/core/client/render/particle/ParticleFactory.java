@@ -64,7 +64,10 @@ public class ParticleFactory
             particle.name = "aurora";
             int life = 32;
             if (args.length > 1) life = args[1];
+            particle.setStartTime((int) (PokecubeCore.getWorld().getWorldTime() % 1000));
+            particle.setSpeed(1);
             particle.setLifetime(life);
+            particle.setSize(0.1f);
             ret = particle;
         }
         else if (name.equalsIgnoreCase("misc"))
@@ -82,7 +85,7 @@ public class ParticleFactory
             if (args.length > 0) particle.setColour(args[0]);
             if (args.length > 0) life = args[1];
             particle.setLifetime(life);
-            particle.setSize(0.25f);
+            particle.setSize(0.15f);
             ret = particle;
         }
         else if (name.equalsIgnoreCase("powder"))

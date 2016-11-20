@@ -1,6 +1,11 @@
 package pokecube.core.moves.animations;
 
+import java.util.List;
+import java.util.Map;
+
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,13 +15,61 @@ import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.moves.PokemobTerrainEffects;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatParser.ClassFinder;
 
 public class MoveAnimationHelper
 {
+    static Map<String, Class<? extends MoveAnimationBase>> presets = Maps.newHashMap();
+
+    static
+    {
+        List<Class<?>> foundClasses;
+        try
+        {
+            foundClasses = ClassFinder.find(MoveAnimationHelper.class.getPackage().getName());
+            for (Class<?> candidateClass : foundClasses)
+            {
+                AnimPreset preset = candidateClass.getAnnotation(AnimPreset.class);
+                if (preset != null && MoveAnimationBase.class.isAssignableFrom(candidateClass))
+                {
+                    @SuppressWarnings("unchecked")
+                    Class<? extends MoveAnimationBase> presetClass = (Class<? extends MoveAnimationBase>) candidateClass;
+                    presets.put(preset.getPreset(), presetClass);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public static IMoveAnimation getAnimationPreset(String anim)
+    {
+        IMoveAnimation animation = null;
+        if (anim == null || anim.isEmpty()) return animation;
+        String preset = anim.split(":")[0];
+        Class<? extends MoveAnimationBase> presetClass = presets.get(preset);
+        if (presetClass != null)
+        {
+            try
+            {
+                animation = presetClass.newInstance();
+                ((MoveAnimationBase) animation).init(anim);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return animation;
+    }
+
     private static MoveAnimationHelper instance;
 
     public static MoveAnimationHelper Instance()

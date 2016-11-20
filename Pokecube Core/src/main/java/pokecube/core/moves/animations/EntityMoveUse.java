@@ -33,9 +33,12 @@ public class EntityMoveUse extends Entity
             DataSerializers.VARINT);
     static final DataParameter<Integer>   TICK          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
+    static final DataParameter<Integer>   APPLYTICK     = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+            DataSerializers.VARINT);
 
     Vector3                               end           = Vector3.getNewVector();
     Vector3                               start         = Vector3.getNewVector();
+    boolean                               applied       = false;
 
     public EntityMoveUse(World worldIn)
     {
@@ -54,7 +57,8 @@ public class EntityMoveUse extends Entity
         this.getDataManager().set(MOVENAME, name);
         if (move.getAnimation((IPokemob) getUser()) != null)
         {
-            getDataManager().set(TICK, move.getAnimation().getDuration() + 1);
+            getDataManager().set(TICK, move.getAnimation((IPokemob) getUser()).getDuration() + 1);
+            setApplicationTick(getAge() - move.getAnimation((IPokemob) getUser()).getApplicationTick());
         }
         else getDataManager().set(TICK, 1);
         return this;
@@ -126,6 +130,16 @@ public class EntityMoveUse extends Entity
         return getDataManager().get(TICK);
     }
 
+    public int getApplicationTick()
+    {
+        return getDataManager().get(APPLYTICK);
+    }
+
+    public void setApplicationTick(int tick)
+    {
+        getDataManager().set(APPLYTICK, tick);
+    }
+
     @Override
     public void onUpdate()
     {
@@ -140,9 +154,15 @@ public class EntityMoveUse extends Entity
         if ((user = getUser()) == null || this.isDead || user.isDead) return;
         if (worldObj.isRemote && attack.getAnimation((IPokemob) user) != null)
             attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
+
+        if (!applied && age <= getApplicationTick())
+        {
+            applied = true;
+            this.doMoveUse();
+        }
+
         if (age == 0)
         {
-            this.doMoveUse();
             this.setDead();
         }
         getDataManager().set(TICK, age);
@@ -182,6 +202,7 @@ public class EntityMoveUse extends Entity
         this.getDataManager().register(USER, -1);
         this.getDataManager().register(TARGET, -1);
         this.getDataManager().register(TICK, 0);
+        this.getDataManager().register(APPLYTICK, 0);
     }
 
     @Override

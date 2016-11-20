@@ -19,13 +19,7 @@ import pokecube.core.moves.Move_Transform;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
-import pokecube.core.moves.animations.AnimationPowder;
-import pokecube.core.moves.animations.ParticleBeam;
-import pokecube.core.moves.animations.ParticleFlow;
-import pokecube.core.moves.animations.ParticlesOnSource;
-import pokecube.core.moves.animations.ParticlesOnTarget;
-import pokecube.core.moves.animations.ThrowParticle;
-import pokecube.core.moves.animations.Thunder;
+import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.teleport.Move_Teleport;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.moves.templates.Move_Explode;
@@ -50,44 +44,10 @@ public class MovesAdder implements IMoveConstants
                 }
                 String anim = move.move.animDefault;
                 if (anim == null) continue;
-                IMoveAnimation animation = getAnimationPreset(anim);
+                IMoveAnimation animation = MoveAnimationHelper.getAnimationPreset(anim);
                 if (animation != null) move.setAnimation(animation);
             }
         }
-    }
-
-    public static IMoveAnimation getAnimationPreset(String anim)
-    {
-        IMoveAnimation animation = null;
-        if (anim.startsWith("beam"))
-        {
-            animation = new ParticleBeam(anim);
-        }
-        if (anim.startsWith("flow"))
-        {
-            animation = new ParticleFlow(anim);
-        }
-        if (anim.startsWith("pont"))
-        {
-            animation = new ParticlesOnTarget(anim);
-        }
-        if (anim.startsWith("pons"))
-        {
-            animation = new ParticlesOnSource(anim);
-        }
-        if (anim.startsWith("powder"))
-        {
-            animation = new AnimationPowder(anim);
-        }
-        if (anim.startsWith("throw"))
-        {
-            animation = new ThrowParticle(anim);
-        }
-        if (anim.startsWith("thunder"))
-        {
-            animation = new Thunder();
-        }
-        return animation;
     }
 
     static void registerDrainMoves()
@@ -211,13 +171,7 @@ public class MovesAdder implements IMoveConstants
 
     public static void registerMoves()
     {
-        // Moves Cflame13 added
-
-        // End of Moves Cflame13 added
-
         // HM like moves
-        // Register world actions for some moves.
-
         registerMove(new Move_Teleport(MOVE_TELEPORT));
 
         // Ongoing moves

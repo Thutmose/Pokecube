@@ -10,7 +10,7 @@ import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.json.JsonMoves.AnimationJson;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.moves.implementations.MovesAdder;
+import pokecube.core.moves.animations.presets.Thunder;
 
 public class AnimationMultiAnimations extends MoveAnimationBase
 {
@@ -30,7 +30,9 @@ public class AnimationMultiAnimations extends MoveAnimationBase
         int            start;
     }
 
-    List<WrappedAnimation> components = Lists.newArrayList();
+    List<WrappedAnimation> components      = Lists.newArrayList();
+
+    private int            applicationTick = 0;
 
     public AnimationMultiAnimations(MoveEntry move)
     {
@@ -39,16 +41,21 @@ public class AnimationMultiAnimations extends MoveAnimationBase
         if (animations == null || animations.isEmpty()) return;
         for (AnimationJson anim : animations)
         {
-            IMoveAnimation animation = MovesAdder.getAnimationPreset(anim.preset);
+            IMoveAnimation animation = MoveAnimationHelper.getAnimationPreset(anim.preset);
             if (animation == null) continue;
             int start = Integer.parseInt(anim.starttick);
             int dur = Integer.parseInt(anim.duration);
+            if (anim.applyAfter != null && Boolean.parseBoolean(anim.applyAfter))
+            {
+                applicationTick = Math.max(start + dur, applicationTick);
+            }
             duration = Math.max(duration, start + dur);
             WrappedAnimation wrapped = new WrappedAnimation();
             wrapped.wrapped = animation;
             wrapped.start = start;
             components.add(wrapped);
         }
+        if (applicationTick == 0) applicationTick = duration;
         components.sort(new Comparator<WrappedAnimation>()
         {
             @Override
@@ -67,6 +74,12 @@ public class AnimationMultiAnimations extends MoveAnimationBase
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+    }
+
+    @Override
+    public int getApplicationTick()
+    {
+        return applicationTick;
     }
 
     @Override

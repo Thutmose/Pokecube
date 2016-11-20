@@ -52,10 +52,10 @@ public class ParticleHandler
 
     public void addParticle(Vector3 location, IParticle particle)
     {
-        if (particle == null) return;
+        if (particle == null || location == null) return;
         synchronized (particles)
         {
-            particles.add(new ParticlePacket(location, particle));
+            particles.add(new ParticlePacket(location.copy(), particle));
         }
     }
 

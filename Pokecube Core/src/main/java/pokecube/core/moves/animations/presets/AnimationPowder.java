@@ -1,4 +1,4 @@
-package pokecube.core.moves.animations;
+package pokecube.core.moves.animations.presets;
 
 import java.util.Random;
 
@@ -8,68 +8,23 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.animations.AnimPreset;
+import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
+@AnimPreset(getPreset="powder")
 public class AnimationPowder extends MoveAnimationBase
 {
 
     String  particle;
     float   width        = 1;
-    float   density      = 1;
     boolean reverse      = false;
     int     meshId       = 0;
 
-    public AnimationPowder(String particle)
+    public AnimationPowder()
     {
-        this.particle = "powder";
-        duration = 50;
-        particleLife = 1;
-        for (EnumDyeColor colour : EnumDyeColor.values())
-        {
-            if (colour.getName().equalsIgnoreCase(particle))
-            {
-                rgba = colour.getMapColor().colorValue + 0xFF000000;
-                break;
-            }
-        }
-        String[] args = particle.split(":");
-        for (int i = 1; i < args.length; i++)
-        {
-            String ident = args[i].substring(0, 1);
-            String val = args[i].substring(1);
-            if (ident.equals("w"))
-            {
-                width = Float.parseFloat(val);
-            }
-            else if (ident.equals("d"))
-            {
-                density = Float.parseFloat(val);
-            }
-            else if (ident.equals("r"))
-            {
-                reverse = Boolean.parseBoolean(val);
-            }
-            else if (ident.equals("c"))
-            {
-                int alpha = 255;
-                rgba = EnumDyeColor.byDyeDamage(Integer.parseInt(val)).getMapColor().colorValue + 0x01000000 * alpha;
-                customColour = true;
-            }
-            else if (ident.equals("t"))
-            {
-                duration = Integer.parseInt(val);
-            }
-            else if (ident.equals("l"))
-            {
-                particleLife = Integer.parseInt(val);
-            }
-            else if (ident.equals("p"))
-            {
-                this.particle = val;
-            }
-        }
-
     }
 
     @SideOnly(Side.CLIENT)
@@ -114,6 +69,49 @@ public class AnimationPowder extends MoveAnimationBase
             temp.addTo(target);
             PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp.copy(), null, rgba, particleLife);
         }
+    }
+
+    @Override
+    public IMoveAnimation init(String preset)
+    {
+        this.particle = "powder";
+        duration = 50;
+        particleLife = 1;
+        String[] args = preset.split(":");
+        for (int i = 1; i < args.length; i++)
+        {
+            String ident = args[i].substring(0, 1);
+            String val = args[i].substring(1);
+            if (ident.equals("w"))
+            {
+                width = Float.parseFloat(val);
+            }
+            else if (ident.equals("d"))
+            {
+                density = Float.parseFloat(val);
+            }
+            else if (ident.equals("r"))
+            {
+                reverse = Boolean.parseBoolean(val);
+            }
+            else if (ident.equals("c"))
+            {
+                initRGBA(val);
+            }
+            else if (ident.equals("t"))
+            {
+                duration = Integer.parseInt(val);
+            }
+            else if (ident.equals("l"))
+            {
+                particleLife = Integer.parseInt(val);
+            }
+            else if (ident.equals("p"))
+            {
+                this.particle = val;
+            }
+        }
+        return this;
     }
 
 }

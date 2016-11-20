@@ -575,9 +575,9 @@ public class Commands extends CommandBase
             BlockPos pos)
     {
         boolean isOp = CommandTools.isOp(sender);
+        List<String> ret = new ArrayList<String>();
         if (args[0].isEmpty())
         {
-            List<String> ret = new ArrayList<String>();
             if (isOp)
             {
                 ret.add("count");
@@ -587,7 +587,7 @@ public class Commands extends CommandBase
             }
             return ret;
         }
-        return null;
+        return ret;
     }
 
     @Override

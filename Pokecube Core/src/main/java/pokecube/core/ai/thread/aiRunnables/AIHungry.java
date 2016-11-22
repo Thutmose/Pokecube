@@ -124,13 +124,13 @@ public class AIHungry extends AIBase
                 ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
                 if (stack != null && stack.getItem() instanceof ItemBerry)
                 {
+                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    hungrymob.eat(berry);
                     CompatWrapper.increment(stack, -1);
                     if (!CompatWrapper.isValid(stack))
                     {
                         pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
                     }
-                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                    hungrymob.eat(berry);
                     ate = true;
                 }
             }

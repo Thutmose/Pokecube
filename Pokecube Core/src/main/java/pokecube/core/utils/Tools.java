@@ -475,9 +475,7 @@ public class Tools
 
     public static boolean isSameStack(ItemStack a, ItemStack b)
     {
-        if ((a == CompatWrapper.nullStack || a.getItem() == null)
-                || (b == CompatWrapper.nullStack || b.getItem() == null))
-            return false;
+        if (!CompatWrapper.isValid(a) || CompatWrapper.isValid(b)) return false;
         int[] aID = OreDictionary.getOreIDs(a);
         int[] bID = OreDictionary.getOreIDs(b);
         boolean check = a.getItem() == b.getItem();

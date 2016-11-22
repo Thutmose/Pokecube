@@ -134,7 +134,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
             {
                 ((IPokemobUseable) item.getItem()).applyEffect(this, item);
             }
-            if (Tools.isSameStack(item, PokecubeItems.getStack("leppaBerry")))
+            if (Tools.isSameStack(item, PokecubeItems.getStack("leppaberry")))
             {
                 hungerValue *= 2;
             }

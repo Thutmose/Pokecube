@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import pokecube.core.interfaces.PokecubeMod;
 
-@Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, dependencies = "required-after:Forge@" + PokecubeMod.MINFORGEVERSION
+@Mod(modid = NBTEdit.MODID, name = NBTEdit.NAME, dependencies = "required-after:forge@" + PokecubeMod.MINFORGEVERSION
         + PokecubeMod.DEPSTRING, acceptedMinecraftVersions = "*", version = NBTEdit.VERSION, acceptableRemoteVersions = "*")
 public class NBTEdit
 {

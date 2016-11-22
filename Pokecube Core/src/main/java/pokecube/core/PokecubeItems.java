@@ -36,6 +36,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class PokecubeItems extends Items
 {
@@ -229,7 +230,8 @@ public class PokecubeItems extends Items
     public static void addToHoldables(String item)
     {
         ItemStack stack = getStack(item);
-        if (stack == null) System.out.println(new NullPointerException("Cannot add null stack to holdables " + item));
+        if (!CompatWrapper.isValid(stack))
+            System.out.println(new NullPointerException("Cannot add null stack to holdables " + item));
         heldItems.add(stack);
     }
 
@@ -282,7 +284,7 @@ public class PokecubeItems extends Items
      * @return */
     public static int getCubeId(ItemStack stack)
     {
-        if (stack != null) for (Integer i : pokecubes.keySet())
+        if (CompatWrapper.isValid(stack)) for (Integer i : pokecubes.keySet())
         {
             Item[] cubes = pokecubes.get(i);
             for (Item cube : cubes)
@@ -338,7 +340,7 @@ public class PokecubeItems extends Items
 
     public static PokedexEntry getFossilEntry(ItemStack fossil)
     {
-        if (fossil == null) return null;
+        if (!CompatWrapper.isValid(fossil)) return null;
         PokedexEntry ret = null;
         for (ItemStack s : fossils.keySet())
         {
@@ -361,14 +363,14 @@ public class PokecubeItems extends Items
 
     public static ItemStack getRandomMeteorDrop()
     {
-        if (meteorDrops.size() == 0) return null;
+        if (meteorDrops.size() == 0) return CompatWrapper.nullStack;
         Collections.shuffle(meteorDrops);
         return meteorDrops.get(0);
     }
 
     public static ItemStack getRandomSpawnerDrop()
     {
-        if (spawnerDrops.size() == 0) return null;
+        if (spawnerDrops.size() == 0) return CompatWrapper.nullStack;
         Collections.shuffle(spawnerDrops);
         return spawnerDrops.get(0);
     }
@@ -380,9 +382,9 @@ public class PokecubeItems extends Items
 
     public static ItemStack getStack(String name, boolean stacktrace)
     {
-        if (name == null) return null;
+        if (name == null) return CompatWrapper.nullStack;
         name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
-        if (itemstacks.get(name) != null) return itemstacks.get(name).copy();
+        if (CompatWrapper.isValid(itemstacks.get(name))) return itemstacks.get(name).copy();
 
         String key = "";
         int n = 0;
@@ -412,7 +414,7 @@ public class PokecubeItems extends Items
         {
             Thread.dumpStack();
         }
-        return null;
+        return CompatWrapper.nullStack;
     }
 
     public static void init()
@@ -490,10 +492,10 @@ public class PokecubeItems extends Items
     public static boolean isValidEvoItem(ItemStack stack)
     {
         boolean ret = false;
-        if (stack == null) return false;
+        if (!CompatWrapper.isValid(stack)) return false;
         for (ItemStack s : evoItems)
         {
-            if (s != null && Tools.isSameStack(s, stack)) return true;
+            if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
         }
         return ret;
     }
@@ -501,11 +503,11 @@ public class PokecubeItems extends Items
     public static boolean isValidHeldItem(ItemStack stack)
     {
         boolean ret = false;
-        if (stack == null) return false;
+        if (!CompatWrapper.isValid(stack)) return false;
         boolean hasANull = false;
         for (ItemStack s : heldItems)
         {
-            if (s != null && Tools.isSameStack(s, stack)) return true;
+            if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
             hasANull = true;
         }
         while (hasANull)
@@ -513,7 +515,7 @@ public class PokecubeItems extends Items
             for (ItemStack s : heldItems)
             {
                 hasANull = false;
-                if (s == null)
+                if (!CompatWrapper.isValid(s))
                 {
                     heldItems.remove(s);
                     hasANull = true;
@@ -524,7 +526,7 @@ public class PokecubeItems extends Items
         hasANull = false;
         for (ItemStack s : evoItems)
         {
-            if (s != null && Tools.isSameStack(s, stack)) return true;
+            if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
             hasANull = true;
         }
         while (hasANull)
@@ -532,7 +534,7 @@ public class PokecubeItems extends Items
             for (ItemStack s : heldItems)
             {
                 hasANull = false;
-                if (s == null)
+                if (!CompatWrapper.isValid(s))
                 {
                     heldItems.remove(s);
                     hasANull = true;
@@ -561,7 +563,7 @@ public class PokecubeItems extends Items
     public static ItemStack makeCandyStack()
     {
         ItemStack candy = PokecubeItems.getStack("rarecandy");
-        if (candy == null) return null;
+        if (!CompatWrapper.isValid(candy)) return CompatWrapper.nullStack;
 
         makeStackValid(candy);
         candy.setStackDisplayName("Rare Candy");

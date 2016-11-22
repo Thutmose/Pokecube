@@ -20486,7 +20486,7 @@
             <Drop r="1" id="minecraft:feather" n="2"/>
             <BASESTATS spdef="70" spatk="70" def="75" spd="52" hp="78" atk="75"/>
             <EVYIELD hp="2"/>
-            <SIZES width="0.7" length="0.7" height="0.7"/>
+            <SIZES width="0.4" length="0.4" height="0.7"/>
             <TYPE type2="Flying" type1="Grass"/>
             <ABILITY normal="Overgrow" hidden="Long Reach"/>
             <MASSKG>16.0</MASSKG>
@@ -20509,7 +20509,7 @@
             <Drop r="1" id="minecraft:feather" n="3"/>
             <BASESTATS spdef="100" spatk="100" def="75" spd="70" hp="78" atk="107"/>
             <EVYIELD atk="3"/>
-            <SIZES width="1.6" length="1.6" height="1.6"/>
+            <SIZES width="0.9" length="0.9" height="1.6"/>
             <TYPE type2="Ghost" type1="Grass"/>
             <ABILITY normal="Overgrow" hidden="Long Reach"/>
             <MASSKG>36.6</MASSKG>
@@ -20561,7 +20561,7 @@
             <Drop r="1" id="minecraft:coal" n="2"/>
             <BASESTATS spdef="50" spatk="80" def="50" spd="90" hp="65" atk="85"/>
             <EVYIELD spd="2"/>
-            <SIZES width="0.7" length="0.7" height="0.7"/>
+            <SIZES width="0.5" length="0.7" height="0.7"/>
             <TYPE type1="Fire"/>
             <ABILITY normal="Blaze" hidden="Intimidate"/>
             <MASSKG>25.0</MASSKG>
@@ -20584,7 +20584,7 @@
             <Drop r="1" id="minecraft:coal" n="3"/>
             <BASESTATS spdef="90" spatk="80" def="90" spd="60" hp="95" atk="115"/>
             <EVYIELD atk="3"/>
-            <SIZES width="1.8" length="1.8" height="1.8"/>
+            <SIZES width="0.9" length="0.9" height="1.8"/>
             <TYPE type2="Dark" type1="Fire"/>
             <ABILITY normal="Blaze" hidden="Intimidate"/>
             <MASSKG>83.0</MASSKG>
@@ -20659,7 +20659,7 @@
             <Drop r="1" id="minecraft:bone" n="3"/>
             <BASESTATS spdef="116" spatk="126" def="74" spd="60" hp="80" atk="74"/>
             <EVYIELD spatk="3"/>
-            <SIZES width="1.8" length="1.8" height="1.8"/>
+            <SIZES width="1.0" length="1.8" height="1.8"/>
             <TYPE type2="Fairy" type1="Water"/>
             <ABILITY normal="Torrent" hidden="Liquid Voice"/>
             <MASSKG>44.0</MASSKG>
@@ -20760,7 +20760,7 @@
             <Drop r="1" id="minecraft:rabbit_hide" n="1"/>
             <BASESTATS spdef="30" spatk="30" def="30" spd="45" hp="48" atk="70"/>
             <EVYIELD atk="1"/>
-            <SIZES width="0.4" length="0.4" height="0.4"/>
+            <SIZES width="0.2" length="0.4" height="0.2"/>
             <TYPE type1="Normal"/>
             <ABILITY normal="Stakeout, Strong Jaw" hidden="Adaptability"/>
             <MASSKG>6.0</MASSKG>
@@ -20783,7 +20783,7 @@
             <Drop r="1" id="minecraft:rabbit_hide" n="1"/>
             <BASESTATS spdef="60" spatk="55" def="60" spd="45" hp="88" atk="110"/>
             <EVYIELD atk="2"/>
-            <SIZES width="0.7" length="0.7" height="0.7"/>
+            <SIZES width="0.3" length="0.7" height="0.7"/>
             <TYPE type1="Normal"/>
             <ABILITY normal="Stakeout, Strong Jaw" hidden="Adaptability"/>
             <MASSKG>14.2</MASSKG>

@@ -21,7 +21,7 @@ public class VanillaLikeParticle extends Particle
         }
 
         @Override
-        public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
+        public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
                 double xSpeedIn, double ySpeedIn, double zSpeedIn, int... args)
         {
             VanillaLikeParticle particle = new VanillaLikeParticle(worldIn, xCoordIn, yCoordIn, zCoordIn);
@@ -51,7 +51,7 @@ public class VanillaLikeParticle extends Particle
         }
 
         @Override
-        public Particle getEntityFX(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
+        public Particle createParticle(int particleID, World worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
                 double xSpeedIn, double ySpeedIn, double zSpeedIn, int... args)
         {
             ParticleAurora particle = new ParticleAurora(worldIn, xCoordIn, yCoordIn, zCoordIn);

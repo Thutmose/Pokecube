@@ -5,17 +5,29 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ItemBag;
+import thut.lib.CompatClass;
+import thut.lib.CompatClass.Phase;
 
 public class WearableCompat
 {
+
+    @Method(modid = "thut_wearables")
+    @CompatClass(phase = Phase.PRE)
+    public static void preInitWearables()
+    {
+        MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
+    }
+
     public WearableCompat()
     {
     }
@@ -39,7 +51,8 @@ public class WearableCompat
 
         @SideOnly(Side.CLIENT)
         @Override
-        public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+        public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
+                float partialTicks)
         {
             PokecubeAdv.proxy.renderWearable(slot, wearer, stack, partialTicks);
         }
@@ -59,17 +72,20 @@ public class WearableCompat
         }
 
         @Override
-        public void onPutOn(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot, int subIndex)
+        public void onPutOn(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
+                int subIndex)
         {
         }
 
         @Override
-        public void onTakeOff(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot, int subIndex)
+        public void onTakeOff(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
+                int subIndex)
         {
         }
 
         @Override
-        public void onUpdate(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot, int subIndex)
+        public void onUpdate(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
+                int subIndex)
         {
         }
 

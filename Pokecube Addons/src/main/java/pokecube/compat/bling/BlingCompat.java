@@ -14,13 +14,6 @@ import thut.lib.CompatClass.Phase;
 public class BlingCompat
 {
 
-    @Method(modid = "thut_wearables")
-    @CompatClass(phase = Phase.PRE)
-    public static void preInitWearables()
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
-    }
-
     @Method(modid = "thut_bling")
     @CompatClass(phase = Phase.POST)
     public static void postInitBling()

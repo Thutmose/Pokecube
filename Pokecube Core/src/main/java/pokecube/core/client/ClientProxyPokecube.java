@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -39,11 +40,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
+import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -592,6 +595,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (velocity == null) velocity = Vector3.empty;
         IParticle particle2 = ParticleFactory.makeParticle(par1Str, location, velocity, args);
         ParticleHandler.Instance().addParticle(location, particle2);
+    }
+
+    @Override
+    public StatisticsManager getManager(EntityPlayer player)
+    {
+        if (player instanceof EntityPlayerSP) return ((EntityPlayerSP) player).getStatFileWriter();
+        return ((EntityPlayerMP) player).getStatFile();
     }
 
     private X3dModel         beltl;

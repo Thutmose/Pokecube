@@ -204,7 +204,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
                 System.err.println("missing for " + entry);
                 return;
             }
-            int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
+            int num = getManager(player).readStat(ach);
             getCaptures(player).put(entry, num + 1);
             player.addStat(ach);
         }
@@ -217,7 +217,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
                 System.err.println("missing for " + entry);
                 return;
             }
-            int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
+            int num = getManager(player).readStat(ach);
             getKills(player).put(entry, num + 1);
             player.addStat(ach);
         }
@@ -225,11 +225,8 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
         public void addHatch(EntityPlayer player, PokedexEntry entry)
         {
             Achievement ach = PokecubeMod.hatchAchievements.get(entry);
-            if (ach == null)
-            {
-                return;
-            }
-            int num = ((EntityPlayerMP) player).getStatFile().readStat(ach);
+            if (ach == null) { return; }
+            int num = getManager(player).readStat(ach);
             getHatches(player).put(entry, num + 1);
             player.addStat(ach);
         }
@@ -260,8 +257,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
 
             if (player.worldObj.isRemote)
             {
-                net.minecraft.client.entity.EntityPlayerSP player1 = (net.minecraft.client.entity.EntityPlayerSP) player;
-                initAchievements(player1.getStatFileWriter());
+                initAchievements(getManager(player));
                 return;
             }
             backup = tag;
@@ -307,20 +303,25 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
 
         public Map<PokedexEntry, Integer> getCaptures(EntityPlayer player)
         {
-            if (captures == null) initAchievements(((EntityPlayerMP) player).getStatFile());
+            if (captures == null) initAchievements(getManager(player));
             return captures;
         }
 
         public Map<PokedexEntry, Integer> getKills(EntityPlayer player)
         {
-            if (kills == null) initAchievements(((EntityPlayerMP) player).getStatFile());
+            if (kills == null) initAchievements(getManager(player));
             return kills;
         }
 
         public Map<PokedexEntry, Integer> getHatches(EntityPlayer player)
         {
-            if (hatches == null) initAchievements(((EntityPlayerMP) player).getStatFile());
+            if (hatches == null) initAchievements(getManager(player));
             return hatches;
+        }
+
+        private StatisticsManager getManager(EntityPlayer player)
+        {
+            return PokecubeMod.getProxy().getManager(player);
         }
     }
 

@@ -2,6 +2,9 @@ package pokecube.core.interfaces;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import thut.api.maths.Vector3;
@@ -32,6 +35,11 @@ public abstract class CommonProxy
 
     public void registerPokecubeRenderer(int cubeId, Render renderer, Object mod)
     {
+    }
+    
+    public StatisticsManager getManager(EntityPlayer player)
+    {
+        return ((EntityPlayerMP) player).getStatFile();
     }
 
     public abstract void registerPokemobModel(int nb, ModelBase model, Object mod);

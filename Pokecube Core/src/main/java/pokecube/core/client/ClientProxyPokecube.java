@@ -270,6 +270,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
             }
         }, PokecubeItems.pokemobEgg);
+        ParticleFactory.initVanillaParticles();
     }
 
     @Override

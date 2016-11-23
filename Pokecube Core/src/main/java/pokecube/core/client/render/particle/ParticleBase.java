@@ -137,7 +137,7 @@ public class ParticleBase implements IParticle, IAnimatedParticle
     }
 
     @Override
-    public void setSpeed(int speed)
+    public void setAnimSpeed(int speed)
     {
         animSpeed = Math.max(speed, 5);
     }

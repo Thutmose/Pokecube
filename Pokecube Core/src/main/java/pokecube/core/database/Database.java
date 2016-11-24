@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.fml.common.ProgressManager;
@@ -135,7 +136,7 @@ public class Database
     public static boolean                                  FORCECOPYRECIPES = true;
     public static boolean                                  FORCECOPYREWARDS = true;
     public static List<ItemStack>                          starterPack      = Lists.newArrayList();
-    public static HashMap<Integer, PokedexEntry>           data             = new HashMap<Integer, PokedexEntry>();
+    public static Int2ObjectOpenHashMap<PokedexEntry>      data             = new Int2ObjectOpenHashMap<>();
     public static HashMap<String, PokedexEntry>            data2            = new HashMap<String, PokedexEntry>();
     public static HashSet<PokedexEntry>                    allFormes        = new HashSet<PokedexEntry>();
     public static HashMap<Integer, PokedexEntry>           baseFormes       = new HashMap<Integer, PokedexEntry>();
@@ -267,7 +268,7 @@ public class Database
         return getEntry(name) != null;
     }
 
-    public static PokedexEntry getEntry(Integer nb)
+    public static PokedexEntry getEntry(int nb)
     {
         return data.get(nb);
     }
@@ -572,6 +573,10 @@ public class Database
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
         Set<Integer> removedNums = Sets.newHashSet();
         List<PokedexEntry> removed = Lists.newArrayList();
+        for (PokedexEntry e : Pokedex.getInstance().getRegisteredEntries())
+        {
+            if (e.base) addEntry(e);
+        }
         for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
@@ -591,6 +596,7 @@ public class Database
             baseFormes.remove(p.pokedexNb);
             spawnables.remove(p);
         }
+
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
         System.err.println("Removed " + removedNums.size() + " Missing Pokemon");
@@ -658,6 +664,7 @@ public class Database
                     e.type2 = base.type2;
                 }
                 if (e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
+                if (e.abilitiesHidden.isEmpty()) e.abilitiesHidden.addAll(base.abilitiesHidden);
             }
             else
             {
@@ -700,7 +707,7 @@ public class Database
         Collections.sort(removed, sorter);
         for (PokedexEntry p : removed)
         {
-//            System.out.println(p);
+            // System.out.println(p);
         }
         bar = ProgressManager.push("Relations", data.size());
         for (PokedexEntry p : data.values())

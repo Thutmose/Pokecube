@@ -235,12 +235,33 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public Entity createPokemob(PokedexEntry entry, World world)
     {
-        Entity e = createPokemob(entry.getPokedexNb(), world);
-        if (e != null)
+        Entity entity = null;
+        Class<?> clazz = null;
+        if (!registered.get(entry.getPokedexNb())) return null;
+        try
         {
-            e = (Entity) ((IPokemob) e).setPokedexEntry(entry);
+            PokedexEntry base = entry.base ? entry : entry.getBaseForme();
+            clazz = pokedexmap.get(base);
+            if (clazz != null)
+            {
+                entity = (Entity) clazz.getConstructor(new Class[] { World.class }).newInstance(new Object[] { world });
+            }
         }
-        return e;
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        if (entity == null)
+        {
+            System.err.println("Problem with entity with: " + entity);
+            System.err.println(clazz + " " + entry);
+        }
+
+        if (entity != null)
+        {
+            entity = (Entity) ((IPokemob) entity).setPokedexEntry(entry);
+        }
+        return entity;
     }
 
     /** Creates a new instance of an entity in the world for the pokemob
@@ -272,7 +293,7 @@ public class PokecubeCore extends PokecubeMod
         if (entity == null)
         {
             System.err.println("Problem with entity with pokedexNb: " + pokedexNb);
-            System.err.println(clazz + " ");
+            System.err.println(clazz + " " + pokedexmap);
         }
         return entity;
     }
@@ -456,7 +477,7 @@ public class PokecubeCore extends PokecubeMod
         sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
         GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
-                + Database.allFormes.size() + " Formes");
+                + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }
 
     @EventHandler
@@ -582,14 +603,13 @@ public class PokecubeCore extends PokecubeMod
      * @param pokedexnb
      *            the pokedex number */
     @Override
-    public void registerPokemon(boolean createEgg, Object mod, int pokedexNb)
-    {
-        registerPokemon(createEgg, mod, Database.getEntry(pokedexNb));
-    }
-
-    @Override
     public void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry)
     {
+        if (!entry.base)
+        {
+            Pokedex.getInstance().getRegisteredEntries().add(entry);
+            return;
+        }
         Class<?> c = genericMobClasses.get(entry);
         if (c == null)
         {
@@ -612,12 +632,6 @@ public class PokecubeCore extends PokecubeMod
         {
             registerPokemonByClass(c, createEgg, mod, entry);
         }
-    }
-
-    @Override
-    public void registerPokemon(boolean createEgg, Object mod, String name)
-    {
-        registerPokemon(createEgg, mod, Database.getEntry(name));
     }
 
     /** Registers a Pokemob into the Pokedex. Have a look to the file called

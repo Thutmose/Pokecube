@@ -700,7 +700,7 @@ public class Database
         Collections.sort(removed, sorter);
         for (PokedexEntry p : removed)
         {
-            System.out.println(p);
+//            System.out.println(p);
         }
         bar = ProgressManager.push("Relations", data.size());
         for (PokedexEntry p : data.values())

@@ -369,7 +369,7 @@ public class EntityTrainer extends EntityHasPokemobs
             TrainerSpawnHandler.addTrainerCoord(this);
         }
         ItemStack next;
-        if (cooldown > worldObj.getTotalWorldTime()) next = null;
+        if (cooldown > worldObj.getTotalWorldTime()) next = CompatWrapper.nullStack;
         else next = getNextPokemob();
         if (CompatWrapper.isValid(next))
         {

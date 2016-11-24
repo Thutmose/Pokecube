@@ -384,7 +384,8 @@ public class PokecubeItems extends Items
     {
         if (name == null) return CompatWrapper.nullStack;
         name = name.toLowerCase(java.util.Locale.ENGLISH).trim();
-        if (CompatWrapper.isValid(itemstacks.get(name))) return itemstacks.get(name).copy();
+        if (itemstacks.containsKey(name) && CompatWrapper.isValid(itemstacks.get(name)))
+            return itemstacks.get(name).copy();
 
         String key = "";
         int n = 0;

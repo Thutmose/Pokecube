@@ -1032,6 +1032,8 @@ public class PokedexEntry
         if (e.mass == -1) e.mass = mass;
         if (e.held.isEmpty()) e.held = held;
         if (e.drops.isEmpty()) e.drops = drops;
+        for (int i = 0; i < foods.length; i++)
+            e.foods[i] = foods[i];
         e.breeds = breeds;
         e.legendary = legendary;
         e.setBaseForme(this);

@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -39,7 +40,7 @@ public class StatsCollector
     public static void addCapture(IPokemob captured)
     {
         String owner;
-        if (captured.getPokemonOwner() instanceof EntityPlayer)
+        if (captured.getPokemonOwner() instanceof EntityPlayer && !(captured.getPokemonOwner() instanceof FakePlayer))
         {
             owner = captured.getPokemonOwner().getCachedUniqueIdString();
             PokedexEntry dbe = Database.getEntry(captured);
@@ -73,7 +74,7 @@ public class StatsCollector
     {
         String owner;
         IPokemob mob = null;
-        if (hatched.getEggOwner() instanceof EntityPlayer)
+        if (hatched.getEggOwner() instanceof EntityPlayer && !(hatched.getEggOwner() instanceof FakePlayer))
         {
             owner = hatched.getEggOwner().getCachedUniqueIdString();
             mob = hatched.getPokemob(true);
@@ -90,7 +91,7 @@ public class StatsCollector
 
     public static void addKill(IPokemob killed, IPokemob killer)
     {
-        if (killer == null || killed == null) return;
+        if (killer == null || killed == null || (killer.getPokemonOwner() instanceof FakePlayer)) return;
         String owner;
         if (killer.getPokemonOwner() instanceof EntityPlayer)
         {

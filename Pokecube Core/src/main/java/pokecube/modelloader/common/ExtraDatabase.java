@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -21,6 +22,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
+import pokecube.modelloader.ModPokecubeML;
 
 public class ExtraDatabase
 {
@@ -47,13 +49,71 @@ public class ExtraDatabase
         String particles;
     }
 
+    @XmlRootElement(name = "model")
+    public static class XMLModel
+    {
+        @XmlElement
+        XMLTexture customTex;
+    }
+
+    @XmlRootElement(name = "customTex")
+    public static class XMLTexture
+    {
+        @XmlElement(name = "forme")
+        List<XMLForme> entries = Lists.newArrayList();
+    }
+
+    @XmlRootElement(name = "forme")
+    public static class XMLForme
+    {
+        @XmlAttribute
+        public String name;
+    }
+
     @XmlRootElement(name = "ModelAnimator")
     public static class XMLFile
     {
+        @XmlElement
+        XMLModel              model;
         @XmlElement(name = "details")
         XMLDetails            details;
         @XmlElement(name = "Pokemon")
         List<XMLPokedexEntry> entries = Lists.newArrayList();
+
+        void init(PokedexEntry base)
+        {
+            if (base == null)
+            {
+                System.err.println("Null Base Entry");
+                return;
+            }
+            if (model != null && model.customTex != null)
+            {
+                for (XMLForme f : model.customTex.entries)
+                {
+                    if (f.name != null)
+                    {
+                        ModPokecubeML.addedPokemon.add(f.name);
+                        boolean has = false;
+                        for (XMLPokedexEntry e : entries)
+                        {
+                            if (e.name.equals(f.name))
+                            {
+                                has = true;
+                                break;
+                            }
+                        }
+                        if (!has)
+                        {
+                            XMLPokedexEntry entry = new XMLPokedexEntry();
+                            entry.name = f.name;
+                            entry.number = base.getPokedexNb();
+                            entries.add(entry);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     static HashMap<String, AddedXML>        xmls    = Maps.newHashMap();
@@ -96,7 +156,7 @@ public class ExtraDatabase
                 {
                     try
                     {
-                        System.out.println(old.name+" "+old.modId + " " + xml.name+" "+xml.modId+" "+e);
+                        System.out.println(old.name + " " + old.modId + " " + xml.name + " " + xml.modId + " " + e);
                     }
                     catch (Exception e1)
                     {
@@ -135,6 +195,7 @@ public class ExtraDatabase
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xml));
+            file.init(entry);
             for (XMLPokedexEntry fileEntry : file.entries)
             {
                 if (entry == null && fileEntry != null)

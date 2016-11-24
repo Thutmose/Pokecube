@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.client.render.AnimationLoader;
@@ -231,17 +232,23 @@ public class ModPokecubeML implements IMobProvider
     private void registerMob(String mob)
     {
         PokedexEntry e;
-        if ((e = Database.getEntry(mob)) != null && e.getBaseForme() == null)
+        if ((e = Database.getEntry(mob)) != null)
         {
             if (textureProviders.containsKey(e.getTrimmedName().toLowerCase(Locale.ENGLISH)))
             {
                 e.setModId(textureProviders.get(e.getTrimmedName().toLowerCase(Locale.ENGLISH)));
+            }
+            else if (e.getBaseForme() != null
+                    && textureProviders.containsKey(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)))
+            {
+                e.setModId(textureProviders.get(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
             }
             else
             {
                 e.setModId(ID);
             }
             if (e.getBaseForme() == null) PokecubeMod.core.registerPokemon(true, this, e);
+            else Pokedex.getInstance().registerPokemon(e);
         }
         else if (e == null)
         {

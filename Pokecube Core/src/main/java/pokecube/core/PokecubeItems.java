@@ -460,6 +460,7 @@ public class PokecubeItems extends Items
     {
         addGeneric("ice", Blocks.PACKED_ICE);
         addGeneric("mossStone", Blocks.MOSSY_COBBLESTONE);
+        addGeneric("icestone", Blocks.PACKED_ICE);
 
         addGeneric("razorfang", Items.IRON_PICKAXE);
         addGeneric("razorclaw", Items.IRON_AXE);
@@ -475,6 +476,7 @@ public class PokecubeItems extends Items
         addToEvos("dragonscale");
         addToEvos("deepseascale");
         addToEvos("deepseatooth");
+        addToEvos("icestone");
     }
 
     public static boolean isValid(ItemStack stack)

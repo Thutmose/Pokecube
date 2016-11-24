@@ -238,6 +238,11 @@ public class ModPokecubeML implements IMobProvider
             {
                 e.setModId(textureProviders.get(e.getTrimmedName().toLowerCase(Locale.ENGLISH)));
             }
+            else if (e.getBaseForme() != null
+                    && textureProviders.containsKey(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)))
+            {
+                e.setModId(textureProviders.get(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
+            }
             else
             {
                 e.setModId(ID);

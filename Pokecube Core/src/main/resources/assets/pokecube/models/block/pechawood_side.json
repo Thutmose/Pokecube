@@ -1,5 +1,5 @@
 {
-    "parent": "block/column_side",
+    "parent": "block/cube_column",
     "textures": {
         "end": "pokecube:blocks/pechawood_top",
         "side": "pokecube:blocks/pechawood"

@@ -878,7 +878,7 @@
             <MISC moves="aerialace, attract, bodyslam, brickbreak, bulldoze, captivate, confide, covet, cut, dig, doubleedge, doubleteam, dynamicpunch, earthpower, earthquake, facade, fling, focuspunch, frustration, gyroball, headbutt, hiddenpower, honeclaws, irontail, knockoff, mimic, mudslap, naturalgift, poisonjab, protect, rest, return, rockslide, rocksmash, rocktomb, round, safeguard, sandstorm, secretpower, seismictoss, shadowclaw, sleeptalk, snore, stealthrock, strength, substitute, sunnyday, superfang, swagger, swordsdance, thief, toxic, xscissor"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Sandshrew Alola" number="27" base="true">
+    <Pokemon name="Sandshrew Alola" number="27">
         <STATS>
             <EVOLUTIONMODE>Iicestone</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>

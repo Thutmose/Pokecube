@@ -28,7 +28,7 @@ import thut.lib.CompatWrapper;
 public abstract class EntityHasPokemobs extends EntityHasMessages
 {
     protected int            battleCooldown   = -1;
-    public ItemStack[]       pokecubes        = CompatWrapper.makeList(6).toArray(new ItemStack[6]);
+    public List<ItemStack>   pokecubes        = CompatWrapper.makeList(6);
     public List<ItemStack>   reward           = Lists.newArrayList(new ItemStack(Items.EMERALD));
     // Cooldown between sending out pokemobs
     public int               attackCooldown   = 0;
@@ -69,13 +69,13 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         boolean found = false;
         for (int i = 0; i < 6; i++)
         {
-            if (CompatWrapper.isValid(pokecubes[i]))
+            if (CompatWrapper.isValid(pokecubes.get(i)))
             {
-                if (pokecubes[i].hasTagCompound())
+                if (pokecubes.get(i).hasTagCompound())
                 {
-                    if (pokecubes[i].getTagCompound().hasKey("Pokemob"))
+                    if (pokecubes.get(i).getTagCompound().hasKey("Pokemob"))
                     {
-                        NBTTagCompound nbt = pokecubes[i].getTagCompound().getCompoundTag("Pokemob");
+                        NBTTagCompound nbt = pokecubes.get(i).getTagCompound().getCompoundTag("Pokemob");
                         uuidLeastTest = nbt.getLong("UUIDLeast");
                         uuidMostTest = nbt.getLong("UUIDMost");
                         if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
@@ -84,7 +84,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                             {
                                 PokecubeManager.heal(mob);
                                 found = true;
-                                pokecubes[i] = mob.copy();
+                                pokecubes.set(i, mob.copy());
                             }
                             break;
                         }
@@ -94,26 +94,26 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         }
         for (int i = 0; i < 6; i++)
         {
-            if (found) if (!CompatWrapper.isValid(pokecubes[i]))
+            if (found) if (!CompatWrapper.isValid(pokecubes.get(i)))
             {
                 PokecubeManager.heal(mob);
-                pokecubes[i] = mob.copy();
+                pokecubes.set(i, mob.copy());
                 break;
             }
-            else if (CompatWrapper.isValid(pokecubes[i]))
+            else if (CompatWrapper.isValid(pokecubes.get(i)))
             {
-                PokecubeManager.heal(pokecubes[i]);
+                PokecubeManager.heal(pokecubes.get(i));
             }
         }
         for (int i = 0; i < 6; i++)
         {
-            ItemStack stack = pokecubes[i];
+            ItemStack stack = pokecubes.get(i);
             if (!CompatWrapper.isValid(stack))
             {
                 for (int j = i; j < 5; j++)
                 {
-                    pokecubes[j] = pokecubes[j + 1];
-                    pokecubes[j + 1] = CompatWrapper.nullStack;
+                    pokecubes.set(j, pokecubes.get(j + 1));
+                    pokecubes.set(j + 1, CompatWrapper.nullStack);
                 }
             }
         }
@@ -208,7 +208,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {
-                pokecubes[i] = CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i));
+                pokecubes.set(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
             }
         }
         if (nbt.hasKey("reward", 9))
@@ -343,17 +343,17 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         if (nextSlot < 0) return CompatWrapper.nullStack;
         for (int i = 0; i < 6; i++)
         {
-            ItemStack stack = pokecubes[i];
+            ItemStack stack = pokecubes.get(i);
             if (!CompatWrapper.isValid(stack))
             {
                 for (int j = i; j < 5; j++)
                 {
-                    pokecubes[j] = pokecubes[j + 1];
-                    pokecubes[j + 1] = CompatWrapper.nullStack;
+                    pokecubes.set(j, pokecubes.get(j + 1));
+                    pokecubes.set(j + 1, CompatWrapper.nullStack);
                 }
             }
         }
-        return pokecubes[nextSlot];
+        return pokecubes.get(nextSlot);
     }
 
     public void resetPokemob()
@@ -368,12 +368,12 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
 
     public ItemStack getPokemob(int slot)
     {
-        return pokecubes[slot];
+        return pokecubes.get(slot);
     }
 
     public void setPokemob(int slot, ItemStack cube)
     {
-        pokecubes[slot] = cube;
+        pokecubes.set(slot, cube);
     }
 
 }

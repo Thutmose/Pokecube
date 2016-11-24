@@ -152,12 +152,12 @@ public class TypeTrainer
             types.add(t);
     }
 
-    public static void getRandomTeam(EntityTrainer trainer, int level, ItemStack[] team, World world)
+    public static void getRandomTeam(EntityTrainer trainer, int level, List<ItemStack> pokecubes, World world)
     {
         TypeTrainer type = trainer.getType();
 
         for (int i = 0; i < 6; i++)
-            team[i] = CompatWrapper.nullStack;
+            pokecubes.set(i, CompatWrapper.nullStack);
 
         if (level == 0) level = 5;
         int variance = PokecubeMod.core.getConfig().levelVariance;
@@ -177,7 +177,7 @@ public class TypeTrainer
                 }
                 if (CompatWrapper.isValid(item)) break;
             }
-            team[i] = item;
+            pokecubes.set(i, item);
         }
     }
 

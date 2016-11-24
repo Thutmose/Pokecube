@@ -161,9 +161,9 @@ public class EntityTrainer extends EntityHasPokemobs
 
     private void addMobTrades(ItemStack buy1)
     {
-        for (int i = 0; i < pokecubes.length; i++)
+        for (int i = 0; i < pokecubes.size(); i++)
         {
-            ItemStack stack = pokecubes[i];
+            ItemStack stack = pokecubes.get(i);
             if (PokecubeManager.isFilled(stack))
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
@@ -574,7 +574,7 @@ public class EntityTrainer extends EntityHasPokemobs
         mon1.setPokemonOwner(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;
-        pokecubes[num] = poke1;
+        setPokemob(num, poke2);
         shouldrefresh = true;
     }
 

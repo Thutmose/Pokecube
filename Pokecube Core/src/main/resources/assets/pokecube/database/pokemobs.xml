@@ -1683,23 +1683,6 @@
             <LVLUP lvl_33="earthpower" lvl_12="mudslap" lvl_23="suckerpunch" lvl_45="slash" lvl_57="fissure" lvl_50="earthquake" lvl_40="dig" lvl_7="astonish" lvl_18="bulldoze" lvl_1="growl" lvl_15="magnitude" lvl_26="sandtomb" lvl_4="growl" lvl_28="mudbomb"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Dugtrio Alola" number="51">
-        <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <SPECIES>Mole</SPECIES>
-            <FOODMATERIAL>rock</FOODMATERIAL>
-            <Drop r="1" id="minecraft:dirt" n="2"/>
-            <BASESTATS spdef="70" spatk="50" def="60" spd="110" hp="35" atk="80"/>
-            <TYPE type2="Steel" type1="Ground"/>
-            <ABILITY normal="Sand Veil, Tangling Hair" hidden="Sand Force"/>
-            <MASSKG>66.6</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_10="mudslap" lvl_22="suckerpunch" lvl_35="dig" lvl_30="earthpower" lvl_41="ironhead" lvl_53="fissure" lvl_7="astonish" lvl_18="bulldoze" lvl_14="magnitude" lvl_25="mudbomb" lvl_47="earthquake" lvl_1="sandtomb,rototiller,nightslash,triattack,metalclaw,scratch,sandattack,growl" lvl_4="growl"/>
-            <MISC moves="aerialace, ancientpower, astonish, attract, beatup, bide, bodyslam, bulldoze, captivate, confide, cut, dig, doubleedge, doubleteam, earthquake, echoedvoice, endure, facade, feintattack, finalgambit, flashcannon, frustration, gigaimpact, headbutt, hiddenpower, honeclaws, hyperbeam, memento, mimic, mudbomb, mudslap, naturalgift, protect, pursuit, rage, rest, return, reversal, rockslide, rocksmash, rocktomb, round, sandstorm, screech, secretpower, shadowclaw, sleeptalk, sludgebomb, sludgewave, snore, stealthrock, stoneedge, substitute, sunnyday, swagger, takedown, thief, toxic, uproar, workup"/>
-        </MOVES>
-    </Pokemon>
     <Pokemon name="Meowth" number="52" base="true">
         <STATS>
             <EVOLUTIONMODE>L28</EVOLUTIONMODE>
@@ -1754,27 +1737,6 @@
             <LVLUP lvl_22="feintattack" lvl_33="slash" lvl_55="darkpulse" lvl_46="captivate" lvl_50="feint" lvl_30="payday" lvl_41="assurance" lvl_6="bite" lvl_9="fakeout" lvl_14="furyswipes" lvl_25="taunt" lvl_1="scratch,growl" lvl_38="nastyplot" lvl_49="nightslash" lvl_17="screech"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Meowth Alola" number="52">
-        <STATS>
-            <EVOLUTIONMODE>H</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <EVOLVESTO>persianalola</EVOLVESTO>
-            <SPECIES>Cat</SPECIES>
-            <PREY>Bird Rodent</PREY>
-            <Drop r="1" id="minecraft:rabbit" n="1"/>
-            <Drop r="1" id="minecraft:gold_nugget" n="1"/>
-            <Drop r="0.1" id="minecraft:bone" n="2"/>
-            <Drop r="0.1" id="minecraft:emerald" n="1"/>
-            <Held r="0.33" id="minecraft:emerald" n="1"/>
-            <Spawn types="village" rate="0.25"/>
-            <BASESTATS spdef="40" spatk="50" def="35" spd="90" hp="40" atk="35"/>
-            <TYPE type1="Dark"/>
-            <ABILITY normal="Pickup, Technician" hidden="Rattled"/>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_22="feintattack" lvl_33="slash" lvl_55="darkpulse" lvl_46="captivate" lvl_50="feint" lvl_30="payday" lvl_41="assurance" lvl_6="bite" lvl_9="fakeout" lvl_14="furyswipes" lvl_25="taunt" lvl_1="scratch,growl" lvl_38="nastyplot" lvl_49="nightslash" lvl_17="screech"/>
-        </MOVES>
-    </Pokemon>
     <Pokemon name="Persian" number="53" base="true">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
@@ -1803,27 +1765,6 @@
         <MOVES>
             <LVLUP lvl_32="powergem" lvl_65="feint" lvl_22="feintattack" lvl_44="nastyplot" lvl_56="captivate" lvl_61="nightslash" lvl_6="bite" lvl_9="fakeout" lvl_14="furyswipes" lvl_25="taunt" lvl_1="swift,playrough,switcheroo,scratch,growl,bite,fakeout" lvl_37="slash" lvl_49="assurance" lvl_17="screech" lvl_28="swift"/>
             <MISC moves="aerialace, amnesia, assist, attract, charm, confide, cut, darkpulse, dig, doubleteam, dreameater, echoedvoice, embargo, facade, flail, flash, foulplay, frustration, gigaimpact, hiddenpower, honeclaws, hyperbeam, hypnosis, irontail, lastresort, odorsleuth, payback, protect, psychup, punishment, raindance, rest, retaliate, return, roar, round, secretpower, shadowball, shadowclaw, sleeptalk, snatch, spite, substitute, sunnyday, swagger, tailwhip, taunt, thief, thunder, thunderbolt, torment, toxic, uturn"/>
-        </MOVES>
-    </Pokemon>
-    <Pokemon name="Persian Alola" number="53">
-        <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <SPECIES>Cat</SPECIES>
-            <PREY>Bird Rodent</PREY>
-            <Drop r="1" id="minecraft:rabbit" n="1"/>
-            <Drop r="1" id="minecraft:gold_nugget" n="2"/>
-            <Drop r="0.1" id="minecraft:bone" n="2"/>
-            <Drop r="0.1" id="minecraft:emerald" n="3"/>
-            <Held r="0.33" id="minecraft:emerald" n="3"/>
-            <BASESTATS spdef="65" spatk="75" def="60" spd="115" hp="65" atk="60"/>
-            <SIZES length="1.1" width="1.0" height="1.0"/>
-            <TYPE type1="Dark"/>
-            <ABILITY normal="Fur Coat, Technician" hidden="Rattled"/>
-            <MASSKG>33.0</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_32="powergem" lvl_65="feint" lvl_22="feintattack" lvl_44="nastyplot" lvl_56="captivate" lvl_61="nightslash" lvl_6="bite" lvl_9="fakeout" lvl_69="darkpulse" lvl_14="furyswipes" lvl_25="taunt" lvl_1="swift,quash,playrough,switcheroo,scratch,growl,bite,fakeout" lvl_37="slash" lvl_49="assurance" lvl_17="screech" lvl_28="swift"/>
         </MOVES>
     </Pokemon>
     <Pokemon name="Persian Alola" number="53">
@@ -2462,25 +2403,6 @@
             <MISC moves="attract, autotomize, block, brickbreak, bulldoze, confide, curse, dig, doubleteam, earthquake, endure, explosion, facade, fireblast, flail, flamethrower, fling, focuspunch, frustration, gyroball, hammerarm, hiddenpower, incinerate, megapunch, naturepower, poweruppunch, protect, rest, return, rockclimb, rockpolish, rockslide, rocksmash, rocktomb, round, sandstorm, secretpower, sleeptalk, smackdown, stoneedge, strength, substitute, sunnyday, swagger, toxic, wideguard"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Geodude Alola" number="74">
-        <STATS>
-            <EVOLUTIONMODE>L25</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <EVOLVESTO>graveleralola</EVOLVESTO>
-            <SPECIES>Rock</SPECIES>
-            <FOODMATERIAL>rock</FOODMATERIAL>
-            <Drop r="1" id="minecraft:cobblestone" n="1"/>
-            <Spawn types="mountain" rate="0.25"/>
-            <Spawn types="cave" rate="0.25"/>
-            <TYPE type2="Electric" type1="Rock"/>
-            <ABILITY normal="Magnet Pull, Sturdy" hidden="Galvanize"/>
-            <MASSKG>20.3</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_10="rollout" lvl_22="thunderpunch" lvl_12="spark" lvl_34="discharge" lvl_24="selfdestruct" lvl_40="doubleedge" lvl_30="rockblast" lvl_42="stoneedge" lvl_6="rockpolish" lvl_18="smackdown" lvl_36="explosion" lvl_1="defensecurl,tackle" lvl_16="rockthrow" lvl_4="charge" lvl_28="stealthrock"/>
-            <MISC moves="attract, autotomize, block, brickbreak, bulldoze, confide, curse, dig, doubleteam, earthquake, endure, explosion, facade, fireblast, flail, flamethrower, fling, focuspunch, frustration, gyroball, hammerarm, hiddenpower, incinerate, megapunch, naturepower, poweruppunch, protect, rest, return, rockclimb, rockpolish, rockslide, rocksmash, rocktomb, round, sandstorm, secretpower, sleeptalk, smackdown, stoneedge, strength, substitute, sunnyday, swagger, toxic, wideguard"/>
-        </MOVES>
-    </Pokemon>
     <Pokemon name="Graveler" number="75" base="true">
         <STATS>
             <EVOLUTIONMODE>X</EVOLUTIONMODE>
@@ -2526,23 +2448,6 @@
             <LVLUP lvl_10="rollout" lvl_54="stoneedge" lvl_22="thunderpunch" lvl_44="explosion" lvl_12="spark" lvl_34="rockblast" lvl_24="selfdestruct" lvl_50="doubleedge" lvl_40="discharge" lvl_30="stealthrock" lvl_6="rockpolish" lvl_18="smackdown" lvl_1="tackle,defensecurl,charge,rockpolish" lvl_16="rockthrow" lvl_4="charge"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Graveler Alola" number="75">
-        <STATS>
-            <EVOLUTIONMODE>X</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <EVOLVESTO>golemalola</EVOLVESTO>
-            <SPECIES>Rock</SPECIES>
-            <FOODMATERIAL>rock</FOODMATERIAL>
-            <Drop r="1" id="minecraft:stone" n="2"/>
-            <BASESTATS spdef="45" spatk="45" def="115" spd="35" hp="55" atk="95"/>
-            <TYPE type2="Electric" type1="Rock"/>
-            <ABILITY normal="Magnet Pull, Sturdy" hidden="Galvanize"/>
-            <MASSKG>110.0</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_10="rollout" lvl_54="stoneedge" lvl_22="thunderpunch" lvl_44="explosion" lvl_12="spark" lvl_34="rockblast" lvl_24="selfdestruct" lvl_50="doubleedge" lvl_40="discharge" lvl_30="stealthrock" lvl_6="rockpolish" lvl_18="smackdown" lvl_1="tackle,defensecurl,charge,rockpolish" lvl_16="rockthrow" lvl_4="charge"/>
-        </MOVES>
-    </Pokemon>
     <Pokemon name="Golem" number="76" base="true">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
@@ -2568,22 +2473,6 @@
         <MOVES>
             <LVLUP lvl_10="steamroller" lvl_54="stoneedge" lvl_22="bulldoze" lvl_44="explosion" lvl_12="magnitude" lvl_34="rockblast" lvl_24="selfdestruct" lvl_50="doubleedge" lvl_40="earthquake" lvl_30="stealthrock" lvl_60="heavyslam" lvl_6="rockpolish" lvl_18="smackdown" lvl_1="heavyslam,tackle,defensecurl,mudsport,rockpolish" lvl_16="rockthrow" lvl_4="mudsport"/>
             <MISC moves="attract, autotomize, block, brickbreak, bulldoze, confide, curse, dig, doubleteam, earthquake, endure, explosion, facade, fireblast, flail, flamethrower, fling, focusblast, focuspunch, frustration, gigaimpact, gyroball, hammerarm, hiddenpower, hyperbeam, incinerate, megapunch, naturepower, poweruppunch, protect, rest, return, roar, rockclimb, rockpolish, rockslide, rocksmash, rocktomb, round, sandstorm, secretpower, sleeptalk, smackdown, stoneedge, strength, substitute, sunnyday, swagger, toxic, wideguard"/>
-        </MOVES>
-    </Pokemon>
-    <Pokemon name="Golem Alola" number="76">
-        <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <SPECIES>Rock</SPECIES>
-            <FOODMATERIAL>rock</FOODMATERIAL>
-            <Drop r="1" id="minecraft:stone" n="3"/>
-            <SIZES length="1.5" width="1.5" height="1.7"/>
-            <TYPE type2="Electric" type1="Rock"/>
-            <ABILITY normal="Magnet Pull, Sturdy" hidden="Galvanize"/>
-            <MASSKG>316.0</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_10="steamroller" lvl_54="stoneedge" lvl_22="thunderpunch" lvl_44="explosion" lvl_12="spark" lvl_34="rockblast" lvl_24="selfdestruct" lvl_50="doubleedge" lvl_40="discharge" lvl_30="stealthrock" lvl_60="heavyslam" lvl_6="rockpolish" lvl_18="smackdown" lvl_1="heavyslam,tackle,defensecurl,charge,rockpolish" lvl_16="rockthrow" lvl_4="charge"/>
         </MOVES>
     </Pokemon>
     <Pokemon name="Golem Alola" number="76">
@@ -2981,24 +2870,6 @@
             <MISC moves="acidspray, attract, confide, curse, dig, doubleteam, explosion, facade, fireblast, flamethrower, fling, frustration, haze, hiddenpower, imprison, incinerate, infestation, lick, meanlook, payback, poisonjab, poweruppunch, protect, raindance, rest, return, rockslide, rocktomb, round, scaryface, secretpower, shadowball, shadowpunch, shadowsneak, sleeptalk, sludgebomb, sludgewave, spitup, stockpile, strength, substitute, sunnyday, swagger, swallow, taunt, thief, thunder, thunderbolt, torment, toxic, venoshock"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Grimer Alola" number="88">
-        <STATS>
-            <EVOLUTIONMODE>L38</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <EVOLVESTO>mukalola</EVOLVESTO>
-            <Drop r="1" id="minecraft:slime_ball" n="1"/>
-            <Spawn types="industrial" rate="0.7"/>
-            <SIZES length="0.7" width="0.7" height="0.7"/>
-            <TYPE type2="Dark" type1="Poison"/>
-            <ABILITY normal="Poison Touch, Gluttony" hidden="Power of Alchemy"/>
-            <MASSKG>42.0</MASSKG>
-            <SHADOWREPLACEMENTS>zombie:slime</SHADOWREPLACEMENTS>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_21="minimize" lvl_32="crunch" lvl_43="acidarmor" lvl_12="disable" lvl_46="belch" lvl_40="gunkshot" lvl_7="bite" lvl_18="poisonfang" lvl_29="knockoff" lvl_1="poisongas,pound" lvl_15="acidspray" lvl_26="fling" lvl_37="screech" lvl_48="memento" lvl_4="harden"/>
-            <MISC moves="acidspray, attract, confide, curse, dig, doubleteam, explosion, facade, fireblast, flamethrower, fling, frustration, haze, hiddenpower, imprison, incinerate, infestation, lick, meanlook, payback, poisonjab, poweruppunch, protect, raindance, rest, return, rockslide, rocktomb, round, scaryface, secretpower, shadowball, shadowpunch, shadowsneak, sleeptalk, sludgebomb, sludgewave, spitup, stockpile, strength, substitute, sunnyday, swagger, swallow, taunt, thief, thunder, thunderbolt, torment, toxic, venoshock"/>
-        </MOVES>
-    </Pokemon>
     <Pokemon name="Muk" number="89" base="true">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
@@ -3021,23 +2892,6 @@
         </STATS>
         <MOVES>
             <LVLUP lvl_21="minimize" lvl_32="sludgewave" lvl_12="disable" lvl_46="acidarmor" lvl_57="memento" lvl_40="gunkshot" lvl_52="belch" lvl_7="mudslap" lvl_18="mudbomb" lvl_29="sludgebomb" lvl_1="venomdrench,pound,poisongas,harden,bite" lvl_15="sludge" lvl_26="fling" lvl_37="screech" lvl_38="venomdrench" lvl_4="harden"/>
-            <MISC moves="acidspray, attract, brickbreak, confide, curse, darkpulse, dig, doubleteam, explosion, facade, fireblast, flamethrower, fling, focusblast, frustration, gigaimpact, haze, hiddenpower, hyperbeam, imprison, incinerate, infestation, lick, meanlook, payback, poisonjab, poweruppunch, protect, raindance, rest, return, rockslide, rocksmash, rocktomb, round, scaryface, secretpower, shadowball, shadowpunch, shadowsneak, sleeptalk, sludgebomb, sludgewave, spitup, stockpile, strength, substitute, sunnyday, swagger, swallow, taunt, thief, thunder, thunderbolt, torment, toxic, venoshock"/>
-        </MOVES>
-    </Pokemon>
-    <Pokemon name="Muk Alola" number="89">
-        <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <SPECIES>Amorphous</SPECIES>
-            <Drop r="1" id="minecraft:slime_ball" n="2"/>
-            <BASESTATS spdef="100" spatk="65" def="75" spd="50" hp="105" atk="105"/>
-            <SIZES length="1.0" width="1.0" height="1.0"/>
-            <TYPE type1="Poison"/>
-            <ABILITY normal="Poison Touch, Gluttony" hidden="Power of Alchemy"/>
-            <MASSKG>52.0</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_21="minimize" lvl_32="crunch" lvl_12="disable" lvl_46="acidarmor" lvl_57="memento" lvl_40="gunkshot" lvl_52="belch" lvl_7="bite" lvl_18="poisonfang" lvl_29="knockoff" lvl_1="venomdrench,pound,poisongas,harden,bite" lvl_15="acidspray" lvl_26="fling" lvl_37="screech" lvl_38="venomdrench" lvl_4="harden"/>
             <MISC moves="acidspray, attract, brickbreak, confide, curse, darkpulse, dig, doubleteam, explosion, facade, fireblast, flamethrower, fling, focusblast, frustration, gigaimpact, haze, hiddenpower, hyperbeam, imprison, incinerate, infestation, lick, meanlook, payback, poisonjab, poweruppunch, protect, raindance, rest, return, rockslide, rocksmash, rocktomb, round, scaryface, secretpower, shadowball, shadowpunch, shadowsneak, sleeptalk, sludgebomb, sludgewave, spitup, stockpile, strength, substitute, sunnyday, swagger, swallow, taunt, thief, thunder, thunderbolt, torment, toxic, venoshock"/>
         </MOVES>
     </Pokemon>
@@ -3535,21 +3389,6 @@
         <MOVES>
             <LVLUP lvl_21="bonemerang" lvl_43="stompingtantrum" lvl_65="bonerush" lvl_11="headbutt" lvl_33="thrash" lvl_23="rage" lvl_13="leer" lvl_53="doubleedge" lvl_7="boneclub" lvl_1="growl,tailwhip,boneclub,headbutt" lvl_37="fling" lvl_59="retaliate" lvl_27="falseswipe" lvl_49="endeavor" lvl_17="focusenergy" lvl_3="tailwhip"/>
             <MISC moves="aerialace, ancientpower, attract, bellydrum, blizzard, brickbreak, bulldoze, chipaway, confide, detect, dig, doublekick, doubleteam, earthquake, echoedvoice, endure, facade, falseswipe, fireblast, flamethrower, fling, focusblast, frustration, gigaimpact, hiddenpower, hyperbeam, icebeam, incinerate, ironhead, perishsong, poweruppunch, protect, rest, retaliate, return, rockslide, rocksmash, rocktomb, round, sandstorm, screech, secretpower, skullbash, sleeptalk, smackdown, stoneedge, strength, substitute, sunnyday, swagger, swordsdance, thief, toxic"/>
-        </MOVES>
-    </Pokemon>
-    <Pokemon name="Marowak Alola" number="105">
-        <STATS>
-            <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
-            <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <SPECIES>BoneKeeper</SPECIES>
-            <Drop r="1" id="minecraft:bone" n="2"/>
-            <Drop r="0.05" d="1" id="minecraft:skull" n="2"/>
-            <TYPE type2="Ghost" type1="Fire"/>
-            <ABILITY normal="Cursed Body, Lightningrod" hidden="Rock Head"/>
-            <MASSKG>34.0</MASSKG>
-        </STATS>
-        <MOVES>
-            <LVLUP lvl_21="bonemerang" lvl_65="bonerush" lvl_43="stompingtantrum" lvl_11="flamewheel" lvl_33="thrash" lvl_23="willowisp" lvl_13="leer" lvl_53="flareblitz" lvl_7="boneclub" lvl_1="growl,tailwhip,boneclub,flamewheel" lvl_37="fling" lvl_59="retaliate" lvl_27="shadowbane" lvl_49="endeavor" lvl_17="hex" lvl_3="tailwhip"/>
         </MOVES>
     </Pokemon>
     <Pokemon name="Marowak Alola" number="105">

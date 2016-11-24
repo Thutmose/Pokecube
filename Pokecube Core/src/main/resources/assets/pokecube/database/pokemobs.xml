@@ -3471,7 +3471,7 @@
     <Pokemon name="Exeggutor Alola" number="103">
         <STATS>
             <BASESTATS spdef="75" spatk="125" def="85" spd="45" hp="95" atk="105"/>
-            <SIZES length="1.0" width="1.0" height="10.9"/>
+            <SIZES length="2.0" width="2.0" height="10.9"/>
             <TYPE type2="Dragon" type1="Grass"/>
             <ABILITY normal="Frisk" hidden="Harvest"/>
             <MASSKG>415.6</MASSKG>

@@ -443,9 +443,8 @@ public class PokecubeCore extends PokecubeMod
 
     private void postInitPokemobs()
     {
-        for (Integer i : Pokedex.getInstance().getEntries())
+        for (PokedexEntry p : Pokedex.getInstance().getRegisteredEntries())
         {
-            PokedexEntry p = Pokedex.getInstance().getEntry(i);
             p.setSound("mobs." + p.getName());
             p.getSoundEvent();
             p.updateMoves();

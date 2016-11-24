@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.IPokecube;
 
@@ -34,8 +35,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
     public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float f, int i1)
     {
         TileEntityTradingTable table = (TileEntityTradingTable) tileentity;
-        // System.out.println("Test");
-        // if(table.renderpass==0) return;
+        if (table.getWorld().getBlockState(table.getPos()).getValue(BlockTradingTable.TMC)) return;
 
         glPushMatrix();
         glTranslated(x, y, z);

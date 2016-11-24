@@ -19303,7 +19303,7 @@
             <MISC moves="attract, bulldoze, confide, darkpulse, dig, doubleteam, echoedvoice, entrainment, facade, fireblast, firespin, flamecharge, flamethrower, frustration, gigaimpact, hiddenpower, hyperbeam, incinerate, overheat, payback, protect, raindance, rest, retaliate, return, roar, rocksmash, round, secretpower, sleeptalk, snarl, snatch, solarbeam, strength, substitute, sunnyday, swagger, taunt, thief, toxic, wildcharge, willowisp, yawn"/>
         </MOVES>
     </Pokemon>
-    <Pokemon name="Flabébé" number="669" base="true">
+    <Pokemon name="Flabebe" number="669" base="true">
         <STATS>
             <EVOLUTIONMODE>L19</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>

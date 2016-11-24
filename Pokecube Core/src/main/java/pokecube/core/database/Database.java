@@ -568,21 +568,18 @@ public class Database
         loadDrops();
         loadHeld();
         loadStarterPack();
-        ProgressBar bar = ProgressManager.push("Removal Checking", baseFormes.size());
+        ProgressBar bar = ProgressManager.push("Removal Checking", allFormes.size());
         List<PokedexEntry> toRemove = new ArrayList<PokedexEntry>();
-        for (PokedexEntry p : baseFormes.values())
+        Set<Integer> removedNums = Sets.newHashSet();
+        List<PokedexEntry> removed = Lists.newArrayList();
+        for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
-            if (!Pokedex.getInstance().getEntries().contains(p.getPokedexNb()))
+            if (!Pokedex.getInstance().getRegisteredEntries().contains(p))
             {
+                if (p.base) removedNums.add(p.getPokedexNb());
                 toRemove.add(p);
-                for (PokedexEntry p1 : allFormes)
-                {
-                    if (p1.getPokedexNb() == p.getPokedexNb() && p1 != p)
-                    {
-                        toRemove.add(p1);
-                    }
-                }
+                removed.add(p);
             }
         }
         ProgressManager.pop(bar);
@@ -596,13 +593,13 @@ public class Database
         }
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
-        System.err.println("Removed " + toRemove.size() + " Missing Pokemon");
+        System.err.println("Removed " + removedNums.size() + " Missing Pokemon");
 
         bar = ProgressManager.push("Base Formes", allFormes.size());
         toRemove.clear();
         List<PokedexEntry> sortedEntries = Lists.newArrayList();
         sortedEntries.addAll(Database.allFormes);
-        Collections.sort(sortedEntries, new Comparator<PokedexEntry>()
+        Comparator<PokedexEntry> sorter = new Comparator<PokedexEntry>()
         {
             @Override
             public int compare(PokedexEntry o1, PokedexEntry o2)
@@ -615,7 +612,8 @@ public class Database
                 }
                 return diff;
             }
-        });
+        };
+        Collections.sort(sortedEntries, sorter);
 
         for (PokedexEntry e : sortedEntries)
         {
@@ -686,20 +684,24 @@ public class Database
                     InteractionLogic.initForEntry(e);
                 }
             }
-            if (!Pokedex.getInstance().getEntries().contains(e.getPokedexNb()))
+            if (!Pokedex.getInstance().getRegisteredEntries().contains(e))
             {
-                if (e.getBaseForme() != null
-                        && Pokedex.getInstance().getEntries().contains(e.getBaseForme().getPokedexNb()))
+                if (e.getBaseForme() != null && Pokedex.getInstance().getRegisteredEntries().contains(e.getBaseForme()))
                 {
                     continue;
                 }
                 toRemove.add(e);
+                removed.add(e);
             }
         }
         System.out.println(toRemove.size() + " Pokemon Formes Removed");
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
-
+        Collections.sort(removed, sorter);
+        for (PokedexEntry p : removed)
+        {
+//            System.out.println(p);
+        }
         bar = ProgressManager.push("Relations", data.size());
         for (PokedexEntry p : data.values())
         {

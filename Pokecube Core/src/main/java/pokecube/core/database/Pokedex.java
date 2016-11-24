@@ -4,6 +4,9 @@
 package pokecube.core.database;
 
 import java.util.HashSet;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 /** @author Manchou */
 public class Pokedex
@@ -19,19 +22,26 @@ public class Pokedex
         return instance;
     }
 
-    private HashSet<Integer> entries;
+    private HashSet<Integer>      entries;
+    private HashSet<PokedexEntry> registeredFormes;
 
     /**
      *
      */
     private Pokedex()
     {
-        entries = new HashSet<Integer>();
+        entries = Sets.newHashSet();
+        registeredFormes = Sets.newHashSet();
     }
 
     public HashSet<Integer> getEntries()
     {
         return entries;
+    }
+
+    public Set<PokedexEntry> getRegisteredEntries()
+    {
+        return registeredFormes;
     }
 
     public PokedexEntry getEntry(Integer pokedexNb)
@@ -127,5 +137,11 @@ public class Pokedex
     {
         if (entry == null || entry.pokedexNb == 0) { return; }
         getEntries().add(entry.pokedexNb);
+        registeredFormes.add(entry);
+    }
+
+    public boolean isRegistered(PokedexEntry entry)
+    {
+        return registeredFormes.contains(entry);
     }
 }

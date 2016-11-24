@@ -1009,6 +1009,11 @@ public class PokedexEntry
 
     public void copyToForm(PokedexEntry e)
     {
+        if(!Pokedex.getInstance().isRegistered(e))
+        {
+            PokecubeMod.log(e+" is not registered.");
+            return;
+        }
         if (e.baseForme != null && e.baseForme != this)
             throw new IllegalArgumentException("Cannot add a second base form");
         e.pokedexNb = pokedexNb;
@@ -1555,9 +1560,8 @@ public class PokedexEntry
             addFromEvolution(this, temp);
             addFromEvolution(temp, this);
         }
-        for (Integer i : Pokedex.getInstance().getEntries())
+        for (PokedexEntry e : Pokedex.getInstance().getRegisteredEntries())
         {
-            PokedexEntry e = Pokedex.getInstance().getEntry(i);
             if (e != null && e.species != null && species != null)
             {
                 for (String s : species)

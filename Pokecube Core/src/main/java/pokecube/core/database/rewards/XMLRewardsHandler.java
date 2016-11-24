@@ -175,9 +175,15 @@ public class XMLRewardsHandler
                 {
                     inputstream = LanguageMap.class.getResourceAsStream(String.format(langFile, lang));
                     table = LanguageMap.parseLangFile(inputstream);
-                    inputstream.close();
+                    try
+                    {
+                        inputstream.close();
+                    }
+                    catch (Exception e)
+                    {
+                    }
                 }
-                catch (IOException e1)
+                catch (Exception e1)
                 {
                     PokecubeMod.log("Error loading book for " + lang);
                 }

@@ -400,7 +400,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                         return entry;
                     }
                 }
-                System.out.println(this.getClass());
+                System.out.println(this.getClass()+" "+getPokedexNb());
                 Thread.dumpStack();
                 this.setDead();
                 return Database.missingno;

@@ -248,7 +248,7 @@ public class ModPokecubeML implements IMobProvider
                 e.setModId(ID);
             }
             if (e.getBaseForme() == null) PokecubeMod.core.registerPokemon(true, this, e);
-            else Pokedex.getInstance().registerPokemon(e);
+            else Pokedex.getInstance().getRegisteredEntries().add(e);
         }
         else if (e == null)
         {

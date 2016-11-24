@@ -212,13 +212,9 @@ public abstract class PokecubeMod
      *            non legendary pokemob)
      * @param mod
      *            the instance of your mod
-     * @param pokedexnb
-     *            the pokedex number */
-    public abstract void registerPokemon(boolean createEgg, Object mod, int pokedexNb);
-
+     * @param entry
+     *            the pokedex entry */
     public abstract void registerPokemon(boolean createEgg, Object mod, PokedexEntry entry);
-
-    public abstract void registerPokemon(boolean createEgg, Object mod, String name);
 
     @SuppressWarnings("rawtypes")
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);

@@ -592,8 +592,11 @@ public class Database
         for (PokedexEntry p : toRemove)
         {
             bar.step(p.getName());
-            data.remove(p.pokedexNb);
-            baseFormes.remove(p.pokedexNb);
+            if (p.base)
+            {
+                data.remove(p.pokedexNb);
+                baseFormes.remove(p.pokedexNb);
+            }
             spawnables.remove(p);
         }
 

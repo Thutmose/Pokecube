@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
@@ -295,7 +296,7 @@ public class ClientProxy extends CommonProxy
                 {
                     if (AnimationLoader.models.containsKey(s))
                     {
-                        PokecubeMod.getProxy().registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
+                        PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
                         {
                             @SuppressWarnings({ "rawtypes", "unchecked" })
                             @Override
@@ -324,7 +325,7 @@ public class ClientProxy extends CommonProxy
             if (mod != null)
             {
                 final String s = entry.getName();
-                PokecubeMod.getProxy().registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
+                PokecubeCore.proxy.registerPokemobRenderer(s, new IRenderFactory<EntityLiving>()
                 {
                     @SuppressWarnings({ "rawtypes", "unchecked" })
                     @Override

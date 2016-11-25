@@ -100,9 +100,6 @@ import pokecube.core.client.render.blocks.RenderTradingTable;
 import pokecube.core.client.render.entity.RenderPokecube;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.client.render.entity.RenderProfessor;
-import pokecube.core.client.render.particle.IParticle;
-import pokecube.core.client.render.particle.ParticleFactory;
-import pokecube.core.client.render.particle.ParticleHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
@@ -119,6 +116,9 @@ import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IExtendedModelPart;
+import thut.core.client.render.particle.IParticle;
+import thut.core.client.render.particle.ParticleFactory;
+import thut.core.client.render.particle.ParticleHandler;
 import thut.core.client.render.x3d.X3dModel;
 import thut.lib.CompatWrapper;
 
@@ -269,7 +269,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
 
             }
         }, PokecubeItems.pokemobEgg);
-        ParticleFactory.initVanillaParticles();
     }
 
     @Override

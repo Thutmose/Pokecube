@@ -320,7 +320,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
 
         private StatisticsManager getManager(EntityPlayer player)
         {
-            return PokecubeMod.getProxy().getManager(player);
+            return PokecubeCore.proxy.getManager(player);
         }
     }
 

@@ -153,7 +153,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     {
         if (first)
         {
-            instance = this;
             EventsHandlerClient hndlr = new EventsHandlerClient();
             MinecraftForge.EVENT_BUS.register(hndlr);
         }

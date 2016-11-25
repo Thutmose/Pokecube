@@ -157,11 +157,6 @@ public abstract class PokecubeMod
         return getFakePlayer(world.provider.getDimension());
     }
 
-    public static CommonProxy getProxy()
-    {
-        return CommonProxy.getClientInstance();
-    }
-
     public static boolean isDeobfuscated()
     {
         Object deObf = Launch.blackboard.get("fml.deobfuscatedEnvironment");

@@ -12,12 +12,6 @@ import thut.api.maths.Vector3;
 @SuppressWarnings("rawtypes")
 public abstract class CommonProxy
 {
-    protected static CommonProxy instance;
-
-    public static CommonProxy getClientInstance()
-    {
-        return instance;
-    }
 
     public void initClient()
     {

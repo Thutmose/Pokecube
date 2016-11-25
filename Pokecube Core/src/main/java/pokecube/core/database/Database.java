@@ -708,10 +708,6 @@ public class Database
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
         Collections.sort(removed, sorter);
-        for (PokedexEntry p : removed)
-        {
-            // System.out.println(p);
-        }
         bar = ProgressManager.push("Relations", data.size());
         for (PokedexEntry p : data.values())
         {

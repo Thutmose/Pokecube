@@ -344,10 +344,10 @@ public class PokedexEntry
                 }
                 if (!rain) return false;
             }
-            boolean correctItem = item == null;
-            if (item != CompatWrapper.nullStack && mob instanceof EntityLiving)
+            boolean correctItem = !CompatWrapper.isValid(item);
+            if (CompatWrapper.isValid(item) && mob instanceof EntityLiving)
             {
-                if (mobs != CompatWrapper.nullStack)
+                if (CompatWrapper.isValid(mobs))
                 {
                     correctItem = Tools.isSameStack(mobs, item);
                 }
@@ -1009,9 +1009,9 @@ public class PokedexEntry
 
     public void copyToForm(PokedexEntry e)
     {
-        if(!Pokedex.getInstance().isRegistered(e))
+        if (!Pokedex.getInstance().isRegistered(e))
         {
-            PokecubeMod.log(e+" is not registered.");
+            PokecubeMod.log(e + " is not registered.");
             return;
         }
         if (e.baseForme != null && e.baseForme != this)

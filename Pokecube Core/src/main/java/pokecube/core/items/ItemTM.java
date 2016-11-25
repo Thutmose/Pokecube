@@ -82,6 +82,8 @@ public class ItemTM extends ItemPokemobUseable
                 if (name.equals(move)) return false;
             }
             String[] learnables = mob.getPokedexEntry().getMoves().toArray(new String[0]);
+            int index = mob.getMoveIndex();
+            if (index > 3) return false;
             for (String s : learnables)
             {
                 if (mob.getPokedexNb() == 151 || s.toLowerCase(java.util.Locale.ENGLISH)
@@ -100,13 +102,15 @@ public class ItemTM extends ItemPokemobUseable
                     {
                         mob.setMove(2, name);
                     }
-                    else
+                    else if (mob.getMove(3) == null)
                     {
                         mob.setMove(3, name);
                     }
-                    tm.setTagCompound(null);
+                    else
+                    {
+                        mob.setMove(index, name);
+                    }
                     tm.splitStack(1);
-                    tm.setItemDamage(0);
                     return true;
                 }
             }
@@ -132,10 +136,7 @@ public class ItemTM extends ItemPokemobUseable
         {
             int num = stack.getItemDamage();
             // Check if is TM or valid candy
-            if (num != 20 || PokecubeItems.isValid(stack))
-            {
-                return feedToPokemob(stack, mob);
-            }
+            if (num != 20 || PokecubeItems.isValid(stack)) { return feedToPokemob(stack, mob); }
             // If invalid candy, drop level since it is bad candy
             if (num == 20)
             {

@@ -254,7 +254,7 @@ public class ContainerPC extends Container
         if (release)
         {
             if (slotId < 54 && slotId >= 0) toRelease[slotId] = !toRelease[slotId];
-            return null;
+            return CompatWrapper.nullStack;
         }
         return super.slotClick(slotId, dragType, clickTypeIn, player);
     }

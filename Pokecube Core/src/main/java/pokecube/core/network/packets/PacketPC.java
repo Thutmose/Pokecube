@@ -15,6 +15,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.lib.CompatWrapper;
 
 public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
 {
@@ -150,7 +151,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
                     if (message.data.getBoolean("val" + i))
                     {
                         int j = i + page * 54;
-                        pc.setInventorySlotContents(j, null);
+                        pc.setInventorySlotContents(j, CompatWrapper.nullStack);
                     }
                 }
             }

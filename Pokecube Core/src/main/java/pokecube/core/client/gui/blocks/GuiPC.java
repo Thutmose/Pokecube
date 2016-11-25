@@ -260,22 +260,22 @@ public class GuiPC extends GuiContainer
         if (cont.pcTile != null)
         {
             if (!bound) buttonList
-                    .add(new GuiButton(5, width / 2 - xOffset + 89, height / 2 - yOffset - 125, 50, 20, "private"));
+                    .add(new GuiButton(5, width / 2 - xOffset - 137, height / 2 - yOffset - 85, 50, 20, "private"));
             else
             {
                 buttonList
-                        .add(new GuiButton(5, width / 2 - xOffset + 89, height / 2 - yOffset - 125, 50, 20, "public"));
-                buttonList.add(new GuiButton(8, width / 2 - xOffset + 89, height / 2 - yOffset - 105, 50, 20, "bind"));
+                        .add(new GuiButton(5, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 50, 20, "public"));
+                buttonList.add(new GuiButton(8, width / 2 - xOffset - 137, height / 2 - yOffset - 105, 50, 20, "bind"));
             }
         }
         else
         {
-            buttonList.add(new GuiButton(5, width / 2 - xOffset + 89, height / 2 - yOffset - 125, 0, 0, ""));
+            buttonList.add(new GuiButton(5, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 0, 0, ""));
         }
         if (!bound)
         {
-            buttonList.add(new GuiButton(6, width / 2 - xOffset + 89, height / 2 - yOffset - 105, 50, 20, "release"));
-            buttonList.add(new GuiButton(7, width / 2 - xOffset + 89, height / 2 - yOffset - 85, 50, 20, "confirm"));
+            buttonList.add(new GuiButton(6, width / 2 - xOffset - 137, height / 2 - yOffset - 65, 50, 20, "release"));
+            buttonList.add(new GuiButton(7, width / 2 - xOffset - 137, height / 2 - yOffset - 45, 50, 20, "confirm"));
             buttonList.get(6).visible = false;
             buttonList.get(6).enabled = false;
 
@@ -285,7 +285,7 @@ public class GuiPC extends GuiContainer
                 25, 10);
         textFieldSelectedBox.setText(page);
 
-        textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 190, height / 2 - yOffset - 80,
+        textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 190, height / 2 - yOffset - 40,
                 100, 10);
         textFieldBoxName.setText(boxName);
 

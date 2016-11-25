@@ -1,7 +1,6 @@
 package pokecube.compat.jei;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +16,6 @@ import mezz.jei.api.IModRegistry;
 import mezz.jei.api.ISubtypeRegistry;
 import mezz.jei.api.ISubtypeRegistry.ISubtypeInterpreter;
 import mezz.jei.api.JEIPlugin;
-import mezz.jei.api.gui.IAdvancedGuiHandler;
 import mezz.jei.api.ingredients.IIngredientHelper;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
@@ -41,7 +39,6 @@ import pokecube.compat.jei.pokemobs.PokemobCategory;
 import pokecube.compat.jei.pokemobs.PokemobRecipe;
 import pokecube.compat.jei.pokemobs.PokemobRecipeHandler;
 import pokecube.core.PokecubeItems;
-import pokecube.core.client.gui.blocks.GuiPC;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -321,14 +318,6 @@ public class JEICompat implements IModPlugin
 
     static boolean                                        added              = false;
 
-    public static List<Rectangle> getPCModuleAreas(GuiPC gui)
-    {
-        List<Rectangle> retList = Lists.newArrayList();
-        retList.add(new Rectangle(gui.guiLeft, gui.guiTop, gui.xSize + 50, 50));
-        // TODO update this as PC buttons change.
-        return retList;
-    }
-
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
     {
@@ -362,27 +351,6 @@ public class JEICompat implements IModPlugin
         IRecipeTransferRegistry recipeTransferRegistry = registry.getRecipeTransferRegistry();
         recipeTransferRegistry.addRecipeTransferHandler(ContainerCloner.class, CLONER, 1, 9, 10, 36);
         registry.addRecipes(RecipeFossilRevive.getRecipeList());
-
-        registry.addAdvancedGuiHandlers(new IAdvancedGuiHandler<GuiPC>()
-        {
-            @Override
-            public Class<GuiPC> getGuiContainerClass()
-            {
-                return GuiPC.class;
-            }
-
-            @Override
-            public List<Rectangle> getGuiExtraAreas(GuiPC guiContainer)
-            {
-                return getPCModuleAreas(guiContainer);
-            }
-
-            @Override
-            public Object getIngredientUnderMouse(GuiPC guiContainer, int mouseX, int mouseY)
-            {
-                return null;
-            }
-        });
     }
 
     @Override

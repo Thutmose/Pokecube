@@ -1011,9 +1011,9 @@ public class PokedexEntry
 
     public void copyToForm(PokedexEntry e)
     {
-        if(!Pokedex.getInstance().isRegistered(e))
+        if (!Pokedex.getInstance().isRegistered(e))
         {
-            PokecubeMod.log(e+" is not registered.");
+            PokecubeMod.log(e + " is not registered.");
             return;
         }
         if (e.baseForme != null && e.baseForme != this)
@@ -1398,7 +1398,7 @@ public class PokedexEntry
             }
             else
             {
-                if (sound == null) setSound(getName());
+                if (sound == null) setSound("mobs." + getName());
                 event = new SoundEvent(sound);
                 ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, event, sound, "registryName");
                 GameRegistry.register(event);

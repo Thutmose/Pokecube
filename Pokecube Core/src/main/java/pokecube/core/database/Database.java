@@ -696,12 +696,9 @@ public class Database
             }
             if (!Pokedex.getInstance().getRegisteredEntries().contains(e))
             {
-                if (e.getBaseForme() != null && Pokedex.getInstance().getRegisteredEntries().contains(e.getBaseForme()))
-                {
-                    continue;
-                }
                 toRemove.add(e);
                 removed.add(e);
+                spawnables.remove(e);
             }
         }
         System.out.println(toRemove.size() + " Pokemon Formes Removed");

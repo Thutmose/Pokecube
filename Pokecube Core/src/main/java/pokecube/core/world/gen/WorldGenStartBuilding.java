@@ -41,7 +41,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
     public static void makePokecenter(Vector3 centre, World world)
     {
         PokecubeTemplates.serverInit(world.getMinecraftServer());
-        PokecubeTemplate template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
+        PokecubeTemplate template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKECENTER);
         Mirror mirror = Mirror.NONE;
         EnumFacing dir = EnumFacing.HORIZONTALS[world.rand.nextInt(4)];
         Rotation rotation = Rotation.NONE;

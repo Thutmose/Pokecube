@@ -42,7 +42,7 @@ public class PokecubeTemplate extends Template
     public void addBlocksToWorld(World worldIn, BlockPos pos, PlacementSettings placementIn)
     {
         ITemplateProcessor processor = new TemplateProcessor(worldIn, pos, placementIn);
-        this.func_189960_a(worldIn, pos, processor, placementIn, 2);
+        this.addBlocksToWorld(worldIn, pos, processor, placementIn, 2);
     }
 
     @Override

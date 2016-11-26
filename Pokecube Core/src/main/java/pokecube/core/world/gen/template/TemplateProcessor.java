@@ -36,9 +36,9 @@ public class TemplateProcessor extends BlockRotationProcessor
     }
 
     @Nullable
-    public Template.BlockInfo func_189943_a(World world, BlockPos pos, Template.BlockInfo info)
+    public Template.BlockInfo processBlock(World world, BlockPos pos, Template.BlockInfo info)
     {
-        info = super.func_189943_a(world, pos, info);
+        info = super.processBlock(world, pos, info);
         if (info != null)
         {
             try

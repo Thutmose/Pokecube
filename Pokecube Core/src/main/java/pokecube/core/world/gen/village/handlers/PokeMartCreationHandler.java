@@ -4,32 +4,51 @@ import java.util.List;
 import java.util.Random;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Village;
+import net.minecraft.world.gen.structure.template.Template;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
-import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
+import pokecube.core.world.gen.template.PokecubeTemplates;
+import pokecube.core.world.gen.village.buildings.TemplatePokemart;
+import pokecube.core.world.gen.village.buildings.TemplateStructure;
 
-public class PokeMartCreationHandler  implements IVillageCreationHandler
+public class PokeMartCreationHandler implements IVillageCreationHandler
 {
-	@Override
-	public Village buildComponent(PieceWeight villagePiece, Start startPiece,
-			List<StructureComponent> pieces, Random random, int p1, int p2, int p3,
-			EnumFacing facing, int p5) {
-		return ComponentPokeMart.buildComponent(villagePiece, startPiece, pieces, random, p1, p2, p3, facing, p5);
-	}
 
-	@Override
-	public Class<?> getComponentClass() {
-		return ComponentPokeMart.class;
-	}
-	
-	@Override
-	public PieceWeight getVillagePieceWeight(Random random,
-			int i) 
-	{
-		return new PieceWeight(ComponentPokeMart.class, 100, 1);
-	}
+    @Override
+    public Village buildComponent(PieceWeight villagePiece, Start startPiece, List<StructureComponent> pieces,
+            Random random, int minX, int minY, int minZ, EnumFacing facing, int componentType)
+    {
+        Template template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
+        BlockPos size = template.getSize();
+        StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(minX, minY, minZ,
+                0, 0, 0, size.getX(), size.getY(), size.getZ(), facing);
+        structureboundingbox.minY = 0;
+        TemplateStructure component = new TemplatePokemart(startPiece, componentType, random, structureboundingbox,
+                facing);
+        boolean conflict = StructureComponent.findIntersecting(pieces, structureboundingbox) == null;
+        return conflict ? component : null;
+    }
+
+    @Override
+    public Class<?> getComponentClass()
+    {
+        return TemplatePokemart.class;
+    }
+
+    @Override
+    public PieceWeight getVillagePieceWeight(Random random, int i)
+    {
+        return new PieceWeight(TemplatePokemart.class, 100, 1);
+    }
+
+    protected static boolean canVillageGoDeeper(StructureBoundingBox par0StructureBoundingBox)
+    {
+        return (par0StructureBoundingBox != null) && (par0StructureBoundingBox.minY > 10);
+    }
 
 }

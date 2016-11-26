@@ -41,7 +41,7 @@ public class ItemLuckyEgg extends Item
         if (player.capabilities.isCreativeMode)
         {
             int metadata = itemstack.getItemDamage();
-            Vector3 location = Vector3.getNewVector().set(player).add(Vector3.getNewVector().set(player.getLookVec()));
+            Vector3 location = Vector3.getNewVector().set(player);
             if (metadata == 0 && player.isSneaking())
             {
                 EntityProfessor p = new EntityProfessor(world, location.offset(EnumFacing.UP), true);

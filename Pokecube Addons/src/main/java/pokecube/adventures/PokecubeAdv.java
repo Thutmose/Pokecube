@@ -46,8 +46,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
-import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
@@ -106,15 +104,6 @@ public class PokecubeAdv
 
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 
-        try
-        {
-            registerMerchant();
-        }
-        catch (NoSuchMethodException | SecurityException e)
-        {
-            e.printStackTrace();
-        }
-
         CompatWrapper.registerModEntity(EntityTarget.class, "targetParticles", 0, this, 16, 3, true);
         CompatWrapper.registerModEntity(EntityTrainer.class, "pokecube:trainer", 1, this, 80, 3, true);
         CompatWrapper.registerModEntity(EntityLeader.class, "pokecube:leader", 2, this, 80, 3, true);
@@ -167,12 +156,6 @@ public class PokecubeAdv
         MinecraftForge.EVENT_BUS.register(new ItemHandler());
         proxy.preinit();
         RecipeHandler.preInit();
-    }
-
-    private void registerMerchant() throws NoSuchMethodException, SecurityException
-    {
-        ComponentPokeMart.seller = EntityPokemartSeller.class;
-        ComponentPokeMart.setLocation = EntityTrainer.class.getMethod("setStationary", Vector3.class);
     }
 
     @EventHandler

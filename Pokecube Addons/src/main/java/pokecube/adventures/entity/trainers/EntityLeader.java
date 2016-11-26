@@ -56,7 +56,7 @@ public class EntityLeader extends EntityTrainer
     @Override
     public void initTrainer(TypeTrainer type, int level)
     {
-        int alevel = Tools.xpToLevel(level, Database.getEntry(1).getEvolutionMode());
+        int alevel = Tools.xpToLevel(Database.getEntry(1).getEvolutionMode(), level);
         level = Tools.levelToXp(Database.getEntry(1).getEvolutionMode(), alevel + 5);
 
         this.type = type;

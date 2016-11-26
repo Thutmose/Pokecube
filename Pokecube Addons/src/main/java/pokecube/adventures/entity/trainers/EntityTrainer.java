@@ -172,7 +172,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 int stat1 = getBaseStats(mon1);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 UUID trader1 = mon1.getPokemonOwnerID();
-                boolean everstone = PokecubeManager.getHeldItemMainhand(stack) != null && Tools
+                boolean everstone = CompatWrapper.isValid(PokecubeManager.getHeldItemMainhand(stack)) && Tools
                         .isSameStack(PokecubeManager.getHeldItemMainhand(stack), PokecubeItems.getStack("everstone"));
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwner(trader1);
@@ -295,7 +295,7 @@ public class EntityTrainer extends EntityHasPokemobs
             EntityPlayer player = (EntityPlayer) defeater;
             for (ItemStack i : reward)
             {
-                if (i == null || i.getItem() == null) continue;
+                if (!CompatWrapper.isValid(i)) continue;
                 if (!player.inventory.addItemStackToInventory(i.copy()))
                 {
                     EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
@@ -369,7 +369,7 @@ public class EntityTrainer extends EntityHasPokemobs
             TrainerSpawnHandler.addTrainerCoord(this);
         }
         ItemStack next;
-        if (cooldown > worldObj.getTotalWorldTime()) next = null;
+        if (cooldown > worldObj.getTotalWorldTime()) next = CompatWrapper.nullStack;
         else next = getNextPokemob();
         if (CompatWrapper.isValid(next))
         {
@@ -420,9 +420,11 @@ public class EntityTrainer extends EntityHasPokemobs
     }
 
     @Override
-    protected void populateBuyingList()
+    public void populateBuyingList()
     {
         tradeList = new MerchantRecipeList();
+        if (shouldrefresh) itemList = null;
+        shouldrefresh = false;
         if (itemList == null && Config.instance.trainersTradeItems)
         {
             itemList = new MerchantRecipeList();
@@ -586,6 +588,7 @@ public class EntityTrainer extends EntityHasPokemobs
         if (genders == 2) male = false;
         if (genders == 3) male = Math.random() < 0.5;
         TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
+        if (randomize) shouldrefresh = true;
         if (type.hasBag)
         {
             this.setItemStackToSlot(EntityEquipmentSlot.CHEST, type.bag.copy());

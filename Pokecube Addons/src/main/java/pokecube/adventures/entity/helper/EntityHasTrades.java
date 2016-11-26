@@ -21,6 +21,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import thut.lib.CompatWrapper;
 
 public abstract class EntityHasTrades extends EntityAgeable implements IMerchant, INpc, IEntityAdditionalSpawnData
 {
@@ -118,7 +119,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         {
             this.livingSoundTime = -this.getTalkInterval();
 
-            if (stack != null)
+            if (CompatWrapper.isValid(stack))
             {
                 this.playSound(SoundEvents.ENTITY_VILLAGER_YES, this.getSoundVolume(), this.getSoundPitch());
             }
@@ -135,7 +136,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         return null;
     }
 
-    protected abstract void populateBuyingList();
+    public abstract void populateBuyingList();
 
     protected abstract void addRandomTrades();
 
@@ -147,15 +148,17 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         List<MerchantRecipe> toRemove = Lists.newArrayList();
         for (MerchantRecipe r : itemList)
         {
-            if (r.getItemToSell() == null || r.getItemToSell().getItem() == null)
+            if (!CompatWrapper.isValid(r.getItemToSell()))
             {
+                shouldrefresh = true;
                 toRemove.add(r);
                 continue;
             }
-            boolean hasBuy = r.getItemToBuy() != null && r.getItemToBuy().getItem() != null;
-            hasBuy = hasBuy || (r.getSecondItemToBuy() != null && r.getSecondItemToBuy().getItem() != null);
+            boolean hasBuy = CompatWrapper.isValid(r.getItemToBuy());
+            hasBuy = hasBuy || CompatWrapper.isValid(r.getSecondItemToBuy());
             if (!hasBuy)
             {
+                shouldrefresh = true;
                 toRemove.add(r);
             }
         }

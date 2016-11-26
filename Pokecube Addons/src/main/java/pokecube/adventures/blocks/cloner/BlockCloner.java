@@ -7,11 +7,9 @@ import java.util.Random;
 
 import javax.vecmath.Vector3f;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -39,9 +37,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
+import thut.core.common.blocks.BlockRotatable;
 import thut.lib.CompatWrapper;
 
-public class BlockCloner extends Block implements ITileEntityProvider
+public class BlockCloner extends BlockRotatable implements ITileEntityProvider
 {
     public static enum EnumType implements IStringSerializable
     {
@@ -60,9 +59,6 @@ public class BlockCloner extends Block implements ITileEntityProvider
             return name;
         }
     }
-
-    public static final PropertyDirection      FACING  = PropertyDirection.create("facing",
-            EnumFacing.Plane.HORIZONTAL);
     public static final PropertyEnum<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
 
     public BlockCloner()

@@ -51,7 +51,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
         PlacementSettings placementsettings = (new PlacementSettings()).setMirror(mirror).setRotation(rotation)
                 .setIgnoreEntities(false).setChunk((ChunkPos) null).setReplacedBlock((Block) null)
                 .setIgnoreStructureBlock(true);
-        template.addBlocksToWorldChunk(world, centre.getPos().up(-2), placementsettings);
+        template.addBlocksToWorldChunk(world, centre.getPos(), placementsettings);
     }
 
     @Override
@@ -66,11 +66,6 @@ public class WorldGenStartBuilding implements IWorldGenerator
         if (x != chunkX || z != chunkZ) return;
         building = true;
         int y = getAverageHeight(world, chunkX * 16, chunkZ * 16) - 1;
-
-        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
-
-        makePokecenter(centre, world);
-
         for (int i = 0; i < 9; i++)
             for (int j = 3; j <= 6; j++)
             {
@@ -98,6 +93,8 @@ public class WorldGenStartBuilding implements IWorldGenerator
             }
             j--;
         }
+        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
+        makePokecenter(centre, world);
         pos = new BlockPos(chunkX * 16 + 4, centre.y + 3, chunkZ * 16 + 4);
         world.provider.setSpawnPoint(pos);
     }

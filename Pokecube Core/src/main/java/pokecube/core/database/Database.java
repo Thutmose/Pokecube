@@ -54,6 +54,7 @@ import pokecube.core.database.rewards.XMLRewardsHandler.XMLRewards;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
+import pokecube.core.world.gen.template.PokecubeTemplates;
 
 public class Database
 {
@@ -200,12 +201,11 @@ public class Database
     {
         File file = evt.getSuggestedConfigurationFile();
         String seperator = System.getProperty("file.separator");
-
         String folder = file.getAbsolutePath();
         String name = file.getName();
-        folder = folder.replace(name, "pokecube" + seperator + "database" + seperator + "");
-
-        CONFIGLOC = folder;
+        CONFIGLOC = folder.replace(name, "pokecube" + seperator + "database" + seperator + "");
+        PokecubeTemplates.TEMPLATES = folder.replace(name, "pokecube" + seperator + "structures" + seperator + "");
+        PokecubeTemplates.initFiles();
         writeDefaultConfig();
         return;
     }

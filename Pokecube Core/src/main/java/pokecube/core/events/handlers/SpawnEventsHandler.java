@@ -6,15 +6,20 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.ai.EntityAITasks.EntityAITaskEntry;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.core.ai.properties.IGuardAICapability;
+import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.SpawnEvent;
+import pokecube.core.events.StructureEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 
@@ -32,6 +37,25 @@ public class SpawnEventsHandler
         int level = event.getInitialLevel();
         if (SpawnHandler.lvlCap) level = Math.min(level, SpawnHandler.capLevel);
         event.setLevel(level);
+    }
+
+    @SubscribeEvent
+    public void StructureSpawn(StructureEvent.SpawnEntity event)
+    {
+        if (!(event.getEntity() instanceof EntityLiving)) return;
+        EntityLiving v = (EntityLiving) event.getEntity();
+        Vector3 pos = Vector3.getNewVector().set(v);
+        IGuardAICapability capability = null;
+        for (Object o2 : v.tasks.taskEntries)
+        {
+            EntityAITaskEntry taskEntry = (EntityAITaskEntry) o2;
+            if (taskEntry.action instanceof GuardAI)
+            {
+                capability = ((GuardAI) taskEntry.action).capability;
+                capability.setPos(pos.getPos());
+                break;
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

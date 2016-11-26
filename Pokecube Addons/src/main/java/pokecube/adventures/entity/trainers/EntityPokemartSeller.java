@@ -28,9 +28,11 @@ public class EntityPokemartSeller extends EntityTrainer
     }
 
     @Override
-    protected void populateBuyingList()
+    public void populateBuyingList()
     {
         tradeList = new MerchantRecipeList();
+        if (shouldrefresh) itemList = null;
+        shouldrefresh = false;
         if (itemList == null)
         {
             itemList = new MerchantRecipeList();

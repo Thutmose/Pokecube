@@ -103,8 +103,9 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenStartBuilding;
-import pokecube.core.world.gen.village.buildings.ComponentPokeCentre;
-import pokecube.core.world.gen.village.buildings.ComponentPokeMart;
+import pokecube.core.world.gen.template.PokecubeTemplates;
+import pokecube.core.world.gen.village.buildings.TemplatePokecenter;
+import pokecube.core.world.gen.village.buildings.TemplatePokemart;
 import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
@@ -407,9 +408,9 @@ public class PokecubeCore extends PokecubeMod
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeMartCreationHandler());
         try
         {
-            if (config.villagePokecenters) MapGenStructureIO.registerStructureComponent(ComponentPokeCentre.class,
+            if (config.villagePokecenters) MapGenStructureIO.registerStructureComponent(TemplatePokecenter.class,
                     "poke_adventures:PokeCentreStructure");
-            if (config.villagePokemarts) MapGenStructureIO.registerStructureComponent(ComponentPokeMart.class,
+            if (config.villagePokemarts) MapGenStructureIO.registerStructureComponent(TemplatePokemart.class,
                     "poke_adventures:PokeMartStructure");
         }
         catch (Throwable e1)
@@ -732,6 +733,7 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new TMCommand());
         event.registerServerCommand(new RecallCommand());
         event.registerServerCommand(new SecretBaseCommand());
+        PokecubeTemplates.serverInit(event.getServer());
         registerSpawns();
         try
         {

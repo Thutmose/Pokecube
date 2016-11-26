@@ -2,12 +2,10 @@ package pokecube.core.blocks.healtable;
 
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,12 +24,12 @@ import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.Config;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.blocks.BlockRotatable;
 import thut.lib.CompatWrapper;
 
-public class BlockHealTable extends Block implements ITileEntityProvider
+public class BlockHealTable extends BlockRotatable implements ITileEntityProvider
 {
     public static final PropertyBool      FIXED  = PropertyBool.create("fixed");
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     public BlockHealTable()
     {

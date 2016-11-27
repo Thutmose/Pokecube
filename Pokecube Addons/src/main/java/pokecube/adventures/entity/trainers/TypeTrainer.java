@@ -73,16 +73,16 @@ public class TypeTrainer
         {
             ItemStack buy1 = this.getItemToBuy();
             ItemStack buy2 = this.getSecondItemToBuy();
-            if (buy1 != null)
+            if (CompatWrapper.isValid(buy1))
             {
                 buy1 = buy1.copy();
             }
-            if (buy2 != null)
+            if (CompatWrapper.isValid(buy2))
             {
                 buy2 = buy2.copy();
             }
             ItemStack sell = this.getItemToSell();
-            if (sell != null)
+            if (CompatWrapper.isValid(sell))
             {
                 sell = sell.copy();
             }

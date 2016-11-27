@@ -87,7 +87,6 @@ public class PAEventsHandler
         String name = event.getStructure();
         if (name == null || !Config.biomeMap.containsKey(name = name.toLowerCase(java.util.Locale.ENGLISH))) { return; }
         int biome = Config.biomeMap.get(name);
-        System.out.println(biome + " " + name);
         Vector3 pos = Vector3.getNewVector();
         StructureBoundingBox bounds = event.getBoundingBox();
         for (int i = bounds.minX; i <= bounds.maxX; i++)

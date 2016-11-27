@@ -25,12 +25,6 @@ public class TemplateStructure extends TemplateStructureBase
         super(type, pos, dir);
     }
 
-    public TemplateStructure(String type, StructureBoundingBox structureboundingbox, EnumFacing facing)
-    {
-        this(type, new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ),
-                facing);
-    }
-
     @Override
     public Template getTemplate()
     {

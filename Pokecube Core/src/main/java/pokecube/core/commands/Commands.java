@@ -71,7 +71,7 @@ public class Commands extends CommandBase
     @Override
     public int compareTo(ICommand arg0)
     {
-        return 0;
+        return super.compareTo(arg0);
     }
 
     private boolean doDebug(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)

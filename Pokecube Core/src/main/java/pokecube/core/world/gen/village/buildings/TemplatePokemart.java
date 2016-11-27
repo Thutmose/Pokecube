@@ -21,11 +21,6 @@ public class TemplatePokemart extends TemplateStructure
         super(PokecubeTemplates.POKEMART, pos, dir);
     }
 
-    public TemplatePokemart(StructureBoundingBox structureboundingbox, EnumFacing facing)
-    {
-        this(new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ), facing);
-    }
-
     @Override
     protected void handleDataMarker(String marker, BlockPos pos, World world, Random rand, StructureBoundingBox box)
     {

@@ -21,11 +21,6 @@ public class TemplatePokecenter extends TemplateStructure
         super(PokecubeTemplates.POKECENTER, pos, dir);
     }
 
-    public TemplatePokecenter(StructureBoundingBox structureboundingbox, EnumFacing facing)
-    {
-        this(new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ), facing);
-    }
-
     @Override
     protected void handleDataMarker(String marker, BlockPos pos, World world, Random rand, StructureBoundingBox box)
     {

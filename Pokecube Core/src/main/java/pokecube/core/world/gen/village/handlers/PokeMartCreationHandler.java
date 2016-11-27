@@ -10,9 +10,7 @@ import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraft.world.gen.structure.StructureVillagePieces.PieceWeight;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Village;
-import net.minecraft.world.gen.structure.template.Template;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
-import pokecube.core.world.gen.template.PokecubeTemplates;
 import pokecube.core.world.gen.village.buildings.TemplatePokemart;
 import pokecube.core.world.gen.village.buildings.TemplateStructureBase;
 
@@ -23,12 +21,15 @@ public class PokeMartCreationHandler implements IVillageCreationHandler
     public Village buildComponent(PieceWeight villagePiece, Start startPiece, List<StructureComponent> pieces,
             Random random, int minX, int minY, int minZ, EnumFacing facing, int componentType)
     {
-        Template template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
-        BlockPos size = template.getSize();
-        StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(minX, minY, minZ,
-                0, 0, 0, size.getX()-1, size.getY(), size.getZ()-1, facing);
-        TemplateStructureBase component = new TemplatePokemart(structureboundingbox, facing);
-        boolean conflict = StructureComponent.findIntersecting(pieces, structureboundingbox) == null;
+        BlockPos pos = new BlockPos(minX, minY, minZ);
+        TemplateStructureBase component = new TemplatePokemart(pos, facing);
+        StructureBoundingBox structureboundingbox = component.getBoundingBox();
+        structureboundingbox.maxX += 2 * facing.getFrontOffsetX();
+        structureboundingbox.maxZ += 2 * facing.getFrontOffsetZ();
+        structureboundingbox.minX += 2 * facing.getFrontOffsetX();
+        structureboundingbox.minZ += 2 * facing.getFrontOffsetZ();
+        StructureComponent conf = StructureComponent.findIntersecting(pieces, structureboundingbox);
+        boolean conflict = conf == null;
         return conflict ? component : null;
     }
 

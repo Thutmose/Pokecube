@@ -24,7 +24,6 @@ public class TemplatePokemart extends TemplateStructure
     public TemplatePokemart(StructureBoundingBox structureboundingbox, EnumFacing facing)
     {
         this(new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ), facing);
-        setBoundingBoxFromTemplate(structureboundingbox);
     }
 
     @Override
@@ -34,16 +33,16 @@ public class TemplatePokemart extends TemplateStructure
     }
 
     @Override
-    protected Template getTemplate()
+    public Template getTemplate()
     {
         if (template != null) return template;
         return template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
     }
 
     @Override
-    protected int getOffset()
+    public int getOffset()
     {
-        return -3;
+        return -2;
     }
 
 }

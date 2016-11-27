@@ -20,6 +20,8 @@ import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
+import pokecube.core.database.worldgen.XMLWorldgenHandler;
+import pokecube.core.database.worldgen.XMLWorldgenHandler.XMLStructure;
 import pokecube.core.events.handlers.SpawnHandler;
 import thut.api.terrain.BiomeType;
 import thut.core.common.config.ConfigBase;
@@ -82,9 +84,9 @@ public class Config extends ConfigBase
     @Configure(category = machines)
     public boolean                     theft                = false;
     @Configure(category = machines)
-    public int                         warpPadRange         = 64;
+    public int                         warpPadRange         = -1;
     @Configure(category = machines)
-    public int                         warpPadMaxEnergy     = 32000;
+    public int                         warpPadMaxEnergy     = 100000000;
     @Configure(category = machines)
     public int                         fossilReanimateCost  = 20000;
     @Configure(category = machines)
@@ -232,6 +234,13 @@ public class Config extends ConfigBase
                 String key = args[0].toLowerCase(java.util.Locale.ENGLISH).replace(".tml", "");
                 String subbiome = args[1];
                 biomeMap.put(key, BiomeType.getBiome(subbiome).getType());
+            }
+        }
+        for (XMLStructure struct : XMLWorldgenHandler.defaults.structures)
+        {
+            if (struct.biomeType != null)
+            {
+                biomeMap.put(struct.name, BiomeType.getBiome(struct.biomeType).getType());
             }
         }
     }

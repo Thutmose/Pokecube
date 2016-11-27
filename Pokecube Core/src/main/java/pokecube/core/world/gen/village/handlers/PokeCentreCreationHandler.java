@@ -26,7 +26,7 @@ public class PokeCentreCreationHandler implements IVillageCreationHandler
         Template template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKECENTER);
         BlockPos size = template.getSize();
         StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(minX, minY, minZ,
-                0, 0, 0, size.getX(), size.getY(), size.getZ(), facing);
+                0, 0, 0, size.getX()-1, size.getY(), size.getZ()-1, facing);
         TemplateStructureBase component = new TemplatePokecenter(structureboundingbox, facing);
         boolean conflict = StructureComponent.findIntersecting(pieces, structureboundingbox) == null;
         return conflict ? component : null;

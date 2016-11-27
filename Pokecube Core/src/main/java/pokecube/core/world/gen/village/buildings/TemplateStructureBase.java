@@ -24,7 +24,6 @@ public abstract class TemplateStructureBase extends Village
 
     public static Rotation getFromDir(EnumFacing dir)
     {
-        dir = dir.getOpposite();
         Rotation rotation = Rotation.CLOCKWISE_180;
         if (dir == EnumFacing.NORTH) rotation = Rotation.NONE;
         if (dir == EnumFacing.EAST) rotation = Rotation.CLOCKWISE_90;
@@ -43,7 +42,6 @@ public abstract class TemplateStructureBase extends Village
 
         Rotation rotation;
         Mirror mirror;
-        dir = dir.getOpposite();
         if (dir == null)
         {
             rotation = Rotation.NONE;
@@ -81,6 +79,7 @@ public abstract class TemplateStructureBase extends Village
         this.template = template;
         this.templatePosition = pos;
         this.placeSettings = settings;
+        setBoundingBoxFromTemplate();
     }
 
     /** (abstract) Helper method to write subclass data to NBT */
@@ -113,22 +112,104 @@ public abstract class TemplateStructureBase extends Village
 
     int averageGroundLevel;
 
+    private void offsetBox(StructureBoundingBox boxIn, boolean ours)
+    {
+        Rotation rotation = this.placeSettings.getRotation();
+        Mirror mirror = this.placeSettings.getMirror();
+        BlockPos blockpos = this.template.transformedSize(rotation);
+        int dx = 0;
+        int dz = 0;
+        if (!ours)
+        {
+            switch (rotation)
+            {
+            case NONE:
+                switch (mirror)
+                {
+                case LEFT_RIGHT:
+                    dx = 0;
+                    dz = 0;
+                    break;
+                case NONE:
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case CLOCKWISE_90:
+                switch (mirror)
+                {
+                case NONE:
+                    dx = 0;
+                    dz = 0;
+                    break;
+                case LEFT_RIGHT:
+                    break;
+                default:
+                    break;
+                }
+                break;
+            default:
+                break;
+            }
+        }
+        else
+        {
+            switch (rotation)
+            {
+            case NONE:
+                switch (mirror)
+                {
+                case LEFT_RIGHT:
+                    dx = -1;
+                    dz = blockpos.getZ() - 2;
+                    break;
+                case NONE:
+                    dx = -1;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            case CLOCKWISE_90:
+                switch (mirror)
+                {
+                case NONE:
+                    dx = blockpos.getX() - 2;
+                    dz = -1;
+                    break;
+                case LEFT_RIGHT:
+                    dz = -1;
+                    break;
+                default:
+                    break;
+                }
+                break;
+            default:
+                break;
+            }
+        }
+        boxIn.offset(dx, 0, dz);
+    }
+
     /** second Part of Structure generating, this for example places Spiderwebs,
      * Mob Spawners, it closes Mineshafts at the end, it adds Fences... */
-    public boolean addComponentParts(World worldIn, Random randomIn, StructureBoundingBox structureBoundingBoxIn)
+    public boolean addComponentParts(World worldIn, Random randomIn, StructureBoundingBox boxIn)
     {
         try
         {
             averageGroundLevel = -1;
+            averageGroundLevel = 4;
             if (this.averageGroundLevel < 0)
             {
-                this.averageGroundLevel = this.getAverageGroundLevel(worldIn, structureBoundingBoxIn);
+                this.averageGroundLevel = this.getAverageGroundLevel(worldIn, boxIn);
                 if (this.averageGroundLevel < 0) { return true; }
             }
             boundingBox.offset(0, this.averageGroundLevel - boundingBox.minY + getOffset(), 0);
             this.templatePosition = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
-            structureBoundingBoxIn.minY = boundingBox.minY;
-            this.placeSettings.setIgnoreEntities(true).setBoundingBox(structureBoundingBoxIn);
+            boxIn = new StructureBoundingBox(boxIn.minX, boxIn.minY, boxIn.minZ, boxIn.maxX, boxIn.maxY, boxIn.maxZ);
+            offsetBox(boxIn, false);
+            this.placeSettings.setIgnoreEntities(false).setBoundingBox(boxIn);
             this.template.addBlocksToWorld(worldIn, this.templatePosition, this.placeSettings);
             Map<BlockPos, String> map = this.template.getDataBlocks(this.templatePosition, this.placeSettings);
             for (BlockPos blockpos : map.keySet())
@@ -144,47 +225,20 @@ public abstract class TemplateStructureBase extends Village
         return true;
     }
 
-    protected abstract Template getTemplate();
+    public abstract Template getTemplate();
 
-    protected abstract int getOffset();
+    public abstract int getOffset();
 
     protected abstract void handleDataMarker(String marker, BlockPos pos, World world, Random rand,
             StructureBoundingBox box);
 
-    public StructureBoundingBox setBoundingBoxFromTemplate(StructureBoundingBox structureBoundingBoxIn)
+    public void setBoundingBoxFromTemplate()
     {
         Rotation rotation = this.placeSettings.getRotation();
-        Mirror mirror = this.placeSettings.getMirror();
-        System.out.println(mirror + " " + rotation);
         BlockPos blockpos = this.template.transformedSize(rotation);
-        boundingBox = new StructureBoundingBox(0, 0, 0, blockpos.getX(), blockpos.getY() - 1, blockpos.getZ());
-        switch (rotation)
-        {
-        case NONE:
-            switch (mirror)
-            {
-            case LEFT_RIGHT:
-                boundingBox.offset(0, 0, blockpos.getZ() - 1);
-                break;
-            default:
-                break;
-            }
-            break;
-        case CLOCKWISE_90:
-            switch (mirror)
-            {
-            case NONE:
-                boundingBox.offset(blockpos.getX() - 1, 0, 0);
-                break;
-            default:
-                break;
-            }
-            break;
-        default:
-            break;
-        }
+        boundingBox = new StructureBoundingBox(0, 0, 0, blockpos.getX() - 1, blockpos.getY() - 1, blockpos.getZ() - 1);
+        offsetBox(boundingBox, true);
         boundingBox.offset(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
-        return boundingBox;
     }
 
     public void offset(int x, int y, int z)

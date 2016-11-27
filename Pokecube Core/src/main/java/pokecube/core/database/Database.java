@@ -51,6 +51,7 @@ import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipes;
 import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLReward;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLRewards;
+import pokecube.core.database.worldgen.XMLWorldgenHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
@@ -206,6 +207,7 @@ public class Database
         CONFIGLOC = folder.replace(name, "pokecube" + seperator + "database" + seperator + "");
         PokecubeTemplates.TEMPLATES = folder.replace(name, "pokecube" + seperator + "structures" + seperator + "");
         PokecubeTemplates.initFiles();
+        XMLWorldgenHandler.loadDefaults(new File(PokecubeTemplates.TEMPLATES, "worldgen.xml"));
         writeDefaultConfig();
         return;
     }

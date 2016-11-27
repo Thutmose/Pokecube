@@ -2,7 +2,10 @@ package pokecube.core.world.gen.village.buildings;
 
 import java.util.Random;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -10,6 +13,8 @@ import net.minecraft.world.gen.structure.template.Template;
 
 public class TemplateStructure extends TemplateStructureBase
 {
+    public int offset = 0;
+
     public TemplateStructure()
     {
         super();
@@ -24,25 +29,34 @@ public class TemplateStructure extends TemplateStructureBase
     {
         this(type, new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ),
                 facing);
-        setBoundingBoxFromTemplate(structureboundingbox);
     }
 
     @Override
-    protected Template getTemplate()
+    public Template getTemplate()
     {
         return template;
     }
 
     @Override
-    protected int getOffset()
+    public int getOffset()
     {
-        return 0;
+        return offset;
     }
 
     @Override
     protected void handleDataMarker(String marker, BlockPos pos, World world, Random rand, StructureBoundingBox box)
     {
-
+        TileEntity below = world.getTileEntity(pos.down());
+        if (marker.startsWith("Chest") && below instanceof TileEntityChest)
+        {
+            String[] args = marker.split(" ");
+            if (args.length == 2)
+            {
+                ResourceLocation loot = new ResourceLocation(args[1]);
+                TileEntityChest chest = (TileEntityChest) below;
+                chest.setLootTable(loot, rand.nextLong());
+            }
+        }
     }
 
 }

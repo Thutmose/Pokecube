@@ -95,7 +95,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             }
             else this.setDead();
         }
-        return false;
+        return super.attackEntityFrom(source, i);
     }
 
     @Override

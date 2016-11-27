@@ -1128,7 +1128,7 @@
             <EVOLUTIONANIMATION>121</EVOLUTIONANIMATION>
             <EVOLVESTO>36</EVOLVESTO>
             <SPECIES>Fairy</SPECIES>
-            <Drop r="0.05" id="minecraft:moonstone" n="1"/>
+            <Drop r="0.05" id="moonstone" n="1"/>
             <Held r="0.1" id="moonstone" n="1"/>
             <Spawn types="meteor" rate="0.25"/>
             <Spawn types="cave" rate="0.1"/>
@@ -1157,7 +1157,7 @@
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Fairy</SPECIES>
-            <Drop r="0.05" id="minecraft:moonstone" n="1"/>
+            <Drop r="0.05" id="moonstone" n="1"/>
             <BASESTATS spdef="90" spatk="95" def="73" spd="60" hp="95" atk="70"/>
             <EVYIELD hp="3"/>
             <SIZES length="0.85" width="0.85" height="1.3"/>
@@ -1276,7 +1276,7 @@
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <EVOLVESTO>40</EVOLVESTO>
             <SPECIES>Balloon</SPECIES>
-            <Drop r="0.05" id="minecraft:moonstone" n="1"/>
+            <Drop r="0.05" id="moonstone" n="1"/>
             <Held r="0.1" id="moonstone" n="1"/>
             <Spawn types="meteor" rate="0.3"/>
             <Spawn types="cave" rate="0.1"/>
@@ -1304,7 +1304,7 @@
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Balloon</SPECIES>
-            <Drop r="0.05" id="minecraft:moonstone" n="1"/>
+            <Drop r="0.05" id="moonstone" n="1"/>
             <BASESTATS spdef="50" spatk="85" def="45" spd="45" hp="140" atk="70"/>
             <EVYIELD hp="3"/>
             <SIZES length="1.0" width="1.0" height="1.0"/>

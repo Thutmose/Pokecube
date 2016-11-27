@@ -2,9 +2,11 @@ package pokecube.adventures.events;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -18,6 +20,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
+import thut.api.terrain.TerrainManager;
 
 public class PAEventsHandler
 {
@@ -75,6 +78,28 @@ public class PAEventsHandler
         if (trainer.getShouldRandomize())
         {
             randomizeTrainerTeam(trainer);
+        }
+    }
+
+    @SubscribeEvent
+    public void StructureBuild(StructureEvent.BuildStructure event)
+    {
+        String name = event.getStructure();
+        if (name == null || !Config.biomeMap.containsKey(name = name.toLowerCase(java.util.Locale.ENGLISH))) { return; }
+        int biome = Config.biomeMap.get(name);
+        System.out.println(biome + " " + name);
+        Vector3 pos = Vector3.getNewVector();
+        StructureBoundingBox bounds = event.getBoundingBox();
+        for (int i = bounds.minX; i <= bounds.maxX; i++)
+        {
+            for (int j = bounds.minY; j <= bounds.maxY; j++)
+            {
+                for (int k = bounds.minZ; k < bounds.maxZ; k++)
+                {
+                    pos.set(i, j, k);
+                    TerrainManager.getInstance().getTerrian(event.getWorld(), pos).setBiome(pos, biome);
+                }
+            }
         }
     }
 

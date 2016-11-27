@@ -1,11 +1,58 @@
 package pokecube.core.events;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class StructureEvent extends Event
 {
+    public static class BuildStructure extends StructureEvent
+    {
+        private final StructureBoundingBox bounds;
+        private final PlacementSettings    settings;
+        private final String               structure;
+        private final World                world;
+
+        public BuildStructure(BlockPos pos, World world, String name, BlockPos size, PlacementSettings settings)
+        {
+            this.structure = name;
+            this.world = world;
+            this.settings = settings;
+            EnumFacing dir = EnumFacing.NORTH;
+            if (settings.getRotation() != null)
+            {
+                dir = settings.getRotation().rotate(dir);
+            }
+            this.bounds = StructureBoundingBox.getComponentToAddBoundingBox(pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0,
+                    size.getX(), size.getY(), size.getZ(), dir);
+        }
+
+        public String getStructure()
+        {
+            return structure;
+        }
+
+        public World getWorld()
+        {
+            return world;
+        }
+
+        public PlacementSettings getSettings()
+        {
+            return settings;
+        }
+
+        public StructureBoundingBox getBoundingBox()
+        {
+            return bounds;
+        }
+    }
+
     @Cancelable
     public static class SpawnEntity extends StructureEvent
     {

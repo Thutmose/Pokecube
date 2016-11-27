@@ -10,7 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -49,9 +48,8 @@ public class WorldGenStartBuilding implements IWorldGenerator
         if (dir == EnumFacing.EAST) rotation = Rotation.CLOCKWISE_90;
         if (dir == EnumFacing.WEST) rotation = Rotation.COUNTERCLOCKWISE_90;
         PlacementSettings placementsettings = (new PlacementSettings()).setMirror(mirror).setRotation(rotation)
-                .setIgnoreEntities(false).setChunk((ChunkPos) null).setReplacedBlock((Block) null)
-                .setIgnoreStructureBlock(true);
-        template.addBlocksToWorldChunk(world, centre.getPos(), placementsettings);
+                .setIgnoreEntities(false).setChunk(null).setReplacedBlock(null).setIgnoreStructureBlock(true);
+        template.addBlocksToWorldChunk(world, centre.getPos().up(), placementsettings);
     }
 
     @Override

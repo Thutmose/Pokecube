@@ -43,6 +43,7 @@ public class PokecubeTemplate extends Template
     {
         ITemplateProcessor processor = new TemplateProcessor(worldIn, pos, placementIn);
         this.func_189960_a(worldIn, pos, processor, placementIn, 2);
+        MinecraftForge.EVENT_BUS.post(new StructureEvent.BuildStructure(pos, worldIn, name, getSize(), placementIn));
     }
 
     @Override

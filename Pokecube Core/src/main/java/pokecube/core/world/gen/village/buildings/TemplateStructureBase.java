@@ -21,6 +21,7 @@ public abstract class TemplateStructureBase extends Village
     protected Template          template;
     protected PlacementSettings placeSettings;
     protected BlockPos          templatePosition;
+    int                         averageGroundLevel = -1;
 
     public static Rotation getFromDir(EnumFacing dir)
     {
@@ -110,8 +111,6 @@ public abstract class TemplateStructureBase extends Village
         template = PokecubeTemplates.getTemplate(name);
     }
 
-    int averageGroundLevel;
-
     private void offsetBox(StructureBoundingBox boxIn)
     {
         Rotation rotation = this.placeSettings.getRotation();
@@ -173,7 +172,6 @@ public abstract class TemplateStructureBase extends Village
     {
         try
         {
-            averageGroundLevel = -1;
             if (this.averageGroundLevel < 0)
             {
                 this.averageGroundLevel = this.getAverageGroundLevel(worldIn, boxIn);

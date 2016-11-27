@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureVillagePieces;
 import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
+import net.minecraft.world.gen.structure.StructureVillagePieces.Well;
 import net.minecraft.world.gen.structure.template.BlockRotationProcessor;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
@@ -26,13 +27,16 @@ public class TemplateProcessor extends BlockRotationProcessor
         GETBIOMEBLOCK.setAccessible(true);
     }
 
-    final StructureVillagePieces.Start init;
+    final StructureVillagePieces.Well init;
 
     public TemplateProcessor(World worldIn, BlockPos pos, PlacementSettings settings)
     {
         super(pos, settings);
-        init = new Start(worldIn.getBiomeProvider(), 0, worldIn.rand, (pos.getX() << 4) + 2, (pos.getZ() << 4) + 2,
+        int x = pos.getX();
+        int z = pos.getZ();
+        Start start = new Start(worldIn.getBiomeProvider(), 0, worldIn.rand, x, z,
                 new ArrayList<StructureVillagePieces.PieceWeight>(), 0);
+        init = new Well(start, 0, worldIn.rand, x, z);
     }
 
     @Nullable

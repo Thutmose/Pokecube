@@ -35,15 +35,9 @@ public class PokecubeTemplates
 
     public static void serverInit(MinecraftServer server)
     {
-        Template t = getManager().func_189942_b(server, new ResourceLocation(POKECENTER));
-        PokecubeTemplate template = new PokecubeTemplate(t, POKECENTER);
-        templates.put(POKECENTER, template);
-        t = getManager().func_189942_b(server, new ResourceLocation(POKEMART));
-        template = new PokecubeTemplate(t, POKEMART);
-        templates.put(POKEMART, template);
-        t = getManager().func_189942_b(server, new ResourceLocation(RUIN_1));
-        template = new PokecubeTemplate(t, RUIN_1);
-        templates.put(RUIN_1, template);
+        initTemplate(POKECENTER);
+        initTemplate(POKEMART);
+        initTemplate(RUIN_1);
     }
 
     public static void initFiles()
@@ -107,6 +101,13 @@ public class PokecubeTemplates
             templates.put(name, ret);
         }
         return ret;
+    }
+
+    static void initTemplate(String name)
+    {
+        Template t = getManager().func_189942_b(FMLCommonHandler.instance().getMinecraftServerInstance(),
+                new ResourceLocation(name));
+        templates.put(name, new PokecubeTemplate(t, name));
     }
 
 }

@@ -174,7 +174,6 @@ public abstract class TemplateStructureBase extends Village
         try
         {
             averageGroundLevel = -1;
-            averageGroundLevel = 4;
             if (this.averageGroundLevel < 0)
             {
                 this.averageGroundLevel = this.getAverageGroundLevel(worldIn, boxIn);

@@ -20,6 +20,7 @@ public class PokecubeTemplates
 {
     public static final String                 POKECENTER = "pokecenter";
     public static final String                 POKEMART   = "pokemart";
+    public static final String                 RUIN_1     = "ruin_1";
 
     public static String                       TEMPLATES;
 
@@ -40,6 +41,9 @@ public class PokecubeTemplates
         t = getManager().func_189942_b(server, new ResourceLocation(POKEMART));
         template = new PokecubeTemplate(t, POKEMART);
         templates.put(POKEMART, template);
+        t = getManager().func_189942_b(server, new ResourceLocation(RUIN_1));
+        template = new PokecubeTemplate(t, RUIN_1);
+        templates.put(RUIN_1, template);
     }
 
     public static void initFiles()
@@ -62,6 +66,14 @@ public class PokecubeTemplates
             try
             {
                 copyFile(POKEMART);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            try
+            {
+                copyFile(RUIN_1);
             }
             catch (Exception e)
             {

@@ -100,7 +100,9 @@ public class ItemPokedex extends Item
                     Pokedex.getInstance().getEntries().size());
             playerIn.addChatMessage(message);
         }
+
         if (!playerIn.isSneaking()) showGui(playerIn);
+        // else structureGenTest(playerIn, worldIn, pos, side);
         return EnumActionResult.FAIL;
     }
 
@@ -118,10 +120,12 @@ public class ItemPokedex extends Item
             int x = -20;
             int y = 64;
             int z = -20;
-            StructureBoundingBox temp = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0,
-                    size.getX() - 1, size.getY(), size.getZ() - 1, side);
-            TemplateStructure component = new TemplateStructure(templateName, temp, side);
-            component.offset = -3;
+            StructureBoundingBox temp = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, size.getX(),
+                    size.getY(), size.getZ(), side);
+            BlockPos pos1 = new BlockPos(x, y, z);
+            TemplateStructure component = new TemplateStructure(templateName, pos1, side);
+            temp = component.getBoundingBox();
+            component.offset = -2;
             StructureBoundingBox temp1 = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, 9, 9, 6,
                     side);
             House1 house = new House1(null, 0, itemRand, temp1, side);
@@ -132,26 +136,31 @@ public class ItemPokedex extends Item
             r = 50;
             x = -r;
             z = -r;
-            for (int i = x; i < c; i++)
-                for (int k = z; k < c; k++)
+            boolean others = false;
+            System.out.println(temp);
+
+            // for (int i = x; i < c; i++)
+            // for (int k = z; k < c; k++)
+
+            for (int i = temp.minX; i <= temp.maxX; i++)
+                for (int k = temp.minZ; k <= temp.maxZ; k++)
                 {
                     BlockPos pos2 = new BlockPos(i, 15, k);
                     if ((pos2.getX() == -21 && pos2.getZ() == -21)) continue;
                     StructureBoundingBox box = StructureBoundingBox.getComponentToAddBoundingBox(i, 1, k, 0, 0, 0, 1,
                             512, 1, side);
                     component.addComponentParts(worldIn, itemRand, box);
-                    // worldIn.setBlockState(pos2,
-                    // Blocks.STONE.getDefaultState());
-                    // house.addComponentParts(worldIn, itemRand, box);
-                    // worldIn.setBlockState(pos2.up(10),
-                    // Blocks.STONE.getDefaultState());
-                    // house2.addComponentParts(worldIn, itemRand, box);
+                    if (!others) continue;
+                    worldIn.setBlockState(pos2, Blocks.STONE.getDefaultState());
+                    house.addComponentParts(worldIn, itemRand, box);
+                    worldIn.setBlockState(pos2.up(10), Blocks.STONE.getDefaultState());
+                    house2.addComponentParts(worldIn, itemRand, box);
                 }
         }
         else if (b == Blocks.DIAMOND_BLOCK)
         {
             for (int i = -r; i < c; i++)
-                for (int j = 0; j < 80; j++)
+                for (int j = 0; j < 100; j++)
                     for (int k = -r; k < c; k++)
                     {
                         BlockPos pos2 = new BlockPos(i, 15, k);

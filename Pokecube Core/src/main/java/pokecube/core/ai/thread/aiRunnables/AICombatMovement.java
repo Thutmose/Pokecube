@@ -178,9 +178,15 @@ public class AICombatMovement extends AIBase
             return;
         }
         pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
+
+        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !!attacker.onGround) return;
+
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
-        Vector3 dir = targetLoc.subtract(leaperLoc).scalarMultBy(0.5f);
+        Vector3 dir = targetLoc.subtract(leaperLoc);
+        double d = dir.mag();
+        dir.norm();
+        dir.scalarMultBy(d * 0.1f);
         if (dir.magSq() < 1) dir.norm();
         if (dir.isNaN())
         {

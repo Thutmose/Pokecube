@@ -71,15 +71,15 @@ public abstract class TemplateStructureBase extends Village
         placeSettings.setRotation(rotation);
         placeSettings.setMirror(mirror);
         Template template = PokecubeTemplates.getTemplate(type);
-        setup(template, pos, placeSettings);
+        setup(template, pos, placeSettings, dir);
     }
 
-    protected void setup(Template template, BlockPos pos, PlacementSettings settings)
+    protected void setup(Template template, BlockPos pos, PlacementSettings settings, EnumFacing dir)
     {
         this.template = template;
         this.templatePosition = pos;
         this.placeSettings = settings;
-        setBoundingBoxFromTemplate();
+        this.setBoundingBoxFromTemplate(dir);
     }
 
     /** (abstract) Helper method to write subclass data to NBT */
@@ -112,83 +112,58 @@ public abstract class TemplateStructureBase extends Village
 
     int averageGroundLevel;
 
-    private void offsetBox(StructureBoundingBox boxIn, boolean ours)
+    private void offsetBox(StructureBoundingBox boxIn)
     {
         Rotation rotation = this.placeSettings.getRotation();
         Mirror mirror = this.placeSettings.getMirror();
         BlockPos blockpos = this.template.transformedSize(rotation);
         int dx = 0;
         int dz = 0;
-        if (!ours)
+        int dpx = 0, dpz = 0;
+        switch (rotation)
         {
-            switch (rotation)
+        case NONE:
+            switch (mirror)
             {
-            case NONE:
-                switch (mirror)
-                {
-                case LEFT_RIGHT:
-                    dx = 0;
-                    dz = 0;
-                    break;
-                case NONE:
-                    break;
-                default:
-                    break;
-                }
+            case LEFT_RIGHT:
+                dx = -1;
+                dz = -1;
+                dpz = blockpos.getZ() - 2;
+                dpx = -1;
                 break;
-            case CLOCKWISE_90:
-                switch (mirror)
-                {
-                case NONE:
-                    dx = 0;
-                    dz = 0;
-                    break;
-                case LEFT_RIGHT:
-                    break;
-                default:
-                    break;
-                }
+            case NONE:
+                dx = -1;
+                dz = 1;
+                dpx = -1;
+                dpz = 1;
                 break;
             default:
                 break;
             }
-        }
-        else
-        {
-            switch (rotation)
+            break;
+        case CLOCKWISE_90:
+            switch (mirror)
             {
             case NONE:
-                switch (mirror)
-                {
-                case LEFT_RIGHT:
-                    dx = -1;
-                    dz = blockpos.getZ() - 2;
-                    break;
-                case NONE:
-                    dx = -1;
-                    break;
-                default:
-                    break;
-                }
+                dx = -1;
+                dz = -1;
+                dpx = blockpos.getX() - 2;
+                dpz = -1;
                 break;
-            case CLOCKWISE_90:
-                switch (mirror)
-                {
-                case NONE:
-                    dx = blockpos.getX() - 2;
-                    dz = -1;
-                    break;
-                case LEFT_RIGHT:
-                    dz = -1;
-                    break;
-                default:
-                    break;
-                }
+            case LEFT_RIGHT:
+                dz = -1;
+                dx = 1;
+                dpx = 1;
+                dpz = -1;
                 break;
             default:
                 break;
             }
+            break;
+        default:
+            break;
         }
+        templatePosition = templatePosition.add(dpx, 0, dpz);
         boxIn.offset(dx, 0, dz);
     }
 
@@ -205,17 +180,16 @@ public abstract class TemplateStructureBase extends Village
                 this.averageGroundLevel = this.getAverageGroundLevel(worldIn, boxIn);
                 if (this.averageGroundLevel < 0) { return true; }
             }
-            boundingBox.offset(0, this.averageGroundLevel - boundingBox.minY + getOffset(), 0);
-            this.templatePosition = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
-            boxIn = new StructureBoundingBox(boxIn.minX, boxIn.minY, boxIn.minZ, boxIn.maxX, boxIn.maxY, boxIn.maxZ);
-            offsetBox(boxIn, false);
-            this.placeSettings.setIgnoreEntities(false).setBoundingBox(boxIn);
+            StructureBoundingBox buildBox = new StructureBoundingBox(boundingBox);
+            buildBox.offset(0, this.averageGroundLevel - buildBox.minY + getOffset(), 0);
+            this.templatePosition = new BlockPos(templatePosition.getX(), buildBox.minY, templatePosition.getZ());
+            this.placeSettings.setIgnoreEntities(true).setBoundingBox(boxIn);
             this.template.addBlocksToWorld(worldIn, this.templatePosition, this.placeSettings);
             Map<BlockPos, String> map = this.template.getDataBlocks(this.templatePosition, this.placeSettings);
             for (BlockPos blockpos : map.keySet())
             {
                 String s = (String) map.get(blockpos);
-                this.handleDataMarker(s, blockpos, worldIn, randomIn, boundingBox);
+                this.handleDataMarker(s, blockpos, worldIn, randomIn, buildBox);
             }
         }
         catch (Exception e)
@@ -232,13 +206,14 @@ public abstract class TemplateStructureBase extends Village
     protected abstract void handleDataMarker(String marker, BlockPos pos, World world, Random rand,
             StructureBoundingBox box);
 
-    public void setBoundingBoxFromTemplate()
+    public void setBoundingBoxFromTemplate(EnumFacing dir)
     {
-        Rotation rotation = this.placeSettings.getRotation();
-        BlockPos blockpos = this.template.transformedSize(rotation);
-        boundingBox = new StructureBoundingBox(0, 0, 0, blockpos.getX() - 1, blockpos.getY() - 1, blockpos.getZ() - 1);
-        offsetBox(boundingBox, true);
-        boundingBox.offset(this.templatePosition.getX(), this.templatePosition.getY(), this.templatePosition.getZ());
+        Template t = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
+        BlockPos size = t.getSize();
+        boundingBox = StructureBoundingBox.getComponentToAddBoundingBox(templatePosition.getX(),
+                templatePosition.getY(), templatePosition.getZ(), 0, 0, 0, size.getX(), size.getY(), size.getZ(), dir);
+        templatePosition = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
+        offsetBox(boundingBox);
     }
 
     public void offset(int x, int y, int z)

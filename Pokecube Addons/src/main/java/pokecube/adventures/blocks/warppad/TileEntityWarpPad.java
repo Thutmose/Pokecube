@@ -101,7 +101,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
         if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
-            tele = energy > distSq;
+            tele = energy > distSq;// TODO power function config.
 
             if (!tele)
             {

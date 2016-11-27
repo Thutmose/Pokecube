@@ -1338,9 +1338,11 @@ public class PokedexEntry
         ArrayList<ItemStack> items = new ArrayList<ItemStack>();
         ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
         items.addAll(drops.keySet());
+        looting = Math.max(looting, 0);
         Random rand = new Random();
         for (ItemStack stack : items)
         {
+            if (!CompatWrapper.isValid(stack)) continue;
             float chance = drops.get(stack);
             if (Math.random() < chance)
             {

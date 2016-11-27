@@ -38,6 +38,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
+import thut.lib.CompatWrapper;
 
 public class PokedexEntryLoader
 {
@@ -810,7 +811,7 @@ public class PokedexEntryLoader
     {
         Map<QName, String> values = d.values;
         ItemStack stack = getStackFromDrop(d);
-        if (stack != null)
+        if (CompatWrapper.isValid(stack))
         {
             float chance = 1;
             for (QName key : values.keySet())
@@ -834,7 +835,7 @@ public class PokedexEntryLoader
             values.put(name, d.tag);
         }
         ItemStack stack = Tools.getStack(d.values);
-        if (stack != null)
+        if (CompatWrapper.isValid(stack))
         {
             float chance = 1;
             for (QName key : values.keySet())

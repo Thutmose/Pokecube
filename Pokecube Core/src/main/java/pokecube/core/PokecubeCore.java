@@ -103,6 +103,7 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
 import pokecube.core.world.gen.WorldGenStartBuilding;
+import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 import pokecube.core.world.gen.village.buildings.TemplatePokecenter;
 import pokecube.core.world.gen.village.buildings.TemplatePokemart;
@@ -417,13 +418,11 @@ public class PokecubeCore extends PokecubeMod
         {
             System.out.println("Error registering Structures with Vanilla Minecraft");
         }
-        if (config.doSpawnBuilding)
-        {
-            GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
-        }
+        if (config.doSpawnBuilding) GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
         // TODO figure out good spawn weights, Also config for these
         if (config.generateFossils) GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         if (config.nests) GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
+        GameRegistry.registerWorldGenerator(new WorldGenTemplates(), 10);
         helper.initAllBlocks();
         proxy.registerKeyBindings();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);

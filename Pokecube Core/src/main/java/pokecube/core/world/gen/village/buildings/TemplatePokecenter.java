@@ -6,7 +6,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraft.world.gen.structure.StructureVillagePieces.Start;
 import net.minecraft.world.gen.structure.template.Template;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 
@@ -22,11 +21,9 @@ public class TemplatePokecenter extends TemplateStructure
         super(PokecubeTemplates.POKECENTER, pos, dir);
     }
 
-    public TemplatePokecenter(Start startPiece, int p5, Random random, StructureBoundingBox structureboundingbox,
-            EnumFacing facing)
+    public TemplatePokecenter(StructureBoundingBox structureboundingbox, EnumFacing facing)
     {
         this(new BlockPos(structureboundingbox.minX, structureboundingbox.minY, structureboundingbox.minZ), facing);
-        this.boundingBox = setBoundingBoxFromTemplate(structureboundingbox);
     }
 
     @Override
@@ -36,16 +33,16 @@ public class TemplatePokecenter extends TemplateStructure
     }
 
     @Override
-    protected Template getTemplate()
+    public Template getTemplate()
     {
         if (template != null) return template;
         return template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKECENTER);
     }
 
     @Override
-    protected int getOffset()
+    public int getOffset()
     {
-        return 5;
+        return -2;
     }
 
 }

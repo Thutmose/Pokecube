@@ -14,7 +14,7 @@ import net.minecraft.world.gen.structure.template.Template;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.IVillageCreationHandler;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 import pokecube.core.world.gen.village.buildings.TemplatePokemart;
-import pokecube.core.world.gen.village.buildings.TemplateStructure;
+import pokecube.core.world.gen.village.buildings.TemplateStructureBase;
 
 public class PokeMartCreationHandler implements IVillageCreationHandler
 {
@@ -26,10 +26,8 @@ public class PokeMartCreationHandler implements IVillageCreationHandler
         Template template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
         BlockPos size = template.getSize();
         StructureBoundingBox structureboundingbox = StructureBoundingBox.getComponentToAddBoundingBox(minX, minY, minZ,
-                0, 0, 0, size.getX(), size.getY(), size.getZ(), facing);
-        structureboundingbox.minY = 0;
-        TemplateStructure component = new TemplatePokemart(startPiece, componentType, random, structureboundingbox,
-                facing);
+                0, 0, 0, size.getX()-1, size.getY(), size.getZ()-1, facing);
+        TemplateStructureBase component = new TemplatePokemart(structureboundingbox, facing);
         boolean conflict = StructureComponent.findIntersecting(pieces, structureboundingbox) == null;
         return conflict ? component : null;
     }

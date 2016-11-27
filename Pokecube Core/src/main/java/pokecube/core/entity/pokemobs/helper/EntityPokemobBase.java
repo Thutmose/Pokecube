@@ -46,6 +46,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokemobBodies;
 import pokecube.core.database.abilities.AbilityManager;
@@ -675,6 +676,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void onUpdate()
     {
+        if (!Pokedex.getInstance().isRegistered(getPokedexEntry())) return;
+
         long time = System.nanoTime();
         here.set(posX, posY, posZ);
         BlockPos pos = new BlockPos(posX, 1, posZ);

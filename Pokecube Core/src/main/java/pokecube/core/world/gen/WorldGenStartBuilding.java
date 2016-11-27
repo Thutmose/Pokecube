@@ -10,7 +10,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -41,7 +40,7 @@ public class WorldGenStartBuilding implements IWorldGenerator
     public static void makePokecenter(Vector3 centre, World world)
     {
         PokecubeTemplates.serverInit(world.getMinecraftServer());
-        PokecubeTemplate template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
+        PokecubeTemplate template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKECENTER);
         Mirror mirror = Mirror.NONE;
         EnumFacing dir = EnumFacing.HORIZONTALS[world.rand.nextInt(4)];
         Rotation rotation = Rotation.NONE;
@@ -49,9 +48,8 @@ public class WorldGenStartBuilding implements IWorldGenerator
         if (dir == EnumFacing.EAST) rotation = Rotation.CLOCKWISE_90;
         if (dir == EnumFacing.WEST) rotation = Rotation.COUNTERCLOCKWISE_90;
         PlacementSettings placementsettings = (new PlacementSettings()).setMirror(mirror).setRotation(rotation)
-                .setIgnoreEntities(false).setChunk((ChunkPos) null).setReplacedBlock((Block) null)
-                .setIgnoreStructureBlock(true);
-        template.addBlocksToWorldChunk(world, centre.getPos().up(-2), placementsettings);
+                .setIgnoreEntities(false).setChunk(null).setReplacedBlock(null).setIgnoreStructureBlock(true);
+        template.addBlocksToWorldChunk(world, centre.getPos().up(), placementsettings);
     }
 
     @Override
@@ -66,11 +64,6 @@ public class WorldGenStartBuilding implements IWorldGenerator
         if (x != chunkX || z != chunkZ) return;
         building = true;
         int y = getAverageHeight(world, chunkX * 16, chunkZ * 16) - 1;
-
-        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
-
-        makePokecenter(centre, world);
-
         for (int i = 0; i < 9; i++)
             for (int j = 3; j <= 6; j++)
             {
@@ -98,6 +91,8 @@ public class WorldGenStartBuilding implements IWorldGenerator
             }
             j--;
         }
+        Vector3 centre = Vector3.getNewVector().set(chunkX * 16, y - 1, chunkZ * 16);
+        makePokecenter(centre, world);
         pos = new BlockPos(chunkX * 16 + 4, centre.y + 3, chunkZ * 16 + 4);
         world.provider.setSpawnPoint(pos);
     }

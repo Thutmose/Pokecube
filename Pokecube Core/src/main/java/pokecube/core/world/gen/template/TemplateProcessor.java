@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-import jeresources.util.ReflectionHelper;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -16,6 +15,7 @@ import net.minecraft.world.gen.structure.template.BlockRotationProcessor;
 import net.minecraft.world.gen.structure.template.PlacementSettings;
 import net.minecraft.world.gen.structure.template.Template;
 import net.minecraft.world.gen.structure.template.Template.BlockInfo;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class TemplateProcessor extends BlockRotationProcessor
 {

@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -149,7 +150,7 @@ public class AIAttack extends AIBase implements IAICombat
             /** Check if it should notify the player of agression, and do so if
              * it should. */
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
-                    && entityTarget instanceof EntityPlayer
+                    && entityTarget instanceof EntityPlayerMP
                     && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)

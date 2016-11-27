@@ -317,7 +317,7 @@ public class TradeEntryLoader
                         TrainerTrade recipe;
                         if (trade.sell.tag != null) values.put(new QName("tag"), trade.sell.tag);
                         ItemStack sell = Tools.getStack(values);
-                        recipe = new TrainerTrade(badge, null, sell);
+                        recipe = new TrainerTrade(badge, CompatWrapper.nullStack, sell);
                         values = trade.values;
                         if (values.containsKey(CHANCE)) recipe.chance = Float.parseFloat(values.get(CHANCE));
                         if (values.containsKey(MIN)) recipe.min = Integer.parseInt(values.get(MIN));

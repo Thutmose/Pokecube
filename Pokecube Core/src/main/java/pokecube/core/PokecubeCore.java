@@ -102,7 +102,6 @@ import pokecube.core.utils.Tools;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.gen.WorldGenFossils;
 import pokecube.core.world.gen.WorldGenNests;
-import pokecube.core.world.gen.WorldGenStartBuilding;
 import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 import pokecube.core.world.gen.village.buildings.TemplatePokecenter;
@@ -418,7 +417,6 @@ public class PokecubeCore extends PokecubeMod
         {
             System.out.println("Error registering Structures with Vanilla Minecraft");
         }
-        if (config.doSpawnBuilding) GameRegistry.registerWorldGenerator(new WorldGenStartBuilding(), 10);
         // TODO figure out good spawn weights, Also config for these
         if (config.generateFossils) GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         if (config.nests) GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
@@ -794,7 +792,6 @@ public class PokecubeCore extends PokecubeMod
     {
         InventoryPC.clearPC();
         achievements.clear();
-        WorldGenStartBuilding.building = false;
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
     }

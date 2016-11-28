@@ -73,6 +73,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             RenderPokemob.renderEvolution((IPokemob) entity, yaw);
             RenderPokemob.renderExitCube((IPokemob) entity, yaw);
         }
+        float s = (mob.getSize());
+        this.shadowSize = entity.addedToChunk ? s * mob.getPokedexEntry().width : 0;
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         if (model.getTexturer() == null)

@@ -40,6 +40,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.achievements.AchievementCatch;
 import pokecube.core.achievements.AchievementHatch;
 import pokecube.core.achievements.AchievementKill;
+import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
@@ -696,6 +697,16 @@ public class Database
                     InteractionLogic.initForEntry(e);
                 }
             }
+            List<EvolutionData> invalidEvos = Lists.newArrayList();
+            for (EvolutionData d : e.evolutions)
+            {
+                if (!Pokedex.getInstance().getRegisteredEntries().contains(d.evolution))
+                {
+                    invalidEvos.add(d);
+                }
+            }
+            e.evolutions.removeAll(invalidEvos);
+
             if (!Pokedex.getInstance().getRegisteredEntries().contains(e))
             {
                 toRemove.add(e);

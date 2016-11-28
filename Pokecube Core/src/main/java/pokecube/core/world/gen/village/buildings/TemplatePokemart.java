@@ -14,6 +14,7 @@ public class TemplatePokemart extends TemplateStructure
     public TemplatePokemart()
     {
         super();
+        setOffset(-2);
     }
 
     public TemplatePokemart(BlockPos pos, EnumFacing dir)
@@ -33,11 +34,4 @@ public class TemplatePokemart extends TemplateStructure
         if (template != null) return template;
         return template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
     }
-
-    @Override
-    public int getOffset()
-    {
-        return -2;
-    }
-
 }

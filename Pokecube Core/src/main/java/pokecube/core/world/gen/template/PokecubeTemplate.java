@@ -78,8 +78,44 @@ public class PokecubeTemplate extends Template
 
                 if (entity != null)
                 {
-                    float f = entity.getMirroredYaw(mirrorIn);
-                    f = f + (entity.rotationYaw - entity.getRotatedYaw(rotationIn));
+                    float f = 0;
+                    switch (rotationIn)
+                    {
+                    case NONE:
+                        switch (mirrorIn)
+                        {
+                        case LEFT_RIGHT:
+                            f = 180;
+                            break;
+                        case NONE:
+                            f = 0;
+                            break;
+                        default:
+                            f = entity.getMirroredYaw(mirrorIn);
+                            f -= entity.getRotatedYaw(rotationIn);
+                            break;
+                        }
+                        break;
+                    case CLOCKWISE_90:
+                        switch (mirrorIn)
+                        {
+                        case NONE:
+                            f = 90;
+                            break;
+                        case LEFT_RIGHT:
+                            f = 270;
+                            break;
+                        default:
+                            f = entity.getMirroredYaw(mirrorIn);
+                            f -= entity.getRotatedYaw(rotationIn);
+                            break;
+                        }
+                        break;
+                    default:
+                        f = entity.getMirroredYaw(mirrorIn);
+                        f -= entity.getRotatedYaw(rotationIn);
+                        break;
+                    }
                     entity.setLocationAndAngles(vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, f, entity.rotationPitch);
                     StructureEvent.SpawnEntity event = new StructureEvent.SpawnEntity(entity, name);
                     MinecraftForge.EVENT_BUS.post(event);

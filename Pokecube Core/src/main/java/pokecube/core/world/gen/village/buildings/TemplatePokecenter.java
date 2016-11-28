@@ -14,6 +14,7 @@ public class TemplatePokecenter extends TemplateStructure
     public TemplatePokecenter()
     {
         super();
+        setOffset(-2);
     }
 
     public TemplatePokecenter(BlockPos pos, EnumFacing dir)
@@ -33,11 +34,4 @@ public class TemplatePokecenter extends TemplateStructure
         if (template != null) return template;
         return template = PokecubeTemplates.getTemplate(PokecubeTemplates.POKECENTER);
     }
-
-    @Override
-    public int getOffset()
-    {
-        return -2;
-    }
-
 }

@@ -53,4 +53,10 @@ public class TemplateStructure extends TemplateStructureBase
         }
     }
 
+    @Override
+    public void setOffset(int offset)
+    {
+        this.offset = offset;
+    }
+
 }

@@ -183,7 +183,24 @@ public abstract class TemplateStructureBase extends Village
         {
             if (this.averageGroundLevel < 0)
             {
-                this.averageGroundLevel = this.getAverageGroundLevel(worldIn, boxIn);
+                Map<BlockPos, String> map = this.template.getDataBlocks(new BlockPos(0, 0, 0), this.placeSettings);
+                for (BlockPos blockpos : map.keySet())
+                {
+                    String s = (String) map.get(blockpos);
+                    if (s.equals("Floor"))
+                    {
+                        setOffset(-blockpos.getY() + 1);
+
+                        blockpos = blockpos.add(templatePosition);
+                        if (boxIn.isVecInside(blockpos))
+                        {
+                            averageGroundLevel = Math.max(worldIn.getTopSolidOrLiquidBlock(blockpos).getY(),
+                                    worldIn.provider.getAverageGroundLevel() - 1);
+                        }
+                        break;
+                    }
+                }
+                if (this.averageGroundLevel < 0) this.averageGroundLevel = this.getAverageGroundLevel(worldIn, boxIn);
                 if (this.averageGroundLevel < 0) { return true; }
             }
             StructureBoundingBox buildBox = new StructureBoundingBox(boundingBox);
@@ -208,6 +225,8 @@ public abstract class TemplateStructureBase extends Village
     public abstract Template getTemplate();
 
     public abstract int getOffset();
+
+    public abstract void setOffset(int offset);
 
     protected abstract void handleDataMarker(String marker, BlockPos pos, World world, Random rand,
             StructureBoundingBox box);

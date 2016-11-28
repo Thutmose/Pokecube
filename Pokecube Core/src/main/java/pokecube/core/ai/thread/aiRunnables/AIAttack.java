@@ -12,6 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -85,7 +86,7 @@ public class AIAttack extends AIBase implements IAICombat
     {
         entityTarget = attacker.getAttackTarget();
 
-        if (entityTarget != null && entityTarget.isDead)
+        if (entityTarget != null && (entityTarget.isDead || !entityTarget.addedToChunk))
         {
             addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
             entityTarget = null;
@@ -150,7 +151,7 @@ public class AIAttack extends AIBase implements IAICombat
             /** Check if it should notify the player of agression, and do so if
              * it should. */
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
-                    && entityTarget instanceof EntityPlayerMP
+                    && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
                     && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
                     && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
                     && ((EntityPlayer) entityTarget).getAITarget() != attacker)
@@ -158,7 +159,14 @@ public class AIAttack extends AIBase implements IAICombat
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 ITextComponent message = new TextComponentTranslation("pokemob.agress",
                         ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
-                entityTarget.addChatMessage(message);
+                try
+                {
+                    entityTarget.addChatMessage(message);
+                }
+                catch (Exception e)
+                {
+                    System.out.println(entityTarget);
+                }
             }
             else if (delayTime < 0)
             {

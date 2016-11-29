@@ -69,7 +69,6 @@ public class ParticleBeam extends MoveAnimationBase
     @Override
     public IMoveAnimation init(String preset)
     {
-        this.particle = preset;
         rgba = 0xFFFFFFFF;
         String[] args = preset.split(":");
         this.particle = "misc";

@@ -46,7 +46,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
     @Override
     public IMoveAnimation init(String preset)
     {
-        this.particle = preset;
+        this.particle = "misc";
         String[] args = preset.split(":");
         for (int i = 1; i < args.length; i++)
         {

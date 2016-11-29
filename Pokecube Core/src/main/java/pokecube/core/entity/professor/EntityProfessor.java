@@ -5,7 +5,7 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.INpc;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -64,8 +64,8 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
         super(par1World);
         this.setSize(0.6F, 1.8F);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 3.0F, 1.0F));
-        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0F));
+        this.tasks.addTask(9, new EntityAIWatchClosest2(this, EntityPlayer.class, 5.0F, 1.0F));
+        this.tasks.addTask(10, new EntityAIWatchClosest(this, EntityLivingBase.class, 8.0F, 1.0f));
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
         this.tasks.addTask(1, guardAI);
         if (location != null)

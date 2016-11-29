@@ -30,6 +30,9 @@ pokemob.move.terraindamage=%1$s was hurt by the %2$s
 pokemob.move.missed.ours=§cIt missed %1$s!
 pokemob.move.missed.theirs=§aIt missed %1$s!
 
+pokemob.move.failed.ours=%1$s's §cattack failed!
+pokemob.move.failed.theirs=%1$s's §aattack failed!
+
 pokemob.move.isfrozen=%1$s is frozen.
 pokemob.move.issleeping=%1$s is sleeping.
 pokemob.move.isfullyparalyzed=%1$s is fully paralyzed.

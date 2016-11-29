@@ -36,6 +36,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -614,7 +615,7 @@ public final class SpawnHandler
             AxisAlignedBB box = v.getAABB();
             int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
             int height = v.getMaxY(world);
-            List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
+            List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityPokemobBase.class,
                     box.expand(radius, Math.max(height, radius), radius));
             if (list.size() < MAXNUM * MAX_DENSITY)
             {

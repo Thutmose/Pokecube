@@ -2,6 +2,8 @@ package pokecube.core.world.gen.village.buildings;
 
 import java.util.Random;
 
+import net.minecraft.block.BlockStairs;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.EnumFacing;
@@ -40,6 +42,7 @@ public class TemplateStructure extends TemplateStructureBase
     @Override
     protected void handleDataMarker(String marker, BlockPos pos, World world, Random rand, StructureBoundingBox box)
     {
+        if (!box.isVecInside(pos)) return;
         TileEntity below = world.getTileEntity(pos.down());
         if (marker.startsWith("Chest") && below instanceof TileEntityChest)
         {
@@ -49,6 +52,13 @@ public class TemplateStructure extends TemplateStructureBase
                 ResourceLocation loot = new ResourceLocation(args[1]);
                 TileEntityChest chest = (TileEntityChest) below;
                 chest.setLootTable(loot, rand.nextLong());
+            }
+        }
+        else if (marker.equals("Floor") && world.getBlockState(pos.down()).getBlock() instanceof BlockStairs)
+        {
+            if (!world.getBlockState(pos.down(2)).getMaterial().isSolid())
+            {
+                world.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
             }
         }
     }

@@ -125,11 +125,11 @@ public class MovesUtils implements IMoveConstants
             if (attacked instanceof IPokemob)
             {
                 String message = "pokemob.move.failed";
-                text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
+                text = new TextComponentTranslation(message + ".theirs",
+                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName().getFormattedText());
+                text = new TextComponentTranslation(message + ".ours",
+                        ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 ((IPokemob) attacked).displayMessageToOwner(text);
                 return;
             }

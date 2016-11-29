@@ -71,27 +71,37 @@ public class GuiInfoMessages
         int paddingXPos = PokecubeCore.core.getConfig().messagePadding[0];
         int paddingXNeg = PokecubeCore.core.getConfig().messagePadding[1];
         GL11.glPushMatrix();
-        int[] messSize = new int[] { trim + paddingXPos + paddingXNeg, 7 * texH };
+
         minecraft.entityRenderer.setupOverlayRendering();
-        int[] messArr = GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().messageRef,
-                PokecubeMod.core.getConfig().messagePos, messSize, PokecubeMod.core.getConfig().messageSize);
+        int[] mess = GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().messageRef,
+                PokecubeMod.core.getConfig().messagePos,
+                new int[] { PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
+                PokecubeMod.core.getConfig().messageSize);
         int x = 0, y = 0;
         float s = PokecubeMod.core.getConfig().messageSize;
-        x += messArr[2];
-        y += messArr[3];
-        Rectangle messRect = new Rectangle((int) (x * s), (int) (y * s), (int) (messArr[0] * s),
-                (int) (messArr[1] * s));
+        x = x - 150;
+        Rectangle messRect = new Rectangle(x, y - 7 * texH, 150, 8 * texH);
+        x += mess[2];
+        y += mess[3];
+        messRect.setBounds((int) (x * s), (int) ((y - 7 * texH) * s), (int) (150 * s), (int) (8 * texH * s));
 
-        int i1 = ((Mouse.getX()));
-        int j1 = ((minecraft.displayHeight - Mouse.getY())) - 1;
-        i1 = i1 - messArr[0];
-        j1 = j1 - messArr[1];
+        int i1 = -10;
+        int j1 = -10;
+
+        if (minecraft.currentScreen != null)
+        {
+            i1 = ((Mouse.getX() * minecraft.currentScreen.width / minecraft.displayWidth));
+            j1 = ((minecraft.currentScreen.height
+                    - Mouse.getY() * minecraft.currentScreen.height / minecraft.displayHeight)) - 1;
+        }
+        i1 = i1 - mess[0];
+        j1 = j1 - mess[1];
+
         int i = Mouse.getDWheel();
         if (!messRect.contains(i1, j1))
         {
             i = 0;
         }
-
         int w = 0;
         int h = 0;
         x = w;
@@ -134,14 +144,15 @@ public class GuiInfoMessages
             int index = (l + offset);
             if (index < 0) index = 0;
             if (index > size) break;
-            String mess = toUse.get(index);
-            List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess, trim);
-            for (int j = 0; j < mess1.size(); j++)
+            String mess2 = toUse.get(index);
+            List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess2, trim);
+            for (int j = mess1.size() - 1; j >= 0; j--)
             {
-                h = y + texH * (shift + j);
+                h = y + texH * (shift);
                 w = x - trim;
-                GuiScreen.drawRect(w - paddingXNeg, h, w + trim + paddingXPos, h + texH, 0x66000000);
-                minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, h, 0xffffff, true);
+                int ph = 6 * texH - h;
+                GuiScreen.drawRect(w - paddingXNeg, ph, w + trim + paddingXPos, ph + texH, 0x66000000);
+                minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, ph, 0xffffff, true);
                 if (j != 0) shift++;
             }
             shift++;

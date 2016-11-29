@@ -358,7 +358,7 @@ public class JEICompat implements IModPlugin
     {
         // TODO Auto-generated method stub
         Item item = PokecubeItems.megastone;
-        subtypeRegistry.registerNbtInterpreter(item, new ISubtypeInterpreter()
+        subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
         {
             @Override
             public String getSubtypeInfo(ItemStack itemStack)
@@ -368,7 +368,7 @@ public class JEICompat implements IModPlugin
             }
         });
         item = PokecubeItems.held;
-        subtypeRegistry.registerNbtInterpreter(item, new ISubtypeInterpreter()
+        subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
         {
             @Override
             public String getSubtypeInfo(ItemStack itemStack)
@@ -378,7 +378,7 @@ public class JEICompat implements IModPlugin
             }
         });
         item = PokecubeItems.fossil;
-        subtypeRegistry.registerNbtInterpreter(item, new ISubtypeInterpreter()
+        subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
         {
             @Override
             public String getSubtypeInfo(ItemStack itemStack)

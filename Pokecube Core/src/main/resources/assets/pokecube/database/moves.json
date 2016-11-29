@@ -1872,7 +1872,7 @@
       "mirrormove": "Yes",
       "animations": [
         {
-          "preset": "flow:bubble",
+          "preset": "flow:pbubble",
           "duration": "5",
           "starttick": "0"
         }

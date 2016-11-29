@@ -99,7 +99,6 @@ public class CartesianFunction extends MoveAnimationBase
     @Override
     public IMoveAnimation init(String preset)
     {
-        this.particle = preset;
         rgba = 0xFFFFFFFF;
         density = 0.5f;
         String[] args = preset.split(":");

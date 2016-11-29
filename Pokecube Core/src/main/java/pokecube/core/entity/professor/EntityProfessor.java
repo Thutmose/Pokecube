@@ -172,9 +172,10 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             else if (type == ProfessorType.HEALER)
             {
                 player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldObj, 0, 0, 0);
+                return true;
             }
         }
-        return false;
+        return true;
     }
 
     @Override

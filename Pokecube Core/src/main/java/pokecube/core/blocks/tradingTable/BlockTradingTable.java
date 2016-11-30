@@ -15,7 +15,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +29,7 @@ import thut.lib.CompatWrapper;
 
 public class BlockTradingTable extends BlockRotatable implements ITileEntityProvider
 {
-    public static final PropertyBool      TMC    = PropertyBool.create("tmc");
+    public static final PropertyBool TMC = PropertyBool.create("tmc");
 
     public BlockTradingTable()
     {
@@ -49,15 +48,6 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     {
         dropItems(worldIn, pos);
         super.breakBlock(worldIn, pos, state);
-    }
-
-    @Override
-    /** Queries if this block should render in a given layer. ISmartBlockModel
-     * can use MinecraftForgeClient.getRenderLayer to alter their model based on
-     * layer */
-    public boolean canRenderInLayer(BlockRenderLayer layer)
-    {
-        return true;
     }
 
     @Override

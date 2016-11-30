@@ -66,13 +66,13 @@ public class PokecubeMobs implements IMobProvider
 
     public PokecubeMobs()
     {
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_1/models/");
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_2/models/");
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_3/models/");
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_4/models/");
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_5/models/");
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_6/models/");
-        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_7/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_1/entity/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_2/entity/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_3/entity/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_4/entity/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_5/entity/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_6/entity/models/");
+        ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_7/entity/models/");
 
         HeldItemHandler.megaVariants.add("absolmega");
         HeldItemHandler.megaVariants.add("aerodactylmega");
@@ -146,19 +146,19 @@ public class PokecubeMobs implements IMobProvider
         switch (gen)
         {
         case 1:
-            return "gen_1/models/";
+            return "gen_1/entity/models/";
         case 2:
-            return "gen_2/models/";
+            return "gen_2/entity/models/";
         case 3:
-            return "gen_3/models/";
+            return "gen_3/entity/models/";
         case 4:
-            return "gen_4/models/";
+            return "gen_4/entity/models/";
         case 5:
-            return "gen_5/models/";
+            return "gen_5/entity/models/";
         case 6:
-            return "gen_6/models/";
+            return "gen_6/entity/models/";
         case 7:
-            return "gen_7/models/";
+            return "gen_7/entity/models/";
         }
         return "models/";
     }
@@ -226,19 +226,19 @@ public class PokecubeMobs implements IMobProvider
         switch (gen)
         {
         case 1:
-            return "gen_1/textures/";
+            return "gen_1/entity/textures/";
         case 2:
-            return "gen_2/textures/";
+            return "gen_2/entity/textures/";
         case 3:
-            return "gen_3/textures/";
+            return "gen_3/entity/textures/";
         case 4:
-            return "gen_4/textures/";
+            return "gen_4/entity/textures/";
         case 5:
-            return "gen_5/textures/";
+            return "gen_5/entity/textures/";
         case 6:
-            return "gen_6/textures/";
+            return "gen_6/entity/textures/";
         case 7:
-            return "gen_7/textures/";
+            return "gen_7/entity/textures/";
         }
         return "textures/entities/";
     }

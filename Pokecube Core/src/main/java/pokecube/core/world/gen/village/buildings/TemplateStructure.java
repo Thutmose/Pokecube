@@ -47,7 +47,7 @@ public class TemplateStructure extends TemplateStructureBase
         if (marker.startsWith("Chest") && below instanceof TileEntityChest)
         {
             String[] args = marker.split(" ");
-            if (args.length == 2)
+            if (args.length >= 2)
             {
                 ResourceLocation loot = new ResourceLocation(args[1]);
                 TileEntityChest chest = (TileEntityChest) below;

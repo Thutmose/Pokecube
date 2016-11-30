@@ -155,8 +155,8 @@ public abstract class TemplateStructureBase extends Village
             case NONE:
                 dx = -1;
                 dz = -1;
-                dpx = blockpos.getX() - 2;
                 dpz = -1;
+                dpx = blockpos.getX() - 2;
                 break;
             case LEFT_RIGHT:
                 dz = -1;
@@ -233,8 +233,7 @@ public abstract class TemplateStructureBase extends Village
 
     public void setBoundingBoxFromTemplate(EnumFacing dir)
     {
-        Template t = PokecubeTemplates.getTemplate(PokecubeTemplates.POKEMART);
-        BlockPos size = t.getSize();
+        BlockPos size = template.getSize();
         boundingBox = StructureBoundingBox.getComponentToAddBoundingBox(templatePosition.getX(),
                 templatePosition.getY(), templatePosition.getZ(), 0, 0, 0, size.getX(), size.getY(), size.getZ(), dir);
         templatePosition = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);

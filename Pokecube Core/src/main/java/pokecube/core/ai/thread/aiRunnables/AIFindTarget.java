@@ -10,7 +10,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.IMerchant;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
@@ -48,7 +49,8 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                      {
                                                          EntityLivingBase mob = (EntityLivingBase) input;
 
-                                                         if (mob instanceof EntityVillager) return false;
+                                                         if (mob instanceof INpc || mob instanceof IMerchant)
+                                                             return false;
                                                          if (mob instanceof EntityPokemobEgg) return false;
 
                                                          if (mob.getTeam() != pokemob.getPokemobTeam()) { return true; }

@@ -27,9 +27,7 @@ public class Move_Teleport extends Move_Basic
         Entity attacked = packet.attacked;
         Entity target = ((EntityCreature) attacker).getAttackTarget();
         boolean angry = attacker.getPokemonAIState(IMoveConstants.ANGRY);
-        ((EntityCreature) attacker).setAttackTarget(null);
-        attacker.setPokemonAIState(IMoveConstants.ANGRY, false);
-
+        if (attacked == attacker) attacked = target;
         if (attacked instanceof EntityLiving)
         {
             ((EntityLiving) attacked).setAttackTarget(null);
@@ -57,5 +55,6 @@ public class Move_Teleport extends Move_Basic
             }
         }
         super.postAttack(packet);
+        ((EntityCreature) attacker).setAttackTarget(null);
     }
 }

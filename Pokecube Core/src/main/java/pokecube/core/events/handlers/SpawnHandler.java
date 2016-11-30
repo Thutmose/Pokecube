@@ -615,7 +615,7 @@ public final class SpawnHandler
             AxisAlignedBB box = v.getAABB();
             int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
             int height = v.getMaxY(world);
-            List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityPokemobBase.class,
+            List<EntityPokemobBase> list = world.getEntitiesWithinAABB(EntityPokemobBase.class,
                     box.expand(radius, Math.max(height, radius), radius));
             if (list.size() < MAXNUM * MAX_DENSITY)
             {

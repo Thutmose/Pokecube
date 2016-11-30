@@ -1,5 +1,6 @@
 package pokecube.core.moves.implementations.actions;
 
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -23,8 +24,11 @@ public class ActionTeleport implements IMoveAction
         double var3;
         double var5;
         Vector3 v = SpawnHandler.getRandomSpawningPointNearEntity(toTeleport.getEntityWorld(), toTeleport, 32, 0);
+        if (v == null) return false;
+        v = Vector3.getNextSurfacePoint(toTeleport.getEntityWorld(), v, Vector3.secondAxisNeg, Math.max(v.y, 10));
+        if (v == null) return false;
         var1 = v.x;
-        var3 = v.y;
+        var3 = v.y + 1;
         var5 = v.z;
         return teleportTo(toTeleport, var1, var3, var5);
     }
@@ -78,6 +82,7 @@ public class ActionTeleport implements IMoveAction
         }
         else if (angry)
         {
+            user.setPokemonAIState(IMoveConstants.ANGRY, false);
             if (user.getPokemonAIState(IMoveConstants.TAMED)) user.returnToPokecube();
             else teleportRandomly((EntityLivingBase) user);
         }

@@ -135,7 +135,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean canBreatheUnderwater()
     {
-        return (getType1() == PokeType.water || getType2() == PokeType.water || getPokedexEntry().shouldDive || getPokedexEntry().swims());
+        return (getType1() == PokeType.water || getType2() == PokeType.water || getPokedexEntry().shouldDive
+                || getPokedexEntry().swims());
     }
 
     @Override
@@ -1232,13 +1233,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void setPokemonAIState(int state, boolean flag)
     {
         int byte0 = dataManager.get(AIACTIONSTATESDW);
-
         if (state == STAYING)
         {
             here.set(this);
             setHome(here.intX(), here.intY(), here.intZ(), 16);
         }
-
         if (flag)
         {
             dataManager.set(AIACTIONSTATESDW, Integer.valueOf((byte0 | state)));

@@ -142,7 +142,7 @@ public class AIHungry extends AIBase
                         new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
                 else pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
-                if (!pokemob.getPokemonAIState(IPokemob.TAMED))
+                if (!pokemob.isPlayerOwned())
                 {
                     toRun.add(new GenBerries(pokemob));
                 }

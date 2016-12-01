@@ -17,6 +17,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatWrapper;
 
 public class SpawnBiomeMatcher
 {
@@ -95,16 +96,9 @@ public class SpawnBiomeMatcher
                         break;
                     }
                 }
-                if (subBiome == null)
+                if (subBiome == null && CompatWrapper.getBiomeType(s) == null)
                 {
-                    try
-                    {
-                        BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
-                    }
-                    catch (Exception e)
-                    {
-                        BiomeType.getBiome(s.trim(), true);
-                    }
+                    BiomeType.getBiome(s.trim(), true);
                 }
             }
         }
@@ -181,16 +175,8 @@ public class SpawnBiomeMatcher
                 if (subBiome == BiomeType.NONE)
                 {
                     BiomeDictionary.Type type;
-                    try
-                    {
-                        type = BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
-                    }
-                    catch (Exception e)
-                    {
-                        type = null;
-                        subBiome = BiomeType.NONE;
-                        e.printStackTrace();
-                    }
+                    type = CompatWrapper.getBiomeType(s);
+                    if (type == null) subBiome = BiomeType.NONE;
                     if (type != null)
                     {
                         if (type == BiomeDictionary.Type.WATER)
@@ -247,7 +233,7 @@ public class SpawnBiomeMatcher
                 }
                 if (subBiome == null)
                 {
-                    BiomeDictionary.Type type = BiomeDictionary.Type.valueOf(s.toUpperCase(java.util.Locale.ENGLISH));
+                    BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);;//
                     if (type != null)
                     {
                         if (type == BiomeDictionary.Type.WATER)
@@ -273,7 +259,7 @@ public class SpawnBiomeMatcher
                 boolean matches = true;
                 for (BiomeDictionary.Type type : validTypes)
                 {
-                    matches = matches && BiomeDictionary.isBiomeOfType(b, type);
+                    matches = matches && CompatWrapper.isOfType(b, type);
                     if (!matches) break;
                 }
                 if (matches) validBiomes.add(b);
@@ -284,7 +270,7 @@ public class SpawnBiomeMatcher
         {
             for (Biome b : validBiomes)
             {
-                if (BiomeDictionary.isBiomeOfType(b, type))
+                if (CompatWrapper.isOfType(b, type))
                 {
                     toRemove.add(b);
                     blackListBiomes.add(b);

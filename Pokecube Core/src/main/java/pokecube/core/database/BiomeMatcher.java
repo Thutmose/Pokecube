@@ -12,6 +12,7 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatWrapper;
 
 public class BiomeMatcher
 {
@@ -63,7 +64,7 @@ public class BiomeMatcher
 
         if (!needAll) for (BiomeDictionary.Type type : validTypes)
         {
-            Biome[] biomes = BiomeDictionary.getBiomesForType(type);
+            Set<Biome> biomes = CompatWrapper.getBiomes(type);
             for (Biome b : biomes)
             {
                 validBiomes.add(b);
@@ -73,13 +74,13 @@ public class BiomeMatcher
         {
             for (BiomeDictionary.Type type : validTypes)
             {
-                Biome[] biomes = BiomeDictionary.getBiomesForType(type);
+                Set<Biome> biomes = CompatWrapper.getBiomes(type);
                 biome:
                 for (Biome b : biomes)
                 {
                     for (BiomeDictionary.Type type1 : validTypes)
                     {
-                        if (!BiomeDictionary.isBiomeOfType(b, type1)) continue biome;
+                        if (!CompatWrapper.isOfType(b, type1)) continue biome;
                     }
                     validBiomes.add(b);
                 }
@@ -90,7 +91,7 @@ public class BiomeMatcher
         {
             for (Biome b : validBiomes)
             {
-                if (BiomeDictionary.isBiomeOfType(b, type))
+                if (CompatWrapper.isOfType(b, type))
                 {
                     toRemove.add(b);
                     blackListBiomes.add(b);
@@ -127,8 +128,7 @@ public class BiomeMatcher
         {
             if (!specific)
             {
-                BiomeDictionary.Type type = BiomeDictionary.Type
-                        .valueOf(biomeName.toUpperCase(java.util.Locale.ENGLISH));
+                BiomeDictionary.Type type = CompatWrapper.getBiomeType(biomeName);
                 if (type != null)
                 {
                     if (type == BiomeDictionary.Type.WATER)

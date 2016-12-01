@@ -22,7 +22,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
@@ -668,10 +667,9 @@ public class MovesUtils implements IMoveConstants
         return false;
     }
 
-    /** returns a new explosion. Does initiation (at time of writing Explosion
-     * is not finished) */
-    public static Explosion newExplosion(Entity entity, double par2, double par4, double par6, float par8, boolean par9,
-            boolean par10)
+    /** creats and ExplosionCustom */
+    public static ExplosionCustom newExplosion(Entity entity, double par2, double par4, double par6, float par8,
+            boolean par9, boolean par10)
     {
         ExplosionCustom var11 = new ExplosionCustom(entity.getEntityWorld(), entity, par2, par4, par6, par8);
 

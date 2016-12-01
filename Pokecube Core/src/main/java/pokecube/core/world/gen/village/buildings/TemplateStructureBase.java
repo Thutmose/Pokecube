@@ -86,18 +86,15 @@ public abstract class TemplateStructureBase extends Village
     /** (abstract) Helper method to write subclass data to NBT */
     protected void writeStructureToNBT(NBTTagCompound tagCompound)
     {
-        try
+        if (templatePosition == null)
         {
-            tagCompound.setInteger("TPX", this.templatePosition.getX());
-            tagCompound.setInteger("TPY", this.templatePosition.getY());
-            tagCompound.setInteger("TPZ", this.templatePosition.getZ());
+            if (boundingBox == null) templatePosition = new BlockPos(0, 0, 0);
+            else templatePosition = new BlockPos(boundingBox.minX, boundingBox.minY, boundingBox.minZ);
         }
-        catch (Exception e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            templatePosition = new BlockPos(0, 0, 0);
-        }
+
+        tagCompound.setInteger("TPX", this.templatePosition.getX());
+        tagCompound.setInteger("TPY", this.templatePosition.getY());
+        tagCompound.setInteger("TPZ", this.templatePosition.getZ());
         tagCompound.setString("TN", ((PokecubeTemplate) getTemplate()).name);
         tagCompound.setByte("Rot", (byte) placeSettings.getRotation().ordinal());
     }

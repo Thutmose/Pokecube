@@ -55,6 +55,39 @@ public class RenderHealth
 
     List<EntityLivingBase> renderedEntities = new ArrayList<>();
 
+    boolean                blend;
+    boolean                normalize;
+    boolean                lighting;
+    int                    src;
+    int                    dst;
+
+    protected void postRender()
+    {
+        // Reset to original state. This fixes changes to guis when rendered in
+        // them.
+        if (!normalize) GL11.glDisable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glDisable(GL11.GL_BLEND);
+        if (lighting) GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        GlStateManager.depthMask(true);
+        GL11.glBlendFunc(src, dst);
+    }
+
+    protected void preRender()
+    {
+        blend = GL11.glGetBoolean(GL11.GL_BLEND);
+        normalize = GL11.glGetBoolean(GL11.GL_NORMALIZE);
+        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
+        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
+        lighting = GL11.glGetBoolean(GL11.GL_LIGHTING);
+        if (lighting) GlStateManager.disableLighting();
+        if (!normalize) GL11.glEnable(GL11.GL_NORMALIZE);
+        if (!blend) GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.depthMask(false);
+        GlStateManager.disableDepth();
+    }
+
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event)
     {
@@ -138,6 +171,9 @@ public class RenderHealth
                 RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
                 GlStateManager.pushMatrix();
+                
+                preRender();
+                
                 GlStateManager.translate(
                         (float) (x - renderManager.viewerPosX), (float) (y - renderManager.viewerPosY
                                 + passedEntity.height + PokecubeMod.core.getConfig().heightAbove),
@@ -146,13 +182,7 @@ public class RenderHealth
                 GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(renderManager.playerViewX, 1.0F, 0.0F, 0.0F);
                 GlStateManager.scale(-scale, -scale, scale);
-                boolean lighting = GL11.glGetBoolean(GL11.GL_LIGHTING);
-                GlStateManager.disableLighting();
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepth();
                 GlStateManager.disableTexture2D();
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 Tessellator tessellator = Tessellator.getInstance();
                 VertexBuffer buffer = tessellator.getBuffer();
 
@@ -333,11 +363,7 @@ public class RenderHealth
                 }
 
                 GlStateManager.popMatrix();
-
-                GlStateManager.disableBlend();
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
-                if (lighting) GlStateManager.enableLighting();
+                this.postRender();
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.popMatrix();
 

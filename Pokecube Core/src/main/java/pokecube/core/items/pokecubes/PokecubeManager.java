@@ -112,9 +112,10 @@ public class PokecubeManager
     {
         if (!itemStack.hasTagCompound()) return null;
         int num = getPokedexNb(itemStack);
-        if (num != 0)
+        PokedexEntry entry = Database.getEntry(num);
+        if (entry != null)
         {
-            IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(num), world);
+            IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
             if (pokemob == null) { return null; }
             Entity poke = (Entity) pokemob;
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB);

@@ -3,6 +3,7 @@
  */
 package pokecube.core.moves.templates;
 
+import java.util.BitSet;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -12,7 +13,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.Explosion;
@@ -21,6 +21,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Pokedex;
+import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -30,30 +31,68 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
+import thut.api.boom.ExplosionCustom.IEntityHitter;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
-public class Move_Explode extends Move_Ongoing
+public class Move_Explode extends Move_Basic
 {
+    private static class Hitter implements IEntityHitter
+    {
+        private final IPokemob     user;
+        private final Move_Explode move;
+        private final BitSet       hit = new BitSet();
+
+        public Hitter(IPokemob user, Move_Explode move)
+        {
+            this.user = user;
+            this.move = move;
+        }
+
+        @Override
+        public void hitEntity(Entity e, float power, Explosion boom)
+        {
+            if (hit.get(e.getEntityId()) || !(e instanceof EntityLivingBase)) return;
+            hit.set(e.getEntityId());
+
+            byte statusChange = STATUS_NON;
+            byte changeAddition = CHANGE_NONE;
+            if (move.move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.move.statusChance)
+            {
+                statusChange = move.move.statusChange;
+            }
+            if (move.move.change != CHANGE_NONE && MovesUtils.rand.nextInt(100) <= move.move.chanceChance)
+            {
+                changeAddition = move.move.change;
+            }
+            MovePacket packet = new MovePacket(user, e, move.name, move.move.type, move.getPWR(user, e), move.move.crit,
+                    statusChange, changeAddition);
+            System.out.println(e + " " + power + " " + move.move.selfDamage + " " + move.move.selfDamageType);
+            move.onAttack(packet);
+        }
+
+    }
 
     /** @param name
      * @param attackCategory */
     public Move_Explode(String name)
     {
         super(name);
+        move.selfDamage = 100;
+        move.selfDamageType = MoveEntry.TOTALHP;
     }
 
     @Override
     public void attack(IPokemob attacker, Entity attacked)
     {
-        if (attacker.getMoveStats().ongoingEffects.containsKey(this)) return;
+        if (((Entity) attacker).isDead) return;
         if (attacker instanceof EntityLiving)
         {
-            EntityLiving voltorb = (EntityLiving) attacker;
+            EntityLiving mob = (EntityLiving) attacker;
             IPokemob pokemob = attacker;
             if (pokemob.getMoveStats().timeSinceIgnited-- <= 0)
             {
-                voltorb.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
+                mob.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
                 pokemob.getMoveStats().timeSinceIgnited = 10;
             }
             if (attacker.getStatus() == STATUS_SLP)
@@ -75,26 +114,45 @@ public class Move_Explode extends Move_Ongoing
             {
                 ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
             }
-            byte statusChange = STATUS_NON;
-            byte changeAddition = CHANGE_NONE;
-            if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
+            float f1 = (float) (getPWR() * PokecubeMod.core.getConfig().blastStrength
+                    * pokemob.getStat(Stats.ATTACK, true) / 500000f);
+
+            ExplosionCustom boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
+            boom.hitter = new Hitter(pokemob, this);
+            ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.getEntityWorld(), boom);
+            MinecraftForge.EVENT_BUS.post(evt);
+            if (!evt.isCanceled())
             {
-                statusChange = move.statusChange;
+                mob.setHealth(0);// kill the mob.
+                if (PokecubeMod.core.getConfig().explosions) ((ExplosionCustom) boom).doExplosion();
+                else
+                {
+                    mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
+                            SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
+                            (1.0F + (mob.worldObj.rand.nextFloat() - mob.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+
+                    if (getPWR() > 200)
+                    {
+                        mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
+                                0.0D, 0.0D, new int[0]);
+                    }
+                    else
+                    {
+                        mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ,
+                                1.0D, 0.0D, 0.0D, new int[0]);
+                    }
+                    actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
+                            pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
+                }
             }
-            if (move.change != CHANGE_NONE && MovesUtils.rand.nextInt(100) <= move.chanceChance)
-            {
-                changeAddition = move.change;
-            }
-            MovePacket packet = new MovePacket(attacker, attacked, name, move.type, 0, move.crit, statusChange,
-                    changeAddition);
-            onAttack(packet);
+            attacker.returnToPokecube();
         }
     }
 
     @Override
     public void attack(IPokemob attacker, Vector3 attacked)
     {
-        if (attacker.getMoveStats().ongoingEffects.containsKey(this)) return;
+        if (((Entity) attacker).isDead) return;
         if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker);
         else
         {
@@ -102,6 +160,10 @@ public class Move_Explode extends Move_Ongoing
         }
     }
 
+    /** This does the somewhat normal attack code.
+     * 
+     * @param attacker
+     * @param location */
     public void actualAttack(IPokemob attacker, Vector3 location)
     {
         List<Entity> targets = ((Entity) attacker).getEntityWorld()
@@ -133,76 +195,33 @@ public class Move_Explode extends Move_Ongoing
     }
 
     @Override
-    public void doOngoingEffect(EntityLiving mob)
+    public void postAttack(MovePacket packet)
     {
-        if (!(mob instanceof IPokemob)) return;
-        IPokemob pokemob = (IPokemob) mob;
-
-        Entity attacked = mob.getAttackTarget();
-        float f1 = (float) (getPWR() * PokecubeMod.core.getConfig().blastStrength * pokemob.getStat(Stats.ATTACK, true)
-                / 100000f);
-
-        if (pokemob.isType(normal)) f1 *= 1.5f;
-
-        Explosion boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
-        ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.getEntityWorld(), boom);
-        MinecraftForge.EVENT_BUS.post(evt);
-        if (!evt.isCanceled())
-        {
-            if (PokecubeMod.core.getConfig().explosions) ((ExplosionCustom) boom).doExplosion();
-            else
+        Entity attacked = packet.attacked;
+        IPokemob pokemob = packet.attacker;
+        if (!PokecubeMod.core.getConfig().explosions)
+            if ((((EntityLiving) pokemob).getHealth() <= 0) && attacked instanceof IPokemob
+                    && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != pokemob))
             {
-                mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
-                        SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
-                        (1.0F + (mob.worldObj.rand.nextFloat() - mob.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
-
-                if (getPWR() > 200)
-                {
-                    mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
-                            0.0D, 0.0D, new int[0]);
-                }
-                else
-                {
-                    mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ, 1.0D,
-                            0.0D, 0.0D, new int[0]);
-                }
-                actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
-                        pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
-            }
-            mob.setHealth(0);
-            mob.onDeath(DamageSource.generic);
-            if (attacked instanceof IPokemob && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != mob))
+            boolean giveExp = true;
+            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp) && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer))
             {
-                boolean giveExp = true;
-                if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
-                        && !PokecubeMod.core.getConfig().pvpExp)
-                        && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer))
-                {
-                    giveExp = false;
-                }
-                if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED)
-                        && !PokecubeMod.core.getConfig().trainerExp))
-                {
-                    giveExp = false;
-                }
-                if (giveExp)
-                {
-                    // voltorb's enemy wins XP and EVs even if it didn't
-                    // attack
-                    ((IPokemob) attacked).setExp(
-                            ((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()),
-                            true);
-                    byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
-                    ((IPokemob) attacked).addEVs(evsToAdd);
-                }
+            giveExp = false;
             }
-            pokemob.returnToPokecube();
-        }
-        else
-        {
-            pokemob.setExplosionState(-1);
-            pokemob.getMoveStats().timeSinceIgnited = 0;
-        }
+            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
+            {
+            giveExp = false;
+            }
+            if (giveExp)
+            {
+            // voltorb's enemy wins XP and EVs even if it didn't
+            // attack
+            ((IPokemob) attacked).setExp(((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()), true);
+            byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
+            ((IPokemob) attacked).addEVs(evsToAdd);
+            }
+            }
+        super.postAttack(packet);
     }
 
     @Override
@@ -212,21 +231,21 @@ public class Move_Explode extends Move_Ongoing
         return null;
     }
 
-    @Override
-    public int getDuration()
-    {
-        return 3;
-    }
-
-    @Override
-    public boolean onSource()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean onTarget()
-    {
-        return false;
-    }
+    // @Override
+    // public int getDuration()
+    // {
+    // return 3;
+    // }
+    //
+    // @Override
+    // public boolean onSource()
+    // {
+    // return true;
+    // }
+    //
+    // @Override
+    // public boolean onTarget()
+    // {
+    // return false;
+    // }
 }

@@ -132,10 +132,8 @@ public class PokedexEntry
             if (type == -1)
             {
                 Biome b = v.getBiome(world);
-                for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                {
-                    if (t.toString().equalsIgnoreCase(biome)) { return BiomeDictionary.isBiomeOfType(b, t); }
-                }
+                BiomeDictionary.Type t = CompatWrapper.getBiomeType(biome);
+                if (t != null) { return CompatWrapper.isOfType(b, t); }
             }
             else
             {
@@ -157,23 +155,13 @@ public class PokedexEntry
                 String name = s.substring(1);
                 if (s.startsWith("B"))
                 {
-                    for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                    {
-                        if (t.toString().equalsIgnoreCase(name))
-                        {
-                            bannedTypes.add(t);
-                        }
-                    }
+                    BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
+                    if (t != null) bannedTypes.add(t);
                 }
                 else if (s.startsWith("W"))
                 {
-                    for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                    {
-                        if (t.toString().equalsIgnoreCase(name))
-                        {
-                            neededTypes.add(t);
-                        }
-                    }
+                    BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
+                    if (t != null) neededTypes.add(t);
                 }
             }
             Vector3 v = Vector3.getNewVector().set(mob);
@@ -183,11 +171,11 @@ public class PokedexEntry
             boolean bannedType = false;
             for (BiomeDictionary.Type t : neededTypes)
             {
-                correctType = correctType && BiomeDictionary.isBiomeOfType(b, t);
+                correctType = correctType && CompatWrapper.isOfType(b, t);
             }
             for (BiomeDictionary.Type t : bannedTypes)
             {
-                bannedType = bannedType || BiomeDictionary.isBiomeOfType(b, t);
+                bannedType = bannedType || CompatWrapper.isOfType(b, t);
             }
             return correctType && !bannedType;
         }

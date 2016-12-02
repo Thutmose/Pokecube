@@ -17,6 +17,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.MovesUtils;
+import thut.lib.CompatWrapper;
 
 public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
 {
@@ -130,23 +131,13 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
             String name = s.substring(1);
             if (s.startsWith("B"))
             {
-                for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                {
-                    if (t.toString().equalsIgnoreCase(name))
-                    {
-                        bannedTypes.add(t);
-                    }
-                }
+                BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
+                if (t != null) bannedTypes.add(t);
             }
             else if (s.startsWith("W"))
             {
-                for (BiomeDictionary.Type t : BiomeDictionary.Type.values())
-                {
-                    if (t.toString().equalsIgnoreCase(name))
-                    {
-                        neededTypes.add(t);
-                    }
-                }
+                BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
+                if (t != null) neededTypes.add(t);
             }
         }
         Biome b = actualBiome;
@@ -155,12 +146,11 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
         boolean found = false;
         for (BiomeDictionary.Type t : neededTypes)
         {
-            if (!found) found = BiomeDictionary.isBiomeOfType(b, t);
-            correctType = correctType && BiomeDictionary.isBiomeOfType(b, t);
+            correctType = correctType && CompatWrapper.isOfType(b, t);
         }
         for (BiomeDictionary.Type t : bannedTypes)
         {
-            bannedType = bannedType || BiomeDictionary.isBiomeOfType(b, t);
+            bannedType = bannedType || CompatWrapper.isOfType(b, t);
         }
         return correctType && found && !bannedType;
     }

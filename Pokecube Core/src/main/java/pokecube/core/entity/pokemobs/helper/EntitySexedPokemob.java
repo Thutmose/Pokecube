@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
@@ -21,7 +20,6 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
@@ -123,7 +121,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         }
         if (transforms && !otherTransforms
                 && ((IPokemob) male).getTransformedTo() != this) { return male.getChild(this); }
-        return getPokedexEntry().getChildNb(((IPokemob) male).getPokedexNb());
+        return getPokedexEntry().getChild(((IPokemob) male).getPokedexEntry());
     }
 
     @Override
@@ -167,7 +165,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         return loveTimer > 0 || lover != null;
     }
 
-    public void lay(int pokedexNb, IPokemob male)
+    public void lay(IPokemob male)
     {
         if (PokecubeMod.debug) System.out.println(this + " lay()");
         if (worldObj.isRemote) { return; }
@@ -176,14 +174,22 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         Vector3 pos = Vector3.getNewVector().set(this);
         if (pos.isClearOfBlocks(getEntityWorld()))
         {
-            ItemStack eggItemStack = ItemPokemobEgg.getEggStack(pokedexNb);
-            Entity eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, eggItemStack, this, male);
-            EggEvent.Lay event = new EggEvent.Lay(eggItem);
-            MinecraftForge.EVENT_BUS.post(event);
-            if (!event.isCanceled())
+            Entity eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, this, male);
+            EggEvent.Lay event;
+            try
             {
-                egg = eggItem;
-                worldObj.spawnEntityInWorld(egg);
+                event = new EggEvent.Lay(eggItem);
+                MinecraftForge.EVENT_BUS.post(event);
+                if (!event.isCanceled())
+                {
+                    egg = eggItem;
+                    worldObj.spawnEntityInWorld(egg);
+                }
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
             return;
         }
@@ -197,7 +203,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             ((EntityPokemob) male).mateWith(this);
             return;
         }
-        int childPokedexNb = (int) getChild(male);
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 2;
         if (male instanceof IHungrymob)
         {
@@ -205,16 +210,11 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             hungry.setHungerTime(hungry.getHungerTime() + hungerValue);
         }
         setHungerTime(getHungerTime() + hungerValue);
-        if (childPokedexNb > 0)
-        {
-            ((EntityPokemob) male).setLover(null);
-            ((EntityPokemob) male).resetInLove();
-
-            setAttackTarget(null);
-            ((EntityPokemob) male).setAttackTarget(null);
-
-            lay(childPokedexNb, (IPokemob) male);
-        }
+        ((EntityPokemob) male).setLover(null);
+        ((EntityPokemob) male).resetInLove();
+        setAttackTarget(null);
+        ((EntityPokemob) male).setAttackTarget(null);
+        lay((IPokemob) male);
         resetInLove();
         lover = null;
     }
@@ -283,9 +283,8 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     {
         if (entityanimal instanceof IPokemob)
         {
-            lay((int) getChild((IBreedingMob) entityanimal), (IPokemob) entityanimal);
+            lay((IPokemob) entityanimal);
         }
-
         return null;
     }
 

@@ -51,6 +51,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokemobBodies;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.Nature;
@@ -719,6 +720,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             NBTTagCompound pokemobTag = nbttagcompound.getCompoundTag(POKEMOBTAG);
             readPokemobData(pokemobTag);
+            GeneticsManager.handleLoad(this);
             return;
         }
         readOldPokemobData(nbttagcompound);
@@ -1068,6 +1070,13 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         super.specificSpawnInit();
         this.setHealth(this.getMaxHealth());
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound)
+    {
+        GeneticsManager.handleEpigenetics(this);
+        return super.writeToNBT(nbttagcompound);
     }
 
     @Override

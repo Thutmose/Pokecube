@@ -1,6 +1,7 @@
 package pokecube.core.database.abilities;
 
 import net.minecraft.entity.EntityLivingBase;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 
@@ -63,6 +64,14 @@ public abstract class Ability
      * @param mob */
     public void onUpdate(IPokemob mob)
     {
+    }
+
+    /** Called when a pokemob tries to mega evolve.
+     * 
+     * @param mob */
+    public boolean canChange(IPokemob mob, PokedexEntry changeTo)
+    {
+        return true;
     }
 
     @Override

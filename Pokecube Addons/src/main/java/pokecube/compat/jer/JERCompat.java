@@ -167,7 +167,7 @@ public class JERCompat
     {
         ArrayList<String> biomes = new ArrayList<String>();
         PokedexEntry spawnable = entry;
-        if (entry.getSpawnData() == null) spawnable = Database.getEntry(entry.getChildNb());
+        if (entry.getSpawnData() == null) spawnable = entry.getChild();
         SpawnData data;
         if ((data = spawnable.getSpawnData()) != null)
         {

@@ -234,10 +234,10 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 {
                     List<String> biomes = Lists.newArrayList();
                     PokedexEntry entry = Database.getEntry(message.data.getString("forme"));
-                    if (entry.getSpawnData() == null && entry.getChildNb() != entry.getPokedexNb())
+                    if (entry.getSpawnData() == null && entry.getChild() != entry)
                     {
                         PokedexEntry child;
-                        if ((child = Database.getEntry(entry.getChildNb())).getSpawnData() != null)
+                        if ((child = entry.getChild()).getSpawnData() != null)
                         {
                             entry = child;
                         }

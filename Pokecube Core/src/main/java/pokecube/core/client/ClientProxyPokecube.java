@@ -256,8 +256,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             @Override
             public int getColorFromItemstack(ItemStack stack, int tintIndex)
             {
-                int damage = ItemPokemobEgg.getNumber(stack);
-                PokedexEntry entry = Database.getEntry(damage);
+                PokedexEntry entry = ItemPokemobEgg.getEntry(stack);
                 if (entry != null)
                 {
                     int colour = entry.getType1().colour;

@@ -80,13 +80,9 @@ public class ExtraDatabase
         @XmlElement(name = "Pokemon")
         List<XMLPokedexEntry> entries = Lists.newArrayList();
 
-        void init(PokedexEntry base)
+        void init(PokedexEntry base) throws NullPointerException
         {
-            if (base == null)
-            {
-                System.err.println("Null Base Entry");
-                return;
-            }
+            if (base == null) { throw new NullPointerException("Null Base Entry"); }
             if (model != null && model.customTex != null)
             {
                 for (XMLForme f : model.customTex.entries)
@@ -195,7 +191,14 @@ public class ExtraDatabase
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLFile.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             XMLFile file = (XMLFile) unmarshaller.unmarshal(new StringReader(xml));
-            file.init(entry);
+            try
+            {
+                file.init(entry);
+            }
+            catch (Exception e)
+            {
+                System.out.println(xml + " " + entry);
+            }
             for (XMLPokedexEntry fileEntry : file.entries)
             {
                 if (entry == null && fileEntry != null)

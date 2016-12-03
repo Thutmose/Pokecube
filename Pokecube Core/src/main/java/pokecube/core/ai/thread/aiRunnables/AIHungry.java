@@ -113,7 +113,7 @@ public class AIHungry extends AIBase
         }
 
         double hurtTime = deathTime / 2d;
-        Random rand = new Random(entity.ticksExisted);
+        Random rand = new Random(pokemob.getRNGValue());
         int tick = rand.nextInt(100);
         if (hungerTime > hurtTime && !entity.getEntityWorld().isRemote && entity.getAttackTarget() == null
                 && !hungrymob.neverHungry() && entity.ticksExisted % 100 == tick)
@@ -188,7 +188,7 @@ public class AIHungry extends AIBase
     {
         ItemStack fruit = ((IBerryFruitBlock) b.getBlock()).getBerryStack(world, foodLoc.getPos());
 
-        if (fruit == null)
+        if (!CompatWrapper.isValid(fruit))
         {
             foodLoc.clear();
             hungrymob.noEat(null);
@@ -304,11 +304,11 @@ public class AIHungry extends AIBase
         {
             if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
             {
-                if (b == Blocks.COBBLESTONE)
+                if (b.getBlock() == Blocks.COBBLESTONE)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.GRAVEL);
                 }
-                else if (b == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
+                else if (b.getBlock() == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
                 {
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.AIR);
                 }
@@ -317,7 +317,6 @@ public class AIHungry extends AIBase
                     TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.COBBLESTONE);
                 }
             }
-
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
             berry.setEntityItemStack(new ItemStack(b.getBlock()));
             hungrymob.eat(berry);
@@ -389,8 +388,8 @@ public class AIHungry extends AIBase
         }
         if (hungrymob.isLithotroph())
         {
-            Block b = v.getBlock(world, EnumFacing.DOWN);
             IBlockState state = v.offset(EnumFacing.DOWN).getBlockState(world);
+            Block b = state.getBlock();
             if (!PokecubeTerrainChecker.isRock(state))
             {
                 Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,

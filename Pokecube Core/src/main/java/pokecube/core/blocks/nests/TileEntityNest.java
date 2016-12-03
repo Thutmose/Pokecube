@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -33,11 +35,11 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 {
 
     private List<ItemStack> inventory = CompatWrapper.makeList(27);
-
     int                     pokedexNb = 0;
-
     HashSet<IPokemob>       residents = new HashSet<IPokemob>();
     int                     time      = 0;
+
+    List<PokedexEntry>      spawns    = Lists.newArrayList();
 
     public TileEntityNest()
     {

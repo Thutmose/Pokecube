@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.Resources;
@@ -114,6 +115,8 @@ public class GuiPokemob extends GuiContainer
                 ((EntityLiving) renderMob).prevRotationYawHead = 0;
                 ((Entity) renderMob).rotationYaw = 0;
                 ((Entity) renderMob).prevRotationYaw = 0;
+                ((EntityLivingBase) renderMob).limbSwing += 0.05;
+                ((EntityLivingBase) renderMob).limbSwingAmount = 0.05f;
                 Object o = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject((Entity) renderMob);
                 if (o instanceof RenderAdvancedPokemobModel
                         || (o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)

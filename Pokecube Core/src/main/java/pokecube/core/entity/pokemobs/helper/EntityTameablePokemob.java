@@ -44,6 +44,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.client.gui.GuiInfoMessages;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.events.MoveMessageEvent;
@@ -58,6 +59,7 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.utils.TagNames;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
@@ -613,6 +615,8 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
                 this.setPokemonAIState(MEGAFORME, false);
                 IPokemob base = megaEvolve(getPokedexEntry().getBaseForme());
                 if (base == this) returning = false;
+                if (getEntityData().hasKey(TagNames.ABILITY))
+                    base.setAbility(AbilityManager.getAbility(getEntityData().getString(TagNames.ABILITY)));
                 base.returnToPokecube();
                 return;
             }

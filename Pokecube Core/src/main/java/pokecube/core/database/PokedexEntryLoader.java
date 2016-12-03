@@ -34,6 +34,7 @@ import pokecube.core.database.PokedexEntry.MegaRule;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntry.SpawnData.SpawnEntry;
 import pokecube.core.database.PokedexEntryLoader.StatsNode.Stats;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
@@ -44,24 +45,27 @@ public class PokedexEntryLoader
 {
     public static class MegaEvoRule implements MegaRule
     {
-        final ItemStack    stack;
-        final String       moveName;
+        ItemStack          stack;
+        String             moveName;
+        String             ability;
         final PokedexEntry baseForme;
 
-        public MegaEvoRule(ItemStack stack, String moveName, PokedexEntry baseForme)
+        public MegaEvoRule(PokedexEntry baseForme)
         {
-            this.stack = stack;
-            this.moveName = moveName;
+            this.stack = CompatWrapper.nullStack;
+            this.moveName = "";
+            this.ability = "";
             this.baseForme = baseForme;
         }
 
         @Override
-        public boolean shouldMegaEvolve(IPokemob mobIn)
+        public boolean shouldMegaEvolve(IPokemob mobIn, PokedexEntry entryTo)
         {
             boolean rightStack = true;
             boolean hasMove = true;
+            boolean hasAbility = true;
             boolean rule = false;
-            if (stack != null)
+            if (CompatWrapper.isValid(stack))
             {
                 rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItemMainhand());
                 rule = true;
@@ -71,7 +75,13 @@ public class PokedexEntryLoader
                 hasMove = Tools.hasMove(moveName, mobIn);
                 rule = true;
             }
-            return rule && hasMove && rightStack;
+            if (ability != null && !ability.isEmpty())
+            {
+                hasAbility = AbilityManager.hasAbility(ability, mobIn);
+                rule = true;
+            }
+            if (hasAbility && mobIn.getAbility() != null) hasAbility = mobIn.getAbility().canChange(mobIn, entryTo);
+            return rule && hasMove && rightStack && hasAbility;
         }
     }
 
@@ -553,22 +563,6 @@ public class PokedexEntryLoader
         entry.sexeRatio = xmlStats.genderRatio;
         entry.mass = xmlStats.mass;
 
-        if (xmlStats.specialEggRules != null)
-        {
-            String[] matedata = xmlStats.specialEggRules.split(";");
-            for (String s1 : matedata)
-            {
-                String[] args = s1.split(":");
-                int fatherNb = Integer.parseInt(args[0]);
-                String[] args1 = args[1].split("`");
-                int[] childNbs = new int[args1.length];
-                for (int i = 0; i < args1.length; i++)
-                {
-                    childNbs[i] = Integer.parseInt(args1[i]);
-                }
-                entry.childNumbers.put(fatherNb, childNbs);
-            }
-        }
         if (xmlStats.movementType != null)
         {
             String[] strings = xmlStats.movementType.trim().split(":");
@@ -687,6 +681,49 @@ public class PokedexEntryLoader
 
     private static void parseEvols(PokedexEntry entry, StatsNode xmlStats, boolean error)
     {
+        if (xmlStats.specialEggRules != null)
+        {
+            String[] matedata = xmlStats.specialEggRules.split(";");
+            mates:
+            for (String s1 : matedata)
+            {
+                String[] args = s1.split(":");
+                PokedexEntry fatherNb;
+                try
+                {
+                    fatherNb = Database.getEntry(Integer.parseInt(args[0]));
+                }
+                catch (NumberFormatException e)
+                {
+                    fatherNb = Database.getEntry(args[0]);
+                }
+                if (fatherNb == null)
+                {
+                    System.err.println("Error with Father for Children for " + entry);
+                    break mates;
+                }
+                String[] args1 = args[1].split("`");
+                PokedexEntry[] childNbs = new PokedexEntry[args1.length];
+                for (int i = 0; i < args1.length; i++)
+                {
+                    try
+                    {
+                        childNbs[i] = Database.getEntry(Integer.parseInt(args1[i]));
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        childNbs[i] = Database.getEntry(args1[i]);
+                    }
+                    if (childNbs[i] == null)
+                    {
+                        System.err.println("Error with Children for " + entry + " " + args1[i]);
+                        break mates;
+                    }
+                }
+                entry.childNumbers.put(fatherNb, childNbs);
+            }
+        }
+
         String numberString = xmlStats.evoTo;
         String dataString = xmlStats.evoModes;
         String fxString = xmlStats.evolAnims;
@@ -1041,6 +1078,7 @@ public class PokedexEntryLoader
                         String forme = "";
                         String item = "";
                         String move = "";
+                        String ability = "";
                         String[] args2 = s.split(":");
                         for (String s1 : args2)
                         {
@@ -1058,6 +1096,10 @@ public class PokedexEntryLoader
                             {
                                 move = arg2;
                             }
+                            else if (arg1.equals("A"))
+                            {
+                                ability = arg2;
+                            }
                         }
                         if (forme.contains("___"))
                         {
@@ -1071,10 +1113,13 @@ public class PokedexEntryLoader
                         PokedexEntry formeEntry = Database.getEntry(forme);
                         if (!forme.isEmpty() && formeEntry != null)
                         {
-                            ItemStack stack = item.isEmpty() ? null : PokecubeItems.getStack(item, false);
-                            String moveName = move;
-                            if (move.isEmpty() && stack == null) continue;
-                            MegaRule rule = new MegaEvoRule(stack, moveName, entry);
+                            ItemStack stack = item.isEmpty() ? CompatWrapper.nullStack
+                                    : PokecubeItems.getStack(item, false);
+                            if (move.isEmpty() && !CompatWrapper.isValid(stack) && ability.isEmpty()) continue;
+                            MegaEvoRule rule = new MegaEvoRule(entry);
+                            rule.ability = ability;
+                            rule.moveName = move;
+                            rule.stack = stack;
                             formeEntry.isMega = true;
                             entry.megaRules.put(formeEntry, rule);
                         }

@@ -53,7 +53,7 @@ public class RecipeHandler
             }
             PokedexEntry entry = Database.getEntry(recipe.values.get(POKEMOB));
             if (entry == null) throw new NullPointerException("No Entry for " + recipe.values.get(POKEMOB));
-            ItemStack eggOut = ItemPokemobEgg.getEggStack(entry.getPokedexNb());
+            ItemStack eggOut = ItemPokemobEgg.getEggStack(entry);
             int energy = Integer.parseInt(recipe.values.get(ENERGY));
             boolean failed = false;
             for (Object o : inputs)

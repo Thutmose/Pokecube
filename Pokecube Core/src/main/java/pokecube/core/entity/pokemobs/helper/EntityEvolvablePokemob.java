@@ -355,6 +355,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
+                    if (getAbility() != null) evolution.getEntityData().setString("Ability", getAbility().toString());
                     ((IPokemob) evolution).setEvolutionTicks(50);
                 }
             }
@@ -366,6 +367,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 if (getPokemonAIState(MEGAFORME))
                 {
                     ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
+                    if (getAbility() != null)
+                        evolution.getEntityData().setString(TagNames.ABILITY, getAbility().toString());
                     ((IPokemob) evolution).setEvolutionTicks(10);
                 }
             }

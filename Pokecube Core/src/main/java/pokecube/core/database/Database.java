@@ -645,7 +645,7 @@ public class Database
             if (base != e)
             {
                 base.copyToForm(e);
-                if (e.height == -1)
+                if (e.height <= 0)
                 {
                     e.height = base.height;
                     e.width = base.width;
@@ -736,7 +736,7 @@ public class Database
         for (PokedexEntry p : data.values())
         {
             bar.step(p.getName());
-            p.getChildNb();
+            p.getChild();
         }
         ProgressManager.pop(bar);
 

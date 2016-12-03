@@ -24,7 +24,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.blocks.berries.IMetaBlock;
-import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.lib.CompatWrapper;
 
@@ -96,10 +96,9 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
                 && !playerIn.getEntityWorld().isRemote)
         {
             TileEntityNest nest = (TileEntityNest) tile_entity;
-
-            nest.pokedexNb = ItemPokemobEgg.getNumber(playerIn.getHeldItemMainhand());
-            CompatWrapper.sendChatMessage(playerIn,
-                    new TextComponentString("Set to " + Database.getEntry(nest.pokedexNb)));
+            PokedexEntry entry = ItemPokemobEgg.getEntry(playerIn.getHeldItemMainhand());
+            if (entry != null) nest.pokedexNb = entry.getPokedexNb();
+            CompatWrapper.sendChatMessage(playerIn, new TextComponentString("Set to " + entry));
             return true;
         }
         if (state.getValue(TYPE) == 1)

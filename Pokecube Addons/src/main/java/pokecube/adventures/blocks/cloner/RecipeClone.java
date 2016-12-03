@@ -7,7 +7,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -95,14 +94,14 @@ public class RecipeClone implements IClonerRecipe
         }
         if (!wrongnum && CompatWrapper.isValid(cube) && CompatWrapper.isValid(egg))
         {
-            int pokenb = PokecubeManager.getPokedexNb(cube);
-            PokedexEntry entry = Database.getEntry(pokenb);
-            pokenb = entry.getChildNb();
+            PokedexEntry entry = PokecubeManager.getPokedexEntry(cube);
             if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-            egg.getTagCompound().setInteger("pokemobNumber", pokenb);
-            IPokemob mob = PokecubeManager.itemToPokemob(cube, worldIn);
-            if (mob.isShiny() && egg.hasTagCompound()) egg.getTagCompound().setBoolean("shiny", true);
-            egg.getTagCompound().setByte("gender", mob.getSexe());
+            egg.getTagCompound().setString("pokemob", entry.getName());
+            // IPokemob mob = PokecubeManager.itemToPokemob(cube, worldIn);
+            // TODO add in way to splice specific dna.
+            // if (mob.isShiny() && egg.hasTagCompound())
+            // egg.getTagCompound().setBoolean("shiny", true);
+            // egg.getTagCompound().setByte("gender", mob.getSexe());
             CompatWrapper.setStackSize(egg, 1);
             output = egg;
             return true;

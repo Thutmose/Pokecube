@@ -19031,11 +19031,19 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <MEGARULES forme="N'Greninja Ash':Abattlebond"/>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="lick" lvl_43="substitute" lvl_33="feintattack" lvl_23="shadowsneak" lvl_56="haze" lvl_52="doubleteam" lvl_20="smokescreen" lvl_75="watershuriken" lvl_70="nightslash" lvl_60="hydropump" lvl_5="bubble" lvl_8="quickattack" lvl_14="waterpulse" lvl_36="watershuriken" lvl_1="nightslash,roleplay,matblock,pound,growl" lvl_49="extrasensory" lvl_28="spikes"/>
             <MISC moves="acrobatics, aerialace, attract, blizzard, bounce, confide, cut, darkpulse, dig, dive, doubleteam, echoedvoice, facade, fling, frustration, gigaimpact, grassknot, gunkshot, hiddenpower, hydrocannon, hyperbeam, icebeam, icepunch, icywind, lowkick, poweruppunch, protect, raindance, rest, return, rockslide, rocksmash, rocktomb, roleplay, round, scald, secretpower, sleeptalk, smackdown, snatch, snore, spite, strength, substitute, surf, swagger, taunt, thief, toxic, uturn, waterfall, waterpledge, waterpulse"/>
         </MOVES>
+    </Pokemon>
+    <Pokemon name="Greninja Ash" number="658">
+        <STATS>
+            <BASESTATS spdef="71" spatk="153" def="67" spd="132" hp="72" atk="145"/>
+            <ABILITY normal="Battle Bond"/>
+            <TYPE type2="Dark" type1="Water"/>
+        </STATS>
     </Pokemon>
     <Pokemon name="Bunnelby" number="659" base="true">
         <STATS>

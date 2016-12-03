@@ -22,6 +22,7 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumActionResult;
@@ -36,9 +37,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
-import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -47,6 +48,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
+import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -94,18 +96,20 @@ public class ItemPokemobEgg extends Item
 
     public static ItemStack getEggStack(int pokedexNb)
     {
+        return getEggStack(Database.getEntry(pokedexNb));
+    }
+
+    public static ItemStack getEggStack(PokedexEntry entry)
+    {
         ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg);
         eggItemStack.setTagCompound(new NBTTagCompound());
-        eggItemStack.getTagCompound().setInteger("pokemobNumber", pokedexNb);
+        eggItemStack.getTagCompound().setString("pokemob", entry.getName());
         return eggItemStack;
     }
 
     public static ItemStack getEggStack(IPokemob pokemob)
     {
-        ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg);
-        eggItemStack.setTagCompound(new NBTTagCompound());
-        eggItemStack.getTagCompound().setInteger("pokemobNumber", pokemob.getPokedexNb());
-        return eggItemStack;
+        return getEggStack(pokemob.getPokedexEntry());
     }
 
     public static IPokemob getFakePokemob(World world, Vector3 location, ItemStack stack)
@@ -128,6 +132,20 @@ public class ItemPokemobEgg extends Item
 
     private static void getGenetics(IPokemob mother, IPokemob father, NBTTagCompound nbt)
     {
+        boolean oldType = false;
+
+        if (!oldType)
+        {// TODO
+            IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+            IMobGenetics mothers = ((Entity) mother).getCapability(IMobGenetics.GENETICS_CAP, null);
+            IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
+            GeneticsManager.initEgg(eggs, mothers, fathers);
+            NBTBase tag = IMobGenetics.GENETICS_CAP.getStorage().writeNBT(IMobGenetics.GENETICS_CAP, eggs, null);
+            nbt.setTag("Genes", tag);
+            nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
+            return;
+        }
+
         byte[] ivs = getIVs(father.getIVs(), mother.getIVs(), father.getEVs(), mother.getEVs());
         long ivsL = PokecubeSerializer.byteArrayAsLong(ivs);
         nbt.setLong("ivs", ivsL);
@@ -308,19 +326,19 @@ public class ItemPokemobEgg extends Item
         return Math.random() > HACHANCE ? index : 2;
     }
 
-    public static int getNumber(ItemStack stack)
+    public static PokedexEntry getEntry(ItemStack stack)
     {
-        if (!CompatWrapper.isValid(stack) || stack.getTagCompound() == null
-                || !stack.getTagCompound().hasKey("pokemobNumber")) { return -1; }
-        return stack.getTagCompound().getInteger("pokemobNumber");
+        if (!CompatWrapper.isValid(stack) || stack.getTagCompound() == null) return null;
+        if (stack.getTagCompound().hasKey("pokemobNumber"))
+            return Database.getEntry(stack.getTagCompound().getInteger("pokemobNumber"));
+        return Database.getEntry(stack.getTagCompound().getString("pokemob"));
     }
 
     public static IPokemob getPokemob(World world, ItemStack stack)
     {
-        if (!CompatWrapper.isValid(stack) || stack.getTagCompound() == null
-                || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
-        int number = stack.getTagCompound().getInteger("pokemobNumber");
-        IPokemob ret = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(number), world);
+        PokedexEntry entry = getEntry(stack);
+        if (entry == null) return null;
+        IPokemob ret = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
         return ret;
     }
 
@@ -334,6 +352,18 @@ public class ItemPokemobEgg extends Item
 
     public static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
     {
+        boolean oldType = false;
+        old:
+        if (!oldType)
+        {// TODO
+            if (!nbt.hasKey("Genes")) break old;
+            NBTBase genes = nbt.getTag("Genes");
+            IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+            IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, eggs, null, genes);
+            GeneticsManager.initFromGenes(eggs, mob);
+            return;
+        }
+
         boolean fixedShiny = nbt.getBoolean("shiny");
 
         String moveString = nbt.getString("moves");
@@ -468,10 +498,10 @@ public class ItemPokemobEgg extends Item
 
     public static boolean spawn(World world, ItemStack stack, double par2, double par4, double par6)
     {
-        int pokedexNb = getNumber(stack);
-        if (!PokecubeMod.pokemobEggs.containsKey(Integer.valueOf(pokedexNb))) { return false; }
+        PokedexEntry entry = getEntry(stack);
+        if (!PokecubeMod.pokemobEggs.containsKey(entry.getPokedexNb())) { return false; }
 
-        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb), world);
+        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(entry, world);
 
         if (entity != null)
         {
@@ -527,15 +557,13 @@ public class ItemPokemobEgg extends Item
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
-        int pokedexNb = getNumber(stack);
-        PokedexEntry entry = Pokedex.getInstance().getEntry(pokedexNb);
+        PokedexEntry entry = getEntry(stack);
         if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
     }
 
     public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
     {
-        if (!PokecubeMod.pokemobEggs.containsKey(getNumber(stack))) { return false; }
-
+        if (!PokecubeMod.pokemobEggs.containsKey(getEntry(stack).getPokedexNb())) { return false; }
         ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg, 1, stack.getItemDamage());
         if (stack.hasTagCompound()) eggItemStack.setTagCompound(stack.getTagCompound());
         else eggItemStack.setTagCompound(new NBTTagCompound());

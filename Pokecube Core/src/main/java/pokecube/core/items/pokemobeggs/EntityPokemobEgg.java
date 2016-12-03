@@ -65,10 +65,10 @@ public class EntityPokemobEgg extends EntityLiving
      * @param d1
      * @param d2
      * @param itemstack */
-    public EntityPokemobEgg(World world, double d, double d1, double d2, ItemStack itemstack, Entity placer,
-            IPokemob father)
+    public EntityPokemobEgg(World world, double d, double d1, double d2, Entity placer, IPokemob father)
     {
         this(world);
+        ItemStack itemstack = ItemPokemobEgg.getEggStack((IPokemob) placer);
         ItemPokemobEgg.initStack(placer, father, itemstack);
         this.setHeldItem(EnumHand.MAIN_HAND, itemstack);
         this.setPosition(d, d1, d2);

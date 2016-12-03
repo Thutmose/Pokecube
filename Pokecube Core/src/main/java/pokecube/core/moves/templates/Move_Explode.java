@@ -67,7 +67,6 @@ public class Move_Explode extends Move_Basic
             }
             MovePacket packet = new MovePacket(user, e, move.name, move.move.type, move.getPWR(user, e), move.move.crit,
                     statusChange, changeAddition);
-            System.out.println(e + " " + power + " " + move.move.selfDamage + " " + move.move.selfDamageType);
             move.onAttack(packet);
         }
 
@@ -114,7 +113,7 @@ public class Move_Explode extends Move_Basic
             {
                 ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
             }
-            float f1 = (float) (getPWR() * PokecubeMod.core.getConfig().blastStrength
+            float f1 = (float) (getPWR(pokemob, attacked) * PokecubeMod.core.getConfig().blastStrength
                     * pokemob.getStat(Stats.ATTACK, true) / 500000f);
 
             ExplosionCustom boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);

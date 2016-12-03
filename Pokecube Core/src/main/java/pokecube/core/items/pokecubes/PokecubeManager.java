@@ -70,6 +70,17 @@ public class PokecubeManager
         return number;
     }
 
+    public static PokedexEntry getPokedexEntry(ItemStack itemStack)
+    {
+        if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return null;
+        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
+                .getCompoundTag(TagNames.POKEMOBTAG);
+        int number = poketag.getCompoundTag(TagNames.OWNERSHIPTAG).getInteger(TagNames.POKEDEXNB);
+        if (poketag.hasNoTags() || number == 0) return Database.getEntry(getPokedexNb(itemStack));
+        String forme = poketag.getCompoundTag(TagNames.VISUALSTAG).getString(TagNames.FORME);
+        return forme.isEmpty() ? Database.getEntry(number) : Database.getEntry(forme);
+    }
+
     public static NBTTagCompound getSealTag(Entity pokemob)
     {
         IPokemob poke = (IPokemob) pokemob;
@@ -111,8 +122,7 @@ public class PokecubeManager
     public static IPokemob itemToPokemob(ItemStack itemStack, World world)
     {
         if (!itemStack.hasTagCompound()) return null;
-        int num = getPokedexNb(itemStack);
-        PokedexEntry entry = Database.getEntry(num);
+        PokedexEntry entry = getPokedexEntry(itemStack);
         if (entry != null)
         {
             IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);

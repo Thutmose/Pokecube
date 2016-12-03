@@ -80,6 +80,7 @@ import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.EvolveEvent;
@@ -322,6 +323,7 @@ public class EventsHandler
             }
         }, MegaCapability.class);
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
+        MinecraftForge.EVENT_BUS.register(new GeneticsManager());
         MinecraftForge.EVENT_BUS.register(this);
         meteorprocessor = new MeteorAreaSetter();
         new SpawnEventsHandler();

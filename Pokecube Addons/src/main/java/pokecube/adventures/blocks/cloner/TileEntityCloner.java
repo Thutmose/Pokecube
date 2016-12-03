@@ -10,12 +10,9 @@ import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,316 +27,20 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
-import pokecube.adventures.blocks.cloner.BlockCloner.EnumType;
 import pokecube.core.database.Database;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.Tools;
-import thut.api.network.PacketHandler;
 import thut.lib.CompatWrapper;
 
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityCloner extends TileEntity implements IInventory, ITickable, SimpleComponent
 {
-    public static class CraftMatrix extends InventoryCrafting
-    {
-        /** Class containing the callbacks for the events on_GUIClosed and
-         * on_CraftMaxtrixChanged. */
-        protected final Container eventHandler;
-        final TileEntityCloner    cloner;
-
-        public CraftMatrix(Container eventHandlerIn, TileEntityCloner cloner)
-        {
-            super(eventHandlerIn, 3, 3);
-            this.eventHandler = eventHandlerIn;
-            this.cloner = cloner;
-        }
-
-        @Override
-        /** Removes up to a specified number of items from an inventory slot and
-         * returns them in a new stack.
-         * 
-         * @param index
-         *            The slot to remove from.
-         * @param count
-         *            The maximum amount of items to remove. */
-        public ItemStack decrStackSize(int index, int count)
-        {
-            ItemStack ret = cloner.decrStackSize(index, count);
-            if (eventHandler != null) this.eventHandler.onCraftMatrixChanged(this);
-            return ret;
-        }
-
-        @Override
-        public int getHeight()
-        {
-            return 3;
-        }
-
-        @Override
-        /** Returns the itemstack in the slot specified (Top left is 0, 0).
-         * Args: row, column */
-        public ItemStack getStackInRowAndColumn(int row, int column)
-        {
-            return row >= 0 && row < 3 && column >= 0 && column <= 3 ? this.getStackInSlot(row + column * 3) : null;
-        }
-
-        @Override
-        /** Returns the stack in the given slot.
-         * 
-         * @param index
-         *            The slot to retrieve from. */
-        public ItemStack getStackInSlot(int index)
-        {
-            return index >= this.getSizeInventory() ? null : cloner.getStackInSlot(index);
-        }
-
-        @Override
-        public int getWidth()
-        {
-            return 3;
-        }
-
-        @Override
-        /** Removes a stack from the given slot and returns it.
-         * 
-         * @param index
-         *            The slot to remove a stack from. */
-        public ItemStack removeStackFromSlot(int index)
-        {
-            return cloner.removeStackFromSlot(index);
-        }
-
-        @Override
-        /** Sets the given item stack to the specified slot in the inventory
-         * (can be crafting or armor sections). */
-        public void setInventorySlotContents(int index, ItemStack stack)
-        {
-            cloner.setInventorySlotContents(index, stack);
-            if (eventHandler != null) eventHandler.onCraftMatrixChanged(this);
-        }
-    }
-
-    public static class CraftResult extends InventoryCraftResult
-    {
-        final TileEntityCloner cloner;
-
-        public CraftResult(TileEntityCloner cloner)
-        {
-            this.cloner = cloner;
-        }
-
-        @Override
-        public void clear()
-        {
-            cloner.setInventorySlotContents(9, null);
-        }
-
-        @Override
-        public void closeInventory(EntityPlayer player)
-        {
-        }
-
-        /** Removes up to a specified number of items from an inventory slot and
-         * returns them in a new stack.
-         * 
-         * @param index
-         *            The slot to remove from.
-         * @param count
-         *            The maximum amount of items to remove. */
-        @Override
-        public ItemStack decrStackSize(int index, int count)
-        {
-            return cloner.decrStackSize(index + 9, count);
-        }
-
-        @Override
-        public int getField(int id)
-        {
-            return 0;
-        }
-
-        @Override
-        public int getFieldCount()
-        {
-            return 0;
-        }
-
-        /** Returns the maximum stack size for a inventory slot. Seems to always
-         * be 64, possibly will be extended. */
-        @Override
-        public int getInventoryStackLimit()
-        {
-            return 64;
-        }
-
-        /** Returns the stack in the given slot.
-         * 
-         * @param index
-         *            The slot to retrieve from. */
-        @Override
-        public ItemStack getStackInSlot(int index)
-        {
-            return cloner.getStackInSlot(index + 9);
-        }
-
-        /** Returns true if automation is allowed to insert the given stack
-         * (ignoring stack size) into the given slot. */
-        @Override
-        public boolean isItemValidForSlot(int index, ItemStack stack)
-        {
-            return true;
-        }
-
-        /** Do not make give this method the name canInteractWith because it
-         * clashes with Container */
-        @Override
-        public boolean isUseableByPlayer(EntityPlayer player)
-        {
-            return true;
-        }
-
-        /** For tile entities, ensures the chunk containing the tile entity is
-         * saved to disk later - the game won't think it hasn't changed and skip
-         * it. */
-        @Override
-        public void markDirty()
-        {
-        }
-
-        @Override
-        public void openInventory(EntityPlayer player)
-        {
-        }
-
-        /** Removes a stack from the given slot and returns it.
-         * 
-         * @param index
-         *            The slot to remove a stack from. */
-        @Override
-        public ItemStack removeStackFromSlot(int index)
-        {
-            return cloner.removeStackFromSlot(index + 9);
-        }
-
-        @Override
-        public void setField(int id, int value)
-        {
-        }
-
-        /** Sets the given item stack to the specified slot in the inventory
-         * (can be crafting or armor sections). */
-        @Override
-        public void setInventorySlotContents(int index, ItemStack stack)
-        {
-            cloner.setInventorySlotContents(index + 9, stack);
-        }
-    }
-
-    public static class ClonerProcess
-    {
-        final IClonerRecipe    recipe;
-        final TileEntityCloner tile;
-        int                    needed = 0;
-
-        public ClonerProcess(IClonerRecipe recipe, TileEntityCloner tile)
-        {
-            this.recipe = recipe;
-            this.tile = tile;
-            needed = recipe.getEnergyCost();
-        }
-
-        public boolean valid()
-        {
-            if (tile.getWorld() == null) return false;
-            boolean reanimator = tile.getWorld().getBlockState(tile.getPos())
-                    .getValue(BlockCloner.VARIANT) == EnumType.FOSSIL;
-            if (reanimator)
-            {
-                if (!(recipe instanceof RecipeFossilRevive)) return false;
-                RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                return !recipe2.splicerRecipe() && recipe.matches(tile.craftMatrix, tile.getWorld());
-            }
-            if ((recipe instanceof RecipeFossilRevive))
-            {
-                RecipeFossilRevive recipe2 = (RecipeFossilRevive) recipe;
-                return recipe2.splicerRecipe() && recipe.matches(tile.craftMatrix, tile.getWorld());
-            }
-            return recipe.matches(tile.craftMatrix, tile.getWorld());
-        }
-
-        public void reset()
-        {
-            needed = recipe.getEnergyCost();
-            tile.progress = getProgress();
-        }
-
-        public boolean tick()
-        {
-            if (needed > 0)
-            {
-                needed -= Math.min(needed, tile.energy);
-                tile.energy = 0;
-                tile.progress = getProgress();
-                tile.total = recipe.getEnergyCost();
-                return true;
-            }
-            return !complete();
-        }
-
-        public int getProgress()
-        {
-            return recipe.getEnergyCost() - needed;
-        }
-
-        public boolean complete()
-        {
-            if (recipe instanceof RecipeFossilRevive)
-            {
-                ItemStack[] remaining = recipe.getRemainingItems(tile.craftMatrix);
-                for (int i = 0; i < remaining.length; i++)
-                {
-                    if (remaining[i] != null) tile.setInventorySlotContents(i, remaining[i]);
-                    else tile.decrStackSize(i, 1);
-                }
-                RecipeFossilRevive recipe = (RecipeFossilRevive) this.recipe;
-                EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(recipe.pokedexEntry,
-                        tile.getWorld());
-                if (entity != null)
-                {
-                    entity.setHealth(entity.getMaxHealth());
-                    // to avoid the death on spawn
-                    int exp = Tools.levelToXp(recipe.pokedexEntry.getEvolutionMode(), recipe.level);
-                    // that will make your pokemob around level 3-5.
-                    // You can give him more XP if you want
-                    entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);
-                    if (tile.user != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.user);
-                    EnumFacing dir = tile.getWorld().getBlockState(tile.getPos()).getValue(BlockCloner.FACING);
-                    entity.setLocationAndAngles(tile.pos.getX() + 0.5 + dir.getFrontOffsetX(), tile.pos.getY() + 1,
-                            tile.pos.getZ() + 0.5 + dir.getFrontOffsetZ(), tile.getWorld().rand.nextFloat() * 360F,
-                            0.0F);
-                    tile.getWorld().spawnEntityInWorld(entity);
-                    entity.playLivingSound();
-                }
-                return true;
-            }
-            if (tile.getStackInSlot(9) == null)
-            {
-                tile.setInventorySlotContents(9, recipe.getCraftingResult(tile.craftMatrix));
-                if (tile.craftMatrix.eventHandler != null) tile.craftMatrix.eventHandler.onCraftMatrixChanged(tile);
-                PacketHandler.sendTileUpdate(tile);
-            }
-            return false;
-        }
-    }
 
     public static int           MAXENERGY      = 256;
     public int                  energy         = 0;
-    private int                 progress       = 0;
-    private int                 total          = 0;
+    int                         progress       = 0;
+    int                         total          = 0;
     protected ClonerProcess     currentProcess = null;
     protected ClonerProcess     cloneProcess   = null;
-    public CraftMatrix          craftMatrix;
+    public ClonerCraftMatrix    craftMatrix;
     public InventoryCraftResult result;
     List<ItemStack>             inventory      = CompatWrapper.makeList(10);
 
@@ -348,7 +49,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     public TileEntityCloner()
     {
         super();
-        this.craftMatrix = new CraftMatrix(null, this);
+        this.craftMatrix = new ClonerCraftMatrix(null, this);
         cloneProcess = new ClonerProcess(new RecipeClone(), this);
     }
 

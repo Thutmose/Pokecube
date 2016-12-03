@@ -107,8 +107,8 @@ public class ContainerCloner extends Container
         this.tile = tile;
         this.pos = tile.getPos();
 
-        tile.craftMatrix = new TileEntityCloner.CraftMatrix(this, tile);
-        tile.result = new TileEntityCloner.CraftResult(tile);
+        tile.craftMatrix = new ClonerCraftMatrix(this, tile);
+        tile.result = new ClonerCraftResult(tile);
 
         this.addSlotToContainer(new SlotClonerCrafting(tile, inv.player, tile.craftMatrix, tile.result, 0, 124, 35));
 

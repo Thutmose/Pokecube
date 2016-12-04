@@ -113,13 +113,14 @@ public class SpeciesGene implements Gene
     public NBTTagCompound save()
     {
         NBTTagCompound tag = new NBTTagCompound();
+        tag.setTag("V", info.save());
         return tag;
     }
 
     @Override
     public void load(NBTTagCompound tag)
     {
-        // TODO Auto-generated method stub
+        info.load(tag.getCompoundTag("V"));
     }
 
 }

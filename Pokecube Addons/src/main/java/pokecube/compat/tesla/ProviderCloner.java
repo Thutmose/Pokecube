@@ -4,7 +4,7 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import pokecube.adventures.blocks.cloner.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 
 public class ProviderCloner implements ITeslaConsumer, ICapabilityProvider
 {

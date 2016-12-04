@@ -20,7 +20,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
-import pokecube.adventures.blocks.cloner.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;

@@ -11,7 +11,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
+import net.minecraftforge.fluids.FluidStack;
+import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import thut.lib.CompatWrapper;
@@ -43,6 +44,20 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     {
     }
 
+    @Nonnull
+    @Override
+    public List<ItemStack> getInputs()
+    {
+        return recipe.recipeItems;
+    }
+
+    @Nonnull
+    @Override
+    public List<ItemStack> getOutputs()
+    {
+        return null;
+    }
+
     public IPokemob getPokemob()
     {
         return recipe.getPokemob();
@@ -59,8 +74,26 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        ingredients.setInputs(ItemStack.class, recipe.recipeItems);
+        ingredients.setInputs(ItemStack.class, getInputs());
         ingredients.setOutput(PokedexEntry.class, recipe.pokedexEntry);
+    }
+
+    @Override
+    public List<FluidStack> getFluidInputs()
+    {
+        return null;
+    }
+
+    @Override
+    public List<FluidStack> getFluidOutputs()
+    {
+        return null;
+    }
+
+    @Override
+    public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
+    {
+
     }
 
     @Override

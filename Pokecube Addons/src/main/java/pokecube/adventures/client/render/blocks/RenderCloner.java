@@ -3,9 +3,9 @@ package pokecube.adventures.client.render.blocks;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
-import pokecube.adventures.blocks.cloner.TileEntityCloner;
-import pokecube.adventures.blocks.cloner.TileEntityCloner.CraftMatrix;
+import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
+import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
@@ -19,9 +19,8 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
     public void renderTileEntityAt(TileEntityCloner te, double x, double y, double z, float partialTicks,
             int destroyStage)
     {
-        CraftMatrix matrix = te.craftMatrix;
+        CraftMatrix matrix = te.getCraftMatrix();
         RecipeFossilRevive currentRecipe = null;
-        ;
         for (RecipeFossilRevive recipe : RecipeFossilRevive.getRecipeList())
         {
             if (recipe.matches(matrix, getWorld()))

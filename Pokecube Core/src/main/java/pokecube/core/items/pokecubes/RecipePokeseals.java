@@ -7,16 +7,14 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import pokecube.core.PokecubeItems;
 import pokecube.core.utils.TagNames;
 import thut.lib.CompatWrapper;
+import thut.lib.IDefaultRecipe;
 
-public class RecipePokeseals implements IRecipe
+public class RecipePokeseals implements IDefaultRecipe
 {
     private ItemStack toCraft = CompatWrapper.nullStack;
     // private static final String __OBFID = "CL_00000083";
@@ -39,12 +37,6 @@ public class RecipePokeseals implements IRecipe
     public int getRecipeSize()
     {
         return 10;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
     /** Used to check if a recipe matches current crafting inventory */

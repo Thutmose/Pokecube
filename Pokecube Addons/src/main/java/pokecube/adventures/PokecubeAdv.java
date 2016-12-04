@@ -67,6 +67,8 @@ public class PokecubeAdv
     public static int          GUICLONER_ID       = 4;
     public static int          GUIBIOMESETTER_ID  = 5;
     public static int          GUIAFA_ID          = 6;
+    public static int          GUISPLICER_ID      = 7;
+    public static int          GUIEXTRACTOR_ID    = 8;
 
     public static boolean      tesla              = false;
 

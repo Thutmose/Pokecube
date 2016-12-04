@@ -3,6 +3,7 @@ package pokecube.adventures;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -14,8 +15,10 @@ import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.ContainerDaycare;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.afa.TileEntityDaycare;
-import pokecube.adventures.blocks.cloner.ContainerCloner;
-import pokecube.adventures.blocks.cloner.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.container.ContainerCloner;
+import pokecube.adventures.blocks.cloner.container.ContainerGeneExtractor;
+import pokecube.adventures.blocks.cloner.container.ContainerSplicer;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import pokecube.adventures.items.bags.ContainerBag;
 
 public class CommonProxy implements IGuiHandler
@@ -58,6 +61,20 @@ public class CommonProxy implements IGuiHandler
             BlockPos pos = new BlockPos(x, y, z);
             TileEntityCloner tile = (TileEntityCloner) world.getTileEntity(pos);
             ContainerCloner cont = new ContainerCloner(player.inventory, tile);
+            return cont;
+        }
+        if (guiID == PokecubeAdv.GUISPLICER_ID)
+        {
+            BlockPos pos = new BlockPos(x, y, z);
+            IInventory tile = (IInventory) world.getTileEntity(pos);
+            ContainerSplicer cont = new ContainerSplicer(player.inventory, tile);
+            return cont;
+        }
+        if (guiID == PokecubeAdv.GUIEXTRACTOR_ID)
+        {
+            BlockPos pos = new BlockPos(x, y, z);
+            IInventory tile = (IInventory) world.getTileEntity(pos);
+            ContainerGeneExtractor cont = new ContainerGeneExtractor(player.inventory, tile);
             return cont;
         }
         if (guiID == PokecubeAdv.GUIAFA_ID)

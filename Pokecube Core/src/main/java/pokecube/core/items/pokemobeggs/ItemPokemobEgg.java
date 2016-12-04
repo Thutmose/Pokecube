@@ -40,6 +40,8 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -141,7 +143,17 @@ public class ItemPokemobEgg extends Item
             IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
             GeneticsManager.initEgg(eggs, mothers, fathers);
             NBTBase tag = IMobGenetics.GENETICS_CAP.getStorage().writeNBT(IMobGenetics.GENETICS_CAP, eggs, null);
-            nbt.setTag("Genes", tag);
+            nbt.setTag(GeneticsManager.GENES, tag);
+            try
+            {
+                SpeciesGene gene = eggs.getAlleles().get(GeneticsManager.SPECIESGENE).getExpressed();
+                SpeciesInfo info = gene.getValue();
+                nbt.setString("pokemob", info.entry.getName());
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
             nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
             return;
         }
@@ -356,8 +368,8 @@ public class ItemPokemobEgg extends Item
         old:
         if (!oldType)
         {// TODO
-            if (!nbt.hasKey("Genes")) break old;
-            NBTBase genes = nbt.getTag("Genes");
+            if (!nbt.hasKey(GeneticsManager.GENES)) break old;
+            NBTBase genes = nbt.getTag(GeneticsManager.GENES);
             IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
             IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, eggs, null, genes);
             GeneticsManager.initFromGenes(eggs, mob);

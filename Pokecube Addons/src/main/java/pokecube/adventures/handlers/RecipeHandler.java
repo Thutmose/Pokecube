@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
-import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
+import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
@@ -36,7 +36,6 @@ public class RecipeHandler
     private static final QName POKEMOB    = new QName("pokemon");
     private static final QName TAME       = new QName("tame");
     private static final QName LEVEL      = new QName("lvl");
-    private static final QName REANIMATOR = new QName("reanimator");
     private static final QName REMAIN     = new QName("remain");
 
     public static boolean      tmRecipe   = true;
@@ -61,15 +60,12 @@ public class RecipeHandler
             if (failed) { throw new NullPointerException("inputs: " + inputs); }
             int level = Integer.parseInt(recipe.values.get(LEVEL));
             int priority = 0;
-            boolean reanimator = false;
             boolean tame = false;
             if (recipe.values.containsKey(PRIORITY)) priority = Integer.parseInt(recipe.values.get(PRIORITY));
-            if (recipe.values.containsKey(REANIMATOR)) reanimator = Boolean.parseBoolean(recipe.values.get(REANIMATOR));
             if (recipe.values.containsKey(TAME)) tame = Boolean.parseBoolean(recipe.values.get(TAME));
             RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, inputs, entry, energy);
             newRecipe.level = level;
             newRecipe.setTame(tame);
-            if (!reanimator) newRecipe.setSplicer();
             newRecipe.priority = priority;
             if (recipe.values.containsKey(REMAIN))
             {

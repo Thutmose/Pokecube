@@ -6,15 +6,13 @@ import java.util.Locale;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
 import thut.lib.CompatWrapper;
+import thut.lib.IDefaultRecipe;
 
-public class RecipeWearables implements IRecipe
+public class RecipeWearables implements IDefaultRecipe
 {
     private ItemStack output = CompatWrapper.nullStack;
 
@@ -34,12 +32,6 @@ public class RecipeWearables implements IRecipe
     public int getRecipeSize()
     {
         return 10;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
     @Override

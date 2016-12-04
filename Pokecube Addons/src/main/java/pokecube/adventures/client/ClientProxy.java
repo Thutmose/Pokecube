@@ -19,6 +19,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -40,13 +41,15 @@ import pokecube.adventures.CommonProxy;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.afa.TileEntityDaycare;
-import pokecube.adventures.blocks.cloner.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import pokecube.adventures.client.gui.GUIBiomeSetter;
 import pokecube.adventures.client.gui.GuiAFA;
 import pokecube.adventures.client.gui.GuiBag;
-import pokecube.adventures.client.gui.GuiCloner;
 import pokecube.adventures.client.gui.GuiDaycare;
 import pokecube.adventures.client.gui.GuiTrainerEdit;
+import pokecube.adventures.client.gui.cloner.GuiCloner;
+import pokecube.adventures.client.gui.cloner.GuiExtractor;
+import pokecube.adventures.client.gui.cloner.GuiSplicer;
 import pokecube.adventures.client.render.blocks.RenderAFA;
 import pokecube.adventures.client.render.blocks.RenderCloner;
 import pokecube.adventures.client.render.entity.RenderTarget;
@@ -87,6 +90,10 @@ public class ClientProxy extends CommonProxy
         }
         if (guiID == PokecubeAdv.GUICLONER_ID) { return new GuiCloner(player.inventory,
                 (TileEntityCloner) world.getTileEntity(pos)); }
+        if (guiID == PokecubeAdv.GUISPLICER_ID) { return new GuiSplicer(player.inventory,
+                (IInventory) world.getTileEntity(pos)); }
+        if (guiID == PokecubeAdv.GUIEXTRACTOR_ID) { return new GuiExtractor(player.inventory,
+                (IInventory) world.getTileEntity(pos)); }
         if (guiID == PokecubeAdv.GUIBIOMESETTER_ID) { return new GUIBiomeSetter(player.getHeldItemMainhand()); }
         if (guiID == PokecubeAdv.GUIAFA_ID)
         {
@@ -145,6 +152,8 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(PokecubeAdv.ID + ":reanimator", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 1,
                 new ModelResourceLocation(PokecubeAdv.ID + ":splicer", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item2, 2,
+                new ModelResourceLocation(PokecubeAdv.ID + ":extractor", "inventory"));
 
         item2 = Item.getItemFromBlock(afa);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
@@ -196,7 +205,8 @@ public class ClientProxy extends CommonProxy
 
     @Method(modid = "thut_wearables")
     @Override
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
+            float partialTicks)
     {
         if (bag1 == null)
         {

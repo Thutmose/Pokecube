@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -34,7 +33,7 @@ public class RecipeSplice implements IPoweredRecipe
     ItemStack output = CompatWrapper.nullStack;
     ItemStack dna    = CompatWrapper.nullStack;
     ItemStack egg    = CompatWrapper.nullStack;
-    ItemStack star   = CompatWrapper.nullStack;
+    ItemStack selector   = CompatWrapper.nullStack;
 
     public RecipeSplice()
     {
@@ -69,7 +68,7 @@ public class RecipeSplice implements IPoweredRecipe
         ItemStack item;
         dna = CompatWrapper.nullStack;
         egg = CompatWrapper.nullStack;
-        star = CompatWrapper.nullStack;
+        selector = CompatWrapper.nullStack;
         boolean wrongnum = false;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
@@ -95,14 +94,14 @@ public class RecipeSplice implements IPoweredRecipe
                 egg = item.copy();
                 continue;
             }
-            else if (item.getItem() == Items.NETHER_STAR)
+            else if (!ClonerHelper.getGeneSelectors(item).isEmpty())
             {
-                if (CompatWrapper.isValid(star))
+                if (CompatWrapper.isValid(selector))
                 {
                     wrongnum = true;
                     break;
                 }
-                star = item.copy();
+                selector = item.copy();
                 continue;
             }
             wrongnum = true;
@@ -134,7 +133,7 @@ public class RecipeSplice implements IPoweredRecipe
         for (int i = 0; i < aitemstack.length; ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            if (star == null)
+            if (selector == null)
             {
                 aitemstack[i] = null;
             }

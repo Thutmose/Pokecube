@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +13,6 @@ import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.lib.CompatWrapper;
 
 public class RecipeExtract implements IPoweredRecipe
@@ -85,7 +83,7 @@ public class RecipeExtract implements IPoweredRecipe
                 source = item.copy();
                 continue;
             }
-            else if (item.getItem() instanceof ItemPokemobEgg)
+            else if (ClonerHelper.isDNAContainer(item))
             {
                 if (CompatWrapper.isValid(destination))
                 {
@@ -95,7 +93,7 @@ public class RecipeExtract implements IPoweredRecipe
                 destination = item.copy();
                 continue;
             }
-            else if (item.getItem() == Items.NETHER_STAR)
+            else if (!ClonerHelper.getGeneSelectors(item).isEmpty())
             {
                 if (CompatWrapper.isValid(selector))
                 {

@@ -4,13 +4,13 @@ import java.util.List;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import thut.lib.CompatWrapper;
+import thut.lib.IDefaultRecipe;
 
-public class RecipeBag implements IRecipe
+public class RecipeBag implements IDefaultRecipe
 {
     private ItemStack output = CompatWrapper.nullStack;
 
@@ -30,13 +30,6 @@ public class RecipeBag implements IRecipe
     public int getRecipeSize()
     {
         return 10;
-    }
-
-    @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
-    {
-        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-        return ret;
     }
 
     @Override

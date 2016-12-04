@@ -3,7 +3,6 @@ package pokecube.core.items.revive;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
@@ -11,8 +10,9 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TagNames;
 import thut.lib.CompatWrapper;
+import thut.lib.IDefaultRecipe;
 
-public class RecipeRevive implements IRecipe
+public class RecipeRevive implements IDefaultRecipe
 {
     private ItemStack healed = CompatWrapper.nullStack;
 
@@ -32,13 +32,6 @@ public class RecipeRevive implements IRecipe
     public int getRecipeSize()
     {
         return 10;
-    }
-
-    @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
-    {
-        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
-        return ret;
     }
 
     @Override

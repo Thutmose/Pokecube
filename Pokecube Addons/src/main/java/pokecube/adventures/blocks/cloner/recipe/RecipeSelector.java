@@ -8,6 +8,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import thut.lib.CompatWrapper;
 
 public class RecipeSelector implements IRecipe
 {
@@ -22,6 +23,8 @@ public class RecipeSelector implements IRecipe
     {
         recipeList.add(toAdd);
     }
+
+    ItemStack output = CompatWrapper.nullStack;
 
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)

@@ -41,6 +41,7 @@ import thut.api.entity.genetics.IMobGenetics;
 public class GeneticsManager
 {
     public static final ResourceLocation       POKECUBEGENETICS = new ResourceLocation(PokecubeMod.ID, "genetics");
+    public static final String                 GENES            = "Genes";
 
     public static final ResourceLocation       ABILITYGENE      = new ResourceLocation(PokecubeMod.ID, "ability");
     public static final ResourceLocation       COLOURGENE       = new ResourceLocation(PokecubeMod.ID, "colour");
@@ -212,8 +213,9 @@ public class GeneticsManager
             }
             if (loc.equals(SPECIESGENE))
             {
-                int[] gender = gene.getValue();
-                pokemob.setSexe((byte) gender[0]);
+                SpeciesInfo info = gene.getValue();
+                pokemob.setSexe(info.value);
+                pokemob.megaEvolve(info.entry);
                 continue;
             }
             if (loc.equals(IVSGENE))
@@ -269,16 +271,23 @@ public class GeneticsManager
             initMob(mob);
             return;
         }
-        Alleles alleles = genes.getAlleles().get(MOVESGENE);
-        alleles.getExpressed().setValue(pokemob.getMoves());
-        alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
-        alleles = genes.getAlleles().get(EVSGENE);
-        alleles.getExpressed().setValue(pokemob.getEVs());
-        alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
-        alleles = genes.getAlleles().get(SPECIESGENE);
-        Gene gene = alleles.getExpressed();
-        SpeciesInfo info = gene.getValue();
-        info.entry = pokemob.getPokedexEntry();
+        try
+        {
+            Alleles alleles = genes.getAlleles().get(MOVESGENE);
+            alleles.getExpressed().setValue(pokemob.getMoves());
+            alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
+            alleles = genes.getAlleles().get(EVSGENE);
+            alleles.getExpressed().setValue(pokemob.getEVs());
+            alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
+            alleles = genes.getAlleles().get(SPECIESGENE);
+            Gene gene = alleles.getExpressed();
+            SpeciesInfo info = gene.getValue();
+            info.entry = pokemob.getPokedexEntry();
+        }
+        catch (Exception e)
+        {
+            initMob(mob);
+        }
     }
 
     public static void initEgg(IMobGenetics eggs, IMobGenetics mothers, IMobGenetics fathers)
@@ -344,7 +353,5 @@ public class GeneticsManager
             NBTBase nbt = tag.getTag("V");
             IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, genetics, null, nbt);
         }
-
     }
-
 }

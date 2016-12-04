@@ -7,8 +7,9 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import pokecube.core.interfaces.IPokemob;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokeType;
 
 /** egg - Undefined Created using Tabula 4.1.1 */
@@ -72,8 +73,7 @@ public class ModelPokemobEgg extends ModelBase
         GL11.glPushMatrix();
         GL11.glScaled(0.25, 0.25, 0.25);
         GL11.glTranslated(0, 4.4, 0);
-
-        IPokemob pokemob = ((EntityPokemobEgg) entity).getPokemob(false);
+        PokedexEntry entry = ItemPokemobEgg.getEntry(((EntityPokemobEgg) entity).getHeldItemMainhand());
 
         Color colour = new Color(PokeType.normal.colour);
         float red = colour.getRed() / 255f;
@@ -82,10 +82,10 @@ public class ModelPokemobEgg extends ModelBase
 
         GL11.glColor3f(red, green, blue);
 
-        if (pokemob != null)
+        if (entry != null)
         {
-            if (pokemob.getType2() != PokeType.unknown) colour = new Color(pokemob.getType2().colour);
-            else colour = new Color(pokemob.getType1().colour);
+            if (entry.getType2() != PokeType.unknown) colour = new Color(entry.getType2().colour);
+            else colour = new Color(entry.getType1().colour);
         }
 
         red = colour.getRed() / 255f;
@@ -105,7 +105,7 @@ public class ModelPokemobEgg extends ModelBase
         this.Egg5.render(f5);
         this.Egg4.render(f5);
 
-        if (pokemob != null) colour = new Color(pokemob.getType1().colour);
+        if (entry != null) colour = new Color(entry.getType1().colour);
         red = colour.getRed() / 255f;
         green = colour.getGreen() / 255f;
         blue = colour.getBlue() / 255f;

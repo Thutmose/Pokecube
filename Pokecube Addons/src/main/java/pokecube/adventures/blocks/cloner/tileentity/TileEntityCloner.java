@@ -1,4 +1,4 @@
-package pokecube.adventures.blocks.cloner;
+package pokecube.adventures.blocks.cloner.tileentity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
@@ -27,84 +26,36 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.common.Optional.InterfaceList;
+import pokecube.adventures.blocks.cloner.block.BlockCloner;
+import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
+import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
+import pokecube.adventures.blocks.cloner.recipe.IPoweredProgress;
+import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSplice;
 import pokecube.core.database.Database;
+import thut.core.common.blocks.DefaultInventory;
 import thut.lib.CompatWrapper;
 
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
-public class TileEntityCloner extends TileEntity implements IInventory, ITickable, SimpleComponent
+public class TileEntityCloner extends TileEntity
+        implements ITickable, DefaultInventory, SimpleComponent, IPoweredProgress
 {
-
     public static int           MAXENERGY      = 256;
     public int                  energy         = 0;
-    int                         progress       = 0;
-    int                         total          = 0;
-    protected ClonerProcess     currentProcess = null;
-    protected ClonerProcess     cloneProcess   = null;
-    public ClonerCraftMatrix    craftMatrix;
+    public int                  progress       = 0;
+    public int                  total          = 0;
+    public PoweredProcess       currentProcess = null;
+    private CraftMatrix         craftMatrix;
     public InventoryCraftResult result;
-    List<ItemStack>             inventory      = CompatWrapper.makeList(10);
 
-    EntityPlayer                user;
+    public EntityPlayer         user;
 
     public TileEntityCloner()
     {
         super();
-        this.craftMatrix = new ClonerCraftMatrix(null, this);
-        cloneProcess = new ClonerProcess(new RecipeClone(), this);
-    }
-
-    @Override
-    public void clear()
-    {
-        for (int i = 0; i < inventory.size(); i++)
-            inventory.set(i, CompatWrapper.nullStack);
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.size();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    {
-        return inventory.get(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int count)
-    {
-        if (CompatWrapper.isValid(inventory.get(slot)))
-        {
-            ItemStack itemStack;
-            itemStack = inventory.get(slot).splitStack(count);
-            if (!CompatWrapper.isValid(inventory.get(slot)))
-            {
-                inventory.set(slot, CompatWrapper.nullStack);
-            }
-            return itemStack;
-        }
-        return CompatWrapper.nullStack;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (CompatWrapper.isValid(inventory.get(slot)))
-        {
-            ItemStack stack = inventory.get(slot);
-            inventory.set(slot, CompatWrapper.nullStack);
-            return stack;
-        }
-        return CompatWrapper.nullStack;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
-        inventory.set(index, stack);
+        /** 1 slot for output, 1 slot for gene input, 1 slot for egg input and 7
+         * slots for supporting item input. */
+        inventory = CompatWrapper.makeList(10);
     }
 
     @Override
@@ -116,7 +67,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     @Override
     public String getComponentName()
     {
-        return "splicer";
+        return "reanimator";
     }
 
     @Override
@@ -211,12 +162,6 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
     }
 
     @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
     public String getName()
     {
         return "cloner";
@@ -229,17 +174,11 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
-        if (craftMatrix != null && craftMatrix.eventHandler != null)
+        if (getCraftMatrix() != null && getCraftMatrix().eventHandler != null)
         {
-            craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
+            getCraftMatrix().eventHandler.onCraftMatrixChanged(getCraftMatrix());
         }
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-    }
-
-    @Override
-    public boolean hasCustomName()
-    {
-        return false;
     }
 
     @Override
@@ -282,9 +221,9 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
-            if (craftMatrix != null && craftMatrix.eventHandler != null)
+            if (getCraftMatrix() != null && getCraftMatrix().eventHandler != null)
             {
-                craftMatrix.eventHandler.onCraftMatrixChanged(craftMatrix);
+                getCraftMatrix().eventHandler.onCraftMatrixChanged(getCraftMatrix());
             }
         }
     }
@@ -329,14 +268,14 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             RecipeFossilRevive recipe = RecipeFossilRevive.getRecipe(Database.getEntry(entryName));
             if (recipe != null)
             {
-                currentProcess = new ClonerProcess(recipe, this);
+                currentProcess = new PoweredProcess(recipe, this);
                 currentProcess.needed = needed;
                 progress = needed;
                 total = currentProcess.recipe.getEnergyCost();
             }
             else if (needed != 0)
             {
-                currentProcess = new ClonerProcess(new RecipeClone(), this);
+                currentProcess = new PoweredProcess(new RecipeSplice(), this);
                 currentProcess.needed = needed;
                 progress = needed;
                 total = currentProcess.recipe.getEnergyCost();
@@ -344,8 +283,8 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             if (currentProcess == null || !currentProcess.valid())
             {
                 progress = 0;
-                currentProcess = cloneProcess;
-                total = currentProcess.recipe.getEnergyCost();
+                currentProcess = null;
+                total = 0;
             }
         }
     }
@@ -386,17 +325,15 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         {
             for (RecipeFossilRevive recipe : RecipeFossilRevive.getRecipeList())
             {
-                if (recipe.matches(craftMatrix, getWorld()))
+                if (recipe.matches(getCraftMatrix(), getWorld()))
                 {
-                    currentProcess = new ClonerProcess(recipe, this);
+                    currentProcess = new PoweredProcess(recipe, this);
                     break;
                 }
             }
             if (currentProcess == null)
             {
-                cloneProcess.reset();
                 total = 0;
-                currentProcess = cloneProcess;
             }
         }
         else
@@ -409,8 +346,7 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
             }
             if (!valid || done)
             {
-                cloneProcess.reset();
-                currentProcess = cloneProcess;
+                currentProcess = null;
                 progress = 0;
                 total = 0;
                 markDirty();
@@ -446,9 +382,54 @@ public class TileEntityCloner extends TileEntity implements IInventory, ITickabl
         return nbt;
     }
 
-    // 1.11
-    public boolean func_191420_l()
+    final List<ItemStack> inventory;
+
+    @Override
+    public List<ItemStack> getInventory()
     {
-        return true;
+        return inventory;
+    }
+
+    @Override
+    public int getEnergy()
+    {
+        return energy;
+    }
+
+    @Override
+    public void setEnergy(int energy)
+    {
+        this.energy = energy;
+    }
+
+    @Override
+    public int getProgress()
+    {
+        return progress;
+    }
+
+    @Override
+    public void setProgress(int progress)
+    {
+        this.progress = progress;
+    }
+
+    @Override
+    public void setCraftMatrix(CraftMatrix matrix)
+    {
+        craftMatrix = matrix;
+    }
+
+    @Override
+    public CraftMatrix getCraftMatrix()
+    {
+        if (craftMatrix == null) this.craftMatrix = new CraftMatrix(null, this, 3, 3);
+        return craftMatrix;
+    }
+
+    @Override
+    public EntityPlayer getUser()
+    {
+        return user;
     }
 }

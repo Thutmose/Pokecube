@@ -1,4 +1,4 @@
-package pokecube.adventures.blocks.cloner;
+package pokecube.adventures.blocks.cloner.block;
 
 import static java.lang.Math.max;
 
@@ -35,6 +35,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityGeneExtractor;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntitySplicer;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 import thut.core.common.blocks.BlockRotatable;
@@ -44,7 +47,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
 {
     public static enum EnumType implements IStringSerializable
     {
-        FOSSIL("reanimator"), SPLICER("splicer");
+        FOSSIL("reanimator"), SPLICER("splicer"), EXTRACTOR("extractor");
 
         final String name;
 
@@ -59,6 +62,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
             return name;
         }
     }
+
     public static final PropertyEnum<EnumType> VARIANT = PropertyEnum.create("variant", EnumType.class);
 
     public BlockCloner()
@@ -172,6 +176,16 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
+        int variant = meta & 3;
+        switch (variant)
+        {
+        case 0:
+            return new TileEntityCloner();
+        case 1:
+            return new TileEntitySplicer();
+        case 2:
+            return new TileEntityGeneExtractor();
+        }
         return new TileEntityCloner();
     }
 
@@ -227,7 +241,20 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        playerIn.openGui(PokecubeAdv.instance, PokecubeAdv.GUICLONER_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+        int gui = PokecubeAdv.GUICLONER_ID;
+        int variant = state.getValue(VARIANT).ordinal();
+        switch (variant)
+        {
+        case 0:
+            break;
+        case 1:
+            gui = PokecubeAdv.GUISPLICER_ID;
+            break;
+        case 2:
+            gui = PokecubeAdv.GUIEXTRACTOR_ID;
+            break;
+        }
+        playerIn.openGui(PokecubeAdv.instance, gui, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;
     }
 

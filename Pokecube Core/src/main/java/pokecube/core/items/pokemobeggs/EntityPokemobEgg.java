@@ -20,7 +20,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IPokemob;
@@ -151,11 +150,8 @@ public class EntityPokemobEgg extends EntityLiving
             ((Entity) pokemob).worldObj = worldObj;
             return pokemob;
         }
-        if (getHeldItemMainhand() == null || !getHeldItemMainhand().hasTagCompound()
-                || !getHeldItemMainhand().getTagCompound().hasKey("pokemobNumber"))
-            return null;
-        int number = getHeldItemMainhand().getTagCompound().getInteger("pokemobNumber");
-        PokedexEntry entry = Database.getEntry(number);
+        PokedexEntry entry = ItemPokemobEgg.getEntry(getHeldItemMainhand());
+        if (entry == null) return null;
         IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, worldObj);
         if (pokemob == null) return null;
         here.moveEntity((Entity) pokemob);

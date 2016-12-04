@@ -12,7 +12,7 @@ import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import pokecube.adventures.blocks.cloner.RecipeFossilRevive;
+import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import thut.lib.CompatWrapper;

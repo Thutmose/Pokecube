@@ -64,6 +64,10 @@ gui.jei.pokemob.evo.chance=With chance %s
 gui.jei.pokemob.gender.male=Male
 gui.jei.pokemob.gender.female=Female
 
+container.splicer=Splicer
+container.extractor=Gene Extractor
+container.cloner=Reanimator
+
 msg.nohere.txt=%s §cwill not spawn here.
 msg.noregi.txt=§cThis does not seem to be the correct location to build this.
 msg.noknowhowmakeregi.txt=§cNothing happened

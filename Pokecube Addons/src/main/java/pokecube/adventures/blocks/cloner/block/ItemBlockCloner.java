@@ -1,4 +1,4 @@
-package pokecube.adventures.blocks.cloner;
+package pokecube.adventures.blocks.cloner.block;
 
 import java.util.List;
 
@@ -38,6 +38,7 @@ public class ItemBlockCloner extends ItemBlock
     {
         subItems.add(new ItemStack(itemIn, 1, 0));
         subItems.add(new ItemStack(itemIn, 1, 1));
+        subItems.add(new ItemStack(itemIn, 1, 2));
     }
 
     /** Returns the unlocalized name of this item. This version accepts an
@@ -47,8 +48,7 @@ public class ItemBlockCloner extends ItemBlock
     public String getUnlocalizedName(ItemStack par1ItemStack)
     {
         int i = par1ItemStack.getItemDamage();
-
-        return super.getUnlocalizedName() + "." + (i == 1 ? "splicer" : "reanimator");
+        return super.getUnlocalizedName() + "." + (i == 1 ? "splicer" : i == 0 ? "reanimator" : "extractor");
     }
 
     @Override

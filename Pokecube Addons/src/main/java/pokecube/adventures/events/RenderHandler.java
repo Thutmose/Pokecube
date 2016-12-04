@@ -8,8 +8,11 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.adventures.blocks.cloner.ContainerCloner;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.adventures.blocks.cloner.ClonerHelper;
+import pokecube.adventures.blocks.cloner.container.ContainerGeneExtractor;
+import thut.api.entity.genetics.Alleles;
+import thut.api.entity.genetics.IMobGenetics;
+import thut.lib.CompatWrapper;
 
 @SideOnly(Side.CLIENT)
 public class RenderHandler
@@ -25,11 +28,12 @@ public class RenderHandler
     {
         EntityPlayer player = evt.getEntityPlayer();
         ItemStack stack = evt.getItemStack();
-        if (stack != null && stack.hasTagCompound() && stack.getTagCompound().getBoolean("isapokebag"))
+        if (!CompatWrapper.isValid(stack) || !stack.hasTagCompound()) return;
+        if (stack.getTagCompound().getBoolean("isapokebag"))
         {
             evt.getToolTip().add("PokeBag");
         }
-        if (stack != null && stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+        if (stack.getTagCompound().hasKey("dyeColour"))
         {
             String colour = I18n.format(
                     EnumDyeColor.byDyeDamage(stack.getTagCompound().getInteger("dyeColour")).getUnlocalizedName());
@@ -41,10 +45,18 @@ public class RenderHandler
             }
             if (!has) evt.getToolTip().add(colour);
         }
-        if (player == null || player.openContainer == null || stack == null) return;
-        if (player.openContainer instanceof ContainerCloner && stack.getItem() instanceof ItemPokemobEgg)
+        if (player == null || player.openContainer == null) return;
+        if (player.openContainer instanceof ContainerGeneExtractor)
         {
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("ivs"))
+            IMobGenetics genes = ClonerHelper.getGenes(stack);
+            if (genes != null)
+            {
+                for (Alleles a : genes.getAlleles().values())
+                {
+                    evt.getToolTip().add(a.getExpressed().getKey().getResourcePath());
+                }
+            }
+            if (stack.getTagCompound().hasKey("ivs"))
             {
                 evt.getToolTip().add("" + stack.getTagCompound().getLong("ivs") + ":"
                         + stack.getTagCompound().getFloat("size") + ":" + stack.getTagCompound().getByte("nature"));

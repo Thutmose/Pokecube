@@ -1,4 +1,4 @@
-package pokecube.adventures.blocks.cloner;
+package pokecube.adventures.blocks.cloner.recipe;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
 
-public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecipe
+public class RecipeFossilRevive extends ShapelessRecipes implements IPoweredRecipe
 {
     private static List<RecipeFossilRevive>                  recipeList = Lists.newArrayList();
     private static HashMap<PokedexEntry, RecipeFossilRevive> entryMap   = Maps.newHashMap();
@@ -40,8 +40,11 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     public static void addRecipe(RecipeFossilRevive toAdd)
     {
         recipeList.add(toAdd);
-        if (toAdd.pokedexEntry != null) entryMap.put(toAdd.pokedexEntry, toAdd);
-        recipeList.sort(comparator);
+        if (toAdd.pokedexEntry != null)
+        {
+            entryMap.put(toAdd.pokedexEntry, toAdd);
+            recipeList.sort(comparator);
+        }
     }
 
     public static RecipeFossilRevive getRecipe(PokedexEntry entry)
@@ -55,7 +58,6 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
     public int           level       = 20;
     public List<Integer> remainIndex = Lists.newArrayList();
     public boolean       tame        = true;
-    private boolean      splicer     = false;
     private IPokemob     pokemob;
 
     public RecipeFossilRevive(ItemStack output, List<ItemStack> inputList, PokedexEntry entry, int cost)
@@ -161,17 +163,5 @@ public class RecipeFossilRevive extends ShapelessRecipes implements IClonerRecip
             }
         }
         return aitemstack;
-    }
-
-    public RecipeFossilRevive setSplicer()
-    {
-        splicer = true;
-        return this;
-    }
-
-    @Override
-    public boolean splicerRecipe()
-    {
-        return splicer;
     }
 }

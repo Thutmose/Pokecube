@@ -1,25 +1,42 @@
-package pokecube.adventures.blocks.cloner;
+package pokecube.adventures.blocks.cloner.recipe;
+
+import java.util.List;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Lists;
 
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.lib.CompatWrapper;
 
-public class RecipeClone implements IClonerRecipe
+public class RecipeExtract implements IPoweredRecipe
 {
-    ItemStack output = CompatWrapper.nullStack;
-    ItemStack cube   = CompatWrapper.nullStack;
-    ItemStack egg    = CompatWrapper.nullStack;
-    ItemStack star   = CompatWrapper.nullStack;
+    private static List<RecipeExtract> recipeList = Lists.newArrayList();
 
-    public RecipeClone()
+    public static List<RecipeExtract> getRecipeList()
+    {
+        return Lists.newArrayList(recipeList);
+    }
+
+    public static void addRecipe(RecipeExtract toAdd)
+    {
+        recipeList.add(toAdd);
+    }
+
+    ItemStack output      = CompatWrapper.nullStack;
+    ItemStack source      = CompatWrapper.nullStack;
+    ItemStack destination = CompatWrapper.nullStack;
+    ItemStack selector    = CompatWrapper.nullStack;
+
+    public RecipeExtract()
     {
     }
 
@@ -50,59 +67,55 @@ public class RecipeClone implements IClonerRecipe
     {
         output = CompatWrapper.nullStack;
         ItemStack item;
-        cube = CompatWrapper.nullStack;
-        egg = CompatWrapper.nullStack;
-        star = CompatWrapper.nullStack;
+        source = CompatWrapper.nullStack;
+        destination = CompatWrapper.nullStack;
+        selector = CompatWrapper.nullStack;
         boolean wrongnum = false;
         for (int i = 0; i < inv.getSizeInventory(); i++)
         {
             item = inv.getStackInSlot(i);
             if (!CompatWrapper.isValid(item)) continue;
-            if (PokecubeManager.isFilled(item))
+            if (ClonerHelper.getGenes(item) != null)
             {
-                if (CompatWrapper.isValid(cube))
+                if (CompatWrapper.isValid(source))
                 {
                     wrongnum = true;
                     break;
                 }
-                cube = item.copy();
+                source = item.copy();
                 continue;
             }
             else if (item.getItem() instanceof ItemPokemobEgg)
             {
-                if (CompatWrapper.isValid(egg))
+                if (CompatWrapper.isValid(destination))
                 {
                     wrongnum = true;
                     break;
                 }
-                egg = item.copy();
+                destination = item.copy();
                 continue;
             }
             else if (item.getItem() == Items.NETHER_STAR)
             {
-                if (CompatWrapper.isValid(star))
+                if (CompatWrapper.isValid(selector))
                 {
                     wrongnum = true;
                     break;
                 }
-                star = item.copy();
+                selector = item.copy();
                 continue;
             }
             wrongnum = true;
             break;
         }
-        if (!wrongnum && CompatWrapper.isValid(cube) && CompatWrapper.isValid(egg))
+        if (!wrongnum && CompatWrapper.isValid(source) && CompatWrapper.isValid(destination))
         {
-            PokedexEntry entry = PokecubeManager.getPokedexEntry(cube);
-            if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-            egg.getTagCompound().setString("pokemob", entry.getName());
-            // IPokemob mob = PokecubeManager.itemToPokemob(cube, worldIn);
-            // TODO add in way to splice specific dna.
-            // if (mob.isShiny() && egg.hasTagCompound())
-            // egg.getTagCompound().setBoolean("shiny", true);
-            // egg.getTagCompound().setByte("gender", mob.getSexe());
-            CompatWrapper.setStackSize(egg, 1);
-            output = egg;
+            PokedexEntry entry = PokecubeManager.getPokedexEntry(source);
+            if (destination.getTagCompound() == null) destination.setTagCompound(new NBTTagCompound());
+            destination.getTagCompound().setString("pokemob", entry.getName());
+            ClonerHelper.mergeGenes(source, destination);
+            CompatWrapper.setStackSize(destination, 1);
+            output = destination;
             return true;
         }
         return false;
@@ -121,7 +134,7 @@ public class RecipeClone implements IClonerRecipe
         for (int i = 0; i < aitemstack.length; ++i)
         {
             ItemStack itemstack = inv.getStackInSlot(i);
-            if (star == null)
+            if (selector == null)
             {
                 aitemstack[i] = null;
             }
@@ -135,11 +148,5 @@ public class RecipeClone implements IClonerRecipe
             }
         }
         return aitemstack;
-    }
-
-    @Override
-    public boolean splicerRecipe()
-    {
-        return true;
     }
 }

@@ -6,9 +6,11 @@ import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.ItemBlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.afa.TileEntityDaycare;
-import pokecube.adventures.blocks.cloner.BlockCloner;
-import pokecube.adventures.blocks.cloner.ItemBlockCloner;
-import pokecube.adventures.blocks.cloner.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.block.BlockCloner;
+import pokecube.adventures.blocks.cloner.block.ItemBlockCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntityGeneExtractor;
+import pokecube.adventures.blocks.cloner.tileentity.TileEntitySplicer;
 import pokecube.adventures.blocks.siphon.BlockSiphon;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
@@ -35,7 +37,10 @@ public class BlockHandler
         cloner.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(cloner, ItemBlockCloner.class, "cloner");
         CompatWrapper.registerTileEntity(TileEntityCloner.class, "cloner");
-        PokecubeItems.addSpecificItemStack("cloner", new ItemStack(cloner, 1, 1));
+        CompatWrapper.registerTileEntity(TileEntitySplicer.class, "splicer");
+        CompatWrapper.registerTileEntity(TileEntityGeneExtractor.class, "extractor");
+        PokecubeItems.addSpecificItemStack("extractor", new ItemStack(cloner, 1, 2));
+        PokecubeItems.addSpecificItemStack("splicer", new ItemStack(cloner, 1, 1));
         PokecubeItems.addSpecificItemStack("reanimator", new ItemStack(cloner, 1, 0));
 
         afa = new BlockAFA().setUnlocalizedName("afa");

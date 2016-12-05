@@ -1,18 +1,10 @@
 package pokecube.adventures.blocks.cloner.container;
 
-import java.util.List;
-
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.crafting.CraftResult;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
@@ -21,76 +13,6 @@ import thut.lib.CompatWrapper;
 
 public class ContainerCloner extends ContainerBase
 {
-    public static class SlotClonerCrafting extends SlotCrafting
-    {
-        final TileEntityCloner cloner;
-
-        public SlotClonerCrafting(TileEntityCloner cloner, EntityPlayer player, InventoryCrafting craftingInventory,
-                IInventory inventoryIn, int slotIndex, int xPosition, int yPosition)
-        {
-            super(player, craftingInventory, inventoryIn, slotIndex, xPosition, yPosition);
-            this.cloner = cloner;
-        }
-
-        /** the itemStack passed in is the output - ie, iron ingots, and
-         * pickaxes, not ore and wood. */
-        @Override
-        protected void onCrafting(ItemStack stack)
-        {
-            super.onCrafting(stack);
-        }
-
-        @Override
-        public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack)
-        {
-            ItemStack vanilla = CraftingManager.getInstance().findMatchingRecipe(cloner.getCraftMatrix(),
-                    cloner.getWorld());
-            if (vanilla != null)
-            {
-                super.onPickupFromSlot(playerIn, stack);
-                return;
-            }
-            if (cloner.currentProcess != null) cloner.currentProcess.reset();
-            else cloner.currentProcess = null;
-            net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerCraftingEvent(playerIn, stack,
-                    cloner.getCraftMatrix());
-            this.onCrafting(stack);
-            net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
-            List<ItemStack> aitemstack = ClonerHelper.getStacks(cloner);
-            net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
-            for (int i = 0; i < aitemstack.size(); ++i)
-            {
-                ItemStack itemstack = cloner.getCraftMatrix().getStackInSlot(i);
-                ItemStack itemstack1 = aitemstack.get(i);
-
-                if (CompatWrapper.isValid(itemstack))
-                {
-                    cloner.getCraftMatrix().decrStackSize(i, 1);
-                    itemstack = cloner.getCraftMatrix().getStackInSlot(i);
-                }
-                if (CompatWrapper.isValid(itemstack1))
-                {
-                    if (!CompatWrapper.isValid(itemstack))
-                    {
-                        cloner.getCraftMatrix().setInventorySlotContents(i, itemstack1);
-                    }
-                    else if (ItemStack.areItemsEqual(itemstack, itemstack1)
-                            && ItemStack.areItemStackTagsEqual(itemstack, itemstack1))
-                    {
-                        CompatWrapper.increment(itemstack1, CompatWrapper.getStackSize(itemstack));
-                        cloner.getCraftMatrix().setInventorySlotContents(i, itemstack1);
-                    }
-                    else if (!playerIn.inventory.addItemStackToInventory(itemstack1))
-                    {
-                        playerIn.dropItem(itemstack1, false);
-                    }
-                }
-            }
-            cloner.setField(0, 0);
-        }
-
-    }
-
     public World            worldObj;
     public TileEntityCloner tile;
     public BlockPos         pos;
@@ -159,17 +81,12 @@ public class ContainerCloner extends ContainerBase
     /** Callback for when the crafting matrix is changed. */
     public void onCraftMatrixChanged(IInventory inv)
     {
-        ItemStack vanilla = CraftingManager.getInstance().findMatchingRecipe(tile.getCraftMatrix(), this.worldObj);
-        if (vanilla != null)
+        if (tile.getProcess() != null)
         {
-            tile.result.setInventorySlotContents(0, vanilla);
-        }
-        else if (tile.currentProcess != null)
-        {
-            if (!tile.currentProcess.valid())
+            if (!tile.getProcess().valid())
             {
                 tile.result.setInventorySlotContents(0, CompatWrapper.nullStack);
-                if (tile.currentProcess != null) tile.currentProcess.reset();
+                if (tile.getProcess() != null) tile.getProcess().reset();
                 tile.setField(0, 0);
                 tile.setField(1, 0);
             }

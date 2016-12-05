@@ -2,9 +2,9 @@
 	"forge_marker": 1,
 	"defaults": {
 		"textures": {
-			"#None": "pokecube_adventures:blocks/cloner"
+			"#None": "pokecube_adventures:blocks/reanimator"
 		},
-		"model": "pokecube_adventures:cloner.obj"
+		"model": "pokecube_adventures:reanimator.obj"
 	},
 	"variants": {
 		"inventory": [{

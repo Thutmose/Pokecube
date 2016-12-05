@@ -50,6 +50,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
+import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -343,6 +344,17 @@ public class ItemPokemobEgg extends Item
         if (!CompatWrapper.isValid(stack) || stack.getTagCompound() == null) return null;
         if (stack.getTagCompound().hasKey("pokemobNumber"))
             return Database.getEntry(stack.getTagCompound().getInteger("pokemobNumber"));
+        genes:
+        if (stack.getTagCompound().hasKey(GeneticsManager.GENES))
+        {
+            NBTBase genes = stack.getTagCompound().getTag(GeneticsManager.GENES);
+            IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+            IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, eggs, null, genes);
+            Alleles gene = eggs.getAlleles().get(GeneticsManager.SPECIESGENE);
+            if (gene == null) break genes;
+            SpeciesInfo info = gene.getExpressed().getValue();
+            return info.entry;
+        }
         return Database.getEntry(stack.getTagCompound().getString("pokemob"));
     }
 

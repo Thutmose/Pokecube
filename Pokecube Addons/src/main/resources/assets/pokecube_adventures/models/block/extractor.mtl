@@ -1,0 +1,7 @@
+# Blender MTL File: 'tradingtable.blend'
+# Material Count: 1
+
+newmtl None
+Kd 1.000000 1.000000 1.000000
+d 1.000000
+map_Kd pokecube_adventures:blocks/extractor

@@ -11,28 +11,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.ItemBasedSelector;
+import pokecube.core.utils.Tools;
+import thut.api.entity.genetics.Alleles;
+import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
 
 public class RecipeExtract implements IPoweredRecipe
 {
-    private static List<RecipeExtract> recipeList = Lists.newArrayList();
+    public static int ENERGYCOST  = 10000;
 
-    public static List<RecipeExtract> getRecipeList()
-    {
-        return Lists.newArrayList(recipeList);
-    }
-
-    public static void addRecipe(RecipeExtract toAdd)
-    {
-        recipeList.add(toAdd);
-    }
-
-    ItemStack output      = CompatWrapper.nullStack;
-    ItemStack source      = CompatWrapper.nullStack;
-    ItemStack destination = CompatWrapper.nullStack;
-    ItemStack selector    = CompatWrapper.nullStack;
+    ItemStack         output      = CompatWrapper.nullStack;
+    ItemStack         source      = CompatWrapper.nullStack;
+    ItemStack         destination = CompatWrapper.nullStack;
+    ItemStack         selector    = CompatWrapper.nullStack;
 
     public RecipeExtract()
     {
@@ -56,7 +48,7 @@ public class RecipeExtract implements IPoweredRecipe
     @Override
     public int getEnergyCost()
     {
-        return 10000;
+        return ENERGYCOST;
     }
 
     /** Used to check if a recipe matches current crafting inventory */
@@ -64,56 +56,36 @@ public class RecipeExtract implements IPoweredRecipe
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
         output = CompatWrapper.nullStack;
-        ItemStack item;
-        source = CompatWrapper.nullStack;
-        destination = CompatWrapper.nullStack;
-        selector = CompatWrapper.nullStack;
-        boolean wrongnum = false;
-        for (int i = 0; i < inv.getSizeInventory(); i++)
+        destination = inv.getStackInSlot(0);
+        source = inv.getStackInSlot(2);
+        selector = inv.getStackInSlot(1);
+        IMobGenetics genes;
+        source:
+        if ((genes = ClonerHelper.getGenes(source)) == null)
         {
-            item = inv.getStackInSlot(i);
-            if (!CompatWrapper.isValid(item)) continue;
-            if (ClonerHelper.getGenes(item) != null)
+            if (CompatWrapper.isValid(source)) for (ItemStack stack : ClonerHelper.DNAITEMS.keySet())
             {
-                if (CompatWrapper.isValid(source))
+                if (Tools.isSameStack(stack, source))
                 {
-                    wrongnum = true;
-                    break;
+                    Alleles alleles = ClonerHelper.DNAITEMS.get(stack);
+                    genes = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+                    genes.getAlleles().put(alleles.getExpressed().getKey(), alleles);
+                    break source;
                 }
-                source = item.copy();
-                continue;
             }
-            else if (ClonerHelper.isDNAContainer(item))
-            {
-                if (CompatWrapper.isValid(destination))
-                {
-                    wrongnum = true;
-                    break;
-                }
-                destination = item.copy();
-                continue;
-            }
-            else if (!ClonerHelper.getGeneSelectors(item).isEmpty())
-            {
-                if (CompatWrapper.isValid(selector))
-                {
-                    wrongnum = true;
-                    break;
-                }
-                selector = item.copy();
-                continue;
-            }
-            wrongnum = true;
-            break;
+            source = CompatWrapper.nullStack;
         }
-        if (!wrongnum && CompatWrapper.isValid(source) && CompatWrapper.isValid(destination))
+        if (!(ClonerHelper.isDNAContainer(destination)))
         {
-            PokedexEntry entry = PokecubeManager.getPokedexEntry(source);
-            if (destination.getTagCompound() == null) destination.setTagCompound(new NBTTagCompound());
-            destination.getTagCompound().setString("pokemob", entry.getName());
-            ClonerHelper.mergeGenes(source, destination);
-            CompatWrapper.setStackSize(destination, 1);
-            output = destination;
+            destination = CompatWrapper.nullStack;
+        }
+        if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = CompatWrapper.nullStack;
+        if (CompatWrapper.isValid(selector) && CompatWrapper.isValid(source) && CompatWrapper.isValid(destination))
+        {
+            output = destination.copy();
+            if (output.getTagCompound() == null) output.setTagCompound(new NBTTagCompound());
+            ClonerHelper.mergeGenes(genes, output, new ItemBasedSelector(selector));
+            CompatWrapper.setStackSize(output, 1);
             return true;
         }
         return false;
@@ -122,29 +94,30 @@ public class RecipeExtract implements IPoweredRecipe
     @Override
     public int getRecipeSize()
     {
-        return 9;
+        return 3;
     }
 
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
+    public ItemStack toKeep(int slot, ItemStack stackIn, InventoryCrafting inv)
     {
-        ItemStack[] aitemstack = new ItemStack[inv.getSizeInventory()];
-        for (int i = 0; i < aitemstack.length; ++i)
+        return IPoweredRecipe.super.toKeep(slot, stackIn, inv);
+    }
+
+    @Override
+    public boolean complete(IPoweredProgress tile)
+    {
+        List<ItemStack> remaining = Lists.newArrayList(getRemainingItems(tile.getCraftMatrix()));
+        for (int i = 0; i < remaining.size(); i++)
         {
-            ItemStack itemstack = inv.getStackInSlot(i);
-            if (selector == null)
-            {
-                aitemstack[i] = null;
-            }
-            else if (!PokecubeManager.isFilled(itemstack))
-            {
-                aitemstack[i] = null;
-            }
-            else
-            {
-                aitemstack[i] = itemstack.copy();
-            }
+            ItemStack stack = remaining.get(i);
+            if (CompatWrapper.isValid(stack)) tile.setInventorySlotContents(i, stack);
+            else tile.decrStackSize(i, 1);
         }
-        return aitemstack;
+        tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
+        if (tile.getCraftMatrix().eventHandler != null)
+        {
+            tile.getCraftMatrix().eventHandler.detectAndSendChanges();
+        }
+        return true;
     }
 }

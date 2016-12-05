@@ -47,6 +47,7 @@ public class GuiExtractor extends GuiContainer
     {
         int i = this.tile.getField(0);
         int j = this.tile.getField(1);
+//        System.out.println(i + " " + j);
         return j != 0 && i != 0 ? i * pixels / j : 0;
     }
 

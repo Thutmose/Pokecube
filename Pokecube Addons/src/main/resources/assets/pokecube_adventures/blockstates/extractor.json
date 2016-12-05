@@ -2,9 +2,9 @@
 	"forge_marker": 1,
 	"defaults": {
 		"textures": {
-			"#None": "pokecube_adventures:blocks/splicer"
+			"#None": "pokecube_adventures:blocks/extractor"
 		},
-		"model": "pokecube_adventures:splicer.obj"
+		"model": "pokecube_adventures:extractor.obj"
 	},
 	"variants": {
 		"inventory": [{

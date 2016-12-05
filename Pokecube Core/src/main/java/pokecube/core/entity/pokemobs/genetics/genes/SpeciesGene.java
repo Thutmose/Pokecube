@@ -56,6 +56,7 @@ public class SpeciesGene implements Gene
     }
 
     SpeciesInfo info = new SpeciesInfo();
+    Random      rand = new Random();
 
     /** The value here is of format {gender, ratio}. */
     public SpeciesGene()
@@ -69,6 +70,7 @@ public class SpeciesGene implements Gene
         SpeciesGene newGene = new SpeciesGene();
         SpeciesGene otherG = (SpeciesGene) other;
         SpeciesGene mother = info.value == IPokemob.FEMALE ? this : otherG;
+        if (info.value == otherG.info.value) mother = rand.nextFloat() < 0.5 ? this : otherG;
         newGene.setValue(mother.info.clone());
         newGene.mutate();
         return newGene;
@@ -79,7 +81,7 @@ public class SpeciesGene implements Gene
     {
         SpeciesGene newGene = new SpeciesGene();
         newGene.setValue(info.clone());
-        newGene.info.value = getSexe(newGene.info.entry.getSexeRatio(), new Random());
+        newGene.info.value = getSexe(newGene.info.entry.getSexeRatio(), rand);
         return newGene;
     }
 
@@ -123,4 +125,9 @@ public class SpeciesGene implements Gene
         info.load(tag.getCompoundTag("V"));
     }
 
+    @Override
+    public String toString()
+    {
+        return info.entry + " " + info.value;
+    }
 }

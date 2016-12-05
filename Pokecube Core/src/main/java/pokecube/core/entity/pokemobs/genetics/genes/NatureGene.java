@@ -72,6 +72,12 @@ public class NatureGene implements Gene
         return false;
     }
 
+    @Override
+    public String toString()
+    {
+        return "" + nature;
+    }
+
     private static Nature getNature(Nature nature, Nature nature2)
     {
         byte ret = 0;

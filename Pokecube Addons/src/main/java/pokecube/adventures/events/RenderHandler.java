@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
-import pokecube.adventures.blocks.cloner.container.ContainerGeneExtractor;
+import pokecube.adventures.blocks.cloner.container.ContainerBase;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
@@ -46,14 +46,14 @@ public class RenderHandler
             if (!has) evt.getToolTip().add(colour);
         }
         if (player == null || player.openContainer == null) return;
-        if (player.openContainer instanceof ContainerGeneExtractor)
+        if (player.openContainer instanceof ContainerBase)
         {
             IMobGenetics genes = ClonerHelper.getGenes(stack);
             if (genes != null)
             {
                 for (Alleles a : genes.getAlleles().values())
                 {
-                    evt.getToolTip().add(a.getExpressed().getKey().getResourcePath());
+                    evt.getToolTip().add(a.getExpressed().getKey().getResourcePath() + ": " + a.getExpressed());
                 }
             }
             if (stack.getTagCompound().hasKey("ivs"))

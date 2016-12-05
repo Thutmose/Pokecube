@@ -20,7 +20,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
-import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileClonerBase;
 import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
@@ -126,10 +126,10 @@ public class EnergyHandler
             event.addCapability(new ResourceLocation("pokecube:tesla"),
                     new ProviderSiphon((TileEntitySiphon) event.getObject()));
         }
-        else if (event.getObject() instanceof TileEntityCloner)
+        else if (event.getObject() instanceof TileClonerBase)
         {
             event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderCloner((TileEntityCloner) event.getObject()));
+                    new ProviderCloner((TileClonerBase) event.getObject()));
         }
         else if (event.getObject() instanceof TileEntityWarpPad)
         {
@@ -207,9 +207,9 @@ public class EnergyHandler
 
     public static class ProviderCloner extends EnergyStorage implements ICapabilityProvider
     {
-        private final TileEntityCloner tile;
+        private final TileClonerBase tile;
 
-        public ProviderCloner(TileEntityCloner tile)
+        public ProviderCloner(TileClonerBase tile)
         {
             super(0);
             this.tile = tile;
@@ -224,7 +224,7 @@ public class EnergyHandler
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate)
         {
-            return tile.receiveEnergy(null, maxReceive, simulate);
+            return tile.addEnergy(maxReceive, simulate);
         }
 
         @Override

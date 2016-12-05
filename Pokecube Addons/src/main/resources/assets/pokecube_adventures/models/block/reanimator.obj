@@ -1,6 +1,6 @@
 # Blender v2.78 (sub 0) OBJ File: 'cloner.blend'
 # www.blender.org
-mtllib cloner.mtl
+mtllib reanimator.mtl
 o Glass1
 v 1.000000 0.750000 0.000000
 v 0.000000 0.750000 0.000000

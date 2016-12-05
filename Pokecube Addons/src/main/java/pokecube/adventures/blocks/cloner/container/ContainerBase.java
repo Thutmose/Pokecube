@@ -49,7 +49,10 @@ public abstract class ContainerBase extends Container
             IContainerListener icrafting = this.listeners.get(i);
             for (int j = 0; j < vals.length; j++)
             {
-                if (vals[j] != tile.getField(j)) icrafting.sendProgressBarUpdate(this, j, this.tile.getField(j));
+                if (vals[j] != tile.getField(j))
+                {
+                    icrafting.sendProgressBarUpdate(this, j, this.tile.getField(j));
+                }
                 vals[j] = tile.getField(j);
             }
         }

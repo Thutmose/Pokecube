@@ -85,4 +85,10 @@ public class AbilityGene implements Gene
         return false;
     }
 
+    @Override
+    public String toString()
+    {
+        return ability.abilityIndex + " " + ability.ability;
+    }
+
 }

@@ -16,29 +16,37 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.recipes.IRecipeParser;
 import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipeInput;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
+import thut.api.entity.genetics.Alleles;
+import thut.lib.CompatWrapper;
 
 public class RecipeHandler
 {
-    private static final QName ENERGY     = new QName("cost");
-    private static final QName PRIORITY   = new QName("priority");
-    private static final QName POKEMOB    = new QName("pokemon");
-    private static final QName TAME       = new QName("tame");
-    private static final QName LEVEL      = new QName("lvl");
-    private static final QName REMAIN     = new QName("remain");
+    private static final QName ENERGY   = new QName("cost");
+    private static final QName PRIORITY = new QName("priority");
+    private static final QName POKEMOB  = new QName("pokemon");
+    private static final QName TAME     = new QName("tame");
+    private static final QName LEVEL    = new QName("lvl");
+    private static final QName REMAIN   = new QName("remain");
+    private static final QName POKEMOBA = new QName("pokemonA");
+    private static final QName POKEMOBB = new QName("pokemonB");
+    private static final QName POKEMOBE = new QName("pokemonE");
 
-    public static boolean      tmRecipe   = true;
+    public static boolean      tmRecipe = true;
 
     public static class ClonerRecipeParser implements IRecipeParser
     {
@@ -52,7 +60,6 @@ public class RecipeHandler
             }
             PokedexEntry entry = Database.getEntry(recipe.values.get(POKEMOB));
             if (entry == null) throw new NullPointerException("No Entry for " + recipe.values.get(POKEMOB));
-            ItemStack eggOut = ItemPokemobEgg.getEggStack(entry);
             int energy = Integer.parseInt(recipe.values.get(ENERGY));
             boolean failed = false;
             for (Object o : inputs)
@@ -63,7 +70,8 @@ public class RecipeHandler
             boolean tame = false;
             if (recipe.values.containsKey(PRIORITY)) priority = Integer.parseInt(recipe.values.get(PRIORITY));
             if (recipe.values.containsKey(TAME)) tame = Boolean.parseBoolean(recipe.values.get(TAME));
-            RecipeFossilRevive newRecipe = new RecipeFossilRevive(eggOut, inputs, entry, energy);
+            RecipeFossilRevive newRecipe = new RecipeFossilRevive(inputs, entry, energy);
+
             newRecipe.level = level;
             newRecipe.setTame(tame);
             newRecipe.priority = priority;
@@ -79,9 +87,97 @@ public class RecipeHandler
         }
     }
 
+    public static class SplicerRecipeParser implements IRecipeParser
+    {
+        @Override
+        public void manageRecipe(XMLRecipe recipe) throws NullPointerException
+        {
+            List<ItemStack> inputs = Lists.newArrayList();
+            for (XMLRecipeInput xml : recipe.inputs)
+            {
+                inputs.add(XMLRecipeHandler.getStack(xml));
+            }
+        }
+    }
+
+    public static class ExtractorRecipeParser implements IRecipeParser
+    {
+        @Override
+        public void manageRecipe(XMLRecipe recipe) throws NullPointerException
+        {
+            List<ItemStack> inputs = Lists.newArrayList();
+            for (XMLRecipeInput xml : recipe.inputs)
+            {
+                inputs.add(XMLRecipeHandler.getStack(xml));
+            }
+        }
+    }
+
+    public static class SelectorRecipeParser implements IRecipeParser
+    {
+        @Override
+        public void manageRecipe(XMLRecipe recipe) throws NullPointerException
+        {
+            List<ItemStack> inputs = Lists.newArrayList();
+            for (XMLRecipeInput xml : recipe.inputs)
+            {
+                inputs.add(XMLRecipeHandler.getStack(xml));
+            }
+        }
+    }
+
+    public static class DNARecipeParser implements IRecipeParser
+    {
+        @Override
+        public void manageRecipe(XMLRecipe recipe) throws NullPointerException
+        {
+            List<ItemStack> inputs = Lists.newArrayList();
+            for (XMLRecipeInput xml : recipe.inputs)
+            {
+                inputs.add(XMLRecipeHandler.getStack(xml));
+            }
+            if (inputs.size() != 1) throw new NullPointerException("Wrong number of stacks for " + recipe);
+            ItemStack stack = inputs.get(0);
+            if (!CompatWrapper.isValid(stack)) throw new NullPointerException("Invalid stack for " + recipe);
+            PokedexEntry entry = Database.getEntry(recipe.values.get(POKEMOB));
+            PokedexEntry entryA = Database.getEntry(recipe.values.get(POKEMOBA));
+            PokedexEntry entryB = Database.getEntry(recipe.values.get(POKEMOBB));
+            PokedexEntry entryE = Database.getEntry(recipe.values.get(POKEMOBE));
+
+            if (entry == null && entryA == null && entryB == null && entryE == null)
+                throw new NullPointerException("No Entry for " + recipe.values.get(POKEMOB));
+
+            if (entry == null)
+            {
+                entry = entryA == null ? entryB == null ? entryE : entryB : entryA;
+            }
+            if (entryA == null) entryA = entry;
+            if (entryB == null) entryB = entry;
+
+            SpeciesGene geneA = new SpeciesGene();
+            SpeciesInfo info = geneA.getValue();
+            info.entry = entryA;
+            SpeciesGene geneB = new SpeciesGene();
+            info = geneB.getValue();
+            info.entry = entryB;
+            Alleles alleles = new Alleles(geneA, geneB);
+            if (entryE != null)
+            {
+                SpeciesGene geneE = new SpeciesGene();
+                info = geneE.getValue();
+                info.entry = entryE;
+            }
+            ClonerHelper.registerDNA(alleles, stack);
+        }
+    }
+
     static
     {
         XMLRecipeHandler.recipeParsers.put("cloner", new ClonerRecipeParser());
+        XMLRecipeHandler.recipeParsers.put("splicer", new SplicerRecipeParser());
+        XMLRecipeHandler.recipeParsers.put("extractor", new ExtractorRecipeParser());
+        XMLRecipeHandler.recipeParsers.put("selector", new SelectorRecipeParser());
+        XMLRecipeHandler.recipeParsers.put("dna", new DNARecipeParser());
         XMLRecipeHandler.recipeFiles.add("pokeadvrecipes");
     }
 
@@ -123,11 +219,19 @@ public class RecipeHandler
         if (Config.instance.autoAddFossils) for (ItemStack stack : PokecubeItems.fossils.keySet())
         {
             PokedexEntry i = PokecubeItems.fossils.get(stack);
-            if (PokecubeMod.registered.get(i.getPokedexNb()))
+            if (Pokedex.getInstance().isRegistered(i))
             {
-                RecipeFossilRevive newRecipe = new RecipeFossilRevive(stack, Lists.newArrayList(stack), i,
+                RecipeFossilRevive newRecipe = new RecipeFossilRevive(Lists.newArrayList(), i,
                         Config.instance.fossilReanimateCost);
                 RecipeFossilRevive.addRecipe(newRecipe);
+                SpeciesGene geneA = new SpeciesGene();
+                SpeciesInfo info = geneA.getValue();
+                info.entry = i;
+                SpeciesGene geneB = new SpeciesGene();
+                info = geneB.getValue();
+                info.entry = i;
+                Alleles alleles = new Alleles(geneA, geneB);
+                ClonerHelper.registerDNA(alleles, stack);
             }
         }
     }
@@ -136,7 +240,10 @@ public class RecipeHandler
     {
         RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
                 "after:minecraft:shapeless");
+        RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
+                "after:minecraft:shapeless");
         GameRegistry.addRecipe(new RecipeBag());
+        GameRegistry.addRecipe(new RecipeSelector());
         addClonerRecipes();
     }
 }

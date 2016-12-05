@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <Recipes>
+    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Mew" priority="-1" remain="0">//Ditto 
+        <Input id="pokecube_adventures:mewhair"/>
+    </Recipe>
     <Recipe handler="cloner" lvl="15" cost="10000" pokemon="Ditto" priority="-1" remain="0">//Ditto 
         <Input id="pokecube_adventures:mewhair"/>
         <Input id="pokecube:pokemobegg" d="32767"/>
@@ -36,6 +39,13 @@
         <Input id="minecraft:diamond_block" key="S"/>
         <Input id="minecraft:golden_apple" d="1" key="M"/>
         <Input id="minecraft:nether_star" key="I"/>
+    </Recipe>
+    <Recipe map="III,SRS,SMS">//Extractor
+        <Output n="1" id="pokecube_adventures:cloner" d="2"/>
+        <Input id="pokecube:tradingtable" key="R"/>
+        <Input id="minecraft:diamond_block" key="S"/>
+        <Input id="minecraft:golden_apple" key="M"/>
+        <Input id="minecraft:gold_ingot" key="I"/>
     </Recipe>
     <Recipe map="III,SRS,SMS">//AFA
         <Output n="1" id="pokecube_adventures:afa"/>

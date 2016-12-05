@@ -83,9 +83,9 @@ public class MovesGene implements Gene
     }
 
     @Override
-    public boolean isEpigenetic()
+    public float getEpigeneticRate()
     {
-        return true;
+        return 1;
     }
 
     @Override

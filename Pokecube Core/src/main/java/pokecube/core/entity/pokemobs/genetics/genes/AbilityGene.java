@@ -80,12 +80,6 @@ public class AbilityGene implements Gene
     }
 
     @Override
-    public boolean isEpigenetic()
-    {
-        return false;
-    }
-
-    @Override
     public String toString()
     {
         return ability.abilityIndex + " " + ability.ability;

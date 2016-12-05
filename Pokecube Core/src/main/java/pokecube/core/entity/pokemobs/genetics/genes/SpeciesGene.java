@@ -104,11 +104,10 @@ public class SpeciesGene implements Gene
         info = (SpeciesInfo) value;
     }
 
-    @Override // This one is epigenetic, as pokedex entry can change via various
-              // means, which could affect breeding.
-    public boolean isEpigenetic()
+    @Override
+    public float getEpigeneticRate()
     {
-        return true;
+        return GeneticsManager.mutationRates.get(getKey());
     }
 
     @Override

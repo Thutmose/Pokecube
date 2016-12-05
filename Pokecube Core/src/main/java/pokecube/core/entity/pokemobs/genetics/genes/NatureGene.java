@@ -67,12 +67,6 @@ public class NatureGene implements Gene
     }
 
     @Override
-    public boolean isEpigenetic()
-    {
-        return false;
-    }
-
-    @Override
     public String toString()
     {
         return "" + nature;

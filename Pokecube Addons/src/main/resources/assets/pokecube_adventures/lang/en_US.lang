@@ -32,19 +32,12 @@ tile.enigmaLog.name=Enigma Wood
 tile.enigmaWood.name=Enigma Planks
 tile.enigmaLeaves.name=Enigma Leaves
 tile.warppad.name=Warp Pad
-tile.cloner.splicer.name=Splicing Device
-tile.cloner.reanimator.name=Fossil Reanimator
+tile.cloner.splicer.name=Gene Splicer
+tile.cloner.extractor.name=Gene Extractor
+tile.cloner.reanimator.name=Cloning Device
 tile.afa.amplifier.name=Ability Field Amplifier
 tile.afa.daycare.name=Daycare Block
 tile.pokesiphon.name=Energy Siphon
-
-tile.celebi.name=Mysterious Altar
-tile.groudon.name=Groudon Altar
-tile.kyogre.name=Kyogre Altar
-tile.hooh.name=Ho-oh Altar
-tile.regice.name=Regice Core
-tile.regirock.name=Regirock Core
-tile.registeel.name=Registeel Core
 
 gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer

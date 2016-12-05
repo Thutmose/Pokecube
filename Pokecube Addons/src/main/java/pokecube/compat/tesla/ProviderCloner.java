@@ -4,13 +4,13 @@ import net.darkhax.tesla.api.ITeslaConsumer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
+import pokecube.adventures.blocks.cloner.tileentity.TileClonerBase;
 
 public class ProviderCloner implements ITeslaConsumer, ICapabilityProvider
 {
-    private final TileEntityCloner tile;
+    private final TileClonerBase tile;
 
-    public ProviderCloner(TileEntityCloner tile)
+    public ProviderCloner(TileClonerBase tile)
     {
         this.tile = tile;
     }
@@ -18,7 +18,7 @@ public class ProviderCloner implements ITeslaConsumer, ICapabilityProvider
     @Override
     public long givePower(long power, boolean simulated)
     {
-        return tile.receiveEnergy(null, (int) power, simulated);
+        return tile.addEnergy((int) Math.min(Integer.MAX_VALUE, power), simulated);
     }
 
     @Override

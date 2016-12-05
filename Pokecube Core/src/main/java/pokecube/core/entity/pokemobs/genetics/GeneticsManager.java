@@ -65,7 +65,7 @@ public class GeneticsManager
         mutationRates.put(MOVESGENE, 0.0f);
         mutationRates.put(IVSGENE, 0.1f);
         mutationRates.put(EVSGENE, 0.1f);
-        mutationRates.put(SPECIESGENE, 0.0f);
+        mutationRates.put(SPECIESGENE, 0.1f);
     }
 
     public static void init()

@@ -1,5 +1,7 @@
 package pokecube.core.entity.pokemobs.genetics.epigenes;
 
+import java.util.Arrays;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
@@ -81,9 +83,15 @@ public class MovesGene implements Gene
     }
 
     @Override
-    public boolean isEpigenetic()
+    public float getEpigeneticRate()
     {
-        return true;
+        return 1;
+    }
+
+    @Override
+    public String toString()
+    {
+        return Arrays.toString(moves);
     }
 
 }

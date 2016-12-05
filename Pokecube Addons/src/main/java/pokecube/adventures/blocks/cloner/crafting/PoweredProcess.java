@@ -1,46 +1,63 @@
 package pokecube.adventures.blocks.cloner.crafting;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pokecube.adventures.blocks.cloner.block.BlockCloner;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredProgress;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
+import pokecube.adventures.blocks.cloner.recipe.RecipeExtract;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.Tools;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSplice;
+import pokecube.adventures.blocks.cloner.tileentity.TileClonerBase;
 import thut.api.network.PacketHandler;
+import thut.lib.CompatWrapper;
 
 public class PoweredProcess
 {
-    public final IPoweredRecipe recipe;
-    final IPoweredProgress      tile;
-    final World                 world;
-    final BlockPos              pos;
-    public int                  needed = 0;
+    private static final RecipeExtract EXTRACT = new RecipeExtract();
+    private static final RecipeSplice  SPLICE  = new RecipeSplice();
 
-    public PoweredProcess(IPoweredRecipe recipe, IPoweredProgress tile)
+    public static IPoweredRecipe findRecipe(IPoweredProgress tile, World world)
     {
-        this.recipe = recipe;
+        if (CompatWrapper.isValid(tile.getStackInSlot(tile.getOutputSlot()))) return null;
+        if (tile.isValid(RecipeFossilRevive.class)) for (RecipeFossilRevive recipe : RecipeFossilRevive.getRecipeList())
+            if (recipe.matches(tile.getCraftMatrix(), world)) { return recipe; }
+        if (tile.isValid(RecipeExtract.class) && EXTRACT.matches(tile.getCraftMatrix(), world)) { return EXTRACT; }
+        if (tile.isValid(RecipeSplice.class) && SPLICE.matches(tile.getCraftMatrix(), world)) { return SPLICE; }
+        return null;
+    }
+
+    public IPoweredRecipe recipe;
+    IPoweredProgress      tile;
+    World                 world;
+    BlockPos              pos;
+    public int            needed = 0;
+
+    public PoweredProcess()
+    {
+    }
+
+    public PoweredProcess setTile(IPoweredProgress tile)
+    {
         this.tile = tile;
         this.world = ((TileEntity) tile).getWorld();
         this.pos = ((TileEntity) tile).getPos();
-        needed = recipe.getEnergyCost();
+        this.recipe = findRecipe(tile, world);
+        if (recipe != null) needed = recipe.getEnergyCost();
+        return this;
     }
 
     public boolean valid()
     {
-        if (world == null) return false;
+        if (world == null || recipe == null) return false;
         return recipe.matches(tile.getCraftMatrix(), world);
     }
 
     public void reset()
     {
-        needed = recipe.getEnergyCost();
+        if (recipe != null) needed = recipe.getEnergyCost();
+        else needed = 0;
         tile.setProgress(getProgress());
     }
 
@@ -48,55 +65,46 @@ public class PoweredProcess
     {
         if (needed > 0)
         {
-            needed -= Math.min(needed, tile.getEnergy());
-            tile.setEnergy(0);
             tile.setProgress(getProgress());
             return true;
         }
         return !complete();
     }
 
+    /** @return the amount of energy already consumed. */
     public int getProgress()
     {
+        if (recipe == null) return 0;
         return recipe.getEnergyCost() - needed;
     }
 
     public boolean complete()
     {
-        if (recipe instanceof RecipeFossilRevive)
+        if (recipe == null || tile == null) return false;
+        boolean ret = recipe.complete(tile);
+        if (!CompatWrapper.isValid(tile.getStackInSlot(tile.getOutputSlot())))
         {
-            ItemStack[] remaining = recipe.getRemainingItems(tile.getCraftMatrix());
-            for (int i = 0; i < remaining.length; i++)
-            {
-                if (remaining[i] != null) tile.setInventorySlotContents(i, remaining[i]);
-                else tile.decrStackSize(i, 1);
-            }
-            RecipeFossilRevive recipe = (RecipeFossilRevive) this.recipe;
-            EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(recipe.pokedexEntry, world);
-            if (entity != null)
-            {
-                entity.setHealth(entity.getMaxHealth());
-                // to avoid the death on spawn
-                int exp = Tools.levelToXp(recipe.pokedexEntry.getEvolutionMode(), recipe.level);
-                // that will make your pokemob around level 3-5.
-                // You can give him more XP if you want
-                entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);
-                if (tile.getUser() != null && recipe.tame) ((IPokemob) entity).setPokemonOwner(tile.getUser());
-                EnumFacing dir = world.getBlockState(pos).getValue(BlockCloner.FACING);
-                entity.setLocationAndAngles(pos.getX() + 0.5 + dir.getFrontOffsetX(), pos.getY() + 1,
-                        pos.getZ() + 0.5 + dir.getFrontOffsetZ(), world.rand.nextFloat() * 360F, 0.0F);
-                world.spawnEntityInWorld(entity);
-                entity.playLivingSound();
-            }
-            return true;
-        }
-        if (tile.getStackInSlot(9) == null)
-        {
-            tile.setInventorySlotContents(9, recipe.getCraftingResult(tile.getCraftMatrix()));
+            tile.setInventorySlotContents(tile.getOutputSlot(), recipe.getCraftingResult(tile.getCraftMatrix()));
             if (tile.getCraftMatrix().eventHandler != null)
                 tile.getCraftMatrix().eventHandler.onCraftMatrixChanged(tile);
             PacketHandler.sendTileUpdate((TileEntity) tile);
         }
-        return false;
+        if (ret)
+        {
+            setTile(tile);
+            PacketHandler.sendTileUpdate((TileEntity) tile);
+        }
+        return ret;
+    }
+
+    public NBTTagCompound save()
+    {
+        NBTTagCompound tag = new NBTTagCompound();
+        return tag;
+    }
+
+    public static PoweredProcess load(NBTTagCompound tag, TileClonerBase tile)
+    {
+        return null;
     }
 }

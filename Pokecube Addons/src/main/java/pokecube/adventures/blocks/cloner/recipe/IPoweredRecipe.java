@@ -1,8 +1,10 @@
 package pokecube.adventures.blocks.cloner.recipe;
 
-import net.minecraft.item.crafting.IRecipe;
+import thut.lib.IDefaultRecipe;
 
-public interface IPoweredRecipe extends IRecipe
+public interface IPoweredRecipe extends IDefaultRecipe
 {
     int getEnergyCost();
+
+    boolean complete(IPoweredProgress tile);
 }

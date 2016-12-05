@@ -1,27 +1,49 @@
 package pokecube.adventures.blocks.cloner.recipe;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import pokecube.adventures.blocks.cloner.ClonerHelper;
+import pokecube.adventures.blocks.cloner.IGeneSelector;
+import thut.api.entity.genetics.Alleles;
+import thut.api.entity.genetics.Gene;
 import thut.lib.CompatWrapper;
+import thut.lib.IDefaultRecipe;
 
-public class RecipeSelector implements IRecipe
+public class RecipeSelector implements IDefaultRecipe
 {
-    private static List<RecipeSelector> recipeList = Lists.newArrayList();
-
-    public static List<RecipeSelector> getRecipeList()
+    public static class ItemBasedSelector implements IGeneSelector
     {
-        return Lists.newArrayList(recipeList);
+        final ItemStack selector;
+
+        public ItemBasedSelector(ItemStack selector)
+        {
+            this.selector = selector;
+        }
+
+        @Override
+        public Alleles merge(Alleles source, Alleles destination)
+        {
+            Set<Class<? extends Gene>> selected = ClonerHelper.getGeneSelectors(selector);
+            if (selected.contains(source.getExpressed().getClass()))
+            {
+                if (destination == null) return source;
+                return IGeneSelector.super.merge(source, destination);
+            }
+            return null;
+        }
     }
 
-    public static void addRecipe(RecipeSelector toAdd)
+    private static Map<ItemStack, Float> selectorValues = Maps.newHashMap();
+
+    public static void addSelector(ItemStack stack, Float value)
     {
-        recipeList.add(toAdd);
+        selectorValues.put(stack, value);
     }
 
     ItemStack output = CompatWrapper.nullStack;
@@ -29,36 +51,31 @@ public class RecipeSelector implements IRecipe
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        // TODO Auto-generated method stub
+        if (inv.getSizeInventory() < getRecipeSize()) return false;
+        ItemStack book = inv.getStackInSlot(0);
+        ItemStack modifier = inv.getStackInSlot(1);
+        if (ClonerHelper.getGeneSelectors(book).isEmpty() || !CompatWrapper.isValid(modifier)) return false;
+
+        System.out.println(inv.getSizeInventory() + " " + inv.getStackInSlot(0));
         return false;
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        // TODO Auto-generated method stub
-        return null;
+        return output;
     }
 
     @Override
     public int getRecipeSize()
     {
-        // TODO Auto-generated method stub
-        return 0;
+        return 2;
     }
 
     @Override
     public ItemStack getRecipeOutput()
     {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv)
-    {
-        // TODO Auto-generated method stub
-        return null;
+        return output;
     }
 
 }

@@ -1,16 +1,13 @@
 package pokecube.adventures.blocks.cloner.recipe;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
+import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
+import thut.core.common.blocks.DefaultInventory;
 
-public interface IPoweredProgress extends IInventory
+public interface IPoweredProgress extends DefaultInventory
 {
-    int getEnergy();
-
-    void setEnergy(int energy);
-
-    int getProgress();
+    int addEnergy(int energy, boolean simulate);
 
     void setProgress(int progress);
 
@@ -19,4 +16,12 @@ public interface IPoweredProgress extends IInventory
     void setCraftMatrix(CraftMatrix matrix);
 
     EntityPlayer getUser();
+
+    PoweredProcess getProcess();
+
+    void setProcess(PoweredProcess process);
+
+    boolean isValid(Class<? extends IPoweredRecipe> recipe);
+
+    int getOutputSlot();
 }

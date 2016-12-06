@@ -118,7 +118,7 @@ public abstract class ContainerBase extends Container
             }
             if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper
                     .getStackSize(itemstack)) { return CompatWrapper.nullStack; }
-            slot.onPickupFromSlot(playerIn, itemstack1);
+            slot.func_190901_a(playerIn, itemstack1);
         }
         return itemstack;
     }

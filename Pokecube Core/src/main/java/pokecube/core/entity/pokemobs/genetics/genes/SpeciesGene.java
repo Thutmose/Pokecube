@@ -71,7 +71,9 @@ public class SpeciesGene implements Gene
         SpeciesGene otherG = (SpeciesGene) other;
         SpeciesGene mother = info.value == IPokemob.FEMALE ? this : otherG;
         if (info.value == otherG.info.value) mother = rand.nextFloat() < 0.5 ? this : otherG;
+        SpeciesGene father = mother == otherG ? this : otherG;
         newGene.setValue(mother.info.clone());
+        newGene.info.entry = newGene.info.entry.getChild(father.info.entry);
         newGene.mutate();
         return newGene;
     }

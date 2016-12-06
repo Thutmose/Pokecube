@@ -2,6 +2,8 @@ package pokecube.adventures.items;
 
 import java.util.List;
 
+import com.google.common.collect.Lists;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -39,8 +41,9 @@ import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.lib.CompatItem;
 
-public class ItemTarget extends Item
+public class ItemTarget extends CompatItem
 {
     public ItemTarget()
     {
@@ -124,13 +127,13 @@ public class ItemTarget extends Item
 
     @SideOnly(Side.CLIENT)
     @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    protected List<ItemStack> getTabItems(Item itemIn, CreativeTabs tab)
     {
+        List<ItemStack> subItems = Lists.newArrayList();
         subItems.add(new ItemStack(itemIn, 1, 0));
         subItems.add(new ItemStack(itemIn, 1, 1));
         subItems.add(new ItemStack(itemIn, 1, 3));
+        return subItems;
     }
 
     /** Returns the unlocalized name of this item. This version accepts an
@@ -380,17 +383,6 @@ public class ItemTarget extends Item
             return EnumActionResult.SUCCESS;
         }
         return EnumActionResult.FAIL;
-    }
-
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand)
-    {
-        return onItemRightClick(player.getHeldItem(hand), world, player, hand);
-    }
-
-    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand,
-            EnumFacing side, float hitX, float hitY, float hitZ)
-    {
-        return onItemUse(playerIn.getHeldItem(hand), playerIn, worldIn, pos, hand, side, hitX, hitY, hitZ);
     }
 
 }

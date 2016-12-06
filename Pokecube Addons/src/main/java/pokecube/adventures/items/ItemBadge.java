@@ -14,8 +14,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
+import thut.lib.CompatItem;
 
-public class ItemBadge extends Item
+public class ItemBadge extends CompatItem
 {
     public static ArrayList<String> variants = Lists.newArrayList();
 
@@ -64,12 +65,11 @@ public class ItemBadge extends Item
         return true;
     }
 
-    @Override
-    /** returns a list of items with the same ID, but different meta (eg: dye
-     * returns 16 items) */
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
+    @Override
+    protected List<ItemStack> getTabItems(Item itemIn, CreativeTabs tab)
     {
+        List<ItemStack> subItems = Lists.newArrayList();
         ItemStack stack;
         for (String s : variants)
         {
@@ -78,6 +78,7 @@ public class ItemBadge extends Item
             stack.getTagCompound().setString("type", s);
             subItems.add(stack);
         }
+        return subItems;
     }
 
     @Override

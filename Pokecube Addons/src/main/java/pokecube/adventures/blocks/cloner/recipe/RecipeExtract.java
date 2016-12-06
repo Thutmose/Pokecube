@@ -30,8 +30,20 @@ public class RecipeExtract implements IPoweredRecipe
     ItemStack         destination = CompatWrapper.nullStack;
     ItemStack         selector    = CompatWrapper.nullStack;
 
+    public boolean    fixed       = false;
+
     public RecipeExtract()
     {
+    }
+
+    public RecipeExtract(boolean fixed)
+    {
+        this.fixed = fixed;
+    }
+
+    public void setSelector(ItemStack selector)
+    {
+        this.selector = selector;
     }
 
     @Override
@@ -91,7 +103,7 @@ public class RecipeExtract implements IPoweredRecipe
         output = CompatWrapper.nullStack;
         destination = inv.getStackInSlot(0);
         source = inv.getStackInSlot(2);
-        selector = inv.getStackInSlot(1);
+        if (!fixed) selector = inv.getStackInSlot(1);
         IMobGenetics genes;
         source:
         if ((genes = ClonerHelper.getGenes(source)) == null)

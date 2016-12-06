@@ -16,14 +16,16 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.block.BlockCloner;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 
-// TODO @InterfaceList({ @Interface(iface =
-// "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityCloner extends TileClonerBase implements SimpleComponent
 {
     public static int MAXENERGY = 256;
@@ -62,8 +64,8 @@ public class TileEntityCloner extends TileClonerBase implements SimpleComponent
      * @param context
      * @param args
      * @return */
-    // TODO @Optional.Method(modid = "OpenComputers")
-    public Object[] getInfo(Context context, Arguments args) throws Exception
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getOldInfo(Context context, Arguments args) throws Exception
     {
         ArrayList<Object> ret = new ArrayList<>();
         int i = args.checkInteger(0);
@@ -141,12 +143,6 @@ public class TileEntityCloner extends TileClonerBase implements SimpleComponent
     }
 
     @Override
-    public void invalidate()
-    {
-        super.invalidate();
-    }
-
-    @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
         switch (index)
@@ -164,12 +160,6 @@ public class TileEntityCloner extends TileClonerBase implements SimpleComponent
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void onChunkUnload()
-    {
-        super.onChunkUnload();
     }
 
     /** Called when you receive a TileEntityData packet for the location this

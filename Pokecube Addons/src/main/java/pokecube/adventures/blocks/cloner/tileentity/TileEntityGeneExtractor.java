@@ -1,6 +1,12 @@
 package pokecube.adventures.blocks.cloner.tileentity;
 
+import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Context;
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
@@ -9,7 +15,8 @@ import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
 
-public class TileEntityGeneExtractor extends TileClonerBase
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class TileEntityGeneExtractor extends TileClonerBase implements SimpleComponent
 {
     public TileEntityGeneExtractor()
     {
@@ -55,5 +62,17 @@ public class TileEntityGeneExtractor extends TileClonerBase
     public boolean isValid(Class<? extends IPoweredRecipe> recipe)
     {
         return recipe == RecipeExtract.class;
+    }
+
+    @Override
+    public String getComponentName()
+    {
+        return "dnaExtractor";
+    }
+
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getSourceInfo(Context context, Arguments args) throws Exception
+    {
+        return null;
     }
 }

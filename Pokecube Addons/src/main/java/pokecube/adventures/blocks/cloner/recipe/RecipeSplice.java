@@ -26,8 +26,20 @@ public class RecipeSplice implements IPoweredRecipe
     ItemStack         egg        = CompatWrapper.nullStack;
     ItemStack         selector   = CompatWrapper.nullStack;
 
+    public boolean    fixed      = false;
+
     public RecipeSplice()
     {
+    }
+
+    public RecipeSplice(boolean fixed)
+    {
+        this.fixed = fixed;
+    }
+
+    public void setSelector(ItemStack selector)
+    {
+        this.selector = selector;
     }
 
     @Override
@@ -58,7 +70,7 @@ public class RecipeSplice implements IPoweredRecipe
         output = CompatWrapper.nullStack;
         dna = inv.getStackInSlot(0);
         egg = inv.getStackInSlot(2);
-        selector = inv.getStackInSlot(1);
+        if (!fixed) selector = inv.getStackInSlot(1);
         if (ClonerHelper.getGenes(dna) == null)
         {
             dna = CompatWrapper.nullStack;

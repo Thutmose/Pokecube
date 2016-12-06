@@ -1,13 +1,17 @@
 package pokecube.adventures.blocks.cloner.tileentity;
 
+import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSplice;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 
-public class TileEntitySplicer extends TileClonerBase
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
 {
     public TileEntitySplicer()
     {
@@ -49,4 +53,12 @@ public class TileEntitySplicer extends TileClonerBase
     {
         return recipe == RecipeSplice.class;
     }
+
+    @Override
+    public String getComponentName()
+    {
+        return "dnaSplicer";
+    }
+    
+    
 }

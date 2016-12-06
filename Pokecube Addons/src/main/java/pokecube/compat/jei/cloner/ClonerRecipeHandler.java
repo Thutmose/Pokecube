@@ -12,7 +12,7 @@ public class ClonerRecipeHandler implements IRecipeHandler<RecipeFossilRevive>
 {
 
     @Nonnull
-    @Override
+    @Deprecated
     public String getRecipeCategoryUid()
     {
         return JEICompat.REANIMATOR;

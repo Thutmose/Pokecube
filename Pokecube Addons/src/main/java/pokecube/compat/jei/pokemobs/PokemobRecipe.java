@@ -2,14 +2,12 @@ package pokecube.compat.jei.pokemobs;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import thut.lib.CompatWrapper;
+import thut.lib.IDefaultRecipe;
 
-public class PokemobRecipe implements IRecipe
+public class PokemobRecipe implements IDefaultRecipe
 {
     EvolutionData data;
 
@@ -40,12 +38,6 @@ public class PokemobRecipe implements IRecipe
     public ItemStack getRecipeOutput()
     {
         return CompatWrapper.nullStack;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 
 }

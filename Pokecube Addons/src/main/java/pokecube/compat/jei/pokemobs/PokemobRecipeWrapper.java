@@ -13,6 +13,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.fluids.FluidStack;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -39,8 +40,26 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
         ingredients.setOutput(PokedexEntry.class, recipe.data.evolution);
     }
 
+    @Deprecated
+    public List<FluidStack> getFluidInputs()
+    {
+        return null;
+    }
+
+    @Deprecated
+    public List<FluidStack> getFluidOutputs()
+    {
+        return null;
+    }
+
     @Override
     public void drawInfo(Minecraft minecraft, int recipeWidth, int recipeHeight, int mouseX, int mouseY)
+    {
+
+    }
+
+    @Deprecated
+    public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
     {
 
     }
@@ -143,7 +162,6 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
         Biome b = actualBiome;
         boolean correctType = true;
         boolean bannedType = false;
-        boolean found = false;
         for (BiomeDictionary.Type t : neededTypes)
         {
             correctType = correctType && CompatWrapper.isOfType(b, t);
@@ -152,13 +170,25 @@ public class PokemobRecipeWrapper implements ICraftingRecipeWrapper
         {
             bannedType = bannedType || CompatWrapper.isOfType(b, t);
         }
-        return correctType && found && !bannedType;
+        return correctType && !bannedType;
     }
 
     @Override
     public boolean handleClick(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
     {
         return false;
+    }
+
+    @Deprecated
+    public List<?> getInputs()
+    {
+        return null;
+    }
+
+    @Deprecated
+    public List<ItemStack> getOutputs()
+    {
+        return null;
     }
 
 }

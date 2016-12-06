@@ -13,6 +13,12 @@ public class PokemobRecipeHandler implements IRecipeHandler<PokemobRecipe>
         return PokemobRecipe.class;
     }
 
+    @Deprecated
+    public String getRecipeCategoryUid()
+    {
+        return JEICompat.POKEMOB;
+    }
+
     @Override
     public String getRecipeCategoryUid(PokemobRecipe recipe)
     {

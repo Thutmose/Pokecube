@@ -18,6 +18,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
+import thut.api.TickHandler;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
@@ -277,8 +278,8 @@ public class AIMate extends AIBase
         }
         if (breedingMob.getLover() instanceof EntityLiving)
         {
-            Vector3 loc = Vector3.getNewVector().set(entity).findNextSolidBlock(world, Vector3.secondAxisNeg,
-                    entity.posY);
+            Vector3 loc = Vector3.getNewVector().set(entity).findNextSolidBlock(
+                    TickHandler.getInstance().getWorldCache(entity.dimension), Vector3.secondAxisNeg, entity.posY);
             if (loc != null) ((EntityLiving) breedingMob.getLover()).getNavigator().tryMoveToXYZ(loc.x, loc.y, loc.x,
                     pokemob.getMovementSpeed());
         }

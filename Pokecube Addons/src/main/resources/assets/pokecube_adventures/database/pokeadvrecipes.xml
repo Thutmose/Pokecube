@@ -1,6 +1,14 @@
 <?xml version="1.0"?>
 <Recipes>
-    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Mew" priority="-1" remain="0">//Ditto 
+    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Genesect" chance="0.1" priority="-1" remain="0">//Mew DNA
+        <Input id="pokecube:fossil">
+            <tag>{pokemon:"kabuto"}</tag>
+        </Input>
+    </Recipe>
+    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Mew" chance="0.1" priority="-1" remain="0">//Mew DNA
+        <Input id="pokecube_adventures:mewhair"/>
+    </Recipe>
+    <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Mewtwo" chance="0.9" priority="-1" remain="0">//Mew DNA
         <Input id="pokecube_adventures:mewhair"/>
     </Recipe>
     <Recipe handler="cloner" lvl="15" cost="10000" pokemon="Ditto" priority="-1" remain="0">//Ditto 

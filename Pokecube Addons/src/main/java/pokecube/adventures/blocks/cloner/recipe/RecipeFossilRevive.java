@@ -14,7 +14,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.block.BlockCloner;
+import pokecube.adventures.comands.Config;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -44,9 +47,9 @@ public class RecipeFossilRevive implements IPoweredRecipe
     public static void addRecipe(RecipeFossilRevive toAdd)
     {
         recipeList.add(toAdd);
-        if (toAdd.pokedexEntry != null)
+        if (toAdd.getPokedexEntry() != null)
         {
-            entryMap.put(toAdd.pokedexEntry, toAdd);
+            entryMap.put(toAdd.getPokedexEntry(), toAdd);
             recipeList.sort(comparator);
         }
     }
@@ -56,20 +59,25 @@ public class RecipeFossilRevive implements IPoweredRecipe
         return entryMap.get(entry);
     }
 
-    public PokedexEntry          pokedexEntry;
-    public int                   energyCost;
-    public int                   priority    = 0;
-    public int                   level       = 20;
-    public List<Integer>         remainIndex = Lists.newArrayList();
-    public List<String>          neededGenes = Lists.newArrayList();
-    public final List<ItemStack> recipeItems;
-    public boolean               tame        = true;
-    private IPokemob             pokemob;
+    public static RecipeFossilRevive ANYMATCH    = new RecipeFossilRevive(Lists.newArrayList(), Database.missingno,
+            Config.instance.fossilReanimateCost);
+
+    private PokedexEntry             pokedexEntry;
+    private PokedexEntry             actualEntry;
+    public int                       energyCost;
+    public int                       priority    = 0;
+    public int                       level       = 20;
+    public List<Integer>             remainIndex = Lists.newArrayList();
+    public List<String>              neededGenes = Lists.newArrayList();
+    public final List<ItemStack>     recipeItems;
+    public boolean                   tame        = true;
+    private IPokemob                 pokemob;
 
     public RecipeFossilRevive(List<ItemStack> inputList, PokedexEntry entry, int cost)
     {
         this.recipeItems = inputList;
         this.pokedexEntry = entry;
+        actualEntry = entry;
         this.energyCost = cost;
     }
 
@@ -85,18 +93,23 @@ public class RecipeFossilRevive implements IPoweredRecipe
         return this;
     }
 
+    public PokedexEntry getPokedexEntry()
+    {
+        return actualEntry;
+    }
+
     public IPokemob getPokemob()
     {
-        if (pokemob == null && pokedexEntry != null)
+        if (pokemob == null && getPokedexEntry() != null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createPokemob(pokedexEntry, null);
+            pokemob = (IPokemob) PokecubeMod.core.createPokemob(getPokedexEntry(), null);
             if (pokemob == null)
             {
-                this.pokedexEntry = null;
+                this.actualEntry = null;
             }
             else
             {
-                pokemob.setPokedexEntry(pokedexEntry);
+                pokemob.setPokedexEntry(getPokedexEntry());
             }
         }
         return pokemob;
@@ -110,32 +123,34 @@ public class RecipeFossilRevive implements IPoweredRecipe
         ItemStack dna = inv.getStackInSlot(0);
         ItemStack egg = inv.getStackInSlot(1);
         if (!(CompatWrapper.isValid(egg) && CompatWrapper.isValid(dna))) return false;
-
-        List<ItemStack> list = Lists.newArrayList(this.recipeItems);
-        for (int i = 0; i < inv.getHeight(); ++i)
+        PokedexEntry entry = ClonerHelper.getFromGenes(dna);
+        if (pokedexEntry == Database.missingno && entry != null)
         {
-            for (int j = 0; j < inv.getWidth(); ++j)
+            tame = !entry.legendary;
+            actualEntry = entry;
+        }
+        if (entry != getPokedexEntry() || getPokedexEntry() == null) return false;
+        List<ItemStack> list = Lists.newArrayList(recipeItems);
+        for (int i = 2; i < inv.getSizeInventory(); i++)
+        {
+            ItemStack itemstack = inv.getStackInSlot(i);
+            if (CompatWrapper.isValid(itemstack))
             {
-                ItemStack itemstack = inv.getStackInRowAndColumn(j, i);
+                boolean flag = false;
 
-                if (CompatWrapper.isValid(itemstack))
+                for (ItemStack itemstack1 : list)
                 {
-                    boolean flag = false;
-
-                    for (ItemStack itemstack1 : list)
+                    boolean matches = false;
+                    if (itemstack1.getMetadata() == 32767) matches = itemstack.getItem() == itemstack1.getItem();
+                    else matches = Tools.isSameStack(itemstack, itemstack1);
+                    if (matches)
                     {
-                        boolean matches = false;
-                        if (itemstack1.getMetadata() == 32767) matches = itemstack.getItem() == itemstack1.getItem();
-                        else matches = Tools.isSameStack(itemstack, itemstack1);
-                        if (matches)
-                        {
-                            flag = true;
-                            list.remove(itemstack1);
-                            break;
-                        }
+                        flag = true;
+                        list.remove(itemstack1);
+                        break;
                     }
-                    if (!flag) { return false; }
                 }
+                if (!flag) { return false; }
             }
         }
         return list.isEmpty();
@@ -185,12 +200,12 @@ public class RecipeFossilRevive implements IPoweredRecipe
         tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
         World world = ((TileEntity) tile).getWorld();
         BlockPos pos = ((TileEntity) tile).getPos();
-        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(pokedexEntry, world);
+        EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(getPokedexEntry(), world);
         if (entity != null)
         {
             entity.setHealth(entity.getMaxHealth());
             // to avoid the death on spawn
-            int exp = Tools.levelToXp(pokedexEntry.getEvolutionMode(), level);
+            int exp = Tools.levelToXp(getPokedexEntry().getEvolutionMode(), level);
             // that will make your pokemob around level 3-5.
             // You can give him more XP if you want
             entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);

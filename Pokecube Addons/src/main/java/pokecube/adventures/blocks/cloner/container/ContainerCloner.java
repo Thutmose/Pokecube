@@ -6,10 +6,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
-import pokecube.adventures.blocks.cloner.crafting.CraftResult;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
 import thut.core.common.blocks.SmartSlot;
-import thut.lib.CompatWrapper;
 
 public class ContainerCloner extends ContainerBase
 {
@@ -24,10 +22,8 @@ public class ContainerCloner extends ContainerBase
         this.worldObj = tile.getWorld();
         this.pos = tile.getPos();
         tile.setCraftMatrix(new CraftMatrix(this, tile, 3, 3));
-        tile.result = new CraftResult(tile, 9);
 
-        this.addSlotToContainer(
-                new SlotClonerCrafting(tile, inv.player, tile.getCraftMatrix(), tile.result, 0, 124, 35));
+        this.addSlotToContainer(new SmartSlot(tile, tile.getOutputSlot(), 124, 35));
 
         int di = 17;
         int di2 = 9;
@@ -36,10 +32,10 @@ public class ContainerCloner extends ContainerBase
         int i = 0;
         int j = 0;
         this.addSlotToContainer(new SmartSlot(tile.getCraftMatrix(), 0, dj - 21 + j * 18, di + i * 18)
-                .setTex("minecraft:textures/items/potion_bottle_empty.png"));
+                .setTex("pokecube_adventures:textures/items/slot_bottle.png"));
         i = 2;
         this.addSlotToContainer(new SmartSlot(tile.getCraftMatrix(), 1, dj - 21 + j * 18, di + i * 18)
-                .setTex("minecraft:textures/items/spawn_egg.png"));
+                .setTex("pokecube_adventures:textures/items/slot_dna.png"));
 
         i = 0;
         this.addSlotToContainer(new SmartSlot(tile.getCraftMatrix(), 2, dj + j * 18, di + di2 + i * 18));
@@ -85,7 +81,6 @@ public class ContainerCloner extends ContainerBase
         {
             if (!tile.getProcess().valid())
             {
-                tile.result.setInventorySlotContents(0, CompatWrapper.nullStack);
                 if (tile.getProcess() != null) tile.getProcess().reset();
                 tile.setField(0, 0);
                 tile.setField(1, 0);

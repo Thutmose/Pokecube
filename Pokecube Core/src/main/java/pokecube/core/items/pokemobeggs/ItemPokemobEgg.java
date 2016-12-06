@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import org.nfunk.jep.JEP;
-
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
@@ -58,33 +56,9 @@ import thut.lib.CompatWrapper;
 /** @author Manchou */
 public class ItemPokemobEgg extends Item
 {
-    public static double                   PLAYERDIST         = 2;
-    public static double                   MOBDIST            = 4;
-    public static double                   HACHANCE           = 0.1;
-    public static double                   SHINYRATE          = 4096;
-    public static double                   SHINYMULTI         = 0.5;
-    public static String                   epigeneticFunction = "(((m + f + 256) * 31) / 512)";
-    private static JEP                     epigeneticParser   = new JEP();
-    static HashMap<PokedexEntry, IPokemob> fakeMobs           = new HashMap<PokedexEntry, IPokemob>();
-
-    public static void initJEP()
-    {
-        epigeneticParser = new JEP();
-        epigeneticParser.initFunTab();
-        epigeneticParser.addStandardFunctions();
-        epigeneticParser.initSymTab(); // clear the contents of the symbol table
-        epigeneticParser.addStandardConstants();
-        epigeneticParser.addComplex();
-        // table
-        epigeneticParser.addVariable("f", 0);
-        epigeneticParser.addVariable("m", 0);
-        epigeneticParser.parseExpression(epigeneticFunction);
-    }
-
-    static
-    {
-        initJEP();
-    }
+    public static double                   PLAYERDIST = 2;
+    public static double                   MOBDIST    = 4;
+    static HashMap<PokedexEntry, IPokemob> fakeMobs   = new HashMap<PokedexEntry, IPokemob>();
 
     public static byte[] getColour(int[] fatherColours, int[] motherColours)
     {
@@ -135,208 +109,24 @@ public class ItemPokemobEgg extends Item
 
     private static void getGenetics(IPokemob mother, IPokemob father, NBTTagCompound nbt)
     {
-        boolean oldType = false;
-
-        if (!oldType)
-        {// TODO
-            IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
-            IMobGenetics mothers = ((Entity) mother).getCapability(IMobGenetics.GENETICS_CAP, null);
-            IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
-            GeneticsManager.initEgg(eggs, mothers, fathers);
-            NBTBase tag = IMobGenetics.GENETICS_CAP.getStorage().writeNBT(IMobGenetics.GENETICS_CAP, eggs, null);
-            nbt.setTag(GeneticsManager.GENES, tag);
-            try
-            {
-                SpeciesGene gene = eggs.getAlleles().get(GeneticsManager.SPECIESGENE).getExpressed();
-                SpeciesInfo info = gene.getValue();
-                nbt.setString("pokemob", info.entry.getName());
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-            nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
-            return;
+        IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+        IMobGenetics mothers = ((Entity) mother).getCapability(IMobGenetics.GENETICS_CAP, null);
+        IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
+        GeneticsManager.initEgg(eggs, mothers, fathers);
+        NBTBase tag = IMobGenetics.GENETICS_CAP.getStorage().writeNBT(IMobGenetics.GENETICS_CAP, eggs, null);
+        nbt.setTag(GeneticsManager.GENES, tag);
+        try
+        {
+            SpeciesGene gene = eggs.getAlleles().get(GeneticsManager.SPECIESGENE).getExpressed();
+            SpeciesInfo info = gene.getValue();
+            nbt.setString("pokemob", info.entry.getName());
         }
-
-        byte[] ivs = getIVs(father.getIVs(), mother.getIVs(), father.getEVs(), mother.getEVs());
-        long ivsL = PokecubeSerializer.byteArrayAsLong(ivs);
-        nbt.setLong("ivs", ivsL);
-        nbt.setByteArray("colour", getColour(((IMobColourable) father).getRGBA(), ((IMobColourable) mother).getRGBA()));
-        nbt.setFloat("size", getSize(father.getSize(), mother.getSize()));
-        nbt.setByte("nature", getNature(mother.getNature(), father.getNature()));
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
-
-        int chance = (int) SHINYRATE;
-        if (mother.isShiny()) chance *= SHINYMULTI;
-        if (father.isShiny()) chance *= SHINYMULTI;
-        if (mother.getOriginalOwnerUUID() != father.getOriginalOwnerUUID()) chance *= SHINYMULTI;
-
-        nbt.setBoolean("shiny", new Random().nextInt(Math.max(1, chance)) == 0);
-
-        String motherMoves = "";
-        String fatherMoves = "";
-        for (int i = 0; i < 4; i++)
-        {
-            if (mother.getMove(i) != null)
-            {
-                motherMoves += mother.getMove(i) + ":";
-            }
-            if (father.getMove(i) != null)
-            {
-                fatherMoves += father.getMove(i) + ":";
-            }
-        }
-        String[] move = getMoves(motherMoves, fatherMoves);
-        String moveString = "";
-        int n = 0;
-        for (String s : move)
-        {
-            if (s != null)
-            {
-                if (n != 0)
-                {
-                    moveString += ";";
-                }
-                moveString += s;
-            }
-            n++;
-        }
-        nbt.setString("moves", moveString);
-        nbt.setInteger("abilityIndex", getAbility(mother.getAbilityIndex(), father.getAbilityIndex()));
-    }
-
-    private static byte[] getIVs(byte[] fatherIVs, byte[] motherIVs, byte[] fatherEVs, byte[] motherEVs)
-    {
-        byte[] ret = new byte[6];
-        Random rand = new Random();
-        for (int i = 0; i < 6; i++)
-        {
-            byte mi = motherIVs[i];
-            byte fi = fatherIVs[i];
-            byte me = motherEVs[i];
-            byte fe = fatherEVs[i];
-            epigeneticParser.setVarValue("f", fe);
-            epigeneticParser.setVarValue("m", me);
-            double value = epigeneticParser.getValue();
-            if (Double.isNaN(value) || Double.isInfinite(value)) value = 0;
-            byte aE = (byte) Math.abs(value);
-            byte iv = (byte) ((mi + fi) / 2);
-            iv = (byte) Math.min((rand.nextInt(iv + 1) + rand.nextInt(iv + 1) + rand.nextInt(aE + 1)), 31);
-            ret[i] = iv;
-        }
-
-        return ret;
-    }
-
-    private static String[] getMoves(String motherMoves, String fatherMoves)
-    {
-        String[] ma = motherMoves.split(":");
-        String[] fa = fatherMoves.split(":");
-        String[] ret = new String[4];
-        int index = 0;
-        ma:
-        for (String s : ma)
-        {
-            if (s != null && !s.isEmpty())
-            {
-                for (String s1 : fa)
-                {
-                    if (s.equals(s1))
-                    {
-                        ret[index] = s;
-                        index++;
-                        continue ma;
-                    }
-                }
-            }
-        }
-        return ret;
-    }
-
-    private static byte getNature(Nature nature, Nature nature2)
-    {
-        byte ret = 0;
-        Random rand = new Random();
-
-        byte[] motherMods = nature.getStatsMod();
-        byte[] fatherMods = nature2.getStatsMod();
-
-        byte[] sum = new byte[6];
-        for (int i = 0; i < 6; i++)
-        {
-            sum[i] = (byte) (motherMods[i] + fatherMods[i]);
-        }
-        int pos = 0;
-        int start = rand.nextInt(100);
-        for (int i = 0; i < 6; i++)
-        {
-            if (sum[(i + start) % 6] > 0)
-            {
-                pos = (i + start) % 6;
-                break;
-            }
-        }
-        int neg = 0;
-        start = rand.nextInt(100);
-        for (int i = 0; i < 6; i++)
-        {
-            if (sum[(i + start) % 6] < 0)
-            {
-                neg = (i + start) % 6;
-                break;
-            }
-        }
-        if (pos != 0 && neg != 0)
-        {
-            for (byte i = 0; i < 25; i++)
-            {
-                if (Nature.values()[i].getStatsMod()[pos] > 0 && Nature.values()[i].getStatsMod()[neg] < 0)
-                {
-                    ret = i;
-                    break;
-                }
-            }
-        }
-        else if (pos != 0)
-        {
-            start = rand.nextInt(1000);
-            for (byte i = 0; i < 25; i++)
-            {
-                if (Nature.values()[(byte) ((i + start) % 25)].getStatsMod()[pos] > 0)
-                {
-                    ret = (byte) ((i + start) % 25);
-                    break;
-                }
-            }
-        }
-        else if (neg != 0)
-        {
-            start = rand.nextInt(1000);
-            for (byte i = 0; i < 25; i++)
-            {
-                if (Nature.values()[(byte) ((i + start) % 25)].getStatsMod()[neg] < 0)
-                {
-                    ret = (byte) ((i + start) % 25);
-                    break;
-                }
-            }
-        }
-        else
-        {
-            int num = rand.nextInt(5);
-            ret = (byte) (num * 6);
-        }
-
-        return ret;
-
-    }
-
-    private static int getAbility(int motherIndex, int fatherIndex)
-    {
-        if (motherIndex == fatherIndex) return Math.random() > HACHANCE ? motherIndex : 2;
-        int index = Math.random() > 0.5 ? 0 : 1;
-        return Math.random() > HACHANCE ? index : 2;
+        return;
     }
 
     public static PokedexEntry getEntry(ItemStack stack)

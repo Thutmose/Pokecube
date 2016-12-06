@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -29,6 +30,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.database.rewards.XMLRewardsHandler;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
@@ -47,6 +49,7 @@ public class Config extends ConfigBase
     public static final String           client                       = "client";
     public static final String           advanced                     = "advanced";
     public static final String           healthbars                   = "healthbars";
+    public static final String           genetics                     = "genetics";
 
     public static int                    GUICHOOSEFIRSTPOKEMOB_ID;
     public static int                    GUIDISPLAYPOKECUBEINFO_ID;
@@ -365,8 +368,7 @@ public class Config extends ConfigBase
                                     // to this.
     String[]                             extraVars                    = { "jc:" + EventsHandler.juiceChance,
             "rc:" + EventsHandler.candyChance, "eggDpl:" + ItemPokemobEgg.PLAYERDIST,
-            "eggDpm:" + ItemPokemobEgg.MOBDIST, "eggHA:" + ItemPokemobEgg.HACHANCE, "eggSC:" + ItemPokemobEgg.SHINYRATE,
-            "eggSM:" + ItemPokemobEgg.SHINYMULTI, "eggEGF:" + ItemPokemobEgg.epigeneticFunction };
+            "eggDpm:" + ItemPokemobEgg.MOBDIST };
     @Configure(category = advanced)
     public boolean                       debug                        = false;
     @Configure(category = advanced)
@@ -380,6 +382,12 @@ public class Config extends ConfigBase
     public String                        nonPokemobExpFunction        = "h*(a+1)";
     @Configure(category = advanced)
     public boolean                       nonPokemobExp                = false;
+
+    @Configure(category = genetics)
+    public String                        epigeneticFunction           = GeneticsManager.epigeneticFunction;
+    @Configure(category = genetics)
+    String[]                             mutationRates                = GeneticsManager.getMutationConfig();
+
     @Configure(category = database, needsMcRestart = true)
     boolean                              forceDatabase                = true;
     @Configure(category = database, needsMcRestart = true)
@@ -484,13 +492,26 @@ public class Config extends ConfigBase
             XMLRecipeHandler.recipeFiles.add(s);
         for (String s : rewardDatabases)
             XMLRewardsHandler.recipeFiles.add(s);
-
-        if (extraVars.length < defaults.extraVars.length)
+        if (extraVars.length != defaults.extraVars.length)
         {
-            String[] vals = extraVars.clone();
+            String[] old = extraVars.clone();
             extraVars = defaults.extraVars.clone();
-            for (int i = 0; i < vals.length; i++)
-                extraVars[i] = vals[i];
+            for (int i = 0; i < extraVars.length; i++)
+            {
+                String[] args1 = extraVars[i].split(":");
+                String key1 = args1[0];
+                for (String s : old)
+                {
+                    String[] args2 = s.split(":");
+                    String key2 = args2[0];
+                    if (key1.equals(key2))
+                    {
+                        extraVars[i] = s;
+                        break;
+                    }
+                }
+            }
+            super.save();
         }
         // TODO more internal variables
         for (String s : extraVars)
@@ -518,26 +539,43 @@ public class Config extends ConfigBase
                 ItemPokemobEgg.MOBDIST = Double.parseDouble(value);
                 continue;
             }
-            if (key.equals("eggHA"))
+        }
+
+        if (mutationRates.length != defaults.mutationRates.length)
+        {
+            String[] old = mutationRates.clone();
+            mutationRates = defaults.mutationRates.clone();
+            for (int i = 0; i < mutationRates.length; i++)
             {
-                ItemPokemobEgg.HACHANCE = Double.parseDouble(value);
-                continue;
+                String[] args1 = mutationRates[i].split(" ");
+                String key1 = args1[0];
+                for (String s : old)
+                {
+                    String[] args2 = s.split(" ");
+                    String key2 = args2[0];
+                    if (key1.equals(key2))
+                    {
+                        mutationRates[i] = s;
+                        break;
+                    }
+                }
             }
-            if (key.equals("eggSC"))
+            super.save();
+        }
+
+        for (String s : mutationRates)
+        {
+            String[] args = s.split(" ");
+            String key = args[0];
+            try
             {
-                ItemPokemobEgg.SHINYRATE = Double.parseDouble(value);
-                continue;
+                Float value = Float.parseFloat(args[1]);
+                ResourceLocation loc = new ResourceLocation(key);
+                GeneticsManager.mutationRates.put(loc, value);
             }
-            if (key.equals("eggSM"))
+            catch (Exception e)
             {
-                ItemPokemobEgg.SHINYMULTI = Double.parseDouble(value);
-                continue;
-            }
-            if (key.equals("eggEGF"))
-            {
-                ItemPokemobEgg.epigeneticFunction = value;
-                ItemPokemobEgg.initJEP();
-                continue;
+                System.err.println("Error with mutation rate for " + s);
             }
         }
 

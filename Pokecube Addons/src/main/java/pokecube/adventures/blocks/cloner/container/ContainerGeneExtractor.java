@@ -4,9 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.inventory.SlotCrafting;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
-import pokecube.adventures.blocks.cloner.crafting.CraftResult;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredProgress;
 import thut.core.common.blocks.SmartSlot;
 
@@ -17,14 +15,13 @@ public class ContainerGeneExtractor extends ContainerBase
     {
         super(inv, tile);
         CraftMatrix matrix = new CraftMatrix(this, tile, 1, 3);
-        CraftResult result = new CraftResult(tile, 3);
 
         if (tile instanceof IPoweredProgress)
         {
             ((IPoweredProgress) tile).setCraftMatrix(matrix);
         }
 
-        this.addSlotToContainer(new SlotCrafting(inv.player, matrix, result, 0, 114, 35));
+        this.addSlotToContainer(new SmartSlot(tile, ((IPoweredProgress) tile).getOutputSlot(), 114, 35));
 
         int di = 17;
         int di2 = 18;
@@ -33,11 +30,13 @@ public class ContainerGeneExtractor extends ContainerBase
 
         // DNA Container
         this.addSlotToContainer(
-                new SmartSlot(matrix, 0, dj + dj2, di).setTex("minecraft:textures/items/potion_bottle_empty.png"));
+                new SmartSlot(matrix, 0, dj + dj2, di).setTex("pokecube_adventures:textures/items/slot_bottle.png"));
         // Stabiliser
-        this.addSlotToContainer(new SmartSlot(matrix, 1, dj + dj2, di + 35));
+        this.addSlotToContainer(new SmartSlot(matrix, 1, dj + dj2, di + 35)
+                .setTex("pokecube_adventures:textures/items/slot_selector.png"));
         // DNA Source
-        this.addSlotToContainer(new SmartSlot(matrix, 2, 47, di + di2));
+        this.addSlotToContainer(
+                new SmartSlot(matrix, 2, 47, di + di2).setTex("pokecube_adventures:textures/items/slot_dna.png"));
 
         for (int k = 0; k < 3; ++k)
         {

@@ -1,5 +1,7 @@
 package pokecube.adventures.events;
 
+import java.util.Set;
+
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
@@ -10,7 +12,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.container.ContainerBase;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import thut.api.entity.genetics.Alleles;
+import thut.api.entity.genetics.Gene;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
 
@@ -55,6 +59,24 @@ public class RenderHandler
                 {
                     evt.getToolTip().add(a.getExpressed().getKey().getResourcePath() + ": " + a.getExpressed());
                 }
+            }
+            Set<Class<? extends Gene>> genesSet;
+            if (!(genesSet = ClonerHelper.getGeneSelectors(stack)).isEmpty())
+            {
+                for (Class<? extends Gene> geneC : genesSet)
+                {
+                    try
+                    {
+                        Gene gene = geneC.newInstance();
+                        evt.getToolTip().add(gene.getKey().getResourcePath());
+                    }
+                    catch (InstantiationException | IllegalAccessException e)
+                    {
+
+                    }
+                }
+                SelectorValue value = ClonerHelper.getSelectorValue(stack);
+                evt.getToolTip().add(value.toString());
             }
             if (stack.getTagCompound().hasKey("ivs"))
             {

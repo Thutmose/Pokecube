@@ -10,7 +10,6 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -27,8 +26,7 @@ import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 // "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
 public class TileEntityCloner extends TileClonerBase implements SimpleComponent
 {
-    public static int           MAXENERGY = 256;
-    public InventoryCraftResult result;
+    public static int MAXENERGY = 256;
 
     public TileEntityCloner()
     {

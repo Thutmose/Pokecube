@@ -30,7 +30,7 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
             }
         }
         if (currentRecipe == null) return;
-        PokedexEntry entry = currentRecipe.pokedexEntry;
+        PokedexEntry entry = currentRecipe.getPokedexEntry();
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
         if (pokemob == null)
         {

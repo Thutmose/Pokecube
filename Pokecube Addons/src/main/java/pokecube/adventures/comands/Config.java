@@ -137,6 +137,8 @@ public class Config extends ConfigBase
     public boolean                     forceRecipes         = true;
     @Configure(category = database)
     public boolean                     autoAddFossils       = true;
+    @Configure(category = database)
+    public boolean                     anyReanimate         = true;
 
     public Config()
     {

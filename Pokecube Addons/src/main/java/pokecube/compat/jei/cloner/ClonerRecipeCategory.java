@@ -36,7 +36,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         icon = guiHelper.createDrawable(JEICompat.TABS, 16, 0, 16, 16);
     }
 
-    @Override
+    @Deprecated
     public void drawAnimations(Minecraft minecraft)
     {
 
@@ -68,7 +68,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         return JEICompat.REANIMATOR;
     }
 
-    @Override
+    @Deprecated
     public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
     {
 
@@ -78,8 +78,8 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     public void setRecipe(IRecipeLayout recipeLayout, ClonerRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-        recipeLayout.getIngredientsGroup(PokedexEntry.class).init(craftOutputSlot, false, JEICompat.ingredientRendererInput,
-                94, 18, 16, 16, 0, 0);
+        recipeLayout.getIngredientsGroup(PokedexEntry.class).init(craftOutputSlot, false,
+                JEICompat.ingredientRendererInput, 94, 18, 16, 16, 0, 0);
         for (int y = 0; y < 3; ++y)
         {
             for (int x = 0; x < 3; ++x)

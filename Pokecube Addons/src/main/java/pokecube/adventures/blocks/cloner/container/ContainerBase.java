@@ -86,7 +86,6 @@ public abstract class ContainerBase extends Container
     {
         ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
-        System.out.println(index + " " + slot);
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
@@ -95,7 +94,6 @@ public abstract class ContainerBase extends Container
             if (index == 0)
             {
                 if (!this.mergeItemStack(itemstack1, num, 36 + num, true)) { return CompatWrapper.nullStack; }
-
                 slot.onSlotChange(itemstack1, itemstack);
             }
             else if (index >= num && index < 27 + num)

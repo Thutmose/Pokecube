@@ -45,14 +45,14 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     }
 
     @Nonnull
-    @Override
+    @Deprecated
     public List<ItemStack> getInputs()
     {
         return recipe.recipeItems;
     }
 
     @Nonnull
-    @Override
+    @Deprecated
     public List<ItemStack> getOutputs()
     {
         return null;
@@ -78,19 +78,19 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
         ingredients.setOutput(PokedexEntry.class, recipe.getPokedexEntry());
     }
 
-    @Override
+    @Deprecated
     public List<FluidStack> getFluidInputs()
     {
         return null;
     }
 
-    @Override
+    @Deprecated
     public List<FluidStack> getFluidOutputs()
     {
         return null;
     }
 
-    @Override
+    @Deprecated
     public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
     {
 

@@ -63,12 +63,12 @@ public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
     {
     }
 
-    @Override
+    @Deprecated
     public void drawAnimations(Minecraft minecraft)
     {
     }
 
-    @Override
+    @Deprecated
     public void setRecipe(IRecipeLayout recipeLayout, PokemobRecipeWrapper recipeWrapper)
     {
     }

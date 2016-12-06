@@ -14385,7 +14385,7 @@
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Seafaring</SPECIES>
-            <SPECIALEGGSPECIESRULES>0:489</SPECIALEGGSPECIESRULES>
+            <SPECIALEGGSPECIESRULES>0:Phione</SPECIALEGGSPECIESRULES>
             <Drop r="1" id="minecraft:nether_star" n="1"/>
             <Spawn types="ocean" min="1" rate="0.001" max="1" air="false"/>
             <BASESTATS spdef="100" spatk="100" def="100" spd="100" hp="100" atk="100"/>

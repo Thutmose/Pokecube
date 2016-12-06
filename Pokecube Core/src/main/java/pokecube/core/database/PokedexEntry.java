@@ -1156,9 +1156,9 @@ public class PokedexEntry
             int index = new Random().nextInt(nums.length);
             return nums[index];
         }
-        else if (childNumbers.containsKey(0))
+        else if (childNumbers.containsKey(Database.missingno))
         {
-            PokedexEntry[] nums = childNumbers.get(0);
+            PokedexEntry[] nums = childNumbers.get(Database.missingno);
             int index = new Random().nextInt(nums.length);
             return nums[index];
         }

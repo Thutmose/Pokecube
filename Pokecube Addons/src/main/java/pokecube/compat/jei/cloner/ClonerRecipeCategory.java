@@ -65,7 +65,7 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     @Override
     public String getUid()
     {
-        return JEICompat.CLONER;
+        return JEICompat.REANIMATOR;
     }
 
     @Override

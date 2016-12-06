@@ -15,6 +15,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.adventures.blocks.cloner.tileentity.TileClonerBase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
@@ -29,9 +31,23 @@ import thut.lib.CompatWrapper;
 
 public class ClonerHelper
 {
-    public static Map<ItemStack, Alleles> DNAITEMS = Maps.newHashMap();
+    public static final String SELECTORTAG = "DNASelector";
 
-    public static void registerDNA(Alleles entry, ItemStack stack)
+    public static class DNAPack
+    {
+        public final Alleles alleles;
+        public final float   chance;
+
+        public DNAPack(Alleles alleles, float chance)
+        {
+            this.alleles = alleles;
+            this.chance = chance;
+        }
+    }
+
+    public static Map<ItemStack, DNAPack> DNAITEMS = Maps.newHashMap();
+
+    public static void registerDNA(DNAPack entry, ItemStack stack)
     {
         DNAITEMS.put(stack, entry);
     }
@@ -99,6 +115,13 @@ public class ClonerHelper
     {
         if (!CompatWrapper.isValid(stack) || !stack.hasTagCompound()) return false;
         return stack.getTagCompound().getString("Potion").equals("minecraft:water");
+    }
+
+    public static SelectorValue getSelectorValue(ItemStack selector)
+    {
+        if (!CompatWrapper.isValid(selector) || !selector.hasTagCompound()) return RecipeSelector.defaultSelector;
+        NBTTagCompound selectorTag = selector.getTagCompound().getCompoundTag(SELECTORTAG);
+        return SelectorValue.load(selectorTag);
     }
 
     public static Set<Class<? extends Gene>> getGeneSelectors(ItemStack stack)

@@ -28,7 +28,7 @@ public class IVsGene extends GeneByteArr
             byte fi = otherI.value[i];
             if (rand.nextFloat() < chance)
             {
-                ret[i] = (byte) Math.max(fi, mi);
+                ret[i] = (byte) Math.min(fi, mi);
                 continue;
             }
             byte iv = (byte) ((mi + fi) / 2);

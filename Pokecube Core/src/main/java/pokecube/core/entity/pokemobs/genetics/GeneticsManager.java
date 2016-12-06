@@ -2,6 +2,8 @@ package pokecube.core.entity.pokemobs.genetics;
 
 import java.util.Map;
 
+import org.nfunk.jep.JEP;
+
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
@@ -21,13 +23,13 @@ import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
 import pokecube.core.entity.pokemobs.genetics.epigenes.MovesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene;
 import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene.AbilityObject;
-import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.entity.pokemobs.genetics.genes.ColourGene;
-import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.IVsGene;
 import pokecube.core.entity.pokemobs.genetics.genes.NatureGene;
 import pokecube.core.entity.pokemobs.genetics.genes.ShinyGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
@@ -40,20 +42,36 @@ import thut.api.entity.genetics.IMobGenetics;
 
 public class GeneticsManager
 {
-    public static final ResourceLocation       POKECUBEGENETICS = new ResourceLocation(PokecubeMod.ID, "genetics");
-    public static final String                 GENES            = "Genes";
+    public static String                       epigeneticFunction = "(((2*v + 256) * 31) / 512)";
+    private static JEP                         epigeneticParser   = new JEP();
 
-    public static final ResourceLocation       ABILITYGENE      = new ResourceLocation(PokecubeMod.ID, "ability");
-    public static final ResourceLocation       COLOURGENE       = new ResourceLocation(PokecubeMod.ID, "colour");
-    public static final ResourceLocation       SIZEGENE         = new ResourceLocation(PokecubeMod.ID, "size");
-    public static final ResourceLocation       NATUREGENE       = new ResourceLocation(PokecubeMod.ID, "nature");
-    public static final ResourceLocation       SHINYGENE        = new ResourceLocation(PokecubeMod.ID, "shiny");
-    public static final ResourceLocation       MOVESGENE        = new ResourceLocation(PokecubeMod.ID, "moves");
-    public static final ResourceLocation       IVSGENE          = new ResourceLocation(PokecubeMod.ID, "ivs");
-    public static final ResourceLocation       EVSGENE          = new ResourceLocation(PokecubeMod.ID, "evs");
-    public static final ResourceLocation       SPECIESGENE      = new ResourceLocation(PokecubeMod.ID, "species");
+    public static final ResourceLocation       POKECUBEGENETICS   = new ResourceLocation(PokecubeMod.ID, "genetics");
+    public static final String                 GENES              = "Genes";
 
-    public static Map<ResourceLocation, Float> mutationRates    = Maps.newHashMap();
+    public static final ResourceLocation       ABILITYGENE        = new ResourceLocation(PokecubeMod.ID, "ability");
+    public static final ResourceLocation       COLOURGENE         = new ResourceLocation(PokecubeMod.ID, "colour");
+    public static final ResourceLocation       SIZEGENE           = new ResourceLocation(PokecubeMod.ID, "size");
+    public static final ResourceLocation       NATUREGENE         = new ResourceLocation(PokecubeMod.ID, "nature");
+    public static final ResourceLocation       SHINYGENE          = new ResourceLocation(PokecubeMod.ID, "shiny");
+    public static final ResourceLocation       MOVESGENE          = new ResourceLocation(PokecubeMod.ID, "moves");
+    public static final ResourceLocation       IVSGENE            = new ResourceLocation(PokecubeMod.ID, "ivs");
+    public static final ResourceLocation       EVSGENE            = new ResourceLocation(PokecubeMod.ID, "evs");
+    public static final ResourceLocation       SPECIESGENE        = new ResourceLocation(PokecubeMod.ID, "species");
+
+    public static Map<ResourceLocation, Float> mutationRates      = Maps.newHashMap();
+
+    public static void initJEP()
+    {
+        epigeneticParser = new JEP();
+        epigeneticParser.initFunTab();
+        epigeneticParser.addStandardFunctions();
+        epigeneticParser.initSymTab(); // clear the contents of the symbol table
+        epigeneticParser.addStandardConstants();
+        epigeneticParser.addComplex();
+        // table
+        epigeneticParser.addVariable("v", 0);
+        epigeneticParser.parseExpression(epigeneticFunction);
+    }
 
     static
     {
@@ -66,6 +84,19 @@ public class GeneticsManager
         mutationRates.put(IVSGENE, 0.1f);
         mutationRates.put(EVSGENE, 0.1f);
         mutationRates.put(SPECIESGENE, 0.1f);
+        initJEP();
+    }
+
+    public static String[] getMutationConfig()
+    {
+        String[] ret = new String[mutationRates.size()];
+        int i = 0;
+        for (ResourceLocation key : mutationRates.keySet())
+        {
+            String var = key + " " + mutationRates.get(key);
+            ret[i++] = var;
+        }
+        return ret;
     }
 
     public static void init()
@@ -191,6 +222,8 @@ public class GeneticsManager
             mobs.getAlleles().clear();
             mobs.getAlleles().putAll(genes.getAlleles());
         }
+        byte[] ivs = new byte[6];
+        byte[] evs = new byte[6];
         for (Map.Entry<ResourceLocation, Alleles> entry : mobs.getAlleles().entrySet())
         {
             ResourceLocation loc = entry.getKey();
@@ -220,8 +253,12 @@ public class GeneticsManager
             }
             if (loc.equals(IVSGENE))
             {
-                byte[] ivs = gene.getValue();
-                pokemob.setIVs(ivs);
+                ivs = gene.getValue();
+                continue;
+            }
+            if (loc.equals(EVSGENE))
+            {
+                ivs = gene.getValue();
                 continue;
             }
             if (loc.equals(MOVESGENE))
@@ -252,6 +289,17 @@ public class GeneticsManager
                 continue;
             }
         }
+        for (int i = 0; i < 6; i++)
+        {
+            epigeneticParser.setVarValue("v", evs[i]);
+            double value = epigeneticParser.getValue();
+            if (!Double.isNaN(value))
+            {
+                ivs[i] += value;
+                ivs[i] = (byte) Math.min(ivs[i], 31);
+            }
+        }
+        pokemob.setIVs(ivs);
     }
 
     public static void handleLoad(IPokemob pokemob)

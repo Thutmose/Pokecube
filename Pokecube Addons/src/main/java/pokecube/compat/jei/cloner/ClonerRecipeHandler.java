@@ -15,7 +15,7 @@ public class ClonerRecipeHandler implements IRecipeHandler<RecipeFossilRevive>
     @Override
     public String getRecipeCategoryUid()
     {
-        return JEICompat.CLONER;
+        return JEICompat.REANIMATOR;
     }
 
     @Override

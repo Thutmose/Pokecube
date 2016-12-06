@@ -6,14 +6,15 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.ItemBasedSelector;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.lib.CompatWrapper;
 
 public class RecipeSplice implements IPoweredRecipe
@@ -62,7 +63,7 @@ public class RecipeSplice implements IPoweredRecipe
         {
             dna = CompatWrapper.nullStack;
         }
-        if (!CompatWrapper.isValid(egg) || !(egg.getItem() instanceof ItemPokemobEgg))
+        if (ClonerHelper.getGenes(dna) == null)
         {
             egg = CompatWrapper.nullStack;
         }
@@ -75,7 +76,6 @@ public class RecipeSplice implements IPoweredRecipe
             if (entry == null) return false;
             egg = egg.copy();
             if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-            egg.getTagCompound().setString("pokemob", entry.getName());
             ClonerHelper.mergeGenes(ClonerHelper.getGenes(dna), egg, new ItemBasedSelector(selector));
             CompatWrapper.setStackSize(egg, 1);
             output = egg;
@@ -93,6 +93,18 @@ public class RecipeSplice implements IPoweredRecipe
     @Override
     public ItemStack toKeep(int slot, ItemStack stackIn, InventoryCrafting inv)
     {
+        boolean keepDNA = false;
+        boolean keepSelector = false;
+
+        SelectorValue value = ClonerHelper.getSelectorValue(selector);
+        if (value.dnaDestructChance < Math.random()) keepDNA = true;
+        if (value.selectorDestructChance < Math.random()) keepSelector = true;
+
+        if (slot == 0 && keepDNA) return stackIn;
+        if (slot == 1 && keepSelector) return stackIn;
+
+        if (slot == 0 && CompatWrapper.isValid(stackIn) && stackIn.getItem() == Items.POTIONITEM)
+            return new ItemStack(Items.GLASS_BOTTLE);
         return IPoweredRecipe.super.toKeep(slot, stackIn, inv);
     }
 

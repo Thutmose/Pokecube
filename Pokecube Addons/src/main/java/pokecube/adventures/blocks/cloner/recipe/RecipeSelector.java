@@ -5,11 +5,14 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.IGeneSelector;
+import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.Gene;
 import thut.lib.CompatWrapper;
@@ -39,9 +42,43 @@ public class RecipeSelector implements IDefaultRecipe
         }
     }
 
-    private static Map<ItemStack, Float> selectorValues = Maps.newHashMap();
+    public static class SelectorValue
+    {
+        public final float selectorDestructChance;
+        public final float dnaDestructChance;
 
-    public static void addSelector(ItemStack stack, Float value)
+        public SelectorValue(float select, float dna)
+        {
+            this.selectorDestructChance = select;
+            this.dnaDestructChance = dna;
+        }
+
+        @Override
+        public String toString()
+        {
+            return selectorDestructChance + " " + dnaDestructChance;
+        }
+
+        public NBTTagCompound save()
+        {
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setFloat("S", selectorDestructChance);
+            tag.setFloat("D", dnaDestructChance);
+            return tag;
+        }
+
+        public static SelectorValue load(NBTTagCompound tag)
+        {
+            if (!tag.hasKey("S") || !tag.hasKey("D")) return defaultSelector;
+            return new SelectorValue(tag.getFloat("S"), tag.getFloat("D"));
+        }
+    }
+
+    public static SelectorValue                  defaultSelector = new SelectorValue(0.5f, 0.5f);
+
+    private static Map<ItemStack, SelectorValue> selectorValues  = Maps.newHashMap();
+
+    public static void addSelector(ItemStack stack, SelectorValue value)
     {
         selectorValues.put(stack, value);
     }
@@ -55,9 +92,26 @@ public class RecipeSelector implements IDefaultRecipe
         ItemStack book = inv.getStackInSlot(0);
         ItemStack modifier = inv.getStackInSlot(1);
         if (ClonerHelper.getGeneSelectors(book).isEmpty() || !CompatWrapper.isValid(modifier)) return false;
+        SelectorValue value = null;
 
-        System.out.println(inv.getSizeInventory() + " " + inv.getStackInSlot(0));
-        return false;
+        if (selectorValues.isEmpty())
+        {
+            SelectorValue selector = new SelectorValue(0.25f, 0);
+            selectorValues.put(new ItemStack(Items.NETHER_STAR), selector);
+        }
+
+        for (ItemStack stack : selectorValues.keySet())
+        {
+            if (Tools.isSameStack(stack, modifier))
+            {
+                value = selectorValues.get(stack);
+                break;
+            }
+        }
+        if (value == null) return false;
+        output = book.copy();
+        output.getTagCompound().setTag(ClonerHelper.SELECTORTAG, value.save());
+        return true;
     }
 
     @Override

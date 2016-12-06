@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
+import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.comands.Config;
@@ -42,6 +43,7 @@ public class RecipeHandler
     private static final QName TAME     = new QName("tame");
     private static final QName LEVEL    = new QName("lvl");
     private static final QName REMAIN   = new QName("remain");
+    private static final QName CHANCE   = new QName("chance");
     private static final QName POKEMOBA = new QName("pokemonA");
     private static final QName POKEMOBB = new QName("pokemonB");
     private static final QName POKEMOBE = new QName("pokemonE");
@@ -167,7 +169,10 @@ public class RecipeHandler
                 info = geneE.getValue();
                 info.entry = entryE;
             }
-            ClonerHelper.registerDNA(alleles, stack);
+            float chance = 1;
+            if (recipe.values.containsKey(CHANCE)) chance = Float.parseFloat(recipe.values.get(CHANCE));
+            DNAPack pack = new DNAPack(alleles, chance);
+            ClonerHelper.registerDNA(pack, stack);
         }
     }
 
@@ -231,7 +236,8 @@ public class RecipeHandler
                 info = geneB.getValue();
                 info.entry = i;
                 Alleles alleles = new Alleles(geneA, geneB);
-                ClonerHelper.registerDNA(alleles, stack);
+                DNAPack pack = new DNAPack(alleles, 1);
+                ClonerHelper.registerDNA(pack, stack);
             }
         }
     }

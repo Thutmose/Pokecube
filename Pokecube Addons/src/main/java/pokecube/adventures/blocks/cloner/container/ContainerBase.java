@@ -86,7 +86,7 @@ public abstract class ContainerBase extends Container
     {
         ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(index);
-
+        System.out.println(index + " " + slot);
         if (slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
@@ -94,19 +94,19 @@ public abstract class ContainerBase extends Container
             int num = tile.getSizeInventory();
             if (index == 0)
             {
-                if (!this.mergeItemStack(itemstack1, 10, 46, true)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, num, 36 + num, true)) { return CompatWrapper.nullStack; }
 
                 slot.onSlotChange(itemstack1, itemstack);
             }
             else if (index >= num && index < 27 + num)
             {
-                if (!this.mergeItemStack(itemstack1, 37, 46, false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, 1, num, false)) { return CompatWrapper.nullStack; }
             }
             else if (index >= 27 + num && index < 36 + num)
             {
-                if (!this.mergeItemStack(itemstack1, 10, 37, false)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, num, 27 + num, false)) { return CompatWrapper.nullStack; }
             }
-            else if (!this.mergeItemStack(itemstack1, 10, 46, false)) { return CompatWrapper.nullStack; }
+            else if (!this.mergeItemStack(itemstack1, num, 36 + num, false)) { return CompatWrapper.nullStack; }
 
             if (!CompatWrapper.isValid(itemstack1))
             {

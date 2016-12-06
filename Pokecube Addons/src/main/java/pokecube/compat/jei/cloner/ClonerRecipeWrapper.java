@@ -75,7 +75,7 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     public void getIngredients(IIngredients ingredients)
     {
         ingredients.setInputs(ItemStack.class, getInputs());
-        ingredients.setOutput(PokedexEntry.class, recipe.pokedexEntry);
+        ingredients.setOutput(PokedexEntry.class, recipe.getPokedexEntry());
     }
 
     @Override

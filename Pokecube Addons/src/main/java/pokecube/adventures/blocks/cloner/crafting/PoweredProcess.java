@@ -21,8 +21,12 @@ public class PoweredProcess
     public static IPoweredRecipe findRecipe(IPoweredProgress tile, World world)
     {
         if (CompatWrapper.isValid(tile.getStackInSlot(tile.getOutputSlot()))) return null;
-        if (tile.isValid(RecipeFossilRevive.class)) for (RecipeFossilRevive recipe : RecipeFossilRevive.getRecipeList())
-            if (recipe.matches(tile.getCraftMatrix(), world)) { return recipe; }
+        if (tile.isValid(RecipeFossilRevive.class))
+        {
+            for (RecipeFossilRevive recipe : RecipeFossilRevive.getRecipeList())
+                if (recipe.matches(tile.getCraftMatrix(), world)) { return recipe; }
+            if (RecipeFossilRevive.ANYMATCH.matches(tile.getCraftMatrix(), world)) return RecipeFossilRevive.ANYMATCH;
+        }
         if (tile.isValid(RecipeExtract.class) && EXTRACT.matches(tile.getCraftMatrix(), world)) { return EXTRACT; }
         if (tile.isValid(RecipeSplice.class) && SPLICE.matches(tile.getCraftMatrix(), world)) { return SPLICE; }
         return null;

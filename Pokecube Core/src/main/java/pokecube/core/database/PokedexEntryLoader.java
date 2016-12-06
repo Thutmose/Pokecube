@@ -688,16 +688,22 @@ public class PokedexEntryLoader
             for (String s1 : matedata)
             {
                 String[] args = s1.split(":");
-                PokedexEntry fatherNb;
+                PokedexEntry father;
+                int num = -1;
+                String name = "";
                 try
                 {
-                    fatherNb = Database.getEntry(Integer.parseInt(args[0]));
+                    father = Database.getEntry(num = Integer.parseInt(args[0]));
                 }
                 catch (NumberFormatException e)
                 {
-                    fatherNb = Database.getEntry(args[0]);
+                    father = Database.getEntry(args[0]);
                 }
-                if (fatherNb == null)
+                if (father == null && (num == 0 || name.equalsIgnoreCase("missingno")))
+                {
+                    father = Database.missingno;
+                }
+                if (father == null)
                 {
                     System.err.println("Error with Father for Children for " + entry);
                     break mates;
@@ -720,7 +726,7 @@ public class PokedexEntryLoader
                         break mates;
                     }
                 }
-                entry.childNumbers.put(fatherNb, childNbs);
+                entry.childNumbers.put(father, childNbs);
             }
         }
 

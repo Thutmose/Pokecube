@@ -64,6 +64,10 @@ public class AIMate extends AIBase
         {
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
+        if (transforms && breedingMob.getLover() != null)
+        {
+            pokemob.setTransformedTo(breedingMob.getLover());
+        }
         if ((breedingMob.getLover() != null || !breedingMob.getMalesForBreeding().isEmpty())
                 && (transforms || pokemob.getSexe() != IPokemob.MALE))
         {
@@ -153,7 +157,6 @@ public class AIMate extends AIBase
                         PokecubeMod.core.getConfig().maxSpawnRadius / 4, entity))
             return null;
         if (breedingMob.getLover() != null) { return breedingMob.getLover(); }
-
         if ((pokemob.getSexe() == IPokemob.MALE && !transforms)
                 || breedingMob.getMalesForBreeding().size() > 0) { return null; }
 
@@ -193,6 +196,14 @@ public class AIMate extends AIBase
                 if (entityanimal == this || entityanimal.getPokemonAIState(IMoveConstants.TAMED) != pokemob
                         .getPokemonAIState(IMoveConstants.TAMED) || !entityanimal.getPokedexEntry().breeds)
                     continue;
+
+                boolean otherTransforms = false;
+                for (String s : entityanimal.getMoves())
+                {
+                    if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
+                }
+
+                if (transforms && otherTransforms) continue;
 
                 boolean validMate = breedingMob.canMate((EntityAnimal) entityanimal);
 
@@ -260,9 +271,15 @@ public class AIMate extends AIBase
         {
             ((IPokemob) breedingMob.getLover()).setPokemonAIState(IMoveConstants.MATING, true);
         }
+        if (breedingMob.getLover() instanceof IBreedingMob)
+        {
+            ((IBreedingMob) breedingMob.getLover()).setLover(entity);
+        }
         if (breedingMob.getLover() instanceof EntityLiving)
         {
-            ((EntityLiving) breedingMob.getLover()).getNavigator().tryMoveToEntityLiving(entity,
+            Vector3 loc = Vector3.getNewVector().set(entity).findNextSolidBlock(world, Vector3.secondAxisNeg,
+                    entity.posY);
+            if (loc != null) ((EntityLiving) breedingMob.getLover()).getNavigator().tryMoveToXYZ(loc.x, loc.y, loc.x,
                     pokemob.getMovementSpeed());
         }
         if (this.spawnBabyDelay >= 50)
@@ -272,6 +289,11 @@ public class AIMate extends AIBase
             breedingMob.mateWith((IBreedingMob) breedingMob.getLover());
             pokemob.setPokemonAIState(IMoveConstants.MATING, false);
             this.spawnBabyDelay = 0;
+            breedingMob.resetLoveStatus();
+            if (breedingMob.getLover() instanceof IBreedingMob)
+            {
+                ((IBreedingMob) breedingMob.getLover()).resetLoveStatus();
+            }
         }
     }
 }

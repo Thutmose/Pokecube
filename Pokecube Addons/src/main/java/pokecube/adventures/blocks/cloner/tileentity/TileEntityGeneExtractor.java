@@ -149,10 +149,15 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
     public Object[] setSelector(Context context, Arguments args) throws Exception
     {
         ItemStack selector = getStackInSlot(1);
-        if (CompatWrapper.isValid(selector)) throw new Exception("Cannot set selector when one is in the slot.");
+        Set<Class<? extends Gene>> getSelectors = ClonerHelper.getGeneSelectors(selector);
+        if (!getSelectors.isEmpty()) throw new Exception("Cannot set custom selector when a valid one is in the slot.");
         List<String> values = Lists.newArrayList();
-        
-        return null;
+        for (int i = 0; i < args.count(); i++)
+        {
+            values.add(args.checkString(i));
+        }
+        if (values.isEmpty()) throw new Exception("You need to specify some genes");
+        return new String[] { "Set" };
     }
 
     @Optional.Method(modid = "OpenComputers")

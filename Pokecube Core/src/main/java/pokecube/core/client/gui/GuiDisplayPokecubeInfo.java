@@ -398,35 +398,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
             GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
-
-            float scale = 1;
-            float size = 0;
-            j = w;
-            int k = h;
-
-            size = Math.max(entity.width, entity.height) * scale;
-
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(j + 25, k + 25, 50F);
-            float zoom = 20f / size;
-            GL11.glScalef(-zoom, zoom, zoom);
-            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f5 = ((k + 75) - 50) - 0;
-            RenderHelper.enableStandardItemLighting();
-            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
-            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-            i = 15728880;
-            int j1 = i % 65536;
-            int k1 = i / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
-            GL11.glRotated(entity.rotationYaw - 40, 0, 1, 0);
-            Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
-            GL11.glPopMatrix();
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GuiPokemob.renderMob(pokemob, (int) width - 30, (int) height - 28, 0, 0, 0, 0, 0, 1);
         }
         GL11.glPopMatrix();
     }

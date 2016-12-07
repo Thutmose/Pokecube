@@ -67,6 +67,11 @@ public class ClonerHelper
             if (PokecubeManager.isFilled(stack))
             {
                 NBTTagCompound poketag = nbt.getCompoundTag(TagNames.POKEMOB);
+                if (!poketag.getCompoundTag("ForgeCaps").hasKey(GeneticsManager.POKECUBEGENETICS.toString()))
+                    return null;
+                if (!poketag.getCompoundTag("ForgeCaps").getCompoundTag(GeneticsManager.POKECUBEGENETICS.toString())
+                        .hasKey("V"))
+                    return null;
                 NBTBase genes = poketag.getCompoundTag("ForgeCaps")
                         .getCompoundTag(GeneticsManager.POKECUBEGENETICS.toString()).getTag("V");
                 IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
@@ -142,17 +147,7 @@ public class ClonerHelper
                         ret.addAll(GeneRegistry.getGenes());
                         break;
                     }
-                    String[] args = line.split(":");
-                    String domain = "pokecube";
-                    String path = "";
-                    if (args.length == 1) path = args[0].toLowerCase(Locale.ENGLISH);
-                    else
-                    {
-                        domain = args[0];
-                        path = args[1].toLowerCase(Locale.ENGLISH);
-                    }
-                    ResourceLocation location = new ResourceLocation(domain, path);
-                    Class<? extends Gene> geneClass = GeneRegistry.getClass(location);
+                    Class<? extends Gene> geneClass = getGene(line);
                     if (geneClass != null)
                     {
                         ret.add(geneClass);
@@ -165,6 +160,22 @@ public class ClonerHelper
             }
         }
         return ret;
+    }
+
+    public static Class<? extends Gene> getGene(String line)
+    {
+        String[] args = line.split(":");
+        String domain = "pokecube";
+        String path = "";
+        if (args.length == 1) path = args[0].toLowerCase(Locale.ENGLISH);
+        else
+        {
+            domain = args[0];
+            path = args[1].toLowerCase(Locale.ENGLISH);
+        }
+        ResourceLocation location = new ResourceLocation(domain, path);
+        Class<? extends Gene> geneClass = GeneRegistry.getClass(location);
+        return geneClass;
     }
 
     public static float destroyChance(ItemStack selector)

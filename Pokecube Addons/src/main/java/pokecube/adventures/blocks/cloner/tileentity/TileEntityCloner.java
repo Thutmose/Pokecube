@@ -159,7 +159,7 @@ public class TileEntityCloner extends TileClonerBase implements SimpleComponent
             }
             return false;
         }
-        return true;
+        return index != getOutputSlot();
     }
 
     /** Called when you receive a TileEntityData packet for the location this

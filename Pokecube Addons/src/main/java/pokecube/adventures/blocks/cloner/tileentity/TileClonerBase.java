@@ -3,18 +3,20 @@ package pokecube.adventures.blocks.cloner.tileentity;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredProgress;
 import thut.lib.CompatWrapper;
 
-public abstract class TileClonerBase extends TileEntity implements IPoweredProgress, ITickable
+public abstract class TileClonerBase extends TileEntity implements IPoweredProgress, ITickable, ISidedInventory
 {
     final List<ItemStack>  inventory;
     final int              outputSlot;
@@ -230,5 +232,35 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
         check = true;
         if (!CompatWrapper.isValid(stack)) getInventory().set(index, CompatWrapper.nullStack);
         else getInventory().set(index, stack);
+    }
+
+    int[] slots;
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        if (slots == null)
+        {
+            slots = new int[getSizeInventory()];
+            for (int i = 0; i < slots.length; i++)
+                slots[i] = i;
+        }
+        return slots;
+    }
+
+    @Override
+    /** Returns true if automation can insert the given item in the given slot
+     * from the given side. */
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return isItemValidForSlot(index, itemStackIn);
+    }
+
+    @Override
+    /** Returns true if automation can extract the given item in the given slot
+     * from the given side. */
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return !isItemValidForSlot(index, stack);
     }
 }

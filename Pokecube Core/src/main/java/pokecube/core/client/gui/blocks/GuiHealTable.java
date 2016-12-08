@@ -6,19 +6,17 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.client.Resources;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
+import thut.api.maths.Vector3;
 
 public class GuiHealTable extends GuiContainer
 {
     public GuiHealTable(InventoryPlayer player_inventory)
     {
-        super(new ContainerHealTable(player_inventory));
+        super(new ContainerHealTable(player_inventory, Vector3.getNewVector().set(player_inventory.player)));
     }
 
     @Override
@@ -31,7 +29,6 @@ public class GuiHealTable extends GuiContainer
             PokecubeServerPacket packet = new PokecubeServerPacket(PokecubeServerPacket.POKECENTER);
             PokecubePacketHandler.sendToServer(packet);
             ((ContainerHealTable) inventorySlots).heal();// client side
-            mc.thePlayer.playSound(new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecenter")), 3, 1);
         }
     }
 

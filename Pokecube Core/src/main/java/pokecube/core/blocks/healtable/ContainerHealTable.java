@@ -7,14 +7,22 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import pokecube.core.interfaces.IHealer;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 public class ContainerHealTable extends Container implements IHealer
 {
+    public static final SoundEvent HEAL_SOUND = new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecenter"));
+
     /** Returns true if the item is a filled pokecube.
      *
      * @param itemstack
@@ -26,10 +34,14 @@ public class ContainerHealTable extends Container implements IHealer
     }
 
     InventoryHealTable inventoryHealTable;
+    Vector3            pos;
+    World              world;
 
-    public ContainerHealTable(InventoryPlayer player_inventory)
+    public ContainerHealTable(InventoryPlayer player_inventory, Vector3 pos)
     {
         inventoryHealTable = new InventoryHealTable(this, "heal");
+        world = player_inventory.player.getEntityWorld();
+        this.pos = pos;
         int index = 0;
 
         for (int i = 0; i < 3; i++)
@@ -71,6 +83,7 @@ public class ContainerHealTable extends Container implements IHealer
     @Override
     public void heal()
     {
+        boolean healed = false;
         for (int i = 0; i < 6; i++)
         {
             Slot slot = getSlot(i);
@@ -78,7 +91,12 @@ public class ContainerHealTable extends Container implements IHealer
             if (slot instanceof SlotHealTable)
             {
                 ((SlotHealTable) slot).heal();
+                if (CompatWrapper.isValid(slot.getStack())) healed = true;
             }
+        }
+        if (healed && !world.isRemote)
+        {
+            world.playSound(null, pos.x, pos.y, pos.z, HEAL_SOUND, SoundCategory.PLAYERS, 3, 1);
         }
     }
 

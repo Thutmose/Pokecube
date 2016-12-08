@@ -19,7 +19,7 @@ public class MovesGene implements Gene
         for (int i = 0; i < moves.length; i++)
         {
             if (moves[i] == null) continue;
-            for (int j = 0; i < otherG.moves.length; j++)
+            for (int j = 0; j < otherG.moves.length; j++)
             {
                 if (moves[i].equals(otherG.moves[j]))
                 {

@@ -80,7 +80,8 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     @Override
     public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z)
     {
-        if (id == Config.GUIPOKECENTER_ID) { return new ContainerHealTable(player.inventory); }
+        if (id == Config.GUIPOKECENTER_ID) { return new ContainerHealTable(player.inventory,
+                Vector3.getNewVector().set(x + .5, y + .5, z + .5)); }
         if (id == Config.GUIPOKEMOB_ID)
         {
             IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);

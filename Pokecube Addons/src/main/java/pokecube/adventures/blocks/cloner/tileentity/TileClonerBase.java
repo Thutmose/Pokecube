@@ -3,18 +3,20 @@ package pokecube.adventures.blocks.cloner.tileentity;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredProgress;
 import thut.lib.CompatWrapper;
 
-public abstract class TileClonerBase extends TileEntity implements IPoweredProgress, ITickable
+public abstract class TileClonerBase extends TileEntity implements IPoweredProgress, ITickable, ISidedInventory
 {
     final List<ItemStack>  inventory;
     final int              outputSlot;
@@ -151,42 +153,46 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
         if (nbt.hasKey("progress"))
         {
             NBTTagCompound tag = nbt.getCompoundTag("progress");
-            currentProcess = PoweredProcess.load(tag, this);
-            if (currentProcess != null)
+            setProcess(PoweredProcess.load(tag, this));
+            if (getProcess() != null)
             {
-                total = currentProcess.recipe.getEnergyCost();
+                total = getProcess().recipe.getEnergyCost();
             }
         }
     }
 
     public void checkRecipes()
     {
-        if (currentProcess == null || !currentProcess.valid())
+        if (getProcess() == null || !getProcess().valid())
         {
             if (check)
             {
                 check = false;
-                currentProcess = new PoweredProcess();
-                currentProcess.setTile(this);
-                if (!currentProcess.valid())
+                if (getProcess() == null)
                 {
-                    currentProcess = null;
+                    setProcess(new PoweredProcess());
+                }
+                this.getProcess().setTile(this);
+                this.getProcess().reset();
+                if (!getProcess().valid())
+                {
+                    setProcess(null);
                 }
             }
-            else currentProcess = null;
+            else setProcess(null);
         }
         else
         {
-            boolean valid = currentProcess.valid();
+            boolean valid = getProcess().valid();
             boolean done = true;
             if (valid)
             {
-                total = currentProcess.recipe.getEnergyCost();
-                done = !currentProcess.tick();
+                total = getProcess().recipe.getEnergyCost();
+                done = !getProcess().tick();
             }
             if (!valid || done)
             {
-                currentProcess = null;
+                setProcess(null);
                 progress = 0;
                 markDirty();
             }
@@ -209,9 +215,9 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
                 itemList.appendTag(tag);
             }
         }
-        if (currentProcess != null)
+        if (getProcess() != null)
         {
-            nbt.setTag("progress", currentProcess.save());
+            nbt.setTag("progress", getProcess().save());
         }
         nbt.setTag("Inventory", itemList);
         return nbt;
@@ -230,5 +236,35 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
         check = true;
         if (!CompatWrapper.isValid(stack)) getInventory().set(index, CompatWrapper.nullStack);
         else getInventory().set(index, stack);
+    }
+
+    int[] slots;
+
+    @Override
+    public int[] getSlotsForFace(EnumFacing side)
+    {
+        if (slots == null)
+        {
+            slots = new int[getSizeInventory()];
+            for (int i = 0; i < slots.length; i++)
+                slots[i] = i;
+        }
+        return slots;
+    }
+
+    @Override
+    /** Returns true if automation can insert the given item in the given slot
+     * from the given side. */
+    public boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    {
+        return isItemValidForSlot(index, itemStackIn);
+    }
+
+    @Override
+    /** Returns true if automation can extract the given item in the given slot
+     * from the given side. */
+    public boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    {
+        return !isItemValidForSlot(index, stack);
     }
 }

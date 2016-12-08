@@ -20,6 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IMoveAnimation;
@@ -215,7 +216,7 @@ public class Move_Explode extends Move_Basic
             {
             // voltorb's enemy wins XP and EVs even if it didn't
             // attack
-            ((IPokemob) attacked).setExp(((IPokemob) attacked).getExp() + Tools.getExp(1, pokemob.getBaseXP(), pokemob.getLevel()), true);
+            ((IPokemob) attacked).setExp(((IPokemob) attacked).getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor, pokemob.getBaseXP(), pokemob.getLevel()), true);
             byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
             ((IPokemob) attacked).addEVs(evsToAdd);
             }

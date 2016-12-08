@@ -174,7 +174,15 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         Vector3 pos = Vector3.getNewVector().set(this);
         if (pos.isClearOfBlocks(getEntityWorld()))
         {
-            Entity eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, this, male);
+            Entity eggItem = null;
+            try
+            {
+                eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, this, male);
+            }
+            catch (Exception e1)
+            {
+                e1.printStackTrace();
+            }
             EggEvent.Lay event;
             try
             {
@@ -188,7 +196,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             }
             catch (Exception e)
             {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return;

@@ -168,15 +168,11 @@ public class EventsHandlerClient
     public static void renderMob(IPokemob pokemob, float tick, boolean rotates)
     {
         if (pokemob == null) return;
-
         EntityLiving entity = (EntityLiving) pokemob;
-
         float size = 0;
-
         float mobScale = pokemob.getSize();
         size = Math.max(pokemob.getPokedexEntry().width * mobScale,
                 Math.max(pokemob.getPokedexEntry().height * mobScale, pokemob.getPokedexEntry().length * mobScale));
-
         GL11.glPushMatrix();
         float zoom = (float) (12f / Math.sqrt(size));
         GL11.glScalef(-zoom, zoom, zoom);
@@ -184,15 +180,13 @@ public class EventsHandlerClient
         long time = Minecraft.getSystemTime();
         if (rotates) GL11.glRotatef((time + tick) / 20f, 0, 1, 0);
         RenderHelper.enableStandardItemLighting();
-
         GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
-
-        int i = 15728880;
-        int j1 = i % 65536;
-        int k1 = i / 65536;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, 1.5F, false);
         RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GlStateManager.disableTexture2D();
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GL11.glPopMatrix();
 
     }

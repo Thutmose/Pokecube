@@ -22,6 +22,7 @@ import mezz.jei.api.ingredients.IModIngredientRegistration;
 import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.EntityLiving;
@@ -212,6 +213,10 @@ public class JEICompat implements IModPlugin
                                                                                                            false);
                                                                                            RenderHelper
                                                                                                    .disableStandardItemLighting();
+                                                                                           GlStateManager.disableRescaleNormal();
+                                                                                           GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+                                                                                           GlStateManager.disableTexture2D();
+                                                                                           GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
                                                                                            GL11.glPopMatrix();
                                                                                            GL11.glPopMatrix();
                                                                                        }

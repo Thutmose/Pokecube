@@ -103,6 +103,8 @@ public class Config extends ConfigBase
     public int                           captureDelayTicks            = 50;
     @Configure(category = misc)
     public boolean                       catchOrderRequired           = true;
+    @Configure(category = misc)
+    public float                         expScaleFactor               = 1;
 
     @Configure(category = misc)
     public boolean                       pcHoldsOnlyPokecubes         = true;

@@ -400,7 +400,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
                         return entry;
                     }
                 }
-                System.out.println(this.getClass()+" "+getPokedexNb());
+                System.out.println(this.getClass() + " " + getPokedexNb());
                 Thread.dumpStack();
                 this.setDead();
                 return Database.missingno;
@@ -568,10 +568,10 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             }
             else if (giveExp)
             {
-                attacker.setExp(attacker.getExp()
-                        + Tools.getExp((float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier : 1),
-                                ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()),
-                        true);
+                attacker.setExp(attacker.getExp() + Tools.getExp(
+                        (float) (pvp ? PokecubeMod.core.getConfig().pvpExpMultiplier
+                                : PokecubeCore.core.getConfig().expScaleFactor),
+                        ((IPokemob) attacked).getBaseXP(), ((IPokemob) attacked).getLevel()), true);
                 byte[] evsToAdd = Pokedex.getInstance().getEntry(((IPokemob) attacked).getPokedexNb()).getEVs();
                 attacker.addEVs(evsToAdd);
             }

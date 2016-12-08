@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -204,39 +205,33 @@ public class GuiPokemob extends GuiContainer
         try
         {
             EntityLiving entity = (EntityLiving) pokemob;
-
             float size = 0;
             int j = width;
             int k = height;
-
             size = Math.max(entity.width, entity.height) * scale;
-
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-            GL11.glPushMatrix();
-            GL11.glTranslatef(j + 55, k + 50, 50F);
-            float zoom = 25f / size;
-            GL11.glScalef(-zoom, zoom, zoom);
-            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f5 = ((k + 75) - 50) - ySize;
-            GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
-
-            RenderHelper.enableStandardItemLighting();
-
-            GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
-            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
             if (zRenderAngle != 0)
             {
                 entity.rotationYaw = 0;
                 entity.rotationPitch = 0;
                 entity.rotationYawHead = 0;
+                entity.prevRotationYawHead = 0;
             }
-
+            float zoom = 25f / size;
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            GL11.glPushMatrix();
+            GL11.glTranslatef(j + 55, k + 50, 50F);
+            GL11.glScalef(-zoom, zoom, zoom);
+            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+            float f5 = ((k + 75) - 50) - ySize;
+            GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
+            RenderHelper.enableStandardItemLighting();
+            GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
+            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(zRenderAngle, 0.0F, 0.0F, 1.0F);
-
             int i = 15728880;
             int j1 = i % 65536;
             int k1 = i / 65536;
@@ -244,6 +239,10 @@ public class GuiPokemob extends GuiContainer
             Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
+            GlStateManager.disableRescaleNormal();
+            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GlStateManager.disableTexture2D();
+            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
         }

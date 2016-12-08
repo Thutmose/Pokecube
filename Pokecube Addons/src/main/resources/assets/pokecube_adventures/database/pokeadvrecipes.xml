@@ -11,6 +11,9 @@
     <Recipe handler="dna" lvl="15" cost="10000" pokemonE="Mewtwo" chance="0.9" priority="-1" remain="0">//Mew DNA
         <Input id="pokecube_adventures:mewhair"/>
     </Recipe>
+    <Recipe handler="selector" dna="0.0" selector="0.25">//Nether star to ensure DNA survives
+        <Input id="minecraft:nether_star"/>
+    </Recipe>
     <Recipe handler="cloner" lvl="15" cost="10000" pokemon="Ditto" priority="-1" remain="0">//Ditto 
         <Input id="pokecube_adventures:mewhair"/>
         <Input id="pokecube:pokemobegg" d="32767"/>

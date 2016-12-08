@@ -57,6 +57,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.achievements.AchievementCatch;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
+import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
@@ -468,8 +469,7 @@ public class PokecubeCore extends PokecubeMod
         }
         ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
         GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
-        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenter");
-        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
+        GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
         sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
         GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "

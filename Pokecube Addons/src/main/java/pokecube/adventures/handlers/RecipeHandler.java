@@ -20,6 +20,7 @@ import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
+import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
@@ -37,18 +38,20 @@ import thut.lib.CompatWrapper;
 
 public class RecipeHandler
 {
-    private static final QName ENERGY   = new QName("cost");
-    private static final QName PRIORITY = new QName("priority");
-    private static final QName POKEMOB  = new QName("pokemon");
-    private static final QName TAME     = new QName("tame");
-    private static final QName LEVEL    = new QName("lvl");
-    private static final QName REMAIN   = new QName("remain");
-    private static final QName CHANCE   = new QName("chance");
-    private static final QName POKEMOBA = new QName("pokemonA");
-    private static final QName POKEMOBB = new QName("pokemonB");
-    private static final QName POKEMOBE = new QName("pokemonE");
+    private static final QName ENERGY           = new QName("cost");
+    private static final QName PRIORITY         = new QName("priority");
+    private static final QName POKEMOB          = new QName("pokemon");
+    private static final QName TAME             = new QName("tame");
+    private static final QName LEVEL            = new QName("lvl");
+    private static final QName REMAIN           = new QName("remain");
+    private static final QName CHANCE           = new QName("chance");
+    private static final QName POKEMOBA         = new QName("pokemonA");
+    private static final QName POKEMOBB         = new QName("pokemonB");
+    private static final QName POKEMOBE         = new QName("pokemonE");
+    private static final QName DNADESTRUCT      = new QName("dna");
+    private static final QName SELECTORDESTRUCT = new QName("selector");
 
-    public static boolean      tmRecipe = true;
+    public static boolean      tmRecipe         = true;
 
     public static class ClonerRecipeParser implements IRecipeParser
     {
@@ -125,6 +128,13 @@ public class RecipeHandler
             {
                 inputs.add(XMLRecipeHandler.getStack(xml));
             }
+            if (inputs.size() != 1) throw new NullPointerException("Wrong number of stacks for " + recipe);
+            ItemStack stack = inputs.get(0);
+            if (!CompatWrapper.isValid(stack)) throw new NullPointerException("Invalid stack for " + recipe);
+            float dna = Float.parseFloat(recipe.values.get(DNADESTRUCT));
+            float select = Float.parseFloat(recipe.values.get(SELECTORDESTRUCT));
+            SelectorValue value = new SelectorValue(select, dna);
+            RecipeSelector.addSelector(stack, value);
         }
     }
 

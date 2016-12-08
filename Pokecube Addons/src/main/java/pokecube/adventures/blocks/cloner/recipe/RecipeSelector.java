@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 
-import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -74,9 +73,23 @@ public class RecipeSelector implements IDefaultRecipe
         }
     }
 
-    public static SelectorValue                  defaultSelector = new SelectorValue(0.5f, 0.5f);
+    public static SelectorValue defaultSelector = new SelectorValue(0.5f, 0.5f);
 
-    private static Map<ItemStack, SelectorValue> selectorValues  = Maps.newHashMap();
+    public static SelectorValue getSelectorValue(ItemStack stack)
+    {
+        SelectorValue value = defaultSelector;
+        if (CompatWrapper.isValid(stack)) for (ItemStack stack1 : selectorValues.keySet())
+        {
+            if (Tools.isSameStack(stack1, stack))
+            {
+                value = selectorValues.get(stack1);
+                break;
+            }
+        }
+        return value;
+    }
+
+    private static Map<ItemStack, SelectorValue> selectorValues = Maps.newHashMap();
 
     public static void addSelector(ItemStack stack, SelectorValue value)
     {
@@ -92,23 +105,8 @@ public class RecipeSelector implements IDefaultRecipe
         ItemStack book = inv.getStackInSlot(0);
         ItemStack modifier = inv.getStackInSlot(1);
         if (ClonerHelper.getGeneSelectors(book).isEmpty() || !CompatWrapper.isValid(modifier)) return false;
-        SelectorValue value = null;
-
-        if (selectorValues.isEmpty())
-        {
-            SelectorValue selector = new SelectorValue(0.25f, 0);
-            selectorValues.put(new ItemStack(Items.NETHER_STAR), selector);
-        }
-
-        for (ItemStack stack : selectorValues.keySet())
-        {
-            if (Tools.isSameStack(stack, modifier))
-            {
-                value = selectorValues.get(stack);
-                break;
-            }
-        }
-        if (value == null) return false;
+        SelectorValue value = getSelectorValue(modifier);
+        if (value == defaultSelector) return false;
         output = book.copy();
         output.getTagCompound().setTag(ClonerHelper.SELECTORTAG, value.save());
         return true;

@@ -69,7 +69,7 @@ public class SpeciesGene implements Gene
     {
         SpeciesGene newGene = new SpeciesGene();
         SpeciesGene otherG = (SpeciesGene) other;
-        SpeciesGene mother = info.value == IPokemob.FEMALE ? this : otherG;
+        SpeciesGene mother = info.value == IPokemob.FEMALE ? this : info.value > 0 ? this : otherG;
         if (info.value == otherG.info.value) mother = rand.nextFloat() < 0.5 ? this : otherG;
         SpeciesGene father = mother == otherG ? this : otherG;
         newGene.setValue(mother.info.clone());

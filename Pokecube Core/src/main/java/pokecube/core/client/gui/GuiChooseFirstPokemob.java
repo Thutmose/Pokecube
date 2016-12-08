@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL12;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
@@ -404,8 +405,11 @@ public class GuiChooseFirstPokemob extends GuiScreen
             entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
             Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+            GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+            GlStateManager.disableTexture2D();
+            GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
             GL11.glPopMatrix();
         }
         catch (Throwable e)

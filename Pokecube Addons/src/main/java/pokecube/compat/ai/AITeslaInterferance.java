@@ -6,6 +6,7 @@ import net.darkhax.tesla.api.ITeslaProducer;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -64,7 +65,19 @@ public class AITeslaInterferance extends EntityAIBase
             mobLoc.set(pokemob).addTo(toFill);
             TileEntity tile = mobLoc.getTileEntity(entity.getEntityWorld());
             if (tile == null) continue;
-            ITeslaConsumer cap = tile.getCapability(TESLA_CONSUMER, null);
+            ITeslaConsumer cap = null;
+            try
+            {
+                cap = tile.getCapability(TESLA_CONSUMER, null);
+            }
+            catch (Exception e)
+            {
+                for (EnumFacing side : EnumFacing.VALUES)
+                {
+                    cap = tile.getCapability(TESLA_CONSUMER, side);
+                    if (cap != null) break;
+                }
+            }
             if (cap != null)
             {
                 int radSq = (int) toFill.magSq();

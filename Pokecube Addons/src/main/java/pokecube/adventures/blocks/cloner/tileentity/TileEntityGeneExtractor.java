@@ -6,6 +6,7 @@ import java.util.Set;
 import com.google.common.collect.Lists;
 
 import li.cil.oc.api.machine.Arguments;
+import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.init.Items;
@@ -87,6 +88,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
         return "dnaExtractor";
     }
 
+    @Callback
     @Optional.Method(modid = "OpenComputers")
     public Object[] getSourceInfo(Context context, Arguments args) throws Exception
     {
@@ -107,6 +109,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
         return values.toArray(new String[0]);
     }
 
+    @Callback
     @Optional.Method(modid = "OpenComputers")
     public Object[] getDestInfo(Context context, Arguments args) throws Exception
     {
@@ -127,6 +130,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
         return values.toArray(new String[0]);
     }
 
+    @Callback
     @Optional.Method(modid = "OpenComputers")
     public Object[] getSelectorInfo(Context context, Arguments args) throws Exception
     {
@@ -150,6 +154,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
         return values.toArray(new String[0]);
     }
 
+    @Callback
     @Optional.Method(modid = "OpenComputers")
     public Object[] setSelector(Context context, Arguments args) throws Exception
     {

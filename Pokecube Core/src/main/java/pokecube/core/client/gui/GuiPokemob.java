@@ -208,7 +208,7 @@ public class GuiPokemob extends GuiContainer
             float size = 0;
             int j = width;
             int k = height;
-            size = Math.max(entity.width, entity.height) * scale;
+            size = Math.max(entity.width, entity.height);
             if (zRenderAngle != 0)
             {
                 entity.rotationYaw = 0;
@@ -216,26 +216,16 @@ public class GuiPokemob extends GuiContainer
                 entity.rotationYawHead = 0;
                 entity.prevRotationYawHead = 0;
             }
-            float zoom = 25f / size;
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+            float zoom = (25f / size) * scale;
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 55, k + 50, 50F);
             GL11.glScalef(-zoom, zoom, zoom);
             GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
-            float f5 = ((k + 75) - 50) - ySize;
             GL11.glRotatef(135F, 0.0F, 1.0F, 0.0F);
             RenderHelper.enableStandardItemLighting();
-            GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
-            GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
-            GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
             GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
             GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef(zRenderAngle, 0.0F, 0.0F, 1.0F);
-            int i = 15728880;
-            int j1 = i % 65536;
-            int k1 = i / 65536;
-            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
             Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, -0.123456, 0, 0, 1.5F, false);
             GL11.glPopMatrix();
             RenderHelper.disableStandardItemLighting();
@@ -289,7 +279,7 @@ public class GuiPokemob extends GuiContainer
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
         this.drawTexturedModalRect(k + 79, l + 17, 0, this.ySize, 90, 18);
         this.drawTexturedModalRect(k + 7, l + 35, 0, this.ySize + 54, 18, 18);
-        yRenderAngle = entity.rotationYaw - 45;
+        yRenderAngle = -entity.rotationYaw + 45;
         xRenderAngle = 0;
         renderMob(pokemob, k, l, xSize, ySize, xRenderAngle, yRenderAngle, 0, 1);
     }

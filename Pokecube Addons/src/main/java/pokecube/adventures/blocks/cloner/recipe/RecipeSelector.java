@@ -78,7 +78,7 @@ public class RecipeSelector implements IDefaultRecipe
     public static SelectorValue getSelectorValue(ItemStack stack)
     {
         SelectorValue value = defaultSelector;
-        for (ItemStack stack1 : selectorValues.keySet())
+        if (CompatWrapper.isValid(stack)) for (ItemStack stack1 : selectorValues.keySet())
         {
             if (Tools.isSameStack(stack1, stack))
             {

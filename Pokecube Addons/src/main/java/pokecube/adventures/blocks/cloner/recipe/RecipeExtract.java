@@ -15,7 +15,6 @@ import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.ItemBasedSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
-import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
@@ -62,8 +61,6 @@ public class RecipeExtract implements IPoweredRecipe
                     DNAPack pack = ClonerHelper.DNAITEMS.get(stack);
                     if (Math.random() > pack.chance) continue;
                     Alleles alleles = pack.alleles;
-                    SpeciesInfo info = alleles.getExpressed().getValue();
-                    System.out.println(info.entry + " " + pack.chance);
                     genes = IMobGenetics.GENETICS_CAP.getDefaultInstance();
                     genes.getAlleles().put(alleles.getExpressed().getKey(), alleles);
                     break source;
@@ -71,10 +68,9 @@ public class RecipeExtract implements IPoweredRecipe
             }
             source = CompatWrapper.nullStack;
         }
-        System.out.println(destination);
         output = destination.copy();
         CompatWrapper.setStackSize(output, 1);
-        if (!CompatWrapper.isValid(source)) return output;
+        if (!CompatWrapper.isValid(source) || genes == null) return output;
         if (output.getTagCompound() == null) output.setTagCompound(new NBTTagCompound());
         ClonerHelper.mergeGenes(genes, output, new ItemBasedSelector(selector));
         CompatWrapper.setStackSize(output, 1);
@@ -128,8 +124,8 @@ public class RecipeExtract implements IPoweredRecipe
             destination = CompatWrapper.nullStack;
         }
         if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = CompatWrapper.nullStack;
-        if (CompatWrapper.isValid(selector) && CompatWrapper.isValid(source)
-                && CompatWrapper.isValid(destination)) { return true; }
+        if (CompatWrapper.isValid(selector) && CompatWrapper.isValid(source) && CompatWrapper.isValid(destination)
+                && genes != null) { return true; }
         return false;
     }
 
@@ -144,14 +140,11 @@ public class RecipeExtract implements IPoweredRecipe
     {
         boolean keepDNA = false;
         boolean keepSelector = false;
-
         SelectorValue value = ClonerHelper.getSelectorValue(selector);
         if (value.dnaDestructChance < Math.random()) keepDNA = true;
         if (value.selectorDestructChance < Math.random()) keepSelector = true;
-
         if (slot == 2 && keepDNA) return stackIn;
         if (slot == 1 && keepSelector) return stackIn;
-
         return IPoweredRecipe.super.toKeep(slot, stackIn, inv);
     }
 

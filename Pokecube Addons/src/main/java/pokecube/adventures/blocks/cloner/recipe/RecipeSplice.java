@@ -107,14 +107,11 @@ public class RecipeSplice implements IPoweredRecipe
     {
         boolean keepDNA = false;
         boolean keepSelector = false;
-
         SelectorValue value = ClonerHelper.getSelectorValue(selector);
         if (value.dnaDestructChance < Math.random()) keepDNA = true;
         if (value.selectorDestructChance < Math.random()) keepSelector = true;
-
         if (slot == 0 && keepDNA) return stackIn;
         if (slot == 1 && keepSelector) return stackIn;
-
         if (slot == 0 && CompatWrapper.isValid(stackIn) && stackIn.getItem() == Items.POTIONITEM)
             return new ItemStack(Items.GLASS_BOTTLE);
         return IPoweredRecipe.super.toKeep(slot, stackIn, inv);
@@ -131,6 +128,10 @@ public class RecipeSplice implements IPoweredRecipe
             else tile.decrStackSize(i, 1);
         }
         tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
+        if (tile.getCraftMatrix().eventHandler != null)
+        {
+            tile.getCraftMatrix().eventHandler.detectAndSendChanges();
+        }
         return true;
     }
 }

@@ -153,42 +153,46 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
         if (nbt.hasKey("progress"))
         {
             NBTTagCompound tag = nbt.getCompoundTag("progress");
-            currentProcess = PoweredProcess.load(tag, this);
-            if (currentProcess != null)
+            setProcess(PoweredProcess.load(tag, this));
+            if (getProcess() != null)
             {
-                total = currentProcess.recipe.getEnergyCost();
+                total = getProcess().recipe.getEnergyCost();
             }
         }
     }
 
     public void checkRecipes()
     {
-        if (currentProcess == null || !currentProcess.valid())
+        if (getProcess() == null || !getProcess().valid())
         {
             if (check)
             {
                 check = false;
-                currentProcess = new PoweredProcess();
-                currentProcess.setTile(this);
-                if (!currentProcess.valid())
+                if (getProcess() == null)
                 {
-                    currentProcess = null;
+                    setProcess(new PoweredProcess());
+                }
+                this.getProcess().setTile(this);
+                this.getProcess().reset();
+                if (!getProcess().valid())
+                {
+                    setProcess(null);
                 }
             }
-            else currentProcess = null;
+            else setProcess(null);
         }
         else
         {
-            boolean valid = currentProcess.valid();
+            boolean valid = getProcess().valid();
             boolean done = true;
             if (valid)
             {
-                total = currentProcess.recipe.getEnergyCost();
-                done = !currentProcess.tick();
+                total = getProcess().recipe.getEnergyCost();
+                done = !getProcess().tick();
             }
             if (!valid || done)
             {
-                currentProcess = null;
+                setProcess(null);
                 progress = 0;
                 markDirty();
             }
@@ -211,9 +215,9 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
                 itemList.appendTag(tag);
             }
         }
-        if (currentProcess != null)
+        if (getProcess() != null)
         {
-            nbt.setTag("progress", currentProcess.save());
+            nbt.setTag("progress", getProcess().save());
         }
         nbt.setTag("Inventory", itemList);
         return nbt;

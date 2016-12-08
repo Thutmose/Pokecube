@@ -62,7 +62,7 @@ public class PoweredProcess
     {
         if (recipe != null) needed = recipe.getEnergyCost();
         else needed = 0;
-        tile.setProgress(getProgress());
+        if (tile != null) tile.setProgress(getProgress());
     }
 
     public boolean tick()

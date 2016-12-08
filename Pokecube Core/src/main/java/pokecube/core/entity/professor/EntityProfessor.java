@@ -171,7 +171,9 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             }
             else if (type == ProfessorType.HEALER)
             {
-                player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldObj, 0, 0, 0);
+                BlockPos pos = getPosition();
+                player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldObj, pos.getX(), pos.getY() + 1,
+                        pos.getZ());
                 return true;
             }
         }

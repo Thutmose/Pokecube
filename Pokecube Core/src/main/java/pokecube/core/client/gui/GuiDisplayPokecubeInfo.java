@@ -229,7 +229,6 @@ public class GuiDisplayPokecubeInfo extends Gui
         int statusOffsetY = 27;
         int confuseOffsetX = 12;
         int confuseOffsetY = 1;
-        int i, j;
         GL11.glPushMatrix();
         GL11.glColor4f(1, 1, 1, 1);
         applyTransform(PokecubeCore.core.getConfig().guiRef, PokecubeMod.core.getConfig().guiPos, guiDims,

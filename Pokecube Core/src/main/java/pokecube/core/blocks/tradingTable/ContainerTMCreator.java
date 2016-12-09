@@ -32,7 +32,6 @@ public class ContainerTMCreator extends Container
 
     public void bindInventories(InventoryPlayer playerInv)
     {
-        clearSlots();
         addSlotToContainer(new SlotTMCreator(tile == null ? new InventoryBasic("", false, 1) : tile, 0, 15, 12));
         bindPlayerInventory(playerInv);
     }

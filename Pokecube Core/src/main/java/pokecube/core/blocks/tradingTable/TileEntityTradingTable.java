@@ -18,7 +18,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -53,10 +52,11 @@ import pokecube.core.network.packets.PacketTrade;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
+import thut.core.common.blocks.DefaultInventory;
 import thut.lib.CompatWrapper;
 
 @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
-public class TileEntityTradingTable extends TileEntityOwnable implements IInventory, SimpleComponent
+public class TileEntityTradingTable extends TileEntityOwnable implements DefaultInventory, SimpleComponent
 {
     public static boolean                     theftEnabled = false;
 
@@ -114,7 +114,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
     @Override
     public void closeInventory(EntityPlayer player)
     {
-        if (!player.getEntityWorld().isRemote)
+        if (!player.getEntityWorld().isRemote && trade)
         {
             if (player.getCachedUniqueIdString().equals(PokecubeManager.getOwner(inventory.get(0))))
             {
@@ -153,60 +153,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
                 ((EntityPlayerMP) player).sendContainerToPlayer(player.inventoryContainer);
             }
         }
-    }
-
-    @Override
-    public void clear()
-    {
-        for (int i = 0; i < inventory.size(); i++)
-            inventory.set(i, CompatWrapper.nullStack);
-    }
-
-    @Override
-    public int getSizeInventory()
-    {
-        return inventory.size();
-    }
-
-    @Override
-    public ItemStack getStackInSlot(int index)
-    {
-        return inventory.get(index);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slot, int count)
-    {
-        if (CompatWrapper.isValid(getStackInSlot(slot)))
-        {
-            ItemStack itemStack;
-            itemStack = getStackInSlot(slot).splitStack(count);
-            if (!CompatWrapper.isValid(getStackInSlot(slot)))
-            {
-                setInventorySlotContents(slot, CompatWrapper.nullStack);
-            }
-            return itemStack;
-        }
-        return CompatWrapper.nullStack;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int slot)
-    {
-        if (CompatWrapper.isValid(getStackInSlot(slot)))
-        {
-            ItemStack stack = getStackInSlot(slot);
-            setInventorySlotContents(slot, CompatWrapper.nullStack);
-            return stack;
-        }
-        return CompatWrapper.nullStack;
-    }
-
-    @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
-    {
-        if (CompatWrapper.isValid(stack)) inventory.set(index, CompatWrapper.nullStack);
-        inventory.set(index, stack);
     }
 
     @Override
@@ -253,12 +199,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         moves = list.toArray(new String[0]);
 
         return moves;
-    }
-
-    @Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
     }
 
     @Override
@@ -373,7 +313,13 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         boolean pc = false;
         IBlockState state = worldObj.getBlockState(getPos());
         trade = !state.getValue(BlockTradingTable.TMC);
-        inventory = CompatWrapper.makeList(trade ? 2 : 1);
+        int size = trade ? 2 : 1;
+        if (size != inventory.size())
+        {
+            List<ItemStack> old = Lists.newArrayList();
+            inventory = CompatWrapper.makeList(size);
+            inventory.set(0, old.get(0));
+        }
         if (!(Boolean) state.getValue(BlockTradingTable.TMC)) { return false; }
         this.pc = null;
         for (EnumFacing side : EnumFacing.values())
@@ -447,21 +393,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         }
     }
 
-    @Override
-    public void onLoad()
-    {
-    }
-
     public void openGUI(EntityPlayer player)
     {
         boolean TMC = worldObj.getBlockState(getPos()).getValue(BlockTradingTable.TMC);
         player.openGui(PokecubeMod.core, TMC ? Config.GUITMTABLE_ID : Config.GUITRADINGTABLE_ID, worldObj,
                 getPos().getX(), getPos().getY(), getPos().getZ());
-    }
-
-    @Override
-    public void openInventory(EntityPlayer player)
-    {
     }
 
     public void pokeseal(ItemStack a, ItemStack b, IPokemob mob)
@@ -630,9 +566,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements IInvent
         return tagCompound;
     }
 
-    // 1.11
-    public boolean func_191420_l()
+    @Override
+    public List<ItemStack> getInventory()
     {
-        return true;
+        return inventory;
     }
 }

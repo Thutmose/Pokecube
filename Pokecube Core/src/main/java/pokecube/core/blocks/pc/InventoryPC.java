@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -16,7 +15,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PCSaveHandler;
@@ -34,36 +32,15 @@ public class InventoryPC implements IInventory
     {
         if (!(PokecubeManager.isFilled(mob))) return;
         String player = PokecubeManager.getOwner(mob);
-        boolean isUUID = false;
         try
         {
             UUID.fromString(player);
-            isUUID = true;
         }
         catch (Exception e)
         {
 
         }
-        if (isUUID)
-        {
-            if (player == null)
-            {
-                IPokemob poke = PokecubeManager.itemToPokemob(mob, world);
-                if (poke != null)
-                {
-                    ((EntityLivingBase) poke).setDead();
-                }
-            }
-            else
-            {
-                addStackToPC(player, mob);
-            }
-        }
-        else
-        {
-            addStackToPC(player, mob);
-        }
-        // TODO see if update packet here was needed.
+        addStackToPC(player, mob);
     }
 
     public static void addStackToPC(String uuid, ItemStack mob)

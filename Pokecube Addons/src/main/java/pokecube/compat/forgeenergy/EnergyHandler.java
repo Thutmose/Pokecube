@@ -40,16 +40,17 @@ public class EnergyHandler
         AxisAlignedBB box = v.getAABB().expand(10, 10, 10);
         List<EntityLiving> l = tile.getWorld().getEntitiesWithinAABB(EntityLiving.class, box);
         int ret = 0;
+        power = Math.min(power, PokecubeAdv.conf.maxOutput);
         for (EntityLiving living : l)
         {
-            if (living != null && living instanceof IPokemob)
+            if (living != null)
             {
                 IEnergyStorage producer = living.getCapability(CapabilityEnergy.ENERGY, null);
                 if (producer != null)
                 {
                     double dSq = Math.max(1, living.getDistanceSq(tile.getPos().getX() + 0.5,
                             tile.getPos().getY() + 0.5, tile.getPos().getZ() + 0.5));
-                    int input = (int) (producer.extractEnergy(PokecubeAdv.conf.maxOutput, simulated) / dSq);
+                    int input = (int) (producer.extractEnergy((int) (PokecubeAdv.conf.maxOutput / dSq), simulated));
                     ret += input;
                     if (ret >= power)
                     {

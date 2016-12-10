@@ -46,6 +46,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         final Entity         evo;
         final ITextComponent pre;
         final long           evoTime;
+        final UUID           id;
+        boolean              set = false;
 
         public EvoTicker(World world, long evoTime, Entity evo, ITextComponent pre)
         {
@@ -53,6 +55,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             this.evoTime = evoTime;
             this.evo = evo;
             this.pre = pre;
+            this.id = evo.getUniqueID();
             MinecraftForge.EVENT_BUS.register(this);
         }
 
@@ -60,7 +63,16 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         public void tick(WorldTickEvent evt)
         {
             if (evt.world != world || evt.phase != Phase.END) return;
-            if (evt.world.getTotalWorldTime() > evoTime)
+            boolean exists = false;
+            for (Entity e : evt.world.loadedEntityList)
+            {
+                if (e.getUniqueID().equals(id))
+                {
+                    exists = true;
+                    break;
+                }
+            }
+            if (evt.world.getTotalWorldTime() > evoTime && !exists)
             {
                 evt.world.spawnEntityInWorld(evo);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
@@ -347,7 +359,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 if (this.addedToChunk)
                 {
-                    worldObj.removeEntity(this);
                     long evoTime = worldObj.getTotalWorldTime() + 2;
                     new EvoTicker(worldObj, evoTime, evolution, this.getPokemonDisplayName());
                 }

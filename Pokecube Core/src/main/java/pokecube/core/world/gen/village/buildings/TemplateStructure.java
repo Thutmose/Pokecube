@@ -42,7 +42,7 @@ public class TemplateStructure extends TemplateStructureBase
     @Override
     protected void handleDataMarker(String marker, BlockPos pos, World world, Random rand, StructureBoundingBox box)
     {
-        if (!box.isVecInside(pos)) return;
+        if (!box.isVecInside(pos) || !world.isAreaLoaded(pos, pos)) return;
         TileEntity below = world.getTileEntity(pos.down());
         if (marker.startsWith("Chest") && below instanceof TileEntityChest)
         {

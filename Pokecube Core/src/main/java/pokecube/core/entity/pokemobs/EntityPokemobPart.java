@@ -12,7 +12,6 @@ import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -339,7 +338,7 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public Team getPokemobTeam()
+    public String getPokemobTeam()
     {
         // TODO Auto-generated method stub
         return parent.getPokemobTeam();

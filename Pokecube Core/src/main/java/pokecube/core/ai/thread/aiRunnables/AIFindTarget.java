@@ -14,6 +14,7 @@ import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.PokecubeCore;
+import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -33,16 +34,14 @@ public class AIFindTarget extends AIBase implements IAICombat
     Vector3                 v                = Vector3.getNewVector();
     Vector3                 v1               = Vector3.getNewVector();
 
-    final Predicate<Object> validGuardTarget = new Predicate<Object>()
+    final Predicate<Entity> validGuardTarget = new Predicate<Entity>()
                                              {
                                                  @Override
-                                                 public boolean apply(Object input)
+                                                 public boolean apply(Entity input)
                                                  {
                                                      if (input instanceof IPokemob && input != pokemob)
                                                      {
-                                                         IPokemob mob = (IPokemob) input;
-                                                         if (mob.getPokemobTeam() != pokemob
-                                                                 .getPokemobTeam()) { return true; }
+                                                         if (!TeamManager.sameTeam(entity, input)) { return true; }
                                                      }
                                                      else if (PokecubeMod.pokemobsDamagePlayers
                                                              && input instanceof EntityLivingBase)
@@ -53,7 +52,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                              return false;
                                                          if (mob instanceof EntityPokemobEgg) return false;
 
-                                                         if (mob.getTeam() != pokemob.getPokemobTeam()) { return true; }
+                                                         if (!TeamManager.sameTeam(entity, input)) { return true; }
                                                      }
                                                      return false;
                                                  }
@@ -195,24 +194,24 @@ public class AIFindTarget extends AIBase implements IAICombat
             else centre.set(pokemob.getPokemonOwner());
 
             pokemobs = getEntitiesWithinDistance(centre, entity.dimension, 16, EntityLivingBase.class);
-
             for (Object o : pokemobs)
             {
-                if (validGuardTarget.apply(o)) ret.add((EntityLivingBase) o);
+                if (validGuardTarget.apply((Entity) o)) ret.add((EntityLivingBase) o);
             }
             EntityLivingBase newtarget = null;
-            double closest = 1000;
-            Vector3 here = v1.set(pokemob);
+            double closest = Integer.MAX_VALUE;
+            Vector3 here = v1.set((Entity) pokemob, true);
             for (EntityLivingBase e : ret)
             {
                 double dist = e.getDistanceSqToEntity(entity);
-                v.set(e);
+                v.set(e, true);
                 if (dist < closest && here.isVisible(world, v))
                 {
                     closest = dist;
                     newtarget = e;
                 }
             }
+            System.out.println(newtarget);
             if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
             {
                 addTargetInfo(entity, newtarget);

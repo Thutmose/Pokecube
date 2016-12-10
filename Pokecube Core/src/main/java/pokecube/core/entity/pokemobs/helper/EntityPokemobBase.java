@@ -27,7 +27,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ReportedException;
@@ -54,6 +53,7 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.SpawnEvent;
+import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
@@ -238,16 +238,15 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public Team getPokemobTeam()
+    public String getPokemobTeam()
     {
-        return getTeam();
+        return TeamManager.getTeam(this);
     }
 
     @Override
     public int getPokemonUID()
     {
         if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
-
         return uid;
     }
 

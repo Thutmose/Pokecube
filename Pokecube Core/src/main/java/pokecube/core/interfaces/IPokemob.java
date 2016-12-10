@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -18,7 +20,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -680,7 +681,8 @@ public interface IPokemob extends IMoveConstants
 
     AnimalChest getPokemobInventory();
 
-    Team getPokemobTeam();
+    @Nonnull
+    String getPokemobTeam();
 
     /** @param state
      * @return the value of the AI state state. */

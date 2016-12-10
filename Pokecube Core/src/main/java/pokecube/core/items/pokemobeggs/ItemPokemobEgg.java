@@ -175,69 +175,72 @@ public class ItemPokemobEgg extends Item
             IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
             IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, eggs, null, genes);
             GeneticsManager.initFromGenes(eggs, mob);
-            return;
-        }
-
-        boolean fixedShiny = nbt.getBoolean("shiny");
-
-        String moveString = nbt.getString("moves");
-        String[] moves = moveString.split(";");
-        long ivs = nbt.getLong("ivs");
-
-        mob.setShiny(fixedShiny);
-        if (!nbt.hasKey("ivs"))
-        {
-
         }
         else
         {
-            if (moves.length > 0)
-            {
-                for (int i = 1; i < Math.max(moves.length + 1, 5); i++)
-                {
-                    mob.setMove(4 - i, null);
-                }
-            }
-            // IsDead is set to prevent it notifiying owner of move learning.
-            ((Entity) mob).isDead = true;
-            for (String s : moves)
-            {
-                if (s != null && !s.isEmpty()) mob.learn(s);
-            }
-            ((Entity) mob).isDead = false;
-            byte[] rgba = new byte[4];
-            if (nbt.hasKey("colour", 7))
-            {
-                rgba = nbt.getByteArray("colour");
-                if (rgba.length == 4)
-                {
-                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
-                }
-                else if (rgba.length == 3)
-                {
-                    ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
-                }
-            }
-            mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
-            mob.setNature(Nature.values()[nbt.getByte("nature")]);
-            mob.setSize(nbt.getFloat("size"));
-            if (nbt.hasKey("abilityIndex"))
-            {
-                int index = nbt.getInteger("abilityIndex");
-                if (index < 2)
-                {
-                    mob.setAbilityIndex(index);
-                }
-                else
-                {
-                    mob.setToHiddenAbility();
-                }
-            }
-        }
 
-        if (nbt.hasKey("gender"))
-        {
-            mob.setSexe(nbt.getByte("gender"));
+            boolean fixedShiny = nbt.getBoolean("shiny");
+
+            String moveString = nbt.getString("moves");
+            String[] moves = moveString.split(";");
+            long ivs = nbt.getLong("ivs");
+
+            mob.setShiny(fixedShiny);
+            if (!nbt.hasKey("ivs"))
+            {
+
+            }
+            else
+            {
+                if (moves.length > 0)
+                {
+                    for (int i = 1; i < Math.max(moves.length + 1, 5); i++)
+                    {
+                        mob.setMove(4 - i, null);
+                    }
+                }
+                // IsDead is set to prevent it notifiying owner of move
+                // learning.
+                ((Entity) mob).isDead = true;
+                for (String s : moves)
+                {
+                    if (s != null && !s.isEmpty()) mob.learn(s);
+                }
+                ((Entity) mob).isDead = false;
+                byte[] rgba = new byte[4];
+                if (nbt.hasKey("colour", 7))
+                {
+                    rgba = nbt.getByteArray("colour");
+                    if (rgba.length == 4)
+                    {
+                        ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
+                    }
+                    else if (rgba.length == 3)
+                    {
+                        ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
+                    }
+                }
+                mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
+                mob.setNature(Nature.values()[nbt.getByte("nature")]);
+                mob.setSize(nbt.getFloat("size"));
+                if (nbt.hasKey("abilityIndex"))
+                {
+                    int index = nbt.getInteger("abilityIndex");
+                    if (index < 2)
+                    {
+                        mob.setAbilityIndex(index);
+                    }
+                    else
+                    {
+                        mob.setToHiddenAbility();
+                    }
+                }
+            }
+
+            if (nbt.hasKey("gender"))
+            {
+                mob.setSexe(nbt.getByte("gender"));
+            }
         }
 
         Vector3 location = Vector3.getNewVector().set(mob);

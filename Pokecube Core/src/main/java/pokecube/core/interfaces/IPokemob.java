@@ -3,6 +3,7 @@
  */
 package pokecube.core.interfaces;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -606,7 +607,10 @@ public interface IPokemob extends IMoveConstants
     /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
      *
      * @return the change state */
-    int getChanges();
+    default int getChanges()
+    {
+        return getMoveStats().changes;
+    }
 
     float getDirectionPitch();
 
@@ -668,7 +672,47 @@ public interface IPokemob extends IMoveConstants
      * @param i
      *            from 0 to 3
      * @return the String name of the move */
-    String getMove(int i);
+    default String getMove(int index)
+    {
+        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
+        {
+            IPokemob to = (IPokemob) getTransformedTo();
+            if (to.getTransformedTo() != this) return to.getMove(index);
+        }
+
+        String[] moves = getMoves();
+
+        if (index >= 0 && index < 4) { return moves[index]; }
+        if (index == 4 && moves[3] != null && getPokemonAIState(LEARNINGMOVE))
+        {
+            List<String> list;
+            List<String> lastMoves = new ArrayList<String>();
+            int n = getLevel();
+
+            while (n > 0)
+            {
+                list = getPokedexEntry().getMovesForLevel(this.getLevel(), --n);
+                if (!list.isEmpty())
+                {
+                    list:
+                    for (String s : list)
+                    {
+                        for (String s1 : moves)
+                        {
+                            if (s.equals(s1)) continue list;
+                        }
+                        lastMoves.add(s);
+                    }
+                    break;
+                }
+            }
+
+            if (!lastMoves.isEmpty()) { return lastMoves.get(getMoveStats().num % lastMoves.size()); }
+        }
+
+        if (index == 5) { return IMoveConstants.MOVE_NONE; }
+        return null;
+    }
 
     /** Returns the index of the move to be executed in executeMove method.
      * 
@@ -689,7 +733,10 @@ public interface IPokemob extends IMoveConstants
      * @return the nature */
     Nature getNature();
 
-    HashMap<Move_Ongoing, Integer> getOngoingEffects();
+    default HashMap<Move_Ongoing, Integer> getOngoingEffects()
+    {
+        return getMoveStats().ongoingEffects;
+    }
 
     boolean getOnGround();
 
@@ -864,7 +911,10 @@ public interface IPokemob extends IMoveConstants
 
     /** @param change
      *            the changes to set */
-    void removeChanges(int changes);
+    default void removeChanges(int changes)
+    {
+        this.getMoveStats().changes -= changes;
+    }
 
     /** The mob returns to its pokecube. */
     void returnToPokecube();
@@ -931,7 +981,10 @@ public interface IPokemob extends IMoveConstants
      *            the Individual Values */
     void setIVs(byte[] ivs);
 
-    void setLeaningMoveIndex(int num);
+    default void setLeaningMoveIndex(int num)
+    {
+        this.getMoveStats().num = num;
+    }
 
     /** Sets the {@link String} id of the specified move.
      *

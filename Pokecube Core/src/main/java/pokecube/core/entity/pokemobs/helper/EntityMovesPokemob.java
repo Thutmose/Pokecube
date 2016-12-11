@@ -5,7 +5,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import io.netty.buffer.Unpooled;
@@ -293,12 +292,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         here.set(this);
     }
 
-    @Override
-    public int getChanges()
-    {
-        return moveInfo.changes;
-    }
-
     @SideOnly(Side.CLIENT)
     /** Params: (Float)Render tick. Returns the intensity of the creeper's flash
      * when it is ignited. */
@@ -312,56 +305,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public int getExplosionState()
     {
         return (int) dataManager.get(BOOMSTATEDW);
-    }
-
-    public String[] getLearnableMoves()
-    {
-        List<String> moves = Database.getLearnableMoves(this.getPokedexNb());
-        return moves.toArray(new String[0]);
-    }
-
-    @Override
-    public String getMove(int index)
-    {
-        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
-        {
-            IPokemob to = (IPokemob) getTransformedTo();
-            if (to.getTransformedTo() != this) return to.getMove(index);
-        }
-
-        String[] moves = getMoves();
-
-        if (index >= 0 && index < 4) { return moves[index]; }
-        if (index == 4 && moves[3] != null && getPokemonAIState(LEARNINGMOVE))
-        {
-            List<String> list;
-            List<String> lastMoves = new ArrayList<String>();
-            int n = getLevel();
-
-            while (n > 0)
-            {
-                list = getPokedexEntry().getMovesForLevel(this.getLevel(), --n);
-                if (!list.isEmpty())
-                {
-                    list:
-                    for (String s : list)
-                    {
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) continue list;
-                        }
-                        lastMoves.add(s);
-                    }
-                    break;
-                }
-            }
-
-            if (!lastMoves.isEmpty()) { return lastMoves.get(moveInfo.num % lastMoves.size()); }
-        }
-
-        if (index == 5) { return IMoveConstants.MOVE_NONE; }
-
-        return null;
     }
 
     @Override
@@ -402,12 +345,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public PokemobMoveStats getMoveStats()
     {
         return moveInfo;
-    }
-
-    @Override
-    public HashMap<Move_Ongoing, Integer> getOngoingEffects()
-    {
-        return moveInfo.ongoingEffects;
     }
 
     @Override
@@ -558,22 +495,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void removeChanges(int changes)
-    {
-        this.moveInfo.changes -= changes;
-    }
-
-    @Override
     public void setExplosionState(int i)
     {
         if (i >= 0) moveInfo.Exploding = true;
         dataManager.set(BOOMSTATEDW, Byte.valueOf((byte) i));
-    }
-
-    @Override
-    public void setLeaningMoveIndex(int num)
-    {
-        this.moveInfo.num = num;
     }
 
     @Override

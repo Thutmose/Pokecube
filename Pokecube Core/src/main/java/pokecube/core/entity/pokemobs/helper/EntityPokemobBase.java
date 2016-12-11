@@ -289,12 +289,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public double getWeight()
-    {
-        return this.getSize() * this.getSize() * this.getSize() * getPokedexEntry().mass;
-    }
-
-    @Override
     public void init(int nb)
     {
         super.init(nb);
@@ -349,12 +343,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public boolean isInLava()
     {
         return getPokemonAIState(INLAVA);
-    }
-
-    @Override
-    public boolean isInWater()
-    {
-        return super.isInWater();
     }
 
     @Override

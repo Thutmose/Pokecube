@@ -882,13 +882,6 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     }
 
     @Override
-    public IPokemob setForSpawn(int exp)
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public int getFlavourAmount(int index)
     {
         // TODO Auto-generated method stub
@@ -987,6 +980,13 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public StatModifiers getModifiers()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IPokemob setForSpawn(int exp, boolean evolve)
     {
         // TODO Auto-generated method stub
         return null;

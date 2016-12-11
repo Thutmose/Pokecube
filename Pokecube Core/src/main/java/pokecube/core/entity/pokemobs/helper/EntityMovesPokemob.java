@@ -19,8 +19,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -29,7 +27,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -440,12 +437,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public Entity getWeapon(int index)
-    {
-        return index == 0 ? moveInfo.weapon1 : moveInfo.weapon2;
-    }
-
-    @Override
     public void healStatus()
     {
         dataManager.set(STATUSDW, (byte) 0);
@@ -567,20 +558,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void onMoveUse(MovePacket move)
-    {
-        Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == this)
-                : new MoveUse.DuringUse.Post(move, move.attacker == this);
-        MinecraftForge.EVENT_BUS.post(toPost);
-    }
-
-    @Override
-    public void popFromPokecube()
-    {
-        super.popFromPokecube();
-    }
-
-    @Override
     public void removeChanges(int changes)
     {
         this.moveInfo.changes -= changes;
@@ -663,7 +640,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public boolean setStatus(byte status)
     {
         if (getStatus() != STATUS_NON) { return false; }
-
         if (status == STATUS_BRN && isType(PokeType.fire)) return false;
         if (status == STATUS_PAR && isType(PokeType.electric)) return false;
         if (status == STATUS_FRZ && isType(PokeType.ice)) return false;
@@ -690,13 +666,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             this.setType1(newEntry.getType1());
             this.setType2(newEntry.getType2());
         }
-    }
-
-    @Override
-    public void setWeapon(int index, Entity weapon)
-    {
-        if (index == 0) moveInfo.weapon1 = weapon;
-        else moveInfo.weapon2 = weapon;
     }
 
     @Override

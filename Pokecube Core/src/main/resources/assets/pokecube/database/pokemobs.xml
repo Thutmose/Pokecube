@@ -289,6 +289,7 @@
             <ABILITY normal="Mega Launcher"/>
             <MASSKG>101.1</MASSKG>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <LOGIC dive="TRUE"/>
         </STATS>
     </Pokemon>
     <Pokemon name="Caterpie" number="10" base="true">
@@ -4121,7 +4122,8 @@
             <TYPE type2="Dark" type1="Water"/>
             <ABILITY normal="Mold Breaker"/>
             <MASSKG>305.0</MASSKG>
-            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <LOGIC dive="TRUE"/>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
         </STATS>
     </Pokemon>
     <Pokemon name="Lapras" number="131" base="true">
@@ -7858,6 +7860,7 @@
             <ABILITY normal="Swift Swim"/>
             <MASSKG>102.0</MASSKG>
             <CAPTURERATE>45</CAPTURERATE>
+            <LOGIC dive="TRUE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
         </STATS>
     </Pokemon>
@@ -9512,6 +9515,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MEGARULES forme="N___:I___"/>
+            <LOGIC dive="TRUE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
         </STATS>
         <MOVES>
@@ -9525,6 +9529,8 @@
             <SIZES length="2.5" width="2.5" height="2.5"/>
             <ABILITY normal="Strong Jaw"/>
             <MASSKG>130.3</MASSKG>
+            <LOGIC dive="TRUE"/>
+            <MOVEMENTTYPE>water</MOVEMENTTYPE>
         </STATS>
     </Pokemon>
     <Pokemon name="Wailmer" number="320" base="true">
@@ -11328,7 +11334,7 @@
             <TYPE type1="Water"/>
             <ABILITY normal="Drizzle" hidden=""/>
             <MASSKG>352.0</MASSKG>
-            <CAPTURERATE>5 (XY) 3 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>5</CAPTURERATE>
             <EXPYIELD>302</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -11369,7 +11375,7 @@
             <TYPE type1="Ground"/>
             <ABILITY normal="Drought" hidden=""/>
             <MASSKG>950.0</MASSKG>
-            <CAPTURERATE>5 (XY) 3 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>5</CAPTURERATE>
             <EXPYIELD>302</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -11410,7 +11416,7 @@
             <TYPE type2="Flying" type1="Dragon"/>
             <ABILITY normal="Air Lock" hidden=""/>
             <MASSKG>206.5</MASSKG>
-            <CAPTURERATE>3 (XY) 45 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>3</CAPTURERATE>
             <EXPYIELD>306</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -14208,7 +14214,7 @@
             <TYPE type2="Dragon" type1="Steel"/>
             <ABILITY normal="Pressure" hidden="Telepathy"/>
             <MASSKG>683.0</MASSKG>
-            <CAPTURERATE>30 (XY) 3 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>3</CAPTURERATE>
             <EXPYIELD>306</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -14232,7 +14238,7 @@
             <TYPE type2="Dragon" type1="Water"/>
             <ABILITY normal="Pressure" hidden="Telepathy"/>
             <MASSKG>336.0</MASSKG>
-            <CAPTURERATE>30 (XY) 3 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>3</CAPTURERATE>
             <EXPYIELD>306</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -18564,7 +18570,7 @@
             <TYPE type2="Fire" type1="Dragon"/>
             <ABILITY normal="Turboblaze" hidden=""/>
             <MASSKG>330.0</MASSKG>
-            <CAPTURERATE>45 (XY) 3 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>3</CAPTURERATE>
             <EXPYIELD>306</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>
@@ -18588,7 +18594,7 @@
             <TYPE type2="Electric" type1="Dragon"/>
             <ABILITY normal="Teravolt" hidden=""/>
             <MASSKG>345.0</MASSKG>
-            <CAPTURERATE>45 (XY) 3 (ΩRαS)</CAPTURERATE>
+            <CAPTURERATE>3</CAPTURERATE>
             <EXPYIELD>306</EXPYIELD>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>

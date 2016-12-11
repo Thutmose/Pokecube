@@ -25,7 +25,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
@@ -33,6 +36,7 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.events.AttackEvent;
+import pokecube.core.events.MoveUse;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.utils.PokeType;
@@ -558,27 +562,46 @@ public interface IPokemob extends IMoveConstants
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
      * @return the pokedex stats */
-    int getStat(Stats stat, boolean modified);
+    default int getStat(Stats stat, boolean modified)
+    {
+        return getModifiers().getStat(this, stat, modified);
+    }
 
     /** Computes an attack strength from stats. Only used against non-poke-mobs.
      *
      * @return the attack strength */
-    float getAttackStrength();
+    default float getAttackStrength()
+    {
+        int ATT = getStat(Stats.ATTACK, true);
+        int ATTSPE = getStat(Stats.SPATTACK, true);
+        float mult = getPokedexEntry().isShadowForme ? 2 : 1;
+        return mult * ((ATT + ATTSPE) / 6f);
+    }
 
     /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
      *
      * @return the pokedex stats */
-    int getBaseStat(Stats stat);
+    default int getBaseStat(Stats stat)
+    {
+        if (stat.ordinal() > 5) return 1;
+        return getPokedexEntry().getStats()[stat.ordinal()];
+    }
 
     /** To compute exp at the end of a fight.
      *
      * @return in base XP */
-    int getBaseXP();
+    default int getBaseXP()
+    {
+        return getPokedexEntry().getBaseXP();
+    }
 
     /** Pokecube catch rate.
      *
      * @return the catch rate */
-    int getCatchRate();
+    default int getCatchRate()
+    {
+        return getPokedexEntry().isShadowForme ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
+    }
 
     /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
      *
@@ -604,7 +627,10 @@ public interface IPokemob extends IMoveConstants
     /** 0, 1, 2, or 3 {@link Tools#xpToLevel(int, int)}
      *
      * @return in evolution mode */
-    int getExperienceMode();
+    default int getExperienceMode()
+    {
+        return getPokedexEntry().getEvolutionMode();
+    }
 
     int getExplosionState();
 
@@ -629,7 +655,10 @@ public interface IPokemob extends IMoveConstants
     byte[] getIVs();
 
     /** @return the level 1-100 */
-    int getLevel();
+    default int getLevel()
+    {
+        return Tools.xpToLevel(getExperienceMode(), getExp());
+    }
 
     /** @return the Modifiers on stats */
     StatModifiers getModifiers();
@@ -677,7 +706,10 @@ public interface IPokemob extends IMoveConstants
     PokedexEntry getPokedexEntry();
 
     /** @return the int pokedex number */
-    Integer getPokedexNb();
+    default Integer getPokedexNb()
+    {
+        return getPokedexEntry().getPokedexNb();
+    }
 
     AnimalChest getPokemobInventory();
 
@@ -692,7 +724,12 @@ public interface IPokemob extends IMoveConstants
      * Pokemob translated name.
      *
      * @return the name to display */
-    ITextComponent getPokemonDisplayName();
+    default ITextComponent getPokemonDisplayName()
+    {
+        if (this.getPokemonNickname().isEmpty())
+            return new TextComponentTranslation(getPokedexEntry().getUnlocalizedName());
+        return new TextComponentString(this.getPokemonNickname());
+    }
 
     /** @return the String nickname */
     String getPokemonNickname();
@@ -758,9 +795,15 @@ public interface IPokemob extends IMoveConstants
 
     EntityAIBase getUtilityMoveAI();
 
-    Entity getWeapon(int index);
+    default Entity getWeapon(int index)
+    {
+        return index == 0 ? getMoveStats().weapon1 : getMoveStats().weapon2;
+    }
 
-    double getWeight();
+    default double getWeight()
+    {
+        return this.getSize() * this.getSize() * this.getSize() * getPokedexEntry().mass;
+    }
 
     boolean hasHomeArea();
 
@@ -775,7 +818,10 @@ public interface IPokemob extends IMoveConstants
 
     boolean isShiny();
 
-    boolean isType(PokeType type);
+    default boolean isType(PokeType typeIn)
+    {
+        return this.getType1() == typeIn || getType2() == typeIn;
+    }
 
     /** The pokemob learns the specified move. It will be set to an available
      * position or erase an existing one if non are available.
@@ -806,7 +852,12 @@ public interface IPokemob extends IMoveConstants
      * pokemon type, or moves that prevent damage.
      * 
      * @param move */
-    void onMoveUse(MovePacket move);
+    default void onMoveUse(MovePacket move)
+    {
+        Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == this)
+                : new MoveUse.DuringUse.Post(move, move.attacker == this);
+        MinecraftForge.EVENT_BUS.post(toPost);
+    }
 
     /** Called to init the mob after it went out of its pokecube. */
     void popFromPokecube();
@@ -859,7 +910,12 @@ public interface IPokemob extends IMoveConstants
      * @param notifyLevelUp
      *            should be false in an initialize step and true in a true exp
      *            earning */
-    IPokemob setForSpawn(int exp);
+    default IPokemob setForSpawn(int exp)
+    {
+        return setForSpawn(exp, true);
+    }
+
+    IPokemob setForSpawn(int exp, boolean evolve);
 
     void setExplosionState(int i);
 
@@ -958,9 +1014,16 @@ public interface IPokemob extends IMoveConstants
      *            the initial value to set */
     void setStatusTimer(short timer);
 
-    void setToHiddenAbility();
+    default void setToHiddenAbility()
+    {
+        this.setAbilityIndex(2);
+        this.setAbility(getPokedexEntry().getHiddenAbility(this));
+    }
 
-    void setTraded(boolean traded);
+    default void setTraded(boolean trade)
+    {
+        setPokemonAIState(TRADED, trade);
+    }
 
     void setTransformedTo(Entity to);
 
@@ -972,7 +1035,11 @@ public interface IPokemob extends IMoveConstants
      * 
      * @param index
      * @param weapon */
-    void setWeapon(int index, Entity weapon);
+    default void setWeapon(int index, Entity weapon)
+    {
+        if (index == 0) getMoveStats().weapon1 = weapon;
+        else getMoveStats().weapon2 = weapon;
+    }
 
     /** Called when the mob spawns naturally. Used to set held item for
      * example. */
@@ -981,12 +1048,18 @@ public interface IPokemob extends IMoveConstants
     /** Has pokemob been traded
      * 
      * @return */
-    boolean traded();
+    default boolean traded()
+    {
+        return getPokemonAIState(TRADED);
+    }
 
     /** Returns the held item this pokemob should have when found wild.
      * 
      * @return */
-    ItemStack wildHeldItem();
+    default ItemStack wildHeldItem()
+    {
+        return this.getPokedexEntry().getRandomHeldItem();
+    }
 
     /** The personality value for the pokemob, used to determine nature,
      * ability, etc.<br>

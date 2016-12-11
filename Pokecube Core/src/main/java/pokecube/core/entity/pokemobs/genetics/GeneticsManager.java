@@ -219,7 +219,6 @@ public class GeneticsManager
         IMobGenetics mobs = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
         if (genes != mobs)
         {
-            mobs.getAlleles().clear();
             mobs.getAlleles().putAll(genes.getAlleles());
         }
         byte[] ivs = new byte[6];

@@ -26,8 +26,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
@@ -309,27 +307,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public float getAttackStrength()
-    {
-        int ATT = getStat(Stats.ATTACK, true);
-        int ATTSPE = getStat(Stats.SPATTACK, true);
-        float mult = getPokedexEntry().isShadowForme ? 2 : 1;
-        return mult * ((ATT + ATTSPE) / 6f);
-    }
-
-    @Override
-    public int getBaseXP()
-    {
-        return getPokedexEntry().getBaseXP();
-    }
-
-    @Override
-    public int getCatchRate()
-    {
-        return getPokedexEntry().isShadowForme ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
-    }
-
-    @Override
     public byte[] getEVs()
     {
         int[] ints = new int[] { dataManager.get(EVS1DW), dataManager.get(EVS2DV) };
@@ -341,12 +318,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public int getExp()
     {
         return dataManager.get(EXPDW);
-    }
-
-    @Override
-    public int getExperienceMode()
-    {
-        return getPokedexEntry().getEvolutionMode();
     }
 
     @Override
@@ -362,12 +333,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public byte[] getIVs()
     {
         return this.ivs;
-    }
-
-    @Override
-    public int getLevel()
-    {
-        return Tools.xpToLevel(getExperienceMode(), getExp());
     }
 
     @Override
@@ -407,20 +372,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
             }
         }
         return entry.getForGender(getSexe());
-    }
-
-    @Override
-    public Integer getPokedexNb()
-    {
-        return getPokedexEntry().getPokedexNb();
-    }
-
-    @Override
-    public ITextComponent getPokemonDisplayName()
-    {
-        if (this.getPokemonNickname().isEmpty())
-            return new TextComponentTranslation(getPokedexEntry().getUnlocalizedName());
-        return new TextComponentString(this.getPokemonNickname());
     }
 
     @Override
@@ -504,13 +455,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (shiny && !getPokedexEntry().hasShiny) shiny = false;
         return shiny;
     }
-
-    @Override
-    public boolean isType(PokeType steel)
-    {
-        return this.getType1() == steel || getType2() == steel;
-    }
-
     /** This method gets called when the entity kills another one. */
     @Override
     public void onKillEntity(EntityLivingBase attacked)
@@ -835,13 +779,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public void setToHiddenAbility()
-    {
-        this.abilityIndex = 2;
-        this.setAbility(getPokedexEntry().getHiddenAbility(this));
-    }
-
-    @Override
     public void setType1(PokeType type1)
     {
         this.type1 = type1;
@@ -851,19 +788,6 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public void setType2(PokeType type2)
     {
         this.type2 = type2;
-    }
-
-    @Override
-    public int getStat(Stats stat, boolean modified)
-    {
-        return getModifiers().getStat(this, stat, modified);
-    }
-
-    @Override
-    public int getBaseStat(Stats stat)
-    {
-        if (stat.ordinal() > 5) return 1;
-        return getPokedexEntry().getStats()[stat.ordinal()];
     }
 
     /** Handles health update.
@@ -912,14 +836,14 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     }
 
     @Override
-    public IPokemob setForSpawn(int exp)
+    public IPokemob setForSpawn(int exp, boolean evolve)
     {
         int level = Tools.xpToLevel(getExperienceMode(), exp);
         this.oldLevel = 0;
         dataManager.set(EXPDW, exp);
         EntityPokemobBase ret = (EntityPokemobBase) this.levelUp(level);
         ItemStack held = getHeldItemMainhand();
-        while (ret.canEvolve(held))
+        if (evolve) while (ret.canEvolve(held))
         {
             IPokemob temp = ret.evolve(false, true, held);
             if (temp == null) break;

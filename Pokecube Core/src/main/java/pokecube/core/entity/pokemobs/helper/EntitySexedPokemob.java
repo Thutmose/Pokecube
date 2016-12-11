@@ -79,12 +79,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         return this.spawnBabyAnimal((EntityAnimal) var1);
     }
 
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-    }
-
     public int getBreedingDelay(IPokemob mate)
     {
         return PokecubeMod.core.getConfig().breedingDelay;
@@ -293,12 +287,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             lay((IPokemob) entityanimal);
         }
         return null;
-    }
-
-    @Override
-    public void specificSpawnInit()
-    {
-        super.specificSpawnInit();
     }
 
     @Override

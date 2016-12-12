@@ -3,18 +3,21 @@
  */
 package pokecube.core.interfaces;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -398,6 +401,13 @@ public interface IPokemob extends IMoveConstants
 
     public static class PokemobMoveStats
     {
+        private static final PokemobMoveStats defaults = new PokemobMoveStats();
+        private static final Set<String>      IGNORE   = Sets.newHashSet();
+        static
+        {
+            IGNORE.add("ongoingEffects");
+            IGNORE.add("moves");
+        }
         public static final int               TYPE_CRIT                  = 2;
         public Entity                         weapon1;
 
@@ -451,6 +461,21 @@ public interface IPokemob extends IMoveConstants
         // next tick when a move can be used
         public int                            nextMoveTick               = 0;
         public String[]                       moves                      = new String[4];
+
+        public void reset()
+        {
+            for (Field f : getClass().getDeclaredFields())
+            {
+                try
+                {
+                    f.set(this, f.get(defaults));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     /*

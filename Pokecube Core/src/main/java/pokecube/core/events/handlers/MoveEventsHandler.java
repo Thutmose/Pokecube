@@ -386,6 +386,7 @@ public class MoveEventsHandler
         IPokemob target = null;
         if (attacked instanceof IPokemob) target = (IPokemob) attacked;
         IPokemob applied = user ? attacker : target;
+        IPokemob other = user ? target : attacker;
         if (applied == null) return;
         if (!user)
         {
@@ -434,50 +435,48 @@ public class MoveEventsHandler
             move.noFaint = true;
         }
 
-        if (attack.getName().equals(IMoveNames.MOVE_PROTECT)
-                || attack.getName().equals(IMoveNames.MOVE_DETECT) && !applied.getMoveStats().blocked)
+        if ((attack.getName().equals(IMoveNames.MOVE_PROTECT) || attack.getName().equals(IMoveNames.MOVE_DETECT)))
         {
             applied.getMoveStats().blockTimer = 30;
             applied.getMoveStats().blocked = true;
-            applied.getMoveStats().BLOCKCOUNTER++;
+            applied.getMoveStats().BLOCKCOUNTER += 2;
         }
         boolean blockMove = false;
-
-        if (Math.random() > 0.25 * (applied.getMoveStats().BLOCKCOUNTER)) for (String s : MoveEntry.protectionMoves)
+        for (String s : MoveEntry.protectionMoves)
             if (s.equals(move.attack))
             {
                 blockMove = true;
                 break;
             }
 
-        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked)
+        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked
+                && applied.getMoveStats().blockTimer-- <= 0)
         {
             applied.getMoveStats().blocked = false;
             applied.getMoveStats().blockTimer = 0;
             applied.getMoveStats().BLOCKCOUNTER = 0;
         }
+        System.out.println(applied + " " + applied.getMoveStats().BLOCKCOUNTER);
 
         boolean unblockable = false;
         for (String s : MoveEntry.unBlockableMoves)
             if (s.equals(move.attack))
             {
                 unblockable = true;
-                System.out.println("Unblockable");
                 break;
             }
 
-        if (applied.getMoveStats().blocked && move.attacked != move.attacker && !unblockable)
+        if (move.attacked != move.attacker && !unblockable && other != null && other.getMoveStats().BLOCKCOUNTER > 0)
         {
-            float count = Math.min(0, applied.getMoveStats().BLOCKCOUNTER - 1);
+            float count = Math.min(0, other.getMoveStats().BLOCKCOUNTER - 1);
             float chance = count != 0 ? Math.max(0.125f, ((1 / (count * 2)))) : 1;
-            if (chance > Math.random())
-            {
-                move.canceled = true;
-            }
-            else
+            if (chance < Math.random())
             {
                 move.failed = true;
+                move.canceled = true;
+                System.out.println("blocked " + other.getMoveStats().BLOCKCOUNTER);
             }
+            else System.out.println("blockfail " + other.getMoveStats().BLOCKCOUNTER);
         }
         if (applied.getMoveStats().BLOCKCOUNTER > 0) applied.getMoveStats().BLOCKCOUNTER--;
     }

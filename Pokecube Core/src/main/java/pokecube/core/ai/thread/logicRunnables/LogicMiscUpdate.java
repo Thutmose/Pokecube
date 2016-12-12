@@ -65,6 +65,7 @@ public class LogicMiscUpdate extends LogicBase
             {
                 for (Stats stat : Stats.values())
                     pokemob.getModifiers().getDefaultMods().setModifier(stat, 0);
+                pokemob.getMoveStats().reset();
             }
         }
         for (int i = 0; i < 5; i++)

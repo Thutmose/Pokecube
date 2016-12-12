@@ -519,6 +519,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         }
         moveInfo.ROLLOUTCOUNTER = 0;
         moveInfo.FURYCUTTERCOUNTER = 0;
+        moveInfo.BLOCKCOUNTER = 0;
+        moveInfo.blocked = false;
+        moveInfo.blockTimer = 0;
 
         if (PokecubeCore.isOnClientSide())
         {

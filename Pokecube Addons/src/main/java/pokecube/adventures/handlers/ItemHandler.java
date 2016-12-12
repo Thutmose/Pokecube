@@ -5,35 +5,20 @@ import static pokecube.core.PokecubeItems.getItem;
 import static pokecube.core.PokecubeItems.register;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 
-import java.util.Collection;
-import java.util.Random;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.conditions.LootConditionManager;
-import net.minecraft.world.storage.loot.functions.LootFunction;
-import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
+import pokecube.adventures.handlers.loot.Loot;
+import pokecube.adventures.handlers.loot.LootHelpers;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemExpShare;
 import pokecube.adventures.items.ItemTarget;
@@ -42,8 +27,6 @@ import pokecube.adventures.items.bags.ItemBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.items.ItemTM;
-import pokecube.core.utils.Tools;
-import thut.lib.CompatWrapper;
 
 public class ItemHandler
 {
@@ -124,98 +107,13 @@ public class ItemHandler
                     new ModelResourceLocation("pokecube_adventures:bag", "inventory"));
         }
         addSpecificItemStack("warplinker", new ItemStack(target, 1, 1));
-
         addBadges();
-    }
 
-    public void addLoot(final ItemStack loot, final String poolName, LootTable table, int weight, int num)
-    {
-        LootEntry[] entries = new LootEntry[1];
-        LootCondition[] conditions = new LootCondition[1];
-        final LootFunction[] functions = new LootFunction[1];
+        ItemStack share = PokecubeItems.getStack("exp_share");
 
-        conditions[0] = new LootCondition()
-        {
-            @Override
-            public boolean testCondition(Random rand, LootContext context)
-            {
-                return true;
-            }
-        };
+        LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
+                Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
 
-        functions[0] = new LootFunction(conditions)
-        {
-            @Override
-            public ItemStack apply(ItemStack stack, Random rand, LootContext context)
-            {
-                return stack;
-            }
-        };
-
-        entries[0] = new LootEntry(weight, num, conditions, poolName)
-        {
-            @Override
-            public void addLoot(Collection<ItemStack> stacks, Random rand, LootContext context)
-            {
-                int i = 0;
-                ItemStack itemstack = loot;
-                for (int j = functions.length; i < j; ++i)
-                {
-                    LootFunction lootfunction = functions[i];
-
-                    if (LootConditionManager.testAllConditions(lootfunction.getConditions(), rand, context))
-                    {
-                        itemstack = lootfunction.apply(itemstack, rand, context);
-                    }
-                }
-                int size = CompatWrapper.getStackSize(itemstack);
-                if (size > 0)
-                {
-                    if (size < itemstack.getItem().getItemStackLimit(itemstack))
-                    {
-                        stacks.add(itemstack);
-                    }
-                    else
-                    {
-                        i = size;
-                        while (i > 0)
-                        {
-                            ItemStack itemstack1 = itemstack.copy();
-                            int size1 = Math.min(itemstack.getMaxStackSize(), i);
-                            CompatWrapper.setStackSize(itemstack1, size1);
-                            i -= size1;
-                            stacks.add(itemstack1);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void serialize(JsonObject json, JsonSerializationContext context)
-            {
-                if (functions.length > 0)
-                {
-                    json.add("functions", context.serialize(functions));
-                }
-
-                ResourceLocation resourcelocation = new ResourceLocation(poolName);
-                json.addProperty("name", resourcelocation.toString());
-            }
-        };
-
-        RandomValueRange rollsIn = new RandomValueRange(1);
-        RandomValueRange bonusRollsIn = new RandomValueRange(1);
-
-        LootPool pool = new LootPool(entries, conditions, rollsIn, bonusRollsIn, poolName);
-        table.addPool(pool);
-    }
-
-    @SubscribeEvent(priority=EventPriority.HIGHEST)
-    public void initLootTables(LootTableLoadEvent event)
-    {
-        final ItemStack share = PokecubeItems.getStack("exp_share");
-        if (Config.instance.exp_shareLoot && share != null && isValidTable(event.getName(), share))
-            addLoot(share, "pokecube_adventures:exp_share", event.getTable(), 100, 10);
         if (Config.instance.HMLoot)
         {
             ItemStack cut = new ItemStack(getItem("tm"));
@@ -226,28 +124,16 @@ public class ItemHandler
             ItemTM.addMoveToStack(IMoveNames.MOVE_DIG, dig);
             ItemStack rocksmash = new ItemStack(getItem("tm"));
             ItemTM.addMoveToStack(IMoveNames.MOVE_ROCKSMASH, rocksmash);
-            if (event.getName().equals(LootTableList.CHESTS_JUNGLE_TEMPLE))
-                addLoot(cut, "pokecube_adventures:cut", event.getTable(), 100, 10);
-            if (event.getName().equals(LootTableList.CHESTS_ABANDONED_MINESHAFT))
-                addLoot(dig, "pokecube_adventures:dig", event.getTable(), 100, 10);
-            if (event.getName().equals(LootTableList.CHESTS_ABANDONED_MINESHAFT))
-                addLoot(rocksmash, "pokecube_adventures:rocksmash", event.getTable(), 100, 10);
-            if (event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
-                addLoot(flash, "pokecube_adventures:flash", event.getTable(), 100, 10);
-        }
-    }
 
-    private boolean isValidTable(ResourceLocation input, ItemStack stack)
-    {
-        if (Tools.isSameStack(stack, PokecubeItems.getStack("exp_share")))
-            return input.equals(LootTableList.CHESTS_SPAWN_BONUS_CHEST)
-                    || input.equals(LootTableList.CHESTS_SIMPLE_DUNGEON)
-                    || input.equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH)
-                    || input.equals(LootTableList.CHESTS_JUNGLE_TEMPLE)
-                    || input.equals(LootTableList.CHESTS_ABANDONED_MINESHAFT);
-        return input.equals(LootTableList.CHESTS_SPAWN_BONUS_CHEST) || input.equals(LootTableList.CHESTS_SIMPLE_DUNGEON)
-                || input.equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH)
-                || input.equals(LootTableList.CHESTS_JUNGLE_TEMPLE)
-                || input.equals(LootTableList.CHESTS_ABANDONED_MINESHAFT);
+            LootHelpers.addLootEntry(LootTableList.CHESTS_JUNGLE_TEMPLE, null,
+                    Loot.getEntryItem(cut, 10, 1, "pokecube_adventures:cut"));
+            LootHelpers.addLootEntry(LootTableList.CHESTS_ABANDONED_MINESHAFT, null,
+                    Loot.getEntryItem(dig, 10, 1, "pokecube_adventures:dig"));
+            LootHelpers.addLootEntry(LootTableList.CHESTS_ABANDONED_MINESHAFT, null,
+                    Loot.getEntryItem(rocksmash, 10, 1, "pokecube_adventures:rocksmash"));
+            LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
+                    Loot.getEntryItem(flash, 10, 1, "pokecube_adventures:flash"));
+        }
+
     }
 }

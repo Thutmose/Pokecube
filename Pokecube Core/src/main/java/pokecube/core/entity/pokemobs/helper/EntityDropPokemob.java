@@ -5,12 +5,15 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
@@ -33,7 +36,6 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     protected void dropEquipment(boolean p_82160_1_, int p_82160_2_)
     {
         if (this.getPokemonAIState(IMoveConstants.TAMED)) return;
-
         super.dropEquipment(p_82160_1_, p_82160_2_);
     }
 
@@ -93,9 +95,10 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     }
 
     @Override
-    public ItemStack wildHeldItem()
+    @Nullable // TODO move stuff over to using a loot table instead?
+    protected ResourceLocation getLootTable()
     {
-        return this.getPokedexEntry().getRandomHeldItem();
+        return null;
     }
 
     @Override

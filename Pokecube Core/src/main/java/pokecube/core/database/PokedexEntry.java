@@ -1057,25 +1057,33 @@ public class PokedexEntry
 
     protected void copyToGenderFormes()
     {
-        if (male != null || female != null)
+        if (male != null)
         {
-            Class<?> me = getClass();
-            CopyToGender c;
-            for (Field f : me.getDeclaredFields())
+            copyToForme(male);
+        }
+        if (female != null)
+        {
+            copyToForme(female);
+        }
+    }
+
+    public void copyToForme(PokedexEntry forme)
+    {
+        Class<?> me = getClass();
+        CopyToGender c;
+        for (Field f : me.getDeclaredFields())
+        {
+            c = f.getAnnotation(CopyToGender.class);
+            if (c != null)
             {
-                c = f.getAnnotation(CopyToGender.class);
-                if (c != null)
+                try
                 {
-                    try
-                    {
-                        f.setAccessible(true);
-                        if (male != null) f.set(male, f.get(this));
-                        if (female != null) f.set(female, f.get(this));
-                    }
-                    catch (Exception e)
-                    {
-                        e.printStackTrace();
-                    }
+                    f.setAccessible(true);
+                    f.set(forme, f.get(this));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
                 }
             }
         }

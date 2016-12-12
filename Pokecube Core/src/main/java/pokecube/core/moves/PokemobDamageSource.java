@@ -3,6 +3,8 @@
  */
 package pokecube.core.moves;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
@@ -77,6 +79,13 @@ public class PokemobDamageSource extends DamageSource
             return owner != null ? owner : this.damageSourceEntity;
         }
         return this.damageSourceEntity;
+    }
+
+    @Nullable
+    @Override
+    public Entity getSourceOfDamage()
+    {
+        return getActualEntity();
     }
 
     public Entity getActualEntity()

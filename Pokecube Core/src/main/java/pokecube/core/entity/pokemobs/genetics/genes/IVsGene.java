@@ -41,6 +41,7 @@ public class IVsGene extends GeneByteArr
     public Gene mutate()
     {
         IVsGene newGene = new IVsGene();
+        newGene.value = value.clone();
         byte[] ret = newGene.value;
         Random rand = new Random();
         float chance = GeneticsManager.mutationRates.get(getKey());

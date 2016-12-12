@@ -444,12 +444,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         dataManager.set(EVOLTICKDW, new Integer(evolutionTicks));
     }
 
-    @Override
-    public void setTraded(boolean trade)
-    {
-        setPokemonAIState(TRADED, trade);
-    }
-
     public void showEvolutionFX(String effect)
     {
         String effectToUse = effect;
@@ -469,11 +463,5 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
         {
             // //TODO Evolution Particles If needed
         }
-    }
-
-    @Override
-    public boolean traded()
-    {
-        return getPokemonAIState(TRADED);
     }
 }

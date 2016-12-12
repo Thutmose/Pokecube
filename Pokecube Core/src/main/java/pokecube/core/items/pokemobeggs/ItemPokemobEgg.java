@@ -110,6 +110,8 @@ public class ItemPokemobEgg extends Item
     private static void getGenetics(IPokemob mother, IPokemob father, NBTTagCompound nbt)
     {
         IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+        GeneticsManager.handleEpigenetics(mother);
+        GeneticsManager.handleEpigenetics(father);
         IMobGenetics mothers = ((Entity) mother).getCapability(IMobGenetics.GENETICS_CAP, null);
         IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
         GeneticsManager.initEgg(eggs, mothers, fathers);

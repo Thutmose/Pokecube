@@ -5,7 +5,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import io.netty.buffer.Unpooled;
@@ -19,8 +18,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -29,7 +26,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -296,12 +292,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         here.set(this);
     }
 
-    @Override
-    public int getChanges()
-    {
-        return moveInfo.changes;
-    }
-
     @SideOnly(Side.CLIENT)
     /** Params: (Float)Render tick. Returns the intensity of the creeper's flash
      * when it is ignited. */
@@ -315,56 +305,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public int getExplosionState()
     {
         return (int) dataManager.get(BOOMSTATEDW);
-    }
-
-    public String[] getLearnableMoves()
-    {
-        List<String> moves = Database.getLearnableMoves(this.getPokedexNb());
-        return moves.toArray(new String[0]);
-    }
-
-    @Override
-    public String getMove(int index)
-    {
-        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
-        {
-            IPokemob to = (IPokemob) getTransformedTo();
-            if (to.getTransformedTo() != this) return to.getMove(index);
-        }
-
-        String[] moves = getMoves();
-
-        if (index >= 0 && index < 4) { return moves[index]; }
-        if (index == 4 && moves[3] != null && getPokemonAIState(LEARNINGMOVE))
-        {
-            List<String> list;
-            List<String> lastMoves = new ArrayList<String>();
-            int n = getLevel();
-
-            while (n > 0)
-            {
-                list = getPokedexEntry().getMovesForLevel(this.getLevel(), --n);
-                if (!list.isEmpty())
-                {
-                    list:
-                    for (String s : list)
-                    {
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) continue list;
-                        }
-                        lastMoves.add(s);
-                    }
-                    break;
-                }
-            }
-
-            if (!lastMoves.isEmpty()) { return lastMoves.get(moveInfo.num % lastMoves.size()); }
-        }
-
-        if (index == 5) { return IMoveConstants.MOVE_NONE; }
-
-        return null;
     }
 
     @Override
@@ -408,12 +348,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public HashMap<Move_Ongoing, Integer> getOngoingEffects()
-    {
-        return moveInfo.ongoingEffects;
-    }
-
-    @Override
     public byte getStatus()
     {
         return (byte) Math.max(0, (int) dataManager.get(STATUSDW));
@@ -437,12 +371,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public Entity getTransformedTo()
     {
         return worldObj.getEntityByID(getDataManager().get(TRANSFORMEDTODW));
-    }
-
-    @Override
-    public Entity getWeapon(int index)
-    {
-        return index == 0 ? moveInfo.weapon1 : moveInfo.weapon2;
     }
 
     @Override
@@ -567,36 +495,10 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void onMoveUse(MovePacket move)
-    {
-        Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == this)
-                : new MoveUse.DuringUse.Post(move, move.attacker == this);
-        MinecraftForge.EVENT_BUS.post(toPost);
-    }
-
-    @Override
-    public void popFromPokecube()
-    {
-        super.popFromPokecube();
-    }
-
-    @Override
-    public void removeChanges(int changes)
-    {
-        this.moveInfo.changes -= changes;
-    }
-
-    @Override
     public void setExplosionState(int i)
     {
         if (i >= 0) moveInfo.Exploding = true;
         dataManager.set(BOOMSTATEDW, Byte.valueOf((byte) i));
-    }
-
-    @Override
-    public void setLeaningMoveIndex(int num)
-    {
-        this.moveInfo.num = num;
     }
 
     @Override
@@ -617,6 +519,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         }
         moveInfo.ROLLOUTCOUNTER = 0;
         moveInfo.FURYCUTTERCOUNTER = 0;
+        moveInfo.BLOCKCOUNTER = 0;
+        moveInfo.blocked = false;
+        moveInfo.blockTimer = 0;
 
         if (PokecubeCore.isOnClientSide())
         {
@@ -663,7 +568,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public boolean setStatus(byte status)
     {
         if (getStatus() != STATUS_NON) { return false; }
-
         if (status == STATUS_BRN && isType(PokeType.fire)) return false;
         if (status == STATUS_PAR && isType(PokeType.electric)) return false;
         if (status == STATUS_FRZ && isType(PokeType.ice)) return false;
@@ -690,13 +594,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             this.setType1(newEntry.getType1());
             this.setType2(newEntry.getType2());
         }
-    }
-
-    @Override
-    public void setWeapon(int index, Entity weapon)
-    {
-        if (index == 0) moveInfo.weapon1 = weapon;
-        else moveInfo.weapon2 = weapon;
     }
 
     @Override

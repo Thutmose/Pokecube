@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <Rewards>
     <Reward handler="freebook">//Guide Book
-        <Condition key="inspect-guidebook" mess="pokedex.inspect.guidebook" file="/assets/pokecube/lang/%s.lang" tag="pokecube.infobook1.json"/>
+        <Condition key="inspect-guidebook" mess="pokedex.inspect.guidebook" file="/assets/pokecube_books/lang/%s.lang" tag="pokecube.infobook1.json"/>
+    </Reward>
+    <Reward handler="freebook">//Care Book
+        <Condition key="inspect-carebook" mess="pokedex.inspect.carebook" file="/assets/pokecube_books/lang/%s.lang" tag="pokecube.infobook2.json"/>
     </Reward>
     <Reward>//EXP Share
         <Item n="1" id="pokecube_adventures:exp_share"/>

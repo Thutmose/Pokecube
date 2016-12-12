@@ -386,6 +386,7 @@ public class MoveEventsHandler
         IPokemob target = null;
         if (attacked instanceof IPokemob) target = (IPokemob) attacked;
         IPokemob applied = user ? attacker : target;
+        IPokemob other = user ? target : attacker;
         if (applied == null) return;
         if (!user)
         {
@@ -394,8 +395,8 @@ public class MoveEventsHandler
         }
         if (target != null && target.getMoveStats().substituteHP > 0 && !user)
         {
-            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().getCategory(attacker),
-                    move.PWR, move);
+            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked,
+                    move.getMove().getCategory(attacker), move.PWR, move);
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "green");
             target.displayMessageToOwner(mess);
             mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "red");
@@ -434,15 +435,13 @@ public class MoveEventsHandler
             move.noFaint = true;
         }
 
-        if (attack.getName().equals(IMoveNames.MOVE_PROTECT)
-                || attack.getName().equals(IMoveNames.MOVE_DETECT) && !applied.getMoveStats().blocked)
+        if ((attack.getName().equals(IMoveNames.MOVE_PROTECT) || attack.getName().equals(IMoveNames.MOVE_DETECT)))
         {
             applied.getMoveStats().blockTimer = 30;
             applied.getMoveStats().blocked = true;
-            applied.getMoveStats().BLOCKCOUNTER++;
+            applied.getMoveStats().BLOCKCOUNTER += 2;
         }
         boolean blockMove = false;
-
         for (String s : MoveEntry.protectionMoves)
             if (s.equals(move.attack))
             {
@@ -450,31 +449,26 @@ public class MoveEventsHandler
                 break;
             }
 
-        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked)
+        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked
+                && applied.getMoveStats().blockTimer-- <= 0)
         {
             applied.getMoveStats().blocked = false;
             applied.getMoveStats().blockTimer = 0;
             applied.getMoveStats().BLOCKCOUNTER = 0;
         }
-
         boolean unblockable = false;
         for (String s : MoveEntry.unBlockableMoves)
             if (s.equals(move.attack))
             {
                 unblockable = true;
-                System.out.println("Unblockable");
                 break;
             }
 
-        if (applied.getMoveStats().blocked && move.attacked != move.attacker && !unblockable)
+        if (move.attacked != move.attacker && !unblockable && other != null && other.getMoveStats().BLOCKCOUNTER > 0)
         {
-            float count = Math.min(0, applied.getMoveStats().BLOCKCOUNTER - 1);
+            float count = Math.max(0, other.getMoveStats().BLOCKCOUNTER - 1);
             float chance = count != 0 ? Math.max(0.125f, ((1 / (count * 2)))) : 1;
-            if (chance > Math.random())
-            {
-                move.canceled = true;
-            }
-            else
+            if (chance < Math.random())
             {
                 move.failed = true;
             }

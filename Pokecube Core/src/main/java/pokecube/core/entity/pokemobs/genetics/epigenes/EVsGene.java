@@ -43,6 +43,7 @@ public class EVsGene extends GeneByteArr
     public Gene mutate()
     {
         EVsGene newGene = new EVsGene();
+        newGene.value = value.clone();
         byte[] ret = newGene.value;
         Random rand = new Random();
         float chance = MUTRATE;

@@ -19,9 +19,11 @@ import pokecube.adventures.blocks.cloner.block.BlockCloner;
 import pokecube.adventures.comands.Config;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
+import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
 
 public class RecipeFossilRevive implements IPoweredRecipe
@@ -190,6 +192,8 @@ public class RecipeFossilRevive implements IPoweredRecipe
     @Override
     public boolean complete(IPoweredProgress tile)
     {
+        ItemStack dnaSource = tile.getStackInSlot(0);
+        if (CompatWrapper.isValid(dnaSource)) dnaSource = dnaSource.copy();
         List<ItemStack> remaining = Lists.newArrayList(getRemainingItems(tile.getCraftMatrix()));
         for (int i = 0; i < remaining.size(); i++)
         {
@@ -214,6 +218,11 @@ public class RecipeFossilRevive implements IPoweredRecipe
             entity.setLocationAndAngles(pos.getX() + 0.5 + dir.getFrontOffsetX(), pos.getY() + 1,
                     pos.getZ() + 0.5 + dir.getFrontOffsetZ(), world.rand.nextFloat() * 360F, 0.0F);
             world.spawnEntityInWorld(entity);
+            IMobGenetics genes = ClonerHelper.getGenes(dnaSource);
+            if (genes != null)
+            {
+                GeneticsManager.initFromGenes(genes, (IPokemob) entity);
+            }
             entity.playLivingSound();
         }
         return true;

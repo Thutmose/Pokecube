@@ -219,7 +219,6 @@ public class GeneticsManager
         IMobGenetics mobs = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
         if (genes != mobs)
         {
-            mobs.getAlleles().clear();
             mobs.getAlleles().putAll(genes.getAlleles());
         }
         byte[] ivs = new byte[6];
@@ -317,7 +316,6 @@ public class GeneticsManager
         if (genes.getAlleles().isEmpty())
         {
             initMob(mob);
-            return;
         }
         try
         {
@@ -326,6 +324,8 @@ public class GeneticsManager
             alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
             alleles = genes.getAlleles().get(EVSGENE);
             alleles.getExpressed().setValue(pokemob.getEVs());
+            alleles = genes.getAlleles().get(IVSGENE);
+            alleles.getExpressed().setValue(pokemob.getIVs());
             alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
             alleles = genes.getAlleles().get(SPECIESGENE);
             Gene gene = alleles.getExpressed();

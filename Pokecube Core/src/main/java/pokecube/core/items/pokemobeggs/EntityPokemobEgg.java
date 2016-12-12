@@ -176,7 +176,7 @@ public class EntityPokemobEgg extends EntityLiving
         motionX *= 0.6;
         motionZ *= 0.6;
         CompatWrapper.moveEntitySelf(this, motionX, motionY, motionZ);
-        if (getHeldItemMainhand() == null)
+        if (!CompatWrapper.isValid(getHeldItemMainhand()))
         {
             this.setDead();
             return;

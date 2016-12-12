@@ -165,7 +165,7 @@ public class AIAttack extends AIBase implements IAICombat
                 }
                 catch (Exception e)
                 {
-                    System.out.println(entityTarget);
+                    System.out.println("Error with message for " + entityTarget);
                 }
             }
             else if (delayTime < 0)

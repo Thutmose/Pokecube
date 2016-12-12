@@ -467,7 +467,7 @@ public interface IPokemob extends IMoveConstants
             {
                 try
                 {
-                    f.set(this, f.get(defaults));
+                    if (!IGNORE.contains(f.getName())) f.set(this, f.get(defaults));
                 }
                 catch (Exception e)
                 {

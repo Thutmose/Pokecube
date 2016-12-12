@@ -456,8 +456,6 @@ public class MoveEventsHandler
             applied.getMoveStats().blockTimer = 0;
             applied.getMoveStats().BLOCKCOUNTER = 0;
         }
-        System.out.println(applied + " " + applied.getMoveStats().BLOCKCOUNTER);
-
         boolean unblockable = false;
         for (String s : MoveEntry.unBlockableMoves)
             if (s.equals(move.attack))
@@ -468,15 +466,12 @@ public class MoveEventsHandler
 
         if (move.attacked != move.attacker && !unblockable && other != null && other.getMoveStats().BLOCKCOUNTER > 0)
         {
-            float count = Math.min(0, other.getMoveStats().BLOCKCOUNTER - 1);
+            float count = Math.max(0, other.getMoveStats().BLOCKCOUNTER - 1);
             float chance = count != 0 ? Math.max(0.125f, ((1 / (count * 2)))) : 1;
             if (chance < Math.random())
             {
                 move.failed = true;
-                move.canceled = true;
-                System.out.println("blocked " + other.getMoveStats().BLOCKCOUNTER);
             }
-            else System.out.println("blockfail " + other.getMoveStats().BLOCKCOUNTER);
         }
         if (applied.getMoveStats().BLOCKCOUNTER > 0) applied.getMoveStats().BLOCKCOUNTER--;
     }

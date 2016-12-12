@@ -257,7 +257,7 @@ public class GeneticsManager
             }
             if (loc.equals(EVSGENE))
             {
-                ivs = gene.getValue();
+                evs = gene.getValue();
                 continue;
             }
             if (loc.equals(MOVESGENE))
@@ -290,7 +290,7 @@ public class GeneticsManager
         }
         for (int i = 0; i < 6; i++)
         {
-            epigeneticParser.setVarValue("v", evs[i]);
+            epigeneticParser.setVarValue("v", evs[i] - 128);
             double value = epigeneticParser.getValue();
             if (!Double.isNaN(value))
             {

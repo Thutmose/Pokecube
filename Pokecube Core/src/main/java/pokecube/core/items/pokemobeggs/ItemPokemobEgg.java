@@ -91,15 +91,11 @@ public class ItemPokemobEgg extends Item
 
     public static IPokemob getFakePokemob(World world, Vector3 location, ItemStack stack)
     {
-        if (stack == null || stack.getTagCompound() == null
-                || !stack.getTagCompound().hasKey("pokemobNumber")) { return null; }
-        int number = stack.getTagCompound().getInteger("pokemobNumber");
-
-        PokedexEntry entry = Database.getEntry(number);
+        PokedexEntry entry = getEntry(stack);
         IPokemob pokemob = fakeMobs.get(entry);
         if (pokemob == null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(number), world);
+            pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
             if (pokemob == null) return null;
             fakeMobs.put(entry, pokemob);
         }
@@ -180,9 +176,7 @@ public class ItemPokemobEgg extends Item
         }
         else
         {
-
             boolean fixedShiny = nbt.getBoolean("shiny");
-
             String moveString = nbt.getString("moves");
             String[] moves = moveString.split(";");
             long ivs = nbt.getLong("ivs");
@@ -244,7 +238,6 @@ public class ItemPokemobEgg extends Item
                 mob.setSexe(nbt.getByte("gender"));
             }
         }
-
         Vector3 location = Vector3.getNewVector().set(mob);
         EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
                 PLAYERDIST, false);

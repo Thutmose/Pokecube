@@ -14,6 +14,8 @@ public class EVsGene extends GeneByteArr
     public EVsGene()
     {
         value = new byte[6];
+        for (int i = 0; i < 6; i++)
+            value[i] = Byte.MIN_VALUE;
     }
 
     @Override

@@ -211,7 +211,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                     newtarget = e;
                 }
             }
-            System.out.println(newtarget);
+
             if (newtarget != null && Vector3.isVisibleEntityFromEntity(entity, newtarget))
             {
                 addTargetInfo(entity, newtarget);

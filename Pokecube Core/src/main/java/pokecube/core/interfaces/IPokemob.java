@@ -408,7 +408,6 @@ public interface IPokemob extends IMoveConstants
             IGNORE.add("ongoingEffects");
             IGNORE.add("moves");
         }
-        public static final int               TYPE_CRIT                  = 2;
         public Entity                         weapon1;
 
         public Entity                         weapon2;
@@ -464,7 +463,7 @@ public interface IPokemob extends IMoveConstants
 
         public void reset()
         {
-            for (Field f : getClass().getDeclaredFields())
+            for (Field f : getClass().getFields())
             {
                 try
                 {

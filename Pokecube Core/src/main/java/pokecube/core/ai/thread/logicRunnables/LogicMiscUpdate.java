@@ -26,6 +26,7 @@ public class LogicMiscUpdate extends LogicBase
     String                     particle          = null;
     int                        particleIntensity = 80;
     int                        particleCounter   = 0;
+    boolean                    reset             = false;
     Vector3                    v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(EntityAnimal entity)
@@ -55,14 +56,16 @@ public class LogicMiscUpdate extends LogicBase
         else if (entity.getAttackTarget() != null)
         {
             lastHadTargetTime = 100;
+            reset = false;
         }
         // If not angry, decrement last had target time, and if that is 0 or
         // less, reset to no stat modifiers.
         if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             lastHadTargetTime--;
-            if (lastHadTargetTime <= 0)
+            if (lastHadTargetTime <= 0 && !reset)
             {
+                reset = true;
                 for (Stats stat : Stats.values())
                     pokemob.getModifiers().getDefaultMods().setModifier(stat, 0);
                 pokemob.getMoveStats().reset();

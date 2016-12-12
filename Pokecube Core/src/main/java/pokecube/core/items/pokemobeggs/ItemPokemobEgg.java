@@ -3,6 +3,7 @@
  */
 package pokecube.core.items.pokemobeggs;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -110,8 +111,14 @@ public class ItemPokemobEgg extends Item
     private static void getGenetics(IPokemob mother, IPokemob father, NBTTagCompound nbt)
     {
         IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+        GeneticsManager.handleEpigenetics(mother);
+        GeneticsManager.handleEpigenetics(father);
         IMobGenetics mothers = ((Entity) mother).getCapability(IMobGenetics.GENETICS_CAP, null);
         IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
+        System.out.println("Genes " + mothers.getAlleles().get(GeneticsManager.IVSGENE).getExpressed() + " "
+                + Arrays.toString(mothers.getAlleles().get(GeneticsManager.IVSGENE).getAlleles())
+                + fathers.getAlleles().get(GeneticsManager.IVSGENE).getExpressed() + " "
+                + Arrays.toString(fathers.getAlleles().get(GeneticsManager.IVSGENE).getAlleles()));
         GeneticsManager.initEgg(eggs, mothers, fathers);
         NBTBase tag = IMobGenetics.GENETICS_CAP.getStorage().writeNBT(IMobGenetics.GENETICS_CAP, eggs, null);
         nbt.setTag(GeneticsManager.GENES, tag);

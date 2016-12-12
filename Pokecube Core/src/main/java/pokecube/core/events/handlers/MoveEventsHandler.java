@@ -394,8 +394,8 @@ public class MoveEventsHandler
         }
         if (target != null && target.getMoveStats().substituteHP > 0 && !user)
         {
-            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked, move.getMove().getCategory(attacker),
-                    move.PWR, move);
+            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked,
+                    move.getMove().getCategory(attacker), move.PWR, move);
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "green");
             target.displayMessageToOwner(mess);
             mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "red");
@@ -443,7 +443,7 @@ public class MoveEventsHandler
         }
         boolean blockMove = false;
 
-        for (String s : MoveEntry.protectionMoves)
+        if (Math.random() > 0.25 * (applied.getMoveStats().BLOCKCOUNTER)) for (String s : MoveEntry.protectionMoves)
             if (s.equals(move.attack))
             {
                 blockMove = true;

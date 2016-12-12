@@ -294,6 +294,7 @@ public class GeneticsManager
             double value = epigeneticParser.getValue();
             if (!Double.isNaN(value))
             {
+                value = Math.max(0, value);
                 ivs[i] += value;
                 ivs[i] = (byte) Math.min(ivs[i], 31);
             }

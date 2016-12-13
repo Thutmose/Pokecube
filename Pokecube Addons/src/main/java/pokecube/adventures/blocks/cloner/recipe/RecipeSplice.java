@@ -121,13 +121,13 @@ public class RecipeSplice implements IPoweredRecipe
     public boolean complete(IPoweredProgress tile)
     {
         List<ItemStack> remaining = Lists.newArrayList(getRemainingItems(tile.getCraftMatrix()));
+        tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
         for (int i = 0; i < remaining.size(); i++)
         {
             ItemStack stack = remaining.get(i);
             if (CompatWrapper.isValid(stack)) tile.setInventorySlotContents(i, stack);
             else tile.decrStackSize(i, 1);
         }
-        tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
         if (tile.getCraftMatrix().eventHandler != null)
         {
             tile.getCraftMatrix().eventHandler.detectAndSendChanges();

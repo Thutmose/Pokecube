@@ -47,7 +47,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
         switch (index)
         {
         case 0:// DNA Container
-            return ClonerHelper.isDNAContainer(stack);
+            return ClonerHelper.isDNAContainer(stack) && ClonerHelper.getGenes(stack) == null;
         case 1:// DNA Selector
             boolean hasGenes = !ClonerHelper.getGeneSelectors(stack).isEmpty();
             boolean selector = hasGenes || RecipeSelector.getSelectorValue(stack) != RecipeSelector.defaultSelector;
@@ -94,27 +94,6 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
     {
         IMobGenetics genes = ClonerHelper.getGenes(getStackInSlot(2));
         if (genes == null) throw new Exception("No Genes found in source slot.");
-        List<String> values = Lists.newArrayList();
-        for (ResourceLocation l : genes.getAlleles().keySet())
-        {
-            Alleles a = genes.getAlleles().get(l);
-            Gene expressed = a.getExpressed();
-            Gene parent1 = a.getAlleles()[0];
-            Gene parent2 = a.getAlleles()[1];
-            values.add(l.getResourcePath());
-            values.add(expressed.toString());
-            values.add(parent1.toString());
-            values.add(parent2.toString());
-        }
-        return values.toArray(new String[0]);
-    }
-
-    @Callback
-    @Optional.Method(modid = "OpenComputers")
-    public Object[] getDestInfo(Context context, Arguments args) throws Exception
-    {
-        IMobGenetics genes = ClonerHelper.getGenes(getStackInSlot(0));
-        if (genes == null) throw new Exception("No Genes found in destination slot.");
         List<String> values = Lists.newArrayList();
         for (ResourceLocation l : genes.getAlleles().keySet())
         {

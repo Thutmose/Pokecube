@@ -297,6 +297,7 @@ public class GeneticsManager
                 value = Math.max(0, value);
                 ivs[i] += value;
                 ivs[i] = (byte) Math.min(ivs[i], 31);
+                ivs[i] = (byte) Math.max(ivs[i], 0);
             }
         }
         pokemob.setIVs(ivs);

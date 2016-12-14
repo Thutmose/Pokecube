@@ -51,7 +51,7 @@ public class Loot
                 {
                     if (size < itemstack.getItem().getItemStackLimit(itemstack))
                     {
-                        stacks.add(itemstack);
+                        stacks.add(itemstack.copy());
                     }
                     else
                     {

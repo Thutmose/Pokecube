@@ -86,7 +86,9 @@ public class ItemPokemobEgg extends Item
 
     public static ItemStack getEggStack(IPokemob pokemob)
     {
-        return getEggStack(pokemob.getPokedexEntry());
+        ItemStack stack = getEggStack(pokemob.getPokedexEntry());
+        initStack((Entity) pokemob, pokemob, stack);
+        return stack;
     }
 
     public static IPokemob getFakePokemob(World world, Vector3 location, ItemStack stack)

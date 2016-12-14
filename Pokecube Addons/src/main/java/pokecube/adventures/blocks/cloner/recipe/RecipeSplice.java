@@ -88,7 +88,7 @@ public class RecipeSplice implements IPoweredRecipe
             if (entry == null) return false;
             egg = egg.copy();
             if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-            ClonerHelper.mergeGenes(ClonerHelper.getGenes(dna), egg, new ItemBasedSelector(selector));
+            ClonerHelper.spliceGenes(ClonerHelper.getGenes(dna), egg, new ItemBasedSelector(selector));
             CompatWrapper.setStackSize(egg, 1);
             output = egg;
             return true;

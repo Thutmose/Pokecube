@@ -113,14 +113,14 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onPlayerAdded(EntityPlayerMP player)
     {
-        player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.enter"));
+        if (!player.isDead) player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.enter"));
     }
 
     /** Called when a Player is removed from the provider's world. */
     @Override
     public void onPlayerRemoved(EntityPlayerMP player)
     {
-        player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.exit"));
+        if (!player.isDead) player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.exit"));
     }
 
     @Override
@@ -132,7 +132,7 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public boolean canMineBlock(net.minecraft.entity.player.EntityPlayer player, BlockPos pos)
     {
-        return player.getCachedUniqueIdString().equals(PokecubeDimensionManager.getOwner(getDimension()));
+        return true;// TODO Check permissions for the base somehow.
     }
 
     /** Called to determine if the chunk at the given chunk coordinates within

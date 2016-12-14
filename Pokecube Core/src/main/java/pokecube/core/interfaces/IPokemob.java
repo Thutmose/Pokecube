@@ -787,6 +787,8 @@ public interface IPokemob extends IMoveConstants
     @Nonnull
     String getPokemobTeam();
 
+    void setPokemobTeam(@Nonnull String team);
+
     /** @param state
      * @return the value of the AI state state. */
     boolean getPokemonAIState(int state);

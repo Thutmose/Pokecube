@@ -51,6 +51,7 @@ import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -155,6 +156,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     boolean                                         returning        = false;
     protected int                                   abilityIndex     = 0;
     protected boolean                               players          = false;
+    private String                                  team             = "";
 
     /** @param par1World */
     public EntityTameablePokemob(World world)
@@ -267,6 +269,22 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     protected boolean getAIState(int state, int array)
     {
         return (array & state) != 0;
+    }
+
+    @Override
+    public String getPokemobTeam()
+    {
+        if (team.isEmpty())
+        {
+            team = TeamManager.getTeam(this);
+        }
+        return team;
+    }
+
+    @Override
+    public void setPokemobTeam(String team)
+    {
+        this.team = team;
     }
 
     @Override
@@ -800,6 +818,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     public void setPokemonOwner(UUID owner)
     {
         this.dataManager.set(OWNER_ID, Optional.fromNullable(owner));
+        this.team = TeamManager.getTeam(this);
     }
 
     /** make a sheep sheared if set to true */

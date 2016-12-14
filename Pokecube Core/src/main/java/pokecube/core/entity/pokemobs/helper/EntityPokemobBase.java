@@ -53,7 +53,6 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.SpawnEvent;
-import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
@@ -235,12 +234,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public ItemStack getPokecube()
     {
         return pokecube;
-    }
-
-    @Override
-    public String getPokemobTeam()
-    {
-        return TeamManager.getTeam(this);
     }
 
     @Override
@@ -731,6 +724,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!ownerShipTag.hasNoTags())
         {
             nb = ownerShipTag.getInteger(POKEDEXNB);
+            this.setPokemobTeam(ownerShipTag.getString(TEAM));
             this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
             this.players = ownerShipTag.getBoolean(PLAYERS);
             try
@@ -1092,6 +1086,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         ownerShipTag.setInteger(POKEDEXNB, this.getPokedexNb());
         ownerShipTag.setString(NICKNAME, getPokemonNickname());
         ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
+        ownerShipTag.setString(TEAM, getPokemobTeam());
         if (getOriginalOwnerUUID() != null) ownerShipTag.setString(OT, getOriginalOwnerUUID().toString());
         if (getPokemonOwnerID() != null) ownerShipTag.setString(OWNER, getPokemonOwnerID().toString());
         ownerShipTag.setBoolean(ISTRADED, getPokemonAIState(TRADED));

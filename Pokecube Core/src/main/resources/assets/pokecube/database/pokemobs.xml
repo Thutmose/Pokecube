@@ -2392,7 +2392,7 @@
             <EVOLVESTO>graveleralola</EVOLVESTO>
             <SPECIES>Rock</SPECIES>
             <FOODMATERIAL>rock</FOODMATERIAL>
-            <Drop r="1" id="minecraft:cobblestone" n="1"/>
+            <Drop r="1" id="minecraft:redstone" n="1"/>
             <Spawn types="mountain" rate="0.25"/>
             <Spawn types="cave" rate="0.25"/>
             <TYPE type2="Electric" type1="Rock"/>
@@ -2440,6 +2440,7 @@
             <SPECIES>Rock</SPECIES>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <Drop r="1" id="minecraft:stone" n="2"/>
+            <Drop r="1" id="minecraft:gold_nugget" n="2"/>
             <BASESTATS spdef="45" spatk="45" def="115" spd="35" hp="55" atk="95"/>
             <TYPE type2="Electric" type1="Rock"/>
             <ABILITY normal="Magnet Pull, Sturdy" hidden="Galvanize"/>
@@ -2456,6 +2457,7 @@
             <SPECIES>Rock</SPECIES>
             <FOODMATERIAL>rock</FOODMATERIAL>
             <Drop r="1" id="minecraft:stone" n="3"/>
+            <Drop r="1" id="minecraft:gold_nugget" n="2"/>
             <BASESTATS spdef="65" spatk="55" def="130" spd="45" hp="80" atk="120"/>
             <EVYIELD def="3"/>
             <SIZES length="1.3" width="1.3" height="1.4"/>

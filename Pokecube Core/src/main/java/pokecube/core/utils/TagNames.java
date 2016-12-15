@@ -36,6 +36,7 @@ public interface TagNames
     public static final String SEXE         = "sexe";
     public static final String SEXETIME     = "loveTimer";
     public static final String POKEDEXNB    = "pokedexNb";
+    public static final String TEAM         = "team";
     public static final String STATUS       = "status";
     public static final String HAPPY        = "bonusHappiness";
     public static final String NICKNAME     = "nickname";

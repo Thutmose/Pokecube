@@ -205,4 +205,24 @@ public class ClonerHelper
         }
         setGenes(destination, eggs);
     }
+
+    public static void spliceGenes(IMobGenetics genesIn, ItemStack destination, IGeneSelector selector)
+    {
+        IMobGenetics eggs = getGenes(destination);
+        if (eggs == null)
+        {
+            eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
+        }
+        for (Map.Entry<ResourceLocation, Alleles> entry : genesIn.getAlleles().entrySet())
+        {
+            ResourceLocation loc = entry.getKey();
+            Alleles alleles = entry.getValue();
+            Alleles eggsAllele = eggs.getAlleles().get(loc);
+            if (eggsAllele != null)
+            {
+                eggs.getAlleles().put(loc, alleles);
+            }
+        }
+        setGenes(destination, eggs);
+    }
 }

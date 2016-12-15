@@ -14,6 +14,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -111,17 +112,23 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 String old = pokemob.getPokemonDisplayName().getFormattedText();
                 if (pokemob.getPokedexEntry() == megaEntry)
                 {
-                    pokemob.megaEvolve(pokemob.getPokedexEntry());
+                    pokemob = pokemob.megaEvolve(pokemob.getPokedexEntry());
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
+                    String ability = ((Entity) pokemob).getEntityData().getString("Ability");
+                    ((Entity) pokemob).getEntityData().removeTag("Ability");
+                    if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }
                 else
                 {
-                    pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
-                    pokemob.megaEvolve(megaEntry);
+
+                    if (pokemob.getAbility() != null)
+                        ((Entity) pokemob).getEntityData().setString("Ability", pokemob.getAbility().toString());
+                    pokemob = pokemob.megaEvolve(megaEntry);
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
                             megaEntry.getUnlocalizedName()));
+                    pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
                 }
             }
             else
@@ -129,7 +136,10 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 if (pokemob.getPokemonAIState(IMoveConstants.MEGAFORME))
                 {
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
-                    pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseForme());
+                    pokemob = pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseForme());
+                    String ability = ((Entity) pokemob).getEntityData().getString("Ability");
+                    ((Entity) pokemob).getEntityData().removeTag("Ability");
+                    if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,

@@ -363,25 +363,12 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                     new EvoTicker(worldObj, evoTime, evolution, this.getPokemonDisplayName());
                 }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
-                if (getPokemonAIState(MEGAFORME))
-                {
-                    ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
-                    if (getAbility() != null) evolution.getEntityData().setString("Ability", getAbility().toString());
-                    ((IPokemob) evolution).setEvolutionTicks(50);
-                }
             }
             else
             {
                 evolution = this;
                 ((IPokemob) evolution).setPokedexEntry(newEntry);
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
-                if (getPokemonAIState(MEGAFORME))
-                {
-                    ((IPokemob) evolution).setPokemonAIState(MEGAFORME, true);
-                    if (getAbility() != null)
-                        evolution.getEntityData().setString(TagNames.ABILITY, getAbility().toString());
-                    ((IPokemob) evolution).setEvolutionTicks(10);
-                }
             }
         }
         return (IPokemob) evolution;

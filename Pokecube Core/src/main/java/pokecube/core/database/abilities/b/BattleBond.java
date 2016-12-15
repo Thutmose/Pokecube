@@ -11,7 +11,6 @@ public class BattleBond extends Ability
      * @param mob */
     public boolean canChange(IPokemob mob, PokedexEntry changeTo)
     {
-        System.out.println(mob + " " + changeTo);
         return true;
     }
 }

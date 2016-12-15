@@ -88,7 +88,7 @@ public class RecipeSplice implements IPoweredRecipe
             if (entry == null) return false;
             egg = egg.copy();
             if (egg.getTagCompound() == null) egg.setTagCompound(new NBTTagCompound());
-            ClonerHelper.mergeGenes(ClonerHelper.getGenes(dna), egg, new ItemBasedSelector(selector));
+            ClonerHelper.spliceGenes(ClonerHelper.getGenes(dna), egg, new ItemBasedSelector(selector));
             CompatWrapper.setStackSize(egg, 1);
             output = egg;
             return true;
@@ -121,13 +121,13 @@ public class RecipeSplice implements IPoweredRecipe
     public boolean complete(IPoweredProgress tile)
     {
         List<ItemStack> remaining = Lists.newArrayList(getRemainingItems(tile.getCraftMatrix()));
+        tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
         for (int i = 0; i < remaining.size(); i++)
         {
             ItemStack stack = remaining.get(i);
             if (CompatWrapper.isValid(stack)) tile.setInventorySlotContents(i, stack);
             else tile.decrStackSize(i, 1);
         }
-        tile.setInventorySlotContents(tile.getOutputSlot(), getRecipeOutput());
         if (tile.getCraftMatrix().eventHandler != null)
         {
             tile.getCraftMatrix().eventHandler.detectAndSendChanges();

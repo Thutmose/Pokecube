@@ -718,22 +718,22 @@ public class Database
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
         Collections.sort(removed, sorter);
-        bar = ProgressManager.push("Relations", data.size());
-        for (PokedexEntry p : data.values())
+        bar = ProgressManager.push("Relations", allFormes.size());
+        for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
             p.initRelations();
         }
         ProgressManager.pop(bar);
-        bar = ProgressManager.push("Prey", data.size());
-        for (PokedexEntry p : data.values())
+        bar = ProgressManager.push("Prey", allFormes.size());
+        for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
             p.initPrey();
         }
         ProgressManager.pop(bar);
-        bar = ProgressManager.push("Children", data.size());
-        for (PokedexEntry p : data.values())
+        bar = ProgressManager.push("Children", allFormes.size());
+        for (PokedexEntry p : allFormes)
         {
             bar.step(p.getName());
             p.getChild();

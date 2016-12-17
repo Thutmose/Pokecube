@@ -99,7 +99,6 @@ public class SecretBaseCommand extends CommandBase
                 {
                     Vector4 loc = ActionSecretPower.pendingBaseLocations.remove(player.getUniqueID());
                     Vector3 pos = Vector3.getNewVector().set(loc.x, loc.y, loc.z);
-                    System.out.println(pos+" "+loc);
                     if (loc.w == player.dimension && pos.distToEntity(player) < 16)
                     {
                         BlockNest nest = (BlockNest) PokecubeItems.getBlock("pokemobNest");

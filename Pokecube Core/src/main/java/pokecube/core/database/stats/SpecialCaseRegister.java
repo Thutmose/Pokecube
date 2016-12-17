@@ -61,7 +61,7 @@ public class SpecialCaseRegister
             @Override
             public boolean canCapture(Entity trainer, IPokemob pokemon)
             {
-                int caught = CaptureStats.getNumberUniqueCaughtBy(trainer.getCachedUniqueIdString());
+                int caught = CaptureStats.getNumberUniqueCaughtBy(trainer.getUniqueID());
 
                 if (caught < Database.spawnables.size() - 1)
                 {

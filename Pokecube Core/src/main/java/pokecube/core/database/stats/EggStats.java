@@ -1,13 +1,14 @@
 package pokecube.core.database.stats;
 
 import java.util.Map;
+import java.util.UUID;
 
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokeType;
 
 public class EggStats
 {
-    public static int getNumberUniqueHatchedBy(String playerName)
+    public static int getNumberUniqueHatchedBy(UUID playerName)
     {
         int count = 0;
         Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerName);
@@ -16,7 +17,7 @@ public class EggStats
         return count;
     }
 
-    public static int getTotalNumberHatchedBy(String playerName)
+    public static int getTotalNumberHatchedBy(UUID playerName)
     {
         int count = 0;
         Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerName);
@@ -28,7 +29,7 @@ public class EggStats
         return count;
     }
 
-    public static int getTotalNumberOfPokemobHatchedBy(String playerName, PokedexEntry type)
+    public static int getTotalNumberOfPokemobHatchedBy(UUID playerName, PokedexEntry type)
     {
         int count = 0;
         Map<PokedexEntry, Integer> map = StatsCollector.getHatches(playerName);
@@ -37,7 +38,7 @@ public class EggStats
         return count;
     }
 
-    public static int getTotalOfTypeHatchedBy(String player, PokeType type)
+    public static int getTotalOfTypeHatchedBy(UUID player, PokeType type)
     {
         int count = 0;
         for (PokedexEntry dbe : StatsCollector.getHatches(player).keySet())

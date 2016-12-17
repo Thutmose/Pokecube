@@ -410,8 +410,8 @@ public class Commands extends CommandBase
                     System.out.println(toAdd);
                     for (PokedexEntry prev : toAdd)
                     {
-                        boolean has = stats.getCaptures(player).containsKey(prev);
-                        has = has || stats.getHatches(player).containsKey(prev);
+                        boolean has = stats.getCaptures(player.getUniqueID()).containsKey(prev);
+                        has = has || stats.getHatches(player.getUniqueID()).containsKey(prev);
                         if (!has)
                         {
                             Achievement catc = PokecubeMod.catchAchievements.get(prev);

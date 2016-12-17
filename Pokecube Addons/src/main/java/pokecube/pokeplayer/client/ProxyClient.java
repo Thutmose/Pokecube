@@ -53,7 +53,7 @@ public class ProxyClient extends Proxy
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
         IPokemob pokemob;
-        if (event.side == Side.SERVER || event.player != PokecubeCore.proxy.getPlayer(null)
+        if (event.side == Side.SERVER || event.player != PokecubeCore.proxy.getPlayer((String)null)
                 || (pokemob = getPokemob(event.player)) == null)
             return;
         if (Minecraft.getMinecraft().currentScreen instanceof GuiPokedex)

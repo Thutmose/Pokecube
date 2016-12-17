@@ -174,6 +174,8 @@ public class PokecubeDimensionManager
         int dim = getDimensionForPlayer(baseOwner);
         WorldServer old = DimensionManager.getWorld(dim);
         Vector3 spawnPos = Vector3.getNewVector().set(0, 64, 0);
+        BlockPos entrance = getBaseEntrance(baseOwner, dim);
+        if (entrance != null) spawnPos.set(entrance);
         if (old == null)
         {
             BlockPos pos = toSend.getEntityWorld().getSpawnPoint();

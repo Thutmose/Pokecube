@@ -479,9 +479,9 @@ public class ItemHandler extends Mod_Pokecube_Helper
                         cube.getEntityWorld());
                 Vector3 v = Vector3.getNewVector();
                 Entity thrower = cube.shootingEntity;
-                int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getCachedUniqueIdString(),
+                int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getUniqueID(),
                         mob.getPokedexEntry());
-                has = has + EggStats.getTotalNumberOfPokemobHatchedBy(thrower.getCachedUniqueIdString(),
+                has = has + EggStats.getTotalNumberOfPokemobHatchedBy(thrower.getUniqueID(),
                         mob.getPokedexEntry());
                 double rate = has > 0 ? 3 : 1;
                 cube.tilt = Tools.computeCatchRate(mob, rate);

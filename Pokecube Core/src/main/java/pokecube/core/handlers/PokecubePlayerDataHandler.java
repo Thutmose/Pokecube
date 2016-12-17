@@ -3,6 +3,7 @@ package pokecube.core.handlers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -166,7 +167,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
         private Map<PokedexEntry, Integer> captures;
         private Map<PokedexEntry, Integer> kills;
         private NBTTagCompound             backup;
-        protected String                   uuid;
+        protected UUID                     uuid;
 
         public PokecubePlayerStats()
         {
@@ -195,7 +196,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
             }
         }
 
-        public void addCapture(EntityPlayer player, PokedexEntry entry)
+        public void addCapture(UUID player, PokedexEntry entry)
         {
             Achievement ach = PokecubeMod.catchAchievements.get(entry);
             if (ach == null)
@@ -205,10 +206,10 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
             }
             int num = getManager(player).readStat(ach);
             getCaptures(player).put(entry, num + 1);
-            player.addStat(ach);
+            getPlayer(player).addStat(ach);
         }
 
-        public void addKill(EntityPlayer player, PokedexEntry entry)
+        public void addKill(UUID player, PokedexEntry entry)
         {
             Achievement ach = PokecubeMod.killAchievements.get(entry);
             if (ach == null)
@@ -218,16 +219,16 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
             }
             int num = getManager(player).readStat(ach);
             getKills(player).put(entry, num + 1);
-            player.addStat(ach);
+            getPlayer(player).addStat(ach);
         }
 
-        public void addHatch(EntityPlayer player, PokedexEntry entry)
+        public void addHatch(UUID player, PokedexEntry entry)
         {
             Achievement ach = PokecubeMod.hatchAchievements.get(entry);
             if (ach == null) { return; }
             int num = getManager(player).readStat(ach);
             getHatches(player).put(entry, num + 1);
-            player.addStat(ach);
+            getPlayer(player).addStat(ach);
         }
 
         @Override
@@ -256,7 +257,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
 
             if (player.worldObj.isRemote)
             {
-                initAchievements(getManager(player));
+                initAchievements(getManager(uuid));
                 return;
             }
             backup = tag;
@@ -268,7 +269,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
                 if (num > 0 && (entry = Database.getEntry(s)) != null)
                 {
                     for (int i = 0; i < num; i++)
-                        addKill(player, entry);
+                        addKill(uuid, entry);
                 }
             }
             temp = tag.getCompoundTag("captures");
@@ -277,9 +278,8 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
                 int num = temp.getInteger(s);
                 if (num > 0 && (entry = Database.getEntry(s)) != null)
                 {
-                    System.out.println(num + " " + entry);
                     for (int i = 0; i < num; i++)
-                        addCapture(player, entry);
+                        addCapture(uuid, entry);
                 }
             }
             temp = tag.getCompoundTag("hatches");
@@ -289,7 +289,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
                 if (num > 0 && (entry = Database.getEntry(s)) != null)
                 {
                     for (int i = 0; i < num; i++)
-                        addHatch(player, entry);
+                        addHatch(uuid, entry);
                 }
             }
         }
@@ -300,27 +300,32 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
             return "pokecubeStats";
         }
 
-        public Map<PokedexEntry, Integer> getCaptures(EntityPlayer player)
+        public Map<PokedexEntry, Integer> getCaptures(UUID player)
         {
             if (captures == null) initAchievements(getManager(player));
             return captures;
         }
 
-        public Map<PokedexEntry, Integer> getKills(EntityPlayer player)
+        public Map<PokedexEntry, Integer> getKills(UUID player)
         {
             if (kills == null) initAchievements(getManager(player));
             return kills;
         }
 
-        public Map<PokedexEntry, Integer> getHatches(EntityPlayer player)
+        public Map<PokedexEntry, Integer> getHatches(UUID player)
         {
             if (hatches == null) initAchievements(getManager(player));
             return hatches;
         }
 
-        private StatisticsManager getManager(EntityPlayer player)
+        private StatisticsManager getManager(UUID player)
         {
             return PokecubeCore.proxy.getManager(player);
+        }
+
+        private EntityPlayer getPlayer(UUID player)
+        {
+            return PokecubeCore.proxy.getPlayer(player);
         }
     }
 

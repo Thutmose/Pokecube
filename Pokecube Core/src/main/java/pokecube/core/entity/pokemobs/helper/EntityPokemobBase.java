@@ -357,7 +357,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         if (this.worldObj.isRemote && this.isBeingRidden()
                 && (this.getServer() == null || this.getServer().isDedicatedServer())
-                && this.getOwner() == PokecubeCore.proxy.getPlayer(null))
+                && this.getOwner() == PokecubeCore.proxy.getPlayer((String) null))
         {
             Vector3 vec = Vector3.getNewVector();
             Vector3 vec2 = Vector3.getNewVector();

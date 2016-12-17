@@ -1532,9 +1532,13 @@ public class PokedexEntry
         List<EvolutionData> stale = Lists.newArrayList();
         for (EvolutionData d : this.evolutions)
         {
-            if (Pokedex.getInstance().getEntry(d.evolution.pokedexNb) == null) stale.add(d);
+            if (!Pokedex.getInstance().isRegistered(d.evolution)) stale.add(d);
         }
         this.evolutions.removeAll(stale);
+        if (!stale.isEmpty())
+        {
+            System.out.println(stale.size() + " stales for " + this);
+        }
         addRelation(this);
         for (EvolutionData d : this.evolutions)
         {

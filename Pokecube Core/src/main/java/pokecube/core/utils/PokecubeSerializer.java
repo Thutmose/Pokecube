@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Vector;
-
-import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +34,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.database.Database;
-import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
 import pokecube.core.interfaces.IPokemob;
@@ -101,8 +97,6 @@ public class PokecubeSerializer
 
     private static final String      POKECUBE       = "pokecube";
     private static final String      DATA           = "data";
-    private static final String      HASSTARTER     = "hasStarter";
-    private static final String      TPOPTIONS      = "tpOptions";
     private static final String      METEORS        = "meteors";
     private static final String      LASTUID        = "lastUid";
     public static final String       USERNAME       = "username";
@@ -386,66 +380,7 @@ public class PokecubeSerializer
     public void readFromNBT(NBTTagCompound nbttagcompound)
     {
         lastId = nbttagcompound.getInteger(LASTUID);
-
         NBTBase temp;
-        // TODO remove support for this.
-        {
-            StatsCollector.readFromNBT(nbttagcompound.getCompoundTag("globalStats"));
-
-            Set<String> ids = Sets.newHashSet();
-            temp = nbttagcompound.getTag(HASSTARTER);
-            if (temp instanceof NBTTagList)
-            {
-                NBTTagList tagListHasStarter = (NBTTagList) temp;
-                for (int i = 0; i < tagListHasStarter.tagCount(); i++)
-                {
-                    NBTTagCompound pokemobData = tagListHasStarter.getCompoundTagAt(i);
-
-                    if (pokemobData != null)
-                    {
-                        String username = pokemobData.getString(USERNAME);
-                        ids.add(username);
-                        Boolean hasStarter = pokemobData.getBoolean(HASSTARTER);
-                        PokecubePlayerDataHandler.getInstance().getPlayerData(username)
-                                .getData(PokecubePlayerData.class).setHasStarter(hasStarter);
-                    }
-                }
-            }
-            temp = nbttagcompound.getTag(TPOPTIONS);
-            if (temp instanceof NBTTagList)
-            {
-                NBTTagList tagListTeleportLocations = (NBTTagList) temp;
-                if (tagListTeleportLocations.tagCount() > 0)
-                    for (int i = 0; i < tagListTeleportLocations.tagCount(); i++)
-                    {
-                    NBTTagCompound pokemobData = tagListTeleportLocations.getCompoundTagAt(i);
-
-                    if (pokemobData != null)
-                    {
-                    String username = pokemobData.getString(USERNAME);
-                    ids.add(username);
-
-                    int index = pokemobData.getInteger("TPOPTION");
-
-                    setTeleIndex(username, index);
-                    NBTBase temp2 = pokemobData.getTag(TPOPTIONS);
-                    if (temp2 instanceof NBTTagList)
-                    {
-                    NBTTagList tagListOptions = (NBTTagList) temp2;
-                    NBTTagCompound pokemobData2 = null;
-                    for (int j = 0; j < tagListOptions.tagCount(); j++)
-                    {
-                    pokemobData2 = tagListOptions.getCompoundTagAt(j);
-                    TeleDest d = TeleDest.readFromNBT(pokemobData2);
-                    setTeleport(username, d);
-                    }
-                    }
-                    }
-                    }
-            }
-            for (String uuid : ids)
-                PokecubePlayerDataHandler.getInstance().save(uuid);
-        }
         temp = nbttagcompound.getTag(METEORS);
         if (temp instanceof NBTTagList)
         {
@@ -476,27 +411,6 @@ public class PokecubeSerializer
         if (temp instanceof NBTTagCompound)
         {
             PokecubeItems.loadTime((NBTTagCompound) temp);
-        }
-
-    }
-
-    public void readPlayerTeleports(NBTTagCompound tag)
-    {
-        String username = tag.getString(USERNAME);
-        int index = tag.getInteger("TPOPTION");
-        setTeleIndex(username, index);
-
-        NBTBase temp2 = tag.getTag(TPOPTIONS);
-        if (temp2 instanceof NBTTagList)
-        {
-            NBTTagList tagListOptions = (NBTTagList) temp2;
-            NBTTagCompound pokemobData2 = null;
-            for (int j = 0; j < tagListOptions.tagCount(); j++)
-            {
-                pokemobData2 = tagListOptions.getCompoundTagAt(j);
-                TeleDest d = TeleDest.readFromNBT(pokemobData2);
-                setTeleport(username, d);
-            }
         }
     }
 

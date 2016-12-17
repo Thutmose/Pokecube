@@ -1,6 +1,7 @@
 package pokecube.core.database.stats;
 
 import java.util.Map;
+import java.util.UUID;
 
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokeType;
@@ -8,7 +9,7 @@ import pokecube.core.utils.PokeType;
 public class KillStats
 {
 
-    public static int getNumberUniqueKilledBy(String playerName)
+    public static int getNumberUniqueKilledBy(UUID playerName)
     {
         int count = 0;
         Map<PokedexEntry, Integer> map = StatsCollector.getKills(playerName);
@@ -17,7 +18,7 @@ public class KillStats
         return count;
     }
 
-    public static int getTotalNumberKilledBy(String playerName)
+    public static int getTotalNumberKilledBy(UUID playerName)
     {
         int count = 0;
         Map<PokedexEntry, Integer> map = StatsCollector.getKills(playerName);
@@ -29,7 +30,7 @@ public class KillStats
         return count;
     }
 
-    public static int getTotalNumberOfPokemobKilledBy(String playerName, PokedexEntry type)
+    public static int getTotalNumberOfPokemobKilledBy(UUID playerName, PokedexEntry type)
     {
         int count = 0;
         Map<PokedexEntry, Integer> map = StatsCollector.getKills(playerName);
@@ -38,7 +39,7 @@ public class KillStats
         return count;
     }
 
-    public static int getTotalOfTypeKilledBy(String player, PokeType type)
+    public static int getTotalOfTypeKilledBy(UUID player, PokeType type)
     {
         int count = 0;
         for (PokedexEntry dbe : StatsCollector.getKills(player).keySet())
@@ -48,7 +49,7 @@ public class KillStats
         return count;
     }
 
-    public static int getTotalUniqueOfTypeKilledBy(String player, PokeType type)
+    public static int getTotalUniqueOfTypeKilledBy(UUID player, PokeType type)
     {
         int count = 0;
         for (PokedexEntry dbe : StatsCollector.getKills(player).keySet())

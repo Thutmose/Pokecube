@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -16,11 +17,15 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.storage.ISaveHandler;
 import pokecube.core.PokecubeCore;
+import pokecube.core.database.stats.CaptureStats;
+import pokecube.core.database.stats.EggStats;
+import pokecube.core.database.stats.KillStats;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
 
 public class WorldProviderSecretBase extends WorldProvider
 {
     public static int DEFAULTSIZE = 8;
+    String            owner;
 
     public static void initToDefaults(WorldBorder border)
     {
@@ -67,7 +72,7 @@ public class WorldProviderSecretBase extends WorldProvider
             NBTTagCompound tag = new NBTTagCompound();
             int size = worldObj.getWorldBorder().getSize();
             tag.setInteger("border", size);
-            String owner = PokecubeDimensionManager.getOwner(getDimension());
+            owner = PokecubeDimensionManager.getOwner(getDimension());
             if (owner != null && !owner.isEmpty()) tag.setString("owner", owner);
             FileOutputStream fileoutputstream = new FileOutputStream(file);
             CompressedStreamTools.writeCompressed(tag, fileoutputstream);
@@ -92,7 +97,25 @@ public class WorldProviderSecretBase extends WorldProvider
                 FileInputStream fileinputstream = new FileInputStream(file);
                 NBTTagCompound tag = CompressedStreamTools.readCompressed(fileinputstream);
                 fileinputstream.close();
-                worldObj.getWorldBorder().setSize(tag.getInteger("border"));
+                owner = tag.getString("owner");
+                int size = DEFAULTSIZE;
+                if (!owner.isEmpty())
+                {
+                    try
+                    {
+                        UUID id = UUID.fromString(owner);
+                        int c = CaptureStats.getNumberUniqueCaughtBy(id);
+                        int k = KillStats.getNumberUniqueKilledBy(id);
+                        int h = EggStats.getNumberUniqueHatchedBy(id);
+                        System.out.println(c + " " + k + " " + h);
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+
+                worldObj.getWorldBorder().setSize(size);
             }
             catch (IOException e)
             {

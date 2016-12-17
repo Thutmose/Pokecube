@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.UUID;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -24,7 +25,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelBakery;
@@ -40,7 +40,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -596,10 +595,21 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     }
 
     @Override
-    public StatisticsManager getManager(EntityPlayer player)
+    public StatisticsManager getManager(UUID player)
     {
-        if (player instanceof EntityPlayerSP) return ((EntityPlayerSP) player).getStatFileWriter();
-        return ((EntityPlayerMP) player).getStatFile();
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return super.getManager(player);
+        if (player == null || player.equals(Minecraft.getMinecraft().thePlayer.getUniqueID()))
+            return Minecraft.getMinecraft().thePlayer.getStatFileWriter();
+        return super.getManager(player);
+    }
+
+    public EntityPlayer getPlayer(UUID player)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return super.getPlayer(player);
+        if (Minecraft.getMinecraft().thePlayer != null
+                && (player == null || player.equals(Minecraft.getMinecraft().thePlayer.getUniqueID())))
+            return Minecraft.getMinecraft().thePlayer;
+        return super.getPlayer(player);
     }
 
     private X3dModel         beltl;

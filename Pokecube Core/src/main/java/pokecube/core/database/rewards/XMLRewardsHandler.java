@@ -95,7 +95,7 @@ public class XMLRewardsHandler
             @Override
             public boolean inspect(PokecubePlayerCustomData data, Entity entity, boolean giveReward)
             {
-                int num = CaptureStats.getNumberUniqueCaughtBy(entity.getCachedUniqueIdString());
+                int num = CaptureStats.getNumberUniqueCaughtBy(entity.getUniqueID());
                 try
                 {
                     return check(entity, data.tag, reward, num, giveReward);

@@ -78,7 +78,7 @@ public class PokedexInspector
         @Override
         public boolean inspect(PokecubePlayerCustomData data, Entity entity, boolean giveReward)
         {
-            int num = CaptureStats.getNumberUniqueCaughtBy(entity.getCachedUniqueIdString());
+            int num = CaptureStats.getNumberUniqueCaughtBy(entity.getUniqueID());
             try
             {
                 return check(entity, (String) configField.get(PokecubeMod.core.getConfig()), data.tag, reward, num,

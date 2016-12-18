@@ -290,7 +290,7 @@ public class GeneticsManager
         }
         for (int i = 0; i < 6; i++)
         {
-            epigeneticParser.setVarValue("v", evs[i] - 128);
+            epigeneticParser.setVarValue("v", evs[i]);
             double value = epigeneticParser.getValue();
             if (!Double.isNaN(value))
             {

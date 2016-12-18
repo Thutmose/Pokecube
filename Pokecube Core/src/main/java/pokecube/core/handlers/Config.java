@@ -261,7 +261,12 @@ public class Config extends ConfigBase
             "rawst:TWmountain,Whills'TWnether'Scave", "aspear:TWforest,Bconiferous", "leppa:TWplains,Bsavanna",
             "oran:TWforest,Whills,Bconiferous'Sall", "persim:TWswamp", "lum:TWjungle,Bhills", "sitrus:TWjungle,Whills",
             "nanab:TWjungle,Bhills'TWbeach,Bcold'TWocean,Bcold", "pinap:TWjungle", "cornn:TWswamp", "enigma:TWend",
-            "jaboca:TWmountain,Whills", "rowap:TWforest,Wconiferous", };                                               // @formatter:on
+            "jaboca:TWmountain,Whills", "rowap:TWforest,Wconiferous", }; // @formatter:on
+
+    @Configure(category = world)
+    public String                        baseSizeFunction             = "8 + c/10 + h/10 + k/20";
+    @Configure(category = world)
+    public int                           baseMaxSize                  = 1;
     // Mob Spawning settings
     @Configure(category = spawning, needsMcRestart = true)
     /** Do monsters not spawn. */

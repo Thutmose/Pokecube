@@ -377,9 +377,10 @@ public class Config extends ConfigBase
     public String[]                      damageBlocksWhitelist        = { "flash", "teleport" };
     @Configure(category = advanced)
     public String[]                      damageBlocksBlacklist        = {};
-
     @Configure(category = advanced)
     public int                           evolutionTicks               = 50;
+    @Configure(category = advanced)
+    public int                           baseRadarRange               = 64;
     @Configure(category = advanced)
     public String                        nonPokemobExpFunction        = "h*(a+1)";
     @Configure(category = advanced)

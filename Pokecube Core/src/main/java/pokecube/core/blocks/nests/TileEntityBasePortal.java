@@ -7,6 +7,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.world.dimensions.PokecubeDimensionManager;
+import pokecube.core.world.dimensions.secretpower.SecretBaseManager;
+import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 
 public class TileEntityBasePortal extends TileEntityOwnable
 {
@@ -53,5 +55,23 @@ public class TileEntityBasePortal extends TileEntityOwnable
         super.writeToNBT(tagCompound);
         tagCompound.setBoolean("allPlayer", sendToUsers);
         return tagCompound;
+    }
+
+    @Override
+    public void invalidate()
+    {
+        super.invalidate();
+        Coordinate c = new Coordinate(getPos().getX(), getPos().getY(), getPos().getZ(),
+                getWorld().provider.getDimension());
+        SecretBaseManager.removeBase(c);
+    }
+
+    @Override
+    public void validate()
+    {
+        super.validate();
+        Coordinate c = new Coordinate(getPos().getX(), getPos().getY(), getPos().getZ(),
+                getWorld().provider.getDimension());
+        SecretBaseManager.addBase(c);
     }
 }

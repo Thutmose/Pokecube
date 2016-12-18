@@ -31,6 +31,7 @@ import pokecube.core.database.recipes.IRecipeParser;
 import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipeInput;
+import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import thut.api.entity.genetics.Alleles;
@@ -194,6 +195,7 @@ public class RecipeHandler
         XMLRecipeHandler.recipeParsers.put("selector", new SelectorRecipeParser());
         XMLRecipeHandler.recipeParsers.put("dna", new DNARecipeParser());
         XMLRecipeHandler.recipeFiles.add("pokeadvrecipes");
+        XMLRewardsHandler.recipeFiles.add("pokeadvrewards");
     }
 
     public static void preInit()
@@ -226,7 +228,29 @@ public class RecipeHandler
                 e.printStackTrace();
             }
         }
-
+        name = "pokeadvrewards.xml";
+        temp1 = new File(Database.CONFIGLOC + name);
+        if (!temp1.exists() || Config.instance.forceRecipes)
+        {
+            ArrayList<String> rows = Database.getFile("/assets/pokecube_adventures/database/" + name);
+            int n = 0;
+            try
+            {
+                File file = new File(Database.CONFIGLOC + name);
+                Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                for (int i = 0; i < rows.size(); i++)
+                {
+                    out.write(rows.get(i) + "\n");
+                    n++;
+                }
+                out.close();
+            }
+            catch (Exception e)
+            {
+                System.err.println(name + " " + n);
+                e.printStackTrace();
+            }
+        }
     }
 
     private static void addClonerRecipes()

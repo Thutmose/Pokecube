@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<Rewards>
+    <Reward handler="freebook">//Genetics Guide Book
+        <Condition key="inspect-geneticsguide" mess="pokedex.inspect.geneticsguide" file="/assets/pokecube_adventures/lang/%s.lang" tag="pokeadv.infobook1.json"/>
+    </Reward>
+</Rewards>

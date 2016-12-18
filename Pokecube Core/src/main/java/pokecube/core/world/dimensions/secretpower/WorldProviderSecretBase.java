@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.nfunk.jep.JEP;
+
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,8 +26,24 @@ import pokecube.core.world.dimensions.PokecubeDimensionManager;
 
 public class WorldProviderSecretBase extends WorldProvider
 {
-    public static int DEFAULTSIZE = 8;
-    String            owner;
+    public static int  DEFAULTSIZE = 8;
+    String             owner;
+    private static JEP parser;
+
+    public static void init()
+    {
+        String function = PokecubeCore.core.getConfig().baseSizeFunction;
+        parser = new JEP();
+        parser.initFunTab();
+        parser.addStandardFunctions();
+        parser.initSymTab(); // clear the contents of the symbol table
+        parser.addStandardConstants();
+        parser.addComplex();
+        parser.addVariable("c", 0);
+        parser.addVariable("k", 0);
+        parser.addVariable("h", 0);
+        parser.parseExpression(function);
+    }
 
     public static void initToDefaults(WorldBorder border)
     {
@@ -107,16 +125,17 @@ public class WorldProviderSecretBase extends WorldProvider
                         int c = CaptureStats.getNumberUniqueCaughtBy(id);
                         int k = KillStats.getNumberUniqueKilledBy(id);
                         int h = EggStats.getNumberUniqueHatchedBy(id);
-                        size += c + k + h;
-                        System.out.println(c + " " + k + " " + h);
-                        size = Math.min(size, 16);
+                        parser.setVarValue("c", c);
+                        parser.setVarValue("k", k);
+                        parser.setVarValue("h", h);
+                        size = (int) parser.getValue();
+                        size = Math.min(size, PokecubeCore.core.getConfig().baseMaxSize * 16);
                     }
                     catch (Exception e)
                     {
                         e.printStackTrace();
                     }
                 }
-
                 worldObj.getWorldBorder().setSize(size);
             }
             catch (IOException e)

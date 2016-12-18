@@ -42,7 +42,7 @@ import thut.api.entity.genetics.IMobGenetics;
 
 public class GeneticsManager
 {
-    public static String                       epigeneticFunction = "(((2*v + 256) * 31) / 512)";
+    public static String                       epigeneticFunction = "rand()*(((2*v + 256) * 31) / 512)";
     private static JEP                         epigeneticParser   = new JEP();
 
     public static final ResourceLocation       POKECUBEGENETICS   = new ResourceLocation(PokecubeMod.ID, "genetics");
@@ -290,7 +290,7 @@ public class GeneticsManager
         }
         for (int i = 0; i < 6; i++)
         {
-            epigeneticParser.setVarValue("v", evs[i] - 128);
+            epigeneticParser.setVarValue("v", evs[i]);
             double value = epigeneticParser.getValue();
             if (!Double.isNaN(value))
             {

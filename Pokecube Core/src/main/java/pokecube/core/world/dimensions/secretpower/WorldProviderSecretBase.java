@@ -107,7 +107,9 @@ public class WorldProviderSecretBase extends WorldProvider
                         int c = CaptureStats.getNumberUniqueCaughtBy(id);
                         int k = KillStats.getNumberUniqueKilledBy(id);
                         int h = EggStats.getNumberUniqueHatchedBy(id);
+                        size += c + k + h;
                         System.out.println(c + " " + k + " " + h);
+                        size = Math.min(size, 16);
                     }
                     catch (Exception e)
                     {

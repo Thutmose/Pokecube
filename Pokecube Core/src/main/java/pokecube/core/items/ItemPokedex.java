@@ -181,7 +181,7 @@ public class ItemPokedex extends Item
         {
             TerrainSegment s = TerrainManager.getInstance().getTerrainForEntity(player);
             PacketSyncTerrain.sendTerrain(player, s.chunkX, s.chunkY, s.chunkZ, s);
-            PacketPokedex.sendVillageInfoPacket(player);
+            PacketPokedex.sendSecretBaseInfoPacket(player);
             PacketDataSync.sendInitPacket(player, "pokecube-stats");
         }
     }

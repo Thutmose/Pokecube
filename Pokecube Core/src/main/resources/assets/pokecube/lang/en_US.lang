@@ -308,7 +308,7 @@ gui.pokemob.select=Select
 gui.pokemob.accept=Accept
 gui.pokemob.deny=Deny
 gui.pokemob.teleport=Teleports
-gui.pokedex.village=Nearest Village
+gui.pokedex.baseradar=Secret Base Radar
 
 pokecube.caught=%1$s §ahas been caught!
 pokecube.missed=%1$s §cbroke out!

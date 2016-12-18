@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -23,6 +26,9 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,6 +58,7 @@ import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
+import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
@@ -60,7 +67,8 @@ import thut.api.terrain.BiomeDatabase;
 public class GuiPokedex extends GuiScreen
 {
     public static PokedexEntry                    pokedexEntry       = null;
-    public static Vector3                         closestVillage     = Vector3.getNewVector();
+    public static Set<Coordinate>                 bases              = Sets.newHashSet();
+    public static float                           baseRange          = 64;
 
     private static final int                      PAGECOUNT          = 5;
 
@@ -103,6 +111,10 @@ public class GuiPokedex extends GuiScreen
         if (item != null)
         {
             page = item.getItemDamage();
+            if (item.hasTagCompound())
+            {
+                mode = item.getTagCompound().getBoolean("M");
+            }
         }
 
         if (pokemob != null)
@@ -114,8 +126,8 @@ public class GuiPokedex extends GuiScreen
             pokedexEntry = Pokedex.getInstance().getFirstEntry();
         }
         PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUEST);
-        packet.data.setBoolean("mode", mode);
-        packet.data.setString("forme", pokedexEntry.getName());
+        packet.data.setBoolean("M", mode);
+        packet.data.setString("F", pokedexEntry.getName());
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
@@ -147,7 +159,7 @@ public class GuiPokedex extends GuiScreen
      * @param yOffset */
     private void drawPage0(int xOffset, int yOffset)
     {
-        if (pokemob != null && pokemob.getPokedexNb() == pokedexEntry.getPokedexNb())
+        if (pokemob != null && pokemob.getPokedexNb() == pokedexEntry.getPokedexNb() && !mode)
         {
             int genderColor = 0xBBBBBB;
             String gender = "";
@@ -257,39 +269,82 @@ public class GuiPokedex extends GuiScreen
         {
             int num = 1;
             PokedexEntry test = Pokedex.getInstance().getFirstEntry();
-            while (test != pokedexEntry && num < 1500)
+            PokedexEntry thisEntry = pokedexEntry.base ? pokedexEntry : pokedexEntry.getBaseForme();
+            while (test != thisEntry && num < 1500)
             {
                 test = Pokedex.getInstance().getNext(test, 1);
                 num++;
             }
-
             String level = "N. " + num;
             drawString(fontRendererObj, level, xOffset + 15, yOffset + 1, 0xffffff);
             if (!mode)
             {
 
             }
-            else if (!closestVillage.isEmpty())
+            else
             {
                 GL11.glPushMatrix();
                 int j = (width - xSize) / 2;
                 int k = (height - ySize) / 2;
-                GL11.glTranslated(j + 180, k + 75, 0);
-                Vector3 v = Vector3.getNewVector().set(entityPlayer).subtractFrom(closestVillage);
-                v.reverse();
-                v.set(v.normalize());
-                double angle = Math.atan2(v.z, v.x) * 180 / Math.PI - entityPlayer.rotationYaw % 360 + 180;
-
+                GL11.glTranslated(j + 185, k + 80, 0);
+                double xCoord = 0;
+                double yCoord = 0;
+                float zCoord = this.zLevel;
+                float maxU = 1;
+                float maxV = 1;
+                float minU = -1;
+                float minV = -1;
+                float r = 0;
+                float g = 1;
+                float b = 0;
+                float a = 1;
+                GlStateManager.disableTexture2D();
+                Tessellator tessellator = Tessellator.getInstance();
+                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+                vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((xCoord + maxU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((xCoord + minU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
+                tessellator.draw();
+                r = 1;
+                g = 0;
+                Vector3 here = Vector3.getNewVector().set(entityPlayer);
+                double angle = -entityPlayer.rotationYaw % 360 + 180;
                 GL11.glRotated(angle, 0, 0, 1);
-                drawString(fontRendererObj, "--->", 0, 0, 0xFF0000);
+                for (Coordinate c : bases)
+                {
+                    Vector3 loc = Vector3.getNewVector().set(c.x + 0.5, c.y + 0.5, c.z + 0.5);
+                    GL11.glPushMatrix();
+                    Vector3 v = here.subtract(loc);
+                    v.reverse();
+                    double max = 30;
+                    double hDistSq = (v.x) * (v.x) + (v.z) * (v.z);
+                    float vDist = (float) Math.abs(v.y);
+                    v.set(v.normalize());
+                    a = ((64 - vDist) / baseRange);
+                    a = Math.min(a, 1);
+                    a = Math.max(a, 0.125f);
+                    double dist = max * Math.sqrt(hDistSq) / baseRange;
+                    v.scalarMultBy(dist);
+                    GL11.glTranslated(v.x, v.z, 0);
+                    xCoord = v.x;
+                    yCoord = v.y;
+                    vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+                    vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((xCoord + maxU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((xCoord + minU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
+                    tessellator.draw();
+                    GL11.glPopMatrix();
+                }
                 GL11.glPopMatrix();
-                String mess = I18n.format("gui.pokedex.village");
+                GlStateManager.enableTexture2D();
+                String mess = I18n.format("gui.pokedex.baseradar");
                 int width = fontRendererObj.getStringWidth(mess);
-                drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 105, 0x78C850);
-                mess = ((int) v.set(closestVillage).distToEntity(entityPlayer)) + "";
-                width = fontRendererObj.getStringWidth(mess);
-                drawString(fontRendererObj, mess, xOffset - width / 2 + 60, yOffset + 119, 0x78C850);
+                drawString(fontRendererObj, mess, xOffset - width / 2 + 70, yOffset + 105, 0x78C850);
             }
+
         }
     }
 
@@ -550,7 +605,7 @@ public class GuiPokedex extends GuiScreen
         int xOffset = width / 2;
 
         GL11.glPushMatrix();
-        renderMob();// TODO find out why rendering player messes up shaders
+        renderMob();
         GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
         int length = fontRendererObj.getStringWidth(pokemobTextField.getText()) / 2;
@@ -906,7 +961,7 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                PacketPokedex.sendChangePagePacket((byte) page);
+                PacketPokedex.sendChangePagePacket((byte) page, mode);
                 if (page == 2)
                 {
                     nicknameTextField.setText("");
@@ -958,15 +1013,16 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                PacketPokedex.sendChangePagePacket((byte) page);
+                PacketPokedex.sendChangePagePacket((byte) page, mode);
             }
         }
         if (button == 13)
         {
             mode = !mode;
             PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUEST);
-            packet.data.setBoolean("mode", mode);
-            packet.data.setString("forme", pokedexEntry.getName());
+
+            packet.data.setBoolean("M", mode);
+            packet.data.setString("F", pokedexEntry.getName());
             PokecubeMod.packetPipeline.sendToServer(packet);
         }
 

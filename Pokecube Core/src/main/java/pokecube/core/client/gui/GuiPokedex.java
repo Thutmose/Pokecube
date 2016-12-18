@@ -893,7 +893,6 @@ public class GuiPokedex extends GuiScreen
             }
             nicknameTextField.setEnabled(true);
         }
-
         if (page == 0 && button >= 1 && button <= 5 || button == 5)
         {
             float volume = 0.2F;
@@ -1020,10 +1019,10 @@ public class GuiPokedex extends GuiScreen
         {
             mode = !mode;
             PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUEST);
-
             packet.data.setBoolean("M", mode);
             packet.data.setString("F", pokedexEntry.getName());
             PokecubeMod.packetPipeline.sendToServer(packet);
+            PacketPokedex.sendChangePagePacket((byte) page, mode);
         }
 
         if (page != 0)

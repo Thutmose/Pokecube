@@ -392,7 +392,7 @@ public class Config extends ConfigBase
     public boolean                       nonPokemobExp                = false;
 
     @Configure(category = genetics)
-    public String                        epigeneticFunction           = GeneticsManager.epigeneticFunction;
+    public String                        epigeneticEVFunction         = GeneticsManager.epigeneticFunction;
     @Configure(category = genetics)
     String[]                             mutationRates                = GeneticsManager.getMutationConfig();
 

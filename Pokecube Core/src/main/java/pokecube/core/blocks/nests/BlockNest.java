@@ -146,14 +146,13 @@ public class BlockNest extends Block implements ITileEntityProvider, IMetaBlock
         List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
 
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
-        IBlockState actual = getActualState(state, world, pos);
-        int count = actual.getBlock().quantityDropped(state, fortune, rand);
+        int count = 1;
         for (int i = 0; i < count; i++)
         {
-            Item item = actual.getBlock().getItemDropped(state, rand, fortune);
+            Item item = Blocks.STONE.getItemDropped(Blocks.STONE.getDefaultState(), rand, fortune);
             if (item != null)
             {
-                ret.add(new ItemStack(item, 1, actual.getBlock().damageDropped(state)));
+                ret.add(new ItemStack(item, 1, Blocks.STONE.damageDropped(Blocks.STONE.getDefaultState())));
             }
         }
         return ret;

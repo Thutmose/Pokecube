@@ -30,9 +30,8 @@ public class WorldProviderSecretBase extends WorldProvider
     String             owner;
     private static JEP parser;
 
-    public static void init()
+    public static void init(String function)
     {
-        String function = PokecubeCore.core.getConfig().baseSizeFunction;
         parser = new JEP();
         parser.initFunTab();
         parser.addStandardFunctions();
@@ -158,6 +157,28 @@ public class WorldProviderSecretBase extends WorldProvider
     public void onPlayerAdded(EntityPlayerMP player)
     {
         if (!player.isDead) player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.enter"));
+        owner = PokecubeDimensionManager.getOwner(getDimension());
+        if (!owner.isEmpty())
+        {
+            try
+            {
+                int size = DEFAULTSIZE;
+                UUID id = UUID.fromString(owner);
+                int c = CaptureStats.getNumberUniqueCaughtBy(id);
+                int k = KillStats.getNumberUniqueKilledBy(id);
+                int h = EggStats.getNumberUniqueHatchedBy(id);
+                parser.setVarValue("c", c);
+                parser.setVarValue("k", k);
+                parser.setVarValue("h", h);
+                size = (int) parser.getValue();
+                size = Math.min(size, PokecubeCore.core.getConfig().baseMaxSize * 16);
+                worldObj.getWorldBorder().setSize(size);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     /** Called when a Player is removed from the provider's world. */

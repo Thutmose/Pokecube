@@ -36,6 +36,7 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
@@ -477,6 +478,7 @@ public class Config extends ConfigBase
     @Override
     public void applySettings()
     {
+        WorldProviderSecretBase.init(baseSizeFunction);
         if (!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;

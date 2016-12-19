@@ -70,7 +70,7 @@ public class XMLRewardsHandler
                         tag.setBoolean(tagString, true);
                         entity.addChatMessage(new TextComponentTranslation(message));
                         EntityPlayer entityPlayer = (EntityPlayer) entity;
-                        Tools.giveItem(entityPlayer, reward);
+                        Tools.giveItem(entityPlayer, reward.copy());
                         PokecubePlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
                     }
                     return true;

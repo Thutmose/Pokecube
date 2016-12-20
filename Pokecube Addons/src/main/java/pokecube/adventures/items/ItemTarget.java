@@ -58,7 +58,7 @@ public class ItemTarget extends CompatItem
     public void interact(EntityInteract event)
     {
         ItemStack stack = event.getItemStack();
-        if (!CompatWrapper.isValid(stack)) return;
+        if (!CompatWrapper.isValid(stack) || stack.getItem() != this) return;
         EntityPlayer playerIn = event.getEntityPlayer();
         Entity target = event.getTarget();
         if (stack.getItemDamage() == 1 && target instanceof IPokemob)

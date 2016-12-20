@@ -7,7 +7,6 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -18,7 +17,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
-import thut.api.TickHandler;
 import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
@@ -275,13 +273,6 @@ public class AIMate extends AIBase
         if (breedingMob.getLover() instanceof IBreedingMob)
         {
             ((IBreedingMob) breedingMob.getLover()).setLover(entity);
-        }
-        if (breedingMob.getLover() instanceof EntityLiving)
-        {
-            Vector3 loc = Vector3.getNewVector().set(entity).findNextSolidBlock(
-                    TickHandler.getInstance().getWorldCache(entity.dimension), Vector3.secondAxisNeg, entity.posY);
-            if (loc != null) ((EntityLiving) breedingMob.getLover()).getNavigator().tryMoveToXYZ(loc.x, loc.y, loc.x,
-                    pokemob.getMovementSpeed());
         }
         if (this.spawnBabyDelay >= 50)
         {

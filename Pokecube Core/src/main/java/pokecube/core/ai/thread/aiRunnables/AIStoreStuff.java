@@ -14,6 +14,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 import thut.lib.ItemStackTools;
 
 /** This IAIRunnable will result in the mob occasionally emptying its inventory
@@ -22,12 +23,32 @@ import thut.lib.ItemStackTools;
  * dropped items. */
 public class AIStoreStuff extends AIBase
 {
-    public static int COOLDOWN = 500;
+    public static int       COOLDOWN                = 50;
+    public static int       MAXSIZE                 = 100;
 
-    final EntityLiving entity;
-    Vector3            inventoryLocation       = null;
-    int                searchInventoryCooldown = 0;
-    int                doStorageCooldown       = 0;
+    final Predicate<Object> matcher                 = new Predicate<Object>()
+                                                    {
+                                                        @Override
+                                                        public boolean apply(Object t)
+                                                        {
+                                                            if (!(t instanceof IBlockState)) return false;
+                                                            IBlockState state = (IBlockState) t;
+                                                            if (state.getBlock() instanceof ITileEntityProvider)
+                                                            {
+                                                                TileEntity tile = ((ITileEntityProvider) state
+                                                                        .getBlock()).createNewTileEntity(null,
+                                                                                state.getBlock()
+                                                                                        .getMetaFromState(state));
+                                                                return tile instanceof IInventory;
+                                                            }
+                                                            return false;
+                                                        }
+                                                    };
+
+    final EntityLiving      entity;
+    Vector3                 inventoryLocation       = null;
+    int                     searchInventoryCooldown = 0;
+    int                     doStorageCooldown       = 0;
 
     public AIStoreStuff(EntityLiving entity)
     {
@@ -39,50 +60,35 @@ public class AIStoreStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        if (tameCheck()) return;
         IPokemob pokemob = (IPokemob) entity;
+        if (tameCheck()) return;
         IInventory inventory = pokemob.getPokemobInventory();
         if (searchInventoryCooldown-- < 0)
         {
             searchInventoryCooldown = COOLDOWN;
-            Vector3 temp = Vector3.getNewVector();
-            temp.set(pokemob.getHome()).offsetBy(EnumFacing.UP);
-            Predicate<Object> matcher = new Predicate<Object>()
-            {
-                @Override
-                public boolean apply(Object t)
-                {
-                    if (!(t instanceof IBlockState)) return false;
-                    IBlockState state = (IBlockState) t;
-                    if (state.getBlock() instanceof ITileEntityProvider)
-                    {
-                        TileEntity tile = ((ITileEntityProvider) state.getBlock()).createNewTileEntity(null,
-                                state.getBlock().getMetaFromState(state));
-                        return tile instanceof IInventory;
-                    }
-                    return false;
-                }
-            };
-            inventoryLocation = temp.findClosestVisibleObject(world, true, 5, matcher);
+            if (world.getTileEntity(pokemob.getHome()) instanceof IInventory)
+                inventoryLocation = Vector3.getNewVector().set(pokemob.getHome());
+            else inventoryLocation = null;
             if (inventoryLocation == null) searchInventoryCooldown = 50 * COOLDOWN;
         }
-        if (inventoryLocation == null || doStorageCooldown-- > 0) return;
-        TileEntity tile = inventoryLocation.getTileEntity(world);
-        if (tile != null)
+        if (inventoryLocation == null || entity.getDistanceSq(pokemob.getHome()) > 16) return;
+        ItemStack stack;
+        ItemStack stack1;
+        boolean hasBerry = CompatWrapper.isValid(stack = stack1 = inventory.getStackInSlot(2))
+                && stack.getItem() instanceof ItemBerry;
+        boolean freeSlot = false;
+        for (int i = 3; i < inventory.getSizeInventory() && !freeSlot; i++)
         {
-            ItemStack stack;
-            ItemStack stack1;
-            boolean hasBerry = (stack = stack1 = inventory.getStackInSlot(2)) != null
-                    && stack.getItem() instanceof ItemBerry;
-            boolean freeSlot = false;
-
-            for (int i = 3; i < inventory.getSizeInventory() && !freeSlot; i++)
-            {
-                freeSlot = (stack = inventory.getStackInSlot(i)) == null;
-            }
-            int index = inventory.getSizeInventory() - 1;
-            IInventory inv = (IInventory) tile;
-            if (!hasBerry) for (int i = 0; i < inv.getSizeInventory(); i++)
+            freeSlot = !CompatWrapper.isValid(stack = inventory.getStackInSlot(i));
+        }
+        boolean cooldown = doStorageCooldown-- > 0;
+        boolean needs = freeSlot && hasBerry;
+        if (needs || cooldown) return;
+        this.world = world;
+        if (!hasBerry)
+        {
+            IInventory inv = getBerryInventory();
+            if (inv != null) for (int i = 0; i < inv.getSizeInventory(); i++)
             {
                 stack = inv.getStackInSlot(i);
                 // If it wants a berry, search for a berry item, and take that.
@@ -96,27 +102,109 @@ public class AIStoreStuff extends AIBase
                         break;
                     }
                 }
-                if (!hasBerry) doStorageCooldown = COOLDOWN;
-            }
-            if (!freeSlot)
-            {
-                for (int i = 0; i < inv.getSizeInventory(); i++)
-                {
-                    stack = inv.getStackInSlot(i);
-                    // If it has full inventory, deposit all but the berry
-                    // stack.
-                    if (ItemStackTools.addItemStackToInventory(inventory.getStackInSlot(index), inv, 0))
-                    {
-                        inventory.setInventorySlotContents(index, null);
-                        freeSlot = true;
-                        index--;
-                        if (index <= 2) break;
-                    }
-                }
-                if (index <= 2) freeSlot = true;
-                if (!freeSlot) doStorageCooldown = COOLDOWN;
             }
         }
+        if (!freeSlot)
+        {
+            IInventory inv = getStorageInventory();
+            if (inv != null) for (int i = 3; i < inventory.getSizeInventory(); i++)
+            {
+                stack = inventory.getStackInSlot(i);
+                // If it has full inventory, deposit all but the berry
+                // stack.
+                if (ItemStackTools.addItemStackToInventory(inventory.getStackInSlot(i), inv, 0))
+                {
+                    inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
+                    freeSlot = true;
+                }
+            }
+        }
+        doStorageCooldown = COOLDOWN;
+    }
+
+    private IInventory getBerryInventory()
+    {
+        TileEntity tile = inventoryLocation.getTileEntity(world);
+        if (tile instanceof IInventory)
+        {
+            IInventory inv = (IInventory) tile;
+            int size = Math.min(MAXSIZE, inv.getSizeInventory());
+            for (int i = 0; i < size; i++)
+            {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry) return inv;
+            }
+        }
+        for (EnumFacing side : EnumFacing.HORIZONTALS)
+        {
+            IInventory inv = getForSide(side);
+            if (inv != null)
+            {
+                int size = Math.min(MAXSIZE, inv.getSizeInventory());
+                for (int i = 0; i < size; i++)
+                {
+                    ItemStack stack = inv.getStackInSlot(i);
+                    if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry) return inv;
+                }
+            }
+        }
+        IInventory inv = getForSide(EnumFacing.UP);
+        if (inv != null)
+        {
+            int size = Math.min(MAXSIZE, inv.getSizeInventory());
+            for (int i = 0; i < size; i++)
+            {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry) return inv;
+            }
+        }
+        inv = getForSide(EnumFacing.DOWN);
+        if (inv != null)
+        {
+            int size = Math.min(MAXSIZE, inv.getSizeInventory());
+            for (int i = 0; i < size; i++)
+            {
+                ItemStack stack = inv.getStackInSlot(i);
+                if (CompatWrapper.isValid(stack) && stack.getItem() instanceof ItemBerry) return inv;
+            }
+        }
+        return null;
+    }
+
+    private IInventory getStorageInventory()
+    {
+        TileEntity tile = inventoryLocation.getTileEntity(world);
+        if (tile instanceof IInventory)
+        {
+            IInventory inv = (IInventory) tile;
+            if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
+        }
+        for (EnumFacing side : EnumFacing.HORIZONTALS)
+        {
+            IInventory inv = getForSide(side);
+            if (inv != null)
+            {
+                if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
+            }
+        }
+        IInventory inv = getForSide(EnumFacing.UP);
+        if (inv != null)
+        {
+            if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
+        }
+        inv = getForSide(EnumFacing.DOWN);
+        if (inv != null)
+        {
+            if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
+        }
+        return null;
+    }
+
+    private IInventory getForSide(EnumFacing side)
+    {
+        TileEntity tile = inventoryLocation.getTileEntity(world, side);
+        if (tile instanceof IInventory) return (IInventory) tile;
+        return null;
     }
 
     @Override
@@ -132,7 +220,7 @@ public class AIStoreStuff extends AIBase
     @Override
     public boolean shouldRun()
     {
-        return false;
+        return !tameCheck();
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.
@@ -141,6 +229,7 @@ public class AIStoreStuff extends AIBase
     private boolean tameCheck()
     {
         IPokemob pokemob = (IPokemob) entity;
-        return pokemob.getPokemonAIState(IMoveConstants.TAMED) && !pokemob.getPokemonAIState(IMoveConstants.STAYING);
+        return pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && !pokemob.getPokemonAIState(IMoveConstants.STAYING);
     }
 }

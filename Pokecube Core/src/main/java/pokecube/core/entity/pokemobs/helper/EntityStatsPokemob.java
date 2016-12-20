@@ -41,6 +41,7 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
+import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -52,6 +53,7 @@ import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
+import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 /** @author Manchou */
@@ -455,6 +457,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         if (shiny && !getPokedexEntry().hasShiny) shiny = false;
         return shiny;
     }
+
     /** This method gets called when the entity kills another one. */
     @Override
     public void onKillEntity(EntityLivingBase attacked)
@@ -859,6 +862,9 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
     {
         specificSpawnInit();
+        SpawnEvent.Post evt = new SpawnEvent.Post(getPokedexEntry(), Vector3.getNewVector().set(this), getEntityWorld(),
+                this);
+        MinecraftForge.EVENT_BUS.post(evt);
         return super.onInitialSpawn(difficulty, livingdata);
     }
 

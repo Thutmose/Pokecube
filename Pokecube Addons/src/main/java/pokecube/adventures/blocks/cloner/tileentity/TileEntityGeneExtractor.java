@@ -106,7 +106,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
             values.add(parent1.toString());
             values.add(parent2.toString());
         }
-        return values.toArray(new String[0]);
+        return new Object[] { values.toArray() };
     }
 
     @Callback
@@ -130,7 +130,7 @@ public class TileEntityGeneExtractor extends TileClonerBase implements SimpleCom
         }
         SelectorValue value = ClonerHelper.getSelectorValue(selector);
         values.add(value.toString());
-        return values.toArray(new String[0]);
+        return new Object[] { values.toArray() };
     }
 
     @Callback

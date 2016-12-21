@@ -222,7 +222,7 @@ public class PCEventsHandler
         if (evt.getEntityLiving() instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) evt.getEntity();
-            recallAllPokemobs(player);
+            EventsHandler.recallAllPokemobsExcluding(player, null);
         }
     }
 

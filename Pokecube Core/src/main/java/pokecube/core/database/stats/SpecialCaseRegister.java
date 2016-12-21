@@ -89,6 +89,5 @@ public class SpecialCaseRegister
     public static void register(String name, ISpecialSpawnCondition condition)
     {
         if (Database.entryExists(name)) ISpecialSpawnCondition.spawnMap.put(Database.getEntry(name), condition);
-
     }
 }

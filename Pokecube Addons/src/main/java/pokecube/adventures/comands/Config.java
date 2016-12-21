@@ -131,6 +131,8 @@ public class Config extends ConfigBase
     public boolean                     bagHoldAll           = false;
     @Configure(category = misc)
     public int                         bagPageCount         = 32;
+    @Configure(category = misc)
+    public boolean                     legendaryConditions  = true;
     @Configure(category = database)
     protected boolean                  forceDatabase        = true;
     @Configure(category = database)

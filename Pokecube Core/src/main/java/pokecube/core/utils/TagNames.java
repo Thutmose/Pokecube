@@ -32,6 +32,7 @@ public interface TagNames
     public static final String SCALE        = "scale";
     public static final String NEWMOVES     = "newMoves";
     public static final String NUMNEWMOVES  = "numberMoves";
+    public static final String MOVEINDEX    = "index";
     public static final String EXP          = "exp";
     public static final String SEXE         = "sexe";
     public static final String SEXETIME     = "loveTimer";

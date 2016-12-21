@@ -121,9 +121,13 @@ public class GuiPokedex extends GuiScreen
         {
             pokedexEntry = pokemob.getPokedexEntry();
         }
-        else if (pokedexEntry == null)
+        else
         {
-            pokedexEntry = Pokedex.getInstance().getFirstEntry();
+            if (item.hasTagCompound())
+            {
+                pokedexEntry = Database.getEntry(item.getTagCompound().getString("F"));
+            }
+            if (pokedexEntry == null) pokedexEntry = Pokedex.getInstance().getFirstEntry();
         }
         PacketPokedex packet = new PacketPokedex(PacketPokedex.REQUEST);
         packet.data.setBoolean("M", mode);
@@ -960,7 +964,7 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                PacketPokedex.sendChangePagePacket((byte) page, mode);
+                PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
                 if (page == 2)
                 {
                     nicknameTextField.setText("");
@@ -1012,7 +1016,7 @@ public class GuiPokedex extends GuiScreen
             if (entityPlayer.getHeldItemMainhand() != null
                     && entityPlayer.getHeldItemMainhand().getItem() == PokecubeItems.pokedex)
             {
-                PacketPokedex.sendChangePagePacket((byte) page, mode);
+                PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
             }
         }
         if (button == 13)
@@ -1022,7 +1026,7 @@ public class GuiPokedex extends GuiScreen
             packet.data.setBoolean("M", mode);
             packet.data.setString("F", pokedexEntry.getName());
             PokecubeMod.packetPipeline.sendToServer(packet);
-            PacketPokedex.sendChangePagePacket((byte) page, mode);
+            PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
         }
 
         if (page != 0)

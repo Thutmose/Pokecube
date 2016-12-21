@@ -72,11 +72,12 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         PokecubePacketHandler.sendToServer(packet);
     }
 
-    public static void sendChangePagePacket(byte page, boolean mode)
+    public static void sendChangePagePacket(byte page, boolean mode, PokedexEntry selected)
     {
         PacketPokedex packet = new PacketPokedex();
         packet.message = (byte) page;
         packet.data.setBoolean("M", mode);
+        packet.data.setString("F", selected.getName());
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -360,6 +361,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             player.getHeldItemMainhand().setTagCompound(new NBTTagCompound());
         }
         player.getHeldItemMainhand().getTagCompound().setBoolean("M", mode);
+        player.getHeldItemMainhand().getTagCompound().setString("F", message.data.getString("F"));
         player.getHeldItemMainhand().setItemDamage(message.message);
     }
 }

@@ -784,6 +784,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 if (moves.hasKey("" + i)) setMove(i, moves.getString("" + i));
             }
             getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
+            this.setMoveIndex(movesTag.getInteger(MOVEINDEX));
             this.getDataManager().set(LASTMOVE, movesTag.getString(LASTUSED));
             this.setAttackCooldown(movesTag.getInteger(COOLDOWN));
         }
@@ -1110,6 +1111,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (getMoveStats().moves[i] != null) movesList.setString("" + i, getMoveStats().moves[i]);
         }
         movesTag.setTag(MOVELIST, movesList);
+        movesTag.setInteger(MOVEINDEX, getMoveIndex());
         movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);
         movesTag.setString(LASTUSED, getDataManager().get(LASTMOVE));
         movesTag.setInteger(COOLDOWN, getAttackCooldown());

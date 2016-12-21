@@ -101,7 +101,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
             values.add(parent1.toString());
             values.add(parent2.toString());
         }
-        return values.toArray(new String[0]);
+        return new Object[] { values.toArray() };
     }
 
     @Callback
@@ -122,7 +122,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
             values.add(parent1.toString());
             values.add(parent2.toString());
         }
-        return values.toArray(new String[0]);
+        return new Object[] { values.toArray(new String[0]) };
     }
 
     @Callback
@@ -146,7 +146,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
         }
         SelectorValue value = ClonerHelper.getSelectorValue(selector);
         values.add(value.toString());
-        return values.toArray(new String[0]);
+        return new Object[] { values.toArray() };
     }
 
     @Callback

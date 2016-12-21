@@ -36,6 +36,7 @@ import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.bags.InventoryBag;
+import pokecube.adventures.legends.LegendaryConditions;
 import pokecube.adventures.network.PacketPokeAdv;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient.MessageHandlerClient;
@@ -124,6 +125,7 @@ public class PokecubeAdv
     public void postPostInit(PostPostInit e)
     {
         conf.postInit();
+        if (conf.legendaryConditions) new LegendaryConditions();
         RecipeHandler.register();
         DBLoader.load();
         int x = -3;

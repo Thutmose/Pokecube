@@ -849,21 +849,25 @@ public class GuiPokedex extends GuiScreen
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 1);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
+            PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
         }
         else if ((page != 2 || mode) && button == 2)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 1);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
+            PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
         }
         else if (page == 0 && button == 3)
         {
             pokedexEntry = Pokedex.getInstance().getNext(pokedexEntry, 10);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
+            PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
         }
         else if (page == 0 && button == 4)
         {
             pokedexEntry = Pokedex.getInstance().getPrevious(pokedexEntry, 10);
             pokemobTextField.setText(I18n.format(pokedexEntry.getUnlocalizedName()));
+            PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
         }
         else if (page == 4 && button == 3)
         {
@@ -1232,6 +1236,7 @@ public class GuiPokedex extends GuiScreen
                 if (entry != null)
                 {
                     pokedexEntry = entry;
+                    PacketPokedex.sendChangePagePacket((byte) page, mode, pokedexEntry);
                 }
                 else
                 {

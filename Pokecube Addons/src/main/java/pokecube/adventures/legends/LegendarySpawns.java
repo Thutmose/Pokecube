@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.stats.ISpecialCaptureCondition;
 import pokecube.core.database.stats.ISpecialSpawnCondition;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -42,12 +43,14 @@ public class LegendarySpawns
         if (block == Blocks.DIAMOND_BLOCK && entry != null)
         {
             ISpecialSpawnCondition condition = ISpecialSpawnCondition.spawnMap.get(entry);
+            ISpecialCaptureCondition condition2 = ISpecialCaptureCondition.captureMap.get(entry);
             if (condition != null)
             {
                 Vector3 location = Vector3.getNewVector().set(pos);
                 if (condition.canSpawn(playerIn, location))
                 {
                     EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(entry, worldIn);
+                    if (condition2 != null && !condition2.canCapture(playerIn, (IPokemob) entity)) return;
                     entity.setHealth(entity.getMaxHealth());
                     location.add(0, 1, 0).moveEntity(entity);
                     condition.onSpawn((IPokemob) entity);

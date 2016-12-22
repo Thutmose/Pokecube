@@ -206,6 +206,7 @@ public class ClonerHelper
         setGenes(destination, eggs);
     }
 
+    // TODO see why this is not working as intended...
     public static void spliceGenes(IMobGenetics genesIn, ItemStack destination, IGeneSelector selector)
     {
         IMobGenetics eggs = getGenes(destination);

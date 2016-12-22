@@ -75,13 +75,13 @@ public class RecipeSplice implements IPoweredRecipe
         {
             dna = CompatWrapper.nullStack;
         }
-        if (ClonerHelper.getGenes(dna) == null)
+        if (ClonerHelper.getGenes(egg) == null)
         {
             egg = CompatWrapper.nullStack;
         }
         if (ClonerHelper.getGeneSelectors(selector).isEmpty()) selector = CompatWrapper.nullStack;
 
-        if (CompatWrapper.isValid(selector) && CompatWrapper.isValid(dna) && CompatWrapper.isValid(egg))
+        if (CompatWrapper.isValid(dna) && CompatWrapper.isValid(egg))
         {
             PokedexEntry entry = ClonerHelper.getFromGenes(dna);
             if (entry == null) entry = ClonerHelper.getFromGenes(egg);

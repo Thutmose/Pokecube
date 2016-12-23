@@ -162,7 +162,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
             values.add(args.checkString(i));
         }
         if (values.isEmpty()) throw new Exception("You need to specify some genes");
-        RecipeExtract fixed = new RecipeExtract(true);
+        RecipeSplice fixed = new RecipeSplice(true);
         ItemStack newSelector = new ItemStack(Items.WRITTEN_BOOK);
         newSelector.setTagCompound(new NBTTagCompound());
         NBTTagList pages = new NBTTagList();

@@ -77,14 +77,8 @@ public class AIIdle extends AIBase
     private void doGroundIdle()
     {
         v.set(xPosition, yPosition, zPosition);
-        for (int i = 0; i > -yPosition; i--)
-        {
-            if (!v.addTo(0, i, 0).isAir(world))
-            {
-                break;
-            }
-        }
-        yPosition = v.y;
+        v.set(Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y));
+        if (v != null) yPosition = v.y;
     }
 
     public void doStationaryIdle()

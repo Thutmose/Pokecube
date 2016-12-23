@@ -22,7 +22,6 @@ import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
-import pokecube.adventures.blocks.cloner.recipe.RecipeExtract;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSplice;

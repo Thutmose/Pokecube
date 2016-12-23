@@ -53,7 +53,6 @@ public class AIStoreStuff extends AIBase
     public AIStoreStuff(EntityLiving entity)
     {
         this.entity = entity;
-        this.setMutex(2);
     }
 
     @Override
@@ -220,7 +219,7 @@ public class AIStoreStuff extends AIBase
     @Override
     public boolean shouldRun()
     {
-        return !tameCheck();
+        return false;
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.
@@ -229,7 +228,7 @@ public class AIStoreStuff extends AIBase
     private boolean tameCheck()
     {
         IPokemob pokemob = (IPokemob) entity;
-        return pokemob.getHome() == null || pokemob.getPokemonAIState(IMoveConstants.TAMED)
-                && !pokemob.getPokemonAIState(IMoveConstants.STAYING);
+        return pokemob.getHome() == null || (pokemob.getPokemonAIState(IMoveConstants.TAMED)
+                && !pokemob.getPokemonAIState(IMoveConstants.STAYING));
     }
 }

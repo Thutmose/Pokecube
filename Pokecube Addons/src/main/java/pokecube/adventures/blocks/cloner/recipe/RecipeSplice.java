@@ -75,7 +75,7 @@ public class RecipeSplice implements IPoweredRecipe
         {
             dna = CompatWrapper.nullStack;
         }
-        if (ClonerHelper.getGenes(dna) == null)
+        if (ClonerHelper.getGenes(egg) == null)
         {
             egg = CompatWrapper.nullStack;
         }

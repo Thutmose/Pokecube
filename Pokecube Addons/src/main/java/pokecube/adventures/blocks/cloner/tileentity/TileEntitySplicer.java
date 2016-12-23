@@ -22,7 +22,6 @@ import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.crafting.PoweredProcess;
 import pokecube.adventures.blocks.cloner.recipe.IPoweredRecipe;
-import pokecube.adventures.blocks.cloner.recipe.RecipeExtract;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSplice;
@@ -162,7 +161,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
             values.add(args.checkString(i));
         }
         if (values.isEmpty()) throw new Exception("You need to specify some genes");
-        RecipeExtract fixed = new RecipeExtract(true);
+        RecipeSplice fixed = new RecipeSplice(true);
         ItemStack newSelector = new ItemStack(Items.WRITTEN_BOOK);
         newSelector.setTagCompound(new NBTTagCompound());
         NBTTagList pages = new NBTTagList();

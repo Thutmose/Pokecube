@@ -1172,7 +1172,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             this.getEntityData().setString("lastMoveHitBy", "");
         }
-        if (entity != getAttackTarget() && getAbility() != null)
+        if (entity != getAttackTarget() && getAbility() != null && !worldObj.isRemote)
         {
             getAbility().onAgress(this, entity);
         }

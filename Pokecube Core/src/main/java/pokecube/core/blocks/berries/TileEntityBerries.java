@@ -61,7 +61,11 @@ public class TileEntityBerries extends TileEntity implements ITickable
         if (new Random().nextInt(PokecubeMod.core.getConfig().leafBerryTicks) == 0
                 && worldObj.getLightFromNeighbors(pos.down()) >= 9)
         {
-            if (worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj.getBlockState(pos.down()), worldObj,
+            if (worldObj.getBlockState(pos).getBlock().isAir(worldObj.getBlockState(pos), worldObj, pos))
+            {
+                worldObj.setBlockToAir(pos);
+            }
+            else if (worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj.getBlockState(pos.down()), worldObj,
                     pos.down()))
             {
                 placeBerry();

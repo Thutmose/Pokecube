@@ -102,6 +102,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
+        if (tile == null) { return state.withProperty(BerryManager.type, "cheri"); }
         String name = BerryManager.berryNames.get(tile.getBerryId());
         if (name == null) name = "cheri";
         return state.withProperty(BerryManager.type, name);

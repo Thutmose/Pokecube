@@ -95,9 +95,9 @@ public class MoveQueue
         });
         for (EntityMoveUse move : moves)
         {
-            if (move.getUser() == null) continue;
-            boolean toUse = !move.getUser().isDead;
-            if (toUse && move.getUser() instanceof EntityLivingBase)
+            if (move.getUser() == null || !move.getUser().isDead) continue;
+            boolean toUse = true;
+            if (move.getUser() instanceof EntityLivingBase)
             {
                 toUse = ((EntityLivingBase) move.getUser()).getHealth() >= 1;
             }

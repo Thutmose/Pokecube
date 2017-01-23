@@ -1,6 +1,7 @@
 package pokecube.core.moves.animations;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -151,7 +152,16 @@ public class EntityMoveUse extends Entity
         }
         Move_Base attack = getMove();
         Entity user;
-        if ((user = getUser()) == null || this.isDead || user.isDead) return;
+        if ((user = getUser()) == null || this.isDead || user.isDead || !user.addedToChunk)
+        {
+            this.setDead();
+            return;
+        }
+        if (user instanceof EntityLivingBase && ((EntityLivingBase) user).getHealth() <= 1)
+        {
+            this.setDead();
+            return;
+        }
         if (worldObj.isRemote && attack.getAnimation((IPokemob) user) != null)
             attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
 

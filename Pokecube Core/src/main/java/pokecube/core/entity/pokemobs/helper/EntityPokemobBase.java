@@ -373,7 +373,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             mainBox.boxMax().z = y;
             mainBox.boxMax().y = z;
             offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
-            mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+            double ar = mainBox.boxMax().x / mainBox.boxMax().z;
+            if (ar > 2 || ar < 0.5) mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
             mainBox.addOffsetTo(offset).addOffsetTo(vec);
             AxisAlignedBB box = mainBox.getBoundingBox();
             AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
@@ -395,71 +396,37 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public boolean fits(IBlockAccess world, Vector3 location, @Nullable Vector3 directionFrom)
     {
         Vector3 diffs = Vector3.getNewVector();
-        // if (getParts() != null)
-        // {
-        // Matrix3 box = new Matrix3();
-        // box.set(getEntityBoundingBox());
-        // float diff = (float) Math.max(width, Math.max(height, length));
-        // AxisAlignedBB aabb = getEntityBoundingBox().expandXyz(diff);
-        // List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb,
-        // worldObj, world);
-        // Matrix3.expandAABBs(aabbs, getEntityBoundingBox());
-        // Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
-        // diffs.set(box.doTileCollision(world, aabbs, this, Vector3.empty,
-        // diffs, false));
-        // for (EntityPokemobPart e : partsArray)
-        // {
-        // Vector3 v = Vector3.getNewVector().set(e.offset.x, e.offset.y,
-        // e.offset.z);
-        // v.scalarMultBy(getSize());
-        // Vector3 v0 = v.copy();
-        // float sin = MathHelper.sin((float) (this.rotationYaw *
-        // 0.017453292F));
-        // float cos = MathHelper.cos((float) (this.rotationYaw *
-        // 0.017453292F));
-        // v.x = v0.x * cos - v0.z * sin;
-        // v.z = v0.x * sin + v0.z * cos;
-        // e.motionX = motionX;
-        // e.motionY = motionY;
-        // e.motionZ = motionZ;
-        // e.setPosition(posX + v.x, posY + v.y, posZ + v.z);
-        // box.set(e.defaultBox.offset(e.posX, e.posY, e.posZ));
-        // diffs.set(box.doTileCollision(world, aabbs, e, Vector3.empty, diffs,
-        // false));
-        // }
-        // }
-        // else
+        mainBox.boxMin().clear();
+        mainBox.boxMax().x = getPokedexEntry().width * getSize();
+        mainBox.boxMax().z = getPokedexEntry().length * getSize();
+        mainBox.boxMax().y = getPokedexEntry().height * getSize();
+        float diff = (float) Math.max(mainBox.boxMax().y, Math.max(mainBox.boxMax().x, mainBox.boxMax().z));
+        offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
+        double ar = mainBox.boxMax().x / mainBox.boxMax().z;
+        if (ar > 2 || ar < 0.5) mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+        mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+        Vector3 pos = offset.add(location);
+        AxisAlignedBB aabb = mainBox.addOffsetTo(pos).getBoundingBox();
+        if (aabb.maxX - aabb.minX > 3)
         {
-            mainBox.boxMin().clear();
-            mainBox.boxMax().x = getPokedexEntry().width * getSize();
-            mainBox.boxMax().z = getPokedexEntry().length * getSize();
-            mainBox.boxMax().y = getPokedexEntry().height * getSize();
-            float diff = (float) Math.max(mainBox.boxMax().y, Math.max(mainBox.boxMax().x, mainBox.boxMax().z));
-            offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
-            mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
-            Vector3 pos = offset.add(here);
-            AxisAlignedBB aabb = mainBox.getBoundingBox();
-            if (aabb.maxX - aabb.minX > 3)
-            {
-                double meanX = aabb.minX + (aabb.maxX - aabb.minX) / 2;
-                aabb = new AxisAlignedBB(meanX - 3, aabb.minY, aabb.minZ, meanX + 3, aabb.maxY, aabb.maxZ);
-            }
-            if (aabb.maxZ - aabb.minZ > 3)
-            {
-                double meanZ = aabb.minZ + (aabb.maxZ - aabb.minZ) / 2;
-                aabb = new AxisAlignedBB(aabb.minX, aabb.minY, meanZ - 3, aabb.maxX, aabb.maxY, meanZ + 3);
-            }
-            if (aabb.maxY - aabb.minY > 3)
-            {
-                aabb = aabb.setMaxY(aabb.minY + 3);
-            }
-            aabb = aabb.expandXyz(Math.min(3, diff));
-            List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, worldObj, world);
-            Matrix3.expandAABBs(aabbs, aabb);
-            if (aabb.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
-            diffs.set(mainBox.doTileCollision(world, aabbs, this, pos, diffs, false));
+            double meanX = aabb.minX + (aabb.maxX - aabb.minX) / 2;
+            aabb = new AxisAlignedBB(meanX - 3, aabb.minY, aabb.minZ, meanX + 3, aabb.maxY, aabb.maxZ);
         }
-        return diffs.isEmpty();
+        if (aabb.maxZ - aabb.minZ > 3)
+        {
+            double meanZ = aabb.minZ + (aabb.maxZ - aabb.minZ) / 2;
+            aabb = new AxisAlignedBB(aabb.minX, aabb.minY, meanZ - 3, aabb.maxX, aabb.maxY, meanZ + 3);
+        }
+        if (aabb.maxY - aabb.minY > 3)
+        {
+            aabb = aabb.setMaxY(aabb.minY + 3);
+        }
+        aabb = aabb.expandXyz(Math.min(3, diff));
+        List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, worldObj, world);
+        Matrix3.expandAABBs(aabbs, aabb);
+        if (aabb.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
+        boolean collides = mainBox.doTileCollision(world, aabbs, Vector3.empty, this, diffs);
+        return !collides;
     }
 
     /** Tries to moves the entity by the passed in displacement. Args: x, y,
@@ -487,7 +454,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             {
                 Matrix3 box = new Matrix3();
                 box.set(getEntityBoundingBox());
-                aabbs = getTileCollsionBoxes();
+                getTileCollsionBoxes();
                 diffs.set(box.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
                 for (EntityPokemobPart e : partsArray)
                 {
@@ -516,10 +483,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 mainBox.boxMax().z = getPokedexEntry().length * getSize();
                 mainBox.boxMax().y = getPokedexEntry().height * getSize();
                 offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
-                mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+                double ar = mainBox.boxMax().x / mainBox.boxMax().z;
+                if (ar > 2 || ar < 0.5) mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
                 mainBox.addOffsetTo(offset).addOffsetTo(here);
                 this.setEntityBoundingBox(mainBox.getBoundingBox());
-                aabbs = getTileCollsionBoxes();
+                getTileCollsionBoxes();
                 diffs.set(mainBox.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
                 x = diffs.x;
                 y = diffs.y;

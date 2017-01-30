@@ -286,7 +286,40 @@ public class PokeNavigator extends PathNavigate
     @Override
     public void pathFollow()
     {
-        super.pathFollow();
+        Vec3d vec3d = this.getEntityPosition();
+        int i = this.currentPath.getCurrentPathLength();
+
+        for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
+        {
+            if ((double)this.currentPath.getPathPointFromIndex(j).yCoord != Math.floor(vec3d.yCoord))
+            {
+                i = j;
+                break;
+            }
+        }
+
+        this.maxDistanceToWaypoint = this.theEntity.width > 0.75F ? this.theEntity.width / 2.0F : 1f;
+        Vec3d vec3d1 = this.currentPath.getCurrentPos();
+
+        if (MathHelper.abs((float)(this.theEntity.posX - (vec3d1.xCoord + 0.5D))) < this.maxDistanceToWaypoint && MathHelper.abs((float)(this.theEntity.posZ - (vec3d1.zCoord + 0.5D))) < this.maxDistanceToWaypoint && Math.abs(this.theEntity.posY - vec3d1.yCoord) < 0.75D)
+        {
+            this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
+        }
+
+        int k = MathHelper.ceiling_float_int(this.theEntity.width);
+        int l = MathHelper.ceiling_float_int(this.theEntity.height);
+        int i1 = k;
+
+        for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
+        {
+            if (this.isDirectPathBetweenPoints(vec3d, this.currentPath.getVectorFromIndex(this.theEntity, j1), k, l, i1))
+            {
+                this.currentPath.setCurrentPathIndex(j1);
+                break;
+            }
+        }
+
+        this.checkForStuck(vec3d);
     }
 
     public void refreshCache()

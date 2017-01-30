@@ -224,7 +224,8 @@ public class PokecubeItems extends Items
     public static void addToEvos(String item)
     {
         ItemStack stack = getStack(item);
-        evoItems.add(stack);
+        addToHoldables(item);
+        if (CompatWrapper.isValid(stack)) evoItems.add(stack);
     }
 
     public static void addToHoldables(String item)
@@ -232,7 +233,7 @@ public class PokecubeItems extends Items
         ItemStack stack = getStack(item);
         if (!CompatWrapper.isValid(stack))
             System.out.println(new NullPointerException("Cannot add null stack to holdables " + item));
-        heldItems.add(stack);
+        else heldItems.add(stack);
     }
 
     public static boolean contains(String name)

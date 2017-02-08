@@ -5,18 +5,18 @@ import java.io.File;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.PostPostInit;
 import pokecube.mobs.PokecubeMobs;
 import pokecube.origin.models.ModelPichu;
 import pokecube.origin.models.ModelPikachu;
-import pokecube.origin.models.ModelRaichu;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
@@ -31,27 +31,29 @@ public class PokecubeOrigin
     public void preInit(FMLPreInitializationEvent e)
     {
         config = new Config(PokecubeCore.core.getPokecubeConfig(e).getConfigFile());
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SideOnly(Side.CLIENT)
-    @EventHandler
-    private void postInit(FMLPostInitializationEvent evt)
+    @SubscribeEvent
+    public void postInit(PostPostInit evt)
     {
+        MinecraftForge.EVENT_BUS.unregister(this);
         if (!config.active) return;
         PokedexEntry pichu = Database.getEntry("pichu");
         PokedexEntry pikachu = Database.getEntry("pikachu");
-        PokedexEntry raichu = Database.getEntry("raichu");
-        if (pichu == null || pikachu == null || raichu == null) return;
-
+        // PokedexEntry raichu = Database.getEntry("raichu");
+        if (pichu == null || pikachu == null) return;
         pichu.setModId(MODID);
         pikachu.setModId(MODID);
-        raichu.setModId(MODID);
+        // raichu.setModId(MODID);
         pichu.texturePath = "textures/entity/";
         pikachu.texturePath = "textures/entity/";
-        raichu.texturePath = "textures/entity/";
+        // raichu.texturePath = "textures/entity/";
         RenderPokemobs.addModel(pichu.getName() + "" + pichu.getModId(), new ModelPichu());
         RenderPokemobs.addModel(pikachu.getName() + "" + pikachu.getModId(), new ModelPikachu());
-        RenderPokemobs.addModel(raichu.getName() + "" + raichu.getModId(), new ModelRaichu());
+        // RenderPokemobs.addModel(raichu.getName() + "" + raichu.getModId(),
+        // new ModelRaichu());
     }
 
     public static class Config extends ConfigBase

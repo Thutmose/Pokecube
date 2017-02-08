@@ -841,9 +841,10 @@
             <Drop r="1" id="minecraft:rabbit_hide" n="1"/>
             <BASESTATS spdef="85" spatk="95" def="50" spd="110" hp="60" atk="85"/>
             <SIZES length="0.7" width="0.7" height="0.7"/>
-            <TYPE type2="Fairy" type1="Electric"/>
+            <TYPE type2="Psychic" type1="Electric"/>
             <ABILITY normal="Surge Surfer"/>
             <MASSKG>21.0</MASSKG>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="psychic,speedswap,thundershock,tailwhip,quickattack,thunderbolt"/>

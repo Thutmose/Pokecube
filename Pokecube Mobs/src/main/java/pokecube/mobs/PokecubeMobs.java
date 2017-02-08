@@ -87,6 +87,7 @@ public class PokecubeMobs implements IMobProvider
         HeldItemHandler.megaVariants.add("cameruptmega");
         HeldItemHandler.megaVariants.add("charizardmega-y");
         HeldItemHandler.megaVariants.add("charizardmega-x");
+        HeldItemHandler.megaVariants.add("dianciemega");
         HeldItemHandler.megaVariants.add("gallademega");
         HeldItemHandler.megaVariants.add("garchompmega");
         HeldItemHandler.megaVariants.add("gardevoirmega");

@@ -777,9 +777,9 @@
     </Pokemon>
     <Pokemon name="Pikachu" number="25" base="true">
         <STATS>
-            <EVOLUTIONMODE>Ithunderstone</EVOLUTIONMODE>
+            <EVOLUTIONMODE>BTbeach:Ithunderstone Ithunderstone</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <EVOLVESTO>26</EVOLVESTO>
+            <EVOLVESTO>raichualola raichu</EVOLVESTO>
             <SPECIES>Rodent Leporidae</SPECIES>
             <Drop r="1" id="minecraft:rabbit" n="1"/>
             <Drop r="1" id="minecraft:redstone" n="2"/>

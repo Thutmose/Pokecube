@@ -11362,6 +11362,7 @@
             <ABILITY normal="Primordial Sea"/>
             <MASSKG>430.0</MASSKG>
             <CAPTURERATE>5</CAPTURERATE>
+            <LOGIC dive="TRUE" shoulder="FALSE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
         </STATS>
     </Pokemon>

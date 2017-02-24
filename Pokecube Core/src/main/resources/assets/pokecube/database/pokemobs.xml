@@ -7013,7 +7013,7 @@
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
-            <LOGIC shoulder="FALSE"/>
+            <LOGIC dive="TRUE" shoulder="FALSE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
         </STATS>
         <MOVES>

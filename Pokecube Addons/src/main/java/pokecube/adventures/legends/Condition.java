@@ -89,9 +89,7 @@ public abstract class Condition implements ISpecialCaptureCondition, ISpecialSpa
             boolean here = Tools.countPokemon(location, trainer.getEntityWorld(), 32, getEntry()) > 0;
             return !here;
         }
-        String message = "msg.nohere.txt";
-        trainer.addChatMessage(
-                new TextComponentTranslation(message, new TextComponentTranslation(getEntry().getUnlocalizedName())));
+        sendNoHere(trainer);
         return false;
     }
 

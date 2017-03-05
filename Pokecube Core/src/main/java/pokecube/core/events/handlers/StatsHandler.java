@@ -27,6 +27,7 @@ public class StatsHandler
     {
         int num = evt.caught.getPokedexNb();
         if (evt.caught.getPokemonAIState(IMoveConstants.TAMED)) evt.setResult(Result.DENY);
+        if (evt.caught.getPokemonAIState(IMoveConstants.DENYCAPTURE)) evt.setResult(Result.DENY);
 
         long lastAttempt = ((Entity) evt.caught).getEntityData().getLong("lastCubeTime");
         if (lastAttempt > evt.pokecube.getEntityWorld().getTotalWorldTime())

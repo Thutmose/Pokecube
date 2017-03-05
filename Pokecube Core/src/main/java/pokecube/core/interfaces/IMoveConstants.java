@@ -157,5 +157,7 @@ public interface IMoveConstants extends IMoveNames
     static final int MEGAFORME            = 1 << 27;
     /** has the pokemob used a zmove this "battle" */
     static final int USEDZMOVE            = 1 << 28;
+    /** should capture be denied for this pokemob. */
+    static final int DENYCAPTURE          = 1 << 29;
 
 }

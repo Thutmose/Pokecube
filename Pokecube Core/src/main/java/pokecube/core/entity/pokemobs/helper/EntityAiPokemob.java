@@ -73,6 +73,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -1036,7 +1037,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
 
         // Open Pokedex Gui
-        if (CompatWrapper.isValid(held) && held.getItem() == PokecubeItems.pokedex)
+        if (CompatWrapper.isValid(held) && held.getItem() instanceof ItemPokedex)
         {
             if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {

@@ -692,7 +692,7 @@ public class PokedexEntry
     protected String                            baseName;
     /** base xp given from defeating */
     @CopyToGender
-    protected int                               baseXP;
+    protected int                               baseXP           = -1;
     @CopyToGender
     public boolean                              breeds           = true;
     @CopyToGender
@@ -1127,6 +1127,7 @@ public class PokedexEntry
     /** @return the baseXP */
     public int getBaseXP()
     {
+        if (baseXP == -1) baseXP = getBaseForme() != null && getBaseForme() != this ? getBaseForme().getBaseXP() : 0;
         return baseXP;
     }
 

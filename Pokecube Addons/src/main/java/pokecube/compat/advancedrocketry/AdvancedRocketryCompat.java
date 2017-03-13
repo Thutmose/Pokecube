@@ -160,7 +160,7 @@ public class AdvancedRocketryCompat
     @SubscribeEvent
     public void postpost(PostPostInit event)
     {
-        Set<String> mobs = Sets.newHashSet();
+        Set<String> mobs = Sets.newHashSet();// TODO make this load from a file.
         mobs.add("clefairy");
         mobs.add("clefable");
         mobs.add("lunatone");

@@ -254,9 +254,14 @@ public class AIFindTarget extends AIBase implements IAICombat
                 return false;
             }
         }
+        boolean wildAgress = !tame && entity.getRNG().nextInt(200) == 0;
+        if (!tame && !wildAgress && entity.ticksExisted % 20 == 0)
+        {
+            wildAgress = entity.getEntityData().getBoolean("alwaysAgress");
+        }
         // If wild, randomly decided to agro a nearby player instead.
         // TODO make this configurable somehow based on specifics
-        if (ret && !tame && entity.getRNG().nextInt(200) == 0)
+        if (ret && wildAgress)
         {
             EntityPlayer player = getClosestVulnerablePlayerToEntity(entity,
                     PokecubeMod.core.getConfig().mobAggroRadius);

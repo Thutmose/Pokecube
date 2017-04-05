@@ -73,7 +73,18 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     private ItemStack           pokecube       = CompatWrapper.nullStack;
     private int                 despawntimer   = 0;
 
-    private float               scale;
+    @Deprecated
+    private float               scale;                                   // TODO
+                                                                         // replace
+                                                                         // this
+                                                                         // with
+                                                                         // a
+                                                                         // quick
+                                                                         // way
+                                                                         // to
+                                                                         // get
+                                                                         // epigentic
+                                                                         // size.
 
     private int[]               flavourAmounts = new int[5];
     private EntityPokemobPart[] partsArray;
@@ -985,7 +996,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (a < 0.01 || b < 0.01 || c < 0.01)
             {
                 float min = 0.01f / Math.min(a, Math.min(c, b));
-                scale *= min;
+                scale *= min / PokecubeMod.core.getConfig().scalefactor;
                 a = entry.width * getSize();
                 b = entry.height * getSize();
                 c = entry.length * getSize();
@@ -1106,7 +1117,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         visualsTag.setBoolean(SHINY, isShiny());
         visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
-        visualsTag.setFloat(SCALE, (float) (getSize() / PokecubeMod.core.getConfig().scalefactor));
+        visualsTag.setFloat(SCALE, (float) (scale));// TODO replace this with a
+                                                    // quick way to get
+                                                    // epigentic size.
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);
         if (getPokecube() != CompatWrapper.nullStack)
         {

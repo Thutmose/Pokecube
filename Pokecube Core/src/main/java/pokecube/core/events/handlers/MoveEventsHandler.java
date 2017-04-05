@@ -101,6 +101,7 @@ public class MoveEventsHandler
                     if (f > 0) hunger *= f;
                     ((IHungrymob) attacker).setHungerTime(((IHungrymob) attacker).getHungerTime() + hunger);
                     item.setEntityItemStack(newstack);
+                    item.lifespan += 6000;
                     smelt = true;
                 }
             }

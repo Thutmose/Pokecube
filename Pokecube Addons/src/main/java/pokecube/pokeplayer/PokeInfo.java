@@ -74,7 +74,7 @@ public class PokeInfo extends PlayerData
     public void setPlayer(EntityPlayer player)
     {
         if (pokemob == null) return;
-        pokemob.setSize(pokemob.getSize());
+        pokemob.setSize((float) (pokemob.getSize()/PokecubeMod.core.getConfig().scalefactor));
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();

@@ -92,7 +92,7 @@ public class Config extends ConfigBase
     public String                        defaultMobs                  = "";
     @Configure(category = misc, needsMcRestart = true)
     protected boolean                    tableRecipe                  = true;
-    @Configure(category = misc)
+    @Configure(category = misc)//TODO sync this to clients on servers.
     public double                        scalefactor                  = 1;
     @Configure(category = misc)
     public double                        contactAttackDistance        = 0;

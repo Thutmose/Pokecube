@@ -672,7 +672,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
         {
             ret = megaEvolve(newEntry);
         }
-        if (worldObj != null) ret.setSize(ret.getSize());
+        if (worldObj != null) ret.setSize((float) (ret.getSize()/PokecubeMod.core.getConfig().scalefactor));
         if (worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
             PacketChangeForme.sendPacketToNear((Entity) ret, newEntry, 128);

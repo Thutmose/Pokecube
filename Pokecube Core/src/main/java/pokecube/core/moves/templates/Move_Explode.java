@@ -124,7 +124,10 @@ public class Move_Explode extends Move_Basic
             if (!evt.isCanceled())
             {
                 mob.setHealth(0);// kill the mob.
-                if (PokecubeMod.core.getConfig().explosions) ((ExplosionCustom) boom).doExplosion();
+                if (PokecubeMod.core.getConfig().explosions)
+                {
+                    ((ExplosionCustom) boom).doExplosion();
+                }
                 else
                 {
                     mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,

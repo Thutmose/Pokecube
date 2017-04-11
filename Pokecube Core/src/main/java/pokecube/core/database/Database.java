@@ -367,9 +367,9 @@ public class Database
         return entryExists(nb) ? getEntry(nb).getMoves() : null;
     }
 
-    public static List<String> getLevelUpMoves(int nb, int level, int oldLevel)
+    public static List<String> getLevelUpMoves(PokedexEntry entry, int level, int oldLevel)
     {
-        return entryExists(nb) ? getEntry(nb).getMovesForLevel(level, oldLevel) : null;
+        return entry != null ? entry.getMovesForLevel(level, oldLevel) : null;
     }
 
     public static SpawnData getSpawnData(int nb)

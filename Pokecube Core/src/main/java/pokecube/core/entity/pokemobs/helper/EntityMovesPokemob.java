@@ -450,7 +450,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public IPokemob levelUp(int level)
     {
-        List<String> moves = Database.getLevelUpMoves(this.getPokedexNb(), level, oldLevel);
+        List<String> moves = Database.getLevelUpMoves(this.getPokedexEntry(), level, oldLevel);
         Collections.shuffle(moves);
         if (!worldObj.isRemote)
         {

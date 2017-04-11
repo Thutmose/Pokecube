@@ -265,7 +265,7 @@ public class GeneticsManager
                 String[] moves = gene.getValue();
                 for (int i = 0; i < moves.length; i++)
                 {
-                    pokemob.setMove(i, moves[i]);
+                    if (moves[i] != null) pokemob.learn(moves[i]);
                 }
                 continue;
             }

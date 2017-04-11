@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.helper.MessageState;
@@ -25,6 +26,7 @@ public class AITrainerBattle extends EntityAIBase
     World               world;
     // The trainer Entity
     final EntityTrainer trainer;
+    int                 noSeeTicks = 0;
 
     public AITrainerBattle(EntityTrainer trainer)
     {
@@ -69,9 +71,10 @@ public class AITrainerBattle extends EntityAIBase
         // If target is no longer visbile, forget about it and reset.
         if (!Vector3.isVisibleEntityFromEntity(trainer, trainer.getTarget()))
         {
-            trainer.resetPokemob();
+            if (noSeeTicks++ > PokecubeAdv.conf.trainerDeAgressTicks) trainer.resetPokemob();
             return;
         }
+        noSeeTicks = 0;
         // Check if maybe mob was sent out, but just not seen
         List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(trainer);
         if (!pokemobs.isEmpty())

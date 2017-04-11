@@ -13,7 +13,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
@@ -66,8 +68,7 @@ public class Pokecube extends Item implements IPokecube
 
         if (flag5)
         {
-            // list.add(I18n.translateToLocal(ItemDye.field_150921_b[nbt.getInteger("dye")]));//TODO
-            // dye names in pokeseals
+             list.add(I18n.format(EnumDyeColor.byDyeDamage(nbt.getInteger("dye")).getUnlocalizedName()));//TODO
         }
     }
 

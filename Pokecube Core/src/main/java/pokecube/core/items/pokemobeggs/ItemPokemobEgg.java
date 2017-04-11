@@ -43,11 +43,8 @@ import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
-import thut.api.entity.IMobColourable;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
@@ -166,80 +163,26 @@ public class ItemPokemobEgg extends Item
 
     public static void initPokemobGenetics(IPokemob mob, NBTTagCompound nbt)
     {
-        boolean oldType = false;
-        old:
-        if (!oldType)
-        {// TODO
-            if (!nbt.hasKey(GeneticsManager.GENES)) break old;
+        mob.setForSpawn(10);
+        if (nbt.hasKey(GeneticsManager.GENES))
+        {
             NBTBase genes = nbt.getTag(GeneticsManager.GENES);
             IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
             IMobGenetics.GENETICS_CAP.getStorage().readNBT(IMobGenetics.GENETICS_CAP, eggs, null, genes);
             GeneticsManager.initFromGenes(eggs, mob);
         }
-        else
+        EntityLivingBase owner = getOwner(mob);
+        if (owner != null)
         {
-            boolean fixedShiny = nbt.getBoolean("shiny");
-            String moveString = nbt.getString("moves");
-            String[] moves = moveString.split(";");
-            long ivs = nbt.getLong("ivs");
-
-            mob.setShiny(fixedShiny);
-            if (!nbt.hasKey("ivs"))
-            {
-
-            }
-            else
-            {
-                if (moves.length > 0)
-                {
-                    for (int i = 1; i < Math.max(moves.length + 1, 5); i++)
-                    {
-                        mob.setMove(4 - i, null);
-                    }
-                }
-                // IsDead is set to prevent it notifiying owner of move
-                // learning.
-                ((Entity) mob).isDead = true;
-                for (String s : moves)
-                {
-                    if (s != null && !s.isEmpty()) mob.learn(s);
-                }
-                ((Entity) mob).isDead = false;
-                byte[] rgba = new byte[4];
-                if (nbt.hasKey("colour", 7))
-                {
-                    rgba = nbt.getByteArray("colour");
-                    if (rgba.length == 4)
-                    {
-                        ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128, rgba[3] + 128);
-                    }
-                    else if (rgba.length == 3)
-                    {
-                        ((IMobColourable) mob).setRGBA(rgba[0] + 128, rgba[1] + 128, rgba[2] + 128);
-                    }
-                }
-                mob.setIVs(PokecubeSerializer.longAsByteArray(ivs));
-                mob.setNature(Nature.values()[nbt.getByte("nature")]);
-                mob.setSize(nbt.getFloat("size"));
-                if (nbt.hasKey("abilityIndex"))
-                {
-                    int index = nbt.getInteger("abilityIndex");
-                    if (index < 2)
-                    {
-                        mob.setAbilityIndex(index);
-                    }
-                    else
-                    {
-                        mob.setToHiddenAbility();
-                    }
-                }
-            }
-
-            if (nbt.hasKey("gender"))
-            {
-                mob.setSexe(nbt.getByte("gender"));
-            }
+            mob.setPokemonOwner(owner);
+            mob.setPokemonAIState(IMoveConstants.TAMED, true);
+            mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+            mob.setHeldItem(CompatWrapper.nullStack);
         }
+    }
+
+    public static EntityLivingBase getOwner(IPokemob mob)
+    {
         Vector3 location = Vector3.getNewVector().set(mob);
         EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
                 PLAYERDIST, false);
@@ -286,14 +229,7 @@ public class ItemPokemobEgg extends Item
                 player = (EntityPlayer) pokemob.getPokemonOwner();
             owner = player;
         }
-
-        if (owner != null)
-        {
-            mob.setPokemonOwner(owner);
-            mob.setPokemonAIState(IMoveConstants.TAMED, true);
-            mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
-            mob.setHeldItem(CompatWrapper.nullStack);
-        }
+        return owner;
     }
 
     public static void initStack(Entity mother, IPokemob father, ItemStack stack)

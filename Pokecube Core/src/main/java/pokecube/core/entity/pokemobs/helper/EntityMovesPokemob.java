@@ -382,11 +382,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void learn(String moveName)
     {
-        if (!MovesUtils.isMoveImplemented(moveName)) { return; }
-
-        String[] moves = getMoves();
-
         if (moveName == null) return;
+        if (!MovesUtils.isMoveImplemented(moveName)) { return; }
+        String[] moves = getMoves();
 
         // check it's not already known or forgotten
         for (String move : moves)

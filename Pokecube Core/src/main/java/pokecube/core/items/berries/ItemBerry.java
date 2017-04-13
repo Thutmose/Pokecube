@@ -2,13 +2,12 @@ package pokecube.core.items.berries;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumActionResult;
@@ -16,6 +15,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.TileEntityBerries;
@@ -198,9 +198,11 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos,
             EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ)
     {
-        Block i = worldIn.getBlockState(pos).getBlock();
         int index = stack.getItemDamage();
-        if (i == Blocks.FARMLAND)
+        net.minecraft.block.state.IBlockState state = worldIn.getBlockState(pos);
+        if (side == EnumFacing.UP && playerIn.canPlayerEdit(pos.offset(side), side, stack)
+                && state.getBlock().canSustainPlant(state, worldIn, pos, EnumFacing.UP, (IPlantable) Items.WHEAT_SEEDS)
+                && worldIn.isAirBlock(pos.up()))
         {
             worldIn.setBlockState(pos.up(), BerryManager.berryCrop.getDefaultState());
             TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos.up());

@@ -36,7 +36,6 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.blocks.pc.TileEntityPC;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.TradeEvent;
 import pokecube.core.handlers.Config;
@@ -183,7 +182,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
 
     public String[] getForgottenMoves(IPokemob mob)
     {
-        PokedexEntry entry = Database.getEntry(mob.getPokedexNb());
+        PokedexEntry entry = mob.getPokedexEntry();
         String[] moves = null;
         List<String> list = new ArrayList<String>();
 
@@ -197,7 +196,6 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             list.add(s);
         }
         moves = list.toArray(new String[0]);
-
         return moves;
     }
 

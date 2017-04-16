@@ -210,6 +210,7 @@ public class GeneticsManager
         alleles.getAlleles()[1] = colours;
         alleles.refreshExpressed();
 
+        pokemob.onGenesChanged();
     }
 
     public static void initFromGenes(IMobGenetics genes, IPokemob pokemob)
@@ -301,6 +302,7 @@ public class GeneticsManager
             }
         }
         pokemob.setIVs(ivs);
+        pokemob.onGenesChanged();
     }
 
     public static void handleLoad(IPokemob pokemob)

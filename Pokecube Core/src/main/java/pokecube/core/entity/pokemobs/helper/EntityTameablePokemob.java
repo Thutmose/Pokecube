@@ -37,6 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
@@ -70,8 +71,9 @@ import thut.api.pathing.IPathingMob;
 import thut.lib.CompatWrapper;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IMob, IInventoryChangedListener,
-        IHungrymob, IPathingMob, IShearable, IBreedingMob, IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob
+public abstract class EntityTameablePokemob extends EntityAnimal
+        implements IPokemob, IMob, IInventoryChangedListener, IHungrymob, IPathingMob, IShearable, IBreedingMob,
+        IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob, IEntityAdditionalSpawnData
 {
     public static int                               EXITCUBEDURATION = 40;
 

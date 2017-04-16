@@ -31,7 +31,6 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
@@ -57,7 +56,7 @@ import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 /** @author Manchou */
-public abstract class EntityStatsPokemob extends EntityTameablePokemob implements IEntityAdditionalSpawnData
+public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 {
     protected Ability     ability;
 
@@ -563,6 +562,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void readSpawnData(ByteBuf data)
     {
+        super.readSpawnData(data);
         PacketBuffer buffer = new PacketBuffer(data);
         try
         {
@@ -821,6 +821,7 @@ public abstract class EntityStatsPokemob extends EntityTameablePokemob implement
     @Override
     public void writeSpawnData(ByteBuf data)
     {
+        super.writeSpawnData(data);
         PacketBuffer buffer = new PacketBuffer(data);
         NBTTagCompound tag = writePokemobData();
         buffer.writeNBTTagCompoundToBuffer(tag);

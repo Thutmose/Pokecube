@@ -918,6 +918,13 @@ public interface IPokemob extends IMoveConstants
     @SideOnly(Side.CLIENT)
     ResourceLocation modifyTexture(ResourceLocation texture);
 
+    /** This method should only be used to update any Alleles objects that are
+     * stored for the mob's genes. */
+    default void onGenesChanged()
+    {
+
+    }
+
     /** This is called during move use to both the attacker and the attacked
      * entity, in that order. This can be used to add in abilities, In
      * EntityMovesPokemob, this is used for accounting for moves like curse,

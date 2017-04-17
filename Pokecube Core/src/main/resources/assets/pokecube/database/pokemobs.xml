@@ -594,9 +594,9 @@
     </Pokemon>
     <Pokemon name="Rattata Alola" number="19">
         <STATS>
-            <EVOLUTIONMODE>L20</EVOLUTIONMODE>
+            <EVOLUTIONMODE>L20:Tnight</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
-            <EVOLVESTO>raticatealola:Tnight</EVOLVESTO>
+            <EVOLVESTO>raticatealola</EVOLVESTO>
             <SPECIES>Rodent</SPECIES>
             <FOODMATERIAL>grass</FOODMATERIAL>
             <Drop r="1" id="minecraft:rotten_flesh" n="1"/>

@@ -66,25 +66,11 @@ import thut.lib.CompatWrapper;
 /** @author Manchou, Thutmose */
 public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart, TagNames
 {
-    public static float         scaleFactor    = 0.075f;
     public static boolean       multibox       = true;
 
     private int                 uid            = -1;
     private ItemStack           pokecube       = CompatWrapper.nullStack;
     private int                 despawntimer   = 0;
-
-    @Deprecated
-    private float               scale;                                   // TODO
-                                                                         // replace
-                                                                         // this
-                                                                         // with
-                                                                         // a
-                                                                         // quick
-                                                                         // way
-                                                                         // to
-                                                                         // get
-                                                                         // epigentic
-                                                                         // size.
 
     private int[]               flavourAmounts = new int[5];
     private EntityPokemobPart[] partsArray;
@@ -254,12 +240,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    public float getSize()
-    {
-        return (float) (scale * PokecubeMod.core.getConfig().scalefactor);
-    }
-
-    @Override
     public SoundEvent getSound()
     {
         return getPokedexEntry().getSoundEvent();
@@ -313,7 +293,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setAbility(getPokedexEntry().getAbility(abilityIndex, this));
         if (getAbility() != null) getAbility().init(this);
 
-        setSize(1 + scaleFactor * (float) (random).nextGaussian());
+        setSize(getSize());
         this.initRidable();
         shiny = random.nextInt(8196) == 0;
 
@@ -675,6 +655,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
+        onGenesChanged();
         if (nbttagcompound.hasKey(POKEMOBTAG))
         {
             NBTTagCompound pokemobTag = nbttagcompound.getCompoundTag(POKEMOBTAG);
@@ -798,7 +779,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.setShiny(visualsTag.getBoolean(SHINY));
             forme = visualsTag.getString(FORME);
             this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
-            setSize(visualsTag.getFloat(SCALE));
+            setSize(getSize());
             this.initRidable();
             flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
             if (visualsTag.hasKey(POKECUBE))
@@ -984,8 +965,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void setSize(float size)
     {
-        if (isAncient()) scale = 2;
-        else scale = size;
+        super.setSize(size);
         float a = 1, b = 1, c = 1;
         PokedexEntry entry = getPokedexEntry();
         if (entry != null)
@@ -993,14 +973,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             a = entry.width * getSize();
             b = entry.height * getSize();
             c = entry.length * getSize();
-            if (a < 0.01 || b < 0.01 || c < 0.01)
-            {
-                float min = 0.01f / Math.min(a, Math.min(c, b));
-                scale *= min / PokecubeMod.core.getConfig().scalefactor;
-                a = entry.width * getSize();
-                b = entry.height * getSize();
-                c = entry.length * getSize();
-            }
         }
 
         this.width = a;
@@ -1117,9 +1089,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         visualsTag.setBoolean(SHINY, isShiny());
         visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
-        visualsTag.setFloat(SCALE, (float) (scale));// TODO replace this with a
-                                                    // quick way to get
-                                                    // epigentic size.
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);
         if (getPokecube() != CompatWrapper.nullStack)
         {

@@ -528,13 +528,20 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
             return true;
         }
-
-        if (!(a.getItem() == Items.EMERALD || b.getItem() == Items.EMERALD)) return false;
-
         int index = PokecubeManager.isFilled(a) ? 0 : 1;
-
         IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory.get(0), worldObj)
                 : PokecubeManager.itemToPokemob(inventory.get(1), worldObj);
+        if (!(a.getItem() == Items.EMERALD || b.getItem() == Items.EMERALD))
+        {
+            if (mob.getPokemonOwnerID() == null || player1.getUniqueID().equals(mob.getPokemonOwnerID()))
+            {
+                mob.setTraded(true);
+                mob.setPokemonOwner(mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
+                player1.inventory.addItemStackToInventory(inventory.get(index));
+                inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
+            }
+            return false;
+        }
         if (theftEnabled) return false;
         mob.setTraded(true);
         mob.setPokemonOwner(player1.getUniqueID());

@@ -4,11 +4,13 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,6 +31,7 @@ public class ContainerTradingTable extends Container
         return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound()
                 && PokecubeItems.getCubeId(itemstack) == 14)
                 || (itemstack.getItem() == Items.EMERALD && CompatWrapper.getStackSize(itemstack) == 64)
+                || (itemstack.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON) && CompatWrapper.getStackSize(itemstack) == 1)
                 || (itemstack.getItem() instanceof IPokecube && CompatWrapper.getStackSize(itemstack) == 1);
     }
 

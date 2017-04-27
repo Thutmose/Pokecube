@@ -62,7 +62,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
     double                moveSpeed;
 
-    byte[]                ivs              = new byte[] { 0, 0, 0, 0, 0, 0 };
     protected Nature      nature           = Nature.HARDY;
     public int            oldLevel         = 0;
     public PokedexEntry   entry;
@@ -328,12 +327,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         bonusHappiness = Math.max(bonusHappiness, -getPokedexEntry().getHappiness());
         bonusHappiness = Math.min(bonusHappiness, 255 - getPokedexEntry().getHappiness());
         return bonusHappiness + getPokedexEntry().getHappiness();
-    }
-
-    @Override
-    public byte[] getIVs()
-    {
-        return this.ivs;
     }
 
     @Override
@@ -643,12 +636,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
             }
         }
         return ret;
-    }
-
-    @Override
-    public void setIVs(byte[] ivs)
-    {
-        this.ivs = ivs;
     }
 
     private void setMaxHealth(float maxHealth)

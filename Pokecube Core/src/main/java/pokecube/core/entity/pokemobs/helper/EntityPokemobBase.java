@@ -656,7 +656,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void readEntityFromNBT(NBTTagCompound nbttagcompound)
     {
         super.readEntityFromNBT(nbttagcompound);
-        onGenesChanged();
         if (nbttagcompound.hasKey(POKEMOBTAG))
         {
             NBTTagCompound pokemobTag = nbttagcompound.getCompoundTag(POKEMOBTAG);
@@ -709,7 +708,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!statsTag.hasNoTags())
         {
             this.setEVs(statsTag.getByteArray(EVS));
-            this.setIVs(statsTag.getByteArray(IVS));
+//            this.setIVs(statsTag.getByteArray(IVS));//TODO confirm this is in genes.
             this.setExp(statsTag.getInteger(EXP), false);
             this.setStatus(statsTag.getByte(STATUS));
             addHappiness(statsTag.getInteger(HAPPY));
@@ -1046,7 +1045,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Write stats tag
         NBTTagCompound statsTag = new NBTTagCompound();
         statsTag.setByteArray(EVS, getEVs());
-        statsTag.setByteArray(IVS, getIVs());
+//        statsTag.setByteArray(IVS, getIVs());//TODO confirm this is in genes.
         statsTag.setInteger(EXP, getExp());
         statsTag.setByte(STATUS, getStatus());
         statsTag.setInteger(HAPPY, bonusHappiness);

@@ -452,7 +452,14 @@ public class GuiPokedex extends GuiScreen
             drawString(fontRendererObj, getEntityToDisplay().getDisplayName().getFormattedText(), xOffset + 16,
                     yOffset + 15, 0xFFFFFF);
             List<String> biomes = PacketPokedex.values;
-            // System.out.println(biomes);
+            try
+            {
+                Integer.parseInt(biomes.get(0));
+                break mode;
+            }
+            catch (Exception e)
+            {
+            }
             index = Math.max(0, Math.min(index, biomes.size() - listSize));
             for (int n = 0; n < Math.min(biomes.size(), listSize); n++)
             {

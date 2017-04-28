@@ -11371,7 +11371,7 @@
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Continent</SPECIES>
-            <Spawn typesBlacklist="cold,wet" types="nether,cave" rate="0.0"/>
+            <Spawn typesBlacklist="wet" types="nether" rate="0.0"/>
             <Spawn typesBlacklist="cold,wet" types="wasteland,mountain,cave" rate="0.0"/>
             <BASESTATS spdef="90" spatk="100" def="140" spd="90" hp="100" atk="150"/>
             <EVYIELD atk="3"/>

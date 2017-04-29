@@ -124,15 +124,17 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
                 if (id == 1)
                 {
                     ItemStack cube = tradeTable.getStackInSlot(0);
-                    if (!PokecubeManager.isFilled(cube)
-                            || PokecubeManager.getOwner(cube).equals(player.getCachedUniqueIdString()))
+                    String owner = PokecubeManager.getOwner(cube);
+                    if (!PokecubeManager.isFilled(cube) || owner == null || owner.isEmpty()
+                            || owner.equals(player.getCachedUniqueIdString()))
                         tradeTable.player1 = tradeTable.player1 == null ? player : null;
                 }
                 if (id == 2)
                 {
                     ItemStack cube = tradeTable.getStackInSlot(1);
-                    if (!PokecubeManager.isFilled(cube)
-                            || PokecubeManager.getOwner(cube).equals(player.getCachedUniqueIdString()))
+                    String owner = PokecubeManager.getOwner(cube);
+                    if (!PokecubeManager.isFilled(cube) || owner == null || owner.isEmpty()
+                            || owner.equals(player.getCachedUniqueIdString()))
                         tradeTable.player2 = tradeTable.player2 == null ? player : null;
                 }
                 if (tradeTable.player1 != null && tradeTable.player2 != null) tradeTable.trade();

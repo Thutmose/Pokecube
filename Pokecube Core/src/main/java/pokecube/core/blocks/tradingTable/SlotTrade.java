@@ -21,7 +21,7 @@ public class SlotTrade extends Slot
         if (!(PokecubeManager.isFilled(getStack()))) return true;
         String name = PokecubeManager.getOwner(getStack());
         String uuid = player.getCachedUniqueIdString();
-        boolean owner = uuid.equals(name);
+        boolean owner = name==null||name.isEmpty()||uuid.equals(name);
         return owner;
     }
 

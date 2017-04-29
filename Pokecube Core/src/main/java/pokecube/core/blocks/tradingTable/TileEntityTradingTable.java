@@ -535,16 +535,14 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         {
             if (mob.getPokemonOwnerID() == null || player1.getUniqueID().equals(mob.getPokemonOwnerID()))
             {
-                mob.setTraded(true);
-                mob.setPokemonOwner(mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
+                PokecubeManager.setOwner(inventory.get(index), mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
                 player1.inventory.addItemStackToInventory(inventory.get(index));
                 inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
             }
             return false;
         }
         if (theftEnabled) return false;
-        mob.setTraded(true);
-        mob.setPokemonOwner(player1.getUniqueID());
+        PokecubeManager.setOwner(inventory.get(index), player1.getUniqueID());
         player1.inventory.addItemStackToInventory(inventory.get(index));
         inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
         return true;

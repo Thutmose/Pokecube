@@ -9174,6 +9174,7 @@
             <MISC moves="attract, bodyslam, brickbreak, bulkup, calmmind, captivate, confide, doubleedge, doubleteam, drainpunch, dreameater, facade, firepunch, flash, fling, focusblast, focuspunch, frustration, grassknot, gravity, headbutt, helpinghand, hiddenpower, icepunch, lightscreen, lowkick, lowsweep, magiccoat, megakick, megapunch, metronome, mimic, mudslap, naturalgift, painsplit, poisonjab, poweruppunch, protect, psychic, psychup, psyshock, raindance, recycle, reflect, rest, retaliate, return, rockslide, rocksmash, rocktomb, roleplay, round, secretpower, seismictoss, shadowball, signalbeam, sleeptalk, snore, strength, substitute, sunnyday, swagger, swift, telekinesis, thunderpunch, toxic, trick, vacuumwave, workup, zenheadbutt"/>
         </MOVES>
     </Pokemon>
+    <Pokemon name="Meditite Female" number="307" gender="female" genderBase="Meditite"/>
     <Pokemon name="Medicham" number="308" base="true">
         <STATS>
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
@@ -10431,12 +10432,27 @@
             <EXPERIENCEMODE>Medium Fast</EXPERIENCEMODE>
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
-            <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <MOVEMENTTYPE>floating</MOVEMENTTYPE>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="watergun,ember,powdersnow" lvl_45="hurricane" lvl_35="hydropump,fireblast,blizzard" lvl_20="raindance,sunnyday,hail" lvl_25="weatherball" lvl_1="tackle" lvl_15="headbutt"/>
             <MISC moves="attract, avalanche, blizzard, bodyslam, captivate, confide, defensecurl, doubleedge, doubleteam, endure, energyball, facade, fireblast, flamethrower, flash, frustration, hail, hiddenpower, icebeam, icywind, incinerate, lastresort, mimic, naturalgift, protect, psychup, raindance, rest, retaliate, return, round, sandstorm, scald, secretpower, shadowball, shockwave, sleeptalk, snore, solarbeam, substitute, sunnyday, swagger, swift, tailwind, thief, thunder, thunderbolt, thunderwave, toxic, waterpulse, workup"/>
         </MOVES>
+    </Pokemon>
+    <Pokemon name="Castform Sun" number="351">
+        <STATS>
+            <TYPE type1="Fire"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Castform Rain" number="351">
+        <STATS>
+            <TYPE type1="Water"/>
+        </STATS>
+    </Pokemon>
+    <Pokemon name="Castform Snow" number="351">
+        <STATS>
+            <TYPE type1="Ice"/>
+        </STATS>
     </Pokemon>
     <Pokemon name="Kecleon" number="352" base="true">
         <STATS>

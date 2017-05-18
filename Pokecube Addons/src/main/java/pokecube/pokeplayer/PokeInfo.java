@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -24,6 +25,8 @@ import thut.lib.CompatWrapper;
 
 public class PokeInfo extends PlayerData
 {
+    private static final int      FIELDINDEX = 52;
+
     private ItemStack             stack;
     private IPokemob              pokemob;
     public InventoryPlayerPokemob pokeInventory;
@@ -59,7 +62,12 @@ public class PokeInfo extends PlayerData
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(originalHP);
         float height = originalHeight;
         float width = originalWidth;
-        Accessor.size(player, width, height);
+        if (player.height != height || player.width != width)
+        {
+            ReflectionHelper.setPrivateValue(Entity.class, player, true, FIELDINDEX);
+            Accessor.size(player, player.width, height);
+            ReflectionHelper.setPrivateValue(Entity.class, player, false, FIELDINDEX);
+        }
         setFlying(player, false);
         pokemob = null;
         stack = null;
@@ -74,11 +82,16 @@ public class PokeInfo extends PlayerData
     public void setPlayer(EntityPlayer player)
     {
         if (pokemob == null) return;
-        pokemob.setSize((float) (pokemob.getSize()/PokecubeMod.core.getConfig().scalefactor));
+        pokemob.setSize((float) (pokemob.getSize() / PokecubeMod.core.getConfig().scalefactor));
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
-        Accessor.size(player, width, height);
+        if (player.height != height || player.width != width)
+        {
+            ReflectionHelper.setPrivateValue(Entity.class, player, true, FIELDINDEX);
+            Accessor.size(player, player.width, height);
+            ReflectionHelper.setPrivateValue(Entity.class, player, false, FIELDINDEX);
+        }
         setFlying(player, true);
         save(player);
         if (!player.worldObj.isRemote)
@@ -108,7 +121,12 @@ public class PokeInfo extends PlayerData
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
         player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
-        Accessor.size(player, width, height);
+        if (player.height != height || player.width != width)
+        {
+            ReflectionHelper.setPrivateValue(Entity.class, player, true, FIELDINDEX);
+            Accessor.size(player, player.width, height);
+            ReflectionHelper.setPrivateValue(Entity.class, player, false, FIELDINDEX);
+        }
         updateFloating(player);
         updateFlying(player);
         updateSwimming(player);

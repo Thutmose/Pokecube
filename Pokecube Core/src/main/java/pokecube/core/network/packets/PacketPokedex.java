@@ -42,6 +42,7 @@ import pokecube.core.world.dimensions.secretpower.SecretBaseManager;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
+import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 
@@ -222,12 +223,14 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                         float val = rates.get(e) * 100 / total;
                         rates.put(e, val);
                     }
+                    int biome = TerrainManager.getInstance().getTerrainForEntity(player).getBiome(pos);
                     packet.data.setString("0",
-                            "" + TerrainManager.getInstance().getTerrainForEntity(player).getBiome(pos));
+                            "" + biome);
+                    packet.data.setString("1", BiomeDatabase.getReadableNameFromType(biome));
                     for (int i = 0; i < names.size(); i++)
                     {
                         PokedexEntry e = names.get(i);
-                        packet.data.setString("" + (i + 1), e.getUnlocalizedName() + "`" + rates.get(e));
+                        packet.data.setString("" + (i + 2), e.getUnlocalizedName() + "`" + rates.get(e));
                     }
                 }
                 else

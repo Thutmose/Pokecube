@@ -401,7 +401,7 @@ public class GuiPokedex extends GuiScreen
      * @param yOffset */
     private void drawPage2(int xOffset, int yOffset)
     {
-        int listSize = mode ? 6 : 7;
+        int listSize = mode ? 6 : 8;
         mode:
         if (!mode)
         {
@@ -418,12 +418,13 @@ public class GuiPokedex extends GuiScreen
             }
             index = Math.max(0, Math.min(index, names.size() - listSize));
             String title = BiomeDatabase.getReadableNameFromType(num);
+            if (title.equals("none")) title = names.get(1);
             if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
             if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
             drawString(fontRendererObj, title, xOffset + 16, yOffset + 15, 0xFFFFFF);
-            for (int n = 1; n < Math.min(names.size(), listSize); n++)
+            for (int n = 2; n < Math.min(names.size(), listSize); n++)
             {
-                int yO = yOffset + 20;
+                int yO = yOffset + 10;
                 String[] var = names.get((n + index)).split("`");
                 String name = var[0];
                 String numbers = "";

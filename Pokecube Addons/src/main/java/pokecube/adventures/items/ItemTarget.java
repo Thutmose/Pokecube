@@ -69,6 +69,8 @@ public class ItemTarget extends CompatItem
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
                 pokemob.setHome(MathHelper.floor_float(pos.x), MathHelper.floor_float(pos.y - 1),
                         MathHelper.floor_float(pos.z), 16);
+                // TODO localize this message.
+                playerIn.addChatMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);
             }
         }

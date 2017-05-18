@@ -5,6 +5,7 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
+import thut.core.client.config.ModGuiConfig;
 
 public class ModGuiFactory implements IModGuiFactory
 {
@@ -31,5 +32,17 @@ public class ModGuiFactory implements IModGuiFactory
     public Set<RuntimeOptionCategoryElement> runtimeGuiCategories()
     {
         return null;
+    }
+
+    @Override
+    public boolean hasConfigGui()
+    {
+        return true;
+    }
+
+    @Override
+    public GuiScreen createConfigGui(GuiScreen parentScreen)
+    {
+        return new ModGuiConfig(parentScreen);
     }
 }

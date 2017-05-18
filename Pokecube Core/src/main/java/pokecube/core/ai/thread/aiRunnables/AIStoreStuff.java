@@ -83,7 +83,7 @@ public class AIStoreStuff extends AIBase
         {
             searchInventoryCooldown = COOLDOWN;
             inventoryLocation = checkDir(world, null, pokemob.getHome());
-            if (inventoryLocation != null) for (EnumFacing dir : EnumFacing.HORIZONTALS)
+            if (inventoryLocation == null) for (EnumFacing dir : EnumFacing.HORIZONTALS)
             {
                 inventoryLocation = checkDir(world, dir, pokemob.getHome());
                 if (inventoryLocation != null)

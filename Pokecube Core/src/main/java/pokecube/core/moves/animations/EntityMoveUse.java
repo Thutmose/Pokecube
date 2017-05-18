@@ -152,8 +152,13 @@ public class EntityMoveUse extends Entity
         }
         Move_Base attack = getMove();
         Entity user;
+        valid:
         if ((user = getUser()) == null || this.isDead || user.isDead || !user.addedToChunk)
         {
+            if (user != null && !user.addedToChunk)
+            {
+                if (user.getEntityData().getBoolean("isPlayer")) break valid;
+            }
             this.setDead();
             return;
         }

@@ -90,6 +90,7 @@ public class ModPokecubeML implements IMobProvider
             loadMob(s.toLowerCase(Locale.ENGLISH));
         }
         ExtraDatabase.apply();
+        System.out.println(addedPokemon.size()+" "+addedPokemon);
         for (String s : addedPokemon)
         {
             registerMob(s.toLowerCase(Locale.ENGLISH));

@@ -9,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -55,6 +56,21 @@ public class AIStoreStuff extends AIBase
         this.entity = entity;
     }
 
+    private Vector3 checkDir(EnumFacing dir, BlockPos centre)
+    {
+        if (dir == null)
+        {
+            if (world.getTileEntity(centre) instanceof IInventory) return Vector3.getNewVector().set(centre);
+            else return null;
+        }
+        else
+        {
+            centre = centre.offset(dir);
+            if (world.getTileEntity(centre) instanceof IInventory) return Vector3.getNewVector().set(centre);
+            else return null;
+        }
+    }
+
     @Override
     public void doMainThreadTick(World world)
     {
@@ -65,9 +81,15 @@ public class AIStoreStuff extends AIBase
         if (searchInventoryCooldown-- < 0)
         {
             searchInventoryCooldown = COOLDOWN;
-            if (world.getTileEntity(pokemob.getHome()) instanceof IInventory)
-                inventoryLocation = Vector3.getNewVector().set(pokemob.getHome());
-            else inventoryLocation = null;
+            inventoryLocation = checkDir(null, pokemob.getHome());
+            if (inventoryLocation != null) for (EnumFacing dir : EnumFacing.HORIZONTALS)
+            {
+                inventoryLocation = checkDir(dir, pokemob.getHome());
+                if (inventoryLocation != null)
+                {
+                    break;
+                }
+            }
             if (inventoryLocation == null) searchInventoryCooldown = 50 * COOLDOWN;
         }
         if (inventoryLocation == null || entity.getDistanceSq(pokemob.getHome()) > 16) return;

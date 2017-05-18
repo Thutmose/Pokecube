@@ -21,6 +21,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 import thut.lib.ItemStackTools;
 
 /** This IAIRunnable gets the mob to look for and collect dropped items and
@@ -216,16 +217,14 @@ public class AIGatherStuff extends AIBase
         {
             cooldowns[0] = COOLDOWN;
         }
-
         if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
         if (cooldowns[0] > 0) return false;
         IInventory inventory = pokemob.getPokemobInventory();
-
         for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
         {
-            states[0] = inventory.getStackInSlot(i) == null;
+            states[0] = !CompatWrapper.isValid(inventory.getStackInSlot(i));
         }
-        return states[0] && cooldowns[0] < 0;
+        return states[0];
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.

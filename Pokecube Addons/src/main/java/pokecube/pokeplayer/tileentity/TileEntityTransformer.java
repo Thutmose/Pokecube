@@ -38,15 +38,15 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
         if (worldObj.isRemote || random) return;
         if (canEdit(player))
         {
-            if (stack == null && PokecubeManager.isFilled(player.getHeldItemMainhand()))
+            if (!CompatWrapper.isValid(stack) && PokecubeManager.isFilled(player.getHeldItemMainhand()))
             {
                 setStack(player.getHeldItemMainhand());
-                player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+                player.inventory.setInventorySlotContents(player.inventory.currentItem, CompatWrapper.nullStack);
             }
             else
             {
                 Tools.giveItem(player, stack);
-                stack = null;
+                stack = CompatWrapper.nullStack;
             }
         }
     }
@@ -56,18 +56,18 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
         if (worldObj.isRemote || stepTick > 0) return;
         PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
         boolean isPokemob = info.getPokemob(worldObj) != null;
-        if ((stack != null || random) && !isPokemob)
+        if ((CompatWrapper.isValid(stack) || random) && !isPokemob)
         {
             IPokemob pokemob = getPokemob();
             if (pokemob != null) PokePlayer.PROXY.setPokemob(player, pokemob);
-            if (stack != null && pokemob != null)
+            if (CompatWrapper.isValid(stack) && pokemob != null)
             {
-                stack = null;
+                stack = CompatWrapper.nullStack;
                 stepTick = 50;
             }
             return;
         }
-        else if (stack == null && !random && isPokemob)
+        else if (!CompatWrapper.isValid(stack) && !random && isPokemob)
         {
             stepTick = 50;
             IPokemob poke = PokePlayer.PROXY.getPokemob(player);
@@ -139,7 +139,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
     public NBTTagCompound writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
-        if (stack != null)
+        if (CompatWrapper.isValid(stack))
         {
             NBTTagCompound tag = new NBTTagCompound();
             stack.writeToNBT(tag);

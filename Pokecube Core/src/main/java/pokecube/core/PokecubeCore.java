@@ -660,7 +660,9 @@ public class PokecubeCore extends PokecubeMod
                 // config.
                 if (!registered.get(entry.getPokedexNb()))
                 {
-                    CompatWrapper.registerModEntity(clazz, name, 25 + entry.getPokedexNb(), mod, 80, 3, true);
+                    int id = getUniqueEntityId(mod);
+                    if (!entry.base) name = entry.getBaseName();
+                    CompatWrapper.registerModEntity(clazz, name, id, mod, 80, 3, true);
 
                     if (!pokemobEggs.containsKey(entry.getPokedexNb()))
                     {
@@ -672,6 +674,10 @@ public class PokecubeCore extends PokecubeMod
                         pokedexmap.put(e, clazz);
                     registered.set(entry.getPokedexNb());
                     Pokedex.getInstance().registerPokemon(entry);
+                }
+                else
+                {
+                    System.err.println("Double Registration for " + entry);
                 }
             }
             catch (Throwable e)

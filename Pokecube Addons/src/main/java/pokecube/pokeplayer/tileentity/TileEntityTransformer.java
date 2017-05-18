@@ -23,7 +23,7 @@ import thut.lib.CompatWrapper;
 
 public class TileEntityTransformer extends TileEntityOwnable implements ITickable
 {
-    ItemStack stack;
+    ItemStack stack    = CompatWrapper.nullStack;
     int[]     nums     = {};
     boolean   random   = false;
     int       stepTick = 20;

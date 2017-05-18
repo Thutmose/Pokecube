@@ -104,6 +104,7 @@ public class PokeInfo extends PlayerData
     {
         if (pokemob == null) return;
         EntityLivingBase poke = (EntityLivingBase) pokemob;
+        if (!pokemob.getPokemonAIState(IPokemob.TAMED)) pokemob.setPokemonAIState(IPokemob.TAMED, true);
         poke.onUpdate();
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(poke.getMaxHealth());
         if (player.capabilities.isCreativeMode)

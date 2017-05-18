@@ -56,8 +56,9 @@ public class AIStoreStuff extends AIBase
         this.entity = entity;
     }
 
-    private Vector3 checkDir(EnumFacing dir, BlockPos centre)
+    private Vector3 checkDir(World world, EnumFacing dir, BlockPos centre)
     {
+        if (centre == null) return null;
         if (dir == null)
         {
             if (world.getTileEntity(centre) instanceof IInventory) return Vector3.getNewVector().set(centre);
@@ -81,10 +82,10 @@ public class AIStoreStuff extends AIBase
         if (searchInventoryCooldown-- < 0)
         {
             searchInventoryCooldown = COOLDOWN;
-            inventoryLocation = checkDir(null, pokemob.getHome());
+            inventoryLocation = checkDir(world, null, pokemob.getHome());
             if (inventoryLocation != null) for (EnumFacing dir : EnumFacing.HORIZONTALS)
             {
-                inventoryLocation = checkDir(dir, pokemob.getHome());
+                inventoryLocation = checkDir(world, dir, pokemob.getHome());
                 if (inventoryLocation != null)
                 {
                     break;

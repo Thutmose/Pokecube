@@ -119,7 +119,8 @@ public class ClonerHelper
     public static boolean isDNAContainer(ItemStack stack)
     {
         if (!CompatWrapper.isValid(stack) || !stack.hasTagCompound()) return false;
-        return stack.getTagCompound().getString("Potion").equals("minecraft:water");
+        String potion = stack.getTagCompound().getString("Potion");
+        return potion.equals("minecraft:water") || potion.equals("minecraft:mundane");
     }
 
     public static SelectorValue getSelectorValue(ItemStack selector)

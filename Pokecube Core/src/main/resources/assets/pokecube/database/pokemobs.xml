@@ -22508,6 +22508,7 @@
             <TYPE type1="Psychic"/>
             <ABILITY normal="Unaware"/>
             <MASSKG>0.1</MASSKG>
+            <Spawn types="end" rate="0.005"/>
             <CAPTURERATE>45</CAPTURERATE>
             <BASEFRIENDSHIP>0</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Slow</EXPERIENCEMODE>

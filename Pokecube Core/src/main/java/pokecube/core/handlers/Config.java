@@ -19,12 +19,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
@@ -92,7 +95,7 @@ public class Config extends ConfigBase
     public String                        defaultMobs                  = "";
     @Configure(category = misc, needsMcRestart = true)
     protected boolean                    tableRecipe                  = true;
-    @Configure(category = misc)//TODO sync this to clients on servers.
+    @Configure(category = misc) // TODO sync this to clients on servers.
     public double                        scalefactor                  = 1;
     @Configure(category = misc)
     public double                        contactAttackDistance        = 0;
@@ -208,6 +211,13 @@ public class Config extends ConfigBase
     public boolean                       surfEnabled                  = true;
     @Configure(category = mobAI)
     public boolean                       diveEnabled                  = true;
+    @Configure(category = mobAI)
+    public String[]                      dodgeSounds                  = { "entity.generic.small_fall" };
+    @Configure(category = mobAI)
+    public String[]                      leapSounds                   = { "entity.generic.small_fall" };
+
+    public SoundEvent[]                  dodges                       = {};
+    public SoundEvent[]                  leaps                        = {};
 
     // World Gen and World effect settings
     @Configure(category = world)
@@ -219,10 +229,6 @@ public class Config extends ConfigBase
     public boolean                       doSpawnBuilding              = true;
     @Configure(category = world)
     public boolean                       basesLoaded                  = false;
-    @Configure(category = world)
-    public boolean                       pokecenterTorch              = true;
-    @Configure(category = world)
-    public boolean                       pokemartMerchant             = true;
     @Configure(category = world)
     public boolean                       autoPopulateLists            = true;
     @Configure(category = world)
@@ -623,6 +629,59 @@ public class Config extends ConfigBase
         {
             SpawnHandler.dimensionWhitelist.add(i);
         }
+        boolean failed = false;
+        if (dodgeSounds.length == 0) failed = true;
+        else
+        {
+            dodges = new SoundEvent[dodgeSounds.length];
+            for (int i = 0; i < dodgeSounds.length; i++)
+            {
+                String s = dodgeSounds[i];
+                try
+                {
+                    SoundEvent e = getRegisteredSoundEvent(s);
+                    dodges[i] = e;
+                }
+                catch (Exception e)
+                {
+                    PokecubeCore.log("No Sound for " + s);
+                    failed = true;
+                    break;
+                }
+            }
+        }
+
+        if (failed)
+        {
+            dodges = new SoundEvent[] { SoundEvents.ENTITY_GENERIC_SMALL_FALL };
+        }
+
+        failed = false;
+        if (leapSounds.length == 0) failed = true;
+        else
+        {
+            leaps = new SoundEvent[leapSounds.length];
+            for (int i = 0; i < leapSounds.length; i++)
+            {
+                String s = leapSounds[i];
+                try
+                {
+                    SoundEvent e = getRegisteredSoundEvent(s);
+                    leaps[i] = e;
+                }
+                catch (Exception e)
+                {
+                    PokecubeCore.log("No Sound for " + s);
+                    failed = true;
+                    break;
+                }
+            }
+        }
+
+        if (failed)
+        {
+            leaps = new SoundEvent[] { SoundEvents.ENTITY_GENERIC_SMALL_FALL };
+        }
     }
 
     @Override
@@ -780,5 +839,18 @@ public class Config extends ConfigBase
         populateSettings(true);
         applySettings();
         save();
+    }
+
+    private static SoundEvent getRegisteredSoundEvent(String id)
+    {
+        SoundEvent soundevent = (SoundEvent) SoundEvent.REGISTRY.getObject(new ResourceLocation(id));
+        if (soundevent == null)
+        {
+            throw new IllegalStateException("Invalid Sound requested: " + id);
+        }
+        else
+        {
+            return soundevent;
+        }
     }
 }

@@ -1,11 +1,14 @@
 package pokecube.core.ai.thread.aiRunnables;
 
+import java.util.Random;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
@@ -34,6 +37,18 @@ public class AICombatMovement extends AIBase
                 * 0.8;
         centre = null;
         this.setMutex(0);
+    }
+
+    private SoundEvent getDodgeSound()
+    {
+        if (PokecubeCore.core.getConfig().dodges.length == 0) return PokecubeCore.core.getConfig().dodges[0];
+        return PokecubeCore.core.getConfig().dodges[new Random().nextInt(PokecubeCore.core.getConfig().dodges.length)];
+    }
+
+    private SoundEvent getLeapSound()
+    {
+        if (PokecubeCore.core.getConfig().leaps.length == 0) return PokecubeCore.core.getConfig().leaps[0];
+        return PokecubeCore.core.getConfig().leaps[new Random().nextInt(PokecubeCore.core.getConfig().leaps.length)];
     }
 
     @Override
@@ -117,8 +132,8 @@ public class AICombatMovement extends AIBase
         }
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
         perp.addVelocities(attacker);
-        toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker),
-                SoundEvents.ENTITY_GENERIC_SMALL_FALL, SoundCategory.HOSTILE, 1, 1));
+        toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getDodgeSound(),
+                SoundCategory.HOSTILE, 1, 1));
     }
 
     /** Check if the mob should dodge. It checks that the mob can dodge (ie is
@@ -195,8 +210,8 @@ public class AICombatMovement extends AIBase
         }
         if (!attacker.onGround) dir.y *= 2;
         dir.addVelocities(attacker);
-        toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker),
-                SoundEvents.ENTITY_GENERIC_SMALL_FALL, SoundCategory.HOSTILE, 1, 1));
+        toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getLeapSound(),
+                SoundCategory.HOSTILE, 1, 1));
     }
 
     @Override

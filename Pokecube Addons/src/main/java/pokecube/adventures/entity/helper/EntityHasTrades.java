@@ -44,7 +44,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     {
         NBTTagCompound tag = new NBTTagCompound();
         this.writeEntityToNBT(tag);
-        new PacketBuffer(buffer).writeNBTTagCompoundToBuffer(tag);
+        new PacketBuffer(buffer).writeCompoundTag(tag);
     }
 
     @Override
@@ -52,7 +52,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     {
         try
         {
-            NBTTagCompound tag = new PacketBuffer(additionalData).readNBTTagCompoundFromBuffer();
+            NBTTagCompound tag = new PacketBuffer(additionalData).readCompoundTag();
             this.readEntityFromNBT(tag);
         }
         catch (IOException e)
@@ -108,14 +108,14 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         int i = 3 + this.rand.nextInt(4);
         if (recipe.getRewardsExp())
         {
-            this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY + 0.5D, this.posZ, i));
+            this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY + 0.5D, this.posZ, i));
         }
     }
 
     @Override
     public void verifySellingItem(ItemStack stack)
     {
-        if (!this.worldObj.isRemote && this.livingSoundTime > -this.getTalkInterval() + 20)
+        if (!this.world.isRemote && this.livingSoundTime > -this.getTalkInterval() + 20)
         {
             this.livingSoundTime = -this.getTalkInterval();
 

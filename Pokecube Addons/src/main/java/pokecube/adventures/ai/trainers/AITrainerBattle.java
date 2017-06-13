@@ -115,7 +115,7 @@ public class AITrainerBattle extends EntityAIBase
                 {
                     IPokemob next = PokecubeManager.itemToPokemob(nextStack, world);
                     if (next != null) trainer.getTarget()
-                            .addChatMessage(trainer.getMessage(MessageState.ABOUTSEND, trainer.getDisplayName(),
+                            .sendMessage(trainer.getMessage(MessageState.ABOUTSEND, trainer.getDisplayName(),
                                     next.getPokemonDisplayName(), trainer.getTarget().getDisplayName()));
                 }
             }

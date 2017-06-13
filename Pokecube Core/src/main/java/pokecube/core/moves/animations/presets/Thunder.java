@@ -21,7 +21,7 @@ public class Thunder extends MoveAnimationBase
     {
         World theRealWorld = info.attacker.getEntityWorld();
         Entity lightning = new EntityLightningBolt(theRealWorld, info.target.x, info.target.y, info.target.z, false);
-        theRealWorld.spawnEntityInWorld(lightning);
+        theRealWorld.spawnEntity(lightning);
         theRealWorld.addWeatherEffect(lightning);
     }
 

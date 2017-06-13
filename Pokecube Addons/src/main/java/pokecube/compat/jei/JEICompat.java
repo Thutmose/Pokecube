@@ -151,7 +151,7 @@ public class JEICompat implements IModPlugin
                                                                                                pokemob = (IPokemob) PokecubeMod.core
                                                                                                        .createPokemob(
                                                                                                                entry,
-                                                                                                               minecraft.theWorld);
+                                                                                                               minecraft.world);
                                                                                                if (pokemob == null)
                                                                                                    return;
                                                                                                EventsHandlerClient.renderMobs
@@ -258,7 +258,7 @@ public class JEICompat implements IModPlugin
                                                                                                pokemob = (IPokemob) PokecubeMod.core
                                                                                                        .createPokemob(
                                                                                                                entry,
-                                                                                                               minecraft.theWorld);
+                                                                                                               minecraft.world);
                                                                                                if (pokemob == null)
                                                                                                    return;
                                                                                                EventsHandlerClient.renderMobs

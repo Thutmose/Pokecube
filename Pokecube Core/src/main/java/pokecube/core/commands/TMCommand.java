@@ -98,19 +98,19 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return this.aliases;
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return aliases.get(0);
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/" + aliases.get(0) + "<move name>";
     }
@@ -123,7 +123,7 @@ public class TMCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
             BlockPos pos)
     {
         Collection<String> moves = MovesUtils.moves.keySet();

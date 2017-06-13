@@ -146,7 +146,7 @@ public class EntityTrainer extends EntityHasPokemobs
             {
                 if (resetTime > 0)
                 {
-                    long diff = worldObj.getTotalWorldTime() - s.defeatTime;
+                    long diff = world.getTotalWorldTime() - s.defeatTime;
                     if (diff > resetTime)
                     {
                         defeaters.remove(s);
@@ -166,8 +166,8 @@ public class EntityTrainer extends EntityHasPokemobs
             ItemStack stack = pokecubes.get(i);
             if (PokecubeManager.isFilled(stack))
             {
-                IPokemob mon = PokecubeManager.itemToPokemob(stack, worldObj);
-                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, worldObj);
+                IPokemob mon = PokecubeManager.itemToPokemob(stack, world);
+                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, world);
                 int stat = getBaseStats(mon);
                 int stat1 = getBaseStats(mon1);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
@@ -211,7 +211,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 if (entity != source.getEntity()) return false;
             }
         }
-        if (source == DamageSource.drown) return false;
+        if (source == DamageSource.DROWN) return false;
         if (Config.instance.trainersInvul) return false;
         return super.attackEntityFrom(source, amount);
     }
@@ -287,7 +287,7 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         if (hasDefeated(defeater)) return;
         if (defeater != null)
-            defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
+            defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), world.getTotalWorldTime()));
         if (reward != null && defeater instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) defeater;
@@ -322,7 +322,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 }
                 ITextComponent text = getMessage(MessageState.GIVEITEM, this.getDisplayName(), i.getDisplayName(),
                         player.getDisplayName());
-                defeater.addChatMessage(text);
+                defeater.sendMessage(text);
             }
             boolean leader = this instanceof EntityLeader;
             Achievement achieve = PokecubeCore.core
@@ -332,12 +332,12 @@ public class EntityTrainer extends EntityHasPokemobs
         if (defeater != null)
         {
             ITextComponent text = getMessage(MessageState.DEFEAT, getDisplayName(), defeater.getDisplayName());
-            defeater.addChatMessage(text);
+            defeater.sendMessage(text);
             if (notifyDefeat && defeater instanceof EntityPlayerMP)
             {
                 PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
                 packet.data.setInteger("I", getEntityId());
-                packet.data.setLong("L", worldObj.getTotalWorldTime() + resetTime);
+                packet.data.setLong("L", world.getTotalWorldTime() + resetTime);
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) defeater);
             }
         }
@@ -354,7 +354,7 @@ public class EntityTrainer extends EntityHasPokemobs
         }
 
         super.onLivingUpdate();
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
 
         if (getTarget() == null && getAIState(INBATTLE))
         {
@@ -367,7 +367,7 @@ public class EntityTrainer extends EntityHasPokemobs
             TrainerSpawnHandler.addTrainerCoord(this);
         }
         ItemStack next;
-        if (cooldown > worldObj.getTotalWorldTime()) next = CompatWrapper.nullStack;
+        if (cooldown > world.getTotalWorldTime()) next = CompatWrapper.nullStack;
         else next = getNextPokemob();
         if (CompatWrapper.isValid(next))
         {
@@ -440,16 +440,16 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
-            if (getType() != null && !worldObj.isRemote && !CompatWrapper.isValid(player.getHeldItemMainhand()))
+            if (getType() != null && !world.isRemote && !CompatWrapper.isValid(player.getHeldItemMainhand()))
             {
                 String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
                 for (ItemStack i : pokecubes)
                 {
                     if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";
                 }
-                player.addChatMessage(new TextComponentString(message));
+                player.sendMessage(new TextComponentString(message));
             }
-            else if (!worldObj.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
+            else if (!world.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
             {
                 throwCubeAt(player);
             }
@@ -460,7 +460,7 @@ public class EntityTrainer extends EntityHasPokemobs
             if (CompatWrapper.isValid(player.getHeldItemMainhand())
                     && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
             {
-                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, worldObj, getEntityId(), 0, 0);
+                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, world, getEntityId(), 0, 0);
             }
         }
         else
@@ -483,7 +483,7 @@ public class EntityTrainer extends EntityHasPokemobs
             else if (friendlyCooldown >= 0)
             {
                 this.setCustomer(player);
-                if (!this.worldObj.isRemote && trades && (getRecipes(player) == null || this.tradeList.size() > 0))
+                if (!this.world.isRemote && trades && (getRecipes(player) == null || this.tradeList.size() > 0))
                 {
                     player.displayVillagerTradeGui(this);
                     return true;
@@ -569,7 +569,7 @@ public class EntityTrainer extends EntityHasPokemobs
 
         int num = poke2.getTagCompound().getInteger("slotnum");
         EntityLivingBase player2 = this;
-        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
+        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, world);
         UUID trader2 = player2.getUniqueID();
         mon1.setPokemonOwner(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
@@ -585,7 +585,7 @@ public class EntityTrainer extends EntityHasPokemobs
         if (genders == 1) male = true;
         if (genders == 2) male = false;
         if (genders == 3) male = Math.random() < 0.5;
-        TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
+        TypeTrainer.getRandomTeam(this, level, pokecubes, world);
         if (randomize) shouldrefresh = true;
         if (type.hasBag)
         {
@@ -620,7 +620,7 @@ public class EntityTrainer extends EntityHasPokemobs
     // TODO new mechant method names.
     public World func_190670_t_()
     {
-        return this.worldObj;
+        return this.world;
     }
 
     // TODO new mechant method names.

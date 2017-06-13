@@ -109,6 +109,10 @@ public abstract class PokecubeMod
 
     public static HashMap<Integer, EntityEggInfo>    pokemobEggs                = Maps.newHashMap();
 
+    public static final UUID                         fakeUUID                   = new UUID(1234, 4321);
+    public static Logger                             logger                     = Logger.getLogger("Pokecube");
+    protected static FileHandler                     logHandler                 = null;
+
     // Achievements
     public static Achievement                        get1stPokemob;
     // public static HashMap<Integer, Achievement> pokemobAchievements;
@@ -119,9 +123,7 @@ public abstract class PokecubeMod
     public static HashMap<PokedexEntry, Achievement> catchAchievements          = Maps.newHashMap();
     public static HashMap<PokedexEntry, Achievement> hatchAchievements          = Maps.newHashMap();
     public static HashMap<PokedexEntry, Achievement> killAchievements           = Maps.newHashMap();
-    public static final UUID                         fakeUUID                   = new UUID(1234, 4321);
-    public static Logger                             logger                     = Logger.getLogger("Pokecube");
-    protected static FileHandler                     logHandler                 = null;
+    public abstract Achievement getAchievement(String desc);
 
     public static FakePlayer getFakePlayer()
     {
@@ -215,8 +217,6 @@ public abstract class PokecubeMod
     public abstract void registerPokemonByClass(Class clazz, boolean createEgg, Object mod, PokedexEntry entry);
 
     public abstract void setEntityProvider(IEntityProvider provider);
-
-    public abstract Achievement getAchievement(String desc);
 
     public abstract void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args);
 

@@ -72,7 +72,7 @@ public class TeslaHandler
         if (event.getObject() instanceof IPokemob)
         {
             Entity pokemob = (Entity) event.getObject();
-            if (pokemob.worldObj != null) event.addCapability(new ResourceLocation("pokecube:tesla"),
+            if (pokemob.world != null) event.addCapability(new ResourceLocation("pokecube:tesla"),
                     new ProviderPokemob((IPokemob) event.getObject()));
         }
     }

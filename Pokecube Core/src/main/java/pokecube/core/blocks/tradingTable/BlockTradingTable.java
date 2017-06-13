@@ -105,7 +105,7 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entity_item);
+                world.spawnEntity(entity_item);
                 CompatWrapper.setStackSize(item, 0);
             }
         }
@@ -193,7 +193,7 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
         return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing().getOpposite());

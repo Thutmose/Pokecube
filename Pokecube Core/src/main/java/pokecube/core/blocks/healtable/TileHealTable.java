@@ -103,7 +103,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
     }
@@ -119,7 +119,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public void invalidate()
     {
         super.invalidate();
-        if (worldObj.isRemote && PokecubeCore.proxy.isSoundPlaying(here))
+        if (world.isRemote && PokecubeCore.proxy.isSoundPlaying(here))
         {
             PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
         }
@@ -132,9 +132,9 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
-        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
+        return world.getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
     }
 
     /** Called when you receive a TileEntityData packet for the location this
@@ -149,7 +149,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -204,12 +204,12 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void update()
     {
-        if (!worldObj.isRemote) return;
-        int power = worldObj.getStrongPower(pos);
+        if (!world.isRemote) return;
+        int power = world.getStrongPower(pos);
         here.set(this);
         if (power == 0)
         {
-            if (worldObj.isRemote && PokecubeCore.proxy.isSoundPlaying(here))
+            if (world.isRemote && PokecubeCore.proxy.isSoundPlaying(here))
                 PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
             return;
         }
@@ -243,7 +243,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

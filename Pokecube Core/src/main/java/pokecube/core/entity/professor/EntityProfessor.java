@@ -84,7 +84,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             EntityPlayer player = (EntityPlayer) e;
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemLuckyEgg)
             {
-                if (!this.worldObj.isRemote)
+                if (!this.world.isRemote)
                 {
                     if (this.type == ProfessorType.PROFESSOR) this.type = ProfessorType.HEALER;
                     else if (this.type == ProfessorType.HEALER) this.type = ProfessorType.PROFESSOR;
@@ -137,7 +137,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
     // 1.10
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (!worldObj.isRemote && hand == EnumHand.MAIN_HAND)
+        if (!world.isRemote && hand == EnumHand.MAIN_HAND)
         {
             if (type == ProfessorType.PROFESSOR)
             {
@@ -172,7 +172,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             else if (type == ProfessorType.HEALER)
             {
                 BlockPos pos = getPosition();
-                player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, worldObj, pos.getX(), pos.getY() + 1,
+                player.openGui(PokecubeCore.instance, Config.GUIPOKECENTER_ID, world, pos.getX(), pos.getY() + 1,
                         pos.getZ());
                 return true;
             }
@@ -241,7 +241,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
     {
         NBTTagCompound tag = new NBTTagCompound();
         this.writeEntityToNBT(tag);
-        new PacketBuffer(buffer).writeNBTTagCompoundToBuffer(tag);
+        new PacketBuffer(buffer).writeCompoundTag(tag);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
     {
         try
         {
-            NBTTagCompound tag = new PacketBuffer(additionalData).readNBTTagCompoundFromBuffer();
+            NBTTagCompound tag = new PacketBuffer(additionalData).readCompoundTag();
             this.readEntityFromNBT(tag);
         }
         catch (IOException e)

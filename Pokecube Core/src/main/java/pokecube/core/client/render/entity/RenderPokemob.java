@@ -10,7 +10,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -53,7 +53,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             f1 = (pokemob.getEvolutionTicks() + par2) / 200.0F;
             f2 = 0.0F;
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer worldrenderer = tessellator.getBuffer();
+            BufferBuilder worldrenderer = tessellator.getBuffer();
             RenderHelper.disableStandardItemLighting();
 
             if (f1 > 0.8F)
@@ -146,7 +146,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += (rand.nextDouble() - 0.5) * width;
                 loc.y += rand.nextDouble();
                 loc.z += (rand.nextDouble() - 0.5) * width;
-                PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.WATER_BUBBLE.getParticleName(), loc,
+                PokecubeMod.core.spawnParticle(entity.world, EnumParticleTypes.WATER_BUBBLE.getParticleName(), loc,
                         vel);
             }
             if (sealTag.getBoolean("Flames"))
@@ -154,7 +154,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += (rand.nextDouble() - 0.5) * width;
                 loc.y += rand.nextDouble();
                 loc.z += (rand.nextDouble() - 0.5) * width;
-                PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.FLAME.getParticleName(), loc, vel);
+                PokecubeMod.core.spawnParticle(entity.world, EnumParticleTypes.FLAME.getParticleName(), loc, vel);
             }
             // *
             if (sealTag.getBoolean("Leaves"))
@@ -165,7 +165,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += rand.nextGaussian() / 2;
                 loc.y += rand.nextGaussian() / 2;
                 loc.z += rand.nextGaussian() / 2;
-                PokecubeMod.core.spawnParticle(entity.worldObj, "leaf", loc, vel);
+                PokecubeMod.core.spawnParticle(entity.world, "leaf", loc, vel);
             }
             if (sealTag.hasKey("dye"))
             {
@@ -175,14 +175,14 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += width * rand.nextGaussian() / 2;
                 loc.y += width * rand.nextGaussian() / 2;
                 loc.z += width * rand.nextGaussian() / 2;
-                PokecubeMod.core.spawnParticle(entity.worldObj, "powder", loc, vel,
+                PokecubeMod.core.spawnParticle(entity.world, "powder", loc, vel,
                         ItemDye.DYE_COLORS[sealTag.getInteger("dye")] | 0xFF000000);
             }
         }
         float f1 = ((float) ticks * 5 + partialTick) / 200.0F;
         float f2 = 0.0F;
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer worldrenderer = tessellator.getBuffer();
+        BufferBuilder worldrenderer = tessellator.getBuffer();
         RenderHelper.disableStandardItemLighting();
 
         if (f1 > 0.8F)
@@ -390,7 +390,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         }
         if (time > 1)
         {
-            long t = Minecraft.getMinecraft().theWorld.getWorldTime() % 1000;
+            long t = Minecraft.getMinecraft().world.getWorldTime() % 1000;
             super.renderModel(entity, t / 3f, 0.6f, t, rotationYaw, rotationPitch, partialTicks);
         }
         else if (((IPokemob) entity).getStatus() == IMoveConstants.STATUS_SLP
@@ -405,9 +405,9 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     }
 
     @Override
-    protected void rotateCorpse(T par1EntityLiving, float par2, float par3, float par4)
+    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
     {
-        super.rotateCorpse(par1EntityLiving, par2, par3, par4);
+        super.applyRotations(par1EntityLiving, par2, par3, par4);
         if (((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP
                 || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
         {

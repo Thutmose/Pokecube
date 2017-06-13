@@ -74,7 +74,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -87,7 +87,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketPC message)

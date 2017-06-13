@@ -76,7 +76,7 @@ public class PacketAFA implements IMessage, IMessageHandler<PacketAFA, IMessage>
     {
         try
         {
-            data = new PacketBuffer(buf).readNBTTagCompoundFromBuffer();
+            data = new PacketBuffer(buf).readCompoundTag();
         }
         catch (IOException e)
         {
@@ -87,7 +87,7 @@ public class PacketAFA implements IMessage, IMessageHandler<PacketAFA, IMessage>
     @Override
     public void toBytes(ByteBuf buf)
     {
-        new PacketBuffer(buf).writeNBTTagCompoundToBuffer(data);
+        new PacketBuffer(buf).writeCompoundTag(data);
     }
 
 }

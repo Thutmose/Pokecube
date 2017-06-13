@@ -33,13 +33,13 @@ public class RecallCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokerecall";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokerecall <optional:name,cubes,stay,all>";
     }
@@ -124,11 +124,11 @@ public class RecallCommand extends CommandBase
         }
         if (num == 0)
         {
-            cSender.addChatMessage(new TextComponentTranslation("pokecube.recall.fail"));
+            cSender.sendMessage(new TextComponentTranslation("pokecube.recall.fail"));
         }
         else
         {
-            cSender.addChatMessage(new TextComponentTranslation("pokecube.recall.success", num));
+            cSender.sendMessage(new TextComponentTranslation("pokecube.recall.success", num));
         }
     }
 }

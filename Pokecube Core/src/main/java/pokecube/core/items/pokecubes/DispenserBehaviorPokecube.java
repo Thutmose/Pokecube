@@ -18,7 +18,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
     public ItemStack dispense(IBlockSource iblocksource, ItemStack itemstack)
     {
         FakePlayer player = PokecubeMod.getFakePlayer();
-        player.worldObj = iblocksource.getWorld();
+        player.world = iblocksource.getWorld();
         player.posX = iblocksource.getX();
         player.posY = iblocksource.getY() - player.getEyeHeight();
         player.posZ = iblocksource.getZ();

@@ -39,7 +39,7 @@ public class ActionFlash implements IMoveAction
         }
         else
         {
-            owner.addChatMessage(new TextComponentTranslation("pokemob.move.cooldown", user.getPokemonDisplayName(),
+            owner.sendMessage(new TextComponentTranslation("pokemob.move.cooldown", user.getPokemonDisplayName(),
                     new TextComponentTranslation(MovesUtils.getUnlocalizedMove(getMoveName()))));
         }
         return used;

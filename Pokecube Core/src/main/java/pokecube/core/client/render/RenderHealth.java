@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -109,17 +109,17 @@ public class RenderHealth
 
         if (PokecubeMod.core.getConfig().showOnlyFocused)
         {
-            Entity focused = getEntityLookedAt(mc.thePlayer);
+            Entity focused = getEntityLookedAt(mc.player);
             if (focused != null && focused instanceof EntityLivingBase && focused.isEntityAlive())
                 renderHealthBar((EntityLivingBase) focused, partialTicks, cameraEntity);
         }
         else
         {
-            WorldClient client = mc.theWorld;
+            WorldClient client = mc.world;
             Set<Entity> entities = ReflectionHelper.getPrivateValue(WorldClient.class, client,
                     new String[] { "entityList", "field_73032_d", "J" });
             for (Entity entity : entities)
-                if (entity != null && entity instanceof EntityLivingBase && entity != mc.thePlayer
+                if (entity != null && entity instanceof EntityLivingBase && entity != mc.player
                         && entity.isInRangeToRender3d(renderingVector.getX(), renderingVector.getY(),
                                 renderingVector.getZ())
                         && (entity.ignoreFrustumCheck || frustum.isBoundingBoxInFrustum(entity.getEntityBoundingBox()))
@@ -184,7 +184,7 @@ public class RenderHealth
                 GlStateManager.scale(-scale, -scale, scale);
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer buffer = tessellator.getBuffer();
+                BufferBuilder buffer = tessellator.getBuffer();
 
                 float padding = PokecubeMod.core.getConfig().backgroundPadding;
                 int bgHeight = PokecubeMod.core.getConfig().backgroundHeight;
@@ -209,8 +209,8 @@ public class RenderHealth
                 ITextComponent nameComp = pokemob.getPokemonDisplayName();
                 boolean nametag = pokemob.getPokemonAIState(IMoveConstants.TAMED);
                 nametag = nametag
-                        || StatsCollector.getCaptured(pokemob.getPokedexEntry(), Minecraft.getMinecraft().thePlayer) > 0
-                        || StatsCollector.getHatched(pokemob.getPokedexEntry(), Minecraft.getMinecraft().thePlayer) > 0;
+                        || StatsCollector.getCaptured(pokemob.getPokedexEntry(), Minecraft.getMinecraft().player) > 0
+                        || StatsCollector.getHatched(pokemob.getPokedexEntry(), Minecraft.getMinecraft().player) > 0;
                 if (!nametag)
                 {
                     nameComp.getStyle().setObfuscated(true);
@@ -381,7 +381,7 @@ public class RenderHealth
                     .getAtlasSprite(iBakedModel.getParticleTexture().getIconName());
             Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(7, DefaultVertexFormats.POSITION_TEX);
             buffer.pos((vertexX), vertexY + intV, 0.0D).tex(textureAtlasSprite.getMinU(), textureAtlasSprite.getMaxV())
                     .endVertex();
@@ -416,7 +416,7 @@ public class RenderHealth
                 lookVector.yCoord * finalDistance, lookVector.zCoord * finalDistance);
 
         Entity lookedEntity = null;
-        List<Entity> entitiesInBoundingBox = e.worldObj
+        List<Entity> entitiesInBoundingBox = e.world
                 .getEntitiesWithinAABBExcludingEntity(e,
                         e.getEntityBoundingBox().addCoord(lookVector.xCoord * finalDistance,
                                 lookVector.yCoord * finalDistance, lookVector.zCoord * finalDistance)
@@ -466,7 +466,7 @@ public class RenderHealth
         Vec3d look = e.getLookVec();
         if (look == null) return null;
 
-        return raycast(e.worldObj, vec, look, len);
+        return raycast(e.world, vec, look, len);
     }
 
     public static RayTraceResult raycast(World world, Vec3d origin, Vec3d ray, double len)

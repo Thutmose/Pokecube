@@ -161,7 +161,7 @@ public class AIAttack extends AIBase implements IAICombat
                         ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 try
                 {
-                    entityTarget.addChatMessage(message);
+                    entityTarget.sendMessage(message);
                 }
                 catch (Exception e)
                 {

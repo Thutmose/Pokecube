@@ -43,7 +43,7 @@ public class PokeInfo extends PlayerData
         if (this.pokemob != null || pokemob == null) resetPlayer(player);
         if (pokemob == null) return;
         this.pokemob = pokemob;
-        this.pokeInventory = new InventoryPlayerPokemob(this, player.worldObj);
+        this.pokeInventory = new InventoryPlayerPokemob(this, player.world);
         this.originalHeight = player.height;
         this.originalWidth = player.width;
         this.originalHP = player.getMaxHealth();
@@ -57,7 +57,7 @@ public class PokeInfo extends PlayerData
 
     public void resetPlayer(EntityPlayer player)
     {
-        if (pokemob == null && !player.worldObj.isRemote) return;
+        if (pokemob == null && !player.world.isRemote) return;
         player.eyeHeight = player.getDefaultEyeHeight();
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(originalHP);
         float height = originalHeight;
@@ -73,7 +73,7 @@ public class PokeInfo extends PlayerData
         stack = null;
         pokeInventory = null;
         save(player);
-        if (!player.worldObj.isRemote)
+        if (!player.world.isRemote)
         {
             new SendPacket(player);
         }
@@ -94,7 +94,7 @@ public class PokeInfo extends PlayerData
         }
         setFlying(player, true);
         save(player);
-        if (!player.worldObj.isRemote)
+        if (!player.world.isRemote)
         {
             new SendPacket(player);
         }
@@ -142,7 +142,7 @@ public class PokeInfo extends PlayerData
 
     public void save(EntityPlayer player)
     {
-        if (!player.worldObj.isRemote)
+        if (!player.world.isRemote)
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString(), getIdentifier());
     }
 
@@ -151,7 +151,7 @@ public class PokeInfo extends PlayerData
         if (pokemob == null) return;
         boolean fly = pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys();
         boolean check = set ? !player.capabilities.allowFlying : player.capabilities.allowFlying;
-        if (fly && check && player.worldObj.isRemote && !player.capabilities.isCreativeMode)
+        if (fly && check && player.world.isRemote && !player.capabilities.isCreativeMode)
         {
             player.capabilities.allowFlying = set;
             player.sendPlayerAbilities();
@@ -176,7 +176,7 @@ public class PokeInfo extends PlayerData
             Vec3d start = new Vec3d(player.posX, player.posY, player.posZ);
             Vec3d end = new Vec3d(player.posX, player.posY - h, player.posZ);
 
-            RayTraceResult position = player.worldObj.rayTraceBlocks(start, end, true, true, false);
+            RayTraceResult position = player.world.rayTraceBlocks(start, end, true, true, false);
 
             if (position != null)
             {

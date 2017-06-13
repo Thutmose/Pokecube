@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLiving;
@@ -304,7 +304,7 @@ public class GuiPokedex extends GuiScreen
                 float a = 1;
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder vertexbuffer = tessellator.getBuffer();
                 vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
                 vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
                 vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
@@ -586,7 +586,7 @@ public class GuiPokedex extends GuiScreen
     {
         Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         List<TeleDest> locations = PokecubeSerializer.getInstance()
-                .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                .getTeleports(minecraft.player.getCachedUniqueIdString());
 
         if (locations.size() == 0) { return; }
         TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -884,7 +884,7 @@ public class GuiPokedex extends GuiScreen
             GuiTeleport.instance().nextMove();
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                    .getTeleports(minecraft.player.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -900,7 +900,7 @@ public class GuiPokedex extends GuiScreen
             GuiTeleport.instance().previousMove();
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                    .getTeleports(minecraft.player.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -917,7 +917,7 @@ public class GuiPokedex extends GuiScreen
             {
                 volume = 1F;
             }
-            mc.thePlayer.playSound(pokedexEntry.getSoundEvent(), volume, 1.0F);
+            mc.player.playSound(pokedexEntry.getSoundEvent(), volume, 1.0F);
 
             nicknameTextField.setVisible(true);
             if (canEditPokemob())
@@ -986,7 +986,7 @@ public class GuiPokedex extends GuiScreen
                 {
                     Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                            .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                     if (locations.size() > 0)
                     {
@@ -1011,7 +1011,7 @@ public class GuiPokedex extends GuiScreen
             {
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1167,7 +1167,7 @@ public class GuiPokedex extends GuiScreen
         {
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                    .getTeleports(minecraft.player.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -1193,7 +1193,7 @@ public class GuiPokedex extends GuiScreen
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1208,7 +1208,7 @@ public class GuiPokedex extends GuiScreen
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1355,10 +1355,10 @@ public class GuiPokedex extends GuiScreen
             {
                 pokemob = (IPokemob) entity;
             }
-            if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
-                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
-                    || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0)
-                    && !mc.thePlayer.capabilities.isCreativeMode)
+            if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
+                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().player) > 0
+                    || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().player) > 0)
+                    && !mc.player.capabilities.isCreativeMode)
             {
 
                 if (entity instanceof IPokemob)

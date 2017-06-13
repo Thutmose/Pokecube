@@ -112,14 +112,14 @@ public class EventsHandlerClient
                 if (result.status == Status.OUTDATED)
                 {
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
+                    (event.player).sendMessage(mess);
                 }
                 else if (PokecubeMod.core.getConfig().loginmessage)
                 {
                     ITextComponent mess = getInfoMessage(result, "Pokecube Core");
-                    (event.player).addChatMessage(mess);
+                    (event.player).sendMessage(mess);
                     mess = getIssuesMessage(result);
-                    (event.player).addChatMessage(mess);
+                    (event.player).sendMessage(mess);
                 }
             }
         }
@@ -206,7 +206,7 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void clientTick(TickEvent.PlayerTickEvent event)
     {
-        if (event.phase == Phase.START || event.player != Minecraft.getMinecraft().thePlayer) return;
+        if (event.phase == Phase.START || event.player != Minecraft.getMinecraft().player) return;
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
@@ -389,7 +389,7 @@ public class EventsHandlerClient
             if ((event.getGui() instanceof GuiContainer))
             {
                 GuiContainer gui = (GuiContainer) event.getGui();
-                if (gui.mc.thePlayer == null || !GuiScreen.isAltKeyDown()) { return; }
+                if (gui.mc.player == null || !GuiScreen.isAltKeyDown()) { return; }
 
                 List<Slot> slots = gui.inventorySlots.inventorySlots;
                 int w = gui.width;
@@ -403,13 +403,13 @@ public class EventsHandlerClient
                 {
                     if (slot.getHasStack() && PokecubeManager.isFilled(slot.getStack()))
                     {
-                        IPokemob pokemob = getPokemobForRender(slot.getStack(), gui.mc.theWorld);
+                        IPokemob pokemob = getPokemobForRender(slot.getStack(), gui.mc.world);
                         if (pokemob == null) continue;
                         int x = (w - xSize) / 2;
                         int y = (h - ySize) / 2;
                         int i, j;
-                        i = slot.xDisplayPosition + 8;
-                        j = slot.yDisplayPosition + 10;
+                        i = slot.xPos + 8;
+                        j = slot.yPos + 10;
                         GL11.glPushMatrix();
                         GL11.glTranslatef(i + x, j + y, 0F);
                         EntityLiving entity = (EntityLiving) pokemob;
@@ -438,7 +438,7 @@ public class EventsHandlerClient
     {
         if (event.getType() == ElementType.HOTBAR)
         {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             if (player == null || !GuiScreen.isAltKeyDown()
                     || Minecraft.getMinecraft().currentScreen != null) { return; }
 

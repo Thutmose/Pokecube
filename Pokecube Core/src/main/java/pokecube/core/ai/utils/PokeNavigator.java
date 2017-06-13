@@ -56,7 +56,7 @@ public class PokeNavigator extends PathNavigate
     {
         super(entity, world);
         this.theEntity = entity;
-        this.worldObj = world;
+        this.world = world;
         this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
         pokemob = (IPokemob) entity;
         canSwim = true;
@@ -111,8 +111,8 @@ public class PokeNavigator extends PathNavigate
         else if (inWater && this.canSwim)
         {
             int i = (int) this.theEntity.posY;
-            Block block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
-                    MathHelper.floor_double(this.theEntity.posZ))).getBlock();
+            Block block = this.world.getBlockState(new BlockPos(MathHelper.floor(this.theEntity.posX), i,
+                    MathHelper.floor(this.theEntity.posZ))).getBlock();
             int j = 0;
 
             do
@@ -120,8 +120,8 @@ public class PokeNavigator extends PathNavigate
                 if (block != Blocks.FLOWING_WATER && block != Blocks.WATER) { return i; }
 
                 ++i;
-                block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
-                        MathHelper.floor_double(this.theEntity.posZ))).getBlock();
+                block = this.world.getBlockState(new BlockPos(MathHelper.floor(this.theEntity.posX), i,
+                        MathHelper.floor(this.theEntity.posZ))).getBlock();
                 ++j;
             }
             while (j <= 16);
@@ -211,8 +211,8 @@ public class PokeNavigator extends PathNavigate
         // for (int i = 0; i < dist; i++)
         // {
         // v1.set(v).add(dir.x * i, dir.y * i - 1, dir.z * i);
-        // if ((!canFly && pather.getBlockPathWeight(worldObj, v1) >= 40)
-        // || !pather.fits(worldObj, v1.addTo(0, 1, 0), null)) { return false; }
+        // if ((!canFly && pather.getBlockPathWeight(world, v1) >= 40)
+        // || !pather.fits(world, v1.addTo(0, 1, 0), null)) { return false; }
         // }
         // return true;
     }
@@ -253,8 +253,8 @@ public class PokeNavigator extends PathNavigate
                         this.currentPath.getCurrentPathIndex());
 
                 if (vec3d.yCoord > vec3d1.yCoord && !this.theEntity.onGround
-                        && MathHelper.floor_double(vec3d.xCoord) == MathHelper.floor_double(vec3d1.xCoord)
-                        && MathHelper.floor_double(vec3d.zCoord) == MathHelper.floor_double(vec3d1.zCoord))
+                        && MathHelper.floor(vec3d.xCoord) == MathHelper.floor(vec3d1.xCoord)
+                        && MathHelper.floor(vec3d.zCoord) == MathHelper.floor(vec3d1.zCoord))
                 {
                     this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
                 }
@@ -274,7 +274,7 @@ public class PokeNavigator extends PathNavigate
                         dy = pointT.y - pointT.yCoord;
                         dz = pointT.z - pointT.zCoord;
                     }
-                    AxisAlignedBB axisalignedbb = this.worldObj.getBlockState(blockpos).getBoundingBox(this.worldObj,
+                    AxisAlignedBB axisalignedbb = this.world.getBlockState(blockpos).getBoundingBox(this.world,
                             blockpos);
                     vec3d2 = vec3d2.subtract(0.0D, 1.0D - axisalignedbb.maxY, 0.0D);
                     this.theEntity.getMoveHelper().setMoveTo(vec3d2.xCoord + dx, vec3d2.yCoord + dy, vec3d2.zCoord + dz,
@@ -309,8 +309,8 @@ public class PokeNavigator extends PathNavigate
             this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
         }
 
-        int k = MathHelper.ceiling_float_int(this.theEntity.width);
-        int l = MathHelper.ceiling_float_int(this.theEntity.height);
+        int k = MathHelper.ceil(this.theEntity.width);
+        int l = MathHelper.ceil(this.theEntity.height);
         int i1 = k;
 
         for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
@@ -334,14 +334,14 @@ public class PokeNavigator extends PathNavigate
     @Override
     public void removeSunnyPath()
     {
-        if (!this.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(this.theEntity.posX),
-                (int) (this.theEntity.posY + 0.5D), MathHelper.floor_double(this.theEntity.posZ))))
+        if (!this.world.canBlockSeeSky(new BlockPos(MathHelper.floor(this.theEntity.posX),
+                (int) (this.theEntity.posY + 0.5D), MathHelper.floor(this.theEntity.posZ))))
         {
             for (int i = 0; i < this.getPath().getCurrentPathLength(); ++i)
             {
                 PathPoint pathpoint = this.getPath().getPathPointFromIndex(i);
 
-                if (this.worldObj.canBlockSeeSky(new BlockPos(pathpoint.xCoord, pathpoint.yCoord, pathpoint.zCoord)))
+                if (this.world.canBlockSeeSky(new BlockPos(pathpoint.xCoord, pathpoint.yCoord, pathpoint.zCoord)))
                 {
                     this.getPath().setCurrentPathLength(i - 1);
                     return;
@@ -396,7 +396,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean tryMoveToXYZ(double x, double y, double z, double speed)
     {
-        Path PathHeap = this.getPathToXYZ(MathHelper.floor_double(x), ((int) y), MathHelper.floor_double(z));
+        Path PathHeap = this.getPathToXYZ(MathHelper.floor(x), ((int) y), MathHelper.floor(z));
         return this.setPath(PathHeap, speed);
     }
 

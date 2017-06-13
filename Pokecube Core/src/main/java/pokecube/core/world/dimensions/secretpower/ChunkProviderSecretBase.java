@@ -9,23 +9,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome.SpawnListEntry;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 
 public class ChunkProviderSecretBase implements IChunkGenerator
 {
 
-    private final World worldObj;
+    private final World world;
 
     public ChunkProviderSecretBase(World world)
     {
-        this.worldObj = world;
+        this.world = world;
     }
 
     @Override
     public Chunk provideChunk(int x, int z)
     {
         // Void world
-        return new Chunk(worldObj, x, z);
+        return new Chunk(world, x, z);
     }
 
     @Override
@@ -61,6 +61,13 @@ public class ChunkProviderSecretBase implements IChunkGenerator
     @Override
     public void recreateStructures(Chunk chunkIn, int x, int z)
     {
+    }
+
+    @Override
+    public boolean func_193414_a(World p_193414_1_, String p_193414_2_, BlockPos p_193414_3_)
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

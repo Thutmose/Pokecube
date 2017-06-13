@@ -170,7 +170,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         // hatches
         if (!getPokemonAIState(IMoveConstants.TAMED))
         {
-            int exp = SpawnHandler.getSpawnXp(worldObj, v1.set(this), getPokedexEntry());
+            int exp = SpawnHandler.getSpawnXp(world, v1.set(this), getPokedexEntry());
             if (getExp() < exp)
             {
                 int n = new Random().nextInt(exp - getExp()) / 3 + 1;

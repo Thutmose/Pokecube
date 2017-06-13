@@ -63,7 +63,7 @@ public class AIHungry extends AIBase
     }
 
     final EntityLiving entity;
-    // final World worldObj;
+    // final World world;
     final EntityItem   berry;
     final double       distance;
     IHungrymob         hungrymob;
@@ -566,7 +566,7 @@ public class AIHungry extends AIBase
     // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
     public boolean isGoodSleepingSpot(ChunkCoordinate c)
     {
-        float light = entity.getBrightness(0);
+        float light = entity.getBrightness();
         List<TimePeriod> active = pokemob.getPokedexEntry().activeTimes();
         if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 10) return false;
 

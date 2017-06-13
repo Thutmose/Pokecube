@@ -34,7 +34,7 @@ public class MoveCurse extends Move_Basic
                     if (!move.canceled)
                     {
                         target.addChange(CHANGE_CURSE);
-                        ((EntityLivingBase) packet.attacker).attackEntityFrom(DamageSource.magic,
+                        ((EntityLivingBase) packet.attacker).attackEntityFrom(DamageSource.MAGIC,
                                 ((EntityLivingBase) packet.attacker).getMaxHealth() / 2);
                     }
                 }

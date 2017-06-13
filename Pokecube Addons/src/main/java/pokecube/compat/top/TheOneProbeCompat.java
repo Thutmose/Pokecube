@@ -41,7 +41,7 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
             PacketBuffer buffer = new PacketBuffer(buf);
             have = buffer.readInt();
             killed = buffer.readInt();
-            entry = Database.getEntry(buffer.readStringFromBuffer(20));
+            entry = Database.getEntry(buffer.readString(20));
         }
 
         public Element(IPokemob pokemob, EntityPlayer player)

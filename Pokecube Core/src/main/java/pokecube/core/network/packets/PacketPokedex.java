@@ -140,7 +140,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -153,7 +153,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketPokedex message)
@@ -186,7 +186,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 {
                     final Map<PokedexEntry, Float> rates = Maps.newHashMap();
                     final Vector3 pos = Vector3.getNewVector().set(player);
-                    final SpawnCheck checker = new SpawnCheck(pos, player.worldObj);
+                    final SpawnCheck checker = new SpawnCheck(pos, player.world);
                     ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
                     for (PokedexEntry e : Database.spawnables)
                     {
@@ -303,7 +303,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         {
             Vector4 location = new Vector4(message.data);
             PokecubeSerializer.getInstance().unsetTeleport(location, player.getCachedUniqueIdString());
-            player.addChatMessage(new TextComponentString("Removed The location " + location.toIntString()));
+            player.sendMessage(new TextComponentString("Removed The location " + location.toIntString()));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;
@@ -313,7 +313,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             String name = message.data.getString("N");
             Vector4 location = new Vector4(message.data);
             PokecubeSerializer.getInstance().setTeleport(location, player.getCachedUniqueIdString(), name);
-            player.addChatMessage(
+            player.sendMessage(
                     new TextComponentString("Set The location " + location.toIntString() + " as " + name));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
@@ -345,14 +345,14 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             {
                 if (inspected)
                 {
-                    player.addChatMessage(new TextComponentTranslation("pokedex.inspect.available"));
+                    player.sendMessage(new TextComponentTranslation("pokedex.inspect.available"));
                 }
             }
             else
             {
                 if (!inspected)
                 {
-                    player.addChatMessage(new TextComponentTranslation("pokedex.inspect.nothing"));
+                    player.sendMessage(new TextComponentTranslation("pokedex.inspect.nothing"));
                 }
                 player.closeScreen();
             }

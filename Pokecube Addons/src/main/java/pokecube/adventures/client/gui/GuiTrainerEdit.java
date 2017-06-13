@@ -71,7 +71,7 @@ public class GuiTrainerEdit extends GuiScreen
         else if (guibutton.id == 2)
         {
             sendChooseToServer();
-            CompatWrapper.sendChatMessage(mc.thePlayer, new TextComponentString(I18n.format("gui.trainer.saved")));
+            CompatWrapper.sendChatMessage(mc.player, new TextComponentString(I18n.format("gui.trainer.saved")));
         }
         else if (guibutton.id == 5)
         {
@@ -83,7 +83,7 @@ public class GuiTrainerEdit extends GuiScreen
         {
             resetTeam = true;
             sendChooseToServer();
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             resetTeam = false;
         }
         else if (guibutton.id == 7)
@@ -91,7 +91,7 @@ public class GuiTrainerEdit extends GuiScreen
             PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEKILLTRAINER);
             packet.data.setInteger("I", trainer.getEntityId());
             PokecubeMod.packetPipeline.sendToServer(packet);
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
         }
         else
         {
@@ -160,7 +160,7 @@ public class GuiTrainerEdit extends GuiScreen
             GL11.glPushMatrix();
             GL11.glTranslated(i1, j1, z);
             GL11.glScaled(8, 8, 8);
-            Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, stack, TransformType.GUI);
+            Minecraft.getMinecraft().getItemRenderer().renderItem(mc.player, stack, TransformType.GUI);
             GL11.glPopMatrix();
         }
 
@@ -325,7 +325,7 @@ public class GuiTrainerEdit extends GuiScreen
                         {
                             level = 1;
                         }
-                        ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.worldObj, level);
+                        ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.world, level);
                         trainer.setPokemob(i, newMob);
                         textFieldPokemobs[i].setText(entry.getName());
                     }
@@ -398,7 +398,7 @@ public class GuiTrainerEdit extends GuiScreen
                 if (entry != null && entry != getEntry(i))
                 {
                     int level = Integer.parseInt(textFieldLevels[i].getText());
-                    ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.worldObj, level);
+                    ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.world, level);
                     trainer.setPokemob(i, newMob);
                     textFieldPokemobs[i].setText(entry.getName());
                 }

@@ -790,7 +790,7 @@ public class PokecubeItems extends Items
                     checks.put(name, true);
                 }
                 if (key == null) return true;
-                for (IProperty<?> prop : input.getPropertyNames())
+                for (IProperty<?> prop : input.getPropertyKeys())
                 {
                     if (prop.getName().equals(key))
                     {

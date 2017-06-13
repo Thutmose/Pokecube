@@ -89,7 +89,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
                     EntityItem entityitem = new EntityItem(worldIn, pos.getX() + d0, pos.getY() + d1, pos.getZ() + d2,
                             stack);
                     entityitem.setDefaultPickupDelay();
-                    worldIn.spawnEntityInWorld(entityitem);
+                    worldIn.spawnEntity(entityitem);
                 }
             }
         }

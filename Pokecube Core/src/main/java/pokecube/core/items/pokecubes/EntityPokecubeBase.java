@@ -86,7 +86,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
-        if (source == DamageSource.outOfWorld)
+        if (source == DamageSource.OUT_OF_WORLD)
         {
             if (PokecubeManager.isFilled(getEntityItem()))
             {
@@ -119,7 +119,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     public Entity getReleased()
     {
         int id = getDataManager().get(ENTITYID);
-        Entity ret = worldObj.getEntityByID(id);
+        Entity ret = world.getEntityByID(id);
         return ret;
     }
 
@@ -156,7 +156,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     @Override
     public void setThrowableHeading(double x, double y, double z, float velocity, float inacurracy)
     {
-        float f2 = MathHelper.sqrt_double(x * x + y * y + z * z);
+        float f2 = MathHelper.sqrt(x * x + y * y + z * z);
         x /= f2;
         y /= f2;
         z /= f2;
@@ -169,7 +169,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         this.motionX = x;
         this.motionY = y;
         this.motionZ = z;
-        float f3 = MathHelper.sqrt_double(x * x + z * z);
+        float f3 = MathHelper.sqrt(x * x + z * z);
         this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
         this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(y, f3) * 180.0D / Math.PI);
         this.ticksInGround = 0;
@@ -186,7 +186,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
         {
-            float f = MathHelper.sqrt_double(x * x + z * z);
+            float f = MathHelper.sqrt(x * x + z * z);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
             this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(y, f) * 180.0D / Math.PI);
             this.prevRotationPitch = this.rotationPitch;
@@ -206,12 +206,12 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     protected void captureFailed()
     {
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), world);
 
         if (entity1 != null)
         {
             ((Entity) entity1).setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
-            boolean ret = worldObj.spawnEntityInWorld((Entity) entity1);
+            boolean ret = world.spawnEntity((Entity) entity1);
 
             if (ret == false)
             {
@@ -228,7 +228,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
             {
                 ITextComponent mess = new TextComponentTranslation("pokecube.missed", entity1.getPokemonDisplayName());
-                ((EntityPlayer) shootingEntity).addChatMessage(mess);
+                ((EntityPlayer) shootingEntity).sendMessage(mess);
                 ((EntityCreature) entity1).setAttackTarget(shootingEntity);
             }
         }
@@ -237,7 +237,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     protected boolean captureSucceed()
     {
         PokecubeManager.setTilt(getEntityItem(), -1);
-        IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), world);
         if (mob == null)
         {
             new NullPointerException("Mob is null").printStackTrace();
@@ -251,7 +251,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
         {
             ITextComponent mess = new TextComponentTranslation("pokecube.caught", mob.getPokemonDisplayName());
-            ((EntityPlayer) shootingEntity).addChatMessage(mess);
+            ((EntityPlayer) shootingEntity).sendMessage(mess);
             this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
             this.playSound(POKECUBESOUND, 1, 1);
         }
@@ -313,22 +313,22 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     public IPokemob sendOut()
     {
-        if (worldObj.isRemote || isReleasing()) { return null; }
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        if (world.isRemote || isReleasing()) { return null; }
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), world);
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
             Vector3 dv = v1.set(motionX, motionY, motionZ);
-            v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
+            v = Vector3.getNextSurfacePoint(world, v, dv, Math.max(2, dv.mag()));
             if (v == null) v = v0.set(this);
             v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
-            IBlockState state = v.getBlockState(worldObj);
+            IBlockState state = v.getBlockState(world);
             if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
             EntityLiving entity = (EntityLiving) entity1;
             entity.fallDistance = 0;
             v.moveEntity(((Entity) entity1));
 
-            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, worldObj, entity1);
+            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, world, entity1);
             if (MinecraftForge.EVENT_BUS.post(evt))
             {
                 if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
@@ -339,7 +339,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 return null;
             }
 
-            worldObj.spawnEntityInWorld((Entity) entity1);
+            world.spawnEntity((Entity) entity1);
             entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
@@ -355,13 +355,13 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             if (((EntityLiving) entity1).getHealth() <= 0)
             {
                 // notify the mob is dead
-                this.worldObj.setEntityState((Entity) entity1, (byte) 3);
+                this.world.setEntityState((Entity) entity1, (byte) 3);
             }
             setReleased((Entity) entity1);
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
-            evt = new SendOut.Post(entity1.getPokedexEntry(), v, worldObj, entity1);
+            evt = new SendOut.Post(entity1.getPokedexEntry(), v, world, entity1);
             MinecraftForge.EVENT_BUS.post(evt);
         }
         else

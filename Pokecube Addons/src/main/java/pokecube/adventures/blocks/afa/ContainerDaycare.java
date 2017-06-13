@@ -31,7 +31,7 @@ public class ContainerDaycare extends Container
     }
 
     public TileEntityDaycare tile;
-    public World             worldObj;
+    public World             world;
     public int               range = 4;
     public BlockPos          pos;
 
@@ -39,7 +39,7 @@ public class ContainerDaycare extends Container
     {
         super();
         this.tile = tile;
-        this.worldObj = tile.getWorld();
+        this.world = tile.getWorld();
         this.pos = tile.getPos();
         bindInventories(playerInv);
     }
@@ -68,7 +68,7 @@ public class ContainerDaycare extends Container
     @Override
     public boolean canInteractWith(EntityPlayer playerIn)
     {
-        return tile.isUseableByPlayer(playerIn);
+        return tile.isUsableByPlayer(playerIn);
     }
 
     protected void clearSlots()

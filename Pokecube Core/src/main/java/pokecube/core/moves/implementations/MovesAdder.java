@@ -388,10 +388,10 @@ public class MovesAdder implements IMoveConstants
             // public void clientAnimation(Entity attacker, Vector3 target,
             // Entity attacked,
             // IWorldEventListener world) {
-            // attacked.worldObj.spawnEntityInWorld(new
-            // EntityWhip(attacked.worldObj, (EntityPokemob) attacker, 1));
-            // attacked.worldObj.spawnEntityInWorld(new
-            // EntityWhip(attacked.worldObj, (EntityPokemob) attacker, 2));
+            // attacked.world.spawnEntity(new
+            // EntityWhip(attacked.world, (EntityPokemob) attacker, 1));
+            // attacked.world.spawnEntity(new
+            // EntityWhip(attacked.world, (EntityPokemob) attacker, 2));
             // }
         }.setSound("random.bow"));
         registerMove(new Move_Basic(MOVE_RAZORLEAF).setMultiTarget());

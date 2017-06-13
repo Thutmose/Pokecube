@@ -97,7 +97,7 @@ public class Regirock extends Condition implements ISpecialCaptureCondition, ISp
         if (!check)
         {
             String message = "msg.reginotlookright.txt";
-            trainer.addChatMessage(new TextComponentTranslation(message));
+            trainer.sendMessage(new TextComponentTranslation(message));
             return false;
         }
         return true;

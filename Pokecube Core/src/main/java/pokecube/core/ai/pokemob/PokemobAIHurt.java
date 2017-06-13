@@ -75,8 +75,8 @@ public class PokemobAIHurt extends EntityAIBase
         {
             return false;
         }
-        int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
-        int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
+        int i = pathpoint.xCoord - MathHelper.floor(p_75295_1_.posX);
+        int j = pathpoint.zCoord - MathHelper.floor(p_75295_1_.posZ);
         return i * i + j * j <= 2.25D;
     }
 
@@ -154,8 +154,8 @@ public class PokemobAIHurt extends EntityAIBase
             else if (p_75296_1_ instanceof EntityPlayer && !p_75296_2_
                     && ((EntityPlayer) p_75296_1_).capabilities.disableDamage) { return false; }
 
-            if (!this.taskOwner.isWithinHomeDistanceFromPosition(new BlockPos(MathHelper.floor_double(p_75296_1_.posX),
-                    MathHelper.floor_double(p_75296_1_.posY), MathHelper.floor_double(p_75296_1_.posZ))))
+            if (!this.taskOwner.isWithinHomeDistanceFromPosition(new BlockPos(MathHelper.floor(p_75296_1_.posX),
+                    MathHelper.floor(p_75296_1_.posY), MathHelper.floor(p_75296_1_.posZ))))
             {
                 return false;
             }

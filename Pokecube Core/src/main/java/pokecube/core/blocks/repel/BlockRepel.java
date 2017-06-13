@@ -66,13 +66,13 @@ public class BlockRepel extends Block implements ITileEntityProvider
             repel.invalidate();
             repel.distance = (byte) Math.max(5, heldStack.getItemDamage());
             repel.validate();
-            playerIn.addChatMessage(new TextComponentString("" + repel.distance));
+            playerIn.sendMessage(new TextComponentString("" + repel.distance));
         }
         if (te instanceof TileEntityRepel && heldStack != null && heldStack.getItem() instanceof ItemPokedex
                 && !worldIn.isRemote)
         {
             TileEntityRepel repel = (TileEntityRepel) te;
-            playerIn.addChatMessage(new TextComponentString("" + repel.distance));
+            playerIn.sendMessage(new TextComponentString("" + repel.distance));
         }
 
         return true;

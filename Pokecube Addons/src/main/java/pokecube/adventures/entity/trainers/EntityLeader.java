@@ -65,7 +65,7 @@ public class EntityLeader extends EntityTrainer
         if (genders == 2) male = false;
         if (genders == 3) male = Math.random() < 0.5;
 
-        TypeTrainer.getRandomTeam(this, level, pokecubes, worldObj);
+        TypeTrainer.getRandomTeam(this, level, pokecubes, world);
         setTypes();
         trades = false;
     }
@@ -79,7 +79,7 @@ public class EntityLeader extends EntityTrainer
         {
             if (!reward.isEmpty()) reward.set(0, player.getHeldItem(hand).copy());
             else reward.add(player.getHeldItem(hand).copy());
-            if (!worldObj.isRemote) player.addChatMessage(
+            if (!world.isRemote) player.sendMessage(
                     new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
             this.setHeldItem(EnumHand.OFF_HAND, reward.get(0));
         }

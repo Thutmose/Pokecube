@@ -18,7 +18,7 @@ public class TileEntityRepel extends TileEntity implements ITickable
     public TileEntityRepel() { }
     
     public boolean addForbiddenSpawningCoord(){
-    	return SpawnHandler.addForbiddenSpawningCoord(pos, worldObj.provider.getDimension(), distance);
+    	return SpawnHandler.addForbiddenSpawningCoord(pos, world.provider.getDimension(), distance);
     }
     
     @Override
@@ -39,14 +39,14 @@ public class TileEntityRepel extends TileEntity implements ITickable
     }
 
     public boolean removeForbiddenSpawningCoord(){
-    	return SpawnHandler.removeForbiddenSpawningCoord(pos, worldObj.provider.getDimension());
+    	return SpawnHandler.removeForbiddenSpawningCoord(pos, world.provider.getDimension());
     }
     
     @Override
     public void update()
     {
-        if (worldObj.isRemote) return;
-        int power = worldObj.getStrongPower(getPos());
+        if (world.isRemote) return;
+        int power = world.getStrongPower(getPos());
         if (power != 0 && enabled)
         {
             enabled = false;

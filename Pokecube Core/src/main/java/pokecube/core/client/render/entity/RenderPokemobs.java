@@ -106,11 +106,11 @@ public class RenderPokemobs extends RenderPokemob
                     if (claz == EntityPlayerSP.class)
                     {
                         claz = EntityOtherPlayerMP.class;
-                        to = new EntityOtherPlayerMP(entity.worldObj, (((EntityPlayerSP) from).getGameProfile()));
+                        to = new EntityOtherPlayerMP(entity.world, (((EntityPlayerSP) from).getGameProfile()));
                     }
                     else
                     {
-                        to = claz.getConstructor(World.class).newInstance(from.worldObj);
+                        to = claz.getConstructor(World.class).newInstance(from.world);
                     }
                     EntityTools.copyEntityData(to, from);
                     EntityTools.copyEntityTransforms(to, entity);

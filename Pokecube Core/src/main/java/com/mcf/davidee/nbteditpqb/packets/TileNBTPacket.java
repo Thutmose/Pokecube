@@ -52,12 +52,12 @@ public class TileNBTPacket implements IMessage {
 				player.getServerWorld().addScheduledTask(new Runnable() {
 					@Override
 					public void run() {
-						TileEntity te = player.worldObj.getTileEntity(packet.pos);
+						TileEntity te = player.world.getTileEntity(packet.pos);
 						if (te != null && NBTEdit.proxy.checkPermission(player)) {
 							try {
 								te.readFromNBT(packet.tag);
 								te.markDirty();// Ensures changes gets saved to disk later on.
-								if (te.hasWorldObj() && te.getWorld() instanceof WorldServer) {
+								if (te.hasWorld() && te.getWorld() instanceof WorldServer) {
 									((WorldServer) te.getWorld()).getPlayerChunkMap().markBlockForUpdate(packet.pos);// Broadcast changes.
 								}
 								NBTEdit.log(Level.TRACE, player.getName() + " edited a tag -- Tile Entity at " + packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ());

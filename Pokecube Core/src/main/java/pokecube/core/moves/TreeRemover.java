@@ -34,7 +34,7 @@ public class TreeRemover
         // dirtTypes.add(Blocks.DIRT);
     }
 
-    World         worldObj;
+    World         world;
     Vector3       centre;
 
     List<Vector3> blocks  = new LinkedList<Vector3>();
@@ -42,7 +42,7 @@ public class TreeRemover
 
     public TreeRemover(World world, Vector3 pos)
     {
-        worldObj = world;
+        world = world;
         centre = pos;
     }
 
@@ -66,9 +66,9 @@ public class TreeRemover
                 for (int k = -1; k < 6; k++)
                 {
                     temp.set(centre).addTo(i, k, j);
-                    if (PokecubeTerrainChecker.isPlant(temp.getBlockState(worldObj)))
+                    if (PokecubeTerrainChecker.isPlant(temp.getBlockState(world)))
                     {
-                        temp.breakBlock(worldObj, true);
+                        temp.breakBlock(world, true);
                     }
                 }
     }
@@ -78,7 +78,7 @@ public class TreeRemover
         int ret = 0;
         for (Vector3 v : blocks)
         {
-            if (!count) v.breakBlock(worldObj, true);
+            if (!count) v.breakBlock(world, true);
             ret++;
         }
         return ret;
@@ -107,15 +107,15 @@ public class TreeRemover
         int k = -1;
         Vector3 temp = Vector3.getNewVector();
 
-        if (PokecubeTerrainChecker.isWood(temp.set(centre).getBlockState(worldObj)))
+        if (PokecubeTerrainChecker.isWood(temp.set(centre).getBlockState(world)))
         {
             boolean valid = false;
             while (centre.intY() + k > 0)
             {
-                if (PokecubeTerrainChecker.isWood(temp.set(centre).addTo(0, k, 0).getBlockState(worldObj)))
+                if (PokecubeTerrainChecker.isWood(temp.set(centre).addTo(0, k, 0).getBlockState(world)))
                 {
                 }
-                else if (PokecubeTerrainChecker.isDirt(temp.set(centre).addTo(0, k, 0).getBlockState(worldObj)))
+                else if (PokecubeTerrainChecker.isDirt(temp.set(centre).addTo(0, k, 0).getBlockState(world)))
                 {
                     valid = true;
                 }
@@ -144,7 +144,7 @@ public class TreeRemover
                 for (int k = -1; k <= 1; k++)
                 {
                     temp.set(prev).addTo(i, k, j);
-                    if (PokecubeTerrainChecker.isWood(temp.getBlockState(worldObj)))
+                    if (PokecubeTerrainChecker.isWood(temp.getBlockState(world)))
                     {
                         tempList.add(temp.copy());
                         ret = true;

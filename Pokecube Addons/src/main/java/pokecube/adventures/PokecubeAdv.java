@@ -128,6 +128,11 @@ public class PokecubeAdv
         if (conf.legendaryConditions) new LegendaryConditions();
         RecipeHandler.register();
         DBLoader.load();
+        registerAchieves();
+    }
+    
+    private void registerAchieves()
+    {
         int x = -3;
         int y = -2;
         Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,
@@ -147,6 +152,7 @@ public class PokecubeAdv
         }
     }
 
+    
     @EventHandler
     public void preInit(FMLPreInitializationEvent e)
     {

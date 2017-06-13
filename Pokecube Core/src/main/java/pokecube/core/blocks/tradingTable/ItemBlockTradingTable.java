@@ -2,7 +2,6 @@ package pokecube.core.blocks.tradingTable;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -28,10 +27,10 @@ public class ItemBlockTradingTable extends ItemBlock
     @SideOnly(Side.CLIENT)
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        subItems.add(new ItemStack(itemIn, 1, 0));
-        subItems.add(new ItemStack(itemIn, 1, 8));
+        subItems.add(new ItemStack(this, 1, 0));
+        subItems.add(new ItemStack(this, 1, 8));
     }
 
     /** Returns the unlocalized name of this item. This version accepts an

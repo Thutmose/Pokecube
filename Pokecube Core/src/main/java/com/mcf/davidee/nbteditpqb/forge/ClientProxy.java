@@ -18,7 +18,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -92,7 +92,7 @@ public class ClientProxy extends CommonProxy {
 	public void sendMessage(EntityPlayer player, String message, TextFormatting color) {
 		ITextComponent component = new TextComponentString(message);
 		component.getStyle().setColor(color);
-		Minecraft.getMinecraft().thePlayer.addChatMessage(component);
+		Minecraft.getMinecraft().player.sendMessage(component);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -109,7 +109,7 @@ public class ClientProxy extends CommonProxy {
 				int x = screen.getBlockX();
 				int y = screen.y;
 				int z = screen.z;
-				World world = Minecraft.getMinecraft().theWorld;
+				World world = Minecraft.getMinecraft().world;
 				BlockPos pos = new BlockPos(x, y, z);
 				IBlockState state = world.getBlockState(pos);
 				Block block = world.getBlockState(pos).getBlock();
@@ -157,7 +157,7 @@ public class ClientProxy extends CommonProxy {
 		GlStateManager.depthMask(false);
 
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 
 		worldRenderer.begin(3, DefaultVertexFormats.POSITION_COLOR);
 		worldRenderer.pos(aabb.minX, aabb.minY, aabb.minZ);

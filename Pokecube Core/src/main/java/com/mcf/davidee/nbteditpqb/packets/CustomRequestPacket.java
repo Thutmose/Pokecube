@@ -33,7 +33,7 @@ public class CustomRequestPacket implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         this.entityID = buf.readInt();
-        customName = new PacketBuffer(buf).readStringFromBuffer(30);
+        customName = new PacketBuffer(buf).readString(30);
     }
 
     @Override

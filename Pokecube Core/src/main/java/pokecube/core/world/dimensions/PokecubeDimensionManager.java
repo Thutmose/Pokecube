@@ -276,7 +276,7 @@ public class PokecubeDimensionManager
     public void playerChangeDimension(PlayerChangedDimensionEvent event)
     {
         ((EntityPlayerMP) event.player).connection.sendPacket(
-                new SPacketWorldBorder(event.player.worldObj.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
+                new SPacketWorldBorder(event.player.world.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
     }
 
     @SubscribeEvent
@@ -286,7 +286,7 @@ public class PokecubeDimensionManager
         if (!world.isRemote)
         {
             ((EntityPlayerMP) event.player).connection.sendPacket(new SPacketWorldBorder(
-                    event.player.worldObj.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
+                    event.player.world.getWorldBorder(), SPacketWorldBorder.Action.INITIALIZE));
         }
     }
 

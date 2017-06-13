@@ -130,7 +130,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             PacketBuffer buffer = new PacketBuffer(data);
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setTag("g", list);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
     }
 
@@ -140,7 +140,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         PacketBuffer buffer = new PacketBuffer(data);
         try
         {
-            NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
+            NBTTagCompound tag = buffer.readCompoundTag();
             NBTTagList list = (NBTTagList) tag.getTag("g");
             IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
             IMobGenetics.GENETICS_CAP.readNBT(genes, null, list);

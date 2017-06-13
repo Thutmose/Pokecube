@@ -54,18 +54,18 @@ public class GuiPC extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (mc.thePlayer.getEntityWorld().isRemote)
+        if (mc.player.getEntityWorld().isRemote)
         {
             if (guibutton.id == 5 && cont.pcTile != null)// Toggle Bound
             {
                 cont.pcTile.toggleBound();
-                mc.thePlayer.closeScreen();
+                mc.player.closeScreen();
                 return;
             }
             if (guibutton.id == 8 && cont.pcTile != null)// Bind PC to self
             {
-                cont.pcTile.setBoundOwner(mc.thePlayer);
-                mc.thePlayer.closeScreen();
+                cont.pcTile.setBoundOwner(mc.player);
+                mc.player.closeScreen();
                 return;
             }
 
@@ -137,12 +137,12 @@ public class GuiPC extends GuiContainer
                     buttonList.get(6).enabled = release;
                     buttonList.get(6).visible = release;
                 }
-                mc.thePlayer.closeScreen();
+                mc.player.closeScreen();
             }
             else
             {
                 cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
-                        mc.thePlayer.inventory);
+                        mc.player.inventory);
                 textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
@@ -300,7 +300,7 @@ public class GuiPC extends GuiContainer
         keyTyped2(par1, par2);
         if (par2 == 1)
         {
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             return;
         }
 
@@ -382,9 +382,9 @@ public class GuiPC extends GuiContainer
     @Override
     public void onGuiClosed()
     {
-        if (this.mc.thePlayer != null)
+        if (this.mc.player != null)
         {
-            this.inventorySlots.onContainerClosed(this.mc.thePlayer);
+            this.inventorySlots.onContainerClosed(this.mc.player);
         }
     }
 

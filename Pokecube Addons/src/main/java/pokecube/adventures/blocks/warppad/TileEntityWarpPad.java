@@ -61,7 +61,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
@@ -78,7 +78,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -87,7 +87,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
 
     public void onStepped(Entity stepper)
     {
-        if (worldObj.isRemote || link == null) return;
+        if (world.isRemote || link == null) return;
         if (here == null) here = Vector3.getNewVector().set(this);
         if (linkPos == null)
         {
@@ -95,7 +95,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         }
 
         double distSq = 0;
-        long time = worldObj.getTotalWorldTime();
+        long time = world.getTotalWorldTime();
         long lastStepped = stepper.getEntityData().getLong("lastWarpPadUse");
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);

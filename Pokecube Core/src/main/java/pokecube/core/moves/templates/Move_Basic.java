@@ -598,18 +598,18 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             {
                 float max = ((EntityLiving) attacker).getMaxHealth();
                 float diff = max * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
+                ((EntityLiving) attacker).attackEntityFrom(DamageSource.FALL, diff);
             }
             if (packet.getMove().move.selfDamageType == MoveEntry.DAMAGEDEALT)
             {
                 float diff = damageDealt * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
+                ((EntityLiving) attacker).attackEntityFrom(DamageSource.FALL, diff);
             }
             if (packet.getMove().move.selfDamageType == MoveEntry.RELATIVEHP)
             {
                 float current = ((EntityLiving) attacker).getHealth();
                 float diff = current * damageRatio / 100f;
-                ((EntityLiving) attacker).attackEntityFrom(DamageSource.fall, diff);
+                ((EntityLiving) attacker).attackEntityFrom(DamageSource.FALL, diff);
             }
         }
 

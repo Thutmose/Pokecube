@@ -20,7 +20,7 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
 {
 
     @Override
-    public void renderTileEntityAt(TileEntityAFA te, double x, double y, double z, float partialTicks, int destroyStage)
+    public void func_192841_a(TileEntityAFA te, double x, double y, double z, float partialTicks, int destroyStage, float f)
     {
         IPokemob mob = te.pokemob;
         if (mob == null) return;
@@ -79,7 +79,7 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         GL11.glTranslatef(0.405f, 0.645f, -0.5f);
         GL11.glScaled(0.15, 0.15, 0.15);
 
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         ItemStack item = te.getStackInSlot(0);
         Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, null);
         RenderHelper.enableStandardItemLighting();

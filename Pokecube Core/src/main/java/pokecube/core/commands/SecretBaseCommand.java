@@ -36,13 +36,13 @@ public class SecretBaseCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokebase";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokebase";
     }
@@ -60,7 +60,7 @@ public class SecretBaseCommand extends CommandBase
             }
             else if (args[0].equals("exit"))
             {
-                if (player.worldObj.provider instanceof WorldProviderSecretBase)
+                if (player.world.provider instanceof WorldProviderSecretBase)
                 {
                     String owner = PokecubeDimensionManager.getOwner(player.dimension);
                     BlockPos exit = PokecubeDimensionManager.getBaseEntrance(owner, 0);
@@ -102,8 +102,8 @@ public class SecretBaseCommand extends CommandBase
                     if (loc.w == player.dimension && pos.distToEntity(player) < 16)
                     {
                         BlockNest nest = (BlockNest) PokecubeItems.getBlock("pokemobNest");
-                        pos.setBlock(player.worldObj, nest.getDefaultState().withProperty(nest.TYPE, 1));
-                        TileEntityBasePortal tile = (TileEntityBasePortal) player.worldObj.getTileEntity(pos.getPos());
+                        pos.setBlock(player.world, nest.getDefaultState().withProperty(nest.TYPE, 1));
+                        TileEntityBasePortal tile = (TileEntityBasePortal) player.world.getTileEntity(pos.getPos());
                         tile.setPlacer(player);
                         Vector3 baseExit = Vector3.getNewVector();
                         baseExit.set(Double.parseDouble(args[1]), Double.parseDouble(args[2]),
@@ -111,7 +111,7 @@ public class SecretBaseCommand extends CommandBase
                         PokecubeDimensionManager.setBaseEntrance(player, player.dimension, baseExit.getPos());
                         TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.confirmed",
                                 pos);
-                        sender.addChatMessage(message);
+                        sender.sendMessage(message);
                     }
                 }
             }

@@ -59,7 +59,7 @@ public class InventoryPC implements IInventory
             ItemStack stack = mob;
             PokecubeManager.heal(stack);
             if (PokecubeCore.proxy.getPlayer(uuid) != null) PokecubeCore.proxy.getPlayer(uuid)
-                    .addChatMessage(new TextComponentTranslation("tile.pc.sentto", mob.getDisplayName()));
+                    .sendMessage(new TextComponentTranslation("tile.pc.sentto", mob.getDisplayName()));
         }
         pc.addItem(mob.copy());
         PCSaveHandler.getInstance().savePC(uuid);
@@ -437,7 +437,7 @@ public class InventoryPC implements IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    public boolean isUsableByPlayer(EntityPlayer entityplayer)
     {
         return true;
     }
@@ -499,7 +499,7 @@ public class InventoryPC implements IInventory
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

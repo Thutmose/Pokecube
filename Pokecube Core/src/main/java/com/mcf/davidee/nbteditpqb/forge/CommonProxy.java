@@ -44,13 +44,13 @@ public class CommonProxy
         {
             ITextComponent component = new TextComponentString(message);
             component.getStyle().setColor(color);
-            player.addChatMessage(component);
+            player.sendMessage(component);
         }
     }
 
     public boolean checkPermission(EntityPlayer player)
     {
-        if (NBTEdit.opOnly ? player.canCommandSenderUseCommand(4, NBTEdit.MODID)
+        if (NBTEdit.opOnly ? player.canUseCommand(4, NBTEdit.MODID)
                 : player.capabilities.isCreativeMode) { return true; }
         return false;
     }

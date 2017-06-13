@@ -121,10 +121,10 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         this.setAIState(INBATTLE, false);
         if (outMob == null && !getAIState(THROWING))
         {
-            if (cooldown <= worldObj.getTotalWorldTime())
+            if (cooldown <= world.getTotalWorldTime())
             {
                 onDefeated(target);
-                cooldown = worldObj.getTotalWorldTime() + battleCooldown;
+                cooldown = world.getTotalWorldTime() + battleCooldown;
                 nextSlot = 0;
             }
         }
@@ -159,7 +159,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                 return isOwner;
             }
         };
-        List<EntityPokecube> cubes = worldObj.getEntities(EntityPokecube.class, matcher);
+        List<EntityPokecube> cubes = world.getEntities(EntityPokecube.class, matcher);
         return cubes.size();
     }
 
@@ -303,12 +303,12 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             Vector3 here = Vector3.getNewVector().set(this);
             Vector3 t = Vector3.getNewVector().set(target);
             t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
-            cube.throwPokecubeAt(worldObj, this, i, t, null);
+            cube.throwPokecubeAt(world, this, i, t, null);
             setAIState(THROWING, true);
             attackCooldown = Config.instance.trainerSendOutDelay;
             ITextComponent text = getMessage(MessageState.SENDOUT, getDisplayName(), i.getDisplayName(),
                     target.getDisplayName());
-            target.addChatMessage(text);
+            target.sendMessage(text);
             nextSlot++;
             if (nextSlot >= 6 || getNextPokemob() == null) nextSlot = -1;
             return;
@@ -322,14 +322,14 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         {
             attackCooldown = Config.instance.trainerBattleDelay;
             ITextComponent text = getMessage(MessageState.AGRESS, getDisplayName(), target.getDisplayName());
-            target.addChatMessage(text);
+            target.sendMessage(text);
             this.setAIState(INBATTLE, true);
         }
         if (target == null)
         {
             if (this.target != null && this.getAIState(INBATTLE))
             {
-                this.target.addChatMessage(
+                this.target.sendMessage(
                         getMessage(MessageState.DEAGRESS, getDisplayName(), this.target.getDisplayName()));
             }
             this.setAIState(THROWING, false);
@@ -363,7 +363,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         this.setAIState(THROWING, false);
         this.setAIState(INBATTLE, false);
         outMob = null;
-        cooldown = worldObj.getTotalWorldTime() + battleCooldown;
+        cooldown = world.getTotalWorldTime() + battleCooldown;
     }
 
     public ItemStack getPokemob(int slot)

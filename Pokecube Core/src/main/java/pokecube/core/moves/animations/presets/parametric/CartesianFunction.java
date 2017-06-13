@@ -51,7 +51,7 @@ public class CartesianFunction extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
         }
         else
         {
@@ -81,7 +81,7 @@ public class CartesianFunction extends MoveAnimationBase
         {
             setVector(i, temp);
             temp.scalarMultBy(scale).addTo(source);
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp, null, rgba, particleLife);
+            PokecubeCore.proxy.spawnParticle(info.attacker.world, particle, temp, null, rgba, particleLife);
         }
     }
 

@@ -155,7 +155,7 @@ public class PokecubePacketHandler
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte((byte) channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
 
         @Override
@@ -249,7 +249,7 @@ public class PokecubePacketHandler
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
 
         public PokecubeServerPacket(byte[] data)
@@ -397,8 +397,8 @@ public class PokecubePacketHandler
             PokedexEntry entry = (name != null) ? Database.getEntry(name) : Database.getEntry(number);
             if (entry != null)
             {
-                World worldObj = owner.getEntityWorld();
-                IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(entry, worldObj);
+                World world = owner.getEntityWorld();
+                IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
                 if (entity != null)
                 {
                     ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
@@ -565,7 +565,7 @@ public class PokecubePacketHandler
     {
         PacketBuffer packetData = new PacketBuffer(Unpooled.buffer());
         packetData.writeByte(channel);
-        packetData.writeNBTTagCompoundToBuffer(nbt);
+        packetData.writeCompoundTag(nbt);
 
         return new PokecubeClientPacket(packetData);
     }

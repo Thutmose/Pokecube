@@ -45,12 +45,12 @@ public class ItemLuckyEgg extends Item
             if (metadata == 0 && player.isSneaking())
             {
                 EntityProfessor p = new EntityProfessor(world, location.offset(EnumFacing.UP), true);
-                world.spawnEntityInWorld(p);
+                world.spawnEntity(p);
             }
             else
             {
                 boolean meteor = PokecubeSerializer.getInstance().canMeteorLand(location);
-                player.addChatMessage(new TextComponentString("Meteor Can Land: " + meteor));
+                player.sendMessage(new TextComponentString("Meteor Can Land: " + meteor));
             }
         }
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);

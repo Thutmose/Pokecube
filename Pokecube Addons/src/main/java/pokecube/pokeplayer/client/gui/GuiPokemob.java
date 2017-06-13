@@ -14,7 +14,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
@@ -49,9 +49,9 @@ public class GuiPokemob extends GuiContainer
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY)
+        public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float f)
         {
-            super.drawButton(mc, mouseX, mouseY);
+            super.func_191745_a(mc, mouseX, mouseY, f);
             if (id == PacketPokemobGui.BUTTONTOGGLESTAY || id == PacketPokemobGui.BUTTONTOGGLESIT)
             {
                 PokedexEntry entry = Database.getEntry("eevee");
@@ -59,7 +59,7 @@ public class GuiPokemob extends GuiContainer
                 if (renderMob == null)
                 {
                     EventsHandlerClient.renderMobs.put(entry,
-                            renderMob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.theWorld));
+                            renderMob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.world));
                 }
                 if (renderMob == null)
                 {
@@ -92,7 +92,7 @@ public class GuiPokemob extends GuiContainer
                     int x = xPosition + 2;
                     int y = yPosition + 1;
                     Tessellator tessellator = Tessellator.getInstance();
-                    VertexBuffer vertexbuffer = tessellator.getBuffer();
+                    BufferBuilder vertexbuffer = tessellator.getBuffer();
                     vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
                     vertexbuffer.pos(x + 0, y + height - 2, this.zLevel).tex(0, 1)
                             .endVertex();
@@ -113,7 +113,7 @@ public class GuiPokemob extends GuiContainer
                 GL11.glTranslatef(x, y, 0F);
                 GL11.glRotated(90, 0, 1, 0);
                 GL11.glScaled(scale, scale, scale);
-                ((Entity) renderMob).ticksExisted = mc.thePlayer.ticksExisted;
+                ((Entity) renderMob).ticksExisted = mc.player.ticksExisted;
                 ((Entity) renderMob).setRotationYawHead(0);
                 ((Entity) renderMob).rotationYaw = 0;
                 Object o;

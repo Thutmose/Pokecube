@@ -80,8 +80,8 @@ public class MoveEventsHandler
                     }
                     else if (f < 1.0F)
                     {
-                        int j = MathHelper.floor_float(i1 * f);
-                        if (j < MathHelper.ceiling_float_int(i1 * f) && Math.random() < i1 * f - j)
+                        int j = MathHelper.floor(i1 * f);
+                        if (j < MathHelper.ceil(i1 * f) && Math.random() < i1 * f - j)
                         {
                             ++j;
                         }
@@ -93,7 +93,7 @@ public class MoveEventsHandler
                     {
                         int k = EntityXPOrb.getXPSplit(i1);
                         i1 -= k;
-                        world.spawnEntityInWorld(
+                        world.spawnEntity(
                                 new EntityXPOrb(world, location.x, location.y + 1.5D, location.z + 0.5D, k));
                     }
                     int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
@@ -485,7 +485,7 @@ public class MoveEventsHandler
         for (int i = 0; i < 3; ++i)
         {
             particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.worldObj, "mobSpell", particleLoc, vel);
+            PokecubeMod.core.spawnParticle(entity.world, "mobSpell", particleLoc, vel);
         }
     }
 
@@ -501,7 +501,7 @@ public class MoveEventsHandler
         for (i = 0; i < 3; ++i)
         {
             particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.worldObj, "mobSpell", particleLoc, vel);
+            PokecubeMod.core.spawnParticle(entity.world, "mobSpell", particleLoc, vel);
         }
     }
 }

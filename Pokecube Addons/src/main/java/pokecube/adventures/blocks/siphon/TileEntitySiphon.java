@@ -96,7 +96,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
     @Override
     public void update()
     {
-        if (!worldObj.isRemote) MinecraftForge.EVENT_BUS.post(new SiphonTickEvent(this));
+        if (!world.isRemote) MinecraftForge.EVENT_BUS.post(new SiphonTickEvent(this));
     }
 
 }

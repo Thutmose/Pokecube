@@ -74,7 +74,7 @@ public class PacketDoActions implements IMessage, IMessageHandler<PacketDoAction
             {
                 PacketDataSync.sendInitPacket(player, "pokecube-data");
             }
-            Entity closest = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, false);
+            Entity closest = PokecubeMod.core.getEntityProvider().getEntity(player.world, id, false);
             if (closest != null)
             {
                 pokemob.executeMove(closest, v.set(closest), closest.getDistanceToEntity((Entity) pokemob));

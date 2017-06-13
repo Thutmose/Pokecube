@@ -117,7 +117,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         {
             int pokedexNb = 0;
             sendMessage(pokedexNb);
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             options = true;
         }
         if (n == 5)
@@ -134,7 +134,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         {
             int pokedexNb = pokedexEntry.getPokedexNb();
             sendMessage(pokedexNb);
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
         }
     }
 
@@ -183,7 +183,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         if (pokedexEntry == null) pokedexEntry = Pokedex.getInstance().getFirstEntry();
         if (pokedexEntry == null)
         {
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             return;
         }
 
@@ -259,7 +259,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         if (pokemob == null || pokemob.getPokedexEntry() != pokedexEntry)
         {
             EventsHandlerClient.renderMobs.put(pokedexEntry,
-                    pokemob = (IPokemob) PokecubeMod.core.createPokemob(pokedexEntry, mc.theWorld));
+                    pokemob = (IPokemob) PokecubeMod.core.createPokemob(pokedexEntry, mc.world));
             if (pokemob == null)
             {
                 System.out.println("Error with " + pokedexEntry);
@@ -315,7 +315,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
         super.keyTyped(par1, par2);
         if (par2 == 1)
         {
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             return;
         }
 

@@ -130,7 +130,7 @@ public class EntityPokecube extends EntityPokecubeBase
     @Override
     public void applyEntityCollision(Entity e)
     {
-        if (e == shootingEntity || isReleasing() || worldObj.isRemote || e instanceof EntityPokecube || e.isDead)
+        if (e == shootingEntity || isReleasing() || world.isRemote || e instanceof EntityPokecube || e.isDead)
         {
             super.applyEntityCollision(e);
             return;
@@ -189,7 +189,7 @@ public class EntityPokecube extends EntityPokecubeBase
             if (!name.isEmpty())
             {
                 UUID id = UUID.fromString(name);
-                EntityPlayer player = worldObj.getPlayerEntityByUUID(id);
+                EntityPlayer player = world.getPlayerEntityByUUID(id);
                 return player;
             }
         }
@@ -198,7 +198,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
     public Entity copy()
     {
-        EntityPokecube copy = new EntityPokecube(worldObj, shootingEntity, getEntityItem());
+        EntityPokecube copy = new EntityPokecube(world, shootingEntity, getEntityItem());
         copy.posX = this.posX;
         copy.posY = this.posY;
         copy.posZ = this.posZ;
@@ -231,7 +231,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
         if (shooter != null && shootingEntity == null)
         {
-            shootingEntity = worldObj.getPlayerEntityByUUID(shooter);
+            shootingEntity = world.getPlayerEntityByUUID(shooter);
         }
 
         if (releasing)
@@ -273,19 +273,19 @@ public class EntityPokecube extends EntityPokecubeBase
 
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
         {
-            float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
                     / Math.PI);
             this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
         }
 
         BlockPos pos = tilePos == null ? getPosition() : tilePos;
-        IBlockState state = worldObj.getBlockState(pos);
+        IBlockState state = world.getBlockState(pos);
 
         Block block = state.getBlock();
         if (state.getMaterial() != Material.AIR)
         {
-            AxisAlignedBB axisalignedbb = state.getBoundingBox(worldObj, pos);
+            AxisAlignedBB axisalignedbb = state.getBoundingBox(world, pos);
 
             if (axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
             {
@@ -388,15 +388,15 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             if (!isReleasing())
             {
-                IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+                IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), world);
                 if (pokemob != null) sendOut();
                 else
                 {
                     if (isLoot)
                     {
                         if (cannotCollect(player) || lootStacks.isEmpty()) return false;
-                        players.add(new CollectEntry(player.getCachedUniqueIdString(), worldObj.getTotalWorldTime()));
-                        PacketPokecube.sendMessage(player, getEntityId(), worldObj.getTotalWorldTime() + resetTime);
+                        players.add(new CollectEntry(player.getCachedUniqueIdString(), world.getTotalWorldTime()));
+                        PacketPokecube.sendMessage(player, getEntityId(), world.getTotalWorldTime() + resetTime);
                         ItemStack loot = lootStacks.get(new Random().nextInt(lootStacks.size()));
                         Tools.giveItem(player, loot.copy());
                         return true;
@@ -546,7 +546,7 @@ public class EntityPokecube extends EntityPokecubeBase
             {
                 if (resetTime > 0)
                 {
-                    long diff = worldObj.getTotalWorldTime() - s.time;
+                    long diff = world.getTotalWorldTime() - s.time;
                     if (diff > resetTime)
                     {
                         players.remove(s);

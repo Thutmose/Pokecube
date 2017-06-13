@@ -243,7 +243,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
@@ -277,7 +277,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return true;
     }
@@ -294,7 +294,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -394,7 +394,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         }
         distance = Math.max(0, distance);
         refreshAbility();
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             PacketHandler.sendTileUpdate(this);
         }
@@ -408,7 +408,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         shift[0] = args.checkInteger(1);
         shift[1] = args.checkInteger(2);
         shift[2] = args.checkInteger(3);
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             PacketHandler.sendTileUpdate(this);
         }
@@ -427,7 +427,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     public Object[] setRange(Context context, Arguments args)
     {
         distance = args.checkInteger(0);
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             PacketHandler.sendTileUpdate(this);
         }
@@ -445,7 +445,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                 int rate = Math.max(PokecubeAdv.conf.afaShinyRate, 1);
                 if (rand.nextInt(rate) == 0)
                 {
-                    if (!noEnergy && !worldObj.isRemote)
+                    if (!noEnergy && !world.isRemote)
                     {
                         parserS.setVarValue("d", distance);
                         double value = parserS.getValue();
@@ -453,16 +453,16 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                         if (this.energy < needed)
                         {
                             energy = 0;
-                            worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
+                            world.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
                                     SoundEvents.BLOCK_NOTE_BASEDRUM, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                             return;
                         }
                         energy -= needed;
                     }
                     evt.pokemob.setShiny(true);
-                    worldObj.playSound(evt.entity.posX, evt.entity.posY, evt.entity.posZ,
+                    world.playSound(evt.entity.posX, evt.entity.posY, evt.entity.posZ,
                             SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
-                    worldObj.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
+                    world.playSound(getPos().getX(), getPos().getY(), getPos().getZ(),
                             SoundEvents.ENTITY_ENDERMEN_TELEPORT, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
                 }
             }
@@ -492,13 +492,13 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
             ((Entity) pokemob).ticksExisted++;
             levelFactor = pokemob.getLevel();
             // Do not call ability update on client.
-            if (!worldObj.isRemote) ability.onUpdate(pokemob);
+            if (!world.isRemote) ability.onUpdate(pokemob);
         }
         shouldUseEnergy = shouldUseEnergy || shiny;
 
         if (shouldUseEnergy)
         {
-            if (!noEnergy && !worldObj.isRemote)
+            if (!noEnergy && !world.isRemote)
             {
                 double value;
                 if (shiny)
@@ -561,7 +561,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

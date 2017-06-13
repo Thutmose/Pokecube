@@ -20,17 +20,17 @@ public class TileEntityBasePortal extends TileEntityOwnable
     {
         if (!sendToUsers && placer == null) return;
         String owner = sendToUsers ? playerIn.getCachedUniqueIdString() : placer.toString();
-        BlockPos exitLoc = PokecubeDimensionManager.getBaseEntrance(owner, worldObj.provider.getDimension());
+        BlockPos exitLoc = PokecubeDimensionManager.getBaseEntrance(owner, world.provider.getDimension());
         if (exitLoc == null)
         {
-            PokecubeDimensionManager.setBaseEntrance(owner, worldObj.provider.getDimension(), pos);
+            PokecubeDimensionManager.setBaseEntrance(owner, world.provider.getDimension(), pos);
             exitLoc = pos;
         }
         double dist = exitLoc.distanceSq(pos);
         if (dist > 36)
         {
-            worldObj.setBlockState(pos, Blocks.STONE.getDefaultState());
-            playerIn.addChatMessage(new TextComponentTranslation("pokemob.removebase.stale"));
+            world.setBlockState(pos, Blocks.STONE.getDefaultState());
+            playerIn.sendMessage(new TextComponentTranslation("pokemob.removebase.stale"));
         }
         else PokecubeDimensionManager.sendToBase(owner, playerIn, exitLoc.getX(), exitLoc.getY(), exitLoc.getZ(),
                 exitDim);

@@ -2,7 +2,10 @@ package pokecube.core.items.berries;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IMoveConstants;
@@ -41,69 +45,69 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
      * description */
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         String info = "";
-        list.add(I18n.format("item.berry.desc"));
+        tooltip.add(I18n.format("item.berry.desc"));
         switch (stack.getItemDamage())
         {
         case 1:
             info = I18n.format("item.cheriBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 2:
             info = I18n.format("item.chestoBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 3:
             info = I18n.format("item.pechaBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 4:
             info = I18n.format("item.rawstBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 5:
             info = I18n.format("item.aspearBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 7:
             info = I18n.format("item.oranBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 9:
             info = I18n.format("item.lumBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 10:
             info = I18n.format("item.sitrusBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 63:
             info = I18n.format("item.jabocaBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         case 64:
             info = I18n.format("item.rowapBerry.desc");
-            list.add(info);
+            tooltip.add(info);
             break;
         }
         if (TileEntityBerries.trees.containsKey(stack.getItemDamage()))
         {
             info = I18n.format("item.berry.istree.desc");
-            list.add(info);
+            tooltip.add(info);
         }
 
-        if (player.openContainer instanceof ContainerPokemob)
+        if (PokecubeCore.getPlayer(null).openContainer instanceof ContainerPokemob)
         {
-            ContainerPokemob container = (ContainerPokemob) player.openContainer;
+            ContainerPokemob container = (ContainerPokemob) PokecubeCore.getPlayer(null).openContainer;
             IPokemob pokemob = container.getPokemob();
             Nature nature = pokemob.getNature();
             int fav = Nature.getFavouriteBerryIndex(nature);
             if (fav == stack.getItemDamage())
             {
                 info = I18n.format("item.berry.favourite.desc", pokemob.getPokemonDisplayName().getFormattedText());
-                list.add(info);
+                tooltip.add(info);
             }
             int weight = Nature.getBerryWeight(stack.getItemDamage(), nature);
             if (weight == 0)
@@ -134,7 +138,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
             {
                 info = I18n.format("item.berry.hate3.desc", pokemob.getPokemonDisplayName().getFormattedText());
             }
-            list.add(info);
+            tooltip.add(info);
         }
     }
 
@@ -158,11 +162,11 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     @Override
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
         for (Integer i : BerryManager.berryNames.keySet())
         {
-            subItems.add(new ItemStack(itemIn, 1, i));
+            subItems.add(new ItemStack(this, 1, i));
         }
     }
 

@@ -44,7 +44,7 @@ public class CustomNBTPacket implements IMessage
     {
         this.entityID = buf.readInt();
         this.tag = NBTHelper.readNbtFromBuffer(buf);
-        this.customName = new PacketBuffer(buf).readStringFromBuffer(30);
+        this.customName = new PacketBuffer(buf).readString(30);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CustomNBTPacket implements IMessage
                     @Override
                     public void run()
                     {
-                        Entity entity = player.worldObj.getEntityByID(packet.entityID);
+                        Entity entity = player.world.getEntityByID(packet.entityID);
                         if (entity != null && NBTEdit.proxy.checkPermission(player))
                         {
                             try

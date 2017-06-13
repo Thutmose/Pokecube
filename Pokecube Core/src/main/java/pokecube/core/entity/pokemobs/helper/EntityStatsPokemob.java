@@ -153,7 +153,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             return false;
         }
-        else if (this.worldObj.isRemote)
+        else if (this.world.isRemote)
         {
             return false;
         }
@@ -229,9 +229,9 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
                 if (flag)
                 {
-                    this.worldObj.setEntityState(this, (byte) 2);
+                    this.world.setEntityState(this, (byte) 2);
 
-                    if (source != DamageSource.drown)
+                    if (source != DamageSource.DROWN)
                     {
                         this.setBeenAttacked();
                     }
@@ -280,7 +280,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 }
                 else
                 {
-                    SoundEvent s1 = this.getHurtSound();
+                    SoundEvent s1 = this.getHurtSound(source);
 
                     if (flag && s1 != null)
                     {
@@ -454,7 +454,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public void onKillEntity(EntityLivingBase attacked)
     {
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
         IPokemob attacker = this;
         if (PokecubeCore.core.getConfig().nonPokemobExp && !(attacked instanceof IPokemob))
         {
@@ -559,7 +559,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         PacketBuffer buffer = new PacketBuffer(data);
         try
         {
-            this.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
+            this.readPokemobData(buffer.readCompoundTag());
         }
         catch (IOException e)
         {
@@ -628,9 +628,9 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                     }
                     ret.levelUp(newLvl);
                     if (this.addedToChunk && ret.getPokemonOwner() instanceof EntityPlayer
-                            && worldObj.getGameRules().getBoolean("doMobLoot") && !worldObj.isRemote)
+                            && world.getGameRules().getBoolean("doMobLoot") && !world.isRemote)
                     {
-                        worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, posX, posY, posZ, 1));
+                        world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, 1));
                     }
                 }
             }
@@ -659,8 +659,8 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             ret = megaEvolve(newEntry);
         }
-        if (worldObj != null) ret.setSize((float) (ret.getSize()/PokecubeMod.core.getConfig().scalefactor));
-        if (worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        if (world != null) ret.setSize((float) (ret.getSize()/PokecubeMod.core.getConfig().scalefactor));
+        if (world != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
             PacketChangeForme.sendPacketToNear((Entity) ret, newEntry, 128);
         }
@@ -811,7 +811,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         super.writeSpawnData(data);
         PacketBuffer buffer = new PacketBuffer(data);
         NBTTagCompound tag = writePokemobData();
-        buffer.writeNBTTagCompoundToBuffer(tag);
+        buffer.writeCompoundTag(tag);
     }
 
     @Override

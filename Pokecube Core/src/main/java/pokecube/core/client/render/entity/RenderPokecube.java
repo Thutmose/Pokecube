@@ -59,7 +59,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
                 renderStack = PokecubeItems.getStack("pokecube");
             }
 
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             Minecraft.getMinecraft().getItemRenderer().renderItem(player, renderStack, TransformType.NONE);
 
             GL11.glDisable(GL11.GL_BLEND);
@@ -91,7 +91,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
         EntityPokecube pokecube = (EntityPokecube) entity;
 
         long time = pokecube.reset;
-        long world = pokecube.worldObj.getTotalWorldTime();
+        long world = pokecube.world.getTotalWorldTime();
         if (time > world) return;
 
         int num = PokecubeItems.getCubeId(pokecube.getEntityItem());

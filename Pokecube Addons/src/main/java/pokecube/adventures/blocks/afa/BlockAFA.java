@@ -123,7 +123,7 @@ public final class BlockAFA extends Block implements ITileEntityProvider
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entity_item);
+                world.spawnEntity(entity_item);
                 CompatWrapper.setStackSize(item, 0);
             }
         }

@@ -31,7 +31,7 @@ public class GuiAFA extends GuiContainer
     protected void actionPerformed(GuiButton button) throws IOException
     {
         ContainerAFA container = (ContainerAFA) inventorySlots;
-        TileEntity te = container.worldObj.getTileEntity(container.pos);
+        TileEntity te = container.world.getTileEntity(container.pos);
         if (te == null) return;
 
         TileEntityAFA tile = (TileEntityAFA) te;
@@ -157,9 +157,9 @@ public class GuiAFA extends GuiContainer
         this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
                 4210752);
         ContainerAFA container = (ContainerAFA) inventorySlots;
-        if (container.worldObj != null)
+        if (container.world != null)
         {
-            TileEntity te = container.worldObj.getTileEntity(container.pos);
+            TileEntity te = container.world.getTileEntity(container.pos);
             if (te == null) return;
             TileEntityAFA cloner = (TileEntityAFA) te;
             String mess;
@@ -186,7 +186,7 @@ public class GuiAFA extends GuiContainer
         // Range Control
         buttonList.add(new GuiButton(0, width / 2 - xOffset + 69, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 69, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
-        if (mc.thePlayer.capabilities.isCreativeMode)
+        if (mc.player.capabilities.isCreativeMode)
         {
             ContainerAFA container = (ContainerAFA) inventorySlots;
             int num = container.tile.getField(2);

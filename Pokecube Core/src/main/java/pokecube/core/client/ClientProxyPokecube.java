@@ -201,8 +201,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public String getFolderName()
     {
-        if (FMLClientHandler.instance().getClient().theWorld != null)
-            return FMLClientHandler.instance().getClient().theWorld.provider.getSaveFolder();
+        if (FMLClientHandler.instance().getClient().world != null)
+            return FMLClientHandler.instance().getClient().world.provider.getSaveFolder();
         return "";
     }
 
@@ -224,7 +224,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public EntityPlayer getPlayer(String playerName)
     {
         if (playerName != null) { return super.getPlayer(playerName); }
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
     @Override
@@ -588,7 +588,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
-        if (world.provider.getDimension() != Minecraft.getMinecraft().thePlayer.dimension) return;
+        if (world.provider.getDimension() != Minecraft.getMinecraft().player.dimension) return;
         if (velocity == null) velocity = Vector3.empty;
         IParticle particle2 = ParticleFactory.makeParticle(par1Str, location, velocity, args);
         ParticleHandler.Instance().addParticle(location, particle2);
@@ -598,17 +598,17 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public StatisticsManager getManager(UUID player)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return super.getManager(player);
-        if (player == null || player.equals(Minecraft.getMinecraft().thePlayer.getUniqueID()))
-            return Minecraft.getMinecraft().thePlayer.getStatFileWriter();
+        if (player == null || player.equals(Minecraft.getMinecraft().player.getUniqueID()))
+            return Minecraft.getMinecraft().player.getStatFileWriter();
         return super.getManager(player);
     }
 
     public EntityPlayer getPlayer(UUID player)
     {
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER) return super.getPlayer(player);
-        if (Minecraft.getMinecraft().thePlayer != null
-                && (player == null || player.equals(Minecraft.getMinecraft().thePlayer.getUniqueID())))
-            return Minecraft.getMinecraft().thePlayer;
+        if (Minecraft.getMinecraft().player != null
+                && (player == null || player.equals(Minecraft.getMinecraft().player.getUniqueID())))
+            return Minecraft.getMinecraft().player;
         return super.getPlayer(player);
     }
 
@@ -637,7 +637,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         switch (slot)
         {
         case WAIST:
-            int brightness = wearer.getBrightnessForRender(partialTicks);
+            int brightness = wearer.getBrightnessForRender();
             GL11.glPushMatrix();
             float dx = 0, dy = -.0f, dz = -0.6f;
             GL11.glRotated(90, 1, 0, 0);
@@ -665,7 +665,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 int damage = stack.getTagCompound().getInteger("dyeColour");
                 ret = EnumDyeColor.byDyeDamage(damage);
             }
-            Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+            Color colour = new Color(ret.func_193350_e() + 0xFF000000);
             int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : belt2.getParts().values())
             {
@@ -700,13 +700,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             GL11.glScaled(s * 0.995f, -s * 0.995f, -s * 0.995f);
             minecraft.renderEngine.bindTexture(hat_2);
             ret = EnumDyeColor.RED;
-            brightness = wearer.getBrightnessForRender(partialTicks);
+            brightness = wearer.getBrightnessForRender();
             if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
             {
                 int damage = stack.getTagCompound().getInteger("dyeColour");
                 ret = EnumDyeColor.byDyeDamage(damage);
             }
-            colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+            colour = new Color(ret.func_193350_e() + 0xFF000000);
             int[] col2 = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : hat2.getParts().values())
             {

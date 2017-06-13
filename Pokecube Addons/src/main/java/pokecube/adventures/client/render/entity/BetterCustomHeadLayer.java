@@ -150,13 +150,13 @@ public class BetterCustomHeadLayer extends LayerCustomHead
                 GL11.glScaled(s * 0.995f, -s * 0.995f, -s * 0.995f);
                 minecraft.renderEngine.bindTexture(belt_2);
                 EnumDyeColor ret = EnumDyeColor.RED;
-                int brightness = entitylivingbaseIn.getBrightnessForRender(partialTicks);
+                int brightness = entitylivingbaseIn.getBrightnessForRender();
                 if (itemstack.hasTagCompound() && itemstack.getTagCompound().hasKey("dyeColour"))
                 {
                     int damage = itemstack.getTagCompound().getInteger("dyeColour");
                     ret = EnumDyeColor.byDyeDamage(damage);
                 }
-                Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+                Color colour = new Color(ret.func_193350_e() + 0xFF000000);
                 int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
                 for (IExtendedModelPart part : model2.getParts().values())
                 {

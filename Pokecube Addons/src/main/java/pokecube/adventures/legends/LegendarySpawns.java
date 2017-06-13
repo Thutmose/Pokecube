@@ -59,7 +59,7 @@ public class LegendarySpawns
                         entity = (EntityLiving) ((IPokemob) entity)
                                 .setForSpawn(Tools.levelToXp(entry.getEvolutionMode(), 50));
                     }
-                    worldIn.spawnEntityInWorld(entity);
+                    worldIn.spawnEntity(entity);
                 }
             }
             evt.setCanceled(true);

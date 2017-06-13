@@ -27,7 +27,7 @@ public class MoveLeechseed extends Move_Ongoing
             }
             float thisMaxHP = mob.getMaxHealth();
             int damage = Math.max(1, (int) (factor * thisMaxHP));
-            mob.attackEntityFrom(DamageSource.generic, damage);
+            mob.attackEntityFrom(DamageSource.GENERIC, damage);
             target.setHealth(Math.min(target.getHealth() + damage, target.getMaxHealth()));
         }
     }

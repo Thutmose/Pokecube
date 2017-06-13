@@ -18,8 +18,8 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -139,10 +139,10 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected void despawnEntity()
     {
-        if (!this.canDespawn() || this.worldObj.isRemote) return;
+        if (!this.canDespawn() || this.world.isRemote) return;
         Result result = ForgeEventFactory.canEntityDespawn(this);
         if (result == Result.DENY) return;
-        SpawnEvent.Despawn evt = new SpawnEvent.Despawn(here, worldObj, this);
+        SpawnEvent.Despawn evt = new SpawnEvent.Despawn(here, world, this);
         MinecraftForge.EVENT_BUS.post(evt);
         if (evt.isCanceled()) return;
         this.setDead();
@@ -165,11 +165,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public boolean getCanSpawnHere()
     {
-        int i = MathHelper.floor_double(posX);
-        int j = MathHelper.floor_double(getEntityBoundingBox().minY);
-        int k = MathHelper.floor_double(posZ);
+        int i = MathHelper.floor(posX);
+        int j = MathHelper.floor(getEntityBoundingBox().minY);
+        int k = MathHelper.floor(posZ);
         here.set(i, j, k);
-        float weight = getBlockPathWeight(worldObj, here);
+        float weight = getBlockPathWeight(world, here);
         return weight >= 0.0F && weight <= 100;
     }
 
@@ -208,7 +208,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    protected SoundEvent getHurtSound()
+    protected SoundEvent getHurtSound(DamageSource source)
     {
         return getAmbientSound();
     }
@@ -345,7 +345,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
     public List<AxisAlignedBB> getTileCollsionBoxes()
     {
-        if (this.worldObj.isRemote && this.isBeingRidden()
+        if (this.world.isRemote && this.isBeingRidden()
                 && (this.getServer() == null || this.getServer().isDedicatedServer())
                 && this.getOwner() == PokecubeCore.proxy.getPlayer((String) null))
         {
@@ -370,7 +370,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             AxisAlignedBB box = mainBox.getBoundingBox();
             AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
             box1 = box1.addCoord(motionX, motionY, motionZ);
-            aabbs = mainBox.getCollidingBoxes(box1, worldObj, worldObj);
+            aabbs = mainBox.getCollidingBoxes(box1, world, world);
             // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
             Matrix3.expandAABBs(aabbs, box);
             if (box.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
@@ -413,7 +413,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             aabb = aabb.setMaxY(aabb.minY + 3);
         }
         aabb = aabb.expandXyz(Math.min(3, diff));
-        List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, worldObj, world);
+        List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, this.world, world);
         Matrix3.expandAABBs(aabbs, aabb);
         if (aabb.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
         boolean collides = mainBox.doTileCollision(world, aabbs, Vector3.empty, this, diffs);
@@ -423,7 +423,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     /** Tries to moves the entity by the passed in displacement. Args: x, y,
      * z */
     @Override
-    public void moveEntity(MoverType type, double x, double y, double z)
+    public void move(MoverType type, double x, double y, double z)
     {
         if (!this.addedToChunk) return;
         boolean normalSize = this.height > 0.5 && this.width < 1 && this.width > 0.25 && this.length < 1
@@ -431,13 +431,12 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!multibox || normalSize)
         {
             this.noClip = false;
-            super.moveEntity(type, x, y, z);
+            super.move(type, x, y, z);
             return;
         }
         else if (aabbs != null)
         {
             double x0 = x, y0 = y, z0 = z;
-            IBlockAccess world = worldObj;
             Vector3 diffs = Vector3.getNewVector();
             diffs.set(x, y, z);
             boolean multi = false;
@@ -498,7 +497,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double newY = y + yOff + dy;
             double size = Math.max(this.getSize() * getPokedexEntry().length, 3);
             Vector3 dir = Vector3.getNewVector().set(x, newY, z).norm().scalarMult(size);
-            boolean border = worldObj.getWorldBorder().contains(getEntityBoundingBox().offset(dir.x, dir.y, dir.z));
+            boolean border = this.world.getWorldBorder().contains(getEntityBoundingBox().offset(dir.x, dir.y, dir.z));
             if (!border)
             {
                 x = newY = z = 0;
@@ -518,7 +517,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.onGround = y0 != y && y0 <= 0.0D;
             this.isCollided = this.isCollidedHorizontally || this.isCollidedVertically;
             BlockPos blockpos = getPosition().down();
-            IBlockState state = worldObj.getBlockState(blockpos);
+            IBlockState state = world.getBlockState(blockpos);
             Block block1 = state.getBlock();
 
             this.updateFallState(y, this.onGround, state, blockpos);
@@ -536,13 +535,13 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
                 if (block1 != null && this.onGround)
                 {
-                    block1.onEntityCollidedWithBlock(this.worldObj, blockpos, state, this);
+                    block1.onEntityCollidedWithBlock(this.world, blockpos, state, this);
                 }
 
                 this.distanceWalkedModified = (float) (this.distanceWalkedModified
-                        + MathHelper.sqrt_double(d15 * d15 + d17 * d17) * 0.6D);
+                        + MathHelper.sqrt(d15 * d15 + d17 * d17) * 0.6D);
                 this.distanceWalkedOnStepModified = (float) (this.distanceWalkedOnStepModified
-                        + MathHelper.sqrt_double(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
+                        + MathHelper.sqrt(d15 * d15 + d16 * d16 + d17 * d17) * 0.6D);
 
                 if (this.distanceWalkedOnStepModified > this.nextStepDistance && state.getMaterial() != Material.AIR)
                 {
@@ -550,7 +549,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
                     if (this.isInWater() && !swims())
                     {
-                        float f = MathHelper.sqrt_double(this.motionX * this.motionX * 0.20000000298023224D
+                        float f = MathHelper.sqrt(this.motionX * this.motionX * 0.20000000298023224D
                                 + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D)
                                 * 0.35F;
 
@@ -621,7 +620,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         long time = System.nanoTime();
         here.set(posX, posY, posZ);
         BlockPos pos = new BlockPos(posX, 1, posZ);
-        boolean loaded = worldObj.isAreaLoaded(pos, 8);
+        boolean loaded = world.isAreaLoaded(pos, 8);
         if (loaded && !(getPokemonAIState(STAYING) || getPokemonAIState(GUARDING) || getPokemonAIState(ANGRY)
                 || getAttackTarget() != null))
         {
@@ -636,7 +635,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         double dt = (System.nanoTime() - time) / 10e3D;
         average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
         double toolong = 500;
-        if (PokecubeMod.core.getConfig().debug && dt > toolong && !worldObj.isRemote)
+        if (PokecubeMod.core.getConfig().debug && dt > toolong && !world.isRemote)
         {
             here.set(here.getPos());
             String toLog = "%3$s took %2$s\u00B5s to tick, it is located at %1$s, the average has been %4$s\u00B5s";
@@ -707,7 +706,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!statsTag.hasNoTags())
         {
             this.setEVs(statsTag.getByteArray(EVS));
-//            this.setIVs(statsTag.getByteArray(IVS));//TODO confirm this is in genes.
+            // this.setIVs(statsTag.getByteArray(IVS));//TODO confirm this is in
+            // genes.
             this.setExp(statsTag.getInteger(EXP), false);
             this.setStatus(statsTag.getByte(STATUS));
             addHappiness(statsTag.getInteger(HAPPY));
@@ -1037,7 +1037,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Write stats tag
         NBTTagCompound statsTag = new NBTTagCompound();
         statsTag.setByteArray(EVS, getEVs());
-//        statsTag.setByteArray(IVS, getIVs());//TODO confirm this is in genes.
+        // statsTag.setByteArray(IVS, getIVs());//TODO confirm this is in genes.
         statsTag.setInteger(EXP, getExp());
         statsTag.setByte(STATUS, getStatus());
         statsTag.setInteger(HAPPY, bonusHappiness);
@@ -1136,11 +1136,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public World getWorld()
     {
-        return worldObj;
+        return world;
     }
 
     @Override
-    public boolean attackEntityFromPart(EntityDragonPart dragonPart, DamageSource source, float damage)
+    public boolean attackEntityFromPart(MultiPartEntityPart dragonPart, DamageSource source, float damage)
     {
         return false;
     }
@@ -1161,7 +1161,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void addEntityCrashInfo(CrashReportCategory category)
     {
         super.addEntityCrashInfo(category);
-        category.addCrashSection("World:", worldObj == null ? "NULL" : worldObj.toString());
+        category.addCrashSection("World:", world == null ? "NULL" : world.toString());
         category.addCrashSection("Owner:", getPokemonOwnerID() == null ? "NULL" : getPokemonOwnerID().toString());
         Thread.dumpStack();
     }

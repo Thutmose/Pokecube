@@ -126,8 +126,8 @@ public class GuiEditNBT extends Gui{
 		key.drawTextBox();
 		value.drawTextBox();
 
-		save.drawButton(mc, mx, my);
-		cancel.drawButton(mc, mx, my);
+		save.func_191745_a(mc, mx, my,0);
+		cancel.func_191745_a(mc, mx, my,0);
 
 		if (kError != null)
 			drawCenteredString(mc.fontRendererObj, kError, x+WIDTH/2, y+4, 0xFF0000);

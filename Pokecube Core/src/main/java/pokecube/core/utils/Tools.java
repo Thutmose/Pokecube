@@ -267,7 +267,7 @@ public class Tools
 
     public static int getExp(float coef, int baseXP, int level)
     {
-        return MathHelper.floor_float(coef * baseXP * level / 7F);
+        return MathHelper.floor(coef * baseXP * level / 7F);
     }
 
     public static int getHealedPokemobSerialization()
@@ -297,8 +297,8 @@ public class Tools
     public static int getHP(int BS, int IV, int EV, int level)
     {
         if (BS == 1) return 1;
-        int EP = MathHelper.floor_double((EV + 128) / 4);
-        return 10 + (MathHelper.floor_double((2 * BS) + IV + EP + 100) * level / 100);
+        int EP = MathHelper.floor((EV + 128) / 4);
+        return 10 + (MathHelper.floor((2 * BS) + IV + EP + 100) * level / 100);
     }
 
     private static int getLevelFromTable(int index, int exp)
@@ -631,7 +631,7 @@ public class Tools
         boolean flag = entityplayer.inventory.addItemStackToInventory(itemstack);
         if (flag)
         {
-            entityplayer.worldObj.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY,
+            entityplayer.world.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY,
                     entityplayer.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
                     ((entityplayer.getRNG().nextFloat() - entityplayer.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             entityplayer.inventoryContainer.detectAndSendChanges();

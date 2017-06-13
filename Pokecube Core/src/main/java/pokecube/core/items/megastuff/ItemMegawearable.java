@@ -3,18 +3,21 @@ package pokecube.core.items.megastuff;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Maps;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -41,14 +44,14 @@ public class ItemMegawearable extends Item
      * description */
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
         {
             int damage = stack.getTagCompound().getInteger("dyeColour");
             EnumDyeColor colour = EnumDyeColor.byDyeDamage(damage);
             String s = I18n.format(colour.getUnlocalizedName());
-            list.add(s);
+            tooltip.add(s);
         }
     }
 
@@ -56,12 +59,12 @@ public class ItemMegawearable extends Item
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
         ItemStack stack;
         for (String s : wearables.keySet())
         {
-            stack = new ItemStack(itemIn);
+            stack = new ItemStack(this);
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("type", s);
             subItems.add(stack);

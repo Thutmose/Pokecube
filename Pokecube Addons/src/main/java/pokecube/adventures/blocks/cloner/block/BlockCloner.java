@@ -159,7 +159,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
         return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
@@ -216,7 +216,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entity_item);
+                world.spawnEntity(entity_item);
                 CompatWrapper.setStackSize(item, 0);
             }
         }
@@ -398,7 +398,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
             {
                 EntityPlayer player = (EntityPlayer) entity;
 
-                if (player.worldObj.isRemote)
+                if (player.world.isRemote)
                 {
                     // This fixes jitter, need a better way to handle this.
                     Minecraft.getMinecraft().gameSettings.viewBobbing = false;
@@ -410,12 +410,12 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
                 }
                 // Meed to set floatingTickCount to prevent being kicked for
                 // flying.
-                if (!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+                if (!player.capabilities.isCreativeMode && !player.world.isRemote)
                 {
                     EntityPlayerMP entityplayer = (EntityPlayerMP) player;
                     if (collidedY) entityplayer.connection.floatingTickCount = 0;
                 }
-                else if (player.worldObj.isRemote)
+                else if (player.world.isRemote)
                 {
                 }
             }

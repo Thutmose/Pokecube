@@ -255,7 +255,7 @@ public class PokecubePlayerDataHandler extends PlayerDataHandler
             EntityPlayer player = PokecubeCore.proxy.getPlayer(uuid);
             if (player == null || tag == null) return;
 
-            if (player.worldObj.isRemote)
+            if (player.world.isRemote)
             {
                 initAchievements(getManager(uuid));
                 return;

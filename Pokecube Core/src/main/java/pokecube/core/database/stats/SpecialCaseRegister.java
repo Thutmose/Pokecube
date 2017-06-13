@@ -66,7 +66,7 @@ public class SpecialCaseRegister
                 if (caught < Database.spawnables.size() - 1)
                 {
                     if (trainer instanceof EntityPlayer) ((EntityPlayer) trainer)
-                            .addChatMessage(new TextComponentString("You do not have enough badges to control Mew!"));
+                            .sendMessage(new TextComponentString("You do not have enough badges to control Mew!"));
                     ActionTeleport.teleportRandomly((EntityLivingBase) pokemon);
                     return false;
                 }

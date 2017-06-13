@@ -38,7 +38,7 @@ public class EssentialsCompat
         @Override
         public String getTeam(Entity entityIn)
         {
-            if (entityIn.worldObj.isRemote) return defaults.getTeam(entityIn);
+            if (entityIn.world.isRemote) return defaults.getTeam(entityIn);
             if (entityIn instanceof EntityPlayer)
             {
                 LandTeam team = LandManager.getTeam(entityIn);

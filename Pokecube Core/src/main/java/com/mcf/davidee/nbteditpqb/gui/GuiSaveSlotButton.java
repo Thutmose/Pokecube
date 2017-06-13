@@ -88,7 +88,7 @@ public class GuiSaveSlotButton extends Gui {
 		width = mc.fontRendererObj.getStringWidth(text)+24;
 		if (width % 2 == 1)
 			++width;
-		width = MathHelper.clamp_int(width, MIN_WIDTH, MAX_WIDTH);
+		width = MathHelper.clamp(width, MIN_WIDTH, MAX_WIDTH);
 		x = rightX - width;
 	}
 

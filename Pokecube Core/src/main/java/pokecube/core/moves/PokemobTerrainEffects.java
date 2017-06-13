@@ -172,7 +172,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 double mult = PokeType.getAttackEfficiency(rock, mob.getType1(), mob.getType2());
-                entity.attackEntityFrom(DamageSource.generic, (float) (damage * mult));
+                entity.attackEntityFrom(DamageSource.GENERIC, (float) (damage * mult));
             }
             if (effects[EFFECT_WEBS] > 0 && mob.getOnGround())
             {
@@ -289,7 +289,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
     {
         if (this.hasEffects())
         {
-            int time = Minecraft.getMinecraft().thePlayer.ticksExisted;
+            int time = Minecraft.getMinecraft().player.ticksExisted;
             Vector3 direction = Vector3.getNewVector().set(0, -1, 0);
             float tick = (float) (time + event.getRenderPartialTicks()) / 2f;
             if (effects[EFFECT_WEATHER_RAIN] > 0)
@@ -317,7 +317,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
         GlStateManager.disableTexture2D();
         Vector3 temp = Vector3.getNewVector();
         Vector3 temp2 = Vector3.getNewVector();
-        Random rand = new Random(Minecraft.getMinecraft().thePlayer.ticksExisted / 200);
+        Random rand = new Random(Minecraft.getMinecraft().player.ticksExisted / 200);
         GlStateManager.translate(-direction.x * 8, -direction.y * 8, -direction.z * 8);
         for (int i = 0; i < 1000; i++)
         {

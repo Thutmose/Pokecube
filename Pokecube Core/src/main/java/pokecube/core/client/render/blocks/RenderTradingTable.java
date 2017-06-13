@@ -32,7 +32,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
     }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileentity, double x, double y, double z, float f, int i1)
+    public void func_192841_a(TileEntity tileentity, double x, double y, double z, float f, int i1, float f1)
     {
         TileEntityTradingTable table = (TileEntityTradingTable) tileentity;
         if (!(table.getWorld().getBlockState(table.getPos()).getBlock() instanceof BlockTradingTable)) return;
@@ -50,7 +50,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
 
         int l = 0;
 
-        if (tileentity.hasWorldObj())
+        if (tileentity.hasWorld())
         {
             l = tileentity.getBlockMetadata();
         }
@@ -79,7 +79,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
             glRotatef(-90, 0, 1, 0);
             RenderHelper.disableStandardItemLighting();
             if (table.getStackInSlot(0).getItem() instanceof IPokecube) Minecraft.getMinecraft().getItemRenderer()
-                    .renderItem(Minecraft.getMinecraft().thePlayer, table.getStackInSlot(0), TransformType.NONE);
+                    .renderItem(Minecraft.getMinecraft().player, table.getStackInSlot(0), TransformType.NONE);
             GlStateManager.disableAlpha();
             GlStateManager.disableBlend();
             RenderHelper.enableStandardItemLighting();
@@ -96,7 +96,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
             glRotatef(90, 0, 1, 0);
             RenderHelper.disableStandardItemLighting();
             if (table.getStackInSlot(1).getItem() instanceof IPokecube) Minecraft.getMinecraft().getItemRenderer()
-                    .renderItem(Minecraft.getMinecraft().thePlayer, table.getStackInSlot(1), TransformType.NONE);
+                    .renderItem(Minecraft.getMinecraft().player, table.getStackInSlot(1), TransformType.NONE);
             GlStateManager.disableAlpha();
             GlStateManager.disableBlend();
             RenderHelper.enableStandardItemLighting();

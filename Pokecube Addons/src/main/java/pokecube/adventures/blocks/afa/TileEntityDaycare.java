@@ -53,10 +53,10 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     @SubscribeEvent
     public void applyExp(LivingUpdateEvent event)
     {
-        if (worldObj == null) return;
+        if (world == null) return;
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
-            if (worldObj.isRemote)
+            if (world.isRemote)
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
@@ -230,7 +230,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
@@ -348,7 +348,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return player.getUniqueID().equals(placer);
     }
@@ -392,7 +392,7 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

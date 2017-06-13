@@ -26,7 +26,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTBase;
@@ -326,7 +326,7 @@ public class GuiNBTTree extends Gui {
 	protected void overlayBackground(int par1, int par2, int par3, int par4)
 	{
 		Tessellator tessellator = Tessellator.getInstance();
-		VertexBuffer worldRenderer = tessellator.getBuffer();
+		BufferBuilder worldRenderer = tessellator.getBuffer();
 		mc.renderEngine.bindTexture(OPTIONS_BACKGROUND);
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		float var6 = 32.0F;

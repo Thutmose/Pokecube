@@ -43,7 +43,7 @@ public class EntityPokemobEgg extends EntityLiving
     {
         super(world);
         this.setSize(0.35f, 0.35f);
-        hatch = 1000 + worldObj.rand.nextInt(PokecubeMod.core.getConfig().eggHatchTime);
+        hatch = 1000 + world.rand.nextInt(PokecubeMod.core.getConfig().eggHatchTime);
     }
 
     /** @param world
@@ -79,7 +79,7 @@ public class EntityPokemobEgg extends EntityLiving
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
         Entity e = source.getEntity();
-        if (!worldObj.isRemote && e != null && e instanceof EntityPlayer)
+        if (!world.isRemote && e != null && e instanceof EntityPlayer)
         {
             if (this.delayBeforeCanPickup > 0) { return false; }
 
@@ -145,18 +145,18 @@ public class EntityPokemobEgg extends EntityLiving
     {
         if (!real)
         {
-            IPokemob pokemob = ItemPokemobEgg.getFakePokemob(worldObj, here, getHeldItemMainhand());
+            IPokemob pokemob = ItemPokemobEgg.getFakePokemob(world, here, getHeldItemMainhand());
             if (pokemob == null) return null;
-            ((Entity) pokemob).worldObj = worldObj;
+            ((Entity) pokemob).world = world;
             return pokemob;
         }
         PokedexEntry entry = ItemPokemobEgg.getEntry(getHeldItemMainhand());
         if (entry == null) return null;
-        IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, worldObj);
+        IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
         if (pokemob == null) return null;
         here.moveEntity((Entity) pokemob);
         ItemPokemobEgg.initPokemobGenetics(pokemob, getHeldItemMainhand().getTagCompound());
-        ((Entity) pokemob).setWorld(worldObj);
+        ((Entity) pokemob).setWorld(world);
         return pokemob;
     }
 
@@ -182,7 +182,7 @@ public class EntityPokemobEgg extends EntityLiving
             return;
         }
         here.set(this);
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
         this.delayBeforeCanPickup--;
         boolean spawned = getHeldItemMainhand().hasTagCompound()
                 && getHeldItemMainhand().getTagCompound().hasKey("nestLocation");
@@ -195,7 +195,7 @@ public class EntityPokemobEgg extends EntityLiving
             {
                 EggEvent.Hatch evt = new EggEvent.Hatch(this);
                 MinecraftForge.EVENT_BUS.post(evt);
-                ItemPokemobEgg.spawn(worldObj, getHeldItemMainhand(), Math.floor(posX) + 0.5, Math.floor(posY) + 0.5,
+                ItemPokemobEgg.spawn(world, getHeldItemMainhand(), Math.floor(posX) + 0.5, Math.floor(posY) + 0.5,
                         Math.floor(posZ) + 0.5);
                 setDead();
             }
@@ -206,12 +206,12 @@ public class EntityPokemobEgg extends EntityLiving
             if (mob == null) this.setDead();
             else((EntityLiving) mob).playLivingSound();
         }
-        TileEntity te = here.getTileEntity(worldObj, EnumFacing.DOWN);
-        if (te == null) te = here.getTileEntity(worldObj);
+        TileEntity te = here.getTileEntity(world, EnumFacing.DOWN);
+        if (te == null) te = here.getTileEntity(world);
         if (te instanceof TileEntityHopper)
         {
             TileEntityHopper hopper = (TileEntityHopper) te;
-            EntityItem item = new EntityItem(worldObj, posX, posY, posZ, getHeldItemMainhand());
+            EntityItem item = new EntityItem(world, posX, posY, posZ, getHeldItemMainhand());
             boolean added = TileEntityHopper.putDropInInventoryAllSlots(null, hopper, item);
             if (added)
             {

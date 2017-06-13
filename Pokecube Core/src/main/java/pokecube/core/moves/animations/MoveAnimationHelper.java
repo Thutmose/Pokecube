@@ -88,7 +88,7 @@ public class MoveAnimationHelper
     {
         try
         {
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             Vector3 source = Vector3.getNewVector().set(player);
             GL11.glPushMatrix();
             int range = 4;

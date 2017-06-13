@@ -30,7 +30,7 @@ public class GuiInfoMessages
     public static void addMessage(ITextComponent message)
     {
         instance.messages.push(message.getFormattedText());
-        instance.time = Minecraft.getMinecraft().thePlayer.ticksExisted;
+        instance.time = Minecraft.getMinecraft().player.ticksExisted;
         instance.recent.addFirst(message.getFormattedText());
         if (instance.messages.size() > 100)
         {
@@ -118,7 +118,7 @@ public class GuiInfoMessages
             if (offset < 0) offset = 0;
             if (offset > messages.size() - 7) offset = messages.size() - 7;
         }
-        else if (time > minecraft.thePlayer.ticksExisted - 30)
+        else if (time > minecraft.player.ticksExisted - 30)
         {
             num = 6;
             offset = 0;
@@ -127,7 +127,7 @@ public class GuiInfoMessages
         {
             offset = 0;
             num = 6;
-            time = minecraft.thePlayer.ticksExisted;
+            time = minecraft.player.ticksExisted;
             if (!recent.isEmpty())
             {
                 recent.removeLast();

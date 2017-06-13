@@ -46,7 +46,7 @@ public class GuiBag extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (mc.thePlayer.getEntityWorld().isRemote)
+        if (mc.player.getEntityWorld().isRemote)
         {
             if (guibutton.id == 3)
             {
@@ -60,7 +60,7 @@ public class GuiBag extends GuiContainer
             else
             {
                 cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
-                        mc.thePlayer.inventory);
+                        mc.player.inventory);
                 textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
@@ -166,7 +166,7 @@ public class GuiBag extends GuiContainer
         keyTyped2(par1, par2);
         if (par2 == 1)
         {
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             return;
         }
 
@@ -244,9 +244,9 @@ public class GuiBag extends GuiContainer
     @Override
     public void onGuiClosed()
     {
-        if (this.mc.thePlayer != null)
+        if (this.mc.player != null)
         {
-            this.inventorySlots.onContainerClosed(this.mc.thePlayer);
+            this.inventorySlots.onContainerClosed(this.mc.player);
         }
     }
 

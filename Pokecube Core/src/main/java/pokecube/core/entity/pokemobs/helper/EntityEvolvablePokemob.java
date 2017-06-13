@@ -74,7 +74,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (evt.world.getTotalWorldTime() > evoTime && !exists)
             {
-                evt.world.spawnEntityInWorld(evo);
+                evt.world.spawnEntity(evo);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
                         pre.getFormattedText(), ((IPokemob) evo).getPokedexEntry().getName());
                 ((IPokemob) evo).displayMessageToOwner(mess);
@@ -96,7 +96,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void cancelEvolve()
     {
         if (!isEvolving()) return;
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             MessageServer message = new MessageServer(MessageServer.CANCELEVOLVE, getEntityId());
             PokecubePacketHandler.sendToServer(message);
@@ -283,7 +283,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean isServerWorld()
     {
-        return worldObj != null && super.isServerWorld();
+        return world != null && super.isServerWorld();
     }
 
     void makeShedinja(IPokemob evo, EntityPlayer player)
@@ -310,7 +310,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             }
             if (hasCube && hasSpace)
             {
-                Entity pokemon = PokecubeMod.core.createPokemob(Database.getEntry("shedinja"), worldObj);
+                Entity pokemon = PokecubeMod.core.createPokemob(Database.getEntry("shedinja"), world);
                 if (pokemon != null)
                 {
                     ItemStack mobCube = cube.copy();
@@ -339,7 +339,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             setPokemonAIState(EVOLVING, true);
             if (newEntry.getPokedexNb() != getPokedexNb())
             {
-                evolution = PokecubeMod.core.createPokemob(newEntry, worldObj);
+                evolution = PokecubeMod.core.createPokemob(newEntry, world);
                 if (evolution == null)
                 {
                     System.err.println("No Entry for " + newEntry);
@@ -359,8 +359,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
                 if (this.addedToChunk)
                 {
-                    long evoTime = worldObj.getTotalWorldTime() + 2;
-                    new EvoTicker(worldObj, evoTime, evolution, this.getPokemonDisplayName());
+                    long evoTime = world.getTotalWorldTime() + 2;
+                    new EvoTicker(world, evoTime, evolution, this.getPokemonDisplayName());
                 }
                 ((IPokemob) evolution).setPokemonAIState(EVOLVING, true);
             }

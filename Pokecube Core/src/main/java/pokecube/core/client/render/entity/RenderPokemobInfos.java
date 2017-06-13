@@ -22,7 +22,7 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
         if (((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
                 || entity.isBeingRidden()) { return false; }
 
-        EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
+        EntityLivingBase player = Minecraft.getMinecraft().player;
         if (!entity.addedToChunk || entity.getRidingEntity() == player) return false;
         float d = entity.getDistanceToEntity(player);
         IPokemob pokemob = ((IPokemob) entity);

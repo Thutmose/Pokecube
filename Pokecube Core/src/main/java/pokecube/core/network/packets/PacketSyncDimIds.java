@@ -39,7 +39,7 @@ public class PacketSyncDimIds implements IMessage, IMessageHandler<PacketSyncDim
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -51,7 +51,7 @@ public class PacketSyncDimIds implements IMessage, IMessageHandler<PacketSyncDim
     public void toBytes(ByteBuf buf)
     {
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketSyncDimIds message)

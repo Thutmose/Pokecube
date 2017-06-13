@@ -80,7 +80,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         if (model.getTexturer() == null)
             FMLClientHandler.instance().getClient().renderEngine.bindTexture(getEntityTexture(entity));
         float f8 = this.handleRotationFloat(entity, partialTick);
-        if (entity.getHealth() <= 0) this.rotateCorpse(entity, f8, yaw, partialTick);
+        if (entity.getHealth() <= 0) this.applyRotations(entity, f8, yaw, partialTick);
         String phase;
         if (overrideAnim) phase = anim;
         else if (entity instanceof IEntityAnimator)

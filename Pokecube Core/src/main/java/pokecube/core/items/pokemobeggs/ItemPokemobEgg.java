@@ -7,11 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -276,15 +279,15 @@ public class ItemPokemobEgg extends Item
                 }
             }
             mob.specificSpawnInit();
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
             if (mob.getPokemonOwner() != null)
             {
                 EntityLivingBase owner = mob.getPokemonOwner();
-                owner.addChatMessage(
+                owner.sendMessage(
                         new TextComponentTranslation("pokemob.hatch", mob.getPokemonDisplayName().getFormattedText()));
                 if (world.getGameRules().getBoolean("doMobLoot"))
                 {
-                    world.spawnEntityInWorld(new EntityXPOrb(world, entity.posX, entity.posY, entity.posZ,
+                    world.spawnEntity(new EntityXPOrb(world, entity.posX, entity.posY, entity.posZ,
                             entity.getRNG().nextInt(7) + 1));
                 }
             }
@@ -305,7 +308,7 @@ public class ItemPokemobEgg extends Item
      * description */
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> tooltip, ITooltipFlag advanced)
     {
         PokedexEntry entry = getEntry(stack);
         if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));
@@ -320,7 +323,7 @@ public class ItemPokemobEgg extends Item
         Entity entity = new EntityPokemobEgg(world, location.x, location.y, location.z, eggItemStack, placer);
         EggEvent.Place event = new EggEvent.Place(entity);
         MinecraftForge.EVENT_BUS.post(event);
-        world.spawnEntityInWorld(entity);
+        world.spawnEntity(entity);
         return true;
     }
 

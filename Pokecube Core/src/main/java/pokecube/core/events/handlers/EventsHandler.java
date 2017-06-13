@@ -18,9 +18,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
@@ -339,7 +339,7 @@ public class EventsHandler
             if (!CompatWrapper.isValid(stack)) return;
             EntityItem item = new EntityItem(evt.getWorld(), evt.getPos().getX() + 0.5, evt.getPos().getY() + 0.5,
                     evt.getPos().getZ() + 0.5, stack);
-            evt.getWorld().spawnEntityInWorld(item);
+            evt.getWorld().spawnEntity(item);
         }
         if (evt.getState().getBlock() == PokecubeItems.pokecenter)
         {
@@ -370,7 +370,7 @@ public class EventsHandler
     {
         if (PokecubeMod.core.getConfig().disableVanillaMonsters && !(evt.getEntity() instanceof IPokemob)
                 && evt.getEntity() instanceof IMob
-                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart)
+                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof MultiPartEntityPart)
                 && evt.getEntity().getClass().getName().contains("net.minecraft"))
         {
             evt.getEntity().setDead();
@@ -489,7 +489,7 @@ public class EventsHandler
     @SubscribeEvent
     public void livingHurtEvent(LivingHurtEvent evt)
     {
-        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.inWall)
+        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.IN_WALL)
         {
             if (evt.getEntityLiving().getRidingEntity() instanceof IPokemob) evt.setCanceled(true);
         }
@@ -498,7 +498,7 @@ public class EventsHandler
     @SubscribeEvent
     public void livingDeath(LivingDeathEvent evt)
     {
-        if (evt.getEntity().worldObj.isRemote || evt.getEntityLiving() instanceof IPokemob) return;
+        if (evt.getEntity().world.isRemote || evt.getEntityLiving() instanceof IPokemob) return;
         if (evt.getEntityLiving().getLastAttacker() instanceof IPokemob
                 && evt.getSource().getEntity() != evt.getEntityLiving().getLastAttacker())
         {
@@ -558,11 +558,11 @@ public class EventsHandler
             EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
             BlockPos here;
             BlockPos old;
-            here = new BlockPos(MathHelper.floor_double(player.chasingPosX) >> 4,
-                    MathHelper.floor_double(player.chasingPosY) >> 4, MathHelper.floor_double(player.chasingPosZ) >> 4);
-            old = new BlockPos(MathHelper.floor_double(player.prevChasingPosX) >> 4,
-                    MathHelper.floor_double(player.prevChasingPosY) >> 4,
-                    MathHelper.floor_double(player.prevChasingPosZ) >> 4);
+            here = new BlockPos(MathHelper.floor(player.chasingPosX) >> 4,
+                    MathHelper.floor(player.chasingPosY) >> 4, MathHelper.floor(player.chasingPosZ) >> 4);
+            old = new BlockPos(MathHelper.floor(player.prevChasingPosX) >> 4,
+                    MathHelper.floor(player.prevChasingPosY) >> 4,
+                    MathHelper.floor(player.prevChasingPosZ) >> 4);
             if (!here.equals(old)) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
                     evt.getEntity().getEntityWorld());
         }
@@ -584,7 +584,7 @@ public class EventsHandler
                 {
                     String message = "A sweet smell is coming from "
                             + shuckle.getPokemonDisplayName().getFormattedText();
-                    ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
+                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(new ItemStack(PokecubeItems.berryJuice));
                 return;
@@ -599,7 +599,7 @@ public class EventsHandler
                 {
                     String message = "The smell coming from " + shuckle.getPokemonDisplayName().getFormattedText()
                             + " has changed";
-                    ((EntityPlayer) shuckle.getPokemonOwner()).addChatMessage(new TextComponentString(message));
+                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(new TextComponentString(message));
                 }
                 shuckle.setHeldItem(candy);
                 return;
@@ -743,7 +743,7 @@ public class EventsHandler
             if (pokecube.isLoot && pokecube.cannotCollect(event.getEntityPlayer()))
             {
                 PacketPokecube.sendMessage(event.getEntityPlayer(), pokecube.getEntityId(),
-                        pokecube.worldObj.getTotalWorldTime() + pokecube.resetTime);
+                        pokecube.world.getTotalWorldTime() + pokecube.resetTime);
             }
         }
     }

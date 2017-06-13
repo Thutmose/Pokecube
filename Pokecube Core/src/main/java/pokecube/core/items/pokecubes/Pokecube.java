@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -82,12 +83,12 @@ public class Pokecube extends Item implements IPokecube
      * description */
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean advanced)
+    public void addInformation(ItemStack item, @Nullable World world, List<String> list, ITooltipFlag advanced)
     {
         if (PokecubeManager.isFilled(item))
         {
             NBTTagCompound poketag = item.getTagCompound().getCompoundTag("Pokemob");
-            IPokemob pokemob = PokecubeManager.itemToPokemob(item, player.getEntityWorld());
+            IPokemob pokemob = PokecubeManager.itemToPokemob(item, world);
 
             if (pokemob == null)
             {
@@ -381,7 +382,7 @@ public class Pokecube extends Item implements IPokecube
         if (!world.isRemote)
         {
             thrower.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
         }
         return true;
     }
@@ -422,7 +423,7 @@ public class Pokecube extends Item implements IPokecube
             if (!world.isRemote)
             {
                 thrower.playSound(SoundEvents.ENTITY_EGG_THROW, 0.5F, 0.4F / (itemRand.nextFloat() * 0.4F + 0.8F));
-                world.spawnEntityInWorld(entity);
+                world.spawnEntity(entity);
             }
         }
         else if (!rightclick) { return false; }

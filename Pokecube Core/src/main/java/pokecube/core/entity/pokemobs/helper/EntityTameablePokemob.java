@@ -327,7 +327,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         if (ownerID == null) return null;
         try
         {
-            EntityPlayer o = worldObj.getPlayerEntityByUUID(ownerID);
+            EntityPlayer o = world.getPlayerEntityByUUID(ownerID);
             players = o != null;
             if (o != null) return o;
         }
@@ -336,7 +336,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
 
         }
         List<Object> entities = null;
-        entities = new ArrayList<Object>(worldObj.loadedEntityList);
+        entities = new ArrayList<Object>(world.loadedEntityList);
         for (Object o : entities)
         {
             if (o instanceof EntityLivingBase)
@@ -412,13 +412,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     @Override
     public Team getTeam()
     {
-        if (getOwner() == this) { return this.worldObj.getScoreboard().getPlayersTeam(this.getCachedUniqueIdString()); }
+        if (getOwner() == this) { return this.world.getScoreboard().getPlayersTeam(this.getCachedUniqueIdString()); }
         return super.getTeam();
     }
 
     protected void handleArmourAndSaddle()
     {
-        if (worldObj != null && !this.worldObj.isRemote)
+        if (world != null && !this.world.isRemote)
         {
             setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != CompatWrapper.nullStack);
             dataManager.set(HELDITEM, this.pokeChest.getStackInSlot(1));
@@ -486,7 +486,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         {
             long last = getEntityData().getLong("lastSheared");
 
-            if (last < worldObj.getTotalWorldTime() - 800 && !worldObj.isRemote)
+            if (last < this.world.getTotalWorldTime() - 800 && !this.world.isRemote)
             {
                 setSheared(false);
             }
@@ -526,7 +526,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
 
-            getEntityData().setLong("lastSheared", worldObj.getTotalWorldTime());
+            getEntityData().setLong("lastSheared", this.world.getTotalWorldTime());
 
             int i = 1 + rand.nextInt(3);
             List<ItemStack> list = getPokedexEntry().getInteractResult(key);
@@ -557,7 +557,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             initHome = false;
             if (getHome() != null)
             {
-                TileEntity te = worldObj.getTileEntity(getHome());
+                TileEntity te = world.getTileEntity(getHome());
                 if (te != null && te instanceof TileEntityNest)
                 {
                     TileEntityNest nest = (TileEntityNest) te;
@@ -575,17 +575,17 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             ItemStack stack;
             if ((stack = this.pokeChest.getStackInSlot(i)) != CompatWrapper.nullStack)
             {
-                stack.getItem().onUpdate(stack, worldObj, this, i, false);
+                stack.getItem().onUpdate(stack, world, this, i, false);
             }
         }
     }
 
     public void openGUI(EntityPlayer player)
     {
-        if (!this.worldObj.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
+        if (!this.world.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
         {
             this.pokeChest.setCustomName(this.getDisplayName().getFormattedText());
-            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
+            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, world, getEntityId(), 0, 0);
         }
     }
 
@@ -661,13 +661,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal
                     noRoom = !toss.isCanceled();
                     if (noRoom)
                     {
-                        EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                        EntityPokecube entity = new EntityPokecube(world, (EntityLivingBase) owner, itemstack);
                         Vector3 temp = Vector3.getNewVector().set(this);
                         temp.moveEntity(entity);
                         temp.clear().setVelocities(entity);
                         entity.targetEntity = null;
                         entity.targetLocation.clear();
-                        worldObj.spawnEntityInWorld(entity);
+                        world.spawnEntity(entity);
                     }
                 }
                 else
@@ -703,13 +703,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal
                     MinecraftForge.EVENT_BUS.post(toss);
                     if (!toss.isCanceled())
                     {
-                        EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                        EntityPokecube entity = new EntityPokecube(world, (EntityLivingBase) owner, itemstack);
                         Vector3 temp = Vector3.getNewVector().set(this);
                         temp.moveEntity(entity);
                         temp.clear().setVelocities(entity);
                         entity.targetEntity = null;
                         entity.targetLocation.clear();
-                        worldObj.spawnEntityInWorld(entity);
+                        world.spawnEntity(entity);
                     }
                 }
                 else
@@ -724,13 +724,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal
                         MinecraftForge.EVENT_BUS.post(toss);
                         if (!toss.isCanceled())
                         {
-                            EntityPokecube entity = new EntityPokecube(worldObj, (EntityLivingBase) owner, itemstack);
+                            EntityPokecube entity = new EntityPokecube(world, (EntityLivingBase) owner, itemstack);
                             Vector3 temp = Vector3.getNewVector().set(this);
                             temp.moveEntity(entity);
                             temp.clear().setVelocities(entity);
                             entity.targetEntity = null;
                             entity.targetLocation.clear();
-                            worldObj.spawnEntityInWorld(entity);
+                            world.spawnEntity(entity);
                         }
                     }
                 }
@@ -745,7 +745,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     @Override
     public void setDead()
     {
-        if (!this.returning && this.addedToChunk && !worldObj.isRemote) returnToPokecube();
+        if (!this.returning && this.addedToChunk && !world.isRemote) returnToPokecube();
         super.setDead();
     }
 

@@ -196,8 +196,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         }
         if (world.villageCollectionObj != null)
         {
-            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(MathHelper.floor_double(v.x),
-                    MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
+            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(MathHelper.floor(v.x),
+                    MathHelper.floor(v.y), MathHelper.floor(v.z)), 2);
             if (village != null)
             {
                 biome = VILLAGE.getType();

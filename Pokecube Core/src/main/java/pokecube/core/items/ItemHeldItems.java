@@ -3,14 +3,17 @@ package pokecube.core.items;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.PokecubeMod;
@@ -54,7 +57,7 @@ public class ItemHeldItems extends Item
      * description */
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> list, ITooltipFlag advanced)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("type"))
         {
@@ -75,12 +78,12 @@ public class ItemHeldItems extends Item
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
         ItemStack stack;
         for (String s : variants)
         {
-            stack = new ItemStack(itemIn);
+            stack = new ItemStack(this);
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("type", s);
             subItems.add(stack);

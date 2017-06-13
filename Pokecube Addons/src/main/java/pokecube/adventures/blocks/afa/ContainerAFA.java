@@ -35,7 +35,7 @@ public class ContainerAFA extends Container
     }
 
     public TileEntityAFA tile;
-    public World         worldObj;
+    public World         world;
     int                  energy = 0;
 
     public BlockPos      pos;
@@ -44,7 +44,7 @@ public class ContainerAFA extends Container
     {
         super();
         this.tile = tile;
-        this.worldObj = tile.getWorld();
+        this.world = tile.getWorld();
         this.pos = tile.getPos();
         bindInventories(playerInv);
     }

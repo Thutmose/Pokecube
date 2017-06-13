@@ -259,10 +259,10 @@ public class MakeCommand extends CommandBase
                             }
                         }
                         mob.specificSpawnInit();
-                        ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
+                        ((Entity) mob).getEntityWorld().spawnEntity((Entity) mob);
                         text = TextFormatting.GREEN + "Spawned " + mob.getPokemonDisplayName().getFormattedText();
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
+                        sender.sendMessage(message);
                         return;
                     }
                 }
@@ -275,19 +275,19 @@ public class MakeCommand extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return this.aliases;
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return aliases.get(0);
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/" + aliases.get(0) + "<pokemob name/number> <arguments>";
     }
@@ -300,7 +300,7 @@ public class MakeCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
             BlockPos pos)
     {
         List<String> ret = new ArrayList<String>();

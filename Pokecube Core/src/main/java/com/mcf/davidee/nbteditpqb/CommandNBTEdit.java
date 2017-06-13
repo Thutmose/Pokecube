@@ -28,13 +28,13 @@ public class CommandNBTEdit extends CommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pcedit";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender par1ICommandSender)
+    public String getUsage(ICommandSender par1ICommandSender)
     {
         return "/pcedit OR /pcedit <EntityId> OR /pcedit <TileX> <TileY> <TileZ>";
     }
@@ -98,7 +98,7 @@ public class CommandNBTEdit extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
             @Nullable BlockPos pos)
     {
         try

@@ -370,7 +370,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public Entity getTransformedTo()
     {
-        return worldObj.getEntityByID(getDataManager().get(TRANSFORMEDTODW));
+        return world.getEntityByID(getDataManager().get(TRANSFORMEDTODW));
     }
 
     @Override
@@ -452,7 +452,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     {
         List<String> moves = Database.getLevelUpMoves(this.getPokedexEntry(), level, oldLevel);
         Collections.shuffle(moves);
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             ITextComponent mess = new TextComponentTranslation("pokemob.info.levelup",
                     getPokemonDisplayName().getFormattedText(), level + "");

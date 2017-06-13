@@ -68,7 +68,7 @@ public class XMLRewardsHandler
                     if (giveReward)
                     {
                         tag.setBoolean(tagString, true);
-                        entity.addChatMessage(new TextComponentTranslation(message));
+                        entity.sendMessage(new TextComponentTranslation(message));
                         EntityPlayer entityPlayer = (EntityPlayer) entity;
                         Tools.giveItem(entityPlayer, reward.copy());
                         PokecubePlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());
@@ -158,7 +158,7 @@ public class XMLRewardsHandler
                 {
                     ItemStack book = getInfoBook(lang);
                     data.tag.setBoolean(key, true);
-                    entity.addChatMessage(new TextComponentTranslation(message));
+                    entity.sendMessage(new TextComponentTranslation(message));
                     EntityPlayer entityPlayer = (EntityPlayer) entity;
                     Tools.giveItem(entityPlayer, book);
                     PokecubePlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());

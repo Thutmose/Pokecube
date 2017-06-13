@@ -7,7 +7,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -99,12 +98,12 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
         ItemStack stack;
         for (String s : vitamins)
         {
-            stack = new ItemStack(itemIn);
+            stack = new ItemStack(this);
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("vitamin", s);
             subItems.add(stack);

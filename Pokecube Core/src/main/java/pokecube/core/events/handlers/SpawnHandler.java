@@ -119,30 +119,30 @@ public final class SpawnHandler
         return true;
     }
 
-    public static boolean canPokemonSpawnHere(Vector3 location, World worldObj, PokedexEntry entry)
+    public static boolean canPokemonSpawnHere(Vector3 location, World world, PokedexEntry entry)
     {
-        if (!location.clearOfBlocks(worldObj) || !canSpawn(null, entry.getSpawnData(), location, worldObj, true))
+        if (!location.clearOfBlocks(world) || !canSpawn(null, entry.getSpawnData(), location, world, true))
             return false;
-        if (!temp.set(location).addTo(0, entry.height, 0).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(0, 0, entry.width / 2).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(worldObj)) return false;
-        if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(worldObj)) return false;
-        IBlockState state = temp.set(location).addTo(0, -1, 0).getBlockState(worldObj);
+        if (!temp.set(location).addTo(0, entry.height, 0).clearOfBlocks(world)) return false;
+        if (!temp.set(location).addTo(entry.width / 2, 0, 0).clearOfBlocks(world)) return false;
+        if (!temp.set(location).addTo(0, 0, entry.width / 2).clearOfBlocks(world)) return false;
+        if (!temp.set(location).addTo(0, 0, -entry.width / 2).clearOfBlocks(world)) return false;
+        if (!temp.set(location).addTo(-entry.width / 2, 0, 0).clearOfBlocks(world)) return false;
+        IBlockState state = temp.set(location).addTo(0, -1, 0).getBlockState(world);
         Block down = state.getBlock();
         net.minecraft.entity.EntityLiving.SpawnPlacementType type = SpawnPlacementType.ON_GROUND;
         if (entry.flys())
         {
             type = SpawnPlacementType.IN_AIR;
-            if (down.canCreatureSpawn(state, worldObj, temp.getPos(), type) || location.isAir(worldObj)) return true;
+            if (down.canCreatureSpawn(state, world, temp.getPos(), type) || location.isAir(world)) return true;
         }
         if (entry.swims())
         {
             type = SpawnPlacementType.IN_WATER;
-            if (down.canCreatureSpawn(state, worldObj, temp.getPos(), type) || state.getMaterial() == Material.WATER)
+            if (down.canCreatureSpawn(state, world, temp.getPos(), type) || state.getMaterial() == Material.WATER)
                 return true;
         }
-        return down.canCreatureSpawn(state, worldObj, temp.getPos(), type);
+        return down.canCreatureSpawn(state, world, temp.getPos(), type);
     }
 
     public static boolean canSpawn(TerrainSegment terrain, SpawnData data, Vector3 v, World world,
@@ -573,7 +573,7 @@ public final class SpawnHandler
                             {
                                 SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world, (IPokemob) entityliving);
                                 MinecraftForge.EVENT_BUS.post(evt);
-                                world.spawnEntityInWorld(entityliving);
+                                world.spawnEntity(entityliving);
                                 totalSpawnCount++;
                             }
                         }
@@ -671,7 +671,7 @@ public final class SpawnHandler
             if (PokecubeMod.core.getConfig().meteors)
             {
                 if (!world.provider.isSurfaceWorld()) return;
-                if (world.provider.getHasNoSky()) return;
+                if (world.provider.hasNoSky()) return;
 
                 List<Object> players = new ArrayList<Object>(world.playerEntities);
                 if (players.size() < 1) return;

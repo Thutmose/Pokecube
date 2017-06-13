@@ -82,7 +82,7 @@ public abstract class MoveAnimationBase implements IMoveAnimation
             }
         }
         if (colour == null) return;
-        rgba = colour.getMapColor().colorValue + 0x01000000 * alpha;
+        rgba = colour.func_193350_e() + 0x01000000 * alpha;
         customColour = true;
     }
 }

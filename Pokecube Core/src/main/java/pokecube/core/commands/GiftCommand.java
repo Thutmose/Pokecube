@@ -170,19 +170,19 @@ public class GiftCommand extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return this.aliases;
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return aliases.get(0);
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/" + aliases.get(0) + "<giftCode>";
     }

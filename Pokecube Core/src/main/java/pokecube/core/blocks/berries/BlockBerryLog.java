@@ -11,6 +11,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.berries.BlockBerryWood.EnumType;
@@ -105,7 +107,7 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
     }
 
     @Override
-    protected ItemStack createStackedBlock(IBlockState state)
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state)
     {
         return new ItemStack(Item.getItemFromBlock(this), 1,
                 state.getValue(shift == 0 ? VARIANT0 : VARIANT4).getMetadata() - shift);
@@ -181,11 +183,11 @@ public class BlockBerryLog extends BlockLog implements IMetaBlock
 
     /** returns a list of blocks with the same ID, but different meta (eg: wood
      * returns 4 blocks) */
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (int i = 0; i < woodType.length; i++)
         {
-            list.add(new ItemStack(itemIn, 1, i));
+            list.add(new ItemStack(Item.getItemFromBlock(this), 1, i));
         }
     }
 

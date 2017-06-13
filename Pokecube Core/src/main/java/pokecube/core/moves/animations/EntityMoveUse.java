@@ -111,7 +111,7 @@ public class EntityMoveUse extends Entity
 
     public Entity getUser()
     {
-        return PokecubeMod.core.getEntityProvider().getEntity(worldObj, getDataManager().get(USER), true);
+        return PokecubeMod.core.getEntityProvider().getEntity(world, getDataManager().get(USER), true);
     }
 
     public EntityMoveUse setTarget(Entity target)
@@ -123,7 +123,7 @@ public class EntityMoveUse extends Entity
 
     public Entity getTarget()
     {
-        return worldObj.getEntityByID(getDataManager().get(TARGET));
+        return world.getEntityByID(getDataManager().get(TARGET));
     }
 
     public int getAge()
@@ -167,7 +167,7 @@ public class EntityMoveUse extends Entity
             this.setDead();
             return;
         }
-        if (worldObj.isRemote && attack.getAnimation((IPokemob) user) != null)
+        if (world.isRemote && attack.getAnimation((IPokemob) user) != null)
             attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
 
         if (!applied && age <= getApplicationTick())
@@ -195,7 +195,7 @@ public class EntityMoveUse extends Entity
         Move_Base attack = getMove();
         Entity user;
         if ((user = getUser()) == null || this.isDead || user.isDead) return;
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             if (attack.move.notIntercepable)
             {

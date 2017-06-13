@@ -168,9 +168,9 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    public boolean isUsableByPlayer(EntityPlayer entityplayer)
     {
-        if (getPC() != null) return getPC().isUseableByPlayer(entityplayer);
+        if (getPC() != null) return getPC().isUsableByPlayer(entityplayer);
         return false;
     }
 
@@ -220,7 +220,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     public void setBoundOwner(EntityPlayer player)
     {
         if (!canEdit(player)) return;
-        if (this.worldObj.isRemote)
+        if (this.world.isRemote)
         {
             PacketPC packet = new PacketPC(PacketPC.BIND);
             packet.data.setBoolean("O", false);
@@ -228,11 +228,11 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             return;
         }
         String uuid = player.getCachedUniqueIdString();
-        TileEntity te = worldObj.getTileEntity(getPos().down());
+        TileEntity te = world.getTileEntity(getPos().down());
         if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).setBoundOwner(player);
         boundId = uuid;
         boundName = player.getDisplayNameString();
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             PacketHandler.sendTileUpdate(this);
         }
@@ -254,7 +254,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
 
     public void toggleBound()
     {
-        if (this.worldObj.isRemote)
+        if (this.world.isRemote)
         {
             PacketPC packet = new PacketPC(PacketPC.BIND);
             packet.data.setBoolean("O", true);
@@ -262,7 +262,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             return;
         }
 
-        TileEntity te = worldObj.getTileEntity(getPos().down());
+        TileEntity te = world.getTileEntity(getPos().down());
         this.bound = !this.bound;
 
         if (te != null && te instanceof TileEntityPC) ((TileEntityPC) te).toggleBound();
@@ -278,7 +278,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
             boundId = "";
             boundName = "";
         }
-        if (!worldObj.isRemote)
+        if (!world.isRemote)
         {
             PacketHandler.sendTileUpdate(this);
         }
@@ -298,7 +298,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

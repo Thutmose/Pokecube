@@ -41,7 +41,7 @@ public class TileEntityCloner extends TileClonerBase
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         if (getCraftMatrix() != null && getCraftMatrix().eventHandler != null)
         {
@@ -82,7 +82,7 @@ public class TileEntityCloner extends TileClonerBase
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -104,7 +104,7 @@ public class TileEntityCloner extends TileClonerBase
     public void update()
     {
         checkCollision();
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
         checkRecipes();
     }
 

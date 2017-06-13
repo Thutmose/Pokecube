@@ -79,7 +79,7 @@ public class GuiTMCreator extends GuiContainer
 
         if (moves.isEmpty() && textFieldSearch.getText().isEmpty())
         {
-            List<String> mov = table.getMoves(mc.thePlayer.getCachedUniqueIdString());
+            List<String> mov = table.getMoves(mc.player.getCachedUniqueIdString());
             if (mov != null)
             {
                 moves.addAll(mov);
@@ -142,7 +142,7 @@ public class GuiTMCreator extends GuiContainer
         keyTyped2(par1, par2);
         textFieldSearch.textboxKeyTyped(par1, par2);
 
-        ArrayList<String> playerMoves = table.getMoves(mc.thePlayer.getCachedUniqueIdString());
+        ArrayList<String> playerMoves = table.getMoves(mc.player.getCachedUniqueIdString());
 
         if (playerMoves == null) return;
 
@@ -194,7 +194,7 @@ public class GuiTMCreator extends GuiContainer
         }
         if (par2 == 1)
         {
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             return;
         }
         if (this.theSlot != null && this.theSlot.getHasStack())

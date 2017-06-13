@@ -217,7 +217,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
             EnumFacing dir = world.getBlockState(pos).getValue(BlockCloner.FACING);
             entity.setLocationAndAngles(pos.getX() + 0.5 + dir.getFrontOffsetX(), pos.getY() + 1,
                     pos.getZ() + 0.5 + dir.getFrontOffsetZ(), world.rand.nextFloat() * 360F, 0.0F);
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
             IMobGenetics genes = ClonerHelper.getGenes(dnaSource);
             if (genes != null)
             {

@@ -130,18 +130,18 @@ public class Move_Explode extends Move_Basic
                 }
                 else
                 {
-                    mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
+                    mob.world.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
                             SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
-                            (1.0F + (mob.worldObj.rand.nextFloat() - mob.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+                            (1.0F + (mob.world.rand.nextFloat() - mob.world.rand.nextFloat()) * 0.2F) * 0.7F);
 
                     if (getPWR() > 200)
                     {
-                        mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
+                        mob.world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
                                 0.0D, 0.0D, new int[0]);
                     }
                     else
                     {
-                        mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ,
+                        mob.world.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ,
                                 1.0D, 0.0D, 0.0D, new int[0]);
                     }
                     actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,

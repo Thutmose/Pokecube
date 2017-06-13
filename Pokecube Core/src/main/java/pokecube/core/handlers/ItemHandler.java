@@ -453,7 +453,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                     ((Entity) evt.caught).setDead();
                     cube.motionX = cube.motionZ = 0;
                     cube.motionY = 0.1;
-                    cube.getEntityWorld().spawnEntityInWorld(cube.copy());
+                    cube.getEntityWorld().spawnEntity(cube.copy());
                     evt.pokecube.setDead();
                 }
                 evt.setCanceled(true);
@@ -494,7 +494,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 ((Entity) evt.caught).setDead();
                 cube.motionX = cube.motionZ = 0;
                 cube.motionY = 0.1;
-                cube.getEntityWorld().spawnEntityInWorld(cube.copy());
+                cube.getEntityWorld().spawnEntity(cube.copy());
                 evt.setCanceled(true);
                 evt.pokecube.setDead();
             }

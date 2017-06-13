@@ -115,7 +115,7 @@ public class PokemobPacketHandler
             this.buffer = new PacketBuffer(Unpooled.buffer(9));
             buffer.writeByte(channel);
             buffer.writeInt(id);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
 
         public MessageServer(byte[] data)

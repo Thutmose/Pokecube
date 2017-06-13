@@ -38,7 +38,7 @@ public class AnimationPowder extends MoveAnimationBase
     {
         if (particle.equals("airbubble"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
         }
         else if (particle.equals("aurora"))
         {
@@ -47,7 +47,7 @@ public class AnimationPowder extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
         }
         else if (!customColour)
         {
@@ -67,7 +67,7 @@ public class AnimationPowder extends MoveAnimationBase
             temp.set(rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());
             temp.scalarMult(0.010 * width);
             temp.addTo(target);
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp.copy(), null, rgba, particleLife);
+            PokecubeCore.proxy.spawnParticle(info.attacker.world, particle, temp.copy(), null, rgba, particleLife);
         }
     }
 

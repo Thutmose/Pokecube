@@ -54,7 +54,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -67,7 +67,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketBag message)

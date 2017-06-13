@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -67,10 +67,10 @@ public class ItemTarget extends CompatItem
             if (stack.hasTagCompound() && playerIn == pokemob.getPokemonOwner())
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                pokemob.setHome(MathHelper.floor_float(pos.x), MathHelper.floor_float(pos.y - 1),
-                        MathHelper.floor_float(pos.z), 16);
+                pokemob.setHome(MathHelper.floor(pos.x), MathHelper.floor(pos.y - 1),
+                        MathHelper.floor(pos.z), 16);
                 // TODO localize this message.
-                playerIn.addChatMessage(new TextComponentString("Set Home to " + pos));
+                playerIn.sendMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);
             }
         }
@@ -86,7 +86,7 @@ public class ItemTarget extends CompatItem
         {
             BlockPos pos = event.getTarget().getBlockPos();
             if (pos == null) return;
-            if (!player.worldObj.getBlockState(pos).getMaterial().isSolid())
+            if (!player.world.getBlockState(pos).getMaterial().isSolid())
             {
                 Vec3d loc = player.getPositionVector().addVector(0, player.getEyeHeight(), 0)
                         .add(player.getLookVec().scale(2));
@@ -117,7 +117,7 @@ public class ItemTarget extends CompatItem
                 GlStateManager.color(1.0F, 0.0F, 0.0F, 1F);
 
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder vertexbuffer = tessellator.getBuffer();
                 vertexbuffer.begin(3, DefaultVertexFormats.POSITION);
                 vertexbuffer.pos(box.minX, box.minY, box.minZ).endVertex();
                 vertexbuffer.pos(box.maxX, box.minY, box.minZ).endVertex();
@@ -268,7 +268,7 @@ public class ItemTarget extends CompatItem
                         }
                 try
                 {
-                    if (!world.isRemote) player.addChatMessage(
+                    if (!world.isRemote) player.sendMessage(
                             new TextComponentString("Second Position " + hit + ", setting all in between to " + s));
                 }
                 catch (Exception e1)
@@ -300,7 +300,7 @@ public class ItemTarget extends CompatItem
                     .add(0, 1.62, 0);
             EntityTarget t = new EntityTarget(world);
             location.moveEntity(t);
-            world.spawnEntityInWorld(t);
+            world.spawnEntity(t);
         }
         return new ActionResult<>(EnumActionResult.PASS, itemstack);
     }
@@ -319,7 +319,7 @@ public class ItemTarget extends CompatItem
                 if (pad.canEdit(playerIn))
                 {
                     pad.link = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                    playerIn.addChatMessage(new TextComponentString("linked pad to " + pad.link));
+                    playerIn.sendMessage(new TextComponentString("linked pad to " + pad.link));
                 }
             }
             else
@@ -329,7 +329,7 @@ public class ItemTarget extends CompatItem
                 Vector4 link = new Vector4(hit.x + 0.5, hit.y + 1, hit.z + 0.5, playerIn.dimension);
                 link.writeToNBT(linkTag);
                 stack.getTagCompound().setTag("link", linkTag);
-                playerIn.addChatMessage(new TextComponentString("Saved location " + link));
+                playerIn.sendMessage(new TextComponentString("Saved location " + link));
             }
         }
         if (meta == 2 && !worldIn.isRemote)
@@ -354,7 +354,7 @@ public class ItemTarget extends CompatItem
                     hit.writeToNBT(minTag, "");
                     stack.getTagCompound().setTag("min", minTag);
                     if (!worldIn.isRemote)
-                        playerIn.addChatMessage(new TextComponentString("First Position " + hit.set(hit.getPos())));
+                        playerIn.sendMessage(new TextComponentString("First Position " + hit.set(hit.getPos())));
                 }
                 else if (playerIn.isSneaking() && stack.getTagCompound().hasKey("min"))
                 {
@@ -394,7 +394,7 @@ public class ItemTarget extends CompatItem
                             }
                     try
                     {
-                        if (!worldIn.isRemote) playerIn.addChatMessage(new TextComponentString(
+                        if (!worldIn.isRemote) playerIn.sendMessage(new TextComponentString(
                                 "Second Position " + hit.set(hit.getPos()) + ", setting all in between to " + s));
                     }
                     catch (Exception e)

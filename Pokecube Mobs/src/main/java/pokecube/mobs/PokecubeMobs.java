@@ -51,7 +51,7 @@ public class PokecubeMobs implements IMobProvider
                 if (result.status == Status.OUTDATED)
                 {
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Mobs");
-                    (event.player).addChatMessage(mess);
+                    (event.player).sendMessage(mess);
                 }
             }
         }

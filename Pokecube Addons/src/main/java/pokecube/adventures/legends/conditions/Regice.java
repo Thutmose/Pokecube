@@ -100,7 +100,7 @@ public class Regice extends Condition implements ISpecialCaptureCondition, ISpec
         if (!check)
         {
             String message = "msg.reginotlookright.txt";
-            trainer.addChatMessage(new TextComponentTranslation(message));
+            trainer.sendMessage(new TextComponentTranslation(message));
             return false;
         }
         return true;

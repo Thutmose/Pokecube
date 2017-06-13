@@ -8,8 +8,8 @@ import javax.vecmath.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +27,7 @@ import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
-public class EntityPokemobPart extends EntityDragonPart implements IPokemob
+public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
 {
     public final IPokemob      parent;
     public final Vector3f      offset;

@@ -64,10 +64,6 @@ import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
 import pokecube.core.utils.Tools;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
-import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 import thut.core.client.ClientProxy;
 
 @SideOnly(Side.CLIENT)
@@ -192,7 +188,6 @@ public class EventsHandlerClient
     }
 
     private Set<RenderPlayer> addedLayers = Sets.newHashSet();
-    boolean                   debug       = false;
     long                      lastSetTime = 0;
 
     public EventsHandlerClient()
@@ -487,9 +482,6 @@ public class EventsHandlerClient
             }
             GL11.glPopMatrix();
         }
-
-        debug = event.getType() == ElementType.DEBUG;
-
     }
 
     private void setMostDamagingMove(IPokemob outMob, Entity target)
@@ -514,24 +506,6 @@ public class EventsHandlerClient
         {
             GuiDisplayPokecubeInfo.instance().setMove(index);
         }
-    }
-
-    @SubscribeEvent
-    public void textOverlay(RenderGameOverlayEvent.Text event)
-    {
-        if (!debug) return;
-        TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(Minecraft.getMinecraft().thePlayer);
-        Vector3 v = Vector3.getNewVector().set(Minecraft.getMinecraft().thePlayer);
-        String msg = "Sub-Biome: " + BiomeDatabase.getReadableNameFromType(t.getBiome(v));
-        // Until forge stops sending the same event, with the same list 8 times,
-        // this is needed
-        for (String s : event.getLeft())
-        {
-            if (s != null && s.equals(msg)) return;
-        }
-        debug = false;
-        event.getLeft().add("");
-        event.getLeft().add(msg);
     }
 
 }

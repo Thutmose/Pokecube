@@ -14,15 +14,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementList;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.launchwrapper.Launch;
-import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -114,16 +114,16 @@ public abstract class PokecubeMod
     protected static FileHandler                     logHandler                 = null;
 
     // Achievements
-    public static Achievement                        get1stPokemob;
+    public static Advancement                        get1stPokemob;
     // public static HashMap<Integer, Achievement> pokemobAchievements;
 
-    public static AchievementPage                    achievementPageCatch;
-    public static AchievementPage                    achievementPageKill;
-    public static AchievementPage                    achievementPageHatch;
-    public static HashMap<PokedexEntry, Achievement> catchAchievements          = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Achievement> hatchAchievements          = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Achievement> killAchievements           = Maps.newHashMap();
-    public abstract Achievement getAchievement(String desc);
+    public static AdvancementList                    achievementPageCatch;
+    public static AdvancementList                    achievementPageKill;
+    public static AdvancementList                    achievementPageHatch;
+    public static HashMap<PokedexEntry, Advancement> catchAchievements          = Maps.newHashMap();
+    public static HashMap<PokedexEntry, Advancement> hatchAchievements          = Maps.newHashMap();
+    public static HashMap<PokedexEntry, Advancement> killAchievements           = Maps.newHashMap();
+    public abstract Advancement getAchievement(String desc);
 
     public static FakePlayer getFakePlayer()
     {

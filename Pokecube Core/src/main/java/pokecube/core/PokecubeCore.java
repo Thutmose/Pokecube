@@ -18,13 +18,13 @@ import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
-import net.minecraft.stats.Achievement;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -775,7 +775,7 @@ public class PokecubeCore extends PokecubeMod
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
         AISaveHandler.instance();
-        for (Achievement a : AchievementList.ACHIEVEMENTS)
+        for (Advancement a : AchievementList.ACHIEVEMENTS)
         {
             if (a == null) continue;
             try
@@ -802,10 +802,10 @@ public class PokecubeCore extends PokecubeMod
         AISaveHandler.clearInstance();
     }
 
-    Map<String, Achievement> achievements = Maps.newHashMap();
+    Map<String, Advancement> achievements = Maps.newHashMap();
 
     @Override
-    public Achievement getAchievement(String desc)
+    public Advancement getAchievement(String desc)
     {
         return achievements.get(desc);
     }

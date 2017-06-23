@@ -14,7 +14,7 @@ import pokecube.core.moves.animations.AnimPreset;
 import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
-@AnimPreset(getPreset="flow")
+@AnimPreset(getPreset = "flow")
 public class ParticleFlow extends MoveAnimationBase
 {
     public ParticleFlow()
@@ -102,36 +102,43 @@ public class ParticleFlow extends MoveAnimationBase
         String[] args = preset.split(":");
         for (int i = 1; i < args.length; i++)
         {
-            String ident = args[i].substring(0, 1);
-            String val = args[i].substring(1);
-            if (ident.equals("w"))
+            try
             {
-                width = Float.parseFloat(val);
+                String ident = args[i].substring(0, 1);
+                String val = args[i].substring(1);
+                if (ident.equals("w"))
+                {
+                    width = Float.parseFloat(val);
+                }
+                else if (ident.equals("d"))
+                {
+                    density = Float.parseFloat(val);
+                }
+                else if (ident.equals("f"))
+                {
+                    flat = true;
+                    angle = (float) (Float.parseFloat(val) * Math.PI) / 180f;
+                }
+                else if (ident.equals("r"))
+                {
+                    reverse = Boolean.parseBoolean(val);
+                }
+                else if (ident.equals("p"))
+                {
+                    particle = val;
+                }
+                else if (ident.equals("l"))
+                {
+                    particleLife = Integer.parseInt(val);
+                }
+                else if (ident.equals("c"))
+                {
+                    initRGBA(val);
+                }
             }
-            else if (ident.equals("d"))
+            catch (NumberFormatException e)
             {
-                density = Float.parseFloat(val);
-            }
-            else if (ident.equals("f"))
-            {
-                flat = true;
-                angle = (float) (Float.parseFloat(val) * Math.PI) / 180f;
-            }
-            else if (ident.equals("r"))
-            {
-                reverse = Boolean.parseBoolean(val);
-            }
-            else if (ident.equals("p"))
-            {
-                particle = val;
-            }
-            else if (ident.equals("l"))
-            {
-                particleLife = Integer.parseInt(val);
-            }
-            else if (ident.equals("c"))
-            {
-                initRGBA(val);
+                System.err.println(preset);
             }
         }
         return this;

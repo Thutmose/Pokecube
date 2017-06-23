@@ -52,25 +52,32 @@ public class ParticlesOnTarget extends MoveAnimationBase
         {
             String ident = args[i].substring(0, 1);
             String val = args[i].substring(1);
-            if (ident.equals("w"))
+            try
             {
-                width = Float.parseFloat(val);
+                if (ident.equals("w"))
+                {
+                    width = Float.parseFloat(val);
+                }
+                else if (ident.equals("d"))
+                {
+                    density = Float.parseFloat(val);
+                }
+                else if (ident.equals("p"))
+                {
+                    particle = val;
+                }
+                else if (ident.equals("l"))
+                {
+                    particleLife = Integer.parseInt(val);
+                }
+                else if (ident.equals("c"))
+                {
+                    initRGBA(val);
+                }
             }
-            else if (ident.equals("d"))
+            catch (NumberFormatException e)
             {
-                density = Float.parseFloat(val);
-            }
-            else if (ident.equals("p"))
-            {
-                particle = val;
-            }
-            else if (ident.equals("l"))
-            {
-                particleLife = Integer.parseInt(val);
-            }
-            else if (ident.equals("c"))
-            {
-                initRGBA(val);
+                System.err.println(preset);
             }
         }
         return this;

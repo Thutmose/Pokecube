@@ -119,7 +119,8 @@ public class PokecubeTemplate extends Template
                     entity.setLocationAndAngles(vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, f, entity.rotationPitch);
                     StructureEvent.SpawnEntity event = new StructureEvent.SpawnEntity(entity, name);
                     MinecraftForge.EVENT_BUS.post(event);
-                    if (event.getToSpawn() != null) worldIn.spawnEntityInWorld(event.getToSpawn());
+                    if (event.getToSpawn() != null && !event.isCanceled())
+                        worldIn.spawnEntityInWorld(event.getToSpawn());
                 }
             }
         }

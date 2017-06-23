@@ -99,7 +99,7 @@ public class Grindables
     static class GrindablePokemob implements IFactoryGrindable
     {
         private Class<? extends EntityLivingBase> _grindableClass;
-        private List<MobDrop>                     _drops = new ArrayList();
+        private List<MobDrop>                     _drops = new ArrayList<>();
         private boolean                           _entityProcessed;
         private PokedexEntry                      entry;
 

@@ -14,45 +14,48 @@ import net.minecraft.world.World;
 import pokecube.core.items.berries.BerryManager;
 import powercrystals.minefactoryreloaded.api.IFactoryFruit;
 import powercrystals.minefactoryreloaded.api.ReplacementBlock;
+import thut.essentials.util.CompatWrapper;
 
-public class Plants {
+public class Plants
+{
 
-	public static void registerFruits(Object registry, Method register) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
-	{
-		for(Integer i: BerryManager.berryNames.keySet())
-		{
-			IFactoryFruit fruit = getFruit(i);
-			if(fruit!=null)
-				register.invoke(registry, fruit);
-		}
-	}
-	
-	
-	
-	private static IFactoryFruit getFruit(int berryId)
-	{
-		final Block fruit = BerryManager.berryFruits.get(berryId);
+    public static void registerFruits(Object registry, Method register)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    {
+        for (Integer i : BerryManager.berryNames.keySet())
+        {
+            IFactoryFruit fruit = getFruit(i);
+            if (fruit != null) register.invoke(registry, fruit);
+        }
+    }
 
-		if(fruit != null)
-		{
-			final List<ItemStack> berries = new ArrayList<ItemStack>();
-			ItemStack berry = BerryManager.getBerryItem(BerryManager.berryNames.get(berryId));
-			berries.add(berry);
-			
-			IFactoryFruit ret = new IFactoryFruit() {
-				
-				Block block = fruit;
-				List<ItemStack> drops = berries;
-				
-				@Override
-				public Block getPlant() {
-					return fruit;
-				}
-				
-				@Override
-				public boolean breakBlock() {
-					return true;
-				}
+    private static IFactoryFruit getFruit(int berryId)
+    {
+        final Block fruit = BerryManager.berryFruits.get(berryId);
+
+        if (fruit != null)
+        {
+            final List<ItemStack> berries = new ArrayList<ItemStack>();
+            ItemStack berry = BerryManager.getBerryItem(BerryManager.berryNames.get(berryId));
+            berries.add(berry);
+
+            IFactoryFruit ret = new IFactoryFruit()
+            {
+
+                Block           block = fruit;
+                List<ItemStack> drops = berries;
+
+                @Override
+                public Block getPlant()
+                {
+                    return fruit;
+                }
+
+                @Override
+                public boolean breakBlock()
+                {
+                    return true;
+                }
 
                 @Override
                 public boolean canBePicked(World world, BlockPos pos)
@@ -69,14 +72,14 @@ public class Plants {
                 @Override
                 public List<ItemStack> getDrops(World world, Random rand, BlockPos pos)
                 {
-                    drops.get(0).stackSize = fruit.quantityDropped(rand);
+                    CompatWrapper.setStackSize(drops.get(0), block.quantityDropped(rand));
                     return drops;
                 }
-			};
-			
-			return ret;
-		}
-		return null;
-	}
+            };
+
+            return ret;
+        }
+        return null;
+    }
 
 }

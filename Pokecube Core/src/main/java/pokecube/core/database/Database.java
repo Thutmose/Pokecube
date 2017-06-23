@@ -46,6 +46,8 @@ import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.database.moves.MoveEntryLoader;
+import pokecube.core.database.moves.MovesParser;
+import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.database.recipes.XMLRecipeHandler;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipe;
 import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipes;
@@ -387,7 +389,20 @@ public class Database
     {
         checkConfigFiles(evt);
         for (String s : configDatabases.get(1))
-            loadMoves(DBLOCATION + s);
+        {
+            try
+            {
+                File moves = new File(DBLOCATION + s);
+                File anims = new File(Database.DBLOCATION + "animations.json");
+                JsonMoves.loadMoves(moves);
+                JsonMoves.merge(anims, moves);
+                MovesParser.load(moves);
+            }
+            catch (IOException e1)
+            {
+                e1.printStackTrace();
+            }
+        }
 
         for (String s : configDatabases.get(EnumDatabase.POKEMON.ordinal()))
         {
@@ -978,6 +993,7 @@ public class Database
                 temp.mkdirs();
             }
             copyDatabaseFile("moves.json");
+            copyDatabaseFile("animations.json");
             for (String s : defaultDatabases)
                 copyDatabaseFile(s);
             DBLOCATION = CONFIGLOC;

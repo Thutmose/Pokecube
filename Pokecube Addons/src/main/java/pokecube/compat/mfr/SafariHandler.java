@@ -25,7 +25,7 @@ public class SafariHandler{
 	static class Handler implements ISafariNetHandler
 	{
 		PokedexEntry entry;
-		Class clazz;
+		Class<?> clazz;
 		public Handler(PokedexEntry entry)
 		{
 			this.entry = entry;

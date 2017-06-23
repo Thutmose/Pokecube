@@ -13,6 +13,7 @@ import powercrystals.minefactoryreloaded.api.IMobSpawnHandler;
 import powercrystals.minefactoryreloaded.api.ISafariNetHandler;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
+import thut.lib.CompatWrapper;
 
 public class MFRCompat
 {
@@ -65,7 +66,7 @@ public class MFRCompat
             throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         ItemStack fossil = PokecubeItems.getStack("fossilStone");
-        fossil.stackSize = 1;
+        CompatWrapper.setStackSize(fossil, 1);
         int num = 10;
         register.invoke(registry, num, fossil);
     }

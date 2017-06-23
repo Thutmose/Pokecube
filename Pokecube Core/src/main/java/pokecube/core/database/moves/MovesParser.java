@@ -133,7 +133,7 @@ public class MovesParser
             try
             {
                 move.power = Integer.parseInt(var);
-                System.out.println(entry.readableName);
+                System.out.println(entry.readableName+" "+var);
             }
             catch (NumberFormatException e)
             {

@@ -473,11 +473,11 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
             {
                 p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
-                shouldGoDown = p.yCoord < posY - stepHeight;
-                shouldGoUp = p.yCoord > posY + stepHeight;
+                shouldGoDown = p.y < posY - stepHeight;
+                shouldGoUp = p.y > posY + stepHeight;
                 if (isAbleToFly)
                 {
-                    shouldGoUp = p.yCoord > posY - stepHeight;
+                    shouldGoUp = p.y > posY - stepHeight;
                     shouldGoDown = !shouldGoUp;
                 }
             }
@@ -699,7 +699,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void onDeath(DamageSource damageSource)
     {
         if (ForgeHooks.onLivingDeath(this, damageSource)) return;
-        Entity entity = damageSource.getEntity();
+        Entity entity = damageSource.getTrueSource();
         EntityLivingBase entitylivingbase = this.getAttackingEntity();
 
         if (this.scoreValue >= 0 && entitylivingbase != null)
@@ -1264,40 +1264,40 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void updateEntityActionState()
     {
-        ++this.entityAge;
+        ++this.idleTime;;
         navi.refreshCache();
-        this.world.theProfiler.startSection("checkDespawn");
+        this.world.profiler.startSection("checkDespawn");
         this.despawnEntity();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.startSection("sensing");
+        this.world.profiler.endSection();
+        this.world.profiler.startSection("sensing");
         this.senses.clearSensingCache();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.startSection("targetSelector");
+        this.world.profiler.endSection();
+        this.world.profiler.startSection("targetSelector");
         this.targetTasks.onUpdateTasks();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.startSection("goalSelector");
+        this.world.profiler.endSection();
+        this.world.profiler.startSection("goalSelector");
         this.tasks.onUpdateTasks();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.startSection("navigation");
+        this.world.profiler.endSection();
+        this.world.profiler.startSection("navigation");
         this.getNavigator().onUpdateNavigation();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.startSection("mob tick");
+        this.world.profiler.endSection();
+        this.world.profiler.startSection("mob tick");
         // Run last tick's results from AI stuff
         this.aiStuff.runServerThreadTasks(world);
         // Schedule AIStuff to tick for next tick.
         AIThreadManager.scheduleAITick(aiStuff);
         this.updateAITasks();
         this.updateAITick();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.startSection("controls");
-        this.world.theProfiler.startSection("move");
+        this.world.profiler.endSection();
+        this.world.profiler.startSection("controls");
+        this.world.profiler.startSection("move");
         this.getMoveHelper().onUpdateMoveHelper();
-        this.world.theProfiler.endStartSection("look");
+        this.world.profiler.endStartSection("look");
         this.getLookHelper().onUpdateLook();
-        this.world.theProfiler.endStartSection("jump");
+        this.world.profiler.endStartSection("jump");
         this.getJumpHelper().doJump();
-        this.world.theProfiler.endSection();
-        this.world.theProfiler.endSection();
+        this.world.profiler.endSection();
+        this.world.profiler.endSection();
     }
 
     @Override

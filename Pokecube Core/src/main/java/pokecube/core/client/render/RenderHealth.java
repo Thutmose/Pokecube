@@ -171,9 +171,9 @@ public class RenderHealth
                 RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
                 GlStateManager.pushMatrix();
-                
+
                 preRender();
-                
+
                 GlStateManager.translate(
                         (float) (x - renderManager.viewerPosX), (float) (y - renderManager.viewerPosY
                                 + passedEntity.height + PokecubeMod.core.getConfig().heightAbove),
@@ -220,7 +220,7 @@ public class RenderHealth
                             TextFormatting.ITALIC + ((EntityLiving) entity).getCustomNameTag());
                 float s = 0.5F;
                 String name = I18n.format(nameComp.getFormattedText());
-                float namel = mc.fontRendererObj.getStringWidth(name) * s;
+                float namel = mc.fontRenderer.getStringWidth(name) * s;
                 if (namel + 20 > size * 2) size = namel / 2F + 10F;
                 float healthSize = size * (health / maxHealth);
 
@@ -291,7 +291,7 @@ public class RenderHealth
                 UUID owner = pokemob.getPokemonOwnerID();
                 boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
                 int colour = isOwner ? 0xFFFFFF : owner == null ? 0x888888 : 0xAA4444;
-                mc.fontRendererObj.drawString(name, 0, 0, colour);
+                mc.fontRenderer.drawString(name, 0, 0, colour);
 
                 GlStateManager.pushMatrix();
                 float s1 = 0.75F;
@@ -316,13 +316,13 @@ public class RenderHealth
                 {
                     colour = 0xCC5555;
                 }
-                if (isOwner) mc.fontRendererObj.drawString(healthStr,
-                        (int) (size / (s * s1)) - mc.fontRendererObj.getStringWidth(healthStr) / 2, h, 0xFFFFFFFF);
-                mc.fontRendererObj.drawString(lvlStr, 2, h, 0xFFFFFF);
-                mc.fontRendererObj.drawString(gender,
-                        (int) (size / (s * s1) * 2) - 2 - mc.fontRendererObj.getStringWidth(gender), h - 1, colour);
+                if (isOwner) mc.fontRenderer.drawString(healthStr,
+                        (int) (size / (s * s1)) - mc.fontRenderer.getStringWidth(healthStr) / 2, h, 0xFFFFFFFF);
+                mc.fontRenderer.drawString(lvlStr, 2, h, 0xFFFFFF);
+                mc.fontRenderer.drawString(gender,
+                        (int) (size / (s * s1) * 2) - 2 - mc.fontRenderer.getStringWidth(gender), h - 1, colour);
                 if (PokecubeMod.core.getConfig().enableDebugInfo && mc.gameSettings.showDebugInfo)
-                    mc.fontRendererObj.drawString("ID: \"" + entityID + "\"", 0, h + 16, 0xFFFFFFFF);
+                    mc.fontRenderer.drawString("ID: \"" + entityID + "\"", 0, h + 16, 0xFFFFFFFF);
                 GlStateManager.popMatrix();
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -412,15 +412,14 @@ public class RenderHealth
         if (pos != null) distance = pos.hitVec.distanceTo(positionVector);
 
         Vec3d lookVector = e.getLookVec();
-        Vec3d reachVector = positionVector.addVector(lookVector.xCoord * finalDistance,
-                lookVector.yCoord * finalDistance, lookVector.zCoord * finalDistance);
+        Vec3d reachVector = positionVector.addVector(lookVector.x * finalDistance, lookVector.y * finalDistance,
+                lookVector.z * finalDistance);
 
         Entity lookedEntity = null;
-        List<Entity> entitiesInBoundingBox = e.world
-                .getEntitiesWithinAABBExcludingEntity(e,
-                        e.getEntityBoundingBox().addCoord(lookVector.xCoord * finalDistance,
-                                lookVector.yCoord * finalDistance, lookVector.zCoord * finalDistance)
-                                .expand(1F, 1F, 1F));
+        List<Entity> entitiesInBoundingBox = e.world.getEntitiesWithinAABBExcludingEntity(e,
+                e.getEntityBoundingBox()
+                        .grow(lookVector.x * finalDistance, lookVector.y * finalDistance, lookVector.z * finalDistance)
+                        .expand(1F, 1F, 1F));
         double minDistance = distance;
 
         for (Entity entity : entitiesInBoundingBox)
@@ -432,7 +431,7 @@ public class RenderHealth
                         collisionBorderSize);
                 RayTraceResult interceptPosition = hitbox.calculateIntercept(positionVector, reachVector);
 
-                if (hitbox.isVecInside(positionVector))
+                if (hitbox.contains(positionVector))
                 {
                     if (0.0D < minDistance || minDistance == 0.0D)
                     {

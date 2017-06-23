@@ -78,11 +78,11 @@ public class GuiArranger
                 // Draw the box for the messages.
                 GL11.glPushMatrix();
                 Minecraft minecraft = Minecraft.getMinecraft();
-                int texH = minecraft.fontRendererObj.FONT_HEIGHT;
+                int texH = minecraft.fontRenderer.FONT_HEIGHT;
                 minecraft.entityRenderer.setupOverlayRendering();
                 int[] mess = GuiDisplayPokecubeInfo.applyTransform(
                         PokecubeCore.core.getConfig().messageRef, PokecubeMod.core.getConfig().messagePos, new int[] {
-                                PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
+                                PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRenderer.FONT_HEIGHT },
                         PokecubeMod.core.getConfig().messageSize);
                 int x = 0, y = 0;
                 x = x - 150;

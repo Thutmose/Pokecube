@@ -16,7 +16,7 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
 {
 
     @Override
-    public void func_192841_a(TileEntityCloner te, double x, double y, double z, float partialTicks,
+    public void render(TileEntityCloner te, double x, double y, double z, float partialTicks,
             int destroyStage, float f)
     {
         CraftMatrix matrix = te.getCraftMatrix();

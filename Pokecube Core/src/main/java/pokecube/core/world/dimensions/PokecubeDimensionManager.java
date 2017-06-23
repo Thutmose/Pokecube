@@ -55,7 +55,7 @@ public class PokecubeDimensionManager
         {
             MinecraftServer mcServer = overworld.getMinecraftServer();
             ISaveHandler savehandler = overworld.getSaveHandler();
-            world1 = (WorldServer) (new WorldServerMulti(mcServer, savehandler, dim, overworld, mcServer.theProfiler)
+            world1 = (WorldServer) (new WorldServerMulti(mcServer, savehandler, dim, overworld, mcServer.profiler)
                     .init());
             WorldProviderSecretBase.initToDefaults(world1.getWorldBorder());
             world1.addEventListener(new ServerWorldEventHandler(mcServer, world1));

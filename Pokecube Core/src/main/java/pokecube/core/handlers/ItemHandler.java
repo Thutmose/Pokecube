@@ -447,8 +447,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
                     if (!tameSnag) evt.caught.setPokecube(evt.filledCube);
 
-                    cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
-                    PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
+                    cube.setItem(PokecubeManager.pokemobToItem(evt.caught));
+                    PokecubeManager.setTilt(cube.getItem(), cube.tilt);
                     Vector3.getNewVector().set(evt.pokecube).moveEntity(cube);
                     ((Entity) evt.caught).setDead();
                     cube.motionX = cube.motionZ = 0;
@@ -487,8 +487,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 cube.tilt = Tools.computeCatchRate(mob, rate);
                 cube.time = cube.tilt * 20;
                 evt.caught.setPokecube(evt.filledCube);
-                cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
-                PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
+                cube.setItem(PokecubeManager.pokemobToItem(evt.caught));
+                PokecubeManager.setTilt(cube.getItem(), cube.tilt);
                 v.set(evt.pokecube).moveEntity(cube);
                 v.moveEntity((Entity) mob);
                 ((Entity) evt.caught).setDead();

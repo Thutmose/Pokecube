@@ -32,7 +32,7 @@ public class RenderTradingTable extends TileEntitySpecialRenderer
     }
 
     @Override
-    public void func_192841_a(TileEntity tileentity, double x, double y, double z, float f, int i1, float f1)
+    public void render(TileEntity tileentity, double x, double y, double z, float f, int i1, float f1)
     {
         TileEntityTradingTable table = (TileEntityTradingTable) tileentity;
         if (!(table.getWorld().getBlockState(table.getPos()).getBlock() instanceof BlockTradingTable)) return;

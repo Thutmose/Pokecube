@@ -149,9 +149,9 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             public boolean apply(EntityPokecube input)
             {
                 boolean isOwner = false;
-                if (PokecubeManager.isFilled(input.getEntityItem()))
+                if (PokecubeManager.isFilled(input.getItem()))
                 {
-                    String name = PokecubeManager.getOwner(input.getEntityItem());
+                    String name = PokecubeManager.getOwner(input.getItem());
                     isOwner = name.equals(owner.getCachedUniqueIdString());
                     System.out.println(name + " " + owner.getCachedUniqueIdString() + " " + isOwner);
 
@@ -180,7 +180,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         if (!isServerWorld()) return;
         if (outID != null && outMob == null)
         {
-            outMob = (IPokemob) getServer().worldServerForDimension(dimension).getEntityFromUuid(outID);
+            outMob = (IPokemob) getServer().getWorld(dimension).getEntityFromUuid(outID);
             if (outMob == null) outID = null;
         }
         if (this.countPokemon() == 0 && !getAIState(STATIONARY) && !getAIState(PERMFRIENDLY))

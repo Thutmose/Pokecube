@@ -48,7 +48,7 @@ public class CylindricalFunction extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else
         {

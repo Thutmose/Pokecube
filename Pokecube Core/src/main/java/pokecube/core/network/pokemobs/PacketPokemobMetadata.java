@@ -61,7 +61,7 @@ public class PacketPokemobMetadata implements IMessage, IMessageHandler<PacketPo
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         int id = message.wrapped.readInt();
         World world = player.getEntityWorld();

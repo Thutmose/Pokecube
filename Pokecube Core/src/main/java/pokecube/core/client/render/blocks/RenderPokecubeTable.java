@@ -25,7 +25,7 @@ public class RenderPokecubeTable extends TileEntitySpecialRenderer {
     }
     
     @Override
-    public void func_192841_a(TileEntity te, double x, double y, double z, float scale, int i, float f) {
+    public void render(TileEntity te, double x, double y, double z, float scale, int i, float f) {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) x + 0.5F, (float) y + 1.15F, (float) z + 0.5F);
 

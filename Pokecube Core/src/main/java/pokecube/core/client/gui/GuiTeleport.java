@@ -62,7 +62,7 @@ public class GuiTeleport extends Gui
     {
         minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         MinecraftForge.EVENT_BUS.register(this);
-        fontRenderer = minecraft.fontRendererObj;
+        fontRenderer = minecraft.fontRenderer;
         instance = this;
     }
 

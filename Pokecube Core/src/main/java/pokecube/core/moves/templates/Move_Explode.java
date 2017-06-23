@@ -170,7 +170,7 @@ public class Move_Explode extends Move_Basic
     public void actualAttack(IPokemob attacker, Vector3 location)
     {
         List<Entity> targets = ((Entity) attacker).getEntityWorld()
-                .getEntitiesWithinAABBExcludingEntity((Entity) attacker, location.getAABB().expandXyz(8));
+                .getEntitiesWithinAABBExcludingEntity((Entity) attacker, location.getAABB().grow(8));
         List<Entity> toRemove = Lists.newArrayList();
         for (Entity e : targets)
             if (!(e instanceof EntityLivingBase)) toRemove.add(e);

@@ -86,7 +86,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
 
     void processMessage(MessageContext ctx, PacketPokemobAttack message)
     {
-        EntityPlayer player = ctx.getServerHandler().playerEntity;
+        EntityPlayer player = ctx.getServerHandler().player;
         Entity user = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
         Entity target = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.targetId, true);
 

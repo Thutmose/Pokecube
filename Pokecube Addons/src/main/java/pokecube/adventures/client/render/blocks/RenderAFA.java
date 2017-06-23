@@ -20,7 +20,7 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
 {
 
     @Override
-    public void func_192841_a(TileEntityAFA te, double x, double y, double z, float partialTicks, int destroyStage, float f)
+    public void render(TileEntityAFA te, double x, double y, double z, float partialTicks, int destroyStage, float f)
     {
         IPokemob mob = te.pokemob;
         if (mob == null) return;

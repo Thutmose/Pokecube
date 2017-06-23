@@ -48,12 +48,12 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
 
             EntityPokecube cube = (EntityPokecube) entity;
 
-            if (PokecubeManager.getTilt(cube.getEntityItem()) > 0)
+            if (PokecubeManager.getTilt(cube.getItem()) > 0)
             {
                 float rotateY = MathHelper.cos(MathHelper.abs((float) (Math.PI * f2) / 12)) * (180F / (float) Math.PI);// getRotationX(entityItem);
                 GL11.glRotatef(rotateY, 0.0F, 0.0F, 1.0F);
             }
-            ItemStack renderStack = cube.getEntityItem();
+            ItemStack renderStack = cube.getItem();
             if (renderStack == null || !(renderStack.getItem() instanceof IPokecube))
             {
                 renderStack = PokecubeItems.getStack("pokecube");
@@ -94,7 +94,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
         long world = pokecube.world.getTotalWorldTime();
         if (time > world) return;
 
-        int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
+        int num = PokecubeItems.getCubeId(pokecube.getItem());
         if (pokecubeRenderers.containsKey(num))
         {
             pokecubeRenderers.get(num).doRender(entity, x, y, z, f, f1);

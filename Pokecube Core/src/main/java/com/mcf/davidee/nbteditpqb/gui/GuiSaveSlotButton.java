@@ -42,15 +42,15 @@ public class GuiSaveSlotButton extends Gui {
 
 		int textColor = ((inBounds(mx,my))) ? 16777120 : 0xffffff;
 		renderVanillaButton(x,y,0,66,width,HEIGHT);
-		drawCenteredString(mc.fontRendererObj, text, x + width/2, y + 6, textColor);
+		drawCenteredString(mc.fontRenderer, text, x + width/2, y + 6, textColor);
 		if (tickCount != -1 && tickCount / 6 % 2 == 0){
-			mc.fontRendererObj.drawStringWithShadow("_", x+(width+mc.fontRendererObj.getStringWidth(text))/2+1, y+6, 0xffffff);
+			mc.fontRenderer.drawStringWithShadow("_", x+(width+mc.fontRenderer.getStringWidth(text))/2+1, y+6, 0xffffff);
 		}
 
 		if (xVisible){
 			textColor = ((inBoundsOfX(mx,my))) ? 16777120 : 0xffffff;
 			renderVanillaButton(leftBoundOfX(),topBoundOfX(),0,66,X_SIZE,X_SIZE);
-			drawCenteredString(mc.fontRendererObj, "x", x-GAP-X_SIZE/2, y + 6, textColor);
+			drawCenteredString(mc.fontRenderer, "x", x-GAP-X_SIZE/2, y + 6, textColor);
 		}
 	}
 	
@@ -85,7 +85,7 @@ public class GuiSaveSlotButton extends Gui {
 	}
 
 	private void updatePosition(){
-		width = mc.fontRendererObj.getStringWidth(text)+24;
+		width = mc.fontRenderer.getStringWidth(text)+24;
 		if (width % 2 == 1)
 			++width;
 		width = MathHelper.clamp(width, MIN_WIDTH, MAX_WIDTH);

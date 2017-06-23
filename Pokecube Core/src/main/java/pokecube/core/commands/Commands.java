@@ -146,9 +146,9 @@ public class Commands extends CommandBase
                         // System.out.println(e);
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            if (((Entity) e).getDistance(cSender.getPositionVector().xCoord,
-                                    cSender.getPositionVector().yCoord,
-                                    cSender.getPositionVector().zCoord) > PokecubeMod.core.getConfig().maxSpawnRadius)
+                            if (((Entity) e).getDistance(cSender.getPositionVector().x,
+                                    cSender.getPositionVector().y,
+                                    cSender.getPositionVector().z) > PokecubeMod.core.getConfig().maxSpawnRadius)
                                 count2++;
                             else count1++;
                             Integer i = counts.get(e.getPokedexEntry());

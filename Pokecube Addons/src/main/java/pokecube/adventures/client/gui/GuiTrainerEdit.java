@@ -148,8 +148,8 @@ public class GuiTrainerEdit extends GuiScreen
         int y1 = height / 2;
 
         String info = I18n.format("gui.trainer.stationary");
-        int l = fontRendererObj.getStringWidth(info);
-        this.fontRendererObj.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
+        int l = fontRenderer.getStringWidth(info);
+        this.fontRenderer.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
 
         ItemStack stack = trainer.getHeldItemOffhand();
         if (stack != null)
@@ -172,8 +172,8 @@ public class GuiTrainerEdit extends GuiScreen
             {
                 PokedexEntry entry = getEntry(n);
                 field = textFieldLevels[n];
-                i1 = field.xPosition - 20;
-                j1 = field.yPosition - 3;
+                i1 = field.x - 20;
+                j1 = field.y - 3;
                 drawGradientRect(i1, j1, i1 + 16, j1 + 16, 0xffaaaaaa, 0xffaaaaaa);
                 double scale = 1;
                 if (entry != null)
@@ -211,8 +211,8 @@ public class GuiTrainerEdit extends GuiScreen
         int yOffset = -20;
         int xOffset = +20;
 
-        textFieldName = new GuiTextField(0, fontRendererObj, width / 2 - 80, height / 4 + 10 + yOffset, 130, 10);
-        textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
+        textFieldName = new GuiTextField(0, fontRenderer, width / 2 - 80, height / 4 + 10 + yOffset, 130, 10);
+        textFieldType = new GuiTextField(0, fontRenderer, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
         textFieldType.setEnabled(false);
 
         oldName = trainer.name;
@@ -236,10 +236,10 @@ public class GuiTrainerEdit extends GuiScreen
         for (int i = 0; i < 6; i++)
         {
             xOffset = -50;
-            textFieldPokemobs[i] = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset,
+            textFieldPokemobs[i] = new GuiTextField(0, fontRenderer, width / 2 - 70 + xOffset,
                     height / 4 + 60 + i * 20 + yOffset, 100, 10);
             xOffset = +20;
-            textFieldLevels[i] = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset,
+            textFieldLevels[i] = new GuiTextField(0, fontRenderer, width / 2 - 15 + xOffset,
                     height / 4 + 60 + i * 20 + yOffset, 30, 10);
 
             ItemStack stack = trainer.getPokemob(i);

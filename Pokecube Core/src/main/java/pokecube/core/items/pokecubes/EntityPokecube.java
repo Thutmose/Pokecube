@@ -114,7 +114,7 @@ public class EntityPokecube extends EntityPokecubeBase
             setVelocity(speed, dir);
             shooter = shootingEntity.getPersistentID();
         }
-        this.setEntityItemStack(entityItem);
+        this.setItem(entityItem);
         this.shootingEntity = shootingEntity;
         if (PokecubeManager.isFilled(entityItem)) tilt = -2;
     }
@@ -142,7 +142,7 @@ public class EntityPokecube extends EntityPokecubeBase
         {
             captureAttempt(e);
         }
-        else if (PokecubeManager.isFilled(getEntityItem()))
+        else if (PokecubeManager.isFilled(getItem()))
         {
             IPokemob entity1 = sendOut();
             if (entity1 != null && shootingEntity != null)
@@ -183,9 +183,9 @@ public class EntityPokecube extends EntityPokecubeBase
 
     public Entity getOwner()
     {
-        if (PokecubeManager.isFilled(getEntityItem()))
+        if (PokecubeManager.isFilled(getItem()))
         {
-            String name = PokecubeManager.getOwner(getEntityItem());
+            String name = PokecubeManager.getOwner(getItem());
             if (!name.isEmpty())
             {
                 UUID id = UUID.fromString(name);
@@ -198,14 +198,14 @@ public class EntityPokecube extends EntityPokecubeBase
 
     public Entity copy()
     {
-        EntityPokecube copy = new EntityPokecube(world, shootingEntity, getEntityItem());
+        EntityPokecube copy = new EntityPokecube(world, shootingEntity, getItem());
         copy.posX = this.posX;
         copy.posY = this.posY;
         copy.posZ = this.posZ;
         copy.motionX = this.motionX;
         copy.motionY = this.motionY;
         copy.motionZ = this.motionZ;
-        copy.setEntityItemStack(getEntityItem());
+        copy.setItem(getItem());
         copy.tilt = this.tilt;
         copy.time = this.time;
         return copy;
@@ -240,7 +240,7 @@ public class EntityPokecube extends EntityPokecubeBase
             this.setDead();
             return;
         }
-        if (PokecubeManager.isFilled(getEntityItem())) time--;
+        if (PokecubeManager.isFilled(getItem())) time--;
 
         if (time == 0 && tilt >= 4) // Captured the pokemon
         {
@@ -287,7 +287,7 @@ public class EntityPokecube extends EntityPokecubeBase
         {
             AxisAlignedBB axisalignedbb = state.getBoundingBox(world, pos);
 
-            if (axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+            if (axisalignedbb != null && axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
             {
                 this.inGround = true;
                 tilePos = pos;
@@ -317,7 +317,7 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             if (tilt < 0 && !(targetEntity == null && targetLocation.isEmpty()))
             {
-                if (PokecubeManager.isFilled(getEntityItem()))
+                if (PokecubeManager.isFilled(getItem()))
                 {
                     sendOut();
                 }
@@ -388,7 +388,7 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             if (!isReleasing())
             {
-                IPokemob pokemob = PokecubeManager.itemToPokemob(getEntityItem(), world);
+                IPokemob pokemob = PokecubeManager.itemToPokemob(getItem(), world);
                 if (pokemob != null) sendOut();
                 else
                 {
@@ -401,7 +401,7 @@ public class EntityPokecube extends EntityPokecubeBase
                         Tools.giveItem(player, loot.copy());
                         return true;
                     }
-                    Tools.giveItem(player, getEntityItem());
+                    Tools.giveItem(player, getItem());
                     this.setDead();
                 }
             }
@@ -499,9 +499,9 @@ public class EntityPokecube extends EntityPokecubeBase
                 {
                     time = 20 * tilt;
                 }
-                hitten.setPokecube(getEntityItem());
-                setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
-                PokecubeManager.setTilt(getEntityItem(), tilt);
+                hitten.setPokecube(getItem());
+                setItem(PokecubeManager.pokemobToItem(hitten));
+                PokecubeManager.setTilt(getItem(), tilt);
                 ((Entity) hitten).setDead();
                 Vector3 v = Vector3.getNewVector();
                 v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
@@ -512,7 +512,7 @@ public class EntityPokecube extends EntityPokecubeBase
         }
         else
         {
-            int n = Tools.computeCatchRate(hitten, PokecubeItems.getCubeId(getEntityItem()));
+            int n = Tools.computeCatchRate(hitten, PokecubeItems.getCubeId(getItem()));
             tilt = n;
 
             if (n == 5)
@@ -524,9 +524,9 @@ public class EntityPokecube extends EntityPokecubeBase
                 time = 20 * n;
             }
 
-            hitten.setPokecube(getEntityItem());
-            setEntityItemStack(PokecubeManager.pokemobToItem(hitten));
-            PokecubeManager.setTilt(getEntityItem(), n);
+            hitten.setPokecube(getItem());
+            setItem(PokecubeManager.pokemobToItem(hitten));
+            PokecubeManager.setTilt(getItem(), n);
             ((Entity) hitten).setDead();
             Vector3 v = Vector3.getNewVector();
             v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);

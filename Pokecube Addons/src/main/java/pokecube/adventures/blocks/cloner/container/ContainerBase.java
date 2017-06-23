@@ -51,7 +51,7 @@ public abstract class ContainerBase extends Container
             {
                 if (vals[j] != tile.getField(j))
                 {
-                    icrafting.sendProgressBarUpdate(this, j, this.tile.getField(j));
+                    icrafting.sendWindowProperty(this, j, this.tile.getField(j));
                 }
                 vals[j] = tile.getField(j);
             }

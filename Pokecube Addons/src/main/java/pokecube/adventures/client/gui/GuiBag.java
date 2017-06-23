@@ -83,9 +83,9 @@ public class GuiBag extends GuiContainer
         GL11.glPushMatrix();
         GL11.glScaled(0.8, 0.8, 0.8);
         String pcTitle = cont.invPlayer.player.getName() + "'s Bag";
-        fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60,
+        fontRenderer.drawString(cont.getPage(), xSize / 2 - fontRenderer.getStringWidth(cont.getPage()) / 3 - 60,
                 13, 4210752);
-        fontRendererObj.drawString(pcTitle, xSize / 2 - fontRendererObj.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
+        fontRenderer.drawString(pcTitle, xSize / 2 - fontRenderer.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
         GL11.glPopMatrix();
     }
 
@@ -147,15 +147,15 @@ public class GuiBag extends GuiContainer
         String rename = I18n.format("tile.pc.rename");
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 50, 20, rename));
 
-        textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
+        textFieldSelectedBox = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
                 25, 10);
         textFieldSelectedBox.setText(page);
 
-        textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 190, height / 2 - yOffset - 80,
+        textFieldBoxName = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 190, height / 2 - yOffset - 80,
                 100, 10);
         textFieldBoxName.setText(boxName);
 
-        textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,
+        textFieldSearch = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,
                 10);
         textFieldSearch.setText("");
     }

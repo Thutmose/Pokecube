@@ -194,10 +194,10 @@ public class EntityTrainer extends EntityHasPokemobs
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
-        if (source.getEntity() != null && (source.getEntity() instanceof EntityLivingBase)
-                && !(source.getEntity() instanceof EntityPlayer))
+        if (source.getTrueSource() != null && (source.getTrueSource() instanceof EntityLivingBase)
+                && !(source.getTrueSource() instanceof EntityPlayer))
         {
-            Entity entity = source.getEntity();
+            Entity entity = source.getTrueSource();
             if (entity instanceof IEntityOwnable)
             {
                 if (((IEntityOwnable) entity).getOwner() != null)
@@ -208,7 +208,7 @@ public class EntityTrainer extends EntityHasPokemobs
             if (attackCooldown <= 0)
             {
                 setTrainerTarget(entity);
-                if (entity != source.getEntity()) return false;
+                if (entity != source.getTrueSource()) return false;
             }
         }
         if (source == DamageSource.DROWN) return false;
@@ -230,7 +230,7 @@ public class EntityTrainer extends EntityHasPokemobs
     }
 
     @Override
-    public EntityLivingBase getAITarget()
+    public EntityLivingBase getAttackTarget()
     {
         return this.getTarget();
     }
@@ -383,7 +383,7 @@ public class EntityTrainer extends EntityHasPokemobs
             this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, type.held);
         }
 
-        EntityLivingBase target = getAITarget() != null ? getAITarget()
+        EntityLivingBase target = getAttackTarget() != null ? getAttackTarget()
                 : getAttackTarget() != null ? getAttackTarget() : null;
 
         if (target != null)

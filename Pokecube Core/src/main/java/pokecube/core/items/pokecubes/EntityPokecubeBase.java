@@ -45,7 +45,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     static final DataParameter<Integer>           ENTITYID       = EntityDataManager
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     private static final DataParameter<ItemStack> ITEM           = EntityDataManager
-            .<ItemStack> createKey(EntityPokecube.class, DataSerializers.OPTIONAL_ITEM_STACK);
+            .<ItemStack> createKey(EntityPokecube.class, DataSerializers.ITEM_STACK);
     static final DataParameter<Boolean>           RELEASING      = EntityDataManager
             .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
 
@@ -88,7 +88,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     {
         if (source == DamageSource.OUT_OF_WORLD)
         {
-            if (PokecubeManager.isFilled(getEntityItem()))
+            if (PokecubeManager.isFilled(getItem()))
             {
                 IPokemob mob = this.sendOut();
                 if (mob != null) mob.returnToPokecube();
@@ -110,7 +110,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     /** Returns the ItemStack corresponding to the Entity (Note: if no item
      * exists, will log an error but still return an ItemStack containing
      * Block.stone) */
-    public ItemStack getEntityItem()
+    public ItemStack getItem()
     {
         ItemStack itemstack = this.getDataManager().get(ITEM);
         return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
@@ -137,7 +137,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     }
 
     /** Sets the ItemStack for this entity */
-    public void setEntityItemStack(ItemStack stack)
+    public void setItem(ItemStack stack)
     {
         this.getDataManager().set(ITEM, stack);
         this.getDataManager().setDirty(ITEM);
@@ -206,7 +206,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     protected void captureFailed()
     {
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), world);
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), world);
 
         if (entity1 != null)
         {
@@ -236,8 +236,8 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     protected boolean captureSucceed()
     {
-        PokecubeManager.setTilt(getEntityItem(), -1);
-        IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), world);
+        PokecubeManager.setTilt(getItem(), -1);
+        IPokemob mob = PokecubeManager.itemToPokemob(getItem(), world);
         if (mob == null)
         {
             new NullPointerException("Mob is null").printStackTrace();
@@ -247,7 +247,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         if (shootingEntity != null && !mob.getPokemonAIState(IMoveConstants.TAMED))
             mob.setPokemonOwner((shootingEntity));
         ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
-        this.setEntityItemStack(mobStack);
+        this.setItem(mobStack);
         if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
         {
             ITextComponent mess = new TextComponentTranslation("pokecube.caught", mob.getPokemonDisplayName());
@@ -265,9 +265,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         nbttagcompound.setInteger("tilt", tilt);
         nbttagcompound.setInteger("time", time);
         if (shooter != null) nbttagcompound.setString("shooter", shooter.toString());
-        if (this.getEntityItem() != null)
+        if (this.getItem() != null)
         {
-            nbttagcompound.setTag("Item", this.getEntityItem().writeToNBT(new NBTTagCompound()));
+            nbttagcompound.setTag("Item", this.getItem().writeToNBT(new NBTTagCompound()));
         }
         if (tilePos != null)
         {
@@ -289,9 +289,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         tilt = nbttagcompound.getInteger("tilt");
         time = nbttagcompound.getInteger("time");
         NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
-        this.setEntityItemStack(CompatWrapper.fromTag(nbttagcompound1));
+        this.setItem(CompatWrapper.fromTag(nbttagcompound1));
 
-        ItemStack item = getEntityItem();
+        ItemStack item = getItem();
 
         if (nbttagcompound.hasKey("shooter"))
         {
@@ -314,7 +314,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     public IPokemob sendOut()
     {
         if (world.isRemote || isReleasing()) { return null; }
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), world);
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), world);
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
@@ -333,7 +333,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             {
                 if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
                 {
-                    Tools.giveItem((EntityPlayer) shootingEntity, getEntityItem());
+                    Tools.giveItem((EntityPlayer) shootingEntity, getItem());
                     this.setDead();
                 }
                 return null;
@@ -367,7 +367,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         else
         {
             System.err.println("Send out no pokemob?");
-            this.entityDropItem(getEntityItem(), 0.5f);
+            this.entityDropItem(getItem(), 0.5f);
             this.setDead();
         }
         return entity1;

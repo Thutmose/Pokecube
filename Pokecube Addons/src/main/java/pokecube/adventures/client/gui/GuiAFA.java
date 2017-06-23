@@ -154,7 +154,7 @@ public class GuiAFA extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
     {
-        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
+        this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
                 4210752);
         ContainerAFA container = (ContainerAFA) inventorySlots;
         if (container.world != null)
@@ -165,12 +165,12 @@ public class GuiAFA extends GuiContainer
             String mess;
             int energy = cloner.getField(0);
             mess = "e:" + energy;
-            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 66, 4210752);
+            this.fontRenderer.drawString(mess, 148 - fontRenderer.getStringWidth(mess), 66, 4210752);
             int distance = cloner.getField(1);
             mess = "r:" + distance;
-            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
+            this.fontRenderer.drawString(mess, 148 - fontRenderer.getStringWidth(mess), 26, 4210752);
             if (cloner.ability != null && cloner.getStackInSlot(0) != null)
-                this.fontRendererObj.drawString("" + I18n.format(cloner.ability.getName()), 48, 6, 4210752);
+                this.fontRenderer.drawString("" + I18n.format(cloner.ability.getName()), 48, 6, 4210752);
         }
     }
 

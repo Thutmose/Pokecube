@@ -671,7 +671,7 @@ public final class SpawnHandler
             if (PokecubeMod.core.getConfig().meteors)
             {
                 if (!world.provider.isSurfaceWorld()) return;
-                if (world.provider.hasNoSky()) return;
+                if (world.provider.isNether()) return;
 
                 List<Object> players = new ArrayList<Object>(world.playerEntities);
                 if (players.size() < 1) return;

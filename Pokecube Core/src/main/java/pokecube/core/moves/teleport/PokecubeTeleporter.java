@@ -21,7 +21,7 @@ public class PokecubeTeleporter extends Teleporter
     public void placeInPortal(Entity entity, float f0)
     {
         WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
-                .worldServerForDimension(entity.dimension);
+                .getWorld(entity.dimension);
         Vector3 v = Vector3.getNewVector().set(world.getSpawnPoint()).addTo(0, entity.height, 0);
 
         if (!v.isClearOfBlocks(world)) v.getTopBlockPos(world).add(1, entity.height);

@@ -125,7 +125,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
     static final DataParameter<ItemStack>      HELDITEM         = EntityDataManager
-            .<ItemStack> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_ITEM_STACK);
+            .<ItemStack> createKey(EntityTameablePokemob.class, DataSerializers.ITEM_STACK);
     static final DataParameter<Optional<UUID>> OWNER_ID         = EntityDataManager
             .<Optional<UUID>> createKey(EntityTameablePokemob.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     static final DataParameter<Optional<UUID>> OT_ID            = EntityDataManager

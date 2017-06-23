@@ -63,7 +63,7 @@ public class CustomNBTPacket implements IMessage
         {
             if (ctx.side == Side.SERVER)
             {
-                final EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+                final EntityPlayerMP player = ctx.getServerHandler().player;
                 player.getServerWorld().addScheduledTask(new Runnable()
                 {
                     @Override

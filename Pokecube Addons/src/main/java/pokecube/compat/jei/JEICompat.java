@@ -138,8 +138,8 @@ public class JEICompat implements IModPlugin
                                                                                        @Override
                                                                                        public void render(
                                                                                                Minecraft minecraft,
-                                                                                               int xPosition,
-                                                                                               int yPosition,
+                                                                                               int x,
+                                                                                               int y,
                                                                                                PokedexEntry entry)
                                                                                        {
                                                                                            if (entry == null) return;
@@ -160,8 +160,8 @@ public class JEICompat implements IModPlugin
                                                                                            }
                                                                                            GL11.glPushMatrix();
                                                                                            GL11.glTranslated(
-                                                                                                   xPosition + 8,
-                                                                                                   yPosition + 17, 10);
+                                                                                                   x + 8,
+                                                                                                   y + 17, 10);
                                                                                            double scale = 1.1;
                                                                                            GL11.glScaled(scale, scale,
                                                                                                    scale);
@@ -236,7 +236,7 @@ public class JEICompat implements IModPlugin
                                                                                                Minecraft minecraft,
                                                                                                PokedexEntry ingredient)
                                                                                        {
-                                                                                           return minecraft.fontRendererObj;
+                                                                                           return minecraft.fontRenderer;
                                                                                        }
                                                                                    };
     public static final IIngredientRenderer<PokedexEntry> ingredientRendererOutput = new IIngredientRenderer<PokedexEntry>()
@@ -245,8 +245,8 @@ public class JEICompat implements IModPlugin
                                                                                        @Override
                                                                                        public void render(
                                                                                                Minecraft minecraft,
-                                                                                               int xPosition,
-                                                                                               int yPosition,
+                                                                                               int x,
+                                                                                               int y,
                                                                                                PokedexEntry entry)
                                                                                        {
                                                                                            if (entry == null) return;
@@ -267,8 +267,8 @@ public class JEICompat implements IModPlugin
                                                                                            }
                                                                                            GL11.glPushMatrix();
                                                                                            GL11.glTranslated(
-                                                                                                   xPosition + 12,
-                                                                                                   yPosition + 22, 10);
+                                                                                                   x + 12,
+                                                                                                   y + 22, 10);
                                                                                            double scale = 1.375;
                                                                                            GL11.glScaled(scale, scale,
                                                                                                    scale);
@@ -339,7 +339,7 @@ public class JEICompat implements IModPlugin
                                                                                                Minecraft minecraft,
                                                                                                PokedexEntry ingredient)
                                                                                        {
-                                                                                           return minecraft.fontRendererObj;
+                                                                                           return minecraft.fontRenderer;
                                                                                        }
                                                                                    };
 

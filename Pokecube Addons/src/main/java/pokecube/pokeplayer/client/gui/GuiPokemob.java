@@ -49,9 +49,9 @@ public class GuiPokemob extends GuiContainer
         }
 
         @Override
-        public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float f)
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float f)
         {
-            super.func_191745_a(mc, mouseX, mouseY, f);
+            super.drawButton(mc, mouseX, mouseY, f);
             if (id == PacketPokemobGui.BUTTONTOGGLESTAY || id == PacketPokemobGui.BUTTONTOGGLESIT)
             {
                 PokedexEntry entry = Database.getEntry("eevee");
@@ -89,8 +89,8 @@ public class GuiPokemob extends GuiContainer
                         }
                     }
                     mc.getTextureManager().bindTexture(texture);
-                    int x = xPosition + 2;
-                    int y = yPosition + 1;
+                    int x = this.x + 2;
+                    int y = this.y + 1;
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder vertexbuffer = tessellator.getBuffer();
                     vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
@@ -106,8 +106,8 @@ public class GuiPokemob extends GuiContainer
                 }
                 ((Entity) renderMob).onGround = false;
 
-                int x = xPosition + width / 2 - 2;
-                int y = yPosition + height / 2 + 7;
+                int x = this.x + width / 2 - 2;
+                int y = this.y + height / 2 + 7;
                 double scale = 0.9f;
                 GL11.glPushMatrix();
                 GL11.glTranslatef(x, y, 0F);
@@ -147,11 +147,11 @@ public class GuiPokemob extends GuiContainer
             else
             {
                 mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                this.drawTexturedModalRect(xPosition + 2, yPosition + 2,
+                this.drawTexturedModalRect(x + 2, y + 2,
                         mc.getTextureMapBlocks().getAtlasSprite("minecraft:items/diamond_sword"), 16, 16);
                 if (!pokemob.getPokemonAIState(IMoveConstants.GUARDING))
                 {
-                    this.drawGradientRect(xPosition + 2, yPosition + 2, xPosition + width - 2, yPosition + width - 2,
+                    this.drawGradientRect(x + 2, y + 2, x + width - 2, y + width - 2,
                             0x88884444, 0x88884444);
                 }
             }
@@ -176,8 +176,8 @@ public class GuiPokemob extends GuiContainer
          * Equivalent of MouseListener.mousePressed(MouseEvent e). */
         public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
         {
-            return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition
-                    && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y
+                    && mouseX < this.x + this.width && mouseY < this.y + this.height;
         }
 
         @Override
@@ -296,9 +296,9 @@ public class GuiPokemob extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRendererObj.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
+        this.fontRenderer.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
                 : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
-        this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
+        this.fontRenderer.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
                 : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
     }
 

@@ -228,7 +228,7 @@ public class PokecubePacketHandler
             @Override
             public PokecubeServerPacket onMessage(PokecubeServerPacket message, MessageContext ctx)
             {
-                EntityPlayer player = ctx.getServerHandler().playerEntity;
+                EntityPlayer player = ctx.getServerHandler().player;
                 new PacketHandler(player, message.buffer);
                 return null;
             }

@@ -78,7 +78,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
     @Override
     public boolean attackEntityFrom(DamageSource source, float i)
     {
-        Entity e = source.getSourceOfDamage();
+        Entity e = source.getTrueSource();
         if (e instanceof EntityPlayer && ((EntityPlayer) e).capabilities.isCreativeMode)
         {
             EntityPlayer player = (EntityPlayer) e;

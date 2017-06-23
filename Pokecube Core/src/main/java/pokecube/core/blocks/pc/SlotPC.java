@@ -11,9 +11,9 @@ public class SlotPC extends Slot
 
     public boolean release = false;
 
-    public SlotPC(IInventory inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition)
+    public SlotPC(IInventory inventory, int slotIndex, int xDisplay, int yDisplay)
     {
-        super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
+        super(inventory, slotIndex, xDisplay, yDisplay);
     }
 
     /** Return whether this slot's stack can be taken from this slot. */

@@ -58,14 +58,14 @@ public class MoveEventsHandler
     public static boolean attemptSmelt(IPokemob attacker, Vector3 location)
     {
         World world = ((Entity) attacker).getEntityWorld();
-        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().grow(1));
         if (!items.isEmpty())
         {
             boolean smelt = false;
             for (int i = 0; i < items.size(); i++)
             {
                 EntityItem item = items.get(i);
-                ItemStack stack = item.getEntityItem();
+                ItemStack stack = item.getItem();
                 int num = CompatWrapper.getStackSize(stack);
                 ItemStack newstack = FurnaceRecipes.instance().getSmeltingResult(stack);
                 if (newstack != null)
@@ -100,7 +100,7 @@ public class MoveEventsHandler
                     hunger = (int) Math.max(1, hunger / (float) attacker.getLevel());
                     if (f > 0) hunger *= f;
                     ((IHungrymob) attacker).setHungerTime(((IHungrymob) attacker).getHungerTime() + hunger);
-                    item.setEntityItemStack(newstack);
+                    item.setItem(newstack);
                     item.lifespan += 6000;
                     smelt = true;
                 }

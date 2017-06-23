@@ -102,9 +102,9 @@ public class GuiTMCreator extends GuiContainer
             Move_Base move = MovesUtils.getMoveFromName(s);
             if (move != null)
             {
-                drawString(fontRendererObj, MovesUtils.getMoveName(s).getFormattedText(), xOffset + 14, yOffset + 99,
+                drawString(fontRenderer, MovesUtils.getMoveName(s).getFormattedText(), xOffset + 14, yOffset + 99,
                         move.getType(null).colour);
-                drawString(fontRendererObj, "" + move.getPWR(), xOffset + 102, yOffset + 99, 0xffffff);
+                drawString(fontRenderer, "" + move.getPWR(), xOffset + 102, yOffset + 99, 0xffffff);
             }
         }
     }
@@ -129,7 +129,7 @@ public class GuiTMCreator extends GuiContainer
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 78, height / 2 - yOffset, 50, 20, prev));
         String apply = I18n.format("tile.tradingtable.apply");
         buttonList.add(new GuiButton(4, width / 2 - xOffset - 25, height / 2 - yOffset, 50, 20, apply));
-        textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 29, height / 2 - yOffset - 25, 90,
+        textFieldSearch = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 29, height / 2 - yOffset - 25, 90,
                 10);
         textFieldSearch.setText("");
 

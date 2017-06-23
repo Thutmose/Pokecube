@@ -165,7 +165,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == REQUEST)
         {

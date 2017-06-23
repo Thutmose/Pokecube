@@ -169,7 +169,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         if (!options)
         {
-            drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st.override"), (width / 2), 17,
+            drawCenteredString(fontRenderer, I18n.format("gui.pokemob.choose1st.override"), (width / 2), 17,
                     0xffffff);
             return;
         }
@@ -193,9 +193,9 @@ public class GuiChooseFirstPokemob extends GuiScreen
         int k1 = i1 / 65536;
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j1 / 1.0F, k1 / 1.0F);
 
-        drawCenteredString(fontRendererObj, I18n.format("gui.pokemob.choose1st"), (width / 2), 17, 0xffffff);
+        drawCenteredString(fontRenderer, I18n.format("gui.pokemob.choose1st"), (width / 2), 17, 0xffffff);
 
-        drawCenteredString(fontRendererObj, I18n.format(pokedexEntry.getUnlocalizedName()), (width / 2), 45, 0xffffff);
+        drawCenteredString(fontRenderer, I18n.format(pokedexEntry.getUnlocalizedName()), (width / 2), 45, 0xffffff);
 
         int n = 0;
         int m = 0;
@@ -206,14 +206,14 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
         if (pokedexEntry.getType2() == PokeType.unknown)
         {
-            drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), (width / 2), 65,
+            drawCenteredString(fontRenderer, getTranslatedName(pokedexEntry.getType1()), (width / 2), 65,
                     pokedexEntry.getType1().colour);
         }
         else
         {
-            drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), (width / 2) - 20, 65,
+            drawCenteredString(fontRenderer, getTranslatedName(pokedexEntry.getType1()), (width / 2) - 20, 65,
                     pokedexEntry.getType1().colour);
-            drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType2()), (width / 2) + 20, 65,
+            drawCenteredString(fontRenderer, getTranslatedName(pokedexEntry.getType2()), (width / 2) + 20, 65,
                     pokedexEntry.getType2().colour);
         }
         GL11.glPushMatrix();
@@ -238,12 +238,12 @@ public class GuiChooseFirstPokemob extends GuiScreen
         GL11.glColor4f((243f / 255f), (86f / 255f), (132f / 255f), 1.0F);
         this.drawTexturedModalRect(n + k, m + l + 65, 0, 0, pokedexEntry.getStatVIT(), 13);
 
-        drawCenteredString(fontRendererObj, "VIT: ", (n + k) - 10, m + l + 3, 0x930000);
-        drawCenteredString(fontRendererObj, "ATT: ", (n + k) - 10, m + l + 17, 0xAD5D22);
-        drawCenteredString(fontRendererObj, "DEF: ", (n + k) - 10, m + l + 29, 0xB39622);
-        drawCenteredString(fontRendererObj, "ATTSPE: ", (n + k) - 18, m + l + 42, 0x4C68AD);
-        drawCenteredString(fontRendererObj, "DEFSPE: ", (n + k) - 18, m + l + 55, 0x57933A);
-        drawCenteredString(fontRendererObj, "SPE: ", (n + k) - 10, m + l + 67, 0xB44062);
+        drawCenteredString(fontRenderer, "VIT: ", (n + k) - 10, m + l + 3, 0x930000);
+        drawCenteredString(fontRenderer, "ATT: ", (n + k) - 10, m + l + 17, 0xAD5D22);
+        drawCenteredString(fontRenderer, "DEF: ", (n + k) - 10, m + l + 29, 0xB39622);
+        drawCenteredString(fontRenderer, "ATTSPE: ", (n + k) - 18, m + l + 42, 0x4C68AD);
+        drawCenteredString(fontRenderer, "DEFSPE: ", (n + k) - 18, m + l + 55, 0x57933A);
+        drawCenteredString(fontRenderer, "SPE: ", (n + k) - 10, m + l + 67, 0xB44062);
         GL11.glPopMatrix();
 
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

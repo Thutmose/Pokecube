@@ -210,7 +210,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
                         new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
-                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                    entity_item.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
                 float factor = 0.005F;
                 entity_item.motionX = rand.nextGaussian() * factor;
@@ -262,7 +262,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
     {
         Vector3 v = Vector3.getNewVector().set(tile).addTo(0.5, 0, 0.5);
         AxisAlignedBB bb = new AxisAlignedBB(v.x - 1, v.y, v.z - 1, v.x + 1, v.y + 3, v.z + 1);
-        List<Entity> entities = tile.getWorld().getEntitiesWithinAABB(Entity.class, bb.expandXyz(1));
+        List<Entity> entities = tile.getWorld().getEntitiesWithinAABB(Entity.class, bb.grow(1));
         if (entities.isEmpty()) return;
 
         Matrix3 matBox = new Matrix3();

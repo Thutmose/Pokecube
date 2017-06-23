@@ -96,7 +96,7 @@ public class RecallCommand extends CommandBase
                 boolean owned = owner != null;
                 if (!owned)
                 {
-                    String ownerId = PokecubeManager.getOwner(cube.getEntityItem());
+                    String ownerId = PokecubeManager.getOwner(cube.getItem());
                     if (!ownerId.isEmpty())
                     {
                         owned = !ownerId.equals(PokecubeMod.fakeUUID.toString());
@@ -106,17 +106,17 @@ public class RecallCommand extends CommandBase
                 {
                     try
                     {
-                        if (PokecubeManager.isFilled(cube.getEntityItem()))
+                        if (PokecubeManager.isFilled(cube.getItem()))
                         {
                             IPokemob mob = cube.sendOut();
                             if (mob != null) mob.returnToPokecube();
-                            else PokecubeMod.log(cube.getEntityItem().getDisplayName());
+                            else PokecubeMod.log(cube.getItem().getDisplayName());
                         }
                         else cube.setDead();
                     }
                     catch (Exception e)
                     {
-                        System.err.println(cube.getEntityItem().getDisplayName());
+                        System.err.println(cube.getItem().getDisplayName());
                     }
                     num++;
                 }

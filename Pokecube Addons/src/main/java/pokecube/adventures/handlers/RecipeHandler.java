@@ -13,6 +13,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
@@ -282,8 +283,8 @@ public class RecipeHandler
                 "after:minecraft:shapeless");
         RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
                 "after:minecraft:shapeless");
-        GameRegistry.addRecipe(new RecipeBag());
-        GameRegistry.addRecipe(new RecipeSelector());
+        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:bag"),new RecipeBag());
+        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:selectors"), new RecipeSelector());
         addClonerRecipes();
     }
 }

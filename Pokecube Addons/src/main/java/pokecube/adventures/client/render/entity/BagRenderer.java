@@ -135,7 +135,7 @@ public class BagRenderer implements LayerRenderer<EntityLivingBase>
             GL11.glTranslated(0, -0.125, -0.6);
             GL11.glScaled(0.7, 0.7, 0.7);
             this.renderer.bindTexture(pass2);
-            Color colour = new Color(getChecker().getBagColour(bagStack).func_193350_e() + 0xFF000000);
+            Color colour = new Color(getChecker().getBagColour(bagStack).getColorValue() + 0xFF000000);
             int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : model2.getParts().values())
             {

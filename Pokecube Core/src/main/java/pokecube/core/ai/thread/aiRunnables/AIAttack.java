@@ -153,8 +153,8 @@ public class AIAttack extends AIBase implements IAICombat
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
                     && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
                     && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
-                    && ((EntityPlayer) entityTarget).getLastAttacker() != attacker
-                    && ((EntityPlayer) entityTarget).getAITarget() != attacker)
+                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker
+                    && ((EntityPlayer) entityTarget).getLastAttackedEntity()!= attacker)
             {
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 ITextComponent message = new TextComponentTranslation("pokemob.agress",
@@ -290,7 +290,7 @@ public class AIAttack extends AIBase implements IAICombat
                     AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
                     AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                             dz + attackedLength);
-                    inRange = box.intersectsWith(box2);
+                    inRange = box.intersects(box2);
                 }
             }
             else
@@ -310,7 +310,7 @@ public class AIAttack extends AIBase implements IAICombat
                 AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
                 AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                         dz + attackedLength);
-                inRange = box.intersectsWith(box2);
+                inRange = box.intersects(box2);
                 if (shouldPath && !(distanced || self))
                     setPokemobAIState((IPokemob) attacker, IMoveConstants.LEAPING, true);
 

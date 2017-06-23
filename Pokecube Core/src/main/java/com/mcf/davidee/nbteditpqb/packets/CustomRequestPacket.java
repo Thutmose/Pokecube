@@ -49,7 +49,7 @@ public class CustomRequestPacket implements IMessage
         @Override
         public IMessage onMessage(CustomRequestPacket packet, MessageContext ctx)
         {
-            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+            EntityPlayerMP player = ctx.getServerHandler().player;
             NBTEdit.log(Level.TRACE, player.getName() + " requested entity with Id #" + packet.entityID);
             NBTEdit.NETWORK.sendCustomTag(player, packet.entityID, packet.customName);
             return null;

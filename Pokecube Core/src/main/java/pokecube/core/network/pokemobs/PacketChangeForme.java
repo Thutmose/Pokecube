@@ -86,7 +86,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
         IPokemob pokemob = (IPokemob) mob;

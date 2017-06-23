@@ -147,7 +147,7 @@ public class ClientProxy extends CommonProxy {
 		double var10 = player.lastTickPosY + (player.posY - player.lastTickPosY) * f;
 		double var12 = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * f;
 
-		aabb = aabb.addCoord(-var8, -var10, -var12);
+		aabb = aabb.offset(-var8, -var10, -var12);
 
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

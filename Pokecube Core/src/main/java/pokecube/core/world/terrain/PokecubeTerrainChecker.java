@@ -194,9 +194,9 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
             sky = v.findNextSolidBlock(world, Vector3.secondAxisNeg, 16) == null;
             if (sky) return BiomeType.SKY.getType();
         }
-        if (world.villageCollectionObj != null)
+        if (world.villageCollection != null)
         {
-            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(MathHelper.floor(v.x),
+            Village village = world.villageCollection.getNearestVillage(new BlockPos(MathHelper.floor(v.x),
                     MathHelper.floor(v.y), MathHelper.floor(v.z)), 2);
             if (village != null)
             {

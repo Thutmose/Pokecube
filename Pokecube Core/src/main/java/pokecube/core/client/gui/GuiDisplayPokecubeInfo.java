@@ -185,7 +185,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public GuiDisplayPokecubeInfo()
     {
         minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-        fontRenderer = minecraft.fontRendererObj;
+        fontRenderer = minecraft.fontRenderer;
         if (instance != null)
         {
             MinecraftForge.EVENT_BUS.unregister(instance);
@@ -206,7 +206,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             indexPokemob = 0;
         }
         if (indexPokemob >= getPokemobsToDisplay().length) { return; }
-        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
+        if (fontRenderer == null) fontRenderer = minecraft.fontRenderer;
         MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderSelectedInfo());
         MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderTargetInfo());
     }

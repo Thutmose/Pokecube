@@ -82,7 +82,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == MESSAGEUPDATETRAINER)
         {

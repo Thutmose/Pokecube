@@ -84,7 +84,7 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
                         new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
-                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                    entity_item.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
                 float factor = 0.005F;
                 entity_item.motionX = rand.nextGaussian() * factor;

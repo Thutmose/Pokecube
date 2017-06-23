@@ -18,9 +18,9 @@ public class ContainerDaycare extends Container
 {
     private static class SlotDaycare extends Slot
     {
-        public SlotDaycare(IInventory inventoryIn, int index, int xPosition, int yPosition)
+        public SlotDaycare(IInventory inventoryIn, int index, int x, int y)
         {
-            super(inventoryIn, index, xPosition, yPosition);
+            super(inventoryIn, index, x, y);
         }
 
         @Override
@@ -91,7 +91,7 @@ public class ContainerDaycare extends Container
         for (int i = 0; i < this.listeners.size(); ++i)
         {
             IContainerListener icrafting = this.listeners.get(i);
-            if (range != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+            if (range != tile.getField(0)) icrafting.sendWindowProperty(this, 0, this.tile.getField(0));
         }
         range = tile.getField(0);
         super.detectAndSendChanges();

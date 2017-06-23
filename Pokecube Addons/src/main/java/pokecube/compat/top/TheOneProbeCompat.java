@@ -75,22 +75,22 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
         public void render(int x, int y)
         {
             if (entry == null) return;
-            Minecraft.getMinecraft().fontRendererObj.drawString(PokeType.getTranslatedName(entry.getType1()), x, y,
+            Minecraft.getMinecraft().fontRenderer.drawString(PokeType.getTranslatedName(entry.getType1()), x, y,
                     entry.getType1().colour, true);
             if (PokeType.unknown != entry.getType2() && entry.getType2() != null)
             {
-                int l = Minecraft.getMinecraft().fontRendererObj
+                int l = Minecraft.getMinecraft().fontRenderer
                         .getStringWidth(PokeType.getTranslatedName(entry.getType1()));
-                Minecraft.getMinecraft().fontRendererObj.drawString(PokeType.getTranslatedName(entry.getType2()),
+                Minecraft.getMinecraft().fontRenderer.drawString(PokeType.getTranslatedName(entry.getType2()),
                         l + 2 + x, y, entry.getType2().colour, true);
             }
 
             int l = 0;
-            Minecraft.getMinecraft().fontRendererObj.drawString(have + "", l + x, y + 10, PokeType.grass.colour, true);
-            l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(have + "");
-            Minecraft.getMinecraft().fontRendererObj.drawString("/", l + x, y + 10, PokeType.normal.colour, true);
-            l += Minecraft.getMinecraft().fontRendererObj.getStringWidth("/");
-            Minecraft.getMinecraft().fontRendererObj.drawString(killed + "", l + x, y + 10, PokeType.fighting.colour,
+            Minecraft.getMinecraft().fontRenderer.drawString(have + "", l + x, y + 10, PokeType.grass.colour, true);
+            l += Minecraft.getMinecraft().fontRenderer.getStringWidth(have + "");
+            Minecraft.getMinecraft().fontRenderer.drawString("/", l + x, y + 10, PokeType.normal.colour, true);
+            l += Minecraft.getMinecraft().fontRenderer.getStringWidth("/");
+            Minecraft.getMinecraft().fontRenderer.drawString(killed + "", l + x, y + 10, PokeType.fighting.colour,
                     true);
 
         }

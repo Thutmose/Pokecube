@@ -75,14 +75,14 @@ public class PokemobAIHurt extends EntityAIBase
         {
             return false;
         }
-        int i = pathpoint.xCoord - MathHelper.floor(p_75295_1_.posX);
-        int j = pathpoint.zCoord - MathHelper.floor(p_75295_1_.posZ);
+        int i = pathpoint.x - MathHelper.floor(p_75295_1_.posX);
+        int j = pathpoint.z - MathHelper.floor(p_75295_1_.posZ);
         return i * i + j * j <= 2.25D;
     }
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
-    public boolean continueExecuting()
+    public boolean shouldContinueExecuting()
     {
         EntityLivingBase entitylivingbase = this.taskOwner.getAttackTarget();
 
@@ -197,7 +197,7 @@ public class PokemobAIHurt extends EntityAIBase
     public boolean shouldExecute()
     {
         int i = this.taskOwner.getRevengeTimer();
-        return i != this.revengeTimer && this.isSuitableTarget(this.taskOwner.getAITarget(), false);
+        return i != this.revengeTimer && this.isSuitableTarget(this.taskOwner.getAttackTarget(), false);
     }
 
     /** Execute a one shot task or start executing a continuous task */
@@ -208,7 +208,7 @@ public class PokemobAIHurt extends EntityAIBase
         this.targetSearchStatus = 0;
         this.targetSearchDelay = 0;
         this.lastSeenTime = 0;
-        // this.taskOwner.setAttackTarget(this.taskOwner.getAITarget());
+        // this.taskOwner.setAttackTarget(this.taskOwner.getAttackTarget());
         this.revengeTimer = this.taskOwner.getRevengeTimer();
 
         if (this.entityCallsForHelp && Math.random() > 0.95)

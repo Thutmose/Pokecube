@@ -159,15 +159,15 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         }
         else
         {
-            this.entityAge = 0;
+            this.idleTime = 0;
 
-            if (source.isExplosion() && source.getEntity() instanceof IPokemob && isType(ghost)) { return false; }
+            if (source.isExplosion() && source.getTrueSource() instanceof IPokemob && isType(ghost)) { return false; }
 
-            if (!(source.getEntity() instanceof IPokemob || source instanceof PokemobDamageSource)
+            if (!(source.getTrueSource() instanceof IPokemob || source instanceof PokemobDamageSource)
                     && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
                 return false;
 
-            if (source.getEntity() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
+            if (source.getTrueSource() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
                 amount *= PokecubeMod.core.getConfig().playerToPokemobDamageScale;
 
             if (this.getHealth() <= 0.0F)
@@ -201,7 +201,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 }
 
                 this.attackedAtYaw = 0.0F;
-                Entity entity = source.getEntity();
+                Entity entity = source.getTrueSource();
 
                 if (entity != null)
                 {
@@ -659,7 +659,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             ret = megaEvolve(newEntry);
         }
-        if (world != null) ret.setSize((float) (ret.getSize()/PokecubeMod.core.getConfig().scalefactor));
+        if (world != null) ret.setSize((float) (ret.getSize() / PokecubeMod.core.getConfig().scalefactor));
         if (world != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
             PacketChangeForme.sendPacketToNear((Entity) ret, newEntry, 128);

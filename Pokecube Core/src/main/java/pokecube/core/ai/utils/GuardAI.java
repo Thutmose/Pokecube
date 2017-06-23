@@ -45,7 +45,7 @@ public class GuardAI extends EntityAIBase
     }
 
     @Override
-    public boolean continueExecuting()
+    public boolean shouldContinueExecuting()
     {
         switch (capability.getState())
         {

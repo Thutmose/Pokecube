@@ -229,7 +229,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         if (world == null) return false;
 
         // Don't look for targets if you are sitting.
-        boolean ret = entity.getAITarget() == null && entity.getAttackTarget() == null
+        boolean ret = entity.getAttackTarget() == null && entity.getAttackTarget() == null
                 && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
         // If target is dead, return false.
         if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)

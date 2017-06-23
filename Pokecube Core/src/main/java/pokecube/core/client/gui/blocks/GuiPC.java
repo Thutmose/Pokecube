@@ -167,9 +167,9 @@ public class GuiPC extends GuiContainer
 
         String name = (cont.pcTile != null) ? cont.pcTile.getName() : "";
         String pcTitle = bound ? name : I18n.format("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
-        fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60,
+        fontRenderer.drawString(cont.getPage(), xSize / 2 - fontRenderer.getStringWidth(cont.getPage()) / 3 - 60,
                 13, 4210752);
-        fontRendererObj.drawString(pcTitle, xSize / 2 - fontRendererObj.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
+        fontRenderer.drawString(pcTitle, xSize / 2 - fontRenderer.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
         GL11.glPopMatrix();
 
         for (int i = 0; i < 54; i++)
@@ -281,15 +281,15 @@ public class GuiPC extends GuiContainer
 
         }
 
-        textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
+        textFieldSelectedBox = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
                 25, 10);
         textFieldSelectedBox.setText(page);
 
-        textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 190, height / 2 - yOffset - 40,
+        textFieldBoxName = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 190, height / 2 - yOffset - 40,
                 100, 10);
         textFieldBoxName.setText(boxName);
 
-        textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,
+        textFieldSearch = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,
                 10);
         textFieldSearch.setText("");
     }

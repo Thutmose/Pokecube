@@ -71,7 +71,7 @@ public class ActionSmash implements IMoveAction
         if (!used)
         {
             World world = ((Entity) user).getEntityWorld();
-            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().grow(1));
             if (!items.isEmpty())
             {
                 // TODO instead of using reverse smelting, make an event that
@@ -80,7 +80,7 @@ public class ActionSmash implements IMoveAction
                 for (int i = 0; i < items.size(); i++)
                 {
                     EntityItem item = items.get(i);
-                    ItemStack stack = item.getEntityItem();
+                    ItemStack stack = item.getItem();
                     if (Block.getBlockFromItem(stack.getItem()) == null) continue;
                     int num = CompatWrapper.getStackSize(stack);
                     ItemStack newstack = null;
@@ -101,7 +101,7 @@ public class ActionSmash implements IMoveAction
                         int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                         hunger = (int) Math.max(1, hunger / (float) user.getLevel());
                         ((IHungrymob) user).setHungerTime(((IHungrymob) user).getHungerTime() + hunger);
-                        item.setEntityItemStack(newstack);
+                        item.setItem(newstack);
                         smelt = true;
                     }
                 }

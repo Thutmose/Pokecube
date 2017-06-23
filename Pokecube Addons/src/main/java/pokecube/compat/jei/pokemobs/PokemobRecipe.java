@@ -2,6 +2,8 @@ package pokecube.compat.jei.pokemobs;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import thut.lib.CompatWrapper;

@@ -139,12 +139,12 @@ public abstract class PokecubeMod
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
                 if (FMLClientHandler.instance().getServer() != null)
-                    world = FMLClientHandler.instance().getServer().worldServerForDimension(dim);
+                    world = FMLClientHandler.instance().getServer().getWorld(dim);
                 else world = null;
             }
             else
             {
-                world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+                world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
             }
 
             FakePlayer fakeplayer = FakePlayerFactory.get(world,

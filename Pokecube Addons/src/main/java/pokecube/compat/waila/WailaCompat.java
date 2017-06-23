@@ -52,7 +52,7 @@ public class WailaCompat implements IWailaEntityProvider
             {
                 name += " ";
                 total += " ";
-                int l = Minecraft.getMinecraft().fontRendererObj.getStringWidth(name);
+                int l = Minecraft.getMinecraft().fontRenderer.getStringWidth(name);
                 name = params[2];
                 total += name + " ";
                 i = Integer.parseInt(params[3]);
@@ -62,7 +62,7 @@ public class WailaCompat implements IWailaEntityProvider
             if (entity instanceof IPokemob)
             {
                 IPokemob pokemob = (IPokemob) entity;
-                int l = Minecraft.getMinecraft().fontRendererObj.getStringWidth(total);
+                int l = Minecraft.getMinecraft().fontRenderer.getStringWidth(total);
                 int caught = CaptureStats.getTotalNumberOfPokemobCaughtBy(accessor.getPlayer().getUniqueID(),
                         pokemob.getPokedexEntry());
                 int hatched = EggStats.getTotalNumberOfPokemobHatchedBy(accessor.getPlayer().getUniqueID(),
@@ -71,9 +71,9 @@ public class WailaCompat implements IWailaEntityProvider
                 int killed = KillStats.getTotalNumberOfPokemobKilledBy(accessor.getPlayer().getUniqueID(),
                         pokemob.getPokedexEntry());
                 DisplayUtil.drawString(number + "", l, 0, PokeType.grass.colour, true);
-                l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(number + "");
+                l += Minecraft.getMinecraft().fontRenderer.getStringWidth(number + "");
                 DisplayUtil.drawString("/", l, 0, PokeType.normal.colour, true);
-                l += Minecraft.getMinecraft().fontRendererObj.getStringWidth("/");
+                l += Minecraft.getMinecraft().fontRenderer.getStringWidth("/");
                 DisplayUtil.drawString(killed + "", l, 0, PokeType.fighting.colour, true);
             }
         }

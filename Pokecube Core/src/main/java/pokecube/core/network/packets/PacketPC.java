@@ -99,7 +99,7 @@ public class PacketPC implements IMessage, IMessageHandler<PacketPC, IMessage>
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         ContainerPC container = null;
         if (player.openContainer instanceof ContainerPC) container = (ContainerPC) player.openContainer;

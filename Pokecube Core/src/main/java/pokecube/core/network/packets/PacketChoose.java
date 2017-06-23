@@ -248,7 +248,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == CHOOSE)
         {

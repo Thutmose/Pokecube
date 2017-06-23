@@ -167,8 +167,8 @@ public class ContainerTradingTable extends Container
         for (int i = 0; i < this.listeners.size(); ++i)
         {
             IContainerListener icrafting = this.listeners.get(i);
-            if (id1 != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
-            if (id2 != tile.getField(1)) icrafting.sendProgressBarUpdate(this, 1, this.tile.getField(1));
+            if (id1 != tile.getField(0)) icrafting.sendWindowProperty(this, 0, this.tile.getField(0));
+            if (id2 != tile.getField(1)) icrafting.sendWindowProperty(this, 1, this.tile.getField(1));
         }
         id1 = tile.getField(0);
         id2 = tile.getField(1);

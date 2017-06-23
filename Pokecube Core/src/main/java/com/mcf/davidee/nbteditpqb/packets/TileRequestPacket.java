@@ -36,7 +36,7 @@ public class TileRequestPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(TileRequestPacket packet, MessageContext ctx) {
-			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			EntityPlayerMP player = ctx.getServerHandler().player;
 			NBTEdit.log(Level.TRACE, player.getName() + " requested tileEntity at "
 					+ packet.pos.getX() + ", " + packet.pos.getY() + ", " + packet.pos.getZ());
 			NBTEdit.NETWORK.sendTile(player, packet.pos);

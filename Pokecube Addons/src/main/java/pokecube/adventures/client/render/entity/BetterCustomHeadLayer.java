@@ -156,7 +156,7 @@ public class BetterCustomHeadLayer extends LayerCustomHead
                     int damage = itemstack.getTagCompound().getInteger("dyeColour");
                     ret = EnumDyeColor.byDyeDamage(damage);
                 }
-                Color colour = new Color(ret.func_193350_e() + 0xFF000000);
+                Color colour = new Color(ret.getColorValue() + 0xFF000000);
                 int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
                 for (IExtendedModelPart part : model2.getParts().values())
                 {

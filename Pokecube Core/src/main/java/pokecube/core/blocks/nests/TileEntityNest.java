@@ -223,9 +223,9 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     public void update()
     {
         time++;
-        int power = world.getRedstonePower(getPos(), EnumFacing.DOWN);// .getBlockPowerInput(xCoord,
-                                                                         // yCoord,
-                                                                         // zCoord);
+        int power = world.getRedstonePower(getPos(), EnumFacing.DOWN);// .getBlockPowerInput(x,
+                                                                         // y,
+                                                                         // z);
 
         if (world.isRemote || (world.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 

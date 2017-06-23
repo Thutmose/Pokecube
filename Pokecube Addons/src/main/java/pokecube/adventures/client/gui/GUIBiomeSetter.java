@@ -48,8 +48,8 @@ public class GUIBiomeSetter extends GuiScreen
     {
         super.drawScreen(i, j, f);
         textField0.drawTextBox();
-        fontRendererObj.drawString("Sub-Biome to set",
-                width / 2 - fontRendererObj.getStringWidth("Sub-Biome to set") / 3 - 20, height / 4 - 15, 4210752);
+        fontRenderer.drawString("Sub-Biome to set",
+                width / 2 - fontRenderer.getStringWidth("Sub-Biome to set") / 3 - 20, height / 4 - 15, 4210752);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class GUIBiomeSetter extends GuiScreen
             biome = setter.getTagCompound().getString("biome");
         }
 
-        textField0 = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 20 + yOffset, 100, 10);
+        textField0 = new GuiTextField(0, fontRenderer, width / 2 - 50, height / 4 + 20 + yOffset, 100, 10);
         textField0.setText(biome);
     }
 

@@ -38,7 +38,7 @@ public class AnimationPowder extends MoveAnimationBase
     {
         if (particle.equals("airbubble"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else if (particle.equals("aurora"))
         {
@@ -47,7 +47,7 @@ public class AnimationPowder extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else if (!customColour)
         {

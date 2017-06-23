@@ -68,7 +68,7 @@ public class AIGatherStuff extends AIBase
                     close = Math.max(close, 2);
                     if (stuff.getDistanceToEntity(entity) < close)
                     {
-                        ItemStackTools.addItemStackToInventory(stuff.getEntityItem(), pokemob.getPokemobInventory(), 2);
+                        ItemStackTools.addItemStackToInventory(stuff.getItem(), pokemob.getPokemobInventory(), 2);
                         stuff.setDead();
                         reset();
                     }

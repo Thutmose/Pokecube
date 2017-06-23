@@ -43,7 +43,7 @@ public class PokemobPacketHandler
                             int id = buffer.readInt();
                             IPokemob pokemob;
                             WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
-                                    .worldServerForDimension(player.dimension);
+                                    .getWorld(player.dimension);
                             Entity entity = PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
                             if (entity == null || !(entity instanceof IPokemob)) { return; }
                             pokemob = (IPokemob) entity;
@@ -84,7 +84,7 @@ public class PokemobPacketHandler
             @Override
             public IMessage onMessage(MessageServer message, MessageContext ctx)
             {
-                EntityPlayer player = ctx.getServerHandler().playerEntity;
+                EntityPlayer player = ctx.getServerHandler().player;
                 new PacketHandler(player, message.buffer);
                 return null;
             }

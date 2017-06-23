@@ -89,7 +89,7 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
                         new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
-                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                    entity_item.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
                 if (PokecubeManager.isFilled(item))
                 {

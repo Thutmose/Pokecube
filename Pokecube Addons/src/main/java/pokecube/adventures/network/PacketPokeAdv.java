@@ -178,7 +178,7 @@ public class PacketPokeAdv
             @Override
             public IMessage onMessage(MessageServer message, MessageContext ctx)
             {
-                EntityPlayer player = ctx.getServerHandler().playerEntity;
+                EntityPlayer player = ctx.getServerHandler().player;
 
                 return handleServerSide(player, message.buffer);
             }

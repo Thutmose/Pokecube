@@ -46,9 +46,9 @@ public class GuiNBTButton extends Gui{
 	}
 	private void drawToolTip(int mx, int my){
 		String s = NBTStringHelper.getButtonName(id);
-		int width = mc.fontRendererObj.getStringWidth(s);
+		int width = mc.fontRenderer.getStringWidth(s);
 		drawRect(mx+4,my+7,mx+5+width,my+17, 0xff000000);
-		mc.fontRendererObj.drawString(s, mx+5, my+8, 0xffffff);
+		mc.fontRenderer.drawString(s, mx+5, my+8, 0xffffff);
 	}
 	public void setEnabled(boolean aFlag){
 		enabled = aFlag;

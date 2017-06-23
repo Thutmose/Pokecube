@@ -22,7 +22,7 @@ public class ChunkProviderSecretBase implements IChunkGenerator
     }
 
     @Override
-    public Chunk provideChunk(int x, int z)
+    public Chunk generateChunk(int x, int z)
     {
         // Void world
         return new Chunk(world, x, z);
@@ -47,13 +47,13 @@ public class ChunkProviderSecretBase implements IChunkGenerator
     }
 
     // 1.10
-    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position)
+    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position)
     {
         return null;
     }
 
     // 1.11
-    public BlockPos getStrongholdGen(World worldIn, String structureName, BlockPos position, boolean p_180513_4_)
+    public BlockPos getNearestStructurePos(World worldIn, String structureName, BlockPos position, boolean p_180513_4_)
     {
         return null;
     }
@@ -64,7 +64,7 @@ public class ChunkProviderSecretBase implements IChunkGenerator
     }
 
     @Override
-    public boolean func_193414_a(World p_193414_1_, String p_193414_2_, BlockPos p_193414_3_)
+    public boolean isInsideStructure(World p_193414_1_, String p_193414_2_, BlockPos p_193414_3_)
     {
         // TODO Auto-generated method stub
         return false;

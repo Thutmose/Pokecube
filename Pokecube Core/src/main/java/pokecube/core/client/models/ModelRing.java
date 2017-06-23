@@ -83,7 +83,7 @@ public class ModelRing extends ModelBase
             int damage = stack.getTagCompound().getInteger("dyeColour");
             ret = EnumDyeColor.byDyeDamage(damage);
         }
-        Color colour = new Color(ret.func_193350_e() + 0xFF000000);
+        Color colour = new Color(ret.getColorValue() + 0xFF000000);
         GL11.glColor3f(colour.getRed() / 255f, colour.getGreen() / 255f, colour.getBlue() / 255f);
         Shape1.render(f5);
         Shape3.render(f5);

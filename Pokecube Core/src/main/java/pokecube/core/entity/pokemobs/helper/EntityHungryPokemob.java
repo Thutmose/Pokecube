@@ -52,7 +52,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
 
         if (source instanceof EntityDamageSource)
         {
-            attacker = source.getEntity();
+            attacker = source.getTrueSource();
 
             if ((attacker instanceof EntityArrow) && ((EntityArrow) attacker).shootingEntity != null)
             {// To test
@@ -129,7 +129,7 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
         if (e instanceof EntityItem)
         {
-            ItemStack item = ((EntityItem) e).getEntityItem();
+            ItemStack item = ((EntityItem) e).getItem();
             if (item.getItem() instanceof IPokemobUseable)
             {
                 ((IPokemobUseable) item.getItem()).applyEffect(this, item);

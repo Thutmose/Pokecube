@@ -79,7 +79,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         ContainerBag container = null;
         if (player.openContainer instanceof ContainerBag) container = (ContainerBag) player.openContainer;

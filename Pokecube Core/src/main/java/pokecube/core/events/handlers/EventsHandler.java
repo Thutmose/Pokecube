@@ -273,13 +273,13 @@ public class EventsHandler
             else if (o instanceof EntityPokecube)
             {
                 EntityPokecube mob = (EntityPokecube) o;
-                if (CompatWrapper.isValid(mob.getEntityItem()))
+                if (CompatWrapper.isValid(mob.getItem()))
                 {
-                    String name = PokecubeManager.getOwner(mob.getEntityItem());
+                    String name = PokecubeManager.getOwner(mob.getItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getCachedUniqueIdString())))
                     {
-                        ItemStack cube = mob.getEntityItem();
+                        ItemStack cube = mob.getItem();
                         ItemTossEvent evt = new ItemTossEvent(
                                 new EntityItem(mob.getEntityWorld(), mob.posX, mob.posY, mob.posZ, cube), player);
                         MinecraftForge.EVENT_BUS.post(evt);
@@ -499,11 +499,12 @@ public class EventsHandler
     public void livingDeath(LivingDeathEvent evt)
     {
         if (evt.getEntity().world.isRemote || evt.getEntityLiving() instanceof IPokemob) return;
-        if (evt.getEntityLiving().getLastAttacker() instanceof IPokemob
-                && evt.getSource().getEntity() != evt.getEntityLiving().getLastAttacker())
-        {
-            evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
-        }
+        // if (evt.getEntityLiving().getRevengeTarget() instanceof IPokemob
+        // && evt.getSource().getEntity() !=
+        // evt.getEntityLiving().getLastAttacker())
+        // {//TODO see if this is still needed.
+        // evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
+        // }
     }
 
     @SubscribeEvent
@@ -558,11 +559,10 @@ public class EventsHandler
             EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
             BlockPos here;
             BlockPos old;
-            here = new BlockPos(MathHelper.floor(player.chasingPosX) >> 4,
-                    MathHelper.floor(player.chasingPosY) >> 4, MathHelper.floor(player.chasingPosZ) >> 4);
+            here = new BlockPos(MathHelper.floor(player.chasingPosX) >> 4, MathHelper.floor(player.chasingPosY) >> 4,
+                    MathHelper.floor(player.chasingPosZ) >> 4);
             old = new BlockPos(MathHelper.floor(player.prevChasingPosX) >> 4,
-                    MathHelper.floor(player.prevChasingPosY) >> 4,
-                    MathHelper.floor(player.prevChasingPosZ) >> 4);
+                    MathHelper.floor(player.prevChasingPosY) >> 4, MathHelper.floor(player.prevChasingPosZ) >> 4);
             if (!here.equals(old)) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
                     evt.getEntity().getEntityWorld());
         }

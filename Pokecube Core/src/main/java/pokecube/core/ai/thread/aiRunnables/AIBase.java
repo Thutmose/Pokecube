@@ -125,7 +125,7 @@ public abstract class AIBase implements IAIRunnable
                                                                  {
                                                                      WorldServer world = FMLCommonHandler.instance()
                                                                              .getMinecraftServerInstance()
-                                                                             .worldServerForDimension(o1.dim);
+                                                                             .getWorld(o1.dim);
                                                                      Entity e1 = world.getEntityByID(o1.attacker);
                                                                      Entity e2 = world.getEntityByID(o2.attacker);
                                                                      if (e1 instanceof IPokemob

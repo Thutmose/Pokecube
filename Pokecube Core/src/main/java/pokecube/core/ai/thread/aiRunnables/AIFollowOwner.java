@@ -66,11 +66,11 @@ public class AIFollowOwner extends AIBase
                 && petPathfinder.getPath().getCurrentPathIndex() < petPathfinder.getPath().getCurrentPathLength() - 3)
         {
             double x, y, z;
-            x = petPathfinder.getPath().getPathPointFromIndex(petPathfinder.getPath().getCurrentPathIndex() + 1).xCoord
+            x = petPathfinder.getPath().getPathPointFromIndex(petPathfinder.getPath().getCurrentPathIndex() + 1).x
                     + 0.5;
-            y = petPathfinder.getPath().getPathPointFromIndex(petPathfinder.getPath().getCurrentPathIndex() + 1).yCoord
+            y = petPathfinder.getPath().getPathPointFromIndex(petPathfinder.getPath().getCurrentPathIndex() + 1).y
                     + 0.5;
-            z = petPathfinder.getPath().getPathPointFromIndex(petPathfinder.getPath().getCurrentPathIndex() + 1).zCoord
+            z = petPathfinder.getPath().getPathPointFromIndex(petPathfinder.getPath().getCurrentPathIndex() + 1).z
                     + 0.5;
             this.thePet.getLookHelper().setLookPosition(x, y, z, 10, this.thePet.getVerticalFaceSpeed());
         }

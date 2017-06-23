@@ -85,7 +85,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == MAKETM)
         {

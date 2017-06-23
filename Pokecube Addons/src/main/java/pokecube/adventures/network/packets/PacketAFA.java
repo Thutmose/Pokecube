@@ -48,7 +48,7 @@ public class PacketAFA implements IMessage, IMessageHandler<PacketAFA, IMessage>
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         IInventory tile = null;
         if ((player.openContainer instanceof ContainerAFA))

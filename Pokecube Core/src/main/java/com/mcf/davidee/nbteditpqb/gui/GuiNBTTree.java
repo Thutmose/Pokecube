@@ -54,7 +54,7 @@ public class GuiNBTTree extends Gui {
 	private GuiNBTButton[] buttons;
 
 	private final int X_GAP = 10, START_X = 10, START_Y = 30;
-	private final int Y_GAP = Minecraft.getMinecraft().fontRendererObj.FONT_HEIGHT+2;
+	private final int Y_GAP = Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT+2;
 
 	private int y, yClick, bottom, width, height, heightDiff, offset;
 

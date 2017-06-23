@@ -17,6 +17,7 @@ import net.minecraft.inventory.InventoryMerchant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
@@ -187,5 +188,15 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
             this.itemList = new MerchantRecipeList(nbttagcompound);
         }
         checkTradeIntegrity();
+    }
+
+    public World getWorld()
+    {
+        return this.buyingPlayer.world;
+    }
+
+    public BlockPos getPos()
+    {
+        return new BlockPos(this.buyingPlayer);
     }
 }

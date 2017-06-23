@@ -21,9 +21,9 @@ public class ContainerAFA extends Container
     private static class AFASlot extends Slot
     {
 
-        public AFASlot(IInventory inventoryIn, int index, int xPosition, int yPosition)
+        public AFASlot(IInventory inventoryIn, int index, int x, int y)
         {
-            super(inventoryIn, index, xPosition, yPosition);
+            super(inventoryIn, index, x, y);
         }
 
         @Override
@@ -94,7 +94,7 @@ public class ContainerAFA extends Container
         for (int i = 0; i < this.listeners.size(); ++i)
         {
             IContainerListener icrafting = this.listeners.get(i);
-            if (energy != tile.getField(0)) icrafting.sendProgressBarUpdate(this, 0, this.tile.getField(0));
+            if (energy != tile.getField(0)) icrafting.sendWindowProperty(this, 0, this.tile.getField(0));
         }
         energy = tile.getField(0);
         super.detectAndSendChanges();

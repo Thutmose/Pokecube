@@ -73,7 +73,7 @@ public class PacketTeams implements IMessage, IMessageHandler<PacketTeams, IMess
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         player.getEntityWorld();
     }

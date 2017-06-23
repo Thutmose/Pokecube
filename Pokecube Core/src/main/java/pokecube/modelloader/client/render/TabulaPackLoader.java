@@ -173,7 +173,7 @@ public class TabulaPackLoader extends AnimationLoader
             if (dyeableIdents.contains(partIdentifier))
             {
                 int rgba = 0xFF000000;
-                rgba += EnumDyeColor.byDyeDamage(((IPokemob) entity).getSpecialInfo()).func_193350_e();
+                rgba += EnumDyeColor.byDyeDamage(((IPokemob) entity).getSpecialInfo()).getColorValue();
                 return rgba;
             }
             return default_;

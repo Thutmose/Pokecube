@@ -20,7 +20,7 @@ public class TeamManager
         public String getTeam(Entity entityIn)
         {
             Team team = entityIn.getTeam();
-            return team == null ? "" : team.getRegisteredName();
+            return team == null ? "" : team.getName();
         }
     }
 

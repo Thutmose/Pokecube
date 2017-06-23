@@ -87,7 +87,7 @@ public class ThrowParticle extends MoveAnimationBase
     {
         if (particle.equals("airbubble"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else if (particle.equals("aurora"))
         {
@@ -96,11 +96,11 @@ public class ThrowParticle extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.func_193350_e();
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else if (particle.equals("spark"))
         {
-            rgba = 0x78000000 + EnumDyeColor.YELLOW.func_193350_e();
+            rgba = 0x78000000 + EnumDyeColor.YELLOW.getColorValue();
         }
         else
         {

@@ -665,7 +665,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 int damage = stack.getTagCompound().getInteger("dyeColour");
                 ret = EnumDyeColor.byDyeDamage(damage);
             }
-            Color colour = new Color(ret.func_193350_e() + 0xFF000000);
+            Color colour = new Color(ret.getColorValue() + 0xFF000000);
             int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : belt2.getParts().values())
             {
@@ -706,7 +706,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 int damage = stack.getTagCompound().getInteger("dyeColour");
                 ret = EnumDyeColor.byDyeDamage(damage);
             }
-            colour = new Color(ret.func_193350_e() + 0xFF000000);
+            colour = new Color(ret.getColorValue() + 0xFF000000);
             int[] col2 = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
             for (IExtendedModelPart part : hat2.getParts().values())
             {

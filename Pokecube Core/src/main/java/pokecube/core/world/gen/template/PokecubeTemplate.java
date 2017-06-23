@@ -60,9 +60,9 @@ public class PokecubeTemplate extends Template
                 Vec3d vec3d = transformedVec3d(template$entityinfo.pos, mirrorIn, rotationIn);
                 Vec3d vec3d1 = vec3d.addVector((double) pos.getX(), (double) pos.getY(), (double) pos.getZ());
                 NBTTagList nbttaglist = new NBTTagList();
-                nbttaglist.appendTag(new NBTTagDouble(vec3d1.xCoord));
-                nbttaglist.appendTag(new NBTTagDouble(vec3d1.yCoord));
-                nbttaglist.appendTag(new NBTTagDouble(vec3d1.zCoord));
+                nbttaglist.appendTag(new NBTTagDouble(vec3d1.x));
+                nbttaglist.appendTag(new NBTTagDouble(vec3d1.y));
+                nbttaglist.appendTag(new NBTTagDouble(vec3d1.z));
                 nbttagcompound.setTag("Pos", nbttaglist);
                 nbttagcompound.setUniqueId("UUID", UUID.randomUUID());
                 Entity entity;
@@ -116,7 +116,7 @@ public class PokecubeTemplate extends Template
                         f -= entity.getRotatedYaw(rotationIn);
                         break;
                     }
-                    entity.setLocationAndAngles(vec3d1.xCoord, vec3d1.yCoord, vec3d1.zCoord, f, entity.rotationPitch);
+                    entity.setLocationAndAngles(vec3d1.x, vec3d1.y, vec3d1.z, f, entity.rotationPitch);
                     StructureEvent.SpawnEntity event = new StructureEvent.SpawnEntity(entity, name);
                     MinecraftForge.EVENT_BUS.post(event);
                     if (event.getToSpawn() != null && !event.isCanceled()) worldIn.spawnEntity(event.getToSpawn());

@@ -36,7 +36,7 @@ import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;

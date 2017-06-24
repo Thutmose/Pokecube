@@ -35,7 +35,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.database.Database;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
+import pokecube.core.handlers.playerdata.PokecubePlayerData;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;

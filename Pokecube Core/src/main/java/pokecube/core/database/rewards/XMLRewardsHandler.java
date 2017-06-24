@@ -29,9 +29,9 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData;
 import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.handlers.PokedexInspector.IInspectReward;
+import pokecube.core.handlers.playerdata.PokecubePlayerCustomData;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 

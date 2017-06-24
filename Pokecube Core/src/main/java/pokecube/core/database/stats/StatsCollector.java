@@ -8,7 +8,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 

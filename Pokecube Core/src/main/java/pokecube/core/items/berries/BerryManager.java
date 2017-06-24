@@ -56,13 +56,12 @@ public class BerryManager implements IMoveConstants
                                                             @Override
                                                             public Optional<String> parseValue(String value)
                                                             {
-                                                                return Optional.<String>fromNullable(value);
+                                                                return Optional.<String> fromNullable(value);
                                                             }
                                                         };
 
     public static Block                   berryFruit;
     public static Block                   berryCrop;
-    public static Block                   berryLog;
     public static Block                   berryLeaf;
     /** Map of berry id -> block of crop */
     public static Map<Integer, Block>     berryCrops    = new HashMap<Integer, Block>();
@@ -150,7 +149,9 @@ public class BerryManager implements IMoveConstants
     {
         for (Block berryCrop : berryCrops.values())
         {
-            if (berryCrop.getUnlocalizedName().toLowerCase(java.util.Locale.ENGLISH).contains(name.toLowerCase(java.util.Locale.ENGLISH))) return berryCrop;
+            if (berryCrop.getUnlocalizedName().toLowerCase(java.util.Locale.ENGLISH)
+                    .contains(name.toLowerCase(java.util.Locale.ENGLISH)))
+                return berryCrop;
         }
         return null;
     }
@@ -164,15 +165,15 @@ public class BerryManager implements IMoveConstants
     {
         return PokecubeItems.getStack(name);
     }
-    
+
     public static void registerTrees()
     {
         TileEntityBerries.trees.put(3, new GenericGrower(ItemHandler.log0.getDefaultState()
                 .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.PECHA)));
         TileEntityBerries.trees.put(6, new GenericGrower(ItemHandler.log0.getDefaultState()
                 .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.LEPPA)));
-        TileEntityBerries.trees.put(7, new GenericGrower(ItemHandler.log0.getDefaultState()
-                .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.ORAN)));
+        TileEntityBerries.trees.put(7, new GenericGrower(
+                ItemHandler.log0.getDefaultState().withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.ORAN)));
         TileEntityBerries.trees.put(10, new GenericGrower(ItemHandler.log0.getDefaultState()
                 .withProperty(BlockBerryLog.VARIANT0, BlockBerryWood.EnumType.SITRUS)));
         TileEntityBerries.trees.put(60, new GenericGrower(ItemHandler.log1.getDefaultState()

@@ -34,7 +34,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.achievements.AchievementCatch;
@@ -201,9 +200,9 @@ public class Database
         heldDatabases.add(file);
     }
 
-    public static void checkConfigFiles(FMLPreInitializationEvent evt)
+    public static void checkConfigFiles()
     {
-        File file = evt.getSuggestedConfigurationFile();
+        File file = new File("./config/pokecube.cfg");
         String seperator = System.getProperty("file.separator");
         String folder = file.getAbsolutePath();
         String name = file.getName();
@@ -385,9 +384,9 @@ public class Database
         return getEntry(nb) != null && getEntry(nb).getSpawnData() != null;
     }
 
-    public static void init(FMLPreInitializationEvent evt)
+    public static void init()
     {
-        checkConfigFiles(evt);
+        checkConfigFiles();
         for (String s : configDatabases.get(1))
         {
             try

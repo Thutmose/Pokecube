@@ -77,6 +77,8 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.onload.InitDatabase;
+import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData;
 import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
@@ -231,6 +233,37 @@ public class PokecubeCore extends PokecubeMod
     {
         new Tools();
         core = this;
+        MinecraftForge.EVENT_BUS.register(this);
+        File file = new File("./config/", ID + ".cfg");
+        String seperator = System.getProperty("file.separator");
+        String folder = file.getAbsolutePath();
+        String name = file.getName();
+        folder = folder.replace(name, "pokecube" + seperator + name);
+        file = new File(folder);
+        config = new Config(new Configuration(file).getConfigFile());
+    }
+
+    @Deprecated // TODO swap this to proper events for 1.11.2/1.12
+    public void register()
+    {
+        CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
+        CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
+                true);
+        CompatWrapper.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
+                false);
+        CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
+
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
+        // used to register the moves from the spreadsheets
+        PokecubeTerrainChecker.init();
+        MoveAnimationHelper.Instance();
+        Database.init();
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
     }
 
     @Override
@@ -394,15 +427,6 @@ public class PokecubeCore extends PokecubeMod
         PlayerDataHandler.dataMap.add(PokecubePlayerStats.class);
         PlayerDataHandler.dataMap.add(PokecubePlayerCustomData.class);
 
-        CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
-        CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
-                true);
-        CompatWrapper.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
-                false);
-        CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
-
         if (config.villagePokecenters)
             VillagerRegistry.instance().registerVillageCreationHandler(new PokeCentreCreationHandler());
         if (config.villagePokemarts)
@@ -418,7 +442,7 @@ public class PokecubeCore extends PokecubeMod
         {
             System.out.println("Error registering Structures with Vanilla Minecraft");
         }
-        // TODO figure out good spawn weights, Also config for these
+
         if (config.generateFossils) GameRegistry.registerWorldGenerator(new WorldGenFossils(), 10);
         if (config.nests) GameRegistry.registerWorldGenerator(new WorldGenNests(), 10);
         GameRegistry.registerWorldGenerator(new WorldGenTemplates(), 10);
@@ -479,13 +503,9 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     private void preInit(FMLPreInitializationEvent evt)
     {
-        PokecubeTerrainChecker.init();
-        MoveAnimationHelper.Instance();
-        config = new Config(getPokecubeConfig(evt).getConfigFile());
+        register();// TODO remove this for 1.11.2/1.12
 
         helper = new Mod_Pokecube_Helper();
-        // used to register the moves from the spreadsheets
-        Database.init(evt);
 
         System.out.println("Registering Moves");
         MovesAdder.registerMoves();

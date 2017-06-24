@@ -34,6 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.common.Config;
@@ -63,7 +64,7 @@ public class ModPokecubeML implements IMobProvider
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy         proxy;
-    public static File                configDir;
+    public static File                configDir               = new File("./config/");
 
     boolean                           postInit                = false;
 
@@ -73,10 +74,28 @@ public class ModPokecubeML implements IMobProvider
         meta.parent = PokecubeMod.ID;
     }
 
-    @EventHandler
-    public void init(FMLInitializationEvent evt)
+    public ModPokecubeML()
     {
-        proxy.init();
+        MinecraftForge.EVENT_BUS.register(this);
+        File file = new File(configDir, ID + ".cfg");
+        String seperator = System.getProperty("file.separator");
+        String folder = file.getAbsolutePath();
+        String name = file.getName();
+        folder = folder.replace(name, "pokecube" + seperator + name);
+        file = new File(folder);
+        new Config(new Configuration(file).getConfigFile());
+        proxy.registerModelProvider(ID, this);
+    }
+
+    @SubscribeEvent
+    public void RegisterPokemobsEvent(RegisterPokemobsEvent.Pre event)
+    {
+        proxy.searchModels();
+    }
+
+    @SubscribeEvent
+    public void RegisterPokemobsEvent(RegisterPokemobsEvent.Register event)
+    {
         if (info)
         {
             for (PokedexEntry e : Database.allFormes)
@@ -90,11 +109,23 @@ public class ModPokecubeML implements IMobProvider
             loadMob(s.toLowerCase(Locale.ENGLISH));
         }
         ExtraDatabase.apply();
-        System.out.println(addedPokemon.size()+" "+addedPokemon);
+        System.out.println(addedPokemon.size() + " " + addedPokemon);
         for (String s : addedPokemon)
         {
             registerMob(s.toLowerCase(Locale.ENGLISH));
         }
+    }
+
+    @SubscribeEvent
+    public void RegisterPokemobsEvent(RegisterPokemobsEvent.Post event)
+    {
+
+    }
+
+    @EventHandler
+    public void init(FMLInitializationEvent evt)
+    {
+        proxy.init();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
     }
 
@@ -149,13 +180,8 @@ public class ModPokecubeML implements IMobProvider
     @EventHandler
     public void preInit(FMLPreInitializationEvent evt)
     {
-        proxy.registerModelProvider(ID, this);
         proxy.preInit();
         doMetastuff();
-        configDir = evt.getModConfigurationDirectory();
-
-        Configuration config = PokecubeMod.core.getPokecubeConfig(evt);
-        new Config(config.getConfigFile());
 
         try
         {

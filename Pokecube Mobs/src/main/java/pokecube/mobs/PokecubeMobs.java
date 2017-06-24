@@ -73,6 +73,7 @@ public class PokecubeMobs implements IMobProvider
         ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_5/entity/models/");
         ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_6/entity/models/");
         ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_7/entity/models/");
+        ModPokecubeML.proxy.registerModelProvider(MODID, this);
 
         HeldItemHandler.megaVariants.add("absolmega");
         HeldItemHandler.megaVariants.add("aerodactylmega");
@@ -128,7 +129,6 @@ public class PokecubeMobs implements IMobProvider
             new UpdateNotifier();
             MinecraftForge.EVENT_BUS.register(this);
         }
-        ModPokecubeML.proxy.registerModelProvider(MODID, this);
     }
 
     @SideOnly(Side.CLIENT)

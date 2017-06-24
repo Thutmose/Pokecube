@@ -280,6 +280,10 @@ public class CommonProxy implements IGuiHandler
 
     public void init()
     {
+    }
+
+    public void searchModels()
+    {
         ArrayList<String> toAdd = ModPokecubeML.addedPokemon;
         if (toAdd == null)
         {
@@ -406,6 +410,10 @@ public class CommonProxy implements IGuiHandler
         return ret;
     }
 
+    /** This should be called in the constructor of the IMobProvider.
+     * 
+     * @param modid
+     * @param mod */
     public void registerModelProvider(String modid, IMobProvider mod)
     {
         if (!mobProviders.containsKey(modid)) mobProviders.put(modid, mod);

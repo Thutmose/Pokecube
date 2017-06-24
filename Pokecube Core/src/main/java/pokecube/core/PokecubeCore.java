@@ -31,7 +31,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
-import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -54,7 +53,6 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.core.achievements.AchievementCatch;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.healtable.ContainerHealTable;
@@ -545,19 +543,7 @@ public class PokecubeCore extends PokecubeMod
         // Init Packets
         PokecubePacketHandler.init();
         helper.addItems();
-        if (get1stPokemob == null)
-        {
-            System.out.println("REGISTERING ACHIEVEMENT");
-            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"), null));
-            get1stPokemob.registerStat();
-            AchievementList.ACHIEVEMENTS.add(get1stPokemob);
-            achievementPageCatch = new AchievementPage("Pokecube Captures");
-            AchievementPage.registerAchievementPage(achievementPageCatch);
-            achievementPageHatch = new AchievementPage("Pokecube Hatchs");
-            AchievementPage.registerAchievementPage(achievementPageHatch);
-            achievementPageKill = new AchievementPage("Pokecube Kills");
-            AchievementPage.registerAchievementPage(achievementPageKill);
-        }
+        PokecubePlayerStats.initAchievements();
         Reader fileIn = null;
         BufferedReader br;
         String giftLoc = GIFTURL;

@@ -734,7 +734,7 @@ public class PokedexEntry
     @CopyToGender
     public PokedexEntry                         evolvesFrom      = null;
     @CopyToGender
-    protected byte[]                            evs;
+    public byte[]                               evs;
     protected PokedexEntry                      female           = null;
     /** Inital list of species which are prey */
     @CopyToGender

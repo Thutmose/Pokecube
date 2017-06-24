@@ -24,7 +24,8 @@ import pokecube.core.database.Database;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.StarterEvent;
 import pokecube.core.handlers.Config;
-import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
@@ -154,7 +155,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         if (pick.isCanceled()) return;
         items.clear();
         items.addAll(pick.starterPack);
-        player.addStat(PokecubeMod.get1stPokemob, 1);
+        PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class).setHasFirst();
         for (ItemStack e : items)
         {
             if (e == null || e.getItem() == null) continue;

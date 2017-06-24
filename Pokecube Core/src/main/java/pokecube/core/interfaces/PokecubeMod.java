@@ -22,7 +22,6 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraft.stats.Achievement;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -109,16 +108,6 @@ public abstract class PokecubeMod
 
     public static HashMap<Integer, EntityEggInfo>    pokemobEggs                = Maps.newHashMap();
 
-    // Achievements
-    public static Achievement                        get1stPokemob;
-    // public static HashMap<Integer, Achievement> pokemobAchievements;
-
-    public static AchievementPage                    achievementPageCatch;
-    public static AchievementPage                    achievementPageKill;
-    public static AchievementPage                    achievementPageHatch;
-    public static HashMap<PokedexEntry, Achievement> catchAchievements          = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Achievement> hatchAchievements          = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Achievement> killAchievements           = Maps.newHashMap();
     public static final UUID                         fakeUUID                   = new UUID(1234, 4321);
     public static Logger                             logger                     = Logger.getLogger("Pokecube");
     protected static FileHandler                     logHandler                 = null;

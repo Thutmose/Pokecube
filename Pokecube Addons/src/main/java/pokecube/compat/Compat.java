@@ -214,6 +214,8 @@ public class Compat
         {
             initMethods.put(phase, new HashSet<java.lang.reflect.Method>());
         }
+        CompatParser.findClasses(getClass().getPackage().getName(), initMethods);
+        doPhase(Phase.CONSTRUCT, null);
     }
 
     private void doMetastuff()
@@ -259,7 +261,6 @@ public class Compat
         Database.addSpawnData(CUSTOMSPAWNSFILE);
         Database.addDropData(CUSTOMSPAWNSFILE.replace("spawns.xml", "drops.xml"));
         Database.addHeldData(CUSTOMSPAWNSFILE.replace("spawns.xml", "held.xml"));
-        CompatParser.findClasses(getClass().getPackage().getName(), initMethods);
         doPhase(Phase.PRE, evt);
     }
 

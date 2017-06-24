@@ -22,7 +22,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.stats.Achievement;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -414,11 +413,7 @@ public class Commands extends CommandBase
                         has = has || stats.getHatches(player.getUniqueID()).containsKey(prev);
                         if (!has)
                         {
-                            Achievement catc = PokecubeMod.catchAchievements.get(prev);
-                            if (catc != null)
-                            {
-                                player.addStat(catc);
-                            }
+                            stats.addCapture(player.getUniqueID(), entry);
                         }
                     }
                 }

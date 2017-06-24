@@ -1,5 +1,8 @@
 package pokecube.core;
 
+import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
+import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
+
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,10 +34,23 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import pokecube.core.blocks.healtable.BlockHealTable;
+import pokecube.core.blocks.pc.BlockPC;
+import pokecube.core.blocks.pokecubeTable.BlockPokecubeTable;
+import pokecube.core.blocks.repel.BlockRepel;
+import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemFossil;
+import pokecube.core.items.ItemLuckyEgg;
+import pokecube.core.items.ItemPokedex;
+import pokecube.core.items.berries.ItemBerry;
+import pokecube.core.items.megastuff.ItemMegastone;
+import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
+import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
+import pokecube.core.items.revive.ItemRevive;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
 
@@ -93,24 +109,32 @@ public class PokecubeItems extends Items
     public static HashSet<Block>                   grasses        = new HashSet<Block>();
 
     public static Item                             held;
-    public static Item                             luckyEgg;
-    public static Item                             pokemobEgg;
-    public static Item                             pokedex;
+    public static Item                             luckyEgg       = new ItemLuckyEgg().setUnlocalizedName("luckyegg")
+            .setCreativeTab(creativeTabPokecube);
+    public static Item                             pokemobEgg     = new ItemPokemobEgg()
+            .setUnlocalizedName("pokemobegg");
+    public static Item                             pokedex        = (new ItemPokedex()).setUnlocalizedName("pokedex");
     public static Item                             berryJuice;
-    public static Item                             berries;
-    public static Item                             megastone;
-    public static Item                             megaring;
-    public static Item                             fossil;
+    public static Item                             berries        = new ItemBerry()
+            .setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry");
+    public static Item                             megastone      = (new ItemMegastone())
+            .setUnlocalizedName("megastone");
+    public static Item                             megaring       = (new ItemMegawearable())
+            .setUnlocalizedName("megaring");
+    public static Item                             fossil         = new ItemFossil().setRegistryName(PokecubeMod.ID,
+            "fossil");
 
-    public static Item                             revive;
-    public static Block                            pokecenter;
-    public static Block                            repelBlock;
-    public static Block                            tableBlock;
+    public static Item                             revive         = (new ItemRevive()).setUnlocalizedName("revive");
+    public static Block                            pokecenter     = (new BlockHealTable())
+            .setUnlocalizedName("pokecenter").setCreativeTab(creativeTabPokecubeBlocks);
+    public static Block                            repelBlock     = new BlockRepel();
+    public static Block                            tableBlock     = new BlockPokecubeTable();
     public static Block                            pokemobSpawnerBlock;
     public static Block                            pokemobSpawnerBlockTallGrass;
-    public static Block                            pc;
+    public static Block                            pc             = (new BlockPC()).setUnlocalizedName("pc");
 
-    public static Block                            tradingtable;
+    public static Block                            tradingtable   = (new BlockTradingTable())
+            .setUnlocalizedName("tradingtable");
 
     public static boolean                          resetTimeTags  = false;
 

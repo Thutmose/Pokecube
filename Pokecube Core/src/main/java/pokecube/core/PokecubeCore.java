@@ -80,10 +80,10 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.handlers.Config;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerData;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerStats;
 import pokecube.core.handlers.PokedexInspector;
+import pokecube.core.handlers.playerdata.PokecubePlayerCustomData;
+import pokecube.core.handlers.playerdata.PokecubePlayerData;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -244,7 +244,7 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @Deprecated // TODO swap this to proper events for 1.11.2/1.12
-    public void register()
+    public void registerMobs()
     {
         CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
         CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
@@ -256,14 +256,25 @@ public class PokecubeCore extends PokecubeMod
         CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
 
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
-        // used to register the moves from the spreadsheets
         PokecubeTerrainChecker.init();
         MoveAnimationHelper.Instance();
         Database.init();
+        System.out.println("Registering Moves");
+        MovesAdder.registerMoves();
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
+    }
+
+    public void registerItems()
+    {
+
+    }
+
+    public void registerBlocks()
+    {
+
     }
 
     @Override
@@ -503,12 +514,11 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     private void preInit(FMLPreInitializationEvent evt)
     {
-        register();// TODO remove this for 1.11.2/1.12
+        registerMobs();// TODO remove this for 1.11.2/1.12
+        registerItems();
+        registerBlocks();
 
         helper = new Mod_Pokecube_Helper();
-
-        System.out.println("Registering Moves");
-        MovesAdder.registerMoves();
 
         spawner = new SpawnHandler();
         if (!config.defaultMobs.equals(""))

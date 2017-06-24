@@ -16,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.database.Database;
 import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.events.PokedexInspectEvent;
-import pokecube.core.handlers.PokecubePlayerDataHandler.PokecubePlayerCustomData;
+import pokecube.core.handlers.playerdata.PokecubePlayerCustomData;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 

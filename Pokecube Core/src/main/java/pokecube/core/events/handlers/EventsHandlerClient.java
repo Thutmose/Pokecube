@@ -64,10 +64,6 @@ import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
 import pokecube.core.utils.Tools;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
-import thut.api.maths.Vector3;
-import thut.api.terrain.BiomeDatabase;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 import thut.core.client.ClientProxy;
 
 @SideOnly(Side.CLIENT)

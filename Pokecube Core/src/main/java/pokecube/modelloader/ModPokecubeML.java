@@ -84,7 +84,7 @@ public class ModPokecubeML implements IMobProvider
         folder = folder.replace(name, "pokecube" + seperator + name);
         file = new File(folder);
         new Config(new Configuration(file).getConfigFile());
-        proxy.registerModelProvider(ID, this);
+        CommonProxy.registerModelProvider(ID, this);
     }
 
     @SubscribeEvent

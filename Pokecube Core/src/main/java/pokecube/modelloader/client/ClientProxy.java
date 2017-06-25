@@ -278,17 +278,6 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    /** This should be called in the constructor of the IMobProvider.
-     * 
-     * @param modid
-     * @param mod */
-    public void registerModelProvider(String modid, IMobProvider mod)
-    {
-        super.registerModelProvider(modid, mod);
-        if (!modelProviders.containsKey(modid)) modelProviders.put(modid, mod);
-    }
-
-    @Override
     public void registerRenderInformation()
     {
         for (String modid : modelProviders.keySet())

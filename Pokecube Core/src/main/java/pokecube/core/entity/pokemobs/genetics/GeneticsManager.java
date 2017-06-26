@@ -7,7 +7,7 @@ import org.nfunk.jep.JEP;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -355,9 +355,9 @@ public class GeneticsManager
     }
 
     @SubscribeEvent
-    public void attachItemCapability(AttachCapabilitiesEvent<Item> event)
+    public void attachItemCapability(AttachCapabilitiesEvent<ItemStack> event)
     {
-        if (event.getObject() instanceof ItemPokemobEgg && !event.getCapabilities().containsKey(POKECUBEGENETICS))
+        if (event.getObject().getItem() instanceof ItemPokemobEgg && !event.getCapabilities().containsKey(POKECUBEGENETICS))
         {
             event.addCapability(POKECUBEGENETICS, new GeneticsProvider());
         }

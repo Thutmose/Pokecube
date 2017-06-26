@@ -25,7 +25,7 @@ import thut.lib.CompatWrapper;
 
 public class PokeInfo extends PlayerData
 {
-    private static final int      FIELDINDEX = 52;
+    private static final int      FIELDINDEX = 53;
 
     private ItemStack             stack;
     private IPokemob              pokemob;

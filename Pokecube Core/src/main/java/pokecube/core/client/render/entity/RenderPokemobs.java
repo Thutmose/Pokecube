@@ -3,6 +3,9 @@ package pokecube.core.client.render.entity;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
@@ -19,6 +22,8 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.EntityTools;
+import pokecube.modelloader.ModPokecubeML;
+import pokecube.modelloader.client.ClientProxy;
 
 @SuppressWarnings("rawtypes")
 public class RenderPokemobs extends RenderPokemob
@@ -27,6 +32,7 @@ public class RenderPokemobs extends RenderPokemob
     private static Map<String, ModelBase> models       = new HashMap<String, ModelBase>();
     private static Map<String, ModelBase> statusModels = new HashMap<String, ModelBase>();
     public static Map<String, Render>     renderMap    = new HashMap<String, Render>();
+    private static Set<PokedexEntry>      loaded       = Sets.newHashSet();
 
     private static RenderPokemobs         instance;
 
@@ -158,6 +164,19 @@ public class RenderPokemobs extends RenderPokemob
                 if (this.mainModel == null)
                 {
                     GlStateManager.popMatrix();
+                    if (!loaded.contains(entry))
+                    {
+                        loaded.add(entry);
+                        if (entry.getBaseForme() != null)
+                        {
+                            entry = entry.getBaseForme();
+                        }
+                        ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
+                        for (PokedexEntry e : entry.forms.values())
+                        {
+                            ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
+                        }
+                    }
                     return;
                 }
                 super.doRender(entity, x, y, z, yaw, partialTick);

@@ -15,7 +15,6 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
@@ -30,15 +29,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.common.Config;
 import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
@@ -67,8 +63,6 @@ public class ModPokecubeML implements IMobProvider
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy         proxy;
     public static File                configDir               = new File("./config/");
-
-    boolean                           postInit                = false;
 
     private void doMetastuff()
     {
@@ -159,20 +153,10 @@ public class ModPokecubeML implements IMobProvider
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void loadModels(ModelBakeEvent e)
-    {
-        if (!postInit) return;
-        System.out.println("Loading Pokemob Models");
-        AnimationLoader.load();
-    }
-
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
         proxy.postInit();
-        postInit = true;
     }
 
     /** This function is called by Forge at initialization.

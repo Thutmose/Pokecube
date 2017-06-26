@@ -480,18 +480,38 @@ public class PokecubeCore extends PokecubeMod
     private void registerItems(FMLPreInitializationEvent evt)
     {
         helper.itemRegistry(evt);
+        proxy.initItemModels();
     }
 
     @EventHandler
     private void registerBlocks(FMLPreInitializationEvent evt)
     {
         helper.blockRegistry(evt);
+        proxy.initBlockModels();
     }
 
     @EventHandler
     private void registerTiles(FMLPreInitializationEvent evt)
     {
         helper.tileRegistry(evt);
+    }
+
+    @EventHandler
+    public void registerDatabase(FMLPreInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
+        PokecubeTerrainChecker.init();
+        MoveAnimationHelper.Instance();
+        Database.init();
+        System.out.println("Registering Moves");
+        MovesAdder.registerMoves();
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
+    }
+
+    @EventHandler
+    public void registerSounds(FMLPostInitializationEvent evt)
+    {
+        Database.initSounds(evt);
     }
 
     // TODO swap this to proper events for 1.11.2/1.12
@@ -506,14 +526,6 @@ public class PokecubeCore extends PokecubeMod
                 false);
         CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
         CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
-
-        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
-        PokecubeTerrainChecker.init();
-        MoveAnimationHelper.Instance();
-        Database.init();
-        System.out.println("Registering Moves");
-        MovesAdder.registerMoves();
-        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());

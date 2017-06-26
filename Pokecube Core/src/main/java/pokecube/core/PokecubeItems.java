@@ -3,7 +3,6 @@ package pokecube.core;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +16,6 @@ import java.util.regex.Pattern;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.ObjectArrays;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
@@ -29,12 +27,13 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
+import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.pc.BlockPC;
 import pokecube.core.blocks.pokecubeTable.BlockPokecubeTable;
 import pokecube.core.blocks.repel.BlockRepel;
@@ -131,12 +130,14 @@ public class PokecubeItems extends Items
             .setUnlocalizedName("pokecenter").setCreativeTab(creativeTabPokecubeBlocks);
     public static Block                            repelBlock     = new BlockRepel();
     public static Block                            tableBlock     = new BlockPokecubeTable();
-    public static Block                            pokemobSpawnerBlock;
-    public static Block                            pokemobSpawnerBlockTallGrass;
+    public static Block                            nest           = new BlockNest()
+            .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks).setUnlocalizedName("pokemobnest");
     public static Block                            pc             = (new BlockPC()).setUnlocalizedName("pc");
 
     public static Block                            tradingtable   = (new BlockTradingTable())
             .setUnlocalizedName("tradingtable");
+    public static Block                            fossilStone    = (new BlockFossilStone()).setHardness(3F)
+            .setResistance(4F).setUnlocalizedName("fossilstone").setRegistryName(PokecubeMod.ID, "fossilstone");
 
     public static boolean                          resetTimeTags  = false;
 
@@ -628,95 +629,20 @@ public class PokecubeItems extends Items
         }
     }
 
-    /** Sets the name of the block to the unlocalized name, minus "tile.", and
-     * uses the given ItemBlock class.
-     * 
-     * @param o
-     * @param clazz */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void register(Block o, Class clazz, Object registry)
-    {
-        register(o, clazz, o.getUnlocalizedName().substring(5), registry);
-    }
-
-    /** Sets the name to the unlocalized name, minus the "tile." or "item.",
-     * uses generic ItemBlock.class for blocks
-     * 
-     * @param o */
     public static void register(Object o, Object registry)
     {
-        if (o instanceof Block)
-        {
-            if (((Block) o).getRegistryName() != null)
-            {
-                GameRegistry.register((Block) o);
-                addGeneric(((Block) o).getRegistryName().getResourceDomain(), o);
-            }
-            else
-            {
-                register(o, ((Block) o).getUnlocalizedName().substring(5), registry);
-            }
-        }
+        String name = null;
         if (o instanceof Item)
         {
-            if (((Item) o).getRegistryName() != null)
-            {
-                GameRegistry.register((Item) o);
-                addGeneric(((Item) o).getRegistryName().getResourceDomain(), o);
-            }
-            else
-            {
-                register(o, ((Item) o).getUnlocalizedName().substring(5), registry);
-            }
-        }
-    }
-
-    /** registers the item or block, clazz can be null, if it isn't it should be
-     * an itemblock class. if name is null, it registers name as the unlocalised
-     * name.
-     * 
-     * @param o
-     * @param name
-     * @param clazz */
-    public static void register(Object o, Class<? extends ItemBlock> clazz, String name, Object registry)
-    {
-        if (o instanceof Item)
-        {
-            if (((Item) o).getRegistryName() == null) ((Item) o).setRegistryName(name);
             GameRegistry.register((Item) o);
+            name = ((Item) o).getRegistryName().getResourcePath();
         }
-        if (o instanceof Block)
+        else if (o instanceof Block)
         {
-            Block block = (Block) o;
-            if (clazz != null)
-            {
-                ItemBlock i = null;
-                Class<?>[] ctorArgClasses = new Class<?>[1];
-                ctorArgClasses[0] = Block.class;
-                try
-                {
-                    Constructor<? extends ItemBlock> itemCtor = clazz.getConstructor(ctorArgClasses);
-                    i = itemCtor.newInstance(ObjectArrays.concat(block, new Object[0]));
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
-                // block registration has to happen first
-                GameRegistry.register(block.getRegistryName() == null ? block.setRegistryName(name) : block);
-                if (i != null) GameRegistry.register(i.setRegistryName(name));
-            }
+            GameRegistry.register((Block) o);
+            name = ((Block) o).getRegistryName().getResourcePath();
         }
-        addGeneric(name, o);
-    }
-
-    /** Registers as above, assigns the itemblock as null.
-     * 
-     * @param o
-     * @param name */
-    public static void register(Object o, String name, Object registry)
-    {
-        register(o, ItemBlock.class, name, registry);
+        if (name != null) addGeneric(name, o);
     }
 
     public static void registerFossil(ItemStack fossil, int number)

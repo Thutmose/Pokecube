@@ -45,7 +45,6 @@ import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.ItemBlockMeta;
 import pokecube.core.blocks.berries.TileEntityBerries;
-import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.blocks.nests.TileEntityNest;
@@ -83,14 +82,16 @@ public class ItemHandler extends Mod_Pokecube_Helper
     {
         BlockBerryLog.currentlyConstructing = 0;
     }
-    public static Block log0   = new BlockBerryLog(0, names1).setHardness(2.0F).setUnlocalizedName("log0");
+    public static Block log0   = new BlockBerryLog(0, names1).setHardness(2.0F).setUnlocalizedName("log0")
+            .setRegistryName(PokecubeMod.ID, "log0");
     public static Block plank0 = new BlockBerryWood(0, names1).setHardness(2.0F).setResistance(5.0F)
-            .setUnlocalizedName("wood0");
+            .setUnlocalizedName("wood0").setRegistryName(PokecubeMod.ID, "wood0");
     static
     {
         BlockBerryLog.currentlyConstructing = 4;
     }
-    public static Block log1 = new BlockBerryLog(4, names).setHardness(2.0F).setUnlocalizedName("log1");
+    public static Block log1 = new BlockBerryLog(4, names).setHardness(2.0F).setUnlocalizedName("log1")
+            .setRegistryName(PokecubeMod.ID, "log1");
 
     public static void initBerries()
     {
@@ -128,18 +129,18 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addBerryBlocks(Object registry)
     {
-        BerryManager.berryCrop = new BlockBerryCrop().setRegistryName("pokecube", "berrycrop")
+        BerryManager.berryCrop = new BlockBerryCrop().setRegistryName(PokecubeMod.ID, "berrycrop")
                 .setUnlocalizedName("berrycrop");
         register(BerryManager.berryCrop, registry);
-        BerryManager.berryFruit = new BlockBerryFruit().setRegistryName("pokecube", "berryfruit")
+        BerryManager.berryFruit = new BlockBerryFruit().setRegistryName(PokecubeMod.ID, "berryfruit")
                 .setUnlocalizedName("berryfruit");
         register(BerryManager.berryFruit, registry);
-        BerryManager.berryLeaf = new BlockBerryLeaf().setRegistryName("pokecube", "berryleaf")
+        BerryManager.berryLeaf = new BlockBerryLeaf().setRegistryName(PokecubeMod.ID, "berryleaf")
                 .setUnlocalizedName("berryleaf");
         register(BerryManager.berryLeaf, registry);
-        register(log0, ItemBlockMeta.class, "pokecube_log0");
-        register(plank0, ItemBlockMeta.class, "pokecube_plank0");
-        register(log1, ItemBlockMeta.class, "pokecube_log1");
+        register(log0, registry);// ItemBlockMeta.class
+        register(plank0, registry);// ItemBlockMeta.class
+        register(log1, registry);// ItemBlockMeta.class
         for (int i = 0; i < 4; i++)
             GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i), new ItemStack(log0, 1, i));
         for (int i = 0; i < 2; i++)
@@ -157,7 +158,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addBerryItems(Object registry)
     {
-        register(berries, "berry");
+        berries.setRegistryName(PokecubeMod.ID, "berry");
+        register(berries, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             registerItemTexture(PokecubeItems.berries, 0, new ModelResourceLocation("pokecube:berry", "inventory"));
@@ -166,13 +168,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addFossilBlocks(Object registry)
     {
-        Block fossilStone = (new BlockFossilStone()).setHardness(3F).setResistance(4F)
-                .setUnlocalizedName("fossilstone");
-        PokecubeItems.register(fossilStone, "fossilstone", registry);
-        fossilStone.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(Item.getItemFromBlock(fossilStone), 0,
-                    new ModelResourceLocation("pokecube:fossilstone", "inventory"));
+        PokecubeItems.register(PokecubeItems.fossilStone, registry);
+        PokecubeItems.fossilStone.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
     }
 
     private static void addFossilItems(Object registry)
@@ -190,19 +187,18 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addMiscBlocks(Object registry)
     {
-        CompatWrapper.registerTileEntity(TileEntityRepel.class, "repel");
-        repelBlock.setUnlocalizedName("repel");
+        repelBlock.setUnlocalizedName("repel").setRegistryName(PokecubeMod.ID, "repel");
         repelBlock.setCreativeTab(creativeTabPokecubeBerries);
-        register(repelBlock, ItemBlock.class, "repel", registry);
+        register(repelBlock, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(Item.getItemFromBlock(repelBlock), 0,
                     new ModelResourceLocation("pokecube:repel", "inventory"));
 
-        tableBlock.setUnlocalizedName("pokecube_table");
+        tableBlock.setUnlocalizedName("pokecube_table").setRegistryName(PokecubeMod.ID, "pokecube_table");
         tableBlock.setCreativeTab(creativeTabPokecubeBlocks);
-        register(tableBlock, ItemBlock.class, "pokecube_table", registry);
-
-        register(PokecubeItems.pokecenter, ItemBlock.class, "pokecenter", registry);
+        register(tableBlock, registry);
+        PokecubeItems.pokecenter.setRegistryName(PokecubeMod.ID, "pokecenter");
+        register(PokecubeItems.pokecenter, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             registerItemTexture(Item.getItemFromBlock(PokecubeItems.pokecenter), 0,
@@ -211,9 +207,9 @@ public class ItemHandler extends Mod_Pokecube_Helper
                     new ModelResourceLocation("pokecube:pokecenter", "inventory"));
         }
 
-        Block nest = new BlockNest().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
-                .setUnlocalizedName("pokemobnest");
-        PokecubeItems.register(nest, ItemBlockMeta.class, "pokemobnest", registry);
+        Block nest = PokecubeItems.nest;
+        nest.setRegistryName(PokecubeMod.ID, "pokemobnest");
+        register(nest, registry);// ItemBlockMeta.class
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             for (int i = 0; i < BlockNest.types.size(); i++)
@@ -222,13 +218,61 @@ public class ItemHandler extends Mod_Pokecube_Helper
         }
 
         tradingtable.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(tradingtable, ItemBlockTradingTable.class, "tradingtable", registry);
+        tradingtable.setRegistryName(PokecubeMod.ID, "tradingtable");
+        register(tradingtable, registry);// ItemBlockTradingTable.class
         PokecubeItems.addSpecificItemStack("tmtable", new ItemStack(tradingtable, 1, 8));
 
         pc.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-        PokecubeItems.register(pc, ItemBlockPC.class, "pc", registry);
+        pc.setRegistryName(PokecubeMod.ID, "pc");
+        register(pc, registry);// ItemBlockPC.class
         PokecubeItems.addSpecificItemStack("pctop", new ItemStack(pc, 1, 8));
         PokecubeItems.addSpecificItemStack("pcbase", new ItemStack(pc, 1, 0));
+    }
+
+    private static void registerItemBlocks(Object registry)
+    {
+        ItemBlock item = new ItemBlockPC(pc);
+        item.setRegistryName(PokecubeMod.ID, "pc");
+        register(item, registry);
+
+        item = new ItemBlockTradingTable(tradingtable);
+        item.setRegistryName(PokecubeMod.ID, "tradingtable");
+        register(item, registry);
+
+        item = new ItemBlockMeta(PokecubeItems.nest);
+        item.setRegistryName(PokecubeMod.ID, "pokemobnest");
+        register(item, registry);
+
+        item = new ItemBlockMeta(log0);
+        item.setRegistryName(PokecubeMod.ID, "log0");
+        register(item, registry);
+
+        item = new ItemBlockMeta(plank0);
+        item.setRegistryName(PokecubeMod.ID, "wood0");
+        register(item, registry);
+
+        item = new ItemBlockMeta(log1);
+        item.setRegistryName(PokecubeMod.ID, "log1");
+        register(item, registry);
+
+        item = new ItemBlock(tableBlock);
+        item.setRegistryName(PokecubeMod.ID, "pokecube_table");
+        register(item, registry);
+
+        item = new ItemBlock(repelBlock);
+        item.setRegistryName(PokecubeMod.ID, "repel");
+        register(item, registry);
+
+        item = new ItemBlock(PokecubeItems.pokecenter);
+        item.setRegistryName(PokecubeMod.ID, "pokecenter");
+        register(item, registry);
+
+        item = new ItemBlock(PokecubeItems.fossilStone);
+        item.setRegistryName(PokecubeItems.fossilStone.getRegistryName());
+        register(item, registry);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            registerItemTexture(Item.getItemFromBlock(PokecubeItems.fossilStone), 0,
+                    new ModelResourceLocation("pokecube:fossilstone", "inventory"));
     }
 
     private static void addMiscTiles(Object registry)
@@ -239,28 +283,30 @@ public class ItemHandler extends Mod_Pokecube_Helper
         CompatWrapper.registerTileEntity(TileEntityBasePortal.class, "pokecubebaseportal");
         CompatWrapper.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");
         CompatWrapper.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
+        CompatWrapper.registerTileEntity(TileEntityRepel.class, "repel");
     }
 
     private static void addMiscItems(Object registry)
     {
-        register(luckyEgg, "luckyegg", registry);
+        luckyEgg.setRegistryName(PokecubeMod.ID, "luckyegg");
+        register(luckyEgg, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(luckyEgg, 0, new ModelResourceLocation("egg", "inventory"));
         addToHoldables("luckyegg");
 
-        register(pokemobEgg, "pokemobegg", registry);
+        register(pokemobEgg.setRegistryName(PokecubeMod.ID, "pokemobegg"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokemobEgg, 0, new ModelResourceLocation("pokecube:pokemobegg", "inventory"));
         OreDictionary.registerOre("egg", new ItemStack(pokemobEgg, 1, OreDictionary.WILDCARD_VALUE));
         BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(pokemobEgg, new DispenserBehaviorPokecube());
 
         pokedex.setCreativeTab(creativeTabPokecube);
-        register(pokedex, "pokedex", registry);
+        register(pokedex.setRegistryName(PokecubeMod.ID, "pokedex"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT) for (int i = 0; i < 10; i++)
             registerItemTexture(pokedex, i, new ModelResourceLocation("pokecube:pokedex", "inventory"));
 
         megaring.setCreativeTab(creativeTabPokecube);
-        register(megaring, "megaring", registry);
+        register(megaring.setRegistryName(PokecubeMod.ID, "megaring"), registry);
         for (String s : ItemMegawearable.wearables.keySet())
         {
             ItemStack stack = new ItemStack(PokecubeItems.megaring);
@@ -270,7 +316,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
         }
 
         megastone.setCreativeTab(creativeTabPokecube);
-        register(megastone, "megastone", registry);
+        register(megastone.setRegistryName(PokecubeMod.ID, "megastone"), registry);
         for (int n = 0; n < HeldItemHandler.megaVariants.size(); n++)
         {
             String s = HeldItemHandler.megaVariants.get(n);
@@ -282,14 +328,14 @@ public class ItemHandler extends Mod_Pokecube_Helper
         }
 
         revive.setCreativeTab(creativeTabPokecube);
-        register(revive, "revive", registry);
+        register(revive.setRegistryName(PokecubeMod.ID, "revive"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(revive, 0, new ModelResourceLocation("pokecube:revive", "inventory"));
         addToHoldables("revive");
 
         Item tm = PokecubeItems.tm;
         tm.setCreativeTab(creativeTabPokecube);
-        register(tm, "tm", registry);
+        register(tm.setRegistryName(PokecubeMod.ID, "tm"), registry);
         addSpecificItemStack("rarecandy", new ItemStack(tm, 1, 20));
         addSpecificItemStack("emerald_shard", new ItemStack(tm, 1, 19));
     }
@@ -315,114 +361,32 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addVitamins(evt);
         addFossilItems(evt);
         addMiscItems(evt);
+        registerItemBlocks(evt);
     }
 
     private static void addPokecubes(Object registry)
     {
-        Pokecube pokecube = new Pokecube();
-        pokecube.setUnlocalizedName("pokecube").setCreativeTab(creativeTabPokecubes);
-        register(pokecube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(pokecube, 0, new ModelResourceLocation("pokecube:pokecube", "inventory"));
+        String[] cubes = { "poke", "great", "ultra", "master", "snag", "dusk", "quick", "timer", "net", "nest", "dive",
+                "repeat", "premier", "cherish" };
+        int[] indecies = { 0, 1, 2, 3, 99, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
 
-        Pokecube greatcube = new Pokecube();
-        greatcube.setUnlocalizedName("greatcube").setCreativeTab(creativeTabPokecubes);
-        register(greatcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(greatcube, 0, new ModelResourceLocation("pokecube:greatcube", "inventory"));
+        for (int i = 0; i < cubes.length; i++)
+        {
+            String name = cubes[i];
+            int index = indecies[i];
+            Pokecube cube = new Pokecube();
+            cube.setUnlocalizedName(name + "cube").setCreativeTab(creativeTabPokecubes);
+            register(cube.setRegistryName(PokecubeMod.ID, name + "cube"), registry);
+            if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+                registerItemTexture(cube, 0, new ModelResourceLocation("pokecube:" + name + "cube", "inventory"));
+            PokecubeItems.addCube(index, new Object[] { cube });
 
-        Pokecube ultracube = new Pokecube();
-        ultracube.setUnlocalizedName("ultracube").setCreativeTab(creativeTabPokecubes);
-        register(ultracube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(ultracube, 0, new ModelResourceLocation("pokecube:ultracube", "inventory"));
-
-        Pokecube mastercube = new Pokecube();
-        mastercube.setUnlocalizedName("mastercube").setCreativeTab(creativeTabPokecubes);
-        register(mastercube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(mastercube, 0, new ModelResourceLocation("pokecube:mastercube", "inventory"));
-
-        Pokecube snagcube = new Pokecube();
-        snagcube.setUnlocalizedName("snagcube").setCreativeTab(creativeTabPokecubes);
-        register(snagcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(snagcube, 0, new ModelResourceLocation("pokecube:snagcube", "inventory"));
-
-        Pokecube duskcube = new Pokecube();
-        duskcube.setUnlocalizedName("duskcube").setCreativeTab(creativeTabPokecubes);
-        register(duskcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(duskcube, 0, new ModelResourceLocation("pokecube:duskcube", "inventory"));
-
-        Pokecube quickcube = new Pokecube();
-        quickcube.setUnlocalizedName("quickcube").setCreativeTab(creativeTabPokecubes);
-        register(quickcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(quickcube, 0, new ModelResourceLocation("pokecube:quickcube", "inventory"));
-
-        Pokecube timercube = new Pokecube();
-        timercube.setUnlocalizedName("timercube").setCreativeTab(creativeTabPokecubes);
-        register(timercube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(timercube, 0, new ModelResourceLocation("pokecube:timercube", "inventory"));
-
-        Pokecube netcube = new Pokecube();
-        netcube.setUnlocalizedName("netcube").setCreativeTab(creativeTabPokecubes);
-        register(netcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(netcube, 0, new ModelResourceLocation("pokecube:netcube", "inventory"));
-
-        Pokecube nestcube = new Pokecube();
-        nestcube.setUnlocalizedName("nestcube").setCreativeTab(creativeTabPokecubes);
-        register(nestcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(nestcube, 0, new ModelResourceLocation("pokecube:nestcube", "inventory"));
-
-        Pokecube divecube = new Pokecube();
-        divecube.setUnlocalizedName("divecube").setCreativeTab(creativeTabPokecubes);
-        register(divecube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(divecube, 0, new ModelResourceLocation("pokecube:divecube", "inventory"));
-
-        Pokecube repeatcube = new Pokecube();
-        repeatcube.setUnlocalizedName("repeatcube").setCreativeTab(creativeTabPokecubes);
-        register(repeatcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(repeatcube, 0, new ModelResourceLocation("pokecube:repeatcube", "inventory"));
-
-        Pokecube premiercube = new Pokecube();
-        premiercube.setUnlocalizedName("premiercube").setCreativeTab(creativeTabPokecubes);
-        register(premiercube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(premiercube, 0, new ModelResourceLocation("pokecube:premiercube", "inventory"));
-
-        Pokecube cherishcube = new Pokecube();
-        cherishcube.setUnlocalizedName("cherishcube").setCreativeTab(creativeTabPokecubes);
-        register(cherishcube, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(cherishcube, 0, new ModelResourceLocation("pokecube:cherishcube", "inventory"));
-
+        }
         Pokecube pokeseal = new Pokecube();
         pokeseal.setUnlocalizedName("pokeseal").setCreativeTab(creativeTabPokecubes);
-        register(pokeseal, registry);
+        register(pokeseal.setRegistryName(PokecubeMod.ID, "pokeseal"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokeseal, 0, new ModelResourceLocation("pokecube:pokeseal", "inventory"));
-
-        PokecubeItems.addCube(0, new Object[] { pokecube });
-        PokecubeItems.addCube(1, new Object[] { greatcube });
-        PokecubeItems.addCube(2, new Object[] { ultracube });
-        PokecubeItems.addCube(3, new Object[] { mastercube });
-        PokecubeItems.addCube(99, new Object[] { snagcube });
-        PokecubeItems.addCube(5, new Object[] { duskcube });
-        PokecubeItems.addCube(6, new Object[] { quickcube });
-        PokecubeItems.addCube(7, new Object[] { timercube });
-        PokecubeItems.addCube(8, new Object[] { netcube });
-        PokecubeItems.addCube(9, new Object[] { nestcube });
-        PokecubeItems.addCube(10, new Object[] { divecube });
-        PokecubeItems.addCube(11, new Object[] { repeatcube });
-        PokecubeItems.addCube(12, new Object[] { premiercube });
-        PokecubeItems.addCube(13, new Object[] { cherishcube });
         PokecubeItems.addCube(-2, new Object[] { pokeseal });
 
         PokecubeBehavior snag = new PokecubeBehavior()
@@ -527,7 +491,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
         berryJuice = (new ItemPokemobUseableFood(6, 0.6f, false)).setUnlocalizedName("berryjuice");
         berryJuice.setCreativeTab(creativeTabPokecube);
-        register(berryJuice, "berryjuice", registry);
+        register(berryJuice.setRegistryName(PokecubeMod.ID, "berryjuice"), registry);
         PokecubeItems.addToHoldables("berryjuice");
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(berryJuice, 0, new ModelResourceLocation("pokecube:berryjuice", "inventory"));
@@ -537,7 +501,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
     {
         Item vitamins = (new ItemVitamin()).setUnlocalizedName("vitamins");
         vitamins.setCreativeTab(creativeTabPokecube);
-        register(vitamins, "vitamins", registry);
+        register(vitamins.setRegistryName(PokecubeMod.ID, "vitamins"), registry);
 
         for (String s : ItemVitamin.vitamins)
         {

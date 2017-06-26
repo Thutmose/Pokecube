@@ -132,6 +132,16 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     {
         return false;
     }
+    
+    public void initItemModels()
+    {
+        
+    }
+    
+    public void initBlockModels()
+    {
+        
+    }
 
     public void preInit(FMLPreInitializationEvent evt)
     {

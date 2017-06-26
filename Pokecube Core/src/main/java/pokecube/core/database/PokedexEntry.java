@@ -33,9 +33,6 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
@@ -1393,13 +1390,6 @@ public class PokedexEntry
             {
                 event = getBaseForme().getSoundEvent();
                 sound = getBaseForme().sound;
-            }
-            else
-            {
-                if (sound == null) setSound("mobs." + getName());
-                event = new SoundEvent(sound);
-                ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, event, sound, "registryName");
-                GameRegistry.register(event);
             }
         }
         return event;

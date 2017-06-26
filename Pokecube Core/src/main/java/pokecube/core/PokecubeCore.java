@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.util.ResourceLocation;
@@ -31,6 +33,7 @@ import net.minecraftforge.common.ForgeChunkManager.LoadingCallback;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -44,6 +47,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
@@ -470,24 +474,26 @@ public class PokecubeCore extends PokecubeMod
                 + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }
 
-    @EventHandler
-    private void registerItems(FMLPreInitializationEvent evt)
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> evt)
     {
-        helper.itemRegistry(evt);
+        helper.itemRegistry(evt.getRegistry());
         proxy.initItemModels();
     }
 
-    @EventHandler
-    private void registerBlocks(FMLPreInitializationEvent evt)
+    @SubscribeEvent
+    public void registerBlocks(RegistryEvent.Register<Block> evt)
     {
-        helper.blockRegistry(evt);
+        helper.blockRegistry(evt.getRegistry());
         proxy.initBlockModels();
     }
 
-    @EventHandler
-    private void registerTiles(FMLPreInitializationEvent evt)
+    @SubscribeEvent
+    public void registerTiles(RegistryEvent.Register<Block> evt)// TODO move to
+                                                                // tile entity
+                                                                // if it exists.
     {
-        helper.tileRegistry(evt);
+        helper.tileRegistry(evt.getRegistry());
     }
 
     public void registerDatabase(FMLPreInitializationEvent evt)

@@ -4,13 +4,16 @@ import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,6 +52,11 @@ public class PokePlayer
             .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks).setUnlocalizedName("poketransformer")
             .setRegistryName(ID, "poketransformer");
 
+    public PokePlayer()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
@@ -72,26 +80,26 @@ public class PokePlayer
                 .setEntityProvider(new EntityProviderPokeplayer((EntityProvider) PokecubeMod.core.getEntityProvider()));
     }
 
-    @EventHandler
-    public void registerBlocks(FMLPreInitializationEvent e)
+    @SubscribeEvent
+    public void registerBlocks(RegistryEvent.Register<Block> evt)
     {
-        Object registry = null;
-        PokecubeItems.register(transformer, registry);
+        PokecubeItems.register(transformer, evt.getRegistry());
     }
 
-    @EventHandler
-    public void registerItems(FMLPreInitializationEvent e)
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> evt)
     {
-        Object registry = null;
+        Object registry = evt.getRegistry();
         PokecubeItems.register(new ItemBlock(transformer).setRegistryName(transformer.getRegistryName()), registry);
-        if (e.getSide() == Side.CLIENT)
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(Item.getItemFromBlock(transformer), 0,
                     new ModelResourceLocation("pokeplayer:poketransformer", "inventory"));
         }
     }
 
-    public void registerTiles(FMLPreInitializationEvent e)
+    @SubscribeEvent
+    public void registerTiles(RegistryEvent.Register<Block> evt)
     {
         GameRegistry.registerTileEntity(TileEntityTransformer.class, "poketransformer");
     }

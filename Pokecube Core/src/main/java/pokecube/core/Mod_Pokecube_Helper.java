@@ -22,7 +22,8 @@ import com.google.common.base.Predicate;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
@@ -103,19 +104,19 @@ public class Mod_Pokecube_Helper
         ItemHandler.initBerries();
     }
 
-    public void itemRegistry(FMLPreInitializationEvent evt)
+    public void itemRegistry(IForgeRegistry<Item> iForgeRegistry)
     {
-        ItemHandler.registerItems(evt);
+        ItemHandler.registerItems(iForgeRegistry);
     }
 
-    public void blockRegistry(FMLPreInitializationEvent evt)
+    public void blockRegistry(IForgeRegistry<Block> iForgeRegistry)
     {
-        ItemHandler.registerBlocks(evt);
+        ItemHandler.registerBlocks(iForgeRegistry);
     }
 
-    public void tileRegistry(FMLPreInitializationEvent evt)
+    public void tileRegistry(IForgeRegistry<Block> iForgeRegistry)
     {
-        ItemHandler.registerTiles(evt);
+        ItemHandler.registerTiles(iForgeRegistry);
     }
 
     public void addVillagerTrades()

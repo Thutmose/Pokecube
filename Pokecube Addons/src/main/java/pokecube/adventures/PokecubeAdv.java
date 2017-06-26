@@ -2,10 +2,13 @@ package pokecube.adventures;
 
 import java.io.File;
 
+import net.minecraft.block.Block;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -95,6 +98,11 @@ public class PokecubeAdv
         return;
     }
 
+    public PokecubeAdv()
+    {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
     @EventHandler
     public void load(FMLInitializationEvent evt)
     {
@@ -155,30 +163,29 @@ public class PokecubeAdv
         tesla = Loader.isModLoaded("tesla");
         DBLoader.preInit(e);
         setTrainerConfig(e);
-        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ItemHandler());
         proxy.preinit();
         RecipeHandler.preInit();
     }
 
-    @EventHandler
-    public void registerItems(FMLPreInitializationEvent e)
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> evt)
     {
-        ItemHandler.registerItems(e);
+        ItemHandler.registerItems(evt.getRegistry());
         proxy.initItemModels();
     }
 
-    @EventHandler
-    public void registerBlocks(FMLPreInitializationEvent e)
+    @SubscribeEvent
+    public void registerBlocks(RegistryEvent.Register<Block> evt)
     {
-        BlockHandler.registerBlocks(e);
+        BlockHandler.registerBlocks(evt.getRegistry());
         proxy.initBlockModels();
     }
 
-    @EventHandler
-    public void registerTiles(FMLPreInitializationEvent e)
+    @SubscribeEvent
+    public void registerTiles(RegistryEvent.Register<Block> evt)
     {
-        BlockHandler.registerTiles(e);
+        BlockHandler.registerTiles(evt.getRegistry());
     }
 
     @EventHandler

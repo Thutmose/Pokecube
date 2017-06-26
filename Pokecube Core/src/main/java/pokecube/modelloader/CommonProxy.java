@@ -414,9 +414,13 @@ public class CommonProxy implements IGuiHandler
      * 
      * @param modid
      * @param mod */
-    public void registerModelProvider(String modid, IMobProvider mod)
+    public static void registerModelProvider(String modid, IMobProvider mod)
     {
-        if (!mobProviders.containsKey(modid)) mobProviders.put(modid, mod);
+        modelProviders.put(modid, mod);
+        if (!mobProviders.containsKey(modid))
+        {
+            mobProviders.put(modid, mod);
+        }
     }
 
     /** Client side only register stuff... */

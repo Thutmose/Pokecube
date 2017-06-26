@@ -23,6 +23,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.render.ModelWrapperEvent;
@@ -73,7 +74,7 @@ public class PokecubeMobs implements IMobProvider
         ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_5/entity/models/");
         ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_6/entity/models/");
         ModPokecubeML.scanPaths.add("assets/pokecube_mobs/gen_7/entity/models/");
-        ModPokecubeML.proxy.registerModelProvider(MODID, this);
+        CommonProxy.registerModelProvider(MODID, this);
 
         HeldItemHandler.megaVariants.add("absolmega");
         HeldItemHandler.megaVariants.add("aerodactylmega");

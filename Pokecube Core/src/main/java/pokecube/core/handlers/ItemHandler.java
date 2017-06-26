@@ -266,14 +266,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(Item.getItemFromBlock(PokecubeItems.fossilStone), 0,
                     new ModelResourceLocation("pokecube:fossilstone", "inventory"));
-        
-        OreDictionary.registerOre("logWood", new ItemStack(log0, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("logWood", new ItemStack(log1, 1, OreDictionary.WILDCARD_VALUE));
-        OreDictionary.registerOre("plankWood", new ItemStack(plank0, 1, OreDictionary.WILDCARD_VALUE));
-        for (int i = 0; i < 4; i++)
-            GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i), new ItemStack(log0, 1, i));
-        for (int i = 0; i < 2; i++)
-            GameRegistry.addShapelessRecipe(new ItemStack(plank0, 4, i + 4), new ItemStack(log1, 1, i));
     }
 
     private static void addMiscTiles(Object registry)

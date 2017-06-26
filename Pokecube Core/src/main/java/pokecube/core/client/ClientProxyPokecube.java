@@ -365,7 +365,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             }
         });
 
-        Item tm = PokecubeItems.getItem("tm");
+        Item tm = PokecubeItems.tm;
 
         for (int i = 0; i < 19; i++)
         {

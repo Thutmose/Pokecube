@@ -194,9 +194,14 @@ public class ModPokecubeML implements IMobProvider
         {
         }
 
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @EventHandler
+    public void registerItems(FMLPreInitializationEvent evt)
+    {
         GameRegistry.register(new ItemModelReloader().setUnlocalizedName("modelreloader")
                 .setRegistryName(ID, "modelreloader").setCreativeTab(PokecubeMod.creativeTabPokecube));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void processResources()

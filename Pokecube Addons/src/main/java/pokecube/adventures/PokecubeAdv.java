@@ -114,6 +114,7 @@ public class PokecubeAdv
         PAEventsHandler events = new PAEventsHandler();
         MinecraftForge.EVENT_BUS.register(events);
         new TrainerSpawnHandler();
+        ItemHandler.handleLoot();
     }
 
     @EventHandler
@@ -158,14 +159,28 @@ public class PokecubeAdv
     {
         conf = new Config(PokecubeMod.core.getPokecubeConfig(e).getConfigFile());
         tesla = Loader.isModLoaded("tesla");
-        BlockHandler.registerBlocks();
-        ItemHandler.registerItems();
         DBLoader.preInit(e);
         setTrainerConfig(e);
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ItemHandler());
         proxy.preinit();
         RecipeHandler.preInit();
+    }
+
+    @EventHandler
+    public void registerItems(FMLPreInitializationEvent e)
+    {
+        ItemHandler.registerItems(e);
+    }
+    @EventHandler
+    public void registerBlocks(FMLPreInitializationEvent e)
+    {
+        BlockHandler.registerBlocks(e);
+    }
+    @EventHandler
+    public void registerTiles(FMLPreInitializationEvent e)
+    {
+        BlockHandler.registerTiles(e);
     }
 
     @EventHandler

@@ -119,7 +119,11 @@ public class ModPokecubeML implements IMobProvider
     @SubscribeEvent
     public void RegisterPokemobsEvent(RegisterPokemobsEvent.Post event)
     {
-
+        for (PokedexEntry e : Database.allFormes)
+        {
+            if (e.getBaseForme() != null && e.texturePath.equals("textures/entities/"))
+                e.texturePath = e.getBaseForme().texturePath;
+        }
     }
 
     @EventHandler
@@ -166,11 +170,6 @@ public class ModPokecubeML implements IMobProvider
     private void postInit(FMLPostInitializationEvent evt)
     {
         proxy.postInit();
-        for (PokedexEntry e : Database.allFormes)
-        {
-            if (e.getBaseForme() != null && e.texturePath.equals("textures/entities/"))
-                e.texturePath = e.getBaseForme().texturePath;
-        }
         postInit = true;
     }
 

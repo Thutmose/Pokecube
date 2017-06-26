@@ -31,8 +31,12 @@ import com.google.common.collect.Sets;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -424,6 +428,17 @@ public class Database
 
         System.out.println(
                 "Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
+    }
+    
+    public static void initSounds(Object registry)
+    {
+        for(PokedexEntry e: allFormes)
+        {
+            if (e.sound == null) e.setSound("mobs." + e.getName());
+            e.event = new SoundEvent(e.sound);
+            ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, e.event, e.sound, "registryName");
+            GameRegistry.register(e.event);
+        }
     }
 
     public static void loadMoves(String file)

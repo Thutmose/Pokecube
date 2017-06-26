@@ -20,8 +20,8 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class TemplateProcessor extends BlockRotationProcessor
 {
-    private static final Method GETBIOMEBLOCK = ReflectionHelper.findMethod(StructureVillagePieces.Village.class, null,
-            new String[] { "func_175847_a", "getBiomeSpecificBlockState" }, IBlockState.class);
+    private static final Method GETBIOMEBLOCK = ReflectionHelper.findMethod(StructureVillagePieces.Village.class,
+            "getBiomeSpecificBlockState", "func_175847_a", IBlockState.class);
     static
     {
         GETBIOMEBLOCK.setAccessible(true);

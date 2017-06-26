@@ -608,9 +608,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void onItemCapabilityAttach(AttachCapabilitiesEvent<Item> event)
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event)
     {
-        event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(new ItemStack(event.getObject())));
+        event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(event.getObject()));
     }
 
     @SubscribeEvent

@@ -59,7 +59,7 @@ public class PokecubeAdv
     public static final String ID                 = "pokecube_adventures";
     public static final String version            = "@VERSION";
     public final static String MCVERSIONS         = "@MCVERSION";
-    public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION";
+    public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;after:thut_wearables";
 
     public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";

@@ -68,16 +68,21 @@ public class PokePlayer
     }
 
     @EventHandler
-    public void preInit(FMLPreInitializationEvent e)
+    public void registerBlocks(FMLPreInitializationEvent e)
     {
+        Object registry = null;
         Block b = new BlockTransformer().setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks)
                 .setUnlocalizedName("poketransformer");
-        PokecubeItems.register(b, "poketransformer");
-        GameRegistry.registerTileEntity(TileEntityTransformer.class, "poketransformer");
+        PokecubeItems.register(b, "poketransformer", registry);
         if (e.getSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(Item.getItemFromBlock(b), 0,
                     new ModelResourceLocation("pokeplayer:poketransformer", "inventory"));
         }
+    }
+
+    public void registerTiles(FMLPreInitializationEvent e)
+    {
+        GameRegistry.registerTileEntity(TileEntityTransformer.class, "poketransformer");
     }
 }

@@ -25,6 +25,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
@@ -249,10 +250,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 if (!swims())
                 {
-                    float f = MathHelper
-                            .sqrt(this.motionX * this.motionX * 0.20000000298023224D
-                                    + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D)
-                            * 0.2F;
+                    float f = MathHelper.sqrt(this.motionX * this.motionX * 0.20000000298023224D
+                            + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D) * 0.2F;
 
                     if (f > 1.0F)
                     {
@@ -453,7 +452,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     @Override
     /** Moves the entity based on the specified heading. Args: strafe,
-     * forward */
+     * forward */// TODO fix minor bugs here.
     public void func_191986_a(float forward, float strafe, float speed)
     {
         double d0;
@@ -507,7 +506,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                 f4 = Math.min(strafe * f3, strafe);
 
-                this.func_191986_a_2(forward, strafe, f4);
+                this.moveRelative(forward, strafe, speed, f4);
                 CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.800000011920929D;
                 this.motionY *= 0.800000011920929D;
@@ -526,7 +525,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             else if (this.isInLava())
             {
                 d0 = this.posY;
-                this.func_191986_a_2(forward, strafe, 0.02F);
+                this.moveRelative(forward, strafe, speed, 0.02F);
                 CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.5D;
                 this.motionY *= 0.5D;
@@ -543,11 +542,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 float f2 = 0.91F;
                 float f6 = isAFish ? 0.15f : 1;
+                BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos
+                        .retain(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ);
 
-                Block b = this.world.getBlockState(getPosition().down()).getBlock();
                 if (this.onGround)
                 {
-                    f2 = b.slipperiness * 0.91F;
+                    f6 = this.world.getBlockState(blockpos$pooledmutableblockpos).getBlock().slipperiness * 0.91F;
                 }
                 else if (isAbleToFly)
                 {
@@ -570,13 +570,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     f4 = this.jumpMovementFactor;
                 }
 
-                this.func_191986_a_2(forward, strafe, f4);
+                this.moveRelative(forward, strafe, speed, f4);
                 f2 = 0.91F;
-
-                if (this.onGround)
-                {
-                    f2 = b.slipperiness * 0.91F;
-                }
 
                 if (this.isOnLadder())
                 {
@@ -748,8 +743,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     {
                         int j = EntityXPOrb.getXPSplit(i1);
                         i1 -= j;
-                        this.world
-                                .spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
+                        this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
                     }
                 }
             }
@@ -954,8 +948,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 particleLoc.set(posX + rand.nextFloat() * width * 2.0F - width, posY + 0.5D + rand.nextFloat() * height,
                         posZ + rand.nextFloat() * width * 2.0F - width);
-                PokecubeMod.core.spawnParticle(world, EnumParticleTypes.VILLAGER_HAPPY.getParticleName(),
-                        particleLoc, null);
+                PokecubeMod.core.spawnParticle(world, EnumParticleTypes.VILLAGER_HAPPY.getParticleName(), particleLoc,
+                        null);
             }
         }
     }
@@ -1040,8 +1034,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             if (PokecubeCore.isOnClientSide() && !player.isSneaking())
             {
-                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, world, (int) posX, (int) posY,
-                        (int) posZ);
+                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, world, (int) posX, (int) posY, (int) posZ);
             }
             return true;
         }
@@ -1264,7 +1257,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void updateEntityActionState()
     {
-        ++this.idleTime;;
+        ++this.idleTime;
+        ;
         navi.refreshCache();
         this.world.profiler.startSection("checkDespawn");
         this.despawnEntity();
@@ -1316,6 +1310,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void setSwingingArms(boolean swingingArms)
     {
         // TODO Auto-generated method stub
-        
+
     }
 }

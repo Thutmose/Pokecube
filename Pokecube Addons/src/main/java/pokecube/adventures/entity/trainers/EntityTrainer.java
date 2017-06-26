@@ -46,12 +46,12 @@ import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -304,30 +304,12 @@ public class EntityTrainer extends EntityHasPokemobs
                     }
                     item.setPickupDelay(0);
                 }
-                Achievement stat = null;
-                if (i.getItem() instanceof ItemBadge)
-                {
-                    for (String s : ItemBadge.variants)
-                    {
-                        if (Tools.isSameStack(i, PokecubeItems.getStack(s)))
-                        {
-                            stat = PokecubeCore.core.getAchievement("pokeadv." + s);
-                            break;
-                        }
-                    }
-                }
-                if (stat != null)
-                {
-                    player.addStat(stat);
-                }
+                checkItemAchievement(i, player);
                 ITextComponent text = getMessage(MessageState.GIVEITEM, this.getDisplayName(), i.getDisplayName(),
                         player.getDisplayName());
                 defeater.sendMessage(text);
             }
-            boolean leader = this instanceof EntityLeader;
-            Achievement achieve = PokecubeCore.core
-                    .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
-            player.addStat(achieve);
+            checkDefeatAchievement(player);
         }
         if (defeater != null)
         {
@@ -342,6 +324,34 @@ public class EntityTrainer extends EntityHasPokemobs
             }
         }
         this.setTrainerTarget(null);
+    }
+
+    public void checkItemAchievement(ItemStack item, EntityPlayer player)
+    {
+        Achievement stat = null;
+        if (item.getItem() instanceof ItemBadge)
+        {
+            for (String s : ItemBadge.variants)
+            {
+                if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
+                {
+                    stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
+                    break;
+                }
+            }
+        }
+        if (stat != null)
+        {
+            player.addStat(stat);
+        }
+    }
+
+    public void checkDefeatAchievement(EntityPlayer player)
+    {
+        boolean leader = this instanceof EntityLeader;
+        Achievement achieve = PokecubePlayerStats
+                .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
+        player.addStat(achieve);
     }
 
     @Override

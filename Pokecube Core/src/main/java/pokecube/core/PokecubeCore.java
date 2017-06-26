@@ -12,20 +12,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
-import com.google.common.collect.Maps;
-
-import net.minecraft.advancements.Advancement;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
-import net.minecraft.stats.AchievementList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -809,19 +804,7 @@ public class PokecubeCore extends PokecubeMod
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
         AISaveHandler.instance();
-        for (Advancement a : AchievementList.ACHIEVEMENTS)
-        {
-            if (a == null) continue;
-            try
-            {
-                String name = a.statId;
-                if (name != null) achievements.put(name, a);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
+        PokecubePlayerStats.initMap();
     }
 
     /** clears PC when server stops
@@ -831,17 +814,9 @@ public class PokecubeCore extends PokecubeMod
     public void WorldUnloadEvent(FMLServerStoppedEvent evt)
     {
         InventoryPC.clearPC();
-        achievements.clear();
+        PokecubePlayerStats.reset();
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
-    }
-
-    Map<String, Advancement> achievements = Maps.newHashMap();
-
-    @Override
-    public Advancement getAchievement(String desc)
-    {
-        return achievements.get(desc);
     }
 
 }

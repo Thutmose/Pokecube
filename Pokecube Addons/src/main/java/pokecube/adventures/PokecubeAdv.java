@@ -165,12 +165,16 @@ public class PokecubeAdv
     public void registerItems(FMLPreInitializationEvent e)
     {
         ItemHandler.registerItems(e);
+        proxy.initItemModels();
     }
+
     @EventHandler
     public void registerBlocks(FMLPreInitializationEvent e)
     {
         BlockHandler.registerBlocks(e);
+        proxy.initBlockModels();
     }
+
     @EventHandler
     public void registerTiles(FMLPreInitializationEvent e)
     {

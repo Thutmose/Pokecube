@@ -142,11 +142,8 @@ public class ClientProxy extends CommonProxy
     }
 
     @Override
-    public void preinit()
+    public void initItemModels()
     {
-        super.preinit();
-        OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID);
-
         Item item2 = Item.getItemFromBlock(cloner);
         ModelLoader.setCustomModelResourceLocation(item2, 0,
                 new ModelResourceLocation(PokecubeAdv.ID + ":reanimator", "inventory"));
@@ -166,6 +163,14 @@ public class ClientProxy extends CommonProxy
 
         registerItemTexture(Item.getItemFromBlock(siphon), 0,
                 new ModelResourceLocation("pokecube_adventures:pokesiphon", "inventory"));
+        BadgeTextureHandler.registerItemModels();
+    }
+
+    @Override
+    public void preinit()
+    {
+        super.preinit();
+        OBJLoader.INSTANCE.addDomain(PokecubeAdv.ID);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTarget.class, new IRenderFactory<EntityLivingBase>()
         {
@@ -194,7 +199,6 @@ public class ClientProxy extends CommonProxy
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCloner.class, new RenderCloner());
-        BadgeTextureHandler.registerItemModels();
     }
 
     X3dModel                 bag1;

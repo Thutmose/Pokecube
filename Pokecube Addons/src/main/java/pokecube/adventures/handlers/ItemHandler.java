@@ -8,14 +8,16 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecube;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.afa.ItemBlockAFA;
+import pokecube.adventures.blocks.cloner.block.ItemBlockCloner;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.handlers.loot.Loot;
 import pokecube.adventures.handlers.loot.LootHelpers;
@@ -30,11 +32,10 @@ import pokecube.core.items.ItemTM;
 
 public class ItemHandler
 {
-    public static Item badges;
+    public static Item badges = new ItemBadge().setRegistryName(PokecubeAdv.ID, "badge");
 
     public static void addBadges(Object registry)
     {
-        badges = new ItemBadge().setRegistryName(PokecubeAdv.ID, "badge");
         PokecubeItems.register(badges, registry);
         for (String s : ItemBadge.variants)
         {
@@ -48,9 +49,10 @@ public class ItemHandler
 
     public static void registerItems(Object registry)
     {
-        Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share");
+        Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share").setRegistryName(PokecubeAdv.ID,
+                "exp_share");
         expshare.setCreativeTab(creativeTabPokecube);
-        register(expshare, "exp_share", registry);
+        register(expshare, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(expshare, 0,
@@ -60,7 +62,7 @@ public class ItemHandler
         PokecubeItems.addToHoldables("exp_share");
 
         Item mewHair = (new Item()).setUnlocalizedName("silkyhair").setRegistryName(PokecubeAdv.ID, "mewhair");
-        GameRegistry.register(mewHair);
+        register(mewHair, registry);
         PokecubeItems.addGeneric("mewhair", mewHair);
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
@@ -69,7 +71,8 @@ public class ItemHandler
                     new ModelResourceLocation("pokecube_adventures:mewhair", "inventory"));
         }
 
-        Item target = new ItemTarget().setUnlocalizedName("pokemobTarget").setCreativeTab(creativeTabPokecube);
+        Item target = new ItemTarget().setUnlocalizedName("pokemobTarget")
+                .setRegistryName(PokecubeAdv.ID, "pokemobTarget").setCreativeTab(creativeTabPokecube);
         register(target, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -83,7 +86,8 @@ public class ItemHandler
             PokecubeItems.registerItemTexture(target, 3,
                     new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
         }
-        Item trainer = new ItemTrainer().setUnlocalizedName("trainerspawner").setCreativeTab(creativeTabPokecube);
+        Item trainer = new ItemTrainer().setUnlocalizedName("trainerspawner")
+                .setRegistryName(PokecubeAdv.ID, "trainerspawner").setCreativeTab(creativeTabPokecube);
         register(trainer, registry);
         addSpecificItemStack("traderSpawner", new ItemStack(trainer, 1, 2));
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
@@ -98,7 +102,8 @@ public class ItemHandler
             PokecubeItems.registerItemTexture(trainer, 3,
                     new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
         }
-        Item bag = new ItemBag().setUnlocalizedName("pokecubebag").setCreativeTab(creativeTabPokecube);
+        Item bag = new ItemBag().setUnlocalizedName("pokecubebag").setRegistryName(PokecubeAdv.ID, "pokecubebag")
+                .setCreativeTab(creativeTabPokecube);
         register(bag, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -109,14 +114,29 @@ public class ItemHandler
         addSpecificItemStack("warplinker", new ItemStack(target, 1, 1));
         addBadges(registry);
 
-        ItemStack share = PokecubeItems.getStack("exp_share");
+        ItemBlock item = new ItemBlockCloner(BlockHandler.cloner);
+        item.setRegistryName(BlockHandler.cloner.getRegistryName());
+        register(item, registry);
 
-        LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
-                Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
+        item = new ItemBlockAFA(BlockHandler.afa);
+        item.setRegistryName(BlockHandler.afa.getRegistryName());
+        register(item, registry);
+
+        item = new ItemBlock(BlockHandler.siphon);
+        item.setRegistryName(BlockHandler.siphon.getRegistryName());
+        register(item, registry);
+
+        item = new ItemBlock(BlockHandler.warppad);
+        item.setRegistryName(BlockHandler.warppad.getRegistryName());
+        register(item, registry);
+
     }
 
     public static void handleLoot()
     {
+        ItemStack share = PokecubeItems.getStack("exp_share");
+        LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
+                Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
         if (Config.instance.HMLoot)
         {
             ItemStack cut = new ItemStack(getItem("tm"));

@@ -452,7 +452,6 @@ public class PokecubeCore extends PokecubeMod
         PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);
-        postInitPokemobs();
         helper.addVillagerTrades();
         SpecialCaseRegister.register();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
@@ -496,7 +495,6 @@ public class PokecubeCore extends PokecubeMod
         helper.tileRegistry(evt);
     }
 
-    @EventHandler
     public void registerDatabase(FMLPreInitializationEvent evt)
     {
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
@@ -511,6 +509,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void registerSounds(FMLPostInitializationEvent evt)
     {
+        System.out.println("Regstering Sounds");
         Database.initSounds(evt);
     }
 
@@ -518,6 +517,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void registerMobs(FMLPreInitializationEvent evt)
     {
+        System.out.println("Regstering Mobs");
         CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
         CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
                 true);
@@ -526,9 +526,13 @@ public class PokecubeCore extends PokecubeMod
                 false);
         CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
         CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
+        PokecubePlayerStats.initAchievements();
+        registerDatabase(evt);
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
+        System.out.println("Registered " + pokedexmap.size());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
+        postInitPokemobs();
     }
 
     @EventHandler
@@ -558,7 +562,6 @@ public class PokecubeCore extends PokecubeMod
 
         // Init Packets
         PokecubePacketHandler.init();
-        PokecubePlayerStats.initAchievements();
         Reader fileIn = null;
         BufferedReader br;
         String giftLoc = GIFTURL;

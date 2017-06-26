@@ -429,13 +429,15 @@ public class Database
         System.out.println(
                 "Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
     }
-    
+
     public static void initSounds(Object registry)
     {
-        for(PokedexEntry e: allFormes)
+        for (PokedexEntry e : allFormes)
         {
-            if (e.sound == null) e.setSound("mobs." + e.getName());
+            if (e.getModId() == null) continue;
+            if (e.sound == null) e.setSound("mobs." + e.getBaseName());
             e.event = new SoundEvent(e.sound);
+            if (SoundEvent.REGISTRY.containsKey(e.sound)) continue;
             ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, e.event, e.sound, "registryName");
             GameRegistry.register(e.event);
         }

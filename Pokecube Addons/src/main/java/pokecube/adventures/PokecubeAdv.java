@@ -3,10 +3,7 @@ package pokecube.adventures;
 import java.io.File;
 
 import net.minecraft.block.Block;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.stats.Achievement;
-import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
@@ -22,9 +19,6 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
-import pokecube.adventures.achievements.AchievementDefeatLeader;
-import pokecube.adventures.achievements.AchievementDefeatTrainer;
-import pokecube.adventures.achievements.AchievementGetBadge;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.trainers.EntityLeader;
@@ -37,7 +31,6 @@ import pokecube.adventures.handlers.ItemHandler;
 import pokecube.adventures.handlers.RecipeHandler;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.EntityTarget;
-import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.legends.LegendaryConditions;
 import pokecube.adventures.network.PacketPokeAdv;
@@ -47,7 +40,6 @@ import pokecube.adventures.network.PacketPokeAdv.MessageServer;
 import pokecube.adventures.network.PacketPokeAdv.MessageServer.MessageHandlerServer;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeCore;
-import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.lib.CompatWrapper;
@@ -144,21 +136,21 @@ public class PokecubeAdv
     {
         int x = -3;
         int y = -2;
-        Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,
-                y++, Items.IRON_SWORD, null);
-        beatTrainer.registerStat();
-        Achievement beatLeader = new AchievementDefeatLeader("pokeadv.defeat.leader", "pokeadv.defeat.leader", x, y++,
-                Items.DIAMOND_SWORD, null);
-        beatLeader.registerStat();
-        AchievementPage.getAchievementPage(0).getAchievements().add(beatLeader);
-        AchievementPage.getAchievementPage(0).getAchievements().add(beatTrainer);
-        for (String s : ItemBadge.variants)
-        {
-            Achievement badge = new AchievementGetBadge("pokeadv." + s, "achievement.pokeadv.get." + s, x, y++,
-                    PokecubeItems.getStack(s), beatLeader);
-            badge.registerStat();
-            AchievementPage.getAchievementPage(0).getAchievements().add(badge);
-        }
+//        Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,
+//                y++, Items.IRON_SWORD, null);
+//        beatTrainer.registerStat();
+//        Achievement beatLeader = new AchievementDefeatLeader("pokeadv.defeat.leader", "pokeadv.defeat.leader", x, y++,
+//                Items.DIAMOND_SWORD, null);
+//        beatLeader.registerStat();
+//        AchievementPage.getAchievementPage(0).getAchievements().add(beatLeader);
+//        AchievementPage.getAchievementPage(0).getAchievements().add(beatTrainer);
+//        for (String s : ItemBadge.variants)
+//        {
+//            Achievement badge = new AchievementGetBadge("pokeadv." + s, "achievement.pokeadv.get." + s, x, y++,
+//                    PokecubeItems.getStack(s), beatLeader);
+//            badge.registerStat();
+//            AchievementPage.getAchievementPage(0).getAchievements().add(badge);
+//        }
     }
 
     

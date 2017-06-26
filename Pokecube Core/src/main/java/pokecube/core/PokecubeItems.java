@@ -30,7 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.nests.BlockNest;

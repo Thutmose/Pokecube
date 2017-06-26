@@ -9,7 +9,9 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
@@ -130,12 +132,6 @@ public class RecipeExtract implements IPoweredRecipe
     }
 
     @Override
-    public int getRecipeSize()
-    {
-        return 3;
-    }
-
-    @Override
     public ItemStack toKeep(int slot, ItemStack stackIn, InventoryCrafting inv)
     {
         boolean keepDNA = false;
@@ -164,5 +160,29 @@ public class RecipeExtract implements IPoweredRecipe
             tile.getCraftMatrix().eventHandler.detectAndSendChanges();
         }
         return true;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        Class<?> clazz = getClass();
+        Class<IRecipe> ret = (Class<IRecipe>) clazz;
+        return ret;
     }
 }

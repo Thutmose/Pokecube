@@ -7,7 +7,9 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.IGeneSelector;
@@ -118,7 +120,6 @@ public class RecipeSelector implements IDefaultRecipe
         return output;
     }
 
-    @Override
     public int getRecipeSize()
     {
         return 2;
@@ -128,6 +129,30 @@ public class RecipeSelector implements IDefaultRecipe
     public ItemStack getRecipeOutput()
     {
         return output;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        Class<?> clazz = getClass();
+        Class<IRecipe> ret = (Class<IRecipe>) clazz;
+        return ret;
     }
 
 }

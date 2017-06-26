@@ -10,8 +10,10 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
@@ -234,7 +236,6 @@ public class RecipeFossilRevive implements IPoweredRecipe
         return CompatWrapper.nullStack;
     }
 
-    @Override
     public int getRecipeSize()
     {
         return this.recipeItems.size();
@@ -244,5 +245,29 @@ public class RecipeFossilRevive implements IPoweredRecipe
     public ItemStack getRecipeOutput()
     {
         return CompatWrapper.nullStack;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        Class<?> clazz = getClass();
+        Class<IRecipe> ret = (Class<IRecipe>) clazz;
+        return ret;
     }
 }

@@ -97,7 +97,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
             info = I18n.format("item.berry.istree.desc");
             tooltip.add(info);
         }
-
+        if(PokecubeCore.getPlayer(null)==null) return;
         if (PokecubeCore.getPlayer(null).openContainer instanceof ContainerPokemob)
         {
             ContainerPokemob container = (ContainerPokemob) PokecubeCore.getPlayer(null).openContainer;

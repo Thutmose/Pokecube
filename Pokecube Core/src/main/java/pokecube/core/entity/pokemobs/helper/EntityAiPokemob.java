@@ -507,7 +507,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                 f4 = Math.min(strafe * f3, strafe);
 
-                this.func_191986_a(forward, strafe, f4);
+                this.func_191986_a_2(forward, strafe, f4);
                 CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.800000011920929D;
                 this.motionY *= 0.800000011920929D;
@@ -526,7 +526,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             else if (this.isInLava())
             {
                 d0 = this.posY;
-                this.func_191986_a(forward, strafe, 0.02F);
+                this.func_191986_a_2(forward, strafe, 0.02F);
                 CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.5D;
                 this.motionY *= 0.5D;
@@ -570,7 +570,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     f4 = this.jumpMovementFactor;
                 }
 
-                this.func_191986_a(forward, strafe, f4);
+                this.func_191986_a_2(forward, strafe, f4);
                 f2 = 0.91F;
 
                 if (this.onGround)

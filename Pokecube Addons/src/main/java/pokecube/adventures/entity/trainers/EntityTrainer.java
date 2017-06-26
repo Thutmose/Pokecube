@@ -25,7 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.stats.Achievement;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -43,7 +42,6 @@ import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityHasPokemobs;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
-import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeItems;
@@ -51,7 +49,6 @@ import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -327,31 +324,31 @@ public class EntityTrainer extends EntityHasPokemobs
     }
 
     public void checkItemAchievement(ItemStack item, EntityPlayer player)
-    {
-        Achievement stat = null;
-        if (item.getItem() instanceof ItemBadge)
-        {
-            for (String s : ItemBadge.variants)
-            {
-                if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
-                {
-                    stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
-                    break;
-                }
-            }
-        }
-        if (stat != null)
-        {
-            player.addStat(stat);
-        }
+    {//TODO redo for advancements.
+//        Achievement stat = null;
+//        if (item.getItem() instanceof ItemBadge)
+//        {
+//            for (String s : ItemBadge.variants)
+//            {
+//                if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
+//                {
+//                    stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
+//                    break;
+//                }
+//            }
+//        }
+//        if (stat != null)
+//        {
+//            player.addStat(stat);
+//        }
     }
 
     public void checkDefeatAchievement(EntityPlayer player)
-    {
-        boolean leader = this instanceof EntityLeader;
-        Achievement achieve = PokecubePlayerStats
-                .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
-        player.addStat(achieve);
+    {//TODO redo for advancements.
+//        boolean leader = this instanceof EntityLeader;
+//        Achievement achieve = PokecubePlayerStats
+//                .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
+//        player.addStat(achieve);
     }
 
     @Override

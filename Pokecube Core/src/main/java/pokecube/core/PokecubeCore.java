@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 
+import net.minecraft.advancements.Advancement;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -465,11 +466,11 @@ public class PokecubeCore extends PokecubeMod
             p.getSoundEvent();
             p.updateMoves();
         }
-        ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
-        GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
-        GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
-        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
-        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
+//        ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
+//        GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
+//        GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
+//        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
+//        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
                 + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }

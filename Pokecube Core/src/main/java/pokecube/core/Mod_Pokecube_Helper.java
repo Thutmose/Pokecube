@@ -23,7 +23,7 @@ import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;

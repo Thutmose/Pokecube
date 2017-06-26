@@ -56,9 +56,9 @@ public class XMLRecipeHandler
                 failed = failed || o == null;
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
             IRecipe toAdd = null;
-            if (recipe.shapeless) toAdd = new ShapelessOreRecipe(output, inputs.toArray());
-            else toAdd = new ShapedOreRecipe(output, inputs.toArray());
-            GameRegistry.addRecipe(toAdd);
+//            if (recipe.shapeless) toAdd = new ShapelessOreRecipe(output, inputs.toArray());
+//            else toAdd = new ShapedOreRecipe(output, inputs.toArray());
+//            GameRegistry.addRecipe(toAdd);
         }
 
     }

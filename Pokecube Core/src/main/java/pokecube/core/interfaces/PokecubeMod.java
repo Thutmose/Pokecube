@@ -14,8 +14,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementList;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList.EntityEggInfo;
@@ -112,18 +110,6 @@ public abstract class PokecubeMod
     public static final UUID                      fakeUUID                   = new UUID(1234, 4321);
     public static Logger                          logger                     = Logger.getLogger("Pokecube");
     protected static FileHandler                  logHandler                 = null;
-
-    // Achievements
-    public static Advancement                        get1stPokemob;
-    // public static HashMap<Integer, Achievement> pokemobAchievements;
-
-    public static AdvancementList                    achievementPageCatch;
-    public static AdvancementList                    achievementPageKill;
-    public static AdvancementList                    achievementPageHatch;
-    public static HashMap<PokedexEntry, Advancement> catchAchievements          = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Advancement> hatchAchievements          = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Advancement> killAchievements           = Maps.newHashMap();
-    public abstract Advancement getAchievement(String desc);
 
     public static FakePlayer getFakePlayer()
     {

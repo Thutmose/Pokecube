@@ -278,13 +278,13 @@ public class RecipeHandler
     }
 
     public static void register()
-    {
-        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
-                "after:minecraft:shapeless");
-        RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
-                "after:minecraft:shapeless");
-        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:bag"),new RecipeBag());
-        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:selectors"), new RecipeSelector());
+    {//TODO Recipes
+//        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
+//                "after:minecraft:shapeless");
+//        RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
+//                "after:minecraft:shapeless");
+//        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:bag"),new RecipeBag());
+//        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:selectors"), new RecipeSelector());
         addClonerRecipes();
     }
 }

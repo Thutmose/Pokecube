@@ -34,9 +34,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.SpawnData;
@@ -438,8 +435,8 @@ public class Database
             if (e.sound == null) e.setSound("mobs." + e.getBaseName());
             e.event = new SoundEvent(e.sound);
             if (SoundEvent.REGISTRY.containsKey(e.sound)) continue;
-            ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, e.event, e.sound, "registryName");
-            GameRegistry.register(e.event);
+//            ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, e.event, e.sound, "registryName");
+//            GameRegistry.register(e.event);
         }
     }
 

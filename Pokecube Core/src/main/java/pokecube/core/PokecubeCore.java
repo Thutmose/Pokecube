@@ -239,40 +239,7 @@ public class PokecubeCore extends PokecubeMod
         folder = folder.replace(name, "pokecube" + seperator + name);
         file = new File(folder);
         config = new Config(new Configuration(file).getConfigFile());
-    }
-
-    @Deprecated // TODO swap this to proper events for 1.11.2/1.12
-    public void registerMobs()
-    {
-        CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
-        CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
-                true);
-        CompatWrapper.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
-                false);
-        CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
-        CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
-
-        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
-        PokecubeTerrainChecker.init();
-        MoveAnimationHelper.Instance();
-        Database.init();
-        System.out.println("Registering Moves");
-        MovesAdder.registerMoves();
-        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
-        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
-        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
-        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
-    }
-
-    public void registerItems()
-    {
-
-    }
-
-    public void registerBlocks()
-    {
-
+        helper = new Mod_Pokecube_Helper();
     }
 
     @Override
@@ -510,14 +477,51 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @EventHandler
+    private void registerItems(FMLPreInitializationEvent evt)
+    {
+        helper.itemRegistry(evt);
+    }
+
+    @EventHandler
+    private void registerBlocks(FMLPreInitializationEvent evt)
+    {
+        helper.blockRegistry(evt);
+    }
+
+    @EventHandler
+    private void registerTiles(FMLPreInitializationEvent evt)
+    {
+        helper.tileRegistry(evt);
+    }
+
+    // TODO swap this to proper events for 1.11.2/1.12
+    @EventHandler
+    public void registerMobs(FMLPreInitializationEvent evt)
+    {
+        CompatWrapper.registerModEntity(EntityPokemob.class, "genericMob", getUniqueEntityId(this), this, 80, 1, true);
+        CompatWrapper.registerModEntity(EntityPokemobPart.class, "genericMobPart", getUniqueEntityId(this), this, 80, 1,
+                true);
+        CompatWrapper.registerModEntity(EntityProfessor.class, "Professor", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityPokemobEgg.class, "pokemobEgg", getUniqueEntityId(this), this, 80, 3,
+                false);
+        CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 3, true);
+        CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
+
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
+        PokecubeTerrainChecker.init();
+        MoveAnimationHelper.Instance();
+        Database.init();
+        System.out.println("Registering Moves");
+        MovesAdder.registerMoves();
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
+    }
+
+    @EventHandler
     private void preInit(FMLPreInitializationEvent evt)
     {
-        registerMobs();// TODO remove this for 1.11.2/1.12
-        registerItems();
-        registerBlocks();
-
-        helper = new Mod_Pokecube_Helper();
-
         spawner = new SpawnHandler();
         if (!config.defaultMobs.equals(""))
         {
@@ -542,7 +546,6 @@ public class PokecubeCore extends PokecubeMod
 
         // Init Packets
         PokecubePacketHandler.init();
-        helper.addItems();
         PokecubePlayerStats.initAchievements();
         Reader fileIn = null;
         BufferedReader br;

@@ -32,10 +32,10 @@ public class ItemHandler
 {
     public static Item badges;
 
-    public static void addBadges()
+    public static void addBadges(Object registry)
     {
         badges = new ItemBadge().setRegistryName(PokecubeAdv.ID, "badge");
-        PokecubeItems.register(badges);
+        PokecubeItems.register(badges, registry);
         for (String s : ItemBadge.variants)
         {
             ItemStack stack = new ItemStack(badges);
@@ -46,11 +46,11 @@ public class ItemHandler
         }
     }
 
-    public static void registerItems()
+    public static void registerItems(Object registry)
     {
         Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share");
         expshare.setCreativeTab(creativeTabPokecube);
-        register(expshare, "exp_share");
+        register(expshare, "exp_share", registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             PokecubeItems.registerItemTexture(expshare, 0,
@@ -70,7 +70,7 @@ public class ItemHandler
         }
 
         Item target = new ItemTarget().setUnlocalizedName("pokemobTarget").setCreativeTab(creativeTabPokecube);
-        register(target);
+        register(target, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             ModelBakery.registerItemVariants(target, new ResourceLocation("pokecube_adventures:spawner"));
@@ -84,7 +84,7 @@ public class ItemHandler
                     new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
         }
         Item trainer = new ItemTrainer().setUnlocalizedName("trainerspawner").setCreativeTab(creativeTabPokecube);
-        register(trainer);
+        register(trainer, registry);
         addSpecificItemStack("traderSpawner", new ItemStack(trainer, 1, 2));
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
@@ -99,7 +99,7 @@ public class ItemHandler
                     new ModelResourceLocation("pokecube_adventures:spawner", "inventory"));
         }
         Item bag = new ItemBag().setUnlocalizedName("pokecubebag").setCreativeTab(creativeTabPokecube);
-        register(bag);
+        register(bag, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {
             ModelBakery.registerItemVariants(bag, new ResourceLocation("pokecube_adventures:bag"));
@@ -107,13 +107,16 @@ public class ItemHandler
                     new ModelResourceLocation("pokecube_adventures:bag", "inventory"));
         }
         addSpecificItemStack("warplinker", new ItemStack(target, 1, 1));
-        addBadges();
+        addBadges(registry);
 
         ItemStack share = PokecubeItems.getStack("exp_share");
 
         LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
                 Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
+    }
 
+    public static void handleLoot()
+    {
         if (Config.instance.HMLoot)
         {
             ItemStack cut = new ItemStack(getItem("tm"));

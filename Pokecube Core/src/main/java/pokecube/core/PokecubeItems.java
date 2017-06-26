@@ -45,6 +45,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemFossil;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
+import pokecube.core.items.ItemTM;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.ItemMegastone;
 import pokecube.core.items.megastuff.ItemMegawearable;
@@ -125,6 +126,7 @@ public class PokecubeItems extends Items
             "fossil");
 
     public static Item                             revive         = (new ItemRevive()).setUnlocalizedName("revive");
+    public static Item                             tm             = (new ItemTM()).setUnlocalizedName("tm");
     public static Block                            pokecenter     = (new BlockHealTable())
             .setUnlocalizedName("pokecenter").setCreativeTab(creativeTabPokecubeBlocks);
     public static Block                            repelBlock     = new BlockRepel();
@@ -631,16 +633,16 @@ public class PokecubeItems extends Items
      * @param o
      * @param clazz */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void register(Block o, Class clazz)
+    public static void register(Block o, Class clazz, Object registry)
     {
-        register(o, clazz, o.getUnlocalizedName().substring(5));
+        register(o, clazz, o.getUnlocalizedName().substring(5), registry);
     }
 
     /** Sets the name to the unlocalized name, minus the "tile." or "item.",
      * uses generic ItemBlock.class for blocks
      * 
      * @param o */
-    public static void register(Object o)
+    public static void register(Object o, Object registry)
     {
         if (o instanceof Block)
         {
@@ -651,7 +653,7 @@ public class PokecubeItems extends Items
             }
             else
             {
-                register(o, ((Block) o).getUnlocalizedName().substring(5));
+                register(o, ((Block) o).getUnlocalizedName().substring(5), registry);
             }
         }
         if (o instanceof Item)
@@ -663,7 +665,7 @@ public class PokecubeItems extends Items
             }
             else
             {
-                register(o, ((Item) o).getUnlocalizedName().substring(5));
+                register(o, ((Item) o).getUnlocalizedName().substring(5), registry);
             }
         }
     }
@@ -675,7 +677,7 @@ public class PokecubeItems extends Items
      * @param o
      * @param name
      * @param clazz */
-    public static void register(Object o, Class<? extends ItemBlock> clazz, String name)
+    public static void register(Object o, Class<? extends ItemBlock> clazz, String name, Object registry)
     {
         if (o instanceof Item)
         {
@@ -711,9 +713,9 @@ public class PokecubeItems extends Items
      * 
      * @param o
      * @param name */
-    public static void register(Object o, String name)
+    public static void register(Object o, String name, Object registry)
     {
-        register(o, ItemBlock.class, name);
+        register(o, ItemBlock.class, name, registry);
     }
 
     public static void registerFossil(ItemStack fossil, int number)

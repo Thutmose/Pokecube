@@ -1747,7 +1747,6 @@ public class PokedexEntry
 
         if (possibleMoves == null)
         {
-            System.out.println(this);
             possibleMoves = getBaseForme().possibleMoves;
         }
         if (lvlUpMoves == null)

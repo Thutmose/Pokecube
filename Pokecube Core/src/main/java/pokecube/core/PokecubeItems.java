@@ -30,7 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.blocks.nests.BlockNest;
@@ -628,17 +628,18 @@ public class PokecubeItems extends Items
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static void register(Object o, Object registry)
     {
         String name = null;
-        if (o instanceof Item)
+        if (o instanceof Item && registry instanceof IForgeRegistry<?>)
         {
-            GameRegistry.register((Item) o);
+            ((IForgeRegistry<Item>) registry).register((Item) o);
             name = ((Item) o).getRegistryName().getResourcePath();
         }
-        else if (o instanceof Block)
+        else if (o instanceof Block && registry instanceof IForgeRegistry<?>)
         {
-            GameRegistry.register((Block) o);
+            ((IForgeRegistry<Block>) registry).register((Block) o);
             name = ((Block) o).getRegistryName().getResourcePath();
         }
         if (name != null) addGeneric(name, o);

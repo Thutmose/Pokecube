@@ -4,6 +4,7 @@
 package pokecube.core;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +25,13 @@ public class CreativeTabPokecubeBerries extends CreativeTabs
     @SideOnly(Side.CLIENT)
     public ItemStack getIconItemStack()
     {
-        return BerryManager.getBerryItem("cheri");
+        ItemStack ret = BerryManager.getBerryItem("cheri");
+        if (ret == null || ret.getItem() == null)
+        {
+            Thread.dumpStack();
+            return new ItemStack(Items.STONE_AXE);
+        }
+        return ret;
     }
 
     @Override

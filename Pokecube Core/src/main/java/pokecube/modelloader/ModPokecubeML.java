@@ -13,10 +13,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -28,9 +30,9 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -192,15 +194,14 @@ public class ModPokecubeML implements IMobProvider
         catch (Exception e)
         {
         }
-
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @EventHandler
-    public void registerItems(FMLPreInitializationEvent evt)
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> evt)
     {
-        GameRegistry.register(new ItemModelReloader().setUnlocalizedName("modelreloader")
-                .setRegistryName(ID, "modelreloader").setCreativeTab(PokecubeMod.creativeTabPokecube));
+        PokecubeItems.register(new ItemModelReloader().setUnlocalizedName("modelreloader")
+                .setRegistryName(ID, "modelreloader").setCreativeTab(PokecubeMod.creativeTabPokecube),
+                evt.getRegistry());
     }
 
     private void processResources()

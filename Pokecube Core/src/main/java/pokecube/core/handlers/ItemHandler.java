@@ -30,8 +30,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.Mod_Pokecube_Helper;
@@ -182,32 +182,16 @@ public class ItemHandler extends Mod_Pokecube_Helper
         repelBlock.setUnlocalizedName("repel").setRegistryName(PokecubeMod.ID, "repel");
         repelBlock.setCreativeTab(creativeTabPokecubeBerries);
         register(repelBlock, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-            registerItemTexture(Item.getItemFromBlock(repelBlock), 0,
-                    new ModelResourceLocation("pokecube:repel", "inventory"));
 
         tableBlock.setUnlocalizedName("pokecube_table").setRegistryName(PokecubeMod.ID, "pokecube_table");
         tableBlock.setCreativeTab(creativeTabPokecubeBlocks);
         register(tableBlock, registry);
         PokecubeItems.pokecenter.setRegistryName(PokecubeMod.ID, "pokecenter");
         register(PokecubeItems.pokecenter, registry);
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            registerItemTexture(Item.getItemFromBlock(PokecubeItems.pokecenter), 0,
-                    new ModelResourceLocation("pokecube:pokecenter", "inventory"));
-            registerItemTexture(Item.getItemFromBlock(PokecubeItems.pokecenter), 1,
-                    new ModelResourceLocation("pokecube:pokecenter", "inventory"));
-        }
 
         Block nest = PokecubeItems.nest;
         nest.setRegistryName(PokecubeMod.ID, "pokemobnest");
         register(nest, registry);// ItemBlockMeta.class
-        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-        {
-            for (int i = 0; i < BlockNest.types.size(); i++)
-                registerItemTexture(Item.getItemFromBlock(nest), i,
-                        new ModelResourceLocation("minecraft:stone", "inventory"));
-        }
 
         tradingtable.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         tradingtable.setRegistryName(PokecubeMod.ID, "tradingtable");
@@ -234,6 +218,11 @@ public class ItemHandler extends Mod_Pokecube_Helper
         item = new ItemBlockMeta(PokecubeItems.nest);
         item.setRegistryName(PokecubeMod.ID, "pokemobnest");
         register(item, registry);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            for (int i = 0; i < BlockNest.types.size(); i++)
+                registerItemTexture(item, i, new ModelResourceLocation("minecraft:stone", "inventory"));
+        }
 
         item = new ItemBlockMeta(log0);
         item.setRegistryName(PokecubeMod.ID, "log0");
@@ -254,10 +243,17 @@ public class ItemHandler extends Mod_Pokecube_Helper
         item = new ItemBlock(repelBlock);
         item.setRegistryName(PokecubeMod.ID, "repel");
         register(item, registry);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            registerItemTexture(item, 0, new ModelResourceLocation("pokecube:repel", "inventory"));
 
         item = new ItemBlock(PokecubeItems.pokecenter);
         item.setRegistryName(PokecubeMod.ID, "pokecenter");
         register(item, registry);
+        if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        {
+            registerItemTexture(item, 0, new ModelResourceLocation("pokecube:pokecenter", "inventory"));
+            registerItemTexture(item, 1, new ModelResourceLocation("pokecube:pokecenter", "inventory"));
+        }
 
         item = new ItemBlock(PokecubeItems.fossilStone);
         item.setRegistryName(PokecubeItems.fossilStone.getRegistryName());
@@ -332,28 +328,28 @@ public class ItemHandler extends Mod_Pokecube_Helper
         addSpecificItemStack("emerald_shard", new ItemStack(tm, 1, 19));
     }
 
-    public static void registerBlocks(FMLPreInitializationEvent evt)
+    public static void registerBlocks(IForgeRegistry<Block> iForgeRegistry)
     {
-        addMiscBlocks(evt);
-        addFossilBlocks(evt);
-        addBerryBlocks(evt);
+        addMiscBlocks(iForgeRegistry);
+        addFossilBlocks(iForgeRegistry);
+        addBerryBlocks(iForgeRegistry);
     }
 
-    public static void registerTiles(FMLPreInitializationEvent evt)
+    public static void registerTiles(IForgeRegistry<Block> iForgeRegistry)
     {
-        addMiscTiles(evt);
-        addBerryTiles(evt);
+        addMiscTiles(iForgeRegistry);
+        addBerryTiles(iForgeRegistry);
     }
 
-    public static void registerItems(FMLPreInitializationEvent evt)
+    public static void registerItems(IForgeRegistry<Item> iForgeRegistry)
     {
-        addPokecubes(evt);
-        addStones(evt);
-        addBerryItems(evt);
-        addVitamins(evt);
-        addFossilItems(evt);
-        addMiscItems(evt);
-        registerItemBlocks(evt);
+        addPokecubes(iForgeRegistry);
+        addStones(iForgeRegistry);
+        addBerryItems(iForgeRegistry);
+        addVitamins(iForgeRegistry);
+        addFossilItems(iForgeRegistry);
+        addMiscItems(iForgeRegistry);
+        registerItemBlocks(iForgeRegistry);
     }
 
     private static void addPokecubes(Object registry)

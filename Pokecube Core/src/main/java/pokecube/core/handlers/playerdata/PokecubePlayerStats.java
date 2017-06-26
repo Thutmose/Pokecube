@@ -297,4 +297,33 @@ public class PokecubePlayerStats extends PlayerData
         }
         return catc;
     }
+
+    private static Map<String, Achievement> achievements = Maps.newHashMap();
+
+    public static Achievement getAchievement(String desc)
+    {
+        return achievements.get(desc);
+    }
+
+    public static void initMap()
+    {
+        for (Achievement a : AchievementList.ACHIEVEMENTS)
+        {
+            if (a == null) continue;
+            try
+            {
+                String name = a.statId;
+                if (name != null) achievements.put(name, a);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void reset()
+    {
+        achievements.clear();
+    }
 }

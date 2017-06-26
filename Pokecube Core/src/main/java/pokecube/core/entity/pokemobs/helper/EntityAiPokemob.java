@@ -710,7 +710,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             if (damageSource instanceof PokemobDamageSource)
             {
-                ((PokemobDamageSource) damageSource).getActualEntity().onKillEntity(this);
+                ((PokemobDamageSource) damageSource).getImmediateSource().onKillEntity(this);
             }
             else entity.onKillEntity(this);
         }

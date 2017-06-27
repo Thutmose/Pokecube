@@ -824,7 +824,7 @@ public class Database
         }
     }
 
-    public static void loadRecipes()
+    public static void loadRecipes(Object event)
     {
         File temp = new File(CONFIGLOC);
         if (!temp.exists())

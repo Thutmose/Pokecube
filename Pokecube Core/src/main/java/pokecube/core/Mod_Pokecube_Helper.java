@@ -133,6 +133,11 @@ public class Mod_Pokecube_Helper
         }
         initLists();
     }
+    
+    public void registerRecipes(Object event)
+    {
+        RecipeHandler.initRecipes(event);
+    }
 
     public void postInit()
     {
@@ -147,7 +152,6 @@ public class Mod_Pokecube_Helper
         GUIDISPLAYTELEPORTINFO_ID = 18;
         GUIPOKEMOB_ID = 19;
         GUITMTABLE_ID = 20;
-        RecipeHandler.initRecipes();
         addToList(PokecubeMod.core.getConfig().getCaveBlocks(), PokecubeMod.core.getConfig().blockListCaveFloor);
         addToList(PokecubeMod.core.getConfig().getSurfaceBlocks(), PokecubeMod.core.getConfig().blockListSurface);
         addToList(PokecubeMod.core.getConfig().getRocks(), PokecubeMod.core.getConfig().blockListRocks);

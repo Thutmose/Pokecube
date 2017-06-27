@@ -20,9 +20,9 @@ import pokecube.core.items.revive.RecipeRevive;
 
 public class RecipeHandler extends Mod_Pokecube_Helper
 {
-    public static void initRecipes()
+    public static void initRecipes(Object event)
     {
-        Database.loadRecipes();
+        Database.loadRecipes(event);
         Item snagcube = getEmptyCube(99);
         GameRegistry.addRecipe(new ItemStack(snagcube, 3), new Object[] { "GFG", "CBC", "III", 'F', Items.IRON_INGOT,
                 'C', Items.GHAST_TEAR, 'G', Items.IRON_INGOT, 'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });

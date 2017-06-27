@@ -337,4 +337,10 @@ public class PokemobTerrainEffects implements ITerrainEffect
         }
         GlStateManager.enableTexture2D();
     }
+
+    @Override
+    public String getIdenitifer()
+    {
+        return "pokemobEffects";
+    }
 }

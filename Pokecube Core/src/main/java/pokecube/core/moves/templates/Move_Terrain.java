@@ -47,11 +47,6 @@ public class Move_Terrain extends Move_Basic
         TerrainSegment segment = TerrainManager.getInstance().getTerrian(world, location);
 
         PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.geTerrainEffect("pokemobEffects");
-        if (teffect == null)
-        {
-            segment.addEffect(teffect = new PokemobTerrainEffects(), "pokemobEffects");
-        }
-
         // TODO check if effect already exists, and send message if so.
         // Otherwise send the it starts to effect message
 

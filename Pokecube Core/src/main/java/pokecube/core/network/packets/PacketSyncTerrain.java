@@ -127,10 +127,6 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         if (message.type == EFFECTS)
         {
             PokemobTerrainEffects effect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
-            if (effect == null)
-            {
-                t.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-            }
             for (int i = 0; i < 16; i++)
             {
                 effect.effects[i] = message.effects[i];

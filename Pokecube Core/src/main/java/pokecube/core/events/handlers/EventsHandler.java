@@ -547,10 +547,6 @@ public class EventsHandler
         {
             TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntity());
             PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
-            if (effect == null)
-            {
-                terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-            }
             effect.doEffect(evt.getEntityLiving(), false);
         }
         if (evt.getEntityLiving() instanceof EntityPlayer)

@@ -87,6 +87,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
+import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.moves.animations.MoveAnimationHelper;
@@ -110,6 +111,7 @@ import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
+import thut.api.terrain.TerrainSegment;
 import thut.core.common.handlers.PlayerDataHandler;
 import thut.lib.CompatWrapper;
 
@@ -399,6 +401,7 @@ public class PokecubeCore extends PokecubeMod
     private void init(FMLInitializationEvent evt)
     {
         System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
+        TerrainSegment.terrainEffectClasses.add(PokemobTerrainEffects.class);
         new PokedexInspector();
         proxy.initClient();
         proxy.registerRenderInformation();

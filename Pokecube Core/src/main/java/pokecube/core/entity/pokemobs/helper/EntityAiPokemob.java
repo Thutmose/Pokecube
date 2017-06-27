@@ -874,20 +874,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(this);
         if (!t.equals(currentTerrain))
         {
-            if (currentTerrain != null)
-            {
-                PokemobTerrainEffects effect = (PokemobTerrainEffects) currentTerrain.geTerrainEffect("pokemobEffects");
-                if (effect == null)
-                {
-                    currentTerrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-                }
-            }
             currentTerrain = t;
             PokemobTerrainEffects effect = (PokemobTerrainEffects) currentTerrain.geTerrainEffect("pokemobEffects");
-            if (effect == null)
-            {
-                currentTerrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-            }
             effect.doEntryEffect(this);
         }
         if (egg != null && egg.isDead)

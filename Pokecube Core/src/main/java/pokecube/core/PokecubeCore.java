@@ -391,6 +391,12 @@ public class PokecubeCore extends PokecubeMod
     }
 
     @EventHandler
+    private void initRecipes(FMLInitializationEvent evt)
+    {
+        helper.registerRecipes(evt);
+    }
+
+    @EventHandler
     private void init(FMLInitializationEvent evt)
     {
         System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());

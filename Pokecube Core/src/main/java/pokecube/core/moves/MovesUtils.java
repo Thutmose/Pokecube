@@ -481,10 +481,6 @@ public class MovesUtils implements IMoveConstants
         float ret = 1;
         long terrainDuration = 0;
         PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
-        if (effect == null)
-        {
-            terrain.addEffect(effect = new PokemobTerrainEffects(), "pokemobEffects");
-        }
         if (type == dragon)
         {
             terrainDuration = effect.getEffect(PokemobTerrainEffects.EFFECT_TERRAIN_MISTY);

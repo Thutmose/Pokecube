@@ -16,6 +16,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.minecraftforge.registries.GameData;
@@ -25,6 +26,7 @@ import pokecube.core.utils.Tools;
 
 public class XMLRecipeHandler
 {
+    private static int                       num           = 0;
     public static Set<String>                recipeFiles   = Sets.newHashSet();
     public static Map<String, IRecipeParser> recipeParsers = Maps.newHashMap();
 
@@ -58,7 +60,7 @@ public class XMLRecipeHandler
             IRecipe toAdd = null;
             if (recipe.shapeless) toAdd = new ShapelessOreRecipe(null, output, inputs.toArray());
             else toAdd = new ShapedOreRecipe(null, output, inputs.toArray());
-            GameData.register_impl(toAdd);
+            GameData.register_impl(toAdd.setRegistryName(new ResourceLocation("pokecube", "autoloaded" + (num++))));
         }
 
     }

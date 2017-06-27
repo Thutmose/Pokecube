@@ -22,6 +22,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.util.ResourceLocation;
@@ -390,8 +391,8 @@ public class PokecubeCore extends PokecubeMod
         return "" + nb;
     }
 
-    @EventHandler
-    private void initRecipes(FMLInitializationEvent evt)
+    @SubscribeEvent
+    public void initRecipes(RegistryEvent.Register<IRecipe> evt)
     {
         helper.registerRecipes(evt);
     }
@@ -472,11 +473,14 @@ public class PokecubeCore extends PokecubeMod
             p.getSoundEvent();
             p.updateMoves();
         }
-//        ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
-//        GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
-//        GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
-//        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
-//        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
+        // ResourceLocation sound = new ResourceLocation(PokecubeMod.ID +
+        // ":pokecube_caught");
+        // GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new
+        // SoundEvent(sound).setRegistryName(sound));
+        // GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID
+        // + ":pokecenter"));
+        // sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
+        // GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
         System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
                 + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }

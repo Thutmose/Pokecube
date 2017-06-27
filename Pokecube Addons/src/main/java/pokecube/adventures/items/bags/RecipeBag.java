@@ -100,12 +100,9 @@ public class RecipeBag implements IDefaultRecipe
         return registryName;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<IRecipe> getRegistryType()
     {
-        Class<?> clazz = getClass();
-        Class<IRecipe> ret = (Class<IRecipe>) clazz;
-        return ret;
+        return IRecipe.class;
     }
 }

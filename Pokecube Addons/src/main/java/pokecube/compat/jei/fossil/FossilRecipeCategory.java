@@ -86,4 +86,10 @@ public class FossilRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         return icon;
     }
 
+    @Override
+    public String getModName()
+    {
+        return "Pokecube";
+    }
+
 }

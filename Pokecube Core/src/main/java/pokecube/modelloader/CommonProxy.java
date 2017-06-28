@@ -260,7 +260,7 @@ public class CommonProxy implements IGuiHandler
             name = name.replace("file:", "");
             name = name.replaceAll("(.jar)(.*)", ".jar");
             resourceDir = new File(name);
-            FMLLog.getLogger().debug("Checking in " + resourceDir + " " + mod);
+            FMLLog.log.debug("Checking in " + resourceDir + " " + mod);
         }
         else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
         checkInFolder(resourceDir, ret, file);

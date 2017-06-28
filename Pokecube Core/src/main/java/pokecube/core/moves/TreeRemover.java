@@ -42,7 +42,7 @@ public class TreeRemover
 
     public TreeRemover(World world, Vector3 pos)
     {
-        world = world;
+        this.world = world;
         centre = pos;
     }
 

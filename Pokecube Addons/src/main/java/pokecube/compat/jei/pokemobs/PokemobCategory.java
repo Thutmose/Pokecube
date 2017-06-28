@@ -92,4 +92,10 @@ public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
         recipeLayout.getIngredientsGroup(PokedexEntry.class).set(ingredients);
     }
 
+    @Override
+    public String getModName()
+    {
+        return "Pokecube";
+    }
+
 }

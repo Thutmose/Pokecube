@@ -159,7 +159,6 @@ public class Database
      * Index 0 = pokemon<br>
      * Index 1 = moves<br>
     */
-    @SuppressWarnings("unchecked")
     public static List<ArrayList<String>>                  configDatabases  = Lists
             .newArrayList(new ArrayList<String>(), new ArrayList<String>());
 

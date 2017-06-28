@@ -143,8 +143,8 @@ public class PokecubeAdv
     
     private void registerAchieves()
     {
-        int x = -3;
-        int y = -2;
+//        int x = -3;
+//        int y = -2;
 //        Achievement beatTrainer = new AchievementDefeatTrainer("pokeadv.defeat.trainer", "pokeadv.defeat.trainer", x,
 //                y++, Items.IRON_SWORD, null);
 //        beatTrainer.registerStat();

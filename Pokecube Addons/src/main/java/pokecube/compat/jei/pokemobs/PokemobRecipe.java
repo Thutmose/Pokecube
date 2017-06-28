@@ -31,15 +31,30 @@ public class PokemobRecipe implements IDefaultRecipe
     }
 
     @Override
-    public int getRecipeSize()
-    {
-        return 2;
-    }
-
-    @Override
     public ItemStack getRecipeOutput()
     {
         return CompatWrapper.nullStack;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
     }
 
 }

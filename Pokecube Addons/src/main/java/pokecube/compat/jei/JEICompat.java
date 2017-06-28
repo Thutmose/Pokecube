@@ -130,6 +130,22 @@ public class JEICompat implements IModPlugin
                                                                                        {
                                                                                            return ingredient.getName();
                                                                                        }
+
+                                                                                       @Override
+                                                                                       public String getResourceId(
+                                                                                               PokedexEntry ingredient)
+                                                                                       {
+                                                                                           return ingredient.getModId()
+                                                                                                   + ":" + ingredient
+                                                                                                           .getName();
+                                                                                       }
+
+                                                                                       @Override
+                                                                                       public PokedexEntry copyIngredient(
+                                                                                               PokedexEntry ingredient)
+                                                                                       {
+                                                                                           return ingredient;
+                                                                                       }
                                                                                    };
 
     public static final IIngredientRenderer<PokedexEntry> ingredientRendererInput  = new IIngredientRenderer<PokedexEntry>()
@@ -138,8 +154,7 @@ public class JEICompat implements IModPlugin
                                                                                        @Override
                                                                                        public void render(
                                                                                                Minecraft minecraft,
-                                                                                               int x,
-                                                                                               int y,
+                                                                                               int x, int y,
                                                                                                PokedexEntry entry)
                                                                                        {
                                                                                            if (entry == null) return;
@@ -159,8 +174,7 @@ public class JEICompat implements IModPlugin
                                                                                                                pokemob);
                                                                                            }
                                                                                            GL11.glPushMatrix();
-                                                                                           GL11.glTranslated(
-                                                                                                   x + 8,
+                                                                                           GL11.glTranslated(x + 8,
                                                                                                    y + 17, 10);
                                                                                            double scale = 1.1;
                                                                                            GL11.glScaled(scale, scale,
@@ -213,10 +227,16 @@ public class JEICompat implements IModPlugin
                                                                                                            false);
                                                                                            RenderHelper
                                                                                                    .disableStandardItemLighting();
-                                                                                           GlStateManager.disableRescaleNormal();
-                                                                                           GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-                                                                                           GlStateManager.disableTexture2D();
-                                                                                           GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+                                                                                           GlStateManager
+                                                                                                   .disableRescaleNormal();
+                                                                                           GlStateManager
+                                                                                                   .setActiveTexture(
+                                                                                                           OpenGlHelper.lightmapTexUnit);
+                                                                                           GlStateManager
+                                                                                                   .disableTexture2D();
+                                                                                           GlStateManager
+                                                                                                   .setActiveTexture(
+                                                                                                           OpenGlHelper.defaultTexUnit);
                                                                                            GL11.glPopMatrix();
                                                                                            GL11.glPopMatrix();
                                                                                        }
@@ -245,8 +265,7 @@ public class JEICompat implements IModPlugin
                                                                                        @Override
                                                                                        public void render(
                                                                                                Minecraft minecraft,
-                                                                                               int x,
-                                                                                               int y,
+                                                                                               int x, int y,
                                                                                                PokedexEntry entry)
                                                                                        {
                                                                                            if (entry == null) return;
@@ -266,8 +285,7 @@ public class JEICompat implements IModPlugin
                                                                                                                pokemob);
                                                                                            }
                                                                                            GL11.glPushMatrix();
-                                                                                           GL11.glTranslated(
-                                                                                                   x + 12,
+                                                                                           GL11.glTranslated(x + 12,
                                                                                                    y + 22, 10);
                                                                                            double scale = 1.375;
                                                                                            GL11.glScaled(scale, scale,

@@ -6,6 +6,7 @@ package pokecube.core.entity.pokemobs.helper;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -13,6 +14,7 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -107,8 +109,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     boolean                     isAFish        = false;
 
     public TerrainSegment       currentTerrain = null;
-
-    float                       moveF;
 
     public EntityAiPokemob(World world)
     {
@@ -309,7 +309,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         jumpHelper = new PokemobJumpHelper(this);
         aiStuff = new AIStuff(this);
 
-        float moveSpeed = 0.5f;
+        float moveSpeed = 0.3f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
         moveSpeed *= speedFactor;
         if (entry.flys()) moveSpeed /= 1.25f;
@@ -349,7 +349,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Controller is done separately for ease of locating it for controls.
         controller = new LogicMountedControl(this);
 
-        if (world.isRemote) return;
+        if (world.isRemote || true) return;
 
         // Add in the Custom type of AI tasks.
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
@@ -452,10 +452,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     /** Moves the entity based on the specified heading. Args: strafe,
      * forward */// TODO fix minor bugs here.
-    public void func_191986_a(float forward, float strafe, float speed)
+    public void func_191986_a(float strafe, float up, float forward)
     {
-        double d0;
-        if (isServerWorld())
+        if (true)
         {
             PokedexEntry entry = getPokedexEntry();
             if (getTransformedTo() instanceof IPokemob)
@@ -465,227 +464,233 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             int aiState = dataManager.get(AIACTIONSTATESDW);
             boolean isAbleToFly = entry.floats() || entry.flys();
             boolean isWaterMob = entry.swims();
-            boolean shouldGoDown = false;
-            boolean shouldGoUp = false;
-            PathPoint p = null;
-            if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
+
+            if (this.isServerWorld() || this.canPassengerSteer())
             {
-                p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
-                shouldGoDown = p.y < posY - stepHeight;
-                shouldGoUp = p.y > posY + stepHeight;
-                if (isAbleToFly)
+                boolean shouldGoDown = false;
+                boolean shouldGoUp = false;
+                PathPoint p = null;
+                if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
                 {
-                    shouldGoUp = p.y > posY - stepHeight;
-                    shouldGoDown = !shouldGoUp;
-                }
-            }
-            if (!(shouldGoDown || shouldGoUp) && entry.floats())
-            {
-                setDirectionPitch(0);
-            }
-            if (!(shouldGoDown || shouldGoUp) && entry.flys())
-            {
-                setDirectionPitch(0);
-            }
-            if (!(shouldGoDown || shouldGoUp) && entry.swims())
-            {
-                setDirectionPitch(0);
-            }
-            if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ)
-                    && isAbleToFly)
-                shouldGoDown = true;
-
-            if (this.isInWater())
-            {
-                d0 = this.posY;
-                float f2 = 0.1F;
-                float f6 = swims() ? 2.5f : 1;
-                float f4;
-                float f3 = f2 * f6;
-
-                f4 = Math.min(strafe * f3, strafe);
-
-                this.moveRelative(forward, strafe, speed, f4);
-                CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
-                this.motionX *= 0.800000011920929D;
-                this.motionY *= 0.800000011920929D;
-                this.motionZ *= 0.800000011920929D;
-
-                if (!isWaterMob)
-                {
-                    this.motionY -= 0.02D;
-                }
-                if (!isWaterMob && this.isCollidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
-                        this.motionY + 0.6000000238418579D - this.posY + d0, this.motionZ))
-                {
-                    this.motionY = 0.30000001192092896D;
-                }
-            }
-            else if (this.isInLava())
-            {
-                d0 = this.posY;
-                this.moveRelative(forward, strafe, speed, 0.02F);
-                CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
-                this.motionX *= 0.5D;
-                this.motionY *= 0.5D;
-                this.motionZ *= 0.5D;
-                this.motionY -= 0.02D;
-
-                if (this.isCollidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
-                        this.motionY + 0.6000000238418579D - this.posY + d0, this.motionZ))
-                {
-                    this.motionY = 0.30000001192092896D;
-                }
-            }
-            else
-            {
-                float f2 = 0.91F;
-                float f6 = isAFish ? 0.15f : 1;
-                BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos
-                        .retain(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ);
-
-                if (this.onGround)
-                {
-                    f6 = this.world.getBlockState(blockpos$pooledmutableblockpos).getBlock().slipperiness * 0.91F;
-                }
-                else if (isAbleToFly)
-                {
-                    f2 = 0.35f;
-                }
-
-                float f3 = 0.16277136F * f6 / (f2 * f2 * f2);
-                float f4;
-
-                if (this.onGround || isAbleToFly)
-                {
-                    f4 = Math.min(this.getAIMoveSpeed() * f3, getAIMoveSpeed());
-                    if (!onGround)
+                    p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
+                    shouldGoDown = p.y < posY - stepHeight;
+                    shouldGoUp = p.y > posY + stepHeight;
+                    if (isAbleToFly)
                     {
-                        f4 *= 4;
+                        shouldGoUp = p.y > posY - stepHeight;
+                        shouldGoDown = !shouldGoUp;
                     }
                 }
-                else
+                if (!(shouldGoDown || shouldGoUp) && entry.floats())
                 {
-                    f4 = this.jumpMovementFactor;
+                    setDirectionPitch(0);
                 }
-
-                this.moveRelative(forward, strafe, speed, f4);
-                f2 = 0.91F;
-
-                if (this.isOnLadder())
+                if (!(shouldGoDown || shouldGoUp) && entry.flys())
                 {
-                    float f5 = 0.05F;
-                    this.onGround = true;
-                    if (this.motionX < (-f5))
-                    {
-                        this.motionX = (-f5);
-                    }
-
-                    if (this.motionX > f5)
-                    {
-                        this.motionX = f5;
-                    }
-
-                    if (this.motionZ < (-f5))
-                    {
-                        this.motionZ = (-f5);
-                    }
-
-                    if (this.motionZ > f5)
-                    {
-                        this.motionZ = f5;
-                    }
-
-                    this.fallDistance = 0.0F;
-
-                    if (this.motionY < -0.05D)
-                    {
-                        this.motionY = -0.05D;
-                    }
-                    if (!shouldGoUp)
-                    {
-                        this.motionY -= 0.05;
-                    }
-
+                    setDirectionPitch(0);
                 }
-                CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
-
-                if (this.world.isRemote && (!this.world.isAreaLoaded(getPosition(), 10)
-                        || !this.world.getChunkFromBlockCoords(getPosition()).isLoaded()))
+                if (!(shouldGoDown || shouldGoUp) && entry.swims())
                 {
-                    if (this.posY > 0.0D)
+                    setDirectionPitch(0);
+                }
+                if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ)
+                        && isAbleToFly)
+                    shouldGoDown = true;
+
+                if (!this.isInWater())
+                {
+                    if (!this.isInLava())
                     {
-                        this.motionY = -0.1D;
+                        float f6 = 0.91F;
+                        BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos
+                                .retain(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ);
+
+                        if (this.onGround)
+                        {
+                            f6 = this.world.getBlockState(blockpos$pooledmutableblockpos).getBlock().slipperiness
+                                    * 0.91F;
+                        }
+
+                        float f7 = 0.16277136F / (f6 * f6 * f6);
+                        float f8;
+
+                        if (this.onGround || isAbleToFly)
+                        {
+                            f8 = this.getAIMoveSpeed() * f7;
+                        }
+                        else
+                        {
+                            f8 = this.jumpMovementFactor;
+                        }
+
+                        this.moveRelative(strafe, up, forward, f8);
+                        f6 = 0.91F;
+
+                        if (this.onGround)
+                        {
+                            f6 = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX,
+                                    this.getEntityBoundingBox().minY - 1.0D, this.posZ)).getBlock().slipperiness
+                                    * 0.91F;
+                        }
+
+                        if (this.isOnLadder())
+                        {
+                            float f9 = 0.15F;
+                            this.motionX = MathHelper.clamp(this.motionX, -0.15000000596046448D, 0.15000000596046448D);
+                            this.motionZ = MathHelper.clamp(this.motionZ, -0.15000000596046448D, 0.15000000596046448D);
+                            this.fallDistance = 0.0F;
+
+                            if (this.motionY < -0.15D)
+                            {
+                                this.motionY = -0.15D;
+                            }
+                        }
+
+                        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+
+                        if (this.isCollidedHorizontally && this.isOnLadder())
+                        {
+                            this.motionY = 0.2D;
+                        }
+
+                        if (this.isPotionActive(MobEffects.LEVITATION))
+                        {
+                            this.motionY += (0.05D
+                                    * (double) (this.getActivePotionEffect(MobEffects.LEVITATION).getAmplifier() + 1)
+                                    - this.motionY) * 0.2D;
+                        }
+                        else
+                        {
+                            blockpos$pooledmutableblockpos.setPos(this.posX, 0.0D, this.posZ);
+
+                            if (!this.world.isRemote || this.world.isBlockLoaded(blockpos$pooledmutableblockpos)
+                                    && this.world.getChunkFromBlockCoords(blockpos$pooledmutableblockpos).isLoaded())
+                            {
+                                if (!this.hasNoGravity() && (!isAbleToFly || this.getAIState(SITTING, aiState)
+                                        || this.getAIState(SLEEPING, aiState)))
+                                {
+                                    this.motionY -= 0.08D;
+                                }
+                            }
+                            else if (this.posY > 0.0D)
+                            {
+                                this.motionY = -0.1D;
+                            }
+                            else
+                            {
+                                this.motionY = 0.0D;
+                            }
+                        }
+
+                        this.motionY *= 0.9800000190734863D;
+                        this.motionX *= (double) f6;
+                        this.motionZ *= (double) f6;
+                        blockpos$pooledmutableblockpos.release();
                     }
                     else
                     {
-                        this.motionY = 0.0D;
+                        double d4 = this.posY;
+                        this.moveRelative(strafe, up, forward, 0.02F);
+                        this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+                        this.motionX *= 0.5D;
+                        this.motionY *= 0.5D;
+                        this.motionZ *= 0.5D;
+
+                        if (!this.hasNoGravity())
+                        {
+                            this.motionY -= 0.02D;
+                        }
+
+                        if (this.isCollidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
+                                this.motionY + 0.6000000238418579D - this.posY + d4, this.motionZ))
+                        {
+                            this.motionY = 0.30000001192092896D;
+                        }
                     }
                 }
-                else if (!isAbleToFly || this.getAIState(SITTING, aiState) || this.getAIState(SLEEPING, aiState))
-                {
-                    this.motionY -= 0.08D;
-                }
-                else if (!(shouldGoUp || shouldGoDown))
-                {
-                }
-
                 else
                 {
-                    this.motionY *= 0.1;
-                }
+                    double d0 = this.posY;
+                    float f1 = this.getWaterSlowDown();
+                    float f2 = 0.02F;
+                    float f3 = (float) EnchantmentHelper.getDepthStriderModifier(this);
+                    if (isWaterMob) f3 *= 2.5;
 
-                if (isAbleToFly)
-                {
-                    this.motionY *= f2;
-                    f2 *= 0.75;
+                    if (f3 > 3.0F)
+                    {
+                        f3 = 3.0F;
+                    }
+
+                    if (!this.onGround)
+                    {
+                        f3 *= 0.5F;
+                    }
+
+                    if (f3 > 0.0F)
+                    {
+                        f1 += (0.54600006F - f1) * f3 / 3.0F;
+                        f2 += (this.getAIMoveSpeed() - f2) * f3 / 3.0F;
+                    }
+
+                    this.moveRelative(strafe, up, forward, f2);
+                    this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+                    this.motionX *= (double) f1;
+                    this.motionY *= 0.800000011920929D;
+                    this.motionZ *= (double) f1;
+
+                    if (!this.hasNoGravity() && !isWaterMob)
+                    {
+                        this.motionY -= 0.02D;
+                    }
+
+                    if (!isWaterMob && this.isCollidedHorizontally && this.isOffsetPositionInLiquid(this.motionX,
+                            this.motionY + 0.6000000238418579D - this.posY + d0, this.motionZ))
+                    {
+                        this.motionY = 0.30000001192092896D;
+                    }
                 }
-                else
-                {
-                    this.motionY *= 0.9100000190734863D;
-                }
-                this.motionX *= f2;
-                this.motionZ *= f2;
             }
+
+            this.prevLimbSwingAmount = this.limbSwingAmount;
+            double d5 = this.posX - this.prevPosX;
+            double d7 = this.posZ - this.prevPosZ;
+            double d9 = isAbleToFly ? this.posY - this.prevPosY : 0.0D;
+            float f10 = MathHelper.sqrt(d5 * d5 + d9 * d9 + d7 * d7) * 4.0F;
+
+            if (f10 > 1.0F)
+            {
+                f10 = 1.0F;
+            }
+
+            this.limbSwingAmount += (f10 - this.limbSwingAmount) * 0.4F;
+            this.limbSwing += this.limbSwingAmount;
+            return;
         }
-
-        this.prevLimbSwingAmount = this.limbSwingAmount;
-        double d2 = this.posX - this.prevPosX;
-        double d3 = this.posZ - this.prevPosZ;
-        float f7 = MathHelper.sqrt(d2 * d2 + d3 * d3) * 4.0F;
-
-        if (f7 > 1.0F)
-        {
-            f7 = 1.0F;
-        }
-
-        this.limbSwingAmount += (f7 - this.limbSwingAmount) * 0.4F;
-        this.limbSwing += this.limbSwingAmount;
     }
 
-    /** Used in both water and by flying objects */
-    public void func_191986_a_2(float strafe, float forward, float speed)
+    public void moveRelative(float strafe, float up, float forward, float friction)
     {
-        float f3 = strafe * strafe + forward * forward;
-        if (f3 >= 0F)
-        {
-            f3 = MathHelper.sqrt(f3);
+        up = -MathHelper.sin(getDirectionPitch() * (float) Math.PI / 180.0F);
+        float f = strafe * strafe + up * up + forward * forward;
 
-            if (f3 < 1.0F)
+        if (f >= 1.0E-4F)
+        {
+            f = MathHelper.sqrt(f);
+
+            if (f < 1.0F)
             {
-                f3 = 1.0F;
+                f = 1.0F;
             }
-            f3 = speed / f3;
-            strafe *= f3;
-            forward *= f3;
-            float f4 = MathHelper.sin(this.rotationYaw * (float) Math.PI / 180.0F)
-                    * MathHelper.cos(this.rotationPitch * (float) Math.PI / 180.0F);
-            float f5 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F)
-                    * MathHelper.cos(this.rotationPitch * (float) Math.PI / 180.0F);
-            float f6 = -MathHelper.sin(getDirectionPitch() * (float) Math.PI / 180.0F);
-            this.motionX += strafe * f5 - forward * f4;
-            this.motionZ += forward * f5 + strafe * f4;
-            this.motionY += (f6 * getMovementSpeed());
+
+            f = friction / f;
+            strafe = strafe * f;
+            up = up * f;
+            forward = forward * f;
+            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F);
+            float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F);
+            this.motionX += (double) (strafe * f2 - forward * f1);
+            this.motionY += (double) up;
+            this.motionZ += (double) (forward * f2 + strafe * f1);
         }
     }
 
@@ -1202,11 +1207,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
     }
 
-    @Override
+    @Override // Is actually move Up
     public void setMoveForward(float forward)
     {
         this.moveForward = forward;
-        moveF = forward;
     }
 
     @Override

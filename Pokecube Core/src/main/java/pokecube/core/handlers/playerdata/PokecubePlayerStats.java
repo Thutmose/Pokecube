@@ -34,19 +34,19 @@ public class PokecubePlayerStats extends PlayerData
 
     public void addCapture(UUID player, PokedexEntry entry)
     {
-        int num = getCaptures(player).get(entry);
+        int num = getCaptures(player).get(entry) == null ? 0 : getCaptures(player).get(entry);
         getCaptures(player).put(entry, num + 1);
     }
 
     public void addKill(UUID player, PokedexEntry entry)
     {
-        int num = getKills(player).get(entry);
+        int num = getKills(player).get(entry) == null ? 0 : getKills(player).get(entry);
         getKills(player).put(entry, num + 1);
     }
 
     public void addHatch(UUID player, PokedexEntry entry)
     {
-        int num = getHatches(player).get(entry);
+        int num = getHatches(player).get(entry) == null ? 0 : getHatches(player).get(entry);
         getHatches(player).put(entry, num + 1);
     }
 

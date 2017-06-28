@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -137,8 +138,9 @@ public class AIHungry extends AIBase
             if (!ate)
             {
                 float ratio = (float) ((hungerTime - hurtTime) / deathTime);
-                entity.setHealth(entity.getHealth() - entity.getMaxHealth() * ratio);
-                if (entity.getHealth() > 0) pokemob.displayMessageToOwner(
+                boolean dead = entity.getMaxHealth() * ratio > entity.getHealth();
+                entity.attackEntityFrom(DamageSource.starve, entity.getMaxHealth() * ratio);
+                if (!dead) pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
                 else pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
@@ -176,7 +178,8 @@ public class AIHungry extends AIBase
         }
 
         if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == tick
-                && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0)
+                && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0
+                && hungrymob.getHungerTime() < 0)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
             float toHeal = entity.getHealth() + dh;
@@ -381,7 +384,7 @@ public class AIHungry extends AIBase
         {
             if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
             {
-                hungrymob.setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+                hungrymob.setHungerTime(hungrymob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 return;
             }
@@ -434,7 +437,7 @@ public class AIHungry extends AIBase
             }
             else
             {
-                hungrymob.setHungerTime(-PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+                hungrymob.setHungerTime(hungrymob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 return;
             }

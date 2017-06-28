@@ -46,7 +46,6 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
         int pokeEnergy = maxEnergy;
         int dE;
         long energyTime = living.getEntityWorld().getTotalWorldTime();
-        boolean first = true;
         if (living.getEntityData().hasKey("energyRemaining"))
         {
             long time = living.getEntityData().getLong("energyTime");
@@ -56,20 +55,25 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
             }
             else
             {
-                first = false;
                 pokeEnergy = living.getEntityData().getInteger("energyRemaining");
             }
         }
-        dE = (pokeEnergy);
+        dE = (maxEnergy);
         dE = (int) Math.min(dE, power);
         if (!simulated)
         {
             living.getEntityData().setLong("energyTime", energyTime);
             living.getEntityData().setInteger("energyRemaining", pokeEnergy - dE);
-            if (first && living.ticksExisted % 2 == 0)
+            int drain = 0;
+            if (pokeEnergy - dE < 0)
+            {
+                drain = dE - pokeEnergy;
+            }
+            if (living.ticksExisted % 2 == 0)
             {
                 int time = ((IHungrymob) pokemob).getHungerTime();
-                ((IHungrymob) pokemob).setHungerTime(time + Config.instance.energyHungerCost);
+                ((IHungrymob) pokemob).setHungerTime(
+                        time + Config.instance.energyHungerCost + drain * Config.instance.energyHungerCost);
             }
         }
         return dE;

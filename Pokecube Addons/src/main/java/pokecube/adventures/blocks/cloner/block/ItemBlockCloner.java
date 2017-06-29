@@ -34,6 +34,7 @@ public class ItemBlockCloner extends ItemBlock
      * returns 16 items) */
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         subItems.add(new ItemStack(this, 1, 0));
         subItems.add(new ItemStack(this, 1, 1));
         subItems.add(new ItemStack(this, 1, 2));

@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -16,6 +17,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.database.rewards.XMLRewardsHandler.FreeBookParser.FreeTranslatedReward;
+import pokecube.core.handlers.PokedexInspector;
+import pokecube.core.handlers.PokedexInspector.IInspectReward;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class ItemHeldItems extends Item
@@ -80,6 +84,7 @@ public class ItemHeldItems extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         ItemStack stack;
         for (String s : variants)
         {
@@ -87,6 +92,15 @@ public class ItemHeldItems extends Item
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("type", s);
             subItems.add(stack);
+        }
+        for (IInspectReward reward : PokedexInspector.rewards)
+        {
+            if (reward instanceof FreeTranslatedReward)
+            {
+                ItemStack book = ((FreeTranslatedReward) reward).getInfoBook(
+                        Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
+                subItems.add(book);
+            }
         }
     }
 

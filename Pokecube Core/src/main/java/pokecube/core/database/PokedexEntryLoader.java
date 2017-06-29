@@ -115,10 +115,14 @@ public class PokedexEntryLoader
     @XmlRootElement(name = "Interact")
     public static class Interact
     {
+        @XmlAttribute
+        public boolean male   = true;
+        @XmlAttribute
+        public boolean female = true;
         @XmlElement(name = "Key")
-        Key    key;
+        Key            key;
         @XmlElement(name = "Action")
-        Action action;
+        Action         action;
     }
 
     @XmlRootElement(name = "Key")

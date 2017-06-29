@@ -13,11 +13,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -445,6 +447,8 @@ public class PokedexEntry
                     values.put(name, key.tag);
                 }
                 ItemStack keyStack = Tools.getStack(values);
+                if (!interact.female) entry.interactionLogic.noFemaleAllowed.add(keyStack);
+                if (!interact.male) entry.interactionLogic.noMaleAllowed.add(keyStack);
                 if (isForme)
                 {
                     PokedexEntry forme = Database.getEntry(action.values.get(new QName("forme")));
@@ -469,8 +473,10 @@ public class PokedexEntry
             }
         }
 
-        HashMap<ItemStack, PokedexEntry>    formes = new HashMap<>();
-        HashMap<ItemStack, List<ItemStack>> stacks = new HashMap<ItemStack, List<ItemStack>>();
+        HashMap<ItemStack, PokedexEntry>    formes          = new HashMap<>();
+        HashMap<ItemStack, List<ItemStack>> stacks          = new HashMap<ItemStack, List<ItemStack>>();
+        Set<ItemStack>                      noMaleAllowed   = Sets.newHashSet();
+        Set<ItemStack>                      noFemaleAllowed = Sets.newHashSet();
 
         boolean canInteract(ItemStack key)
         {
@@ -507,6 +513,9 @@ public class PokedexEntry
                 if (diff < 100) { return false; }
             }
             ItemStack stack = getStackKey(held);
+
+            if (!noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
+            if (!noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
 
             if (stack == CompatWrapper.nullStack)
             {

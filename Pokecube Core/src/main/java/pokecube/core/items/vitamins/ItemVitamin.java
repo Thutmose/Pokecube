@@ -101,6 +101,7 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         ItemStack stack;
         for (String s : vitamins)
         {

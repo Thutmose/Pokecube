@@ -636,6 +636,12 @@
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <ACTIVETIMES>dusk dawn</ACTIVETIMES>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="bite" lvl_44="endeavor" lvl_34="superfang" lvl_13="pursuit" lvl_24="crunch" lvl_20="scaryface" lvl_7="focusenergy" lvl_29="assurance" lvl_19="suckerpunch" lvl_1="swordsdance,tackle,tailwhip,quickattack,focusenergy" lvl_4="quickattack" lvl_16="hyperfang" lvl_39="doubleedge"/>
@@ -656,6 +662,12 @@
             <TYPE type2="Normal" type1="Dark"/>
             <ABILITY normal="Gluttony, Hustle" hidden="Thick Fat"/>
             <MASSKG>25.5</MASSKG>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="bite" lvl_44="endeavor" lvl_34="superfang" lvl_13="pursuit" lvl_24="crunch" lvl_7="focusenergy" lvl_29="suckerpunch" lvl_19="assurance" lvl_1="scaryface,swordsdance,tackle,tailwhip,quickattack,focusenergy" lvl_4="quickattack" lvl_16="hyperfang" lvl_39="doubleedge"/>
@@ -825,6 +837,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="thundershock,tailwhip,quickattack,thunderbolt"/>
@@ -845,6 +863,12 @@
             <ABILITY normal="Surge Surfer"/>
             <MASSKG>21.0</MASSKG>
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="psychic,speedswap,thundershock,tailwhip,quickattack,thunderbolt"/>
@@ -920,6 +944,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="swordsdance" lvl_11="furycutter" lvl_22="crushclaw" lvl_33="dig" lvl_24="sandtomb" lvl_20="furyswipes" lvl_53="earthquake" lvl_5="poisonsting" lvl_7="rollout" lvl_9="rapidspin" lvl_14="magnitude" lvl_1="scratch,defensecurl,sandattack,poisonsting" lvl_48="sandstorm" lvl_38="gyroball" lvl_3="sandattack" lvl_17="swift" lvl_28="slash"/>
@@ -938,6 +968,12 @@
             <TYPE type2="Steel" type1="Ice"/>
             <ABILITY normal="Snow Cloak" hidden="Slush Rush"/>
             <MASSKG>55.0</MASSKG>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="iciclespear,metalburst,iciclecrash,slash,defensecurl,iceball,metalclaw"/>
@@ -1029,6 +1065,12 @@
             <GENDERRATIO>254</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="earthpower" lvl_23="chipaway" lvl_35="bodyslam" lvl_58="superpower" lvl_1="superpower,scratch,tailwhip,doublekick,poisonsting"/>
@@ -1249,6 +1291,12 @@
             <GENDERRATIO>190</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="imprison,nastyplot,flamethrower,quickattack,confuseray,safeguard"/>
@@ -1266,6 +1314,12 @@
             <BASESTATS spdef="100" spatk="81" def="75" spd="109" hp="73" atk="67"/>
             <TYPE type2="Fairy" type1="ice"/>
             <ABILITY normal="Snow Cloak" hidden="Snow Warning"/>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="dazzlinggleam,imprison,nastyplot,icebeam,iceshard,confuseray,safeguard"/>
@@ -1763,6 +1817,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="powergem" lvl_65="feint" lvl_22="feintattack" lvl_44="nastyplot" lvl_56="captivate" lvl_61="nightslash" lvl_6="bite" lvl_9="fakeout" lvl_14="furyswipes" lvl_25="taunt" lvl_1="playrough,switcheroo,scratch,growl,bite,fakeout" lvl_37="slash" lvl_49="assurance" lvl_17="screech" lvl_28="swift"/>
@@ -1785,6 +1845,12 @@
             <TYPE type1="Dark"/>
             <ABILITY normal="Fur Coat, Technician" hidden="Rattled"/>
             <MASSKG>33.0</MASSKG>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="powergem" lvl_65="feint" lvl_22="feintattack" lvl_44="nastyplot" lvl_56="captivate" lvl_61="nightslash" lvl_6="bite" lvl_9="fakeout" lvl_69="darkpulse" lvl_14="furyswipes" lvl_25="taunt" lvl_1="swift,quash,playrough,switcheroo,scratch,growl,bite,fakeout" lvl_37="slash" lvl_49="assurance" lvl_17="screech" lvl_28="swift"/>
@@ -1894,6 +1960,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="screech" lvl_13="karatechop" lvl_35="swagger" lvl_41="crosschop" lvl_63="finalgambit" lvl_53="punishment" lvl_9="furyswipes" lvl_25="assurance" lvl_47="thrash" lvl_1="finalgambit,fling,scratch,lowkick,leer,focusenergy" lvl_59="closecombat" lvl_17="seismictoss" lvl_28="rage"/>
@@ -1949,6 +2021,12 @@
             <GENDERRATIO>63</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_34="extremespeed" lvl_1="thunderfang,bite,roar,odorsleuth,firefang"/>
@@ -2549,6 +2627,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="flamecharge" lvl_33="inferno" lvl_45="bounce" lvl_13="flamewheel" lvl_40="furyattack" lvl_41="fireblast" lvl_9="ember" lvl_29="takedown" lvl_25="firespin" lvl_1="poisonjab,megahorn,growl,quickattack,tailwhip,ember" lvl_37="agility" lvl_4="tailwhip" lvl_49="flareblitz" lvl_17="stomp"/>
@@ -5003,6 +5087,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="followme" lvl_32="rest" lvl_56="hypervoice" lvl_13="furyswipes" lvl_46="batonpass" lvl_50="mefirst" lvl_42="amnesia" lvl_7="quickattack" lvl_36="suckerpunch" lvl_1="scratch,foresight,defensecurl,quickattack" lvl_4="defensecurl" lvl_17="helpinghand" lvl_28="slam"/>
@@ -5462,6 +5552,12 @@
                     <Drop id="minecraft:wool" n="2"/>
                 </Action>
             </Interact>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="discharge" lvl_43="lightscreen" lvl_11="cottonspore" lvl_22="electroball" lvl_46="thunder" lvl_8="thundershock" lvl_18="takedown" lvl_29="powergem" lvl_25="confuseray" lvl_36="cottonguard" lvl_1="tackle,growl" lvl_15="charge" lvl_4="thunderwave" lvl_39="signalbeam"/>
@@ -5490,6 +5586,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC dye="TRUE#15" shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="cottonguard" lvl_11="cottonspore" lvl_34="powergem" lvl_56="thunder" lvl_52="lightscreen" lvl_20="takedown" lvl_8="thundershock" lvl_29="confuseray" lvl_25="electroball" lvl_47="signalbeam" lvl_1="tackle,growl,thunderwave,thundershock" lvl_4="thunderwave" lvl_16="charge" lvl_38="discharge"/>
@@ -5517,6 +5619,12 @@
             <LOGIC shoulder="FALSE"/>
             <MEGARULES forme="N___:I___"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_65="dragonpulse" lvl_11="cottonspore" lvl_35="powergem" lvl_46="cottonguard" lvl_57="lightscreen" lvl_40="discharge" lvl_51="signalbeam" lvl_62="thunder" lvl_30="thunderpunch" lvl_20="takedown" lvl_8="thundershock" lvl_29="confuseray" lvl_25="electroball" lvl_1="zapcannon,magneticflux,iondeluge,dragonpulse,firepunch,tackle,growl,thunderwave,thundershock" lvl_4="thunderwave" lvl_16="charge"/>
@@ -6435,6 +6543,12 @@
             <GENDERRATIO>190</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="playrough" lvl_67="outrage" lvl_7="bite" lvl_13="lick" lvl_35="rage" lvl_51="payback" lvl_19="headbutt" lvl_1="outrage,icefang,firefang,thunderfang,tackle,scaryface,tailwhip,charm" lvl_59="crunch" lvl_27="roar"/>
@@ -6649,6 +6763,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_22="sweetscent" lvl_8="furyswipes" lvl_67="hammerarm" lvl_29="slash" lvl_25="playnice" lvl_47="rest" lvl_58="thrash" lvl_1="hammerarm,covet,scratch,leer,lick,faketears" lvl_15="feintattack" lvl_38="scaryface" lvl_49="snore"/>
@@ -6759,6 +6879,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="icywind" lvl_11="mudslap" lvl_33="furyattack" lvl_24="icefang" lvl_46="earthquake" lvl_41="thrash" lvl_52="blizzard" lvl_5="mudsport" lvl_8="powdersnow" lvl_18="mudbomb" lvl_14="endure" lvl_58="amnesia" lvl_1="ancientpower,peck,odorsleuth,mudsport,powdersnow" lvl_37="mist" lvl_28="takedown"/>
@@ -7067,6 +7193,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_6="rapidspin" lvl_10="rollout" lvl_43="earthquake" lvl_24="slam" lvl_50="gigaimpact" lvl_30="magnitude" lvl_19="knockoff" lvl_25="furyattack" lvl_1="firefang,thunderfang,hornattack,bulldoze,growl,defensecurl" lvl_15="assurance" lvl_37="scaryface"/>
@@ -7119,6 +7251,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="hypnosis" lvl_21="takedown" lvl_43="jumpkick" lvl_33="roleplay" lvl_55="mefirst" lvl_23="confuseray" lvl_13="stomp" lvl_50="captivate" lvl_7="astonish" lvl_1="mefirst,tackle" lvl_16="sandattack" lvl_27="calmmind" lvl_38="zenheadbutt" lvl_49="imprison" lvl_3="leer"/>
@@ -7297,7 +7435,7 @@
             <GENDERRATIO>254</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
-            <Interact>
+            <Interact male="FALSE">
                 <Key id="minecraft:bucket"/>
                 <Action type="item">
                     <Drop id="minecraft:milk_bucket" n="1"/>
@@ -7965,6 +8103,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="slash" lvl_43="bellydrum" lvl_11="headbutt" lvl_13="odorsleuth" lvl_24="covet" lvl_35="doubleedge" lvl_40="rest" lvl_5="tailwhip" lvl_7="sandattack" lvl_19="furyswipes" lvl_1="playrough,rototiller,switcheroo,tackle,growl,tailwhip,sandattack" lvl_48="fling" lvl_27="bestow" lvl_17="mudsport"/>
@@ -8626,6 +8770,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_6="encore" lvl_43="reversal" lvl_33="counter" lvl_23="slash" lvl_9="uproar" lvl_14="furyswipes" lvl_1="reversal,scratch,focusenergy,encore,uproar" lvl_37="focuspunch" lvl_27="chipaway" lvl_17="endure"/>
@@ -8651,6 +8801,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_33="counter" lvl_23="covet" lvl_61="hammerarm" lvl_53="punishment" lvl_6="encore" lvl_9="slackoff" lvl_14="feintattack" lvl_36="swagger" lvl_47="fling" lvl_1="hammerarm,punishment,fling,scratch,yawn,encore,slackoff" lvl_27="chipaway" lvl_17="amnesia" lvl_39="flail"/>
@@ -8962,6 +9118,12 @@
             <GENDERRATIO>190</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="fakeout,sing,attract,doubleslap"/>
@@ -9758,6 +9920,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="odorsleuth" lvl_21="magiccoat" lvl_32="teeterdance" lvl_35="rest,snore" lvl_46="payback" lvl_52="psychic" lvl_42="psyshock" lvl_60="bounce" lvl_7="psywave" lvl_18="confuseray" lvl_29="powergem" lvl_14="psybeam" lvl_1="splash,psywave,odorsleuth,psybeam" lvl_15="psychup" lvl_26="zenheadbutt"/>
@@ -10008,6 +10176,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="taunt" lvl_22="revenge" lvl_33="embargo" lvl_12="pursuit" lvl_50="closecombat" lvl_40="xscissor" lvl_5="quickattack" lvl_8="furycutter" lvl_29="falseswipe" lvl_19="slash" lvl_36="detect" lvl_47="swordsdance" lvl_1="scratch,leer" lvl_15="honeclaws" lvl_26="crushclaw"/>
@@ -10677,6 +10851,12 @@
             <LOGIC shoulder="FALSE"/>
             <MEGARULES forme="N___:I___"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="pursuit" lvl_22="slash" lvl_33="detect" lvl_45="suckerpunch" lvl_13="taunt" lvl_57="perishsong" lvl_41="mefirst" lvl_53="futuresight" lvl_7="quickattack" lvl_29="nightslash" lvl_19="doubleteam" lvl_25="swordsdance" lvl_1="perishsong,futuresight,scratch,feint,leer,quickattack" lvl_37="psychocut" lvl_4="leer" lvl_16="bite" lvl_49="razorwind"/>
@@ -10864,6 +11044,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="swagger" lvl_44="icefang" lvl_7="rollout,encore" lvl_13="iceball" lvl_31="rest,snore" lvl_19="brine,aurorabeam" lvl_60="sheercold" lvl_25="bodyslam" lvl_1="crunch,defensecurl,powdersnow,growl,watergun" lvl_38="hail" lvl_49="blizzard"/>
@@ -11945,6 +12131,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="superfang" lvl_33="amnesia" lvl_23="hyperfang" lvl_13="rollout" lvl_53="curse" lvl_5="growl" lvl_9="defensecurl" lvl_18="headbutt" lvl_1="rototiller,tackle,growl" lvl_15="watergun" lvl_48="superpower" lvl_38="takedown" lvl_28="yawn"/>
@@ -12080,6 +12272,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_23="roar" lvl_56="discharge" lvl_67="electricterrain" lvl_13="spark" lvl_35="thunderfang" lvl_63="wildcharge" lvl_42="crunch" lvl_5="leer" lvl_9="charge" lvl_18="bite" lvl_1="electricterrain,tackle,leer,charge" lvl_49="scaryface" lvl_28="swagger"/>
@@ -12471,6 +12669,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>water</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="swift" lvl_11="quickattack" lvl_24="aquajet" lvl_35="whirlpool" lvl_46="aquatail" lvl_57="hydropump" lvl_51="agility" lvl_41="razorwind" lvl_7="watersport" lvl_18="pursuit" lvl_29="doublehit" lvl_1="icefang,crunch,sonicboom,growl,watersport,quickattack" lvl_15="watergun" lvl_4="growl"/>
@@ -12605,6 +12809,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="doublehit" lvl_43="lastresort" lvl_11="batonpass" lvl_22="swift" lvl_8="astonish" lvl_18="furyswipes" lvl_29="agility" lvl_25="screech" lvl_36="fling" lvl_1="scratch,tailwhip,sandattack,astonish" lvl_15="tickle" lvl_4="sandattack" lvl_39="nastyplot"/>
@@ -12709,6 +12919,12 @@
             <LOGIC shoulder="FALSE"/>
             <MEGARULES forme="N___:I___"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="afteryou" lvl_33="agility" lvl_66="highjumpkick" lvl_23="jumpkick" lvl_56="bounce" lvl_13="return" lvl_46="charm" lvl_63="healingwish" lvl_53="entrainment" lvl_6="endure" lvl_36="dizzypunch" lvl_1="healingwish,bounce,rototiller,mirrorcoat,magiccoat,defensecurl,splash,pound,foresight" lvl_26="batonpass" lvl_16="quickattack"/>
@@ -12727,6 +12943,12 @@
             <MASSKG>28.3</MASSKG>
             <CAPTURERATE>60</CAPTURERATE>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
     </Pokemon>
     <Pokemon name="Mismagius" number="429" base="true">
@@ -12827,6 +13049,12 @@
             <GENDERRATIO>190</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="captivate" lvl_45="bodyslam" lvl_13="hypnosis" lvl_52="attract" lvl_20="furyswipes" lvl_60="honeclaws" lvl_5="scratch" lvl_8="growl" lvl_29="assist" lvl_25="charm" lvl_1="fakeout,scratch,growl" lvl_37="slash" lvl_38="swagger" lvl_17="feintattack"/>
@@ -12903,6 +13131,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="furyswipes" lvl_32="acidspray" lvl_22="slash" lvl_34="flamethrower" lvl_56="belch" lvl_61="explosion" lvl_51="memento" lvl_41="nightslash" lvl_7="screech" lvl_18="feint" lvl_14="smokescreen" lvl_1="scratch,focusenergy,poisongas" lvl_4="poisongas" lvl_27="toxic"/>
@@ -13320,6 +13554,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_7="bite" lvl_13="yawn" lvl_50="doubleedge" lvl_40="earthquake" lvl_31="crunch" lvl_19="takedown,dig" lvl_60="fissure" lvl_25="sandtomb" lvl_1="icefang,firefang,thunderfang,tackle,sandattack,bite,yawn"/>
@@ -13921,6 +14161,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="hail" lvl_11="mudslap" lvl_33="doublehit" lvl_24="icefang" lvl_46="earthquake" lvl_41="thrash" lvl_52="blizzard" lvl_5="mudsport" lvl_8="powdersnow" lvl_18="mudbomb" lvl_14="endure" lvl_58="scaryface" lvl_1="scaryface,ancientpower,peck,odorsleuth,mudsport,powdersnow" lvl_37="mist" lvl_28="takedown"/>
@@ -14289,6 +14535,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact>
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:lava_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_65="ironhead" lvl_33="crunch" lvl_88="stoneedge" lvl_57="firespin" lvl_73="earthpower" lvl_41="scaryface" lvl_96="magmastorm" lvl_81="heatwave" lvl_9="leer" lvl_25="metalsound" lvl_1="magmastorm,heatwave,earthpower,ironhead,firespin,ancientpower" lvl_49="lavaplume" lvl_17="firefang"/>
@@ -14787,6 +15039,12 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_44="headsmash" lvl_23="rollout" lvl_13="defensecurl" lvl_52="flareblitz" lvl_20="smog" lvl_31="heatcrash" lvl_7="ember" lvl_9="odorsleuth" lvl_36="assurance" lvl_47="roar" lvl_1="tackle,tailwhip,ember,odorsleuth" lvl_15="flamecharge" lvl_3="tailwhip" lvl_17="armthrust" lvl_28="takedown" lvl_39="flamethrower"/>
@@ -14814,6 +15072,12 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="flamethrower" lvl_55="roar" lvl_23="rollout" lvl_13="defensecurl" lvl_50="headsmash" lvl_62="flareblitz" lvl_20="smog" lvl_31="heatcrash" lvl_7="ember" lvl_9="odorsleuth" lvl_1="hammerarm,tackle,tailwhip,ember,odorsleuth" lvl_15="flamecharge" lvl_38="assurance" lvl_3="tailwhip" lvl_17="armthrust" lvl_28="takedown"/>
@@ -14865,6 +15129,12 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="watersport" lvl_33="aquajet" lvl_44="retaliate" lvl_13="focusenergy" lvl_41="aquatail" lvl_52="hydropump" lvl_20="furycutter" lvl_5="tailwhip" lvl_7="watergun" lvl_25="waterpulse" lvl_36="encore" lvl_1="tackle,tailwhip,watergun,watersport" lvl_49="swordsdance" lvl_17="razorshell" lvl_28="revenge"/>
@@ -14889,6 +15159,12 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC dive="TRUE" shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="watersport" lvl_33="aquajet" lvl_45="aquatail" lvl_13="focusenergy" lvl_57="swordsdance" lvl_50="retaliate" lvl_62="hydropump" lvl_20="furycutter" lvl_5="tailwhip" lvl_7="watergun" lvl_25="waterpulse" lvl_36="slash" lvl_1="megahorn,tackle,tailwhip,watergun,watersport" lvl_38="encore" lvl_17="razorshell" lvl_28="revenge"/>
@@ -14942,6 +15218,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="hyperfang" lvl_43="slam" lvl_11="detect" lvl_22="superfang" lvl_13="sandattack" lvl_20="confuseray" lvl_6="bite" lvl_8="bide" lvl_18="hypnosis" lvl_29="psychup" lvl_25="afteryou" lvl_36="meanlook" lvl_1="rototiller,tackle,leer,bite,lowkick" lvl_16="crunch" lvl_3="leer" lvl_39="batonpass"/>
@@ -14994,6 +15276,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_33="retaliate" lvl_12="helpinghand" lvl_24="crunch" lvl_52="playrough" lvl_20="workup" lvl_42="lastresort" lvl_5="odorsleuth" lvl_8="bite" lvl_29="roar" lvl_47="gigaimpact" lvl_1="leer,tackle,odorsleuth,bite" lvl_15="takedown" lvl_38="reversal"/>
@@ -15018,6 +15306,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_12="helpinghand" lvl_24="crunch" lvl_51="lastresort" lvl_63="playrough" lvl_20="workup" lvl_42="reversal" lvl_5="odorsleuth" lvl_8="bite" lvl_29="roar" lvl_36="retaliate" lvl_1="icefang,firefang,thunderfang,leer,tackle,odorsleuth,bite" lvl_15="takedown" lvl_59="gigaimpact"/>
@@ -15068,6 +15362,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="sandattack" lvl_43="nightslash" lvl_22="fakeout" lvl_55="suckerpunch" lvl_12="furyswipes" lvl_34="slash" lvl_50="nastyplot" lvl_31="assurance" lvl_6="assist" lvl_19="torment" lvl_47="snatch" lvl_58="playrough" lvl_1="scratch,growl,assist,sandattack" lvl_15="pursuit" lvl_26="honeclaws" lvl_38="taunt" lvl_3="growl"/>
@@ -15412,6 +15712,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="shockwave" lvl_22="pursuit" lvl_31="stomp" lvl_42="agility" lvl_53="thrash" lvl_8="charge" lvl_18="flamecharge" lvl_25="spark" lvl_36="discharge" lvl_47="wildcharge" lvl_58="iondeluge" lvl_1="iondeluge,quickattack,tailwhip,charge,thunderwave" lvl_15="thunderwave" lvl_4="tailwhip"/>
@@ -16707,6 +17013,12 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="scaryface" lvl_54="nastyplot" lvl_44="embargo" lvl_34="torment" lvl_13="furyswipes" lvl_30="nightslash" lvl_64="nightdaze" lvl_5="pursuit" lvl_9="honeclaws" lvl_29="foulplay" lvl_25="taunt" lvl_1="nightdaze,imprison,uturn,scratch,leer,pursuit,honeclaws" lvl_59="imprison" lvl_49="punishment" lvl_17="feintattack" lvl_39="agility"/>
@@ -16761,6 +17073,12 @@
             <GENDERRATIO>190</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_1="bulletseed,rockblast,helpinghand,tickle,sing,tailslap"/>
@@ -17096,6 +17414,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="doublekick" lvl_32="energyball" lvl_44="naturepower" lvl_13="leechseed" lvl_24="jumpkick" lvl_52="doubleedge" lvl_20="takedown" lvl_60="solarbeam" lvl_7="sandattack" lvl_36="charm" lvl_1="megahorn,tackle,camouflage,growl,sandattack" lvl_37="hornleech" lvl_4="growl" lvl_16="feintattack" lvl_28="aromatherapy"/>
@@ -17835,6 +18159,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="brine" lvl_33="slash" lvl_66="sheercold" lvl_45="blizzard" lvl_13="icywind" lvl_41="rest" lvl_53="hail" lvl_9="playnice" lvl_29="swagger" lvl_25="endure" lvl_36="flail" lvl_1="sheercold,thrash,superpower,aquajet,growl,powdersnow,bide,icywind" lvl_37="iciclecrash" lvl_59="thrash" lvl_17="furyswipes"/>
@@ -17988,6 +18318,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="swift" lvl_33="drainpunch" lvl_45="wideguard" lvl_56="highjumpkick" lvl_13="fakeout" lvl_41="uturn" lvl_63="reversal" lvl_70="aurasphere" lvl_5="meditate" lvl_9="detect" lvl_29="forcepalm" lvl_25="calmmind" lvl_1="aurasphere,reversal,pound,meditate,detect,fakeout" lvl_37="jumpkick" lvl_49="bounce" lvl_17="doubleslap"/>
@@ -18139,6 +18475,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="scaryface" lvl_11="furyattack" lvl_56="swordsdance" lvl_46="reversal" lvl_50="thrash" lvl_61="gigaimpact" lvl_41="megahorn" lvl_31="headcharge" lvl_6="rage" lvl_36="focusenergy" lvl_1="pursuit,leer" lvl_26="revenge" lvl_16="hornattack"/>
@@ -18982,6 +19324,12 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="howl" lvl_22="firespin" lvl_55="sunnyday" lvl_34="psyshock" lvl_61="fireblast" lvl_51="psychic" lvl_30="lightscreen" lvl_42="flamethrower" lvl_75="mysticalfire" lvl_5="ember" lvl_18="psybeam" lvl_14="flamecharge" lvl_36="mysticalfire" lvl_47="willowisp" lvl_58="magicroom" lvl_69="futuresight" lvl_1="futuresight,roleplay,switcheroo,shadowball,scratch,tailwhip" lvl_27="luckychant"/>
@@ -19120,6 +19468,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_13="mudslap" lvl_57="earthquake" lvl_20="doublekick" lvl_31="flail" lvl_42="bounce" lvl_53="facade" lvl_60="hammerarm" lvl_7="quickattack" lvl_18="mudshot" lvl_1="hammerarm,rototiller,bulldoze,swordsdance,tackle,agility,leer" lvl_15="takedown" lvl_26="odorsleuth" lvl_37="dig" lvl_48="superfang"/>
@@ -19331,6 +19685,12 @@
             <GENDERRATIO>190</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="headbutt" lvl_33="echoedvoice" lvl_23="firefang" lvl_57="overheat" lvl_51="incinerate" lvl_20="takedown" lvl_42="crunch" lvl_5="ember" lvl_8="workup" lvl_1="hyperbeam,tackle,leer" lvl_15="nobleroar" lvl_48="hypervoice" lvl_38="flamethrower" lvl_28="endeavor"/>
@@ -19460,6 +19820,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_65="aerialace" lvl_22="takedown" lvl_55="leafblade" lvl_12="leechseed" lvl_34="bulkup" lvl_13="razorleaf" lvl_40="doubleedge" lvl_30="seedbomb" lvl_20="synthesis" lvl_60="earthquake" lvl_7="vinewhip" lvl_9="tailwhip" lvl_47="hornleech" lvl_58="milkdrink" lvl_1="aerialace,tackle,growth" lvl_26="bulldoze" lvl_16="worryseed"/>
@@ -19510,6 +19876,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="workup" lvl_65="taunt" lvl_12="karatechop" lvl_45="entrainment" lvl_35="bodyslam" lvl_57="hammerarm" lvl_52="skyuppercut" lvl_20="slash" lvl_42="crunch" lvl_70="lowsweep" lvl_7="armthrust" lvl_25="circlethrow" lvl_1="entrainment,hammerarm,tackle,leer" lvl_15="cometpunch" lvl_48="partingshot" lvl_27="vitalthrow"/>
@@ -19535,6 +19907,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_5="sandattack" lvl_22="bite" lvl_33="retaliate" lvl_12="headbutt" lvl_35="takedown" lvl_9="babydolleyes" lvl_42="suckerpunch" lvl_1="tackle,growl" lvl_15="tailwhip" lvl_48="cottonguard" lvl_27="odorsleuth" lvl_38="charm"/>
@@ -19587,6 +19965,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="roleplay" lvl_22="disarmingvoice" lvl_45="signalbeam" lvl_13="lightscreen" lvl_35="extrasensory" lvl_50="futuresight" lvl_40="psychic" lvl_31="shadowball" lvl_53="storedpower" lvl_5="covet" lvl_9="confusion" lvl_19="fakeout" lvl_25="psyshock" lvl_1="storedpower,mefirst,magicalleaf,scratch,leer" lvl_48="suckerpunch" lvl_17="psybeam" lvl_28="chargebeam"/>
@@ -20638,6 +21022,12 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="superfang" lvl_11="gust" lvl_23="aircutter" lvl_13="bite" lvl_35="tailwind" lvl_40="whirlwind" lvl_62="hurricane" lvl_31="razorwind" lvl_53="airslash" lvl_75="boomburst" lvl_70="dragonpulse" lvl_5="leechlife" lvl_18="agility" lvl_1="moonlight,boomburst,dragonpulse,hurricane,screech,supersonic,tackle" lvl_16="wingattack" lvl_27="roost"/>
@@ -21177,6 +21567,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="sandattack" lvl_43="hyperfang" lvl_55="rest" lvl_23="mudslap" lvl_13="odorsleuth" lvl_35="scaryface" lvl_51="thrash" lvl_31="takedown" lvl_7="pursuit" lvl_19="bite" lvl_47="yawn" lvl_1="tackle,leer,pursuit,sandattack" lvl_16="bide" lvl_27="superfang" lvl_3="leer" lvl_39="crunch"/>
@@ -21442,6 +21838,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_12="howl" lvl_23="rocktomb" lvl_34="rockslide" lvl_45="rockclimb" lvl_40="crunch" lvl_7="bite" lvl_18="odorsleuth" lvl_29="stealthrock" lvl_1="counter,reversal,taunt,tackle,leer,sandattack,bite" lvl_15="rockthrow" lvl_26="roar" lvl_37="scaryface" lvl_48="stoneedge" lvl_4="sandattack"/>
@@ -21466,6 +21868,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_12="howl" lvl_23="rocktomb" lvl_34="rockslide" lvl_45="rockclimb" lvl_40="crunch" lvl_7="bite" lvl_18="odorsleuth" lvl_29="stealthrock" lvl_1="counter,reversal,taunt,tackle,leer,sandattack,bite" lvl_15="rockthrow" lvl_26="roar" lvl_37="scaryface" lvl_48="stoneedge" lvl_4="sandattack"/>
@@ -21590,6 +21998,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="bulldoze" lvl_22="bide" lvl_55="megakick" lvl_34="heavyslam" lvl_24="highhorsepower" lvl_42="counter" lvl_60="superpower" lvl_8="rototiller" lvl_29="irondefense" lvl_47="earthquake" lvl_1="mudslap,mudsport,rototiller,bulldoze" lvl_15="doublekick" lvl_3="mudsport" lvl_17="stomp"/>
@@ -21832,6 +22246,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="babydolleyes" lvl_43="thrash" lvl_23="payback" lvl_56="doubleedge" lvl_62="superpower" lvl_30="takedown" lvl_5="bide" lvl_19="flail" lvl_0="bind" lvl_14="brutalswing" lvl_36="hammerarm" lvl_1="tackle,leer" lvl_49="painsplit"/>
@@ -21951,6 +22371,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="instruct" lvl_43="psychic" lvl_11="quash" lvl_22="feintattack" lvl_46="futuresight" lvl_50="trickroom" lvl_8="taunt" lvl_18="psychup" lvl_29="zenheadbutt" lvl_25="nastyplot" lvl_36="foulplay" lvl_1="confusion" lvl_15="storedpower" lvl_4="afteryou" lvl_39="calmmind"/>
@@ -21974,6 +22400,12 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <Interact male="FALSE">
+                <Key id="minecraft:bucket"/>
+                <Action type="item">
+                    <Drop id="minecraft:milk_bucket" n="1"/>
+                </Action>
+            </Interact>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="bulkup" lvl_43="closecombat" lvl_11="focusenergy" lvl_22="takedown" lvl_46="reversal" lvl_50="gigaimpact" lvl_8="rocksmash" lvl_18="scaryface" lvl_29="thrash" lvl_25="bestow" lvl_36="doubleedge" lvl_1="tackle" lvl_15="beatup" lvl_4="leer" lvl_39="fling"/>

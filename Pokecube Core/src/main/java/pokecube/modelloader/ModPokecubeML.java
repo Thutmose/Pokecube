@@ -15,6 +15,7 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
@@ -29,12 +30,21 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.events.onload.RegisterPokemobsEvent;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.EntityPokecubeBase;
+import pokecube.core.moves.animations.MoveAnimationHelper;
+import pokecube.core.moves.implementations.MovesAdder;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import pokecube.modelloader.common.Config;
 import pokecube.modelloader.common.ExtraDatabase;
 import pokecube.modelloader.items.ItemModelReloader;
@@ -81,6 +91,41 @@ public class ModPokecubeML implements IMobProvider
         file = new File(folder);
         new Config(new Configuration(file).getConfigFile());
         CommonProxy.registerModelProvider(ID, this);
+    }
+
+    @EventHandler
+    public void registerMobs(FMLPreInitializationEvent evt)
+    {
+        PokecubePlayerStats.initAchievements();
+        registerDatabase(evt);
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
+        System.out.println("Registered " + PokecubeCore.pokedexmap.size());
+        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
+        postInitPokemobs();
+    }
+
+    public void registerDatabase(FMLPreInitializationEvent evt)
+    {
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
+        PokecubeTerrainChecker.init();
+        MoveAnimationHelper.Instance();
+        Database.init();
+        System.out.println("Registering Moves");
+        MovesAdder.registerMoves();
+        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
+    }
+
+    private void postInitPokemobs()
+    {
+        for (PokedexEntry p : Pokedex.getInstance().getRegisteredEntries())
+        {
+            p.setSound("mobs." + p.getName());
+            p.getSoundEvent();
+            p.updateMoves();
+        }
+        System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
+                + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }
 
     @SubscribeEvent

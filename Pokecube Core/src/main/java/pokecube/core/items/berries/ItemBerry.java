@@ -159,6 +159,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
      * returns 16 items) */
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         for (Integer i : BerryManager.berryNames.keySet())
         {
             subItems.add(new ItemStack(itemIn, 1, i));

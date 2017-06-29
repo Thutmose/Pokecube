@@ -178,6 +178,7 @@ public class ItemTM extends ItemPokemobUseable
      * returns 16 items) */
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         subItems.add(new ItemStack(itemIn, 1, 0));
         subItems.add(new ItemStack(itemIn, 1, 19));
     }

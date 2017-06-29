@@ -47,6 +47,7 @@ public class ItemMegastone extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         ItemStack stack;
         for (String s : HeldItemHandler.megaVariants)
         {

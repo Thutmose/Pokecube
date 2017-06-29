@@ -139,7 +139,7 @@ public class AIHungry extends AIBase
             {
                 float ratio = (float) ((hungerTime - hurtTime) / deathTime);
                 boolean dead = entity.getMaxHealth() * ratio > entity.getHealth();
-                entity.attackEntityFrom(DamageSource.starve, entity.getMaxHealth() * ratio);
+                entity.attackEntityFrom(DamageSource.STARVE, entity.getMaxHealth() * ratio);
                 if (!dead) pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
                 else pokemob.displayMessageToOwner(

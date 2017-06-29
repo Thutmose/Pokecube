@@ -190,7 +190,7 @@ public class ItemPokemobEgg extends Item
         EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
                 PLAYERDIST, false);
         EntityLivingBase owner = player;
-        AxisAlignedBB box = location.getAABB().expand(MOBDIST, MOBDIST, MOBDIST);
+        AxisAlignedBB box = location.getAABB().grow(MOBDIST, MOBDIST, MOBDIST);
         if (owner == null)
         {
             List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,

@@ -309,7 +309,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         jumpHelper = new PokemobJumpHelper(this);
         aiStuff = new AIStuff(this);
 
-        float moveSpeed = 0.3f;
+        float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
         moveSpeed *= speedFactor;
         if (entry.flys()) moveSpeed /= 1.25f;
@@ -349,7 +349,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Controller is done separately for ease of locating it for controls.
         controller = new LogicMountedControl(this);
 
-        if (world.isRemote || true) return;
+        if (world.isRemote) return;
 
         // Add in the Custom type of AI tasks.
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
@@ -535,7 +535,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                         if (this.isOnLadder())
                         {
-                            float f9 = 0.15F;
                             this.motionX = MathHelper.clamp(this.motionX, -0.15000000596046448D, 0.15000000596046448D);
                             this.motionZ = MathHelper.clamp(this.motionZ, -0.15000000596046448D, 0.15000000596046448D);
                             this.fallDistance = 0.0F;

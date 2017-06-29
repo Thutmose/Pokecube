@@ -218,7 +218,7 @@ public class PokemobAIHurt extends EntityAIBase
                     this.taskOwner.getClass(),
                     new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ,
                             this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)
-                                    .expand(d0, 10.0D, d0));
+                                    .grow(d0, 10.0D, d0));
             Iterator<? extends EntityCreature> iterator = list.iterator();
 
             while (iterator.hasNext())

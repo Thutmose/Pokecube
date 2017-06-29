@@ -368,7 +368,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             if (ar > 2 || ar < 0.5) mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
             mainBox.addOffsetTo(offset).addOffsetTo(vec);
             AxisAlignedBB box = mainBox.getBoundingBox();
-            AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
+            AxisAlignedBB box1 = box.grow(2 + x, 2 + y, 2 + z);
             box1 = box1.grow(motionX, motionY, motionZ);
             aabbs = mainBox.getCollidingBoxes(box1, world, world);
             // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);

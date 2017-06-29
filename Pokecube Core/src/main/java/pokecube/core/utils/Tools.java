@@ -212,7 +212,7 @@ public class Tools
     {
         int ret = 0;
         List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
-                location.getAABB().expand(distance, distance, distance));
+                location.getAABB().grow(distance, distance, distance));
         for (Object o : list)
         {
             if (o instanceof IPokemob)
@@ -232,7 +232,7 @@ public class Tools
     {
         int ret = 0;
         List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
-                location.getAABB().expand(distance, distance, distance));
+                location.getAABB().grow(distance, distance, distance));
         for (Object o : list)
         {
             if (o instanceof IPokemob)
@@ -251,7 +251,7 @@ public class Tools
     {
         AxisAlignedBB box = location.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(radius, radius, radius));
+                box.grow(radius, radius, radius));
         int num = 0;
         for (Object o : list)
         {
@@ -326,7 +326,7 @@ public class Tools
         List<Entity> list = entity.getEntityWorld()
                 .getEntitiesInAABBexcluding(
                         entity, entity.getEntityBoundingBox()
-                                .grow(vec31.x * d0, vec31.y * d0, vec31.z * d0).expand(f, f, f),
+                                .grow(vec31.x * d0, vec31.y * d0, vec31.z * d0).grow(f, f, f),
                         Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
                         {
                             @Override

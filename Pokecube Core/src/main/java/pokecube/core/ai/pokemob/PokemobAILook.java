@@ -94,7 +94,7 @@ public class PokemobAILook extends EntityAIBase
             else
             {
                 this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(this.watchedClass,
-                        this.theWatcher.getEntityBoundingBox().expand(this.maxDistanceForPlayer, 3.0D,
+                        this.theWatcher.getEntityBoundingBox().grow(this.maxDistanceForPlayer, 3.0D,
                                 this.maxDistanceForPlayer),
                         this.theWatcher);
             }

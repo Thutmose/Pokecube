@@ -214,7 +214,7 @@ public class EventsHandler
         List<IPokemob> ret = new ArrayList<IPokemob>();
 
         AxisAlignedBB box = new AxisAlignedBB(owner.posX, owner.posY, owner.posZ, owner.posX, owner.posY, owner.posZ)
-                .expand(distance, distance, distance);
+                .grow(distance, distance, distance);
 
         List<EntityLivingBase> pokemobs = owner.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, box);
         for (Object o : pokemobs)

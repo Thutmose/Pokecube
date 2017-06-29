@@ -373,6 +373,7 @@ public class Pokecube extends Item implements IPokecube
         temp.set(direction.scalarMultBy(power * 10)).setVelocities(entity);
         entity.targetEntity = null;
         entity.targetLocation.clear();
+        entity.forceSpawn = true;
 
         if (PokecubeManager.isFilled(stack) && !thrower.isSneaking())
         {

@@ -474,7 +474,7 @@ public final class SpawnHandler
         int height = v.getMaxY(world);
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(radius, Math.max(height, radius), radius));
+                box.grow(radius, Math.max(height, radius), radius));
         for (Object o : list)
         {
             if (o instanceof IPokemob) num++;
@@ -617,7 +617,7 @@ public final class SpawnHandler
             int radius = PokecubeMod.core.getConfig().maxSpawnRadius;
             int height = v.getMaxY(world);
             List<EntityPokemobBase> list = world.getEntitiesWithinAABB(EntityPokemobBase.class,
-                    box.expand(radius, Math.max(height, radius), radius));
+                    box.grow(radius, Math.max(height, radius), radius));
             if (list.size() < MAXNUM * MAX_DENSITY)
             {
                 long time = System.nanoTime();

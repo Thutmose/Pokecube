@@ -73,6 +73,7 @@ public class ItemBadge extends CompatItem
     protected List<ItemStack> getTabItems(Item itemIn, CreativeTabs tab)
     {
         List<ItemStack> subItems = Lists.newArrayList();
+        if (tab != getCreativeTab()) return subItems;
         ItemStack stack;
         for (String s : variants)
         {

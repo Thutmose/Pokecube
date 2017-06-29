@@ -51,6 +51,7 @@ public class ItemTrainer extends CompatItem
     protected List<ItemStack> getTabItems(Item itemIn, CreativeTabs tab)
     {
         List<ItemStack> subItems = Lists.newArrayList();
+        if (tab != getCreativeTab()) return subItems;
         subItems.add(new ItemStack(itemIn, 1, 0));
         subItems.add(new ItemStack(itemIn, 1, 1));
         subItems.add(new ItemStack(itemIn, 1, 2));

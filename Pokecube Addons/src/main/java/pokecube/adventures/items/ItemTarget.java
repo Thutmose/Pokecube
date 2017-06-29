@@ -67,8 +67,7 @@ public class ItemTarget extends CompatItem
             if (stack.hasTagCompound() && playerIn == pokemob.getPokemonOwner())
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                pokemob.setHome(MathHelper.floor(pos.x), MathHelper.floor(pos.y - 1),
-                        MathHelper.floor(pos.z), 16);
+                pokemob.setHome(MathHelper.floor(pos.x), MathHelper.floor(pos.y - 1), MathHelper.floor(pos.z), 16);
                 // TODO localize this message.
                 playerIn.sendMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);
@@ -154,6 +153,7 @@ public class ItemTarget extends CompatItem
     protected List<ItemStack> getTabItems(Item itemIn, CreativeTabs tab)
     {
         List<ItemStack> subItems = Lists.newArrayList();
+        if (tab != getCreativeTab()) return subItems;
         subItems.add(new ItemStack(itemIn, 1, 0));
         subItems.add(new ItemStack(itemIn, 1, 1));
         subItems.add(new ItemStack(itemIn, 1, 3));

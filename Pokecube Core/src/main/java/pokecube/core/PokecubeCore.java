@@ -21,10 +21,10 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -52,8 +52,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.registries.GameData;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
+import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
@@ -73,8 +75,6 @@ import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
-import pokecube.core.events.onload.InitDatabase;
-import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.handlers.playerdata.PokecubePlayerCustomData;
@@ -84,11 +84,11 @@ import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
+import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.moves.animations.EntityMoveUse;
-import pokecube.core.moves.animations.MoveAnimationHelper;
 import pokecube.core.moves.implementations.MovesAdder;
 import pokecube.core.network.EntityProvider;
 import pokecube.core.network.NetworkWrapper;
@@ -107,7 +107,6 @@ import pokecube.core.world.gen.village.buildings.TemplatePokecenter;
 import pokecube.core.world.gen.village.buildings.TemplatePokemart;
 import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
-import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
 import thut.core.common.handlers.PlayerDataHandler;
@@ -389,8 +388,8 @@ public class PokecubeCore extends PokecubeMod
         return "" + nb;
     }
 
-    @SubscribeEvent
-    public void initRecipes(RegistryEvent.Register<IRecipe> evt)
+    @EventHandler
+    private void initRecipes(FMLInitializationEvent evt)
     {
         helper.registerRecipes(evt);
     }
@@ -464,26 +463,6 @@ public class PokecubeCore extends PokecubeMod
         MovesAdder.postInitMoves();
     }
 
-    private void postInitPokemobs()
-    {
-        for (PokedexEntry p : Pokedex.getInstance().getRegisteredEntries())
-        {
-            p.setSound("mobs." + p.getName());
-            p.getSoundEvent();
-            p.updateMoves();
-        }
-        // ResourceLocation sound = new ResourceLocation(PokecubeMod.ID +
-        // ":pokecube_caught");
-        // GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new
-        // SoundEvent(sound).setRegistryName(sound));
-        // GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID
-        // + ":pokecenter"));
-        // sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
-        // GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
-        System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
-                + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
-    }
-
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> evt)
     {
@@ -506,22 +485,16 @@ public class PokecubeCore extends PokecubeMod
         helper.tileRegistry(evt.getRegistry());
     }
 
-    public void registerDatabase(FMLPreInitializationEvent evt)
-    {
-        MinecraftForge.EVENT_BUS.post(new InitDatabase.Pre());
-        PokecubeTerrainChecker.init();
-        MoveAnimationHelper.Instance();
-        Database.init();
-        System.out.println("Registering Moves");
-        MovesAdder.registerMoves();
-        MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
-    }
-
     @EventHandler
     public void registerSounds(FMLPostInitializationEvent evt)
     {
         System.out.println("Regstering Sounds");
         Database.initSounds(evt);
+        ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
+        GameData.register_impl(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
+        GameData.register_impl(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
+        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
+        GameData.register_impl(new SoundEvent(sound).setRegistryName(sound));
     }
 
     // TODO swap this to proper events for 1.11.2/1.12
@@ -537,13 +510,6 @@ public class PokecubeCore extends PokecubeMod
                 false);
         CompatWrapper.registerModEntity(EntityPokecube.class, "cube", getUniqueEntityId(this), this, 80, 1, true);
         CompatWrapper.registerModEntity(EntityMoveUse.class, "moveuse", getUniqueEntityId(this), this, 80, 3, true);
-        PokecubePlayerStats.initAchievements();
-        registerDatabase(evt);
-        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
-        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
-        System.out.println("Registered " + pokedexmap.size());
-        MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
-        postInitPokemobs();
     }
 
     @EventHandler

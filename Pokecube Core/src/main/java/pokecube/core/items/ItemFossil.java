@@ -52,6 +52,7 @@ public class ItemFossil extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
+        if (tab != getCreativeTab()) return;
         ItemStack stack;
         for (String s : HeldItemHandler.fossilVariants)
         {

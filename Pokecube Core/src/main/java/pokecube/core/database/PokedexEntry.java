@@ -1151,7 +1151,7 @@ public class PokedexEntry
             {
                 for (EvolutionData d : e.evolutions)
                 {
-                    if (d.evolution.getPokedexNb() == this.pokedexNb)
+                    if (d.evolution == this)
                     {
                         childNb = e.getChild();
                     }

@@ -40,6 +40,7 @@ import pokecube.core.blocks.repel.BlockRepel;
 import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemFossil;
 import pokecube.core.items.ItemLuckyEgg;
@@ -614,6 +615,14 @@ public class PokecubeItems extends Items
     private static void postInitFossils()
     {
         List<ItemStack> toRemove = Lists.newArrayList();
+        for (String s : HeldItemHandler.fossilVariants)
+        {
+            ItemStack stack = new ItemStack(PokecubeItems.fossil);
+            stack.setTagCompound(new NBTTagCompound());
+            stack.getTagCompound().setString("pokemon", s);
+            PokecubeItems.addSpecificItemStack(s, stack);
+            PokecubeItems.registerFossil(stack, s);
+        }
         for (ItemStack s : fossils.keySet())
         {
             PokedexEntry num = fossils.get(s);

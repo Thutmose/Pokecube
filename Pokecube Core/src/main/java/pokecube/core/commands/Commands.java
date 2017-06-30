@@ -145,8 +145,7 @@ public class Commands extends CommandBase
                         // System.out.println(e);
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            if (((Entity) e).getDistance(cSender.getPositionVector().x,
-                                    cSender.getPositionVector().y,
+                            if (((Entity) e).getDistance(cSender.getPositionVector().x, cSender.getPositionVector().y,
                                     cSender.getPositionVector().z) > PokecubeMod.core.getConfig().maxSpawnRadius)
                                 count2++;
                             else count1++;
@@ -156,8 +155,7 @@ public class Commands extends CommandBase
                         }
                     }
                 }
-                cSender.sendMessage(
-                        CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
+                cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
                 cSender.sendMessage(new TextComponentString(counts.toString()));
                 return true;
             }
@@ -290,14 +288,14 @@ public class Commands extends CommandBase
                         if (check)
                         {
                             boolean has = tag.getBoolean(reward);
-                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward",
-                                    "", player.getName(), reward, has));
+                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward", "",
+                                    player.getName(), reward, has));
                         }
                         else
                         {
                             tag.setBoolean(reward, false);
-                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward",
-                                    "", player.getName(), reward));
+                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward", "",
+                                    player.getName(), reward));
                             PokecubePlayerDataHandler.saveCustomData(player);
                         }
                     }
@@ -409,11 +407,11 @@ public class Commands extends CommandBase
                     System.out.println(toAdd);
                     for (PokedexEntry prev : toAdd)
                     {
-                        boolean has = stats.getCaptures(player.getUniqueID()).containsKey(prev);
-                        has = has || stats.getHatches(player.getUniqueID()).containsKey(prev);
+                        boolean has = stats.getCaptures().containsKey(prev);
+                        has = has || stats.getHatches().containsKey(prev);
                         if (!has)
                         {
-                            stats.addCapture(player.getUniqueID(), entry);
+                            stats.addCapture(entry);
                         }
                     }
                 }
@@ -567,8 +565,7 @@ public class Commands extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         boolean isOp = CommandTools.isOp(sender);
         List<String> ret = new ArrayList<String>();

@@ -416,10 +416,9 @@ public class RenderHealth
                 lookVector.z * finalDistance);
 
         Entity lookedEntity = null;
-        List<Entity> entitiesInBoundingBox = e.world.getEntitiesWithinAABBExcludingEntity(e,
-                e.getEntityBoundingBox()
-                        .grow(lookVector.x * finalDistance, lookVector.y * finalDistance, lookVector.z * finalDistance)
-                        .grow(1F, 1F, 1F));
+        List<Entity> entitiesInBoundingBox = e.world.getEntitiesWithinAABBExcludingEntity(e, e.getEntityBoundingBox()
+                .expand(lookVector.x * finalDistance, lookVector.y * finalDistance, lookVector.z * finalDistance)
+                .grow(1F, 1F, 1F));
         double minDistance = distance;
 
         for (Entity entity : entitiesInBoundingBox)

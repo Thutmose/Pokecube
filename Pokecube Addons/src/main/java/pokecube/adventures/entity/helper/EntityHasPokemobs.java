@@ -67,6 +67,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         long uuidLeastTest = -1;
         long uuidMostTest = -1;
         boolean found = false;
+        int foundID = -1;
         for (int i = 0; i < 6; i++)
         {
             if (CompatWrapper.isValid(pokecubes.get(i)))
@@ -82,8 +83,9 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
                         {
                             if (Config.instance.trainerslevel)
                             {
-                                PokecubeManager.heal(mob);
                                 found = true;
+                                foundID = i;
+                                PokecubeManager.heal(mob);
                                 pokecubes.set(i, mob.copy());
                             }
                             break;
@@ -94,7 +96,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         }
         for (int i = 0; i < 6; i++)
         {
-            if (found) if (!CompatWrapper.isValid(pokecubes.get(i)))
+            if (found && foundID == i) if (!CompatWrapper.isValid(pokecubes.get(i)))
             {
                 PokecubeManager.heal(mob);
                 pokecubes.set(i, mob.copy());
@@ -205,6 +207,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         super.readEntityFromNBT(nbt);
         if (nbt.hasKey("pokemobs", 9))
         {
+            pokecubes.clear();
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {

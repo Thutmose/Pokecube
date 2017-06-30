@@ -131,7 +131,8 @@ public class PokedexInspector
         boolean done = false;
         for (IInspectReward reward : rewards)
         {
-            done = done || reward.inspect(data, evt.getEntity(), evt.shouldReward);
+            boolean has = reward.inspect(data, evt.getEntity(), evt.shouldReward);
+            done = done || has;
         }
         if (done) evt.setCanceled(true);
     }

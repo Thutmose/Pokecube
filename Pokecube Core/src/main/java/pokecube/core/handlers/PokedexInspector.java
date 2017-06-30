@@ -133,6 +133,7 @@ public class PokedexInspector
         {
             boolean has = reward.inspect(data, evt.getEntity(), evt.shouldReward);
             done = done || has;
+            if (done && !evt.shouldReward) break;
         }
         if (done) evt.setCanceled(true);
     }

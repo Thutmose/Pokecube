@@ -9,10 +9,12 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class Triggers
 {
-    public static final CatchPokemobTrigger CATCHPOKEMOB = register(new CatchPokemobTrigger());
-    public static final KillPokemobTrigger  KILLPOKEMOB  = register(new KillPokemobTrigger());
-    public static final HatchPokemobTrigger HATCHPOKEMOB = register(new HatchPokemobTrigger());
-    public static final FirstPokemobTrigger FIRSTPOKEMOB = register(new FirstPokemobTrigger());
+    public static final CatchPokemobTrigger  CATCHPOKEMOB  = register(new CatchPokemobTrigger());
+    public static final KillPokemobTrigger   KILLPOKEMOB   = register(new KillPokemobTrigger());
+    public static final HatchPokemobTrigger  HATCHPOKEMOB  = register(new HatchPokemobTrigger());
+    public static final FirstPokemobTrigger  FIRSTPOKEMOB  = register(new FirstPokemobTrigger());
+    public static final EvolvePokemobTrigger EVOLVEPOKEMOB = register(new EvolvePokemobTrigger());
+    public static final BreedPokemobTrigger  BREEDPOKEMOB  = register(new BreedPokemobTrigger());
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static <T extends ICriterionTrigger> T register(T criterion)

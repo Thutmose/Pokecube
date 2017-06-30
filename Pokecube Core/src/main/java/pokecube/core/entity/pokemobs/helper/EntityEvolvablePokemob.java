@@ -8,6 +8,7 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +28,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.events.EvolveEvent;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
@@ -180,6 +182,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 // Send post evolve event.
                 evt = new EvolveEvent.Post(evo);
                 MinecraftForge.EVENT_BUS.post(evt);
+                if (evo.getPokemonOwner() instanceof EntityPlayerMP)
+                    Triggers.EVOLVEPOKEMOB.trigger((EntityPlayerMP) evo.getPokemonOwner(), evo);
                 ((Entity) this).setDead();
                 return evo;
             }

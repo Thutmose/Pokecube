@@ -31,12 +31,13 @@ public class KillPokemobTrigger implements ICriterionTrigger<KillPokemobTrigger.
         public Instance(PokedexEntry entry)
         {
             super(ID);
-            this.entry = entry;
+            this.entry = entry != null ? entry : Database.missingno;
         }
 
         public boolean test(EntityPlayerMP player, IPokemob pokemob)
         {
-            return pokemob.getPokedexEntry() == entry && pokemob.getPokemonOwner() != player;
+            return (entry == Database.missingno || pokemob.getPokedexEntry() == entry)
+                    && pokemob.getPokemonOwner() != player;
         }
 
     }
@@ -148,7 +149,7 @@ public class KillPokemobTrigger implements ICriterionTrigger<KillPokemobTrigger.
     @Override
     public KillPokemobTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
     {
-        String name = json.get("entry").getAsString();
+        String name = json.has("entry") ? json.get("entry").getAsString() : "";
         return new KillPokemobTrigger.Instance(Database.getEntry(name));
     }
 

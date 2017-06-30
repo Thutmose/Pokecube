@@ -10,12 +10,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -165,6 +167,13 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         if (world.isRemote) { return; }
         int num = Tools.countPokemon(world, here, PokecubeMod.core.getConfig().maxSpawnRadius);
         if (!(getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
+        if (male != null
+                && (this.getOwner() instanceof EntityPlayerMP || male.getPokemonOwner() instanceof EntityPlayerMP))
+        {
+            EntityPlayerMP player = this.getOwner() instanceof EntityPlayerMP ? (EntityPlayerMP) this.getOwner()
+                    : (EntityPlayerMP) male.getPokemonOwner();
+            Triggers.BREEDPOKEMOB.trigger(player, this, male);
+        }
         Vector3 pos = Vector3.getNewVector().set(this);
         if (pos.isClearOfBlocks(getEntityWorld()))
         {

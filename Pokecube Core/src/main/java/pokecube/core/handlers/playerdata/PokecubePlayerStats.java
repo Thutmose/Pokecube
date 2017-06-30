@@ -178,26 +178,26 @@ public class PokecubePlayerStats extends PlayerData
 
         // Comment in this stuff if you want to generate get item achivements
         // for different types.
-        for (PokeType type : PokeType.values())
-        {
-            if (type != PokeType.unknown)
-            {
-                String json = BadgeGen.makeJson(type.name, "pokecube_adventures:trainers/root");
-                File dir = new File("./mods/pokecube/assets/pokecube_adventures/advancements/trainers/");
-                if (!dir.exists()) dir.mkdirs();
-                File file = new File(dir, "get_" + type.name + "_badge.json");
-                try
-                {
-                    FileWriter write = new FileWriter(file);
-                    write.write(json);
-                    write.close();
-                }
-                catch (IOException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        for (PokeType type : PokeType.values())
+//        {
+//            if (type != PokeType.unknown)
+//            {
+//                String json = BadgeGen.makeJson(type.name, "pokecube_adventures:trainers/root");
+//                File dir = new File("./mods/pokecube/assets/pokecube_adventures/advancements/trainers/");
+//                if (!dir.exists()) dir.mkdirs();
+//                File file = new File(dir, "get_" + type.name + "_badge.json");
+//                try
+//                {
+//                    FileWriter write = new FileWriter(file);
+//                    write.write(json);
+//                    write.close();
+//                }
+//                catch (IOException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
     /** Comment these out to re-generate advancements. */

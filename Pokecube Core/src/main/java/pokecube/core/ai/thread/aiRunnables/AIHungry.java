@@ -177,6 +177,11 @@ public class AIHungry extends AIBase
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
 
+        // cap hunger.
+        hungerTime = hungrymob.getHungerTime();
+        int hunger = Math.max(hungerTime, -deathTime / 4);
+        if (hunger != hungerTime) hungrymob.setHungerTime(hunger);
+
         if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == tick
                 && !entity.getEntityWorld().isRemote && hungrymob.getHungerCooldown() < 0
                 && hungrymob.getHungerTime() < 0)

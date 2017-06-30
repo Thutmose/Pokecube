@@ -297,8 +297,8 @@ public class GuiPokemob extends GuiContainer
         float full = PokecubeMod.core.getConfig().pokemobLifeSpan / 4 + PokecubeMod.core.getConfig().pokemobLifeSpan;
         float current = -(mob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan);
         float scale = 100f / full;
-        // System.out.println(current + " " + scale+ " "+full);
         current *= scale / 100f;
+        current = Math.min(1, current);
         int i = 84, j = 37;
         int col = 0xFF555555;
         this.drawGradientRect(i, j, i + 80, j + 10, col, col);

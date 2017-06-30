@@ -35,6 +35,7 @@ public class AdvancementGenerator
         displayJson.add("icon", icon);
         displayJson.add("title", title);
         displayJson.add("description", description);
+        // if (entry.legendary) displayJson.addProperty("frame", "challenge");
         return displayJson;
     }
 
@@ -49,6 +50,7 @@ public class AdvancementGenerator
         JsonObject sub = new JsonObject();
         sub.addProperty("trigger", "pokecube:" + id);
         JsonObject conditions = new JsonObject();
+        if (id.equals("catch") || id.equals("kill")) conditions.addProperty("lenient", true);
         conditions.addProperty("entry", entry.getName());
         sub.add("conditions", conditions);
         critmap.add(id + "_" + entry.getName(), sub);
@@ -64,7 +66,6 @@ public class AdvancementGenerator
         {
             json.addProperty("parent", parent);
         }
-        json.addProperty("entry", entry.getName());
         return GSON.toJson(json);
     }
 }

@@ -3,6 +3,7 @@ package pokecube.core.network.pokemobs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -15,6 +16,7 @@ import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -129,6 +131,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
                             megaEntry.getUnlocalizedName()));
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
+                    Triggers.MEGAEVOLVEPOKEMOB.trigger((EntityPlayerMP) player, pokemob);
                 }
             }
             else

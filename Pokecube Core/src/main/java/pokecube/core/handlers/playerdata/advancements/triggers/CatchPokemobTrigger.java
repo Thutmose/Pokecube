@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 
@@ -27,16 +28,44 @@ public class CatchPokemobTrigger implements ICriterionTrigger<CatchPokemobTrigge
     public static class Instance extends AbstractCriterionInstance
     {
         final PokedexEntry entry;
+        boolean            lenient = false;
+        int                number  = -1;
+        int                sign    = 0;
 
-        public Instance(PokedexEntry entry)
+        public Instance(PokedexEntry entry, boolean lenient, int number, int sign)
         {
             super(ID);
             this.entry = entry != null ? entry : Database.missingno;
+            this.lenient = lenient;
+            this.number = number;
+            this.sign = sign;
         }
 
         public boolean test(EntityPlayerMP player, IPokemob pokemob)
         {
-            return (entry == Database.missingno || pokemob.getPokedexEntry() == entry)
+            PokedexEntry entry = this.entry;
+            PokedexEntry testEntry = pokemob.getPokedexEntry();
+            boolean numCheck = true;
+            if (lenient)
+            {
+                entry = entry.getBaseForme();
+                testEntry = testEntry.getBaseForme();
+            }
+            if (number != -1)
+            {
+                int num = -1;
+                if (entry == Database.missingno)
+                {
+                    num = CaptureStats.getNumberUniqueCaughtBy(player.getUniqueID());
+                }
+                else
+                {
+                    num = CaptureStats.getTotalNumberOfPokemobCaughtBy(player.getUniqueID(), entry);
+                }
+                if (num == -1) return false;
+                numCheck = num * sign > number;
+            }
+            return numCheck && (entry == Database.missingno || testEntry == entry)
                     && pokemob.getPokemonOwner() == player;
         }
 
@@ -150,7 +179,10 @@ public class CatchPokemobTrigger implements ICriterionTrigger<CatchPokemobTrigge
     public CatchPokemobTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context)
     {
         String name = json.has("entry") ? json.get("entry").getAsString() : "";
-        return new CatchPokemobTrigger.Instance(Database.getEntry(name));
+        int number = json.has("number") ? json.get("number").getAsInt() : -1;
+        int sign = json.has("sign") ? json.get("sign").getAsInt() : 0;
+        boolean lenient = json.has("lenient") ? json.get("lenient").getAsBoolean() : false;
+        return new CatchPokemobTrigger.Instance(Database.getEntry(name), lenient, number, sign);
     }
 
     public void trigger(EntityPlayerMP player, IPokemob pokemob)

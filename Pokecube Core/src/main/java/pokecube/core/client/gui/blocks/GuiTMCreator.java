@@ -114,6 +114,7 @@ public class GuiTMCreator extends GuiContainer
     {
         super.drawScreen(i, j, f);
         textFieldSearch.drawTextBox();
+        this.renderHoveredToolTip(i, j);
     }
 
     @Override

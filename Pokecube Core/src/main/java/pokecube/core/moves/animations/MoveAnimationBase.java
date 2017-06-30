@@ -1,6 +1,8 @@
 package pokecube.core.moves.animations;
 
 import net.minecraft.item.EnumDyeColor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
 
@@ -17,6 +19,8 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     protected float   angle           = 0;
     protected boolean flat            = false;
     protected boolean reverse         = false;
+
+    protected String  rgbaVal         = null;
 
     public int getColourFromMove(Move_Base move, int alpha)
     {
@@ -42,6 +46,7 @@ public abstract class MoveAnimationBase implements IMoveAnimation
         return duration;
     }
 
+    @SideOnly(Side.CLIENT)
     public abstract void initColour(long time, float partialTicks, Move_Base move);
 
     @Override
@@ -55,8 +60,12 @@ public abstract class MoveAnimationBase implements IMoveAnimation
     {
     }
 
-    protected void initRGBA(String val)
+    @SideOnly(Side.CLIENT)
+    public void reallyInitRGBA()
     {
+        if (rgbaVal == null) return;
+        String val = rgbaVal;
+        rgbaVal = null;
         int alpha = 255;
         EnumDyeColor colour = null;
         try
@@ -84,5 +93,10 @@ public abstract class MoveAnimationBase implements IMoveAnimation
         if (colour == null) return;
         rgba = colour.getColorValue() + 0x01000000 * alpha;
         customColour = true;
+    }
+
+    protected void initRGBA(String val)
+    {
+        this.rgbaVal = val;
     }
 }

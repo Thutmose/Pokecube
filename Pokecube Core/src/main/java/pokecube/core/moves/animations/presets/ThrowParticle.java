@@ -82,9 +82,11 @@ public class ThrowParticle extends MoveAnimationBase
         return duration;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        reallyInitRGBA();
         if (particle.equals("airbubble"))
         {
             rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();

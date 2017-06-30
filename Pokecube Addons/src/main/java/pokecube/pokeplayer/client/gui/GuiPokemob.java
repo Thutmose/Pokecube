@@ -339,6 +339,7 @@ public class GuiPokemob extends GuiContainer
             else text.add(I18n.format("pokemob.stance.stand"));
             this.drawHoveringText(text, x, y);
         }
+        this.renderHoveredToolTip(x, y);
     }
 
     @Override

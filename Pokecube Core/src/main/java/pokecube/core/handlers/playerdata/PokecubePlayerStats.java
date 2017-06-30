@@ -17,7 +17,9 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.playerdata.advancements.AdvancementGenerator;
-import pokecube.core.handlers.playerdata.advancements.criteria.Triggers;
+import pokecube.core.handlers.playerdata.advancements.BadgeGen;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
+import pokecube.core.utils.PokeType;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
 /** Player capture/hatch/kill stats */
@@ -174,21 +176,44 @@ public class PokecubePlayerStats extends PlayerData
     public static void initAchievements()
     {
 
+        // Comment in this stuff if you want to generate get item achivements
+        // for different types.
+        for (PokeType type : PokeType.values())
+        {
+            if (type != PokeType.unknown)
+            {
+                String json = BadgeGen.makeJson(type.name, "pokecube_adventures:trainers/root");
+                File dir = new File("./mods/pokecube/assets/pokecube_adventures/advancements/trainers/");
+                if (!dir.exists()) dir.mkdirs();
+                File file = new File(dir, "get_" + type.name + "_badge.json");
+                try
+                {
+                    FileWriter write = new FileWriter(file);
+                    write.write(json);
+                    write.close();
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
-    /** This is moved here for future 1.12 stuff. */
+    /** Comment these out to re-generate advancements. */
     public static void registerAchievements(PokedexEntry entry)
     {
-//        make(entry, "catch", "pokecube:capture/get_first_pokemob", "capture");
-//        make(entry, "kill", "pokecube:kill/root", "kill");
-//        make(entry, "hatch", "pokecube:hatch/root", "hatch");
+        // make(entry, "catch", "pokecube_mobs:capture/get_first_pokemob",
+        // "capture");
+        // make(entry, "kill", "pokecube_mobs:kill/root", "kill");
+        // make(entry, "hatch", "pokecube_mobs:hatch/root", "hatch");
     }
 
-    private static void make(PokedexEntry entry, String id, String parent, String path)
+    protected static void make(PokedexEntry entry, String id, String parent, String path)
     {
         ResourceLocation key = new ResourceLocation(entry.getModId(), id + "_" + entry.getName());
         String json = AdvancementGenerator.makeJson(entry, id, parent);
-        File dir = new File("./mods/pokecube/assets/pokecube/advancements/" + path + "/");
+        File dir = new File("./mods/pokecube/assets/pokecube_mobs/advancements/" + path + "/");
         if (!dir.exists()) dir.mkdirs();
         File file = new File(dir, key.getResourcePath() + ".json");
         try

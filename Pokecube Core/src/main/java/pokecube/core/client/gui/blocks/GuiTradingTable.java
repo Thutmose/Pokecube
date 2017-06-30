@@ -133,6 +133,7 @@ public class GuiTradingTable extends GuiContainer
             GL11.glDisable(GL11.GL_BLEND);
             GL11.glPopMatrix();
         }
+        this.renderHoveredToolTip(i, j);
     }
 
     private EntityLiving getEntityToDisplay(int index)

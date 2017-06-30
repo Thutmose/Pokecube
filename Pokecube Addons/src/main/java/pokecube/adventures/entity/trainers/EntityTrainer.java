@@ -35,6 +35,7 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.ai.trainers.AITrainerBattle;
 import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
@@ -324,31 +325,14 @@ public class EntityTrainer extends EntityHasPokemobs
     }
 
     public void checkItemAchievement(ItemStack item, EntityPlayer player)
-    {//TODO redo for advancements.
-//        Achievement stat = null;
-//        if (item.getItem() instanceof ItemBadge)
-//        {
-//            for (String s : ItemBadge.variants)
-//            {
-//                if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
-//                {
-//                    stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
-//                    break;
-//                }
-//            }
-//        }
-//        if (stat != null)
-//        {
-//            player.addStat(stat);
-//        }
+    {
     }
 
     public void checkDefeatAchievement(EntityPlayer player)
-    {//TODO redo for advancements.
-//        boolean leader = this instanceof EntityLeader;
-//        Achievement achieve = PokecubePlayerStats
-//                .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
-//        player.addStat(achieve);
+    {
+        boolean leader = this instanceof EntityLeader;
+        if (leader) Triggers.BEATLEADER.trigger((EntityPlayerMP) player, this);
+        else Triggers.BEATTRAINER.trigger((EntityPlayerMP) player, this);
     }
 
     @Override

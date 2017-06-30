@@ -28,6 +28,15 @@ public class GuiAFA extends GuiContainer
     }
 
     @Override
+    /** Draws the screen and all the components in it. */
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException
     {
         ContainerAFA container = (ContainerAFA) inventorySlots;
@@ -152,8 +161,9 @@ public class GuiAFA extends GuiContainer
     /** Draw the foreground layer for the GuiContainer (everything in front of
      * the items) */
     @Override
-    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
                 4210752);
         ContainerAFA container = (ContainerAFA) inventorySlots;

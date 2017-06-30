@@ -19,6 +19,7 @@ import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.trainers.EntityLeader;
@@ -102,6 +103,7 @@ public class PokecubeAdv
     public PokecubeAdv()
     {
         MinecraftForge.EVENT_BUS.register(this);
+        Triggers.init();
     }
 
     @EventHandler

@@ -52,6 +52,13 @@ public class Move_Transform extends Move_Basic
 
         }
 
+        @Override
+        public void reallyInitRGBA()
+        {
+            // TODO Auto-generated method stub
+            
+        }
+
     }
 
     /** @param name

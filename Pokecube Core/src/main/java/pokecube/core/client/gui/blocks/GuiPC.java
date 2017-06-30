@@ -193,9 +193,9 @@ public class GuiPC extends GuiContainer
     }
 
     @Override
-    public void drawScreen(int i1, int j, float f)
+    public void drawScreen(int mouseX, int mouseY, float f)
     {
-        super.drawScreen(i1, j, f);
+        super.drawScreen(mouseX, mouseY, f);
         textFieldSelectedBox.drawTextBox();
 
         if (!bound) textFieldSearch.drawTextBox();
@@ -233,6 +233,7 @@ public class GuiPC extends GuiContainer
                     GL11.glPopMatrix();
                 }
             }
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override

@@ -27,9 +27,11 @@ public class ParticleFlow extends MoveAnimationBase
     {
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        reallyInitRGBA();
         if (customColour) return;
         if (particle.equals("airbubble"))
         {

@@ -83,16 +83,16 @@ public class GuiBag extends GuiContainer
         GL11.glPushMatrix();
         GL11.glScaled(0.8, 0.8, 0.8);
         String pcTitle = cont.invPlayer.player.getName() + "'s Bag";
-        fontRenderer.drawString(cont.getPage(), xSize / 2 - fontRenderer.getStringWidth(cont.getPage()) / 3 - 60,
-                13, 4210752);
+        fontRenderer.drawString(cont.getPage(), xSize / 2 - fontRenderer.getStringWidth(cont.getPage()) / 3 - 60, 13,
+                4210752);
         fontRenderer.drawString(pcTitle, xSize / 2 - fontRenderer.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
         GL11.glPopMatrix();
     }
 
     @Override
-    public void drawScreen(int i1, int j, float f)
+    public void drawScreen(int mouseX, int mouseY, float f)
     {
-        super.drawScreen(i1, j, f);
+        super.drawScreen(mouseX, mouseY, f);
         textFieldSelectedBox.drawTextBox();
 
         textFieldSearch.drawTextBox();
@@ -107,7 +107,8 @@ public class GuiBag extends GuiContainer
                 int y = (i / 9) * 18 + height / 2 - 96;
 
                 String name = stack == null ? "" : stack.getDisplayName().toLowerCase(java.util.Locale.ENGLISH);
-                if (name.isEmpty() || !name.toLowerCase(java.util.Locale.ENGLISH).contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH)))
+                if (name.isEmpty() || !name.toLowerCase(java.util.Locale.ENGLISH)
+                        .contains(textFieldSearch.getText().toLowerCase(java.util.Locale.ENGLISH)))
                 {
                     GL11.glPushMatrix();
                     GL11.glTranslated(0, 0, zLevel);
@@ -130,6 +131,7 @@ public class GuiBag extends GuiContainer
                     GL11.glPopMatrix();
                 }
             }
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
@@ -147,12 +149,12 @@ public class GuiBag extends GuiContainer
         String rename = I18n.format("tile.pc.rename");
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 137, height / 2 - yOffset - 125, 50, 20, rename));
 
-        textFieldSelectedBox = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
-                25, 10);
+        textFieldSelectedBox = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 13, height / 2 - yOffset + 5, 25,
+                10);
         textFieldSelectedBox.setText(page);
 
-        textFieldBoxName = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 190, height / 2 - yOffset - 80,
-                100, 10);
+        textFieldBoxName = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 190, height / 2 - yOffset - 80, 100,
+                10);
         textFieldBoxName.setText(boxName);
 
         textFieldSearch = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,

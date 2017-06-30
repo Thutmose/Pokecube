@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube_adventures:badge",
+      "nbt": "{\"type\":\"badgepoison\"}"
+    },
+    "title": {
+      "translate": "achievement.achievement.pokeadv.get.badgepoison"
+    },
+    "description": {
+      "translate": "achievement.achievement.pokeadv.get.badgepoison.desc"
+    }
+  },
+  "criteria": {
+    "get_badge": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "pokecube_adventures:badge",
+            "nbt": "{\"type\":\"badgepoison\"}"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "pokecube_adventures:trainers/root"
+}

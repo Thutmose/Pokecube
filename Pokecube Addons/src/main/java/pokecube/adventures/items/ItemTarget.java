@@ -36,6 +36,7 @@ import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
@@ -186,7 +187,7 @@ public class ItemTarget extends CompatItem
             EnumHand hand)
     {
         int meta = itemstack.getItemDamage();
-
+PokecubePlayerStats.initAchievements();
         Vector3 p = Vector3.getNewVector().set(player, false);
         Vector3 d = Vector3.getNewVector().set(player.getLookVec());
 

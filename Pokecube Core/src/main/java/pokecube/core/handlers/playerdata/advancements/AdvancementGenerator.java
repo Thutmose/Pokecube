@@ -59,7 +59,7 @@ public class AdvancementGenerator
     {
         JsonObject json = new JsonObject();
         json.add("display", fromInfo(entry, id));
-        json.add("criteria", AdvancementGenerator.fromCriteria(entry, id));
+        json.add("criteria", fromCriteria(entry, id));
         if (parent != null)
         {
             json.addProperty("parent", parent);

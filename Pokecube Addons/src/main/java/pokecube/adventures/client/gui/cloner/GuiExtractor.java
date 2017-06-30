@@ -33,11 +33,21 @@ public class GuiExtractor extends GuiContainer
         this.drawTexturedModalRect(k + 78, l + 34, 176, 0, l1 + 1, 16);
     }
 
+    @Override
+    /** Draws the screen and all the components in it. */
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
     /** Draw the foreground layer for the GuiContainer (everything in front of
      * the items) */
     @Override
-    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
         this.fontRenderer.drawString(I18n.format("container.extractor", new Object[0]), 28, 6, 4210752);
         this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
                 4210752);
@@ -47,7 +57,7 @@ public class GuiExtractor extends GuiContainer
     {
         int i = this.tile.getField(0);
         int j = this.tile.getField(1);
-//        System.out.println(i + " " + j);
+        // System.out.println(i + " " + j);
         return j != 0 && i != 0 ? i * pixels / j : 0;
     }
 

@@ -323,18 +323,16 @@ public class Tools
         Vec3d vec32 = vec3.addVector(vec31.x * d0, vec31.y * d0, vec31.z * d0);
         Entity pointedEntity = null;
         float f = 0.5F;
-        List<Entity> list = entity.getEntityWorld()
-                .getEntitiesInAABBexcluding(
-                        entity, entity.getEntityBoundingBox()
-                                .grow(vec31.x * d0, vec31.y * d0, vec31.z * d0).grow(f, f, f),
-                        Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
-                        {
-                            @Override
-                            public boolean apply(Entity entity)
-                            {
-                                return entity.canBeCollidedWith();
-                            }
-                        }));
+        List<Entity> list = entity.getEntityWorld().getEntitiesInAABBexcluding(entity,
+                entity.getEntityBoundingBox().expand(vec31.x * d0, vec31.y * d0, vec31.z * d0).grow(f, f, f),
+                Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+                {
+                    @Override
+                    public boolean apply(Entity entity)
+                    {
+                        return entity.canBeCollidedWith();
+                    }
+                }));
         double d2 = distance;
 
         for (int j = 0; j < list.size(); ++j)
@@ -631,8 +629,8 @@ public class Tools
         boolean flag = entityplayer.inventory.addItemStackToInventory(itemstack);
         if (flag)
         {
-            entityplayer.world.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY,
-                    entityplayer.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
+            entityplayer.world.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY, entityplayer.posZ,
+                    SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
                     ((entityplayer.getRNG().nextFloat() - entityplayer.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             entityplayer.inventoryContainer.detectAndSendChanges();
         }

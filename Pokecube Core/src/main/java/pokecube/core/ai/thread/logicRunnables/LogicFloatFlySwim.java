@@ -110,9 +110,9 @@ public class LogicFloatFlySwim extends LogicBase
                     && !pokemob.getPokemonAIState(IMoveConstants.SLEEPING)
                     || here.getBlockState(entity.world).getMaterial().isLiquid())
             {
-                entity.motionY += 0.01;
+                entity.motionY += 0.005;
             }
-            else entity.motionY -= 0.01;
+            else entity.motionY -= 0.005;
             if (down == null || pokemob.getPokemonAIState(IMoveConstants.SITTING))
             {
                 entity.motionY -= 0.02;

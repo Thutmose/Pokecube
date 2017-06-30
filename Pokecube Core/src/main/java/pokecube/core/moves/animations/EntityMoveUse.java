@@ -8,7 +8,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Rotations;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -21,25 +20,32 @@ import thut.api.maths.Vector3;
 
 public class EntityMoveUse extends Entity
 {
-    private static final Rotations        EMPTYLOCATION = new Rotations(0.0F, 0.0F, 0.0F);
-    static final DataParameter<String>    MOVENAME      = EntityDataManager.<String> createKey(EntityMoveUse.class,
+    static final DataParameter<String>  MOVENAME      = EntityDataManager.<String> createKey(EntityMoveUse.class,
             DataSerializers.STRING);
-    static final DataParameter<Rotations> ENDLOC        = EntityDataManager.<Rotations> createKey(EntityMoveUse.class,
-            DataSerializers.ROTATIONS);
-    static final DataParameter<Rotations> STARTLOC      = EntityDataManager.<Rotations> createKey(EntityMoveUse.class,
-            DataSerializers.ROTATIONS);
-    static final DataParameter<Integer>   USER          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   ENDX          = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+            DataSerializers.FLOAT);
+    static final DataParameter<Float>   ENDY          = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+            DataSerializers.FLOAT);
+    static final DataParameter<Float>   ENDZ          = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+            DataSerializers.FLOAT);
+    static final DataParameter<Float>   STARTX        = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+            DataSerializers.FLOAT);
+    static final DataParameter<Float>   STARTY        = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+            DataSerializers.FLOAT);
+    static final DataParameter<Float>   STARTZ        = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+            DataSerializers.FLOAT);
+    static final DataParameter<Integer> USER          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
-    static final DataParameter<Integer>   TARGET        = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> TARGET        = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
-    static final DataParameter<Integer>   TICK          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> TICK          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
-    static final DataParameter<Integer>   APPLYTICK     = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> APPLYTICK     = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
 
-    Vector3                               end           = Vector3.getNewVector();
-    Vector3                               start         = Vector3.getNewVector();
-    boolean                               applied       = false;
+    Vector3                             end           = Vector3.getNewVector();
+    Vector3                             start         = Vector3.getNewVector();
+    boolean                             applied       = false;
 
     public EntityMoveUse(World worldIn)
     {
@@ -74,32 +80,34 @@ public class EntityMoveUse extends Entity
     {
         start.set(location);
         start.moveEntity(this);
-        getDataManager().set(STARTLOC, new Rotations((float) start.x, (float) start.y, (float) start.z));
+        getDataManager().set(STARTX, (float) start.x);
+        getDataManager().set(STARTY, (float) start.y);
+        getDataManager().set(STARTZ, (float) start.z);
         return this;
     }
 
     public EntityMoveUse setEnd(Vector3 location)
     {
         end.set(location);
-        getDataManager().set(ENDLOC, new Rotations((float) end.x, (float) end.y, (float) end.z));
+        getDataManager().set(ENDX, (float) end.x);
+        getDataManager().set(ENDY, (float) end.y);
+        getDataManager().set(ENDZ, (float) end.z);
         return this;
     }
 
     public Vector3 getStart()
     {
-        Rotations rot = getDataManager().get(STARTLOC);
-        start.x = rot.getX();
-        start.y = rot.getY();
-        start.z = rot.getZ();
+        start.x = getDataManager().get(STARTX);
+        start.y = getDataManager().get(STARTY);
+        start.z = getDataManager().get(STARTZ);
         return start;
     }
 
     public Vector3 getEnd()
     {
-        Rotations rot = getDataManager().get(ENDLOC);
-        end.x = rot.getX();
-        end.y = rot.getY();
-        end.z = rot.getZ();
+        end.x = getDataManager().get(ENDX);
+        end.y = getDataManager().get(ENDY);
+        end.z = getDataManager().get(ENDZ);
         return end;
     }
 
@@ -212,8 +220,12 @@ public class EntityMoveUse extends Entity
     protected void entityInit()
     {
         this.getDataManager().register(MOVENAME, "");
-        this.getDataManager().register(ENDLOC, EMPTYLOCATION);
-        this.getDataManager().register(STARTLOC, EMPTYLOCATION);
+        this.getDataManager().register(ENDX, 0f);
+        this.getDataManager().register(ENDY, 0f);
+        this.getDataManager().register(ENDZ, 0f);
+        this.getDataManager().register(STARTX, 0f);
+        this.getDataManager().register(STARTY, 0f);
+        this.getDataManager().register(STARTZ, 0f);
         this.getDataManager().register(USER, -1);
         this.getDataManager().register(TARGET, -1);
         this.getDataManager().register(TICK, 0);

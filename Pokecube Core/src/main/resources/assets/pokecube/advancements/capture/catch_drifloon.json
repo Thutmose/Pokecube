@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Drifloon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Drifloon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Drifloon": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Drifloon"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Drifloon"
+}

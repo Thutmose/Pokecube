@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Wailmer.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wailmer.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Wailmer": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Wailmer"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Wailmer"
+}

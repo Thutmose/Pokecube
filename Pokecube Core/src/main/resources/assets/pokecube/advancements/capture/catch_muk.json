@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Muk.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Muk.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Muk": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Muk"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Muk"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Hitmontop.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmontop.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Hitmontop": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Hitmontop"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Hitmontop"
+}

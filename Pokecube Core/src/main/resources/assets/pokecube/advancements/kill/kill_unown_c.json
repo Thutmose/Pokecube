@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Unown_C.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Unown_C.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Unown_C": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Unown_C"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Unown_C"
+}

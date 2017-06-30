@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Delphox.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Delphox.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Delphox": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Delphox"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Delphox"
+}

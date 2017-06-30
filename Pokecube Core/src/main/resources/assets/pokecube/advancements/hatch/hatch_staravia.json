@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Staravia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Staravia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Staravia": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Staravia"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Staravia"
+}

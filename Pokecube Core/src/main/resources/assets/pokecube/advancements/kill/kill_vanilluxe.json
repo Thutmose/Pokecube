@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Vanilluxe.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vanilluxe.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Vanilluxe": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Vanilluxe"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Vanilluxe"
+}

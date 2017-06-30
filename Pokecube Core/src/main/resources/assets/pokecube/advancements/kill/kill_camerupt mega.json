@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Camerupt Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Camerupt Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Camerupt Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Camerupt Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Camerupt Mega"
+}

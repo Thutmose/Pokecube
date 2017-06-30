@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Gligar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gligar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Gligar": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Gligar"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Gligar"
+}

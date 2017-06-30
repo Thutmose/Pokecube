@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Poliwag.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Poliwag.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Poliwag": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Poliwag"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Poliwag"
+}

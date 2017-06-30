@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Pidgeot.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pidgeot.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Pidgeot": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Pidgeot"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Pidgeot"
+}

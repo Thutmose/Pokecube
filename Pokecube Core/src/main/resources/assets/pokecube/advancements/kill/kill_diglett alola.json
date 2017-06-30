@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Diglett Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Diglett Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Diglett Alola": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Diglett Alola"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Diglett Alola"
+}

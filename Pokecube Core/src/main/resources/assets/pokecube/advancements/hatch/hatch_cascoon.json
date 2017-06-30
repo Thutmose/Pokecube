@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cascoon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cascoon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cascoon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cascoon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cascoon"
+}

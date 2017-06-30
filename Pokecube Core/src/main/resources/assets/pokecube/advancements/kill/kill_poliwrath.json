@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Poliwrath.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Poliwrath.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Poliwrath": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Poliwrath"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Poliwrath"
+}

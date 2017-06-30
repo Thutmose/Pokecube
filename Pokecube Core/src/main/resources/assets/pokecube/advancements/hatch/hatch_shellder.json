@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Shellder.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shellder.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Shellder": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Shellder"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Shellder"
+}

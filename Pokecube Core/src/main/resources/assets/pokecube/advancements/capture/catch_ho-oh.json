@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Ho-Oh.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ho-Oh.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Ho-Oh": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Ho-Oh"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Ho-Oh"
+}

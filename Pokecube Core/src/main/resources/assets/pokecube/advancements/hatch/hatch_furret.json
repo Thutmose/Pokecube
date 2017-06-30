@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Furret.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Furret.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Furret": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Furret"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Furret"
+}

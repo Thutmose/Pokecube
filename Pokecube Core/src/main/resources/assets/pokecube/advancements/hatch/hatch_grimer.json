@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Grimer.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Grimer.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Grimer": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Grimer"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Grimer"
+}

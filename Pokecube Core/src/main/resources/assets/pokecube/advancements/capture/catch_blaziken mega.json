@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Blaziken Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blaziken Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Blaziken Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Blaziken Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Blaziken Mega"
+}

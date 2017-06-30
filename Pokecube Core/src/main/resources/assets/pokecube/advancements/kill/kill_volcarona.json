@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Volcarona.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Volcarona.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Volcarona": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Volcarona"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Volcarona"
+}

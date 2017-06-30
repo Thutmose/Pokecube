@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sandygast.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sandygast.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sandygast": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sandygast"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sandygast"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Noibat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Noibat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Noibat": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Noibat"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Noibat"
+}

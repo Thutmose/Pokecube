@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Growlithe.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Growlithe.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Growlithe": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Growlithe"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Growlithe"
+}

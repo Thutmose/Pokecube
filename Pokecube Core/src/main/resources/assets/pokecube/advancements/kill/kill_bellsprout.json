@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bellsprout.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bellsprout.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bellsprout": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bellsprout"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bellsprout"
+}

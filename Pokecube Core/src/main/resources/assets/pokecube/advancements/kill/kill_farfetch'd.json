@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Farfetch\u0027d.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Farfetch\u0027d.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Farfetch\u0027d": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Farfetch\u0027d"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Farfetch\u0027d"
+}

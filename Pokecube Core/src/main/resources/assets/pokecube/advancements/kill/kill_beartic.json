@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Beartic.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Beartic.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Beartic": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Beartic"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Beartic"
+}

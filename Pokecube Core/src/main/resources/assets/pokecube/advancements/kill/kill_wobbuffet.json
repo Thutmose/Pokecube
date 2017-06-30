@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Wobbuffet.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wobbuffet.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Wobbuffet": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Wobbuffet"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Wobbuffet"
+}

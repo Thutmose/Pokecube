@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Hoppip.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hoppip.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Hoppip": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Hoppip"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Hoppip"
+}

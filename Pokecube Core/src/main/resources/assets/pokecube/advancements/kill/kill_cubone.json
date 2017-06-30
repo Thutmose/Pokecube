@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Cubone.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cubone.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Cubone": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Cubone"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Cubone"
+}

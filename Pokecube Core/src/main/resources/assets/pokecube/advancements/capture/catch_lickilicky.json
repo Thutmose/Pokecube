@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Lickilicky.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lickilicky.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Lickilicky": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Lickilicky"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Lickilicky"
+}

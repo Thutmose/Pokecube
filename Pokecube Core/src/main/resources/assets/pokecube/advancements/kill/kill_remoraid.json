@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Remoraid.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Remoraid.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Remoraid": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Remoraid"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Remoraid"
+}

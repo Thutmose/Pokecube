@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Darmanitan Zen.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Darmanitan Zen.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Darmanitan Zen": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Darmanitan Zen"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Darmanitan Zen"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Spheal.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Spheal.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Spheal": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Spheal"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Spheal"
+}

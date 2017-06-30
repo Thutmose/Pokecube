@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonlee.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonlee.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Hitmonlee": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Hitmonlee"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Hitmonlee"
+}

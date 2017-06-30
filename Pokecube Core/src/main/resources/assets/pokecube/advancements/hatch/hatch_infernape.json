@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Infernape.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Infernape.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Infernape": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Infernape"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Infernape"
+}

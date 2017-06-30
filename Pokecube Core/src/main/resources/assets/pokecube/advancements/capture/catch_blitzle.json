@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Blitzle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blitzle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Blitzle": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Blitzle"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Blitzle"
+}

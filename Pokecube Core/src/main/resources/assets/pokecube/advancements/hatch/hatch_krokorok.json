@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Krokorok.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Krokorok.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Krokorok": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Krokorok"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Krokorok"
+}

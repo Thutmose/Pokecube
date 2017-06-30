@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Mewtwo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mewtwo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Mewtwo": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Mewtwo"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Mewtwo"
+}

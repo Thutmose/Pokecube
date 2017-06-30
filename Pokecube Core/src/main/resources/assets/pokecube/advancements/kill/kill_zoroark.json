@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Zoroark.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zoroark.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Zoroark": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Zoroark"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Zoroark"
+}

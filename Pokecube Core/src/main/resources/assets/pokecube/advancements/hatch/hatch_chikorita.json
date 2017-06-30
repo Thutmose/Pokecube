@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Chikorita.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chikorita.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Chikorita": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Chikorita"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Chikorita"
+}

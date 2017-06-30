@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Xatu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Xatu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Xatu": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Xatu"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Xatu"
+}

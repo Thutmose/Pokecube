@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Houndour.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Houndour.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Houndour": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Houndour"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Houndour"
+}

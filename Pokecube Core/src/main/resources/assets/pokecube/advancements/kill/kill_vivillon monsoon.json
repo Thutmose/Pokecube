@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Monsoon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Monsoon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Vivillon Monsoon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Vivillon Monsoon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Vivillon Monsoon"
+}

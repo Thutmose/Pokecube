@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Groudon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Groudon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Groudon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Groudon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Groudon"
+}

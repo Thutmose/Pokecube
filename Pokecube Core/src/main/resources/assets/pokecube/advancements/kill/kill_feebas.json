@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Feebas.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Feebas.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Feebas": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Feebas"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Feebas"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Shroomish.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shroomish.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Shroomish": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Shroomish"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Shroomish"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Vulpix.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vulpix.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Vulpix": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Vulpix"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Vulpix"
+}

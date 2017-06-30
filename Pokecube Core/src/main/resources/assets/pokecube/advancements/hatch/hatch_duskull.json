@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Duskull.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Duskull.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Duskull": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Duskull"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Duskull"
+}

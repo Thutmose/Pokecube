@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Magnezone.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Magnezone.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Magnezone": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Magnezone"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Magnezone"
+}

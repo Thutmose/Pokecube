@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Geodude Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Geodude Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Geodude Alola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Geodude Alola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Geodude Alola"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bidoof.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bidoof.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bidoof": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bidoof"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bidoof"
+}

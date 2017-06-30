@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Raticate Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Raticate Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Raticate Alola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Raticate Alola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Raticate Alola"
+}

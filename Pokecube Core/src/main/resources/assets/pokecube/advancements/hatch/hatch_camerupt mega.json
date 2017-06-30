@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Camerupt Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Camerupt Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Camerupt Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Camerupt Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Camerupt Mega"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Abra.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Abra.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Abra": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Abra"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Abra"
+}

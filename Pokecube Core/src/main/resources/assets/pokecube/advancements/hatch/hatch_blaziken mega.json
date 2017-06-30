@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Blaziken Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blaziken Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Blaziken Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Blaziken Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Blaziken Mega"
+}

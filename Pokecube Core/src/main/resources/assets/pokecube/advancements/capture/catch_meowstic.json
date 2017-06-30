@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Meowstic.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meowstic.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Meowstic": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Meowstic"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Meowstic"
+}

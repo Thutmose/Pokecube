@@ -1237,8 +1237,8 @@ pokemob.move.fusionflare=크로스플레임
 pokemob.move.fusionbolt=크로스썬더
 
 achievement.catch=%1$s 잡기
-achievement.get1stPokemob=
-achievement.get1stPokemob.desc=
+achievement.pokecube.get1st=
+achievement.pokecube.get1st.desc=
 gui.pokemob.choose1st=
 
 pokecube.caught=%1$s 잡혔다!

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Litwick.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Litwick.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Litwick": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Litwick"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Litwick"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Dragonite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dragonite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Dragonite": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Dragonite"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Dragonite"
+}

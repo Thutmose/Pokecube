@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Kabuto.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kabuto.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Kabuto": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Kabuto"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Kabuto"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Electrike.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Electrike.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Electrike": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Electrike"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Electrike"
+}

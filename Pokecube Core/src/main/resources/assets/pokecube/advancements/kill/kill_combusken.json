@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Combusken.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Combusken.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Combusken": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Combusken"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Combusken"
+}

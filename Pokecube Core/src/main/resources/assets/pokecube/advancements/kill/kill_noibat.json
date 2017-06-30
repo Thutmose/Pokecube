@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Noibat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Noibat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Noibat": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Noibat"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Noibat"
+}

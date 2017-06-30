@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Banette.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Banette.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Banette": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Banette"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Banette"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Rotom Fan.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rotom Fan.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Rotom Fan": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Rotom Fan"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Rotom Fan"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Golem.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Golem.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Golem": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Golem"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Golem"
+}

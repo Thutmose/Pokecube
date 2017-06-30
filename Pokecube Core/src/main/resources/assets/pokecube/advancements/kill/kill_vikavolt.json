@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Vikavolt.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vikavolt.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Vikavolt": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Vikavolt"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Vikavolt"
+}

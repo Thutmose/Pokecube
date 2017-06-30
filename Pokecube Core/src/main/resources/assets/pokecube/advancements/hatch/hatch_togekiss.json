@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Togekiss.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Togekiss.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Togekiss": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Togekiss"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Togekiss"
+}

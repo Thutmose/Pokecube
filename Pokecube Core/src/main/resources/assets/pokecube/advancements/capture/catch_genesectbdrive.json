@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.GenesectBDrive.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.GenesectBDrive.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_GenesectBDrive": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "GenesectBDrive"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "GenesectBDrive"
+}

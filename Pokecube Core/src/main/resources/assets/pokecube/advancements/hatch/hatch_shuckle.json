@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Shuckle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shuckle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Shuckle": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Shuckle"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Shuckle"
+}

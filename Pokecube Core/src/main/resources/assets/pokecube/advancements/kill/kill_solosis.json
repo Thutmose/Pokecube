@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Solosis.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Solosis.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Solosis": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Solosis"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Solosis"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Torracat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Torracat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Torracat": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Torracat"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Torracat"
+}

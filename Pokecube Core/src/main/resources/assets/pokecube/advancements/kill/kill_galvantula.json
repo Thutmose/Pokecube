@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Galvantula.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Galvantula.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Galvantula": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Galvantula"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Galvantula"
+}

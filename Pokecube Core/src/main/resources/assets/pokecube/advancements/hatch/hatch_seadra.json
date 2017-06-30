@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Seadra.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Seadra.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Seadra": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Seadra"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Seadra"
+}

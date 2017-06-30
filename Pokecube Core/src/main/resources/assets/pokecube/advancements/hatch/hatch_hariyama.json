@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Hariyama.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hariyama.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Hariyama": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Hariyama"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Hariyama"
+}

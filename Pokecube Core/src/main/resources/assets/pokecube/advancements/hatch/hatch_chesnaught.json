@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Chesnaught.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chesnaught.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Chesnaught": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Chesnaught"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Chesnaught"
+}

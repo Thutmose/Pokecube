@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Togekiss.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Togekiss.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Togekiss": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Togekiss"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Togekiss"
+}

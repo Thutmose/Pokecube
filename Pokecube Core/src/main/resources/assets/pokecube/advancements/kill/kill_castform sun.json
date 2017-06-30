@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Castform Sun.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Castform Sun.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Castform Sun": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Castform Sun"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Castform Sun"
+}

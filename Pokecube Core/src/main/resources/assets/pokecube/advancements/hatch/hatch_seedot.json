@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Seedot.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Seedot.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Seedot": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Seedot"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Seedot"
+}

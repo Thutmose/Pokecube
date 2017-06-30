@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Glalie Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Glalie Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Glalie Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Glalie Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Glalie Mega"
+}

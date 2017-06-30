@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Kangaskhan Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kangaskhan Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Kangaskhan Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Kangaskhan Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Kangaskhan Mega"
+}

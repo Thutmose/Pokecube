@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Crustle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Crustle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Crustle": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Crustle"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Crustle"
+}

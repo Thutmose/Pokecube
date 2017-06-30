@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Combusken.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Combusken.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Combusken": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Combusken"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Combusken"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Ambipom.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ambipom.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Ambipom": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Ambipom"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Ambipom"
+}

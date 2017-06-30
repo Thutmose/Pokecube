@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Jumpluff.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Jumpluff.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Jumpluff": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Jumpluff"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Jumpluff"
+}

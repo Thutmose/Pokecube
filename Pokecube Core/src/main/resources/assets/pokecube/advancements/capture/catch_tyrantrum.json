@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Tyrantrum.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tyrantrum.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Tyrantrum": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Tyrantrum"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Tyrantrum"
+}

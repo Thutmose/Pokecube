@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Phione.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Phione.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Phione": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Phione"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Phione"
+}

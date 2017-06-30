@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Gabite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gabite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Gabite": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Gabite"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Gabite"
+}

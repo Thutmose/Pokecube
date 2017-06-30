@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Squirtle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Squirtle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Squirtle": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Squirtle"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Squirtle"
+}

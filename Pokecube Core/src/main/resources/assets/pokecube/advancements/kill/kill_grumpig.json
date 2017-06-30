@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Grumpig.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Grumpig.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Grumpig": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Grumpig"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Grumpig"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Rattata Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rattata Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Rattata Alola": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Rattata Alola"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Rattata Alola"
+}

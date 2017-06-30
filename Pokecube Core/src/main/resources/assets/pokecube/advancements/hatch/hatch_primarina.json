@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Primarina.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Primarina.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Primarina": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Primarina"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Primarina"
+}

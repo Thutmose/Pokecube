@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ho-Oh.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ho-Oh.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ho-Oh": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ho-Oh"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ho-Oh"
+}

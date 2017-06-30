@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cottonee.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cottonee.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cottonee": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cottonee"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cottonee"
+}

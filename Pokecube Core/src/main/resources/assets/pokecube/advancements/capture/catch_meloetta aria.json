@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Meloetta Aria.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meloetta Aria.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Meloetta Aria": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Meloetta Aria"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Meloetta Aria"
+}

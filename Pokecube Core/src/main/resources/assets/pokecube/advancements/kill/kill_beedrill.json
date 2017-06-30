@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Beedrill.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Beedrill.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Beedrill": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Beedrill"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Beedrill"
+}

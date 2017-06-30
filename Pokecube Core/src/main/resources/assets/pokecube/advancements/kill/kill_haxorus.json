@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Haxorus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Haxorus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Haxorus": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Haxorus"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Haxorus"
+}

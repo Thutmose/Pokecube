@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Remoraid.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Remoraid.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Remoraid": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Remoraid"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Remoraid"
+}

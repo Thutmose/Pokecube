@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Highplains.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Highplains.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon Highplains": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon Highplains"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon Highplains"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Fairy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Fairy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Arceus Fairy": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Arceus Fairy"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Arceus Fairy"
+}

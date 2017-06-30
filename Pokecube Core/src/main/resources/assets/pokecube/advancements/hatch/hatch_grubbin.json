@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Grubbin.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Grubbin.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Grubbin": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Grubbin"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Grubbin"
+}

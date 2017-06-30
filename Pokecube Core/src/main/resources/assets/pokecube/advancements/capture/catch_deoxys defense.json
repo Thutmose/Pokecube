@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Deoxys Defense.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Deoxys Defense.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Deoxys Defense": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Deoxys Defense"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Deoxys Defense"
+}

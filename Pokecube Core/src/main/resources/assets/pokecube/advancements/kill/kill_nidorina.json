@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Nidorina.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Nidorina.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Nidorina": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Nidorina"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Nidorina"
+}

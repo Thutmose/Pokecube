@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ice.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ice.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Arceus Ice": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Arceus Ice"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Arceus Ice"
+}

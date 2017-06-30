@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Chimchar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chimchar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Chimchar": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Chimchar"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Chimchar"
+}

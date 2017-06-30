@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Chingling.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chingling.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Chingling": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Chingling"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Chingling"
+}

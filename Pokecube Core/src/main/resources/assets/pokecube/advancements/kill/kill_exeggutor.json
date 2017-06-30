@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Exeggutor.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Exeggutor.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Exeggutor": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Exeggutor"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Exeggutor"
+}

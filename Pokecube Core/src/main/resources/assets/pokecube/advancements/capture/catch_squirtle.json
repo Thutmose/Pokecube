@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Squirtle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Squirtle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Squirtle": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Squirtle"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Squirtle"
+}

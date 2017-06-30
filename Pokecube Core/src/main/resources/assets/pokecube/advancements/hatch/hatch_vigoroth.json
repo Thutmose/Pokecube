@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vigoroth.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vigoroth.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vigoroth": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vigoroth"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vigoroth"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Marowak.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Marowak.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Marowak": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Marowak"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Marowak"
+}

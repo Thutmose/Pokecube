@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Gliscor.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gliscor.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Gliscor": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Gliscor"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Gliscor"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Froslass.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Froslass.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Froslass": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Froslass"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Froslass"
+}

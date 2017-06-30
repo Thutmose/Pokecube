@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Altaria Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Altaria Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Altaria Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Altaria Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Altaria Mega"
+}

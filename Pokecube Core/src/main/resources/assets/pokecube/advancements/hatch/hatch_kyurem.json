@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Kyurem.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kyurem.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Kyurem": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Kyurem"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Kyurem"
+}

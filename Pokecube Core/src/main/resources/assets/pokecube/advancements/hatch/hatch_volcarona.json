@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Volcarona.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Volcarona.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Volcarona": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Volcarona"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Volcarona"
+}

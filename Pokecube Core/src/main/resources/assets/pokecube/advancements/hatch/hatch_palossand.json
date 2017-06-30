@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Palossand.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Palossand.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Palossand": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Palossand"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Palossand"
+}

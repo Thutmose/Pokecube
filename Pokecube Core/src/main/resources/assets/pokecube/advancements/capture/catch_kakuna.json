@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Kakuna.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kakuna.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Kakuna": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Kakuna"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Kakuna"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Absol.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Absol.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Absol": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Absol"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Absol"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Porygon-Z.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Porygon-Z.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Porygon-Z": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Porygon-Z"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Porygon-Z"
+}

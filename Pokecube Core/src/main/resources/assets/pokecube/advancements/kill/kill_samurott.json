@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Samurott.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Samurott.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Samurott": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Samurott"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Samurott"
+}

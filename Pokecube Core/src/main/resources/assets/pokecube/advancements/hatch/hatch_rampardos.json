@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Rampardos.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rampardos.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Rampardos": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Rampardos"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Rampardos"
+}

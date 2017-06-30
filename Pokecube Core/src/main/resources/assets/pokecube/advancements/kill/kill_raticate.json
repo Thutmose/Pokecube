@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Raticate.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Raticate.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Raticate": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Raticate"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Raticate"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Kabutops.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kabutops.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Kabutops": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Kabutops"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Kabutops"
+}

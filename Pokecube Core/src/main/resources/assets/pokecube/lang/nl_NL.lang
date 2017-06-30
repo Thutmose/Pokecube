@@ -254,8 +254,8 @@ ability.zenmode.name=Zen Modus
 
 
 achievement.catch=Vang een %1$s
-achievement.get1stPokemob=Bemachtig je eerste Pokémob
-achievement.get1stPokemob.desc=Ontvang je starter Pokémob
+achievement.pokecube.get1st=Bemachtig je eerste Pokémob
+achievement.pokecube.get1st.desc=Ontvang je starter Pokémob
 gui.pokemob.choose1st=Kies je eerste Pokémob
 gui.pokemob.choose1st.override=Starten met Persoonlijke Starter?
 gui.pokemob.select=Kies

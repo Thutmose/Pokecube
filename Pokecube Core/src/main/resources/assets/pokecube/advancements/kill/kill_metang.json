@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Metang.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Metang.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Metang": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Metang"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Metang"
+}

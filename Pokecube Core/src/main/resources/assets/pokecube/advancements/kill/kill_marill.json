@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Marill.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Marill.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Marill": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Marill"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Marill"
+}

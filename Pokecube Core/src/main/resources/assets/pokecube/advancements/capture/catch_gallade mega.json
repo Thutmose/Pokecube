@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Gallade Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gallade Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Gallade Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Gallade Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Gallade Mega"
+}

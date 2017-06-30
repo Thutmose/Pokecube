@@ -155,7 +155,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         if (pick.isCanceled()) return;
         items.clear();
         items.addAll(pick.starterPack);
-        PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class).setHasFirst();
+        PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class).setHasFirst(player);
         for (ItemStack e : items)
         {
             if (e == null || e.getItem() == null) continue;

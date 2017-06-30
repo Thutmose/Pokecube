@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Machoke.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Machoke.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Machoke": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Machoke"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Machoke"
+}

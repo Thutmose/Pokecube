@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Quagsire.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Quagsire.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Quagsire": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Quagsire"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Quagsire"
+}

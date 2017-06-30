@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Venipede.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Venipede.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Venipede": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Venipede"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Venipede"
+}

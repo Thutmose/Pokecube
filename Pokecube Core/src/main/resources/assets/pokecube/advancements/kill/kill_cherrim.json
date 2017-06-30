@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Cherrim.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cherrim.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Cherrim": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Cherrim"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Cherrim"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Grovyle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Grovyle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Grovyle": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Grovyle"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Grovyle"
+}

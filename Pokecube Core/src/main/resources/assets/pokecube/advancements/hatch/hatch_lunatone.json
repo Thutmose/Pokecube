@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Lunatone.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lunatone.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Lunatone": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Lunatone"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Lunatone"
+}

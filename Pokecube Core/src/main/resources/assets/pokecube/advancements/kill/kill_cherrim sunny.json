@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Cherrim Sunny.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cherrim Sunny.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Cherrim Sunny": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Cherrim Sunny"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Cherrim Sunny"
+}

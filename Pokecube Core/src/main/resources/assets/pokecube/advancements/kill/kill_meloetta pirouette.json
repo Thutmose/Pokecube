@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Meloetta Pirouette.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meloetta Pirouette.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Meloetta Pirouette": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Meloetta Pirouette"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Meloetta Pirouette"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Doduo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Doduo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Doduo": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Doduo"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Doduo"
+}

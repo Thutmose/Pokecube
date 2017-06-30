@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Gardevoir.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gardevoir.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Gardevoir": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Gardevoir"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Gardevoir"
+}

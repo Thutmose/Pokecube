@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Aipom.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Aipom.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Aipom": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Aipom"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Aipom"
+}

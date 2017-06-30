@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Chandelure.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chandelure.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Chandelure": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Chandelure"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Chandelure"
+}

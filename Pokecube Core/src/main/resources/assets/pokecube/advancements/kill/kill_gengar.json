@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Gengar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gengar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Gengar": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Gengar"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Gengar"
+}

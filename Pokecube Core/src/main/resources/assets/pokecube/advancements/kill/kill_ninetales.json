@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ninetales.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ninetales.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ninetales": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ninetales"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ninetales"
+}

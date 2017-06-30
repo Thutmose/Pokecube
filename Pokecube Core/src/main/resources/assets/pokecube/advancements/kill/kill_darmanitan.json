@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Darmanitan.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Darmanitan.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Darmanitan": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Darmanitan"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Darmanitan"
+}

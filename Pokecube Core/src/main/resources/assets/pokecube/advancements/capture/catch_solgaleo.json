@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Solgaleo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Solgaleo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Solgaleo": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Solgaleo"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Solgaleo"
+}

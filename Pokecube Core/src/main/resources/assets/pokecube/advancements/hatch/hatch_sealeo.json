@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Sealeo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sealeo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Sealeo": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Sealeo"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Sealeo"
+}

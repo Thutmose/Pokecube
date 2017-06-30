@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Zigzagoon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zigzagoon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Zigzagoon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Zigzagoon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Zigzagoon"
+}

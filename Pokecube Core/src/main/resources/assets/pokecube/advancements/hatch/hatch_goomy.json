@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Goomy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Goomy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Goomy": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Goomy"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Goomy"
+}

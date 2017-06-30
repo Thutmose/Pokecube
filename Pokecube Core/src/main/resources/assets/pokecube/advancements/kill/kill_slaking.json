@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Slaking.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slaking.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Slaking": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Slaking"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Slaking"
+}

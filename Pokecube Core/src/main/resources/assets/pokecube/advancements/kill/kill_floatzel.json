@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Floatzel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Floatzel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Floatzel": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Floatzel"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Floatzel"
+}

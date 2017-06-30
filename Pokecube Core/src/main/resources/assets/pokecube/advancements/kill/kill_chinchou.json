@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Chinchou.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chinchou.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Chinchou": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Chinchou"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Chinchou"
+}

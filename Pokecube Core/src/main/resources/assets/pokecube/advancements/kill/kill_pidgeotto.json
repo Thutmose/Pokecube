@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Pidgeotto.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pidgeotto.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Pidgeotto": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Pidgeotto"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Pidgeotto"
+}

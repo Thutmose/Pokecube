@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Fraxure.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Fraxure.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Fraxure": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Fraxure"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Fraxure"
+}

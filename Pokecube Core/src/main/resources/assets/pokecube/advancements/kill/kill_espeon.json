@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Espeon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Espeon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Espeon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Espeon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Espeon"
+}

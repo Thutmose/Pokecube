@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Togepi.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Togepi.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Togepi": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Togepi"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Togepi"
+}

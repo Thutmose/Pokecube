@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sawsbuck.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sawsbuck.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sawsbuck": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sawsbuck"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sawsbuck"
+}

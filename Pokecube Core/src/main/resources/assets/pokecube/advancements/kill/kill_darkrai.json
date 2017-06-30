@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Darkrai.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Darkrai.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Darkrai": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Darkrai"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Darkrai"
+}

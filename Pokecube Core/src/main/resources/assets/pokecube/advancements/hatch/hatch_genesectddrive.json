@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.GenesectDDrive.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.GenesectDDrive.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_GenesectDDrive": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "GenesectDDrive"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "GenesectDDrive"
+}

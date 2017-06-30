@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Slugma.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slugma.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Slugma": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Slugma"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Slugma"
+}

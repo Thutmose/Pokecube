@@ -256,8 +256,8 @@ ability.wonderskin.name=Pele Maravilha (Wonder Skin)
 ability.zenmode.name=Modo Zen (Zen Mode)
 
 achievement.catch=Capturar %1$s
-achievement.get1stPokemob=Pegue seu primeiro Pokémob
-achievement.get1stPokemob.desc=Pegue o seu Inicial
+achievement.pokecube.get1st=Pegue seu primeiro Pokémob
+achievement.pokecube.get1st.desc=Pegue o seu Inicial
 gui.pokemob.choose1st=Escolha seu primeiro Pokémob
 gui.pokemob.choose1st.override=Começar com Inicial Sobreposto?
 gui.pokemob.select=Selecionar

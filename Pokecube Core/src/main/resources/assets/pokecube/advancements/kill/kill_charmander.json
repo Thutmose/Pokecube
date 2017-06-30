@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Charmander.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Charmander.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Charmander": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Charmander"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Charmander"
+}

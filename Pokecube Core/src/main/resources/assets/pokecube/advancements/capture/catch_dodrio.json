@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Dodrio.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dodrio.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Dodrio": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Dodrio"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Dodrio"
+}

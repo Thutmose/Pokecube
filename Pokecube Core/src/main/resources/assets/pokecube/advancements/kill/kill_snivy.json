@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Snivy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Snivy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Snivy": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Snivy"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Snivy"
+}

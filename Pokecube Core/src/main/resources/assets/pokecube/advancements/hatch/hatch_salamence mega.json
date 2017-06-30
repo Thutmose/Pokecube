@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Salamence Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Salamence Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Salamence Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Salamence Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Salamence Mega"
+}

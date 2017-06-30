@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Diancie.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Diancie.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Diancie": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Diancie"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Diancie"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Chansey.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chansey.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Chansey": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Chansey"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Chansey"
+}

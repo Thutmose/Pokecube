@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Tranquill.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tranquill.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Tranquill": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Tranquill"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Tranquill"
+}

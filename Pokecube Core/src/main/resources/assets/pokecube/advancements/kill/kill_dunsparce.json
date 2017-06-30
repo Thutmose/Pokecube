@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Dunsparce.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dunsparce.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Dunsparce": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Dunsparce"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Dunsparce"
+}

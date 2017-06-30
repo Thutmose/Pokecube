@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Forretress.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Forretress.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Forretress": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Forretress"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Forretress"
+}

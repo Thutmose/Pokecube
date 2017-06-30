@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Forretress.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Forretress.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Forretress": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Forretress"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Forretress"
+}

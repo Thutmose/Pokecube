@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Lycanroc Midnight.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lycanroc Midnight.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Lycanroc Midnight": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Lycanroc Midnight"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Lycanroc Midnight"
+}

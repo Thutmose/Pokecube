@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Rampardos.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rampardos.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Rampardos": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Rampardos"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Rampardos"
+}

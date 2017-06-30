@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Shelgon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shelgon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Shelgon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Shelgon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Shelgon"
+}

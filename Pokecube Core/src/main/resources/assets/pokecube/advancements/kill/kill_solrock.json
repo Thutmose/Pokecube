@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Solrock.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Solrock.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Solrock": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Solrock"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Solrock"
+}

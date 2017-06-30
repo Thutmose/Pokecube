@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Corphish.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Corphish.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Corphish": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Corphish"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Corphish"
+}

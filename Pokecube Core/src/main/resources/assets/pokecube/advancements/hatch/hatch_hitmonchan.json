@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonchan.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonchan.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Hitmonchan": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Hitmonchan"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Hitmonchan"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Lunala.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lunala.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Lunala": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Lunala"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Lunala"
+}

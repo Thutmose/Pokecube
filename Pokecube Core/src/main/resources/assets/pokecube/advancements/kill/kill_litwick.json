@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Litwick.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Litwick.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Litwick": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Litwick"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Litwick"
+}

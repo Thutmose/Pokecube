@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Rowlet.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rowlet.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Rowlet": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Rowlet"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Rowlet"
+}

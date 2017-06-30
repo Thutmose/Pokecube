@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Chingling.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chingling.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Chingling": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Chingling"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Chingling"
+}

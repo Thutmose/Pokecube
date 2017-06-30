@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Braixen.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Braixen.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Braixen": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Braixen"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Braixen"
+}

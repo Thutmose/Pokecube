@@ -1237,8 +1237,8 @@ pokemob.move.scald=Scald
 pokemob.move.soak=Soak
 
 achievement.catch=Zachytit %1$s
-achievement.get1stPokemob=
-achievement.get1stPokemob.desc=
+achievement.pokecube.get1st=
+achievement.pokecube.get1st.desc=
 gui.pokemob.choose1st=
 
 pokecube.caught=

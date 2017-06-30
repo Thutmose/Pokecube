@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Alakazam.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Alakazam.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Alakazam": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Alakazam"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Alakazam"
+}

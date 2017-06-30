@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Samurott.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Samurott.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Samurott": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Samurott"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Samurott"
+}

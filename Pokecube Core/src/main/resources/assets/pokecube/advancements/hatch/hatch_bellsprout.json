@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Bellsprout.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bellsprout.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Bellsprout": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Bellsprout"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Bellsprout"
+}

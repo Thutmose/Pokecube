@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Cubchoo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cubchoo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Cubchoo": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Cubchoo"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Cubchoo"
+}

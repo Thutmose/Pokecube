@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Omastar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Omastar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Omastar": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Omastar"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Omastar"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Keldeo Resolute.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Keldeo Resolute.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Keldeo Resolute": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Keldeo Resolute"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Keldeo Resolute"
+}

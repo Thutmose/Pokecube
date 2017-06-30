@@ -14,6 +14,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -153,7 +154,7 @@ public class SpawnBiomeMatcher
                     Biome b = Biome.REGISTRY.getObject(key);
                     if (b != null)
                     {
-                        if (b.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(s))
+                        if (BiomeDatabase.getBiomeName(b).replaceAll(" ", "").equalsIgnoreCase(s))
                         {
                             biome = b;
                             break;
@@ -204,7 +205,7 @@ public class SpawnBiomeMatcher
                     Biome b = Biome.REGISTRY.getObject(key);
                     if (b != null)
                     {
-                        if (b.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(s))
+                        if (BiomeDatabase.getBiomeName(b).replaceAll(" ", "").equalsIgnoreCase(s))
                         {
                             biome = b;
                             break;

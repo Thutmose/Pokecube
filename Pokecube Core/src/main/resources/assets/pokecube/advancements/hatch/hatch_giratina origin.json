@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Giratina Origin.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Giratina Origin.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Giratina Origin": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Giratina Origin"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Giratina Origin"
+}

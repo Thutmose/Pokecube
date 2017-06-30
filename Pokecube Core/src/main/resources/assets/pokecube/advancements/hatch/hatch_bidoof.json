@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Bidoof.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bidoof.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Bidoof": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Bidoof"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Bidoof"
+}

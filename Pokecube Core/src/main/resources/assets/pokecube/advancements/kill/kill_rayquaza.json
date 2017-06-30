@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Rayquaza.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rayquaza.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Rayquaza": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Rayquaza"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Rayquaza"
+}

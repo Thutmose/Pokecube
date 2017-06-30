@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Metagross.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Metagross.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Metagross": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Metagross"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Metagross"
+}

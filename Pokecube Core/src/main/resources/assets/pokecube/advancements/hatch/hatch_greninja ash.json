@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Greninja Ash.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Greninja Ash.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Greninja Ash": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Greninja Ash"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Greninja Ash"
+}

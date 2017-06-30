@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Electabuzz.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Electabuzz.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Electabuzz": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Electabuzz"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Electabuzz"
+}

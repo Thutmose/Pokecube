@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Dusclops.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dusclops.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Dusclops": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Dusclops"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Dusclops"
+}

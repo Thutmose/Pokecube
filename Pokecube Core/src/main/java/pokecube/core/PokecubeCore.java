@@ -80,6 +80,8 @@ import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.handlers.playerdata.PokecubePlayerCustomData;
 import pokecube.core.handlers.playerdata.PokecubePlayerData;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
+import pokecube.core.handlers.playerdata.advancements.criteria.CatchPokemobTrigger;
+import pokecube.core.handlers.playerdata.advancements.criteria.Triggers;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -403,7 +405,7 @@ public class PokecubeCore extends PokecubeMod
         proxy.initClient();
         proxy.registerRenderInformation();
         moveQueues = new MoveQueuer();
-
+CatchPokemobTrigger trigger = Triggers.CATCHPOKEMOB;
         PlayerDataHandler.dataMap.add(PokecubePlayerData.class);
         PlayerDataHandler.dataMap.add(PokecubePlayerStats.class);
         PlayerDataHandler.dataMap.add(PokecubePlayerCustomData.class);

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Krookodile.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Krookodile.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Krookodile": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Krookodile"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Krookodile"
+}

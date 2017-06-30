@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Toucannon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Toucannon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Toucannon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Toucannon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Toucannon"
+}

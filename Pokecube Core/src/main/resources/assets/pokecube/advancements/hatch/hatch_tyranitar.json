@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Tyranitar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tyranitar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Tyranitar": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Tyranitar"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Tyranitar"
+}

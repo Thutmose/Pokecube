@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Horsea.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Horsea.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Horsea": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Horsea"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Horsea"
+}

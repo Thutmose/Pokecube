@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Wormadam.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wormadam.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Wormadam": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Wormadam"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Wormadam"
+}

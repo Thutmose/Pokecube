@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Fearow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Fearow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Fearow": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Fearow"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Fearow"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Goomy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Goomy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Goomy": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Goomy"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Goomy"
+}

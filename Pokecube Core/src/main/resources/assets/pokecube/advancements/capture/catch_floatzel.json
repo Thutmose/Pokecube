@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Floatzel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Floatzel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Floatzel": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Floatzel"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Floatzel"
+}

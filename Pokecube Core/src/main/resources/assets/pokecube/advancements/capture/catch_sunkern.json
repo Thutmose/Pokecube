@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Sunkern.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sunkern.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Sunkern": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Sunkern"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Sunkern"
+}

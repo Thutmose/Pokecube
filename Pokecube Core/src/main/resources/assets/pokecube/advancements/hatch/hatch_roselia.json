@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Roselia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Roselia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Roselia": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Roselia"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Roselia"
+}

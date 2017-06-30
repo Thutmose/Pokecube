@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Pikipek.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pikipek.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Pikipek": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Pikipek"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Pikipek"
+}

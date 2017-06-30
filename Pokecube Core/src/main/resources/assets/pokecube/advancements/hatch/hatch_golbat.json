@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Golbat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Golbat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Golbat": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Golbat"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Golbat"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Umbreon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Umbreon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Umbreon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Umbreon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Umbreon"
+}

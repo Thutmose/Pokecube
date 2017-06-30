@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Oshawott.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Oshawott.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Oshawott": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Oshawott"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Oshawott"
+}

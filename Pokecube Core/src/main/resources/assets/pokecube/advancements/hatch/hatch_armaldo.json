@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Armaldo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Armaldo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Armaldo": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Armaldo"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Armaldo"
+}

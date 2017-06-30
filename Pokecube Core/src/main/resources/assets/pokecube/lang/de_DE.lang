@@ -1237,8 +1237,8 @@ pokemob.move.fusionflare=Kreuzflamme
 pokemob.move.fusionbolt=Kreuzdonner
 
 achievement.catch=Schnapp dir ein %1$s
-achievement.get1stPokemob=Schnapp deinen ersten Pokemob
-achievement.get1stPokemob.desc=Dein Starter
+achievement.pokecube.get1st=Schnapp deinen ersten Pokemob
+achievement.pokecube.get1st.desc=Dein Starter
 gui.pokemob.choose1st=Wähle deinen ersten Pokemob.
 
 pokecube.caught=%1$s wurde gefangen!

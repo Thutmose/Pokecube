@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Sliggoo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sliggoo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Sliggoo": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Sliggoo"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Sliggoo"
+}

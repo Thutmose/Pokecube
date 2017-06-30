@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Sandstorm.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Sandstorm.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon Sandstorm": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon Sandstorm"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon Sandstorm"
+}

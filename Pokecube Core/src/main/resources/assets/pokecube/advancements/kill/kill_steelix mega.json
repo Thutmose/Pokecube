@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Steelix Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Steelix Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Steelix Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Steelix Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Steelix Mega"
+}

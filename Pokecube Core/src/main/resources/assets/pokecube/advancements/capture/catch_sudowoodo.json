@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Sudowoodo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sudowoodo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Sudowoodo": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Sudowoodo"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Sudowoodo"
+}

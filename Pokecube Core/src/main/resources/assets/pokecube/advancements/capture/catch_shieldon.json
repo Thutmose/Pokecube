@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Shieldon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shieldon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Shieldon": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Shieldon"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Shieldon"
+}

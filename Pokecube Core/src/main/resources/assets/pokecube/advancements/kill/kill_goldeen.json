@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Goldeen.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Goldeen.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Goldeen": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Goldeen"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Goldeen"
+}

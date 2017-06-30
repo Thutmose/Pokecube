@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Venipede.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Venipede.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Venipede": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Venipede"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Venipede"
+}

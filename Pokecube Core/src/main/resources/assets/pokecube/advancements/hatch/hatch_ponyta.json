@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Ponyta.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ponyta.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Ponyta": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Ponyta"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Ponyta"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Toucannon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Toucannon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Toucannon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Toucannon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Toucannon"
+}

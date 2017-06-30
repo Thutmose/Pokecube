@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Pikachu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pikachu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Pikachu": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Pikachu"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Pikachu"
+}

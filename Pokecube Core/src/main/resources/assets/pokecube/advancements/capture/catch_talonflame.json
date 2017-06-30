@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Talonflame.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Talonflame.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Talonflame": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Talonflame"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Talonflame"
+}

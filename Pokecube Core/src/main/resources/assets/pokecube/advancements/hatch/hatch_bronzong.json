@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Bronzong.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bronzong.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Bronzong": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Bronzong"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Bronzong"
+}

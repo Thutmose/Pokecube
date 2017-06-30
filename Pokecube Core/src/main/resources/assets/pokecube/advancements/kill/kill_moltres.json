@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Moltres.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Moltres.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Moltres": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Moltres"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Moltres"
+}

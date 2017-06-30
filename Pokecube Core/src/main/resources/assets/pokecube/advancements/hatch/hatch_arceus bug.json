@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Bug.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Bug.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Arceus Bug": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Arceus Bug"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Arceus Bug"
+}

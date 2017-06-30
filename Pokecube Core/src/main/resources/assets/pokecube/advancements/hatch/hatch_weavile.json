@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Weavile.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Weavile.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Weavile": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Weavile"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Weavile"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Pidgeot.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pidgeot.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Pidgeot": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Pidgeot"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Pidgeot"
+}

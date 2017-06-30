@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Torchic.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Torchic.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Torchic": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Torchic"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Torchic"
+}

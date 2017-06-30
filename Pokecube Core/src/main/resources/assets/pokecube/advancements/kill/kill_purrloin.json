@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Purrloin.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Purrloin.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Purrloin": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Purrloin"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Purrloin"
+}

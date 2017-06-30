@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vulpix.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vulpix.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vulpix": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vulpix"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vulpix"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Patrat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Patrat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Patrat": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Patrat"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Patrat"
+}

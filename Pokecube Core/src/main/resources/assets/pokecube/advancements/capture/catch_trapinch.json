@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Trapinch.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Trapinch.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Trapinch": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Trapinch"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Trapinch"
+}

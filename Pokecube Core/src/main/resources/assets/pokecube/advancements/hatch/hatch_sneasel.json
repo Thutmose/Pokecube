@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Sneasel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sneasel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Sneasel": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Sneasel"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Sneasel"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Garchomp.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Garchomp.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Garchomp": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Garchomp"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Garchomp"
+}

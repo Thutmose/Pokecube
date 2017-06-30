@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Magby.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Magby.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Magby": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Magby"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Magby"
+}

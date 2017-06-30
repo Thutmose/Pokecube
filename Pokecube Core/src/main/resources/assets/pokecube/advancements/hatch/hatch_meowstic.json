@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Meowstic.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meowstic.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Meowstic": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Meowstic"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Meowstic"
+}

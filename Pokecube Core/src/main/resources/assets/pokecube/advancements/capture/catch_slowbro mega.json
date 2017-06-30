@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Slowbro Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slowbro Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Slowbro Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Slowbro Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Slowbro Mega"
+}

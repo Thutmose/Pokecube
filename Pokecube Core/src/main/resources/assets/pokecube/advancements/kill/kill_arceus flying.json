@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Flying.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Flying.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Arceus Flying": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Arceus Flying"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Arceus Flying"
+}

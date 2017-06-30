@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Tyranitar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tyranitar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Tyranitar": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Tyranitar"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Tyranitar"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bellossom.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bellossom.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bellossom": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bellossom"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bellossom"
+}

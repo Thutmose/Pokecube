@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Metagross Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Metagross Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Metagross Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Metagross Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Metagross Mega"
+}

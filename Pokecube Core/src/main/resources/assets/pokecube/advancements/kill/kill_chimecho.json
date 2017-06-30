@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Chimecho.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chimecho.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Chimecho": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Chimecho"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Chimecho"
+}

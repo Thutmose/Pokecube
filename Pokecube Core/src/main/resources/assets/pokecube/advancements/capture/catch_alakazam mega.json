@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Alakazam Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Alakazam Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Alakazam Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Alakazam Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Alakazam Mega"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Skorupi.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Skorupi.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Skorupi": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Skorupi"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Skorupi"
+}

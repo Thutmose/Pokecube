@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Trumbeak.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Trumbeak.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Trumbeak": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Trumbeak"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Trumbeak"
+}

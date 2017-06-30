@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Honchkrow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Honchkrow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Honchkrow": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Honchkrow"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Honchkrow"
+}

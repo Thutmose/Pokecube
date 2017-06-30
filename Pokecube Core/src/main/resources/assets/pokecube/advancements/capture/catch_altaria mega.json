@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Altaria Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Altaria Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Altaria Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Altaria Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Altaria Mega"
+}

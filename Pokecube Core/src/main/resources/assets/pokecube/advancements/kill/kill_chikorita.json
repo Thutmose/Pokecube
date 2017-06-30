@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Chikorita.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chikorita.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Chikorita": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Chikorita"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Chikorita"
+}

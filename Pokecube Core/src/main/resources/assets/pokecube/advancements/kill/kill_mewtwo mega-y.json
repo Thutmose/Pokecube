@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Mewtwo Mega-Y.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mewtwo Mega-Y.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Mewtwo Mega-Y": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Mewtwo Mega-Y"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Mewtwo Mega-Y"
+}

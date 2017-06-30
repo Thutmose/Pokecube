@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Slowpoke.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slowpoke.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Slowpoke": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Slowpoke"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Slowpoke"
+}

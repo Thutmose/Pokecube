@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Blaziken Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blaziken Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Blaziken Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Blaziken Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Blaziken Mega"
+}

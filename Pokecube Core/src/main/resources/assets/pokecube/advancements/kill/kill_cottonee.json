@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Cottonee.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cottonee.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Cottonee": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Cottonee"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Cottonee"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Elegant.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Elegant.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Vivillon Elegant": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Vivillon Elegant"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Vivillon Elegant"
+}

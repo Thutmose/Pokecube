@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ground.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ground.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Arceus Ground": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Arceus Ground"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Arceus Ground"
+}

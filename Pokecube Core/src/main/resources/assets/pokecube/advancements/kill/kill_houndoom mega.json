@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Houndoom Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Houndoom Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Houndoom Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Houndoom Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Houndoom Mega"
+}

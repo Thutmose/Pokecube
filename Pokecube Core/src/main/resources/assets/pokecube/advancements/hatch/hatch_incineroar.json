@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Incineroar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Incineroar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Incineroar": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Incineroar"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Incineroar"
+}

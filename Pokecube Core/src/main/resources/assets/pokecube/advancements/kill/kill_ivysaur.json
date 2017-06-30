@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ivysaur.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ivysaur.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ivysaur": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ivysaur"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ivysaur"
+}

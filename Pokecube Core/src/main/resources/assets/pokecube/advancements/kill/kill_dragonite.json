@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Dragonite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dragonite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Dragonite": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Dragonite"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Dragonite"
+}

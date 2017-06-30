@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Oddish.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Oddish.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Oddish": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Oddish"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Oddish"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Duosion.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Duosion.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Duosion": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Duosion"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Duosion"
+}

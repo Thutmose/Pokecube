@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Espeon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Espeon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Espeon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Espeon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Espeon"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Grass.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Grass.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Arceus Grass": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Arceus Grass"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Arceus Grass"
+}

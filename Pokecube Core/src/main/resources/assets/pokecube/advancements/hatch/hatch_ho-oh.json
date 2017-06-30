@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Ho-Oh.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ho-Oh.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Ho-Oh": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Ho-Oh"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Ho-Oh"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Natu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Natu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Natu": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Natu"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Natu"
+}

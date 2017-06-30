@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Zapdos.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zapdos.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Zapdos": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Zapdos"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Zapdos"
+}

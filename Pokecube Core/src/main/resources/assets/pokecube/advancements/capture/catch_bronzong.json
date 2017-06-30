@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Bronzong.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bronzong.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Bronzong": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Bronzong"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Bronzong"
+}

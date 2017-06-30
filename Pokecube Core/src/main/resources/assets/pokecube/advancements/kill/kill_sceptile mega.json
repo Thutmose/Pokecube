@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sceptile Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sceptile Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sceptile Mega"
+}

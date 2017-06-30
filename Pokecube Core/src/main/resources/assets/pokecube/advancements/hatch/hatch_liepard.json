@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Liepard.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Liepard.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Liepard": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Liepard"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Liepard"
+}

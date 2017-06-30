@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Duskull.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Duskull.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Duskull": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Duskull"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Duskull"
+}

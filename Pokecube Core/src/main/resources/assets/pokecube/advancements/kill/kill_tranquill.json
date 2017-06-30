@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Tranquill.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tranquill.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Tranquill": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Tranquill"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Tranquill"
+}

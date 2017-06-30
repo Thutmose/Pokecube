@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bonsly.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bonsly.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bonsly": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bonsly"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bonsly"
+}

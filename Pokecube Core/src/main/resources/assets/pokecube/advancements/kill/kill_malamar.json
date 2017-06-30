@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Malamar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Malamar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Malamar": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Malamar"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Malamar"
+}

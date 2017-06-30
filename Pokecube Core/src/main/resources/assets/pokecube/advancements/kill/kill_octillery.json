@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Octillery.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Octillery.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Octillery": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Octillery"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Octillery"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bulbasaur.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bulbasaur.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bulbasaur": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bulbasaur"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bulbasaur"
+}

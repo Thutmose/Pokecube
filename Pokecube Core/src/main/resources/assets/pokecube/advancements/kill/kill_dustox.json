@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Dustox.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dustox.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Dustox": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Dustox"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Dustox"
+}

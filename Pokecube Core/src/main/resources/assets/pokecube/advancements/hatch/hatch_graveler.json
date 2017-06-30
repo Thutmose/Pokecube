@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Graveler.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Graveler.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Graveler": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Graveler"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Graveler"
+}

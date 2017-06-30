@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Deoxys Speed.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Deoxys Speed.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Deoxys Speed": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Deoxys Speed"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Deoxys Speed"
+}

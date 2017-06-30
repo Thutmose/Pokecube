@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Roselia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Roselia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Roselia": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Roselia"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Roselia"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Reuniclus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Reuniclus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Reuniclus": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Reuniclus"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Reuniclus"
+}

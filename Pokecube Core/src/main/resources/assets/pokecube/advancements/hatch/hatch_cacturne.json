@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cacturne.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cacturne.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cacturne": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cacturne"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cacturne"
+}

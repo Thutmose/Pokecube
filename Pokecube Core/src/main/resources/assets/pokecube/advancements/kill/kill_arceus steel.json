@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Steel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Steel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Arceus Steel": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Arceus Steel"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Arceus Steel"
+}

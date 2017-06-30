@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Riolu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Riolu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Riolu": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Riolu"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Riolu"
+}

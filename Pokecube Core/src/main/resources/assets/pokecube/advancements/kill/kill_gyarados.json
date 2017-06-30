@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Gyarados.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gyarados.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Gyarados": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Gyarados"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Gyarados"
+}

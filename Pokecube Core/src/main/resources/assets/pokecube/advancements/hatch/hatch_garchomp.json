@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Garchomp.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Garchomp.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Garchomp": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Garchomp"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Garchomp"
+}

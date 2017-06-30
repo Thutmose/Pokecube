@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Unown_I.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Unown_I.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Unown_I": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Unown_I"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Unown_I"
+}

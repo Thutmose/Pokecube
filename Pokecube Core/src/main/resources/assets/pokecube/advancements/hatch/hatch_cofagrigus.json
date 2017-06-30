@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cofagrigus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cofagrigus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cofagrigus": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cofagrigus"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cofagrigus"
+}

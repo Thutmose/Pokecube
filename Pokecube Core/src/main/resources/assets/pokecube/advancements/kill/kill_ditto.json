@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ditto.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ditto.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ditto": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ditto"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ditto"
+}

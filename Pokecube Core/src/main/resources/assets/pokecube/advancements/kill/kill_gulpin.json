@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Gulpin.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gulpin.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Gulpin": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Gulpin"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Gulpin"
+}

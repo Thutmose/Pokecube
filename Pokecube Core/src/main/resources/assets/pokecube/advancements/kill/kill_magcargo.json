@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Magcargo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Magcargo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Magcargo": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Magcargo"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Magcargo"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Dugtrio Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dugtrio Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Dugtrio Alola": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Dugtrio Alola"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Dugtrio Alola"
+}

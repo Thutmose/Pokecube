@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Tynamo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tynamo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Tynamo": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Tynamo"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Tynamo"
+}

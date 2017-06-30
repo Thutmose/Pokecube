@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Froakie.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Froakie.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Froakie": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Froakie"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Froakie"
+}

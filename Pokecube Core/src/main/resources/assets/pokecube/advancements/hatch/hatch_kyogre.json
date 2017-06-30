@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Kyogre.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kyogre.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Kyogre": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Kyogre"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Kyogre"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Cresselia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cresselia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Cresselia": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Cresselia"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Cresselia"
+}

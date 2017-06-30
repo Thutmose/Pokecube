@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Meditite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meditite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Meditite Female": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Meditite Female"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Meditite Female"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Murkrow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Murkrow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Murkrow": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Murkrow"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Murkrow"
+}

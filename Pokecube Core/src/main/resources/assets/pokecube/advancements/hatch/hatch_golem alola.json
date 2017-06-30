@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Golem Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Golem Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Golem Alola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Golem Alola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Golem Alola"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Milotic.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Milotic.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Milotic": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Milotic"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Milotic"
+}

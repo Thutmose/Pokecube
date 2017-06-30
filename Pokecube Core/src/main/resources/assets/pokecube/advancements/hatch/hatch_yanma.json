@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Yanma.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Yanma.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Yanma": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Yanma"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Yanma"
+}

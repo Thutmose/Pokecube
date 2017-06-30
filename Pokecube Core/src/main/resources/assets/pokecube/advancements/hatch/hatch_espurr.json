@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Espurr.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Espurr.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Espurr": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Espurr"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Espurr"
+}

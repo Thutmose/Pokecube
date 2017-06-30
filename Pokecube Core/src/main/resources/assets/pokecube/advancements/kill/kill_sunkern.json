@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sunkern.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sunkern.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sunkern": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sunkern"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sunkern"
+}

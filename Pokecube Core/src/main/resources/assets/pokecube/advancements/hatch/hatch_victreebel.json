@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Victreebel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Victreebel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Victreebel": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Victreebel"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Victreebel"
+}

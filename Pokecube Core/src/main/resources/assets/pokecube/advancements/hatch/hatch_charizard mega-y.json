@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Charizard Mega-Y.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Charizard Mega-Y.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Charizard Mega-Y": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Charizard Mega-Y"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Charizard Mega-Y"
+}

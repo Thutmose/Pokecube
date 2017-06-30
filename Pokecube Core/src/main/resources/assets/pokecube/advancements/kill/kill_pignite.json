@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Pignite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pignite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Pignite": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Pignite"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Pignite"
+}

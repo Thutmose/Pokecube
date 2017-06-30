@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Vanillish.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vanillish.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Vanillish": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Vanillish"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Vanillish"
+}

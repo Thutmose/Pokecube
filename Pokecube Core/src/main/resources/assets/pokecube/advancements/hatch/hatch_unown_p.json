@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Unown_P.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Unown_P.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Unown_P": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Unown_P"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Unown_P"
+}

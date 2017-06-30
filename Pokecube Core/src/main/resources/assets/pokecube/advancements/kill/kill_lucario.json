@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Lucario.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lucario.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Lucario": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Lucario"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Lucario"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Lickitung.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lickitung.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Lickitung": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Lickitung"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Lickitung"
+}

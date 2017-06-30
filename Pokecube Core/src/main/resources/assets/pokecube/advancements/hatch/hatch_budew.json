@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Budew.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Budew.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Budew": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Budew"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Budew"
+}

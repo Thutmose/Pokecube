@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Magnemite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Magnemite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Magnemite": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Magnemite"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Magnemite"
+}

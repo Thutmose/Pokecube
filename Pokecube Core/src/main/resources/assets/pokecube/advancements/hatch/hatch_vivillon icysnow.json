@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon IcySnow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon IcySnow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon IcySnow": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon IcySnow"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon IcySnow"
+}

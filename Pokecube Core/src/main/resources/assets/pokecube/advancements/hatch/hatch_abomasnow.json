@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Abomasnow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Abomasnow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Abomasnow": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Abomasnow"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Abomasnow"
+}

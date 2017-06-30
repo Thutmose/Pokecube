@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Vikavolt.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vikavolt.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Vikavolt": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Vikavolt"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Vikavolt"
+}

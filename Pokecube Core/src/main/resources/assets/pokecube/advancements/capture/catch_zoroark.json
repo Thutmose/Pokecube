@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Zoroark.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zoroark.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Zoroark": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Zoroark"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Zoroark"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Lairon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lairon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Lairon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Lairon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Lairon"
+}

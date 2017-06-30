@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Alomomola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Alomomola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Alomomola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Alomomola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Alomomola"
+}

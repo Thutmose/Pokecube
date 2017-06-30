@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ponyta.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ponyta.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ponyta": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ponyta"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ponyta"
+}

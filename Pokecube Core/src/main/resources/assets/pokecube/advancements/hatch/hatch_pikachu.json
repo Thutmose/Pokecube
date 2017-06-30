@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Pikachu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pikachu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Pikachu": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Pikachu"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Pikachu"
+}

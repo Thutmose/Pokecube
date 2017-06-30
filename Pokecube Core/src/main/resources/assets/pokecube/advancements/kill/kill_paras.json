@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Paras.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Paras.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Paras": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Paras"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Paras"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Aurorus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Aurorus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Aurorus": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Aurorus"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Aurorus"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Lickitung.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lickitung.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Lickitung": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Lickitung"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Lickitung"
+}

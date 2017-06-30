@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Tangela.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tangela.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Tangela": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Tangela"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Tangela"
+}

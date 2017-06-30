@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Inkay.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Inkay.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Inkay": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Inkay"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Inkay"
+}

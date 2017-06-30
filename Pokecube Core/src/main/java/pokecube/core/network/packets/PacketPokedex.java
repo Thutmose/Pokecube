@@ -224,8 +224,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                         rates.put(e, val);
                     }
                     int biome = TerrainManager.getInstance().getTerrainForEntity(player).getBiome(pos);
-                    packet.data.setString("0",
-                            "" + biome);
+                    packet.data.setString("0", "" + biome);
                     packet.data.setString("1", BiomeDatabase.getReadableNameFromType(biome));
                     for (int i = 0; i < names.size(); i++)
                     {
@@ -280,7 +279,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                         Biome b = Biome.REGISTRY.getObject(key);
                         if (b != null)
                         {
-                            if (data.isValid(b)) biomes.add(b.getBiomeName());
+                            if (data.isValid(b)) biomes.add(BiomeDatabase.getBiomeName(b));
                         }
                     }
                     for (BiomeType b : BiomeType.values())
@@ -313,8 +312,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
             String name = message.data.getString("N");
             Vector4 location = new Vector4(message.data);
             PokecubeSerializer.getInstance().setTeleport(location, player.getCachedUniqueIdString(), name);
-            player.sendMessage(
-                    new TextComponentString("Set The location " + location.toIntString() + " as " + name));
+            player.sendMessage(new TextComponentString("Set The location " + location.toIntString() + " as " + name));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;

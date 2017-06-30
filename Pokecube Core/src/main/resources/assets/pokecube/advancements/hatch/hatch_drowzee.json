@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Drowzee.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Drowzee.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Drowzee": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Drowzee"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Drowzee"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Slowbro.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slowbro.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Slowbro": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Slowbro"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Slowbro"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ralts.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ralts.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ralts": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ralts"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ralts"
+}

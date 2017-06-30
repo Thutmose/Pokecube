@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Poochyena.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Poochyena.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Poochyena": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Poochyena"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Poochyena"
+}

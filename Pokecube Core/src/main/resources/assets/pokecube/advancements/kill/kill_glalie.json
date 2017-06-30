@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Glalie.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Glalie.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Glalie": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Glalie"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Glalie"
+}

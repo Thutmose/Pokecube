@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Sudowoodo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sudowoodo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Sudowoodo": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Sudowoodo"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Sudowoodo"
+}

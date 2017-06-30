@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Eelektrik.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Eelektrik.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Eelektrik": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Eelektrik"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Eelektrik"
+}

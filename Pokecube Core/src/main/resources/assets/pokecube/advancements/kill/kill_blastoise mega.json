@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Blastoise Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blastoise Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Blastoise Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Blastoise Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Blastoise Mega"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Sceptile": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Sceptile"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Sceptile"
+}

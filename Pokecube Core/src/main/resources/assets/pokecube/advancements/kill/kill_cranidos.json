@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Cranidos.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cranidos.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Cranidos": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Cranidos"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Cranidos"
+}

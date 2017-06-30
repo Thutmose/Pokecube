@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Corsola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Corsola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Corsola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Corsola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Corsola"
+}

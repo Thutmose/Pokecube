@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Rotom.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rotom.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Rotom": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Rotom"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Rotom"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sceptile": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sceptile"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sceptile"
+}

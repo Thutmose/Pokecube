@@ -1245,8 +1245,8 @@ pokemob.move.fusionbolt=Éclair Croix
 
 
 achievement.catch=Attrapez un %1$s
-achievement.get1stPokemob=Obtenir le premier Pokémob
-achievement.get1stPokemob.desc=Obtenez votre starter
+achievement.pokecube.get1st=Obtenir le premier Pokémob
+achievement.pokecube.get1st.desc=Obtenez votre starter
 gui.pokemob.choose1st=Choisissez votre premier Pokémob.
 
 pokecube.caught=%1$s a été attrapé !

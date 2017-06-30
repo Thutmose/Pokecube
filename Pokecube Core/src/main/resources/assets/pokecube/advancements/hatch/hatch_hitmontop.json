@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Hitmontop.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmontop.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Hitmontop": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Hitmontop"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Hitmontop"
+}

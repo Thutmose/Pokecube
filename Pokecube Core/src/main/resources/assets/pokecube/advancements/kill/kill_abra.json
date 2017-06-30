@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Abra.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Abra.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Abra": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Abra"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Abra"
+}

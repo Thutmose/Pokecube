@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Larvitar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Larvitar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Larvitar": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Larvitar"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Larvitar"
+}

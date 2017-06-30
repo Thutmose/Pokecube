@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Charjabug.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Charjabug.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Charjabug": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Charjabug"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Charjabug"
+}

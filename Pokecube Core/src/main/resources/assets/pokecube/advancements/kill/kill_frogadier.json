@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Frogadier.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Frogadier.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Frogadier": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Frogadier"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Frogadier"
+}

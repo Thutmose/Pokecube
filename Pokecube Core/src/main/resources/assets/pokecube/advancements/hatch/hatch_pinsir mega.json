@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Pinsir Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pinsir Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Pinsir Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Pinsir Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Pinsir Mega"
+}

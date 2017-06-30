@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Hydreigon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hydreigon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Hydreigon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Hydreigon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Hydreigon"
+}

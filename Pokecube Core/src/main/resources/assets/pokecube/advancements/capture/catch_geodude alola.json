@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Geodude Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Geodude Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Geodude Alola": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Geodude Alola"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Geodude Alola"
+}

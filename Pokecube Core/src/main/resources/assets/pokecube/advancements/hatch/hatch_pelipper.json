@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Pelipper.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pelipper.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Pelipper": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Pelipper"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Pelipper"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Monferno.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Monferno.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Monferno": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Monferno"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Monferno"
+}

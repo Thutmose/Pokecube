@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Dunsparce.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dunsparce.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Dunsparce": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Dunsparce"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Dunsparce"
+}

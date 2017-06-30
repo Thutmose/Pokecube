@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Meditite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meditite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Meditite Female": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Meditite Female"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Meditite Female"
+}

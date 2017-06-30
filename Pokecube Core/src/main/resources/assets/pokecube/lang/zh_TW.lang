@@ -688,8 +688,8 @@ pokemob.move.hyperFang=超級毒牙
 pokemob.move.transform=變身
 
 achievement.catch=抓到一隻 %1$s
-achievement.get1stPokemob=
-achievement.get1stPokemob.desc=
+achievement.pokecube.get1st=
+achievement.pokecube.get1st.desc=
 gui.pokemob.choose1st=
 
 pokecube.caught=抓到了%1$s!

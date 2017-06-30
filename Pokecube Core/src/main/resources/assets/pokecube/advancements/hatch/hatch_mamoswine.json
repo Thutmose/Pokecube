@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Mamoswine.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mamoswine.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Mamoswine": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Mamoswine"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Mamoswine"
+}

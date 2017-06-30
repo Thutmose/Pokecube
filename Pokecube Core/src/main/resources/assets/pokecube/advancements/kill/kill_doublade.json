@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Doublade.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Doublade.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Doublade": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Doublade"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Doublade"
+}

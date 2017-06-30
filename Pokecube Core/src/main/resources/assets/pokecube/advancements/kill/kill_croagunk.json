@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Croagunk.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Croagunk.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Croagunk": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Croagunk"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Croagunk"
+}

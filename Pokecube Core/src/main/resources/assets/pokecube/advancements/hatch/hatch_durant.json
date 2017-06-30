@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Durant.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Durant.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Durant": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Durant"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Durant"
+}

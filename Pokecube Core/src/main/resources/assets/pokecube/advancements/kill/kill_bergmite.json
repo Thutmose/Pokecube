@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bergmite.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bergmite.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bergmite": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bergmite"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bergmite"
+}

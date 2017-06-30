@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Regirock.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Regirock.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Regirock": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Regirock"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Regirock"
+}

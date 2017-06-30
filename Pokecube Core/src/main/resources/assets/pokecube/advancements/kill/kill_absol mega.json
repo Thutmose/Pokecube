@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Absol Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Absol Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Absol Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Absol Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Absol Mega"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ludicolo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ludicolo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ludicolo": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ludicolo"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ludicolo"
+}

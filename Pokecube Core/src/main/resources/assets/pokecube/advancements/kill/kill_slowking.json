@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Slowking.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slowking.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Slowking": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Slowking"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Slowking"
+}

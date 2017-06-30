@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon End.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon End.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon End": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon End"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon End"
+}

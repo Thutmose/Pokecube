@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Sandstorm.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Sandstorm.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Vivillon Sandstorm": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Vivillon Sandstorm"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Vivillon Sandstorm"
+}

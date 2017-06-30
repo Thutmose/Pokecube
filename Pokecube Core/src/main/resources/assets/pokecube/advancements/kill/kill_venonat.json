@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Venonat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Venonat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Venonat": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Venonat"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Venonat"
+}

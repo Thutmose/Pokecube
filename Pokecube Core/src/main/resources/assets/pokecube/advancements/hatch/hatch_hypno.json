@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Hypno.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hypno.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Hypno": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Hypno"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Hypno"
+}

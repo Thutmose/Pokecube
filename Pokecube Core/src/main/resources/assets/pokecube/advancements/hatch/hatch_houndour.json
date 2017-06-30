@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Houndour.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Houndour.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Houndour": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Houndour"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Houndour"
+}

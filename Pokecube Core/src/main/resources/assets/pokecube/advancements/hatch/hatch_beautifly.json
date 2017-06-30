@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Beautifly.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Beautifly.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Beautifly": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Beautifly"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Beautifly"
+}

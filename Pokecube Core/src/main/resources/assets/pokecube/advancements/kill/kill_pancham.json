@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Pancham.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pancham.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Pancham": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Pancham"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Pancham"
+}

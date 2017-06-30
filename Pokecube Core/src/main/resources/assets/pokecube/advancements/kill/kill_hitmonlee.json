@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonlee.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonlee.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Hitmonlee": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Hitmonlee"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Hitmonlee"
+}

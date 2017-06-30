@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Mime Jr..name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mime Jr..name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Mime Jr.": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Mime Jr."
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Mime Jr."
+}

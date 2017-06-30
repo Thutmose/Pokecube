@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Zubat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zubat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Zubat": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Zubat"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Zubat"
+}

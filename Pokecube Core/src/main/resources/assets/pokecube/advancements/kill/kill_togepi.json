@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Togepi.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Togepi.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Togepi": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Togepi"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Togepi"
+}

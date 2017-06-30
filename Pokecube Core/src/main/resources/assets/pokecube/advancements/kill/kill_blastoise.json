@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Blastoise.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blastoise.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Blastoise": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Blastoise"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Blastoise"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Spiritomb.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Spiritomb.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Spiritomb": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Spiritomb"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Spiritomb"
+}

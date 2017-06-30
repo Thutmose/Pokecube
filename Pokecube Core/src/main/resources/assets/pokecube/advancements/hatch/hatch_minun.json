@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Minun.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Minun.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Minun": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Minun"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Minun"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Jumpluff.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Jumpluff.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Jumpluff": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Jumpluff"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Jumpluff"
+}

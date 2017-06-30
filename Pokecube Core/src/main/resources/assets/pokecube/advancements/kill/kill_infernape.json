@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Infernape.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Infernape.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Infernape": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Infernape"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Infernape"
+}

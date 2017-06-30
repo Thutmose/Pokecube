@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Aron.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Aron.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Aron": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Aron"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Aron"
+}

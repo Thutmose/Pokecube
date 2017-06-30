@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Hell.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Hell.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Vivillon Hell": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Vivillon Hell"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Vivillon Hell"
+}

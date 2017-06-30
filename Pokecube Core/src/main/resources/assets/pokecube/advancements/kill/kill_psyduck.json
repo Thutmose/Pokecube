@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Psyduck.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Psyduck.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Psyduck": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Psyduck"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Psyduck"
+}

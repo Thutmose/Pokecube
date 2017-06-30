@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Glalie Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Glalie Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Glalie Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Glalie Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Glalie Mega"
+}

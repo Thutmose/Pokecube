@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Azumarill.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Azumarill.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Azumarill": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Azumarill"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Azumarill"
+}

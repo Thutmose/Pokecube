@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Yungoos.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Yungoos.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Yungoos": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Yungoos"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Yungoos"
+}

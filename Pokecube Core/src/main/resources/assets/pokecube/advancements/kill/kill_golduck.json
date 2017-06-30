@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Golduck.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Golduck.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Golduck": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Golduck"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Golduck"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Ludicolo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ludicolo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Ludicolo": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Ludicolo"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Ludicolo"
+}

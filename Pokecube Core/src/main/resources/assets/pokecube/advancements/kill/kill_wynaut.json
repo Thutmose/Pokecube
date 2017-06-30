@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Wynaut.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wynaut.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Wynaut": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Wynaut"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Wynaut"
+}

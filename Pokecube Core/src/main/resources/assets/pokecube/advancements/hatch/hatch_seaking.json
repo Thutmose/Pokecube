@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Seaking.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Seaking.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Seaking": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Seaking"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Seaking"
+}

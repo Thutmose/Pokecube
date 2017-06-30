@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Wormadam.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wormadam.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Wormadam": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Wormadam"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Wormadam"
+}

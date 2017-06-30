@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Ampharos Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ampharos Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Ampharos Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Ampharos Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Ampharos Mega"
+}

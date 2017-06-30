@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cosmoem.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cosmoem.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cosmoem": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cosmoem"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cosmoem"
+}

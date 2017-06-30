@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Clefable.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Clefable.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Clefable": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Clefable"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Clefable"
+}

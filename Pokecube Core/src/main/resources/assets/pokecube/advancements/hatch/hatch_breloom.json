@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Breloom.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Breloom.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Breloom": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Breloom"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Breloom"
+}

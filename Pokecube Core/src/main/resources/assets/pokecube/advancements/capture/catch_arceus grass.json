@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Grass.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Grass.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Arceus Grass": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Arceus Grass"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Arceus Grass"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Charmeleon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Charmeleon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Charmeleon": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Charmeleon"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Charmeleon"
+}

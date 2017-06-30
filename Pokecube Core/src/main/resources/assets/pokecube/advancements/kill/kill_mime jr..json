@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Mime Jr..name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mime Jr..name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Mime Jr.": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Mime Jr."
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Mime Jr."
+}

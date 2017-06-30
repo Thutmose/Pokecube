@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Omastar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Omastar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Omastar": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Omastar"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Omastar"
+}

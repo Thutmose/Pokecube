@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Zweilous.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zweilous.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Zweilous": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Zweilous"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Zweilous"
+}

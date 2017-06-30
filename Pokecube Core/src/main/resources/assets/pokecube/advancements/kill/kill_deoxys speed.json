@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Deoxys Speed.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Deoxys Speed.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Deoxys Speed": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Deoxys Speed"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Deoxys Speed"
+}

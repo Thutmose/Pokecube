@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Darumaka.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Darumaka.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Darumaka": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Darumaka"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Darumaka"
+}

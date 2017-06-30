@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Primeape.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Primeape.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Primeape": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Primeape"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Primeape"
+}

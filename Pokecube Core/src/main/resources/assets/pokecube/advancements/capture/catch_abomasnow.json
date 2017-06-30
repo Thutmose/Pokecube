@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Abomasnow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Abomasnow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Abomasnow": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Abomasnow"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Abomasnow"
+}

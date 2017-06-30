@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Lunatone.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lunatone.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Lunatone": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Lunatone"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Lunatone"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Klefki.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Klefki.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Klefki": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Klefki"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Klefki"
+}

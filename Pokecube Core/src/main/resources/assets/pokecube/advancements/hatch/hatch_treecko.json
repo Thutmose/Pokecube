@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Treecko.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Treecko.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Treecko": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Treecko"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Treecko"
+}

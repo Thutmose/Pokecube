@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Lunatone.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lunatone.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Lunatone": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Lunatone"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Lunatone"
+}

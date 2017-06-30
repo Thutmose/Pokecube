@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Serperior.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Serperior.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Serperior": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Serperior"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Serperior"
+}

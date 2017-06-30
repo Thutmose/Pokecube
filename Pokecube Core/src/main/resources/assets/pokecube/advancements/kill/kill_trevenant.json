@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Trevenant.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Trevenant.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Trevenant": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Trevenant"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Trevenant"
+}

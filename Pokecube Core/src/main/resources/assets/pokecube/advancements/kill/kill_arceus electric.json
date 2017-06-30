@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Electric.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Electric.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Arceus Electric": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Arceus Electric"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Arceus Electric"
+}

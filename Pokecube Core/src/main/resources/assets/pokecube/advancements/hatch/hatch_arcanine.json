@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Arcanine.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arcanine.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Arcanine": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Arcanine"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Arcanine"
+}

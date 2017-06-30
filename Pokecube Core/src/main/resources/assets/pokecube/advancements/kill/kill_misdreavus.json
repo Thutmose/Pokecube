@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Misdreavus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Misdreavus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Misdreavus": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Misdreavus"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Misdreavus"
+}

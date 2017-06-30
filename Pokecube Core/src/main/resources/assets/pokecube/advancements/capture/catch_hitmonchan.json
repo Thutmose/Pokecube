@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonchan.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonchan.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Hitmonchan": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Hitmonchan"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Hitmonchan"
+}

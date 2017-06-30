@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Litten.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Litten.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Litten": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Litten"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Litten"
+}

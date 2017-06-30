@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Onix.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Onix.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Onix": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Onix"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Onix"
+}

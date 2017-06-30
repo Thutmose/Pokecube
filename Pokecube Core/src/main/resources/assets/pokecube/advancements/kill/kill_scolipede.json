@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Scolipede.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Scolipede.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Scolipede": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Scolipede"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Scolipede"
+}

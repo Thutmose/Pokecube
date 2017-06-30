@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sandshrew.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sandshrew.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sandshrew": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sandshrew"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sandshrew"
+}

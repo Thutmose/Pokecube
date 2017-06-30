@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Diggersby.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Diggersby.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Diggersby": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Diggersby"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Diggersby"
+}

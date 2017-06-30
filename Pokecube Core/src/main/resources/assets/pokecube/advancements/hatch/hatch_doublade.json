@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Doublade.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Doublade.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Doublade": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Doublade"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Doublade"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Tauros.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tauros.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Tauros": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Tauros"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Tauros"
+}

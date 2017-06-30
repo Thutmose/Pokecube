@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Regirock.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Regirock.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Regirock": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Regirock"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Regirock"
+}

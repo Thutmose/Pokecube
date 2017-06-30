@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Kingler.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kingler.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Kingler": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Kingler"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Kingler"
+}

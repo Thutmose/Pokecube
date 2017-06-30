@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Axew.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Axew.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Axew": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Axew"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Axew"
+}

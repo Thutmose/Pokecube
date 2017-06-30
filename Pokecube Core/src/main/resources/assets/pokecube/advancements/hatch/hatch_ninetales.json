@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Ninetales.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ninetales.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Ninetales": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Ninetales"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Ninetales"
+}

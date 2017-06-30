@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Lugia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lugia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Lugia": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Lugia"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Lugia"
+}

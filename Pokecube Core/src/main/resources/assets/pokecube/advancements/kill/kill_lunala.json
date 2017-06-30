@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Lunala.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lunala.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Lunala": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Lunala"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Lunala"
+}

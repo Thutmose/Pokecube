@@ -471,6 +471,7 @@ public class Commands extends CommandBase
                     {
                         PokecubeSerializer.getInstance().setHasStarter(player, true);
                         PacketDataSync.sendInitPacket(player, "pokecube-data");
+                        PacketDataSync.sendInitPacket(player, "pokecube-stats");
                         cSender.sendMessage(
                                 new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
                     }

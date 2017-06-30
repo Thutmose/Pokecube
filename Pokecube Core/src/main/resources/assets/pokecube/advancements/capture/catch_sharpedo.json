@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Sharpedo.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sharpedo.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Sharpedo": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Sharpedo"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Sharpedo"
+}

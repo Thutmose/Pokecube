@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ground.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ground.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Arceus Ground": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Arceus Ground"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Arceus Ground"
+}

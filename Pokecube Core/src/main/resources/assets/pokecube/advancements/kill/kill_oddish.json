@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Oddish.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Oddish.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Oddish": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Oddish"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Oddish"
+}

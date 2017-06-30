@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Lapras.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lapras.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Lapras": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Lapras"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Lapras"
+}

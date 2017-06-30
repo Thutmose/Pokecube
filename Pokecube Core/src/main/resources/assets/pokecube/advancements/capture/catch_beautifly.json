@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Beautifly.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Beautifly.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Beautifly": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Beautifly"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Beautifly"
+}

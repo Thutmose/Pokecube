@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Swinub.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Swinub.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Swinub": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Swinub"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Swinub"
+}

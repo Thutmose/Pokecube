@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ampharos.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ampharos.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ampharos": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ampharos"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ampharos"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Clefairy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Clefairy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Clefairy": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Clefairy"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Clefairy"
+}

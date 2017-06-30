@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Smeargle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Smeargle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Smeargle": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Smeargle"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Smeargle"
+}

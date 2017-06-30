@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Abomasnow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Abomasnow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Abomasnow": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Abomasnow"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Abomasnow"
+}

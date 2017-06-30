@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Mewtwo Mega-X.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mewtwo Mega-X.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Mewtwo Mega-X": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Mewtwo Mega-X"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Mewtwo Mega-X"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Piplup.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Piplup.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Piplup": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Piplup"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Piplup"
+}

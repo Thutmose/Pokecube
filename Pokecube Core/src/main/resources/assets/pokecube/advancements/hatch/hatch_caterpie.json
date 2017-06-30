@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Caterpie.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Caterpie.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Caterpie": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Caterpie"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Caterpie"
+}

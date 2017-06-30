@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.GenesectSDrive.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.GenesectSDrive.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_GenesectSDrive": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "GenesectSDrive"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "GenesectSDrive"
+}

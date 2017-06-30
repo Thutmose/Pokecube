@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Zigzagoon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zigzagoon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Zigzagoon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Zigzagoon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Zigzagoon"
+}

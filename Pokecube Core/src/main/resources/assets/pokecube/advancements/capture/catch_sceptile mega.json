@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sceptile Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Sceptile Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Sceptile Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Sceptile Mega"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Wailord.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wailord.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Wailord": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Wailord"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Wailord"
+}

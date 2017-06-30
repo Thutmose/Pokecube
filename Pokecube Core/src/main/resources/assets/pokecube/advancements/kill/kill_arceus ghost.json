@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ghost.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Ghost.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Arceus Ghost": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Arceus Ghost"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Arceus Ghost"
+}

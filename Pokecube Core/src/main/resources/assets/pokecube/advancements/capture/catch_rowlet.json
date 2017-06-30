@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Rowlet.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rowlet.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Rowlet": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Rowlet"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Rowlet"
+}

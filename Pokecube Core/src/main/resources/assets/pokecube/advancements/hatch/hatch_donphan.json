@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Donphan.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Donphan.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Donphan": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Donphan"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Donphan"
+}

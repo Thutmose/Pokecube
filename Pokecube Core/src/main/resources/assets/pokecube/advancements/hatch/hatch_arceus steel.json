@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Steel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Steel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Arceus Steel": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Arceus Steel"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Arceus Steel"
+}

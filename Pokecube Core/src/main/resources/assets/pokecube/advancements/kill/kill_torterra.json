@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Torterra.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Torterra.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Torterra": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Torterra"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Torterra"
+}

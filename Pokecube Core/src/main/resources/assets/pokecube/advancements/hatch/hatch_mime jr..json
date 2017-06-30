@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Mime Jr..name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mime Jr..name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Mime Jr.": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Mime Jr."
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Mime Jr."
+}

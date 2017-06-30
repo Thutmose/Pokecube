@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Trumbeak.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Trumbeak.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Trumbeak": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Trumbeak"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Trumbeak"
+}

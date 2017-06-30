@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sableye.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sableye.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sableye": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sableye"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sableye"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Murkrow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Murkrow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Murkrow": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Murkrow"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Murkrow"
+}

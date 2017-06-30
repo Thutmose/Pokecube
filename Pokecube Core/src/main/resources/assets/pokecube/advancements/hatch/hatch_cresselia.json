@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cresselia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cresselia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cresselia": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cresselia"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cresselia"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Luxio.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Luxio.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Luxio": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Luxio"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Luxio"
+}

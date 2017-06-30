@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Aegislash Blade.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Aegislash Blade.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Aegislash Blade": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Aegislash Blade"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Aegislash Blade"
+}

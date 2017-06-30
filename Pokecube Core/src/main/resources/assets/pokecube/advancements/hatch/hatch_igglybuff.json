@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Igglybuff.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Igglybuff.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Igglybuff": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Igglybuff"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Igglybuff"
+}

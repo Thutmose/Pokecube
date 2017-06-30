@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Elegant.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Elegant.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon Elegant": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon Elegant"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon Elegant"
+}

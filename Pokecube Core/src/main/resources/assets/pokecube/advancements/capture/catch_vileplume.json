@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Vileplume.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vileplume.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Vileplume": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Vileplume"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Vileplume"
+}

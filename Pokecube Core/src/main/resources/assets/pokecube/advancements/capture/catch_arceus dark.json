@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Dark.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Dark.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Arceus Dark": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Arceus Dark"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Arceus Dark"
+}

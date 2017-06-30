@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Gallade Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gallade Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Gallade Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Gallade Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Gallade Mega"
+}

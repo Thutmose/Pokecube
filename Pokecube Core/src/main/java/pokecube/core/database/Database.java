@@ -32,6 +32,8 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.registries.GameData;
@@ -432,9 +434,52 @@ public class Database
         for (PokedexEntry e : allFormes)
         {
             if (e.getModId() == null || e.event != null) continue;
+            if (!e.base)
+            {
+                PokedexEntry e1 = e.getBaseForme();
+                if (e1.sound == null) e1.setSound("mobs." + e1.getBaseName());
+                if (e1.event != null)
+                {
+                    if (e1.event != null)
+                    {
+                        e.event = e1.event;
+                        e.setSound("mobs." + e1.getBaseName());
+                    }
+                    continue;
+                }
+                e1.event = new SoundEvent(e1.sound);
+                //Fix the annoying warning about wrong mod container...
+                ModContainer mc = Loader.instance().activeModContainer();
+                for (ModContainer cont : Loader.instance().getActiveModList())
+                {
+                    if (cont.getModId().equals("pokecube_mobs"))
+                    {
+                        Loader.instance().setActiveModContainer(cont);
+                        break;
+                    }
+                }
+                e1.event.setRegistryName(e1.sound);
+                Loader.instance().setActiveModContainer(mc);
+                e.event = e1.event;
+                e.setSound("mobs." + e1.getBaseName());
+                if (SoundEvent.REGISTRY.containsKey(e1.sound)) continue;
+                if (!SoundEvent.REGISTRY.containsKey(e1.sound)) GameData.register_impl(e1.event);
+                continue;
+            }
             if (e.sound == null) e.setSound("mobs." + e.getBaseName());
             e.event = new SoundEvent(e.sound);
+            //Fix the annoying warning about wrong mod container...
+            ModContainer mc = Loader.instance().activeModContainer();
+            for (ModContainer cont : Loader.instance().getActiveModList())
+            {
+                if (cont.getModId().equals("pokecube_mobs"))
+                {
+                    Loader.instance().setActiveModContainer(cont);
+                    break;
+                }
+            }
             e.event.setRegistryName(e.sound);
+            Loader.instance().setActiveModContainer(mc);
             if (SoundEvent.REGISTRY.containsKey(e.sound)) continue;
             if (!SoundEvent.REGISTRY.containsKey(e.sound)) GameData.register_impl(e.event);
         }

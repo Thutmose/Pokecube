@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Murkrow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Murkrow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Murkrow": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Murkrow"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Murkrow"
+}

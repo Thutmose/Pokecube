@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Noivern.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Noivern.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Noivern": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Noivern"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Noivern"
+}

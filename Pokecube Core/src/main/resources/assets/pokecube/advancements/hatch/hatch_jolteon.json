@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Jolteon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Jolteon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Jolteon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Jolteon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Jolteon"
+}

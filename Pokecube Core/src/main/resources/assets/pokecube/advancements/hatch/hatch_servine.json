@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Servine.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Servine.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Servine": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Servine"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Servine"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Blissey.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blissey.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Blissey": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Blissey"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Blissey"
+}

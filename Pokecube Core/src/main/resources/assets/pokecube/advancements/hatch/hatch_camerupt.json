@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Camerupt.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Camerupt.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Camerupt": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Camerupt"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Camerupt"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Combee.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Combee.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Combee": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Combee"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Combee"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Swellow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Swellow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Swellow": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Swellow"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Swellow"
+}

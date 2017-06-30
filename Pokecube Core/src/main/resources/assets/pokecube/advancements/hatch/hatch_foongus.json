@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Foongus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Foongus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Foongus": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Foongus"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Foongus"
+}

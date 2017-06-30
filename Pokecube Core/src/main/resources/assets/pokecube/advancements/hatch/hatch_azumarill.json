@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Azumarill.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Azumarill.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Azumarill": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Azumarill"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Azumarill"
+}

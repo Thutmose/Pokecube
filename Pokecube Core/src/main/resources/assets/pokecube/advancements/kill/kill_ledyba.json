@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ledyba.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ledyba.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ledyba": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ledyba"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ledyba"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Xatu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Xatu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Xatu": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Xatu"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Xatu"
+}

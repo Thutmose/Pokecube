@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Politoed.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Politoed.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Politoed": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Politoed"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Politoed"
+}

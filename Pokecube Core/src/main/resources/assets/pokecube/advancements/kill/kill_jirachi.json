@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Jirachi.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Jirachi.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Jirachi": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Jirachi"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Jirachi"
+}

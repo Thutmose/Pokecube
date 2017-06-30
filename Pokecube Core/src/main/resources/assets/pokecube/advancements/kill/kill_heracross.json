@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Heracross.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Heracross.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Heracross": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Heracross"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Heracross"
+}

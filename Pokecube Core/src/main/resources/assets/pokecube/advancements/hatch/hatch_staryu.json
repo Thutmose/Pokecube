@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Staryu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Staryu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Staryu": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Staryu"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Staryu"
+}

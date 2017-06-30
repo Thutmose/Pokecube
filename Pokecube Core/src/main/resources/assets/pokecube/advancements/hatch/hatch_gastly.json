@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Gastly.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gastly.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Gastly": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Gastly"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Gastly"
+}

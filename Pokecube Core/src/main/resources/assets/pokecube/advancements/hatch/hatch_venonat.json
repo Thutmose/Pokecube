@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Venonat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Venonat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Venonat": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Venonat"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Venonat"
+}

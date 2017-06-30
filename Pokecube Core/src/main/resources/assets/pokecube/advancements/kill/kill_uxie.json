@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Uxie.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Uxie.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Uxie": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Uxie"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Uxie"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Haxorus.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Haxorus.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Haxorus": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Haxorus"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Haxorus"
+}

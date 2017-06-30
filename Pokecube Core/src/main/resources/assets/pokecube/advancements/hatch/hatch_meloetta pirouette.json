@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Meloetta Pirouette.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Meloetta Pirouette.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Meloetta Pirouette": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Meloetta Pirouette"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Meloetta Pirouette"
+}

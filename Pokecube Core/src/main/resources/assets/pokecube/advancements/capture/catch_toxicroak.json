@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Toxicroak.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Toxicroak.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Toxicroak": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Toxicroak"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Toxicroak"
+}

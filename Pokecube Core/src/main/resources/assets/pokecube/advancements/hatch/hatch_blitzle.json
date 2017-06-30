@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Blitzle.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Blitzle.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Blitzle": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Blitzle"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Blitzle"
+}

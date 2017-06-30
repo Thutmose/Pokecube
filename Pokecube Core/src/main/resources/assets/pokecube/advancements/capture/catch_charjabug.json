@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Charjabug.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Charjabug.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Charjabug": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Charjabug"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Charjabug"
+}

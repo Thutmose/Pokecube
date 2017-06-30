@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Monsoon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Monsoon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon Monsoon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon Monsoon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon Monsoon"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Klinklang.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Klinklang.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Klinklang": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Klinklang"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Klinklang"
+}

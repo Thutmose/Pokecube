@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Dragonair.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Dragonair.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Dragonair": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Dragonair"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Dragonair"
+}

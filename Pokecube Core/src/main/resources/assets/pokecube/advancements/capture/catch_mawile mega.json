@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Mawile Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mawile Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Mawile Mega": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Mawile Mega"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Mawile Mega"
+}

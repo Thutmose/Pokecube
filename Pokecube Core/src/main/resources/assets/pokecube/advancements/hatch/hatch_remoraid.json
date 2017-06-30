@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Remoraid.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Remoraid.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Remoraid": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Remoraid"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Remoraid"
+}

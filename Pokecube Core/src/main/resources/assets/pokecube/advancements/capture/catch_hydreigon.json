@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Hydreigon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hydreigon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Hydreigon": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Hydreigon"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Hydreigon"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Slowpoke.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Slowpoke.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Slowpoke": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Slowpoke"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Slowpoke"
+}

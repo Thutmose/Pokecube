@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Paras.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Paras.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Paras": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Paras"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Paras"
+}

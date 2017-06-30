@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Staraptor.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Staraptor.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Staraptor": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Staraptor"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Staraptor"
+}

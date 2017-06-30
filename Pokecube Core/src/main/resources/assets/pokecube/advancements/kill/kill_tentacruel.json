@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Tentacruel.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Tentacruel.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Tentacruel": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Tentacruel"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Tentacruel"
+}

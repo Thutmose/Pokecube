@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Polar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon Polar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Vivillon Polar": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Vivillon Polar"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Vivillon Polar"
+}

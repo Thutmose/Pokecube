@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Greninja Ash.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Greninja Ash.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Greninja Ash": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Greninja Ash"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Greninja Ash"
+}

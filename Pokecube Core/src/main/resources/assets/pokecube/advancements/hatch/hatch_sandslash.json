@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Sandslash.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sandslash.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Sandslash": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Sandslash"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Sandslash"
+}

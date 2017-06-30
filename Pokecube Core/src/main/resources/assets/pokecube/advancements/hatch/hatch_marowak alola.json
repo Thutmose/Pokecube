@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Marowak Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Marowak Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Marowak Alola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Marowak Alola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Marowak Alola"
+}

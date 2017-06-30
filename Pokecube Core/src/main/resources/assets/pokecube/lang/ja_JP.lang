@@ -1238,8 +1238,8 @@ pokemob.move.fusionbolt=クロスサンダー
 
 
 achievement.catch=%1$sを捕まえる
-achievement.get1stPokemob=
-achievement.get1stPokemob.desc=
+achievement.pokecube.get1st=
+achievement.pokecube.get1st.desc=
 gui.pokemob.choose1st=
 
 pokecube.caught=%1$sを捕まえた!

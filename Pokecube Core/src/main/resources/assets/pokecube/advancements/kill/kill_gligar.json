@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Gligar.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gligar.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Gligar": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Gligar"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Gligar"
+}

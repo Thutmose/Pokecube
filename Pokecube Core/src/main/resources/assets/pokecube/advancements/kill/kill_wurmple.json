@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Wurmple.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wurmple.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Wurmple": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Wurmple"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Wurmple"
+}

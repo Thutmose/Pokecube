@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Diancie Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Diancie Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Diancie Mega": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Diancie Mega"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Diancie Mega"
+}

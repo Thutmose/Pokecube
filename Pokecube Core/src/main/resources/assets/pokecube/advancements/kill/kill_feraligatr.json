@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Feraligatr.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Feraligatr.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Feraligatr": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Feraligatr"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Feraligatr"
+}

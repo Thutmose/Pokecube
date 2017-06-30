@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Wigglytuff.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Wigglytuff.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Wigglytuff": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Wigglytuff"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Wigglytuff"
+}

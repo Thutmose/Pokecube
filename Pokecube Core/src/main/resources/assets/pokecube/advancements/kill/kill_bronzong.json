@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Bronzong.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Bronzong.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Bronzong": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Bronzong"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Bronzong"
+}

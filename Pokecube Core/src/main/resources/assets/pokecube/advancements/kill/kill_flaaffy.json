@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Flaaffy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Flaaffy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Flaaffy": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Flaaffy"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Flaaffy"
+}

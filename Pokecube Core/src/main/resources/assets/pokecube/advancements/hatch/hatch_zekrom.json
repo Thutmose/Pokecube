@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Zekrom.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zekrom.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Zekrom": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Zekrom"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Zekrom"
+}

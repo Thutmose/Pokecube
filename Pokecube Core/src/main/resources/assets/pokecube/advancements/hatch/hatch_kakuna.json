@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Kakuna.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Kakuna.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Kakuna": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Kakuna"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Kakuna"
+}

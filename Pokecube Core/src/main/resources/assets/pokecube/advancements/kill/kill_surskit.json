@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Surskit.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Surskit.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Surskit": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Surskit"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Surskit"
+}

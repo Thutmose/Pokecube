@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon IcySnow.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Vivillon IcySnow.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Vivillon IcySnow": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Vivillon IcySnow"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Vivillon IcySnow"
+}

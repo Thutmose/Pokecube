@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonchan.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Hitmonchan.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Hitmonchan": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Hitmonchan"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Hitmonchan"
+}

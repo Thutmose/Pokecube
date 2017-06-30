@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Roggenrola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Roggenrola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Roggenrola": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Roggenrola"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Roggenrola"
+}

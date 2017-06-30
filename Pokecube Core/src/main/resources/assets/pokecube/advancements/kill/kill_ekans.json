@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Ekans.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ekans.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Ekans": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Ekans"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Ekans"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Diglett Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Diglett Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Diglett Alola": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Diglett Alola"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Diglett Alola"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Scatterbug.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Scatterbug.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Scatterbug": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Scatterbug"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Scatterbug"
+}

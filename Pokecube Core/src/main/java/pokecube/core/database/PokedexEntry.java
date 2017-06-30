@@ -55,6 +55,7 @@ import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -119,7 +120,7 @@ public class PokedexEntry
                     Biome b = Biome.REGISTRY.getObject(key);
                     if (b != null)
                     {
-                        if (b.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(biome))
+                        if (BiomeDatabase.getBiomeName(b).replaceAll(" ", "").equalsIgnoreCase(biome))
                         {
                             type = Biome.getIdForBiome(b);
                         }

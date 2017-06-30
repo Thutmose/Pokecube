@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Gallade.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Gallade.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Gallade": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Gallade"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Gallade"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Carvanha.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Carvanha.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Carvanha": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Carvanha"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Carvanha"
+}

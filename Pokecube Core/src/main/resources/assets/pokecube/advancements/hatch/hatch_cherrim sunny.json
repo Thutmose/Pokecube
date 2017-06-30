@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Cherrim Sunny.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Cherrim Sunny.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Cherrim Sunny": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Cherrim Sunny"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Cherrim Sunny"
+}

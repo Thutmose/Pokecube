@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Rhydon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rhydon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Rhydon": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Rhydon"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Rhydon"
+}

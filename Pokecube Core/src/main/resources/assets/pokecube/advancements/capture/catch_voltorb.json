@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Voltorb.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Voltorb.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Voltorb": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Voltorb"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Voltorb"
+}

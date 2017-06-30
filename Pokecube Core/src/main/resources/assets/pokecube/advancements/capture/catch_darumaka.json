@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Darumaka.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Darumaka.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Darumaka": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Darumaka"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Darumaka"
+}

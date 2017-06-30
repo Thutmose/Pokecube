@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Pidove.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pidove.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Pidove": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Pidove"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Pidove"
+}

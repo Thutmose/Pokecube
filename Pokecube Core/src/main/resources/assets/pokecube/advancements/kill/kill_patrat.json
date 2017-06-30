@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Patrat.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Patrat.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Patrat": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Patrat"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Patrat"
+}

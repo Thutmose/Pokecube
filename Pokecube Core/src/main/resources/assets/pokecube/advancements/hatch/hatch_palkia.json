@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Palkia.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Palkia.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Palkia": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Palkia"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Palkia"
+}

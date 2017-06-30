@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Latias Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Latias Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Latias Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Latias Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Latias Mega"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Whiscash.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Whiscash.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Whiscash": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Whiscash"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Whiscash"
+}

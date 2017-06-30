@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Manaphy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Manaphy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Manaphy": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Manaphy"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Manaphy"
+}

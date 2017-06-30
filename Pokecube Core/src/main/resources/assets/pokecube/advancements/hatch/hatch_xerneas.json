@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Xerneas.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Xerneas.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Xerneas": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Xerneas"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Xerneas"
+}

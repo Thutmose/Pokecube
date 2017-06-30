@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Seaking.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Seaking.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Seaking": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Seaking"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Seaking"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Mightyena.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mightyena.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Mightyena": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Mightyena"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Mightyena"
+}

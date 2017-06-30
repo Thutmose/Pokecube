@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Fairy.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Arceus Fairy.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Arceus Fairy": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Arceus Fairy"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Arceus Fairy"
+}

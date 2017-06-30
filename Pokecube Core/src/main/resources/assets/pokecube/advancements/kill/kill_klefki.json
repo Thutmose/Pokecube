@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Klefki.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Klefki.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Klefki": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Klefki"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Klefki"
+}

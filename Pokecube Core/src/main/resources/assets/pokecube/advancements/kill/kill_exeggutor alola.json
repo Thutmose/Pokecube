@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Exeggutor Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Exeggutor Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Exeggutor Alola": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Exeggutor Alola"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Exeggutor Alola"
+}

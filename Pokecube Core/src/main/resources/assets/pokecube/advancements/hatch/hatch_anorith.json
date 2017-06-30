@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Anorith.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Anorith.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Anorith": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Anorith"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Anorith"
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Whismur.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Whismur.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Whismur": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Whismur"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Whismur"
+}

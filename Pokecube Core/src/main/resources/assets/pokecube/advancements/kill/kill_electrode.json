@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Electrode.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Electrode.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Electrode": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Electrode"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Electrode"
+}

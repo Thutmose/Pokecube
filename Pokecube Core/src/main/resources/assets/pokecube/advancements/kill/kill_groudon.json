@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Groudon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Groudon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Groudon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Groudon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Groudon"
+}

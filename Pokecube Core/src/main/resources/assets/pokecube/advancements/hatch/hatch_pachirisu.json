@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Pachirisu.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Pachirisu.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Pachirisu": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Pachirisu"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Pachirisu"
+}

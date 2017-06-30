@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Mismagius.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Mismagius.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Mismagius": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Mismagius"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Mismagius"
+}

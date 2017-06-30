@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Shiftry.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shiftry.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Shiftry": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Shiftry"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Shiftry"
+}

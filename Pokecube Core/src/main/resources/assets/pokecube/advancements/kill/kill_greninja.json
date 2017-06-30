@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Greninja.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Greninja.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Greninja": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Greninja"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Greninja"
+}

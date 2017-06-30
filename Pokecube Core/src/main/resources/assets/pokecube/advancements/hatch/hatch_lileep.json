@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Lileep.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Lileep.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Lileep": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Lileep"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Lileep"
+}

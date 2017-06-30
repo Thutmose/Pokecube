@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Empoleon.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Empoleon.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Empoleon": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Empoleon"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Empoleon"
+}

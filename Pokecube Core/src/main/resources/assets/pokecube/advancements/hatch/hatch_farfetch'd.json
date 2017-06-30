@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Farfetch\u0027d.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Farfetch\u0027d.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Farfetch\u0027d": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Farfetch\u0027d"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Farfetch\u0027d"
+}

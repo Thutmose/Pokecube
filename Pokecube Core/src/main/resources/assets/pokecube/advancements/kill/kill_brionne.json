@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Brionne.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Brionne.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Brionne": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Brionne"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Brionne"
+}

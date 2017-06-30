@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Rapidash.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Rapidash.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Rapidash": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Rapidash"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Rapidash"
+}

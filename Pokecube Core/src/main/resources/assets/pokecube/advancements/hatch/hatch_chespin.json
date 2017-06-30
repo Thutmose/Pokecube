@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Chespin.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Chespin.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Chespin": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Chespin"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Chespin"
+}

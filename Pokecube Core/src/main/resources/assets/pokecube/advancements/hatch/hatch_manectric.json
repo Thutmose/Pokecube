@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Manectric.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Manectric.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Manectric": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Manectric"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Manectric"
+}

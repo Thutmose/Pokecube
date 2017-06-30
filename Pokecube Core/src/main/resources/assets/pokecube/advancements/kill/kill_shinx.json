@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Shinx.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Shinx.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Shinx": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Shinx"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Shinx"
+}

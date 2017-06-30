@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Ursaring.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Ursaring.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Ursaring": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Ursaring"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Ursaring"
+}

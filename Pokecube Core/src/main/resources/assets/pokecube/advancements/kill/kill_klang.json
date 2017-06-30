@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Klang.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Klang.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Klang": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Klang"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Klang"
+}

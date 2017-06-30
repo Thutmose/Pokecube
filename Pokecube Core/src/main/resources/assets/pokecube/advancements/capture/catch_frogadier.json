@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.catch",
+      "with": [
+        {
+          "translate": "pkmn.Frogadier.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.catch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Frogadier.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "catch_Frogadier": {
+      "trigger": "pokecube:catch",
+      "conditions": {
+        "entry": "Frogadier"
+      }
+    }
+  },
+  "parent": "pokecube:capture/get_first_pokemob",
+  "entry": "Frogadier"
+}

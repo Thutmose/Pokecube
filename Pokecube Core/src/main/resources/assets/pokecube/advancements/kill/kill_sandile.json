@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sandile.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sandile.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sandile": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sandile"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sandile"
+}

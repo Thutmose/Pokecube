@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Banette Mega.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Banette Mega.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Banette Mega": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Banette Mega"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Banette Mega"
+}

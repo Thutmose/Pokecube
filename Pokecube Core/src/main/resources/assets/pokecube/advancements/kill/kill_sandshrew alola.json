@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Sandshrew Alola.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Sandshrew Alola.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Sandshrew Alola": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Sandshrew Alola"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Sandshrew Alola"
+}

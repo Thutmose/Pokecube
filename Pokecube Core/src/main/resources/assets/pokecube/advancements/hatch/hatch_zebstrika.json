@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.hatch",
+      "with": [
+        {
+          "translate": "pkmn.Zebstrika.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.hatch.desc",
+      "with": [
+        {
+          "translate": "pkmn.Zebstrika.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "hatch_Zebstrika": {
+      "trigger": "pokecube:hatch",
+      "conditions": {
+        "entry": "Zebstrika"
+      }
+    }
+  },
+  "parent": "pokecube:hatch/root",
+  "entry": "Zebstrika"
+}

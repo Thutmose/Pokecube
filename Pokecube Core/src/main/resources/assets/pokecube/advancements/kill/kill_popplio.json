@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Popplio.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Popplio.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Popplio": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Popplio"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Popplio"
+}

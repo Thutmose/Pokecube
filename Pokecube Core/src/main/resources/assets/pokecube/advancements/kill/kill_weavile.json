@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube:pokecube"
+    },
+    "title": {
+      "translate": "achievement.pokecube.kill",
+      "with": [
+        {
+          "translate": "pkmn.Weavile.name"
+        }
+      ]
+    },
+    "description": {
+      "translate": "achievement.pokecube.kill.desc",
+      "with": [
+        {
+          "translate": "pkmn.Weavile.name"
+        }
+      ]
+    }
+  },
+  "criteria": {
+    "kill_Weavile": {
+      "trigger": "pokecube:kill",
+      "conditions": {
+        "entry": "Weavile"
+      }
+    }
+  },
+  "parent": "pokecube:kill/root",
+  "entry": "Weavile"
+}

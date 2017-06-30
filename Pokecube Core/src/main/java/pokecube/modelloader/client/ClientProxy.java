@@ -216,7 +216,7 @@ public class ClientProxy extends CommonProxy
                 }
                 catch (Exception e1)
                 {
-                    e1.printStackTrace();
+                    if (model.base) e1.printStackTrace();
                     try
                     {
                         ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");

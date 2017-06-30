@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -220,9 +221,10 @@ public class AnimationLoader
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(animation);
                 res.close();
             }
-            catch (IOException e3)
+            catch (Exception e3)
             {
-                animation = new ResourceLocation(anim.replace(entry.getName(), entry.getBaseName()));
+                animation = new ResourceLocation(anim.replace(entry.getTrimmedName().toLowerCase(Locale.ENGLISH),
+                        entry.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
             }
             if (model != null)
             {

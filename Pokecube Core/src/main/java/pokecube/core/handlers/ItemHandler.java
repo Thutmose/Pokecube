@@ -167,14 +167,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
     private static void addFossilItems(Object registry)
     {
         PokecubeItems.register(PokecubeItems.fossil, registry);
-        for (String s : HeldItemHandler.fossilVariants)
-        {
-            ItemStack stack = new ItemStack(PokecubeItems.fossil);
-            stack.setTagCompound(new NBTTagCompound());
-            stack.getTagCompound().setString("pokemon", s);
-            PokecubeItems.addSpecificItemStack(s, stack);
-            PokecubeItems.registerFossil(stack, s);
-        }
     }
 
     private static void addMiscBlocks(Object registry)

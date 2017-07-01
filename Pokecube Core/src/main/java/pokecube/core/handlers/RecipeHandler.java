@@ -29,8 +29,8 @@ public class RecipeHandler extends Mod_Pokecube_Helper
     {
         Database.loadRecipes(event);
         Item snagcube = getEmptyCube(99);
-
-        IRecipe recipe = new ShapedOreRecipe(null, new ItemStack(snagcube, 3),
+        ResourceLocation group = new ResourceLocation(PokecubeMod.ID, "defaults");
+        IRecipe recipe = new ShapedOreRecipe(group, new ItemStack(snagcube, 3),
                 new Object[] { "GFG", "CBC", "III", 'F', Items.IRON_INGOT, 'C', Items.GHAST_TEAR, 'G', Items.IRON_INGOT,
                         'B', Blocks.STONE_BUTTON, 'I', Items.IRON_INGOT });
         GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, "snagcube")));
@@ -48,13 +48,13 @@ public class RecipeHandler extends Mod_Pokecube_Helper
         OreDictionary.registerOre("plankWood", new ItemStack(ItemHandler.plank0, 1, OreDictionary.WILDCARD_VALUE));
         for (int i = 0; i < 4; i++)
         {
-            recipe = new ShapelessRecipes("", new ItemStack(ItemHandler.plank0, 4, i),
+            recipe = new ShapelessRecipes(group.toString(), new ItemStack(ItemHandler.plank0, 4, i),
                     NonNullList.<Ingredient> withSize(1, Ingredient.fromStacks(new ItemStack(ItemHandler.log0, 1, i))));
             GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, "log0" + i)));
         }
         for (int i = 0; i < 2; i++)
         {
-            recipe = new ShapelessRecipes("", new ItemStack(ItemHandler.plank0, 4, i + 4),
+            recipe = new ShapelessRecipes(group.toString(), new ItemStack(ItemHandler.plank0, 4, i + 4),
                     NonNullList.<Ingredient> withSize(1, Ingredient.fromStacks(new ItemStack(ItemHandler.log1, 1, i))));
             GameData.register_impl(recipe.setRegistryName(new ResourceLocation(PokecubeMod.ID, "log0" + (i + 4))));
         }

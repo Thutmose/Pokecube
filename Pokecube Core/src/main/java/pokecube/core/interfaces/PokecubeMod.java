@@ -142,7 +142,9 @@ public abstract class PokecubeMod
 
     public static FakePlayer getFakePlayer(World world)
     {
-        return getFakePlayer(world.provider.getDimension());
+        FakePlayer player = getFakePlayer(world.provider.getDimension());
+        player.setWorld(world);
+        return player;
     }
 
     public static boolean isDeobfuscated()

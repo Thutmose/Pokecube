@@ -785,7 +785,7 @@ public class PokecubeCore extends PokecubeMod
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
         AISaveHandler.instance();
-        PokecubePlayerStats.initMap();
+        PokecubePlayerStats.initMap();FMLCommonHandler.instance().resetClientRecipeBook();
     }
 
     /** clears PC when server stops

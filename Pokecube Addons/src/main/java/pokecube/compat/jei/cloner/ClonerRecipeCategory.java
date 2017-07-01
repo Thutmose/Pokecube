@@ -32,14 +32,8 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
     {
         ResourceLocation location = new ResourceLocation(PokecubeAdv.ID, "textures/gui/clonergui.png");
         background = guiHelper.createDrawable(location, 29, 16, 116, 54);
-        localizedName = Translator.translateToLocal("tile.cloner.splicer.name");
+        localizedName = Translator.translateToLocal("tile.cloner.reanimator.name");
         icon = guiHelper.createDrawable(JEICompat.TABS, 16, 0, 16, 16);
-    }
-
-    @Deprecated
-    public void drawAnimations(Minecraft minecraft)
-    {
-
     }
 
     @Override
@@ -68,12 +62,6 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
         return JEICompat.REANIMATOR;
     }
 
-    @Deprecated
-    public void setRecipe(@Nonnull IRecipeLayout recipeLayout, @Nonnull ClonerRecipeWrapper recipeWrapper)
-    {
-
-    }
-
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, ClonerRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
@@ -85,7 +73,8 @@ public class ClonerRecipeCategory implements IRecipeCategory<ClonerRecipeWrapper
             for (int x = 0; x < 3; ++x)
             {
                 int index = craftInputSlot1 + x + (y * 3);
-                guiItemStacks.init(index, true, x * 18, y * 18);
+                int dy = x == 1 ? 0 : 9;
+                guiItemStacks.init(index, true, x * 18 + 2, y * 18 + dy);
             }
         }
         guiItemStacks.set(ingredients);

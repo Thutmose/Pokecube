@@ -63,30 +63,20 @@ public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
     {
     }
 
-    @Deprecated
-    public void drawAnimations(Minecraft minecraft)
-    {
-    }
-
-    @Deprecated
-    public void setRecipe(IRecipeLayout recipeLayout, PokemobRecipeWrapper recipeWrapper)
-    {
-    }
-
     @Override
     public void setRecipe(IRecipeLayout recipeLayout, PokemobRecipeWrapper recipeWrapper, IIngredients ingredients)
     {
         int out = 24;
         IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
         recipeLayout.getIngredientsGroup(PokedexEntry.class).init(0, false, JEICompat.ingredientRendererOutput, 81, 15,
-                out, out, 0, 0);
+                out, out, 4, 4);
         int x = 50;
         int y = 0;
         guiItemStacks.init(1, true, x, y);
         x = 14;
         y = 15;
         recipeLayout.getIngredientsGroup(PokedexEntry.class).init(1, true, JEICompat.ingredientRendererOutput, x, y,
-                out, out, 0, 0);
+                out, out, 4, 4);
         guiItemStacks.set(ingredients);
         recipeLayout.getIngredientsGroup(PokedexEntry.class).set(ingredients);
         recipeLayout.getIngredientsGroup(PokedexEntry.class).set(ingredients);

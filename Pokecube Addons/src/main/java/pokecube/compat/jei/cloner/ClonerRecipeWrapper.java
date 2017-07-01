@@ -8,16 +8,15 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 
 import mezz.jei.api.ingredients.IIngredients;
-import mezz.jei.api.recipe.wrapper.ICraftingRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import thut.lib.CompatWrapper;
 
-public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
+public class ClonerRecipeWrapper implements IRecipeWrapper
 {
 
     @Nonnull
@@ -44,20 +43,6 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     {
     }
 
-    @Nonnull
-    @Deprecated
-    public List<ItemStack> getInputs()
-    {
-        return recipe.recipeItems;
-    }
-
-    @Nonnull
-    @Deprecated
-    public List<ItemStack> getOutputs()
-    {
-        return null;
-    }
-
     public IPokemob getPokemob()
     {
         return recipe.getPokemob();
@@ -74,26 +59,8 @@ public class ClonerRecipeWrapper implements ICraftingRecipeWrapper
     @Override
     public void getIngredients(IIngredients ingredients)
     {
-        ingredients.setInputs(ItemStack.class, getInputs());
+        ingredients.setInputs(ItemStack.class, recipe.recipeItems);
         ingredients.setOutput(PokedexEntry.class, recipe.getPokedexEntry());
-    }
-
-    @Deprecated
-    public List<FluidStack> getFluidInputs()
-    {
-        return null;
-    }
-
-    @Deprecated
-    public List<FluidStack> getFluidOutputs()
-    {
-        return null;
-    }
-
-    @Deprecated
-    public void drawAnimations(Minecraft minecraft, int recipeWidth, int recipeHeight)
-    {
-
     }
 
     @Override

@@ -97,9 +97,17 @@ public class ItemHeldItems extends Item
         {
             if (reward instanceof FreeTranslatedReward)
             {
-                ItemStack book = ((FreeTranslatedReward) reward).getInfoBook(
-                        Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
-                subItems.add(book);
+                try
+                {
+                    ItemStack book = ((FreeTranslatedReward) reward).getInfoBook(
+                            Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage().getLanguageCode());
+                    subItems.add(book);
+                }
+                catch (Exception e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
     }

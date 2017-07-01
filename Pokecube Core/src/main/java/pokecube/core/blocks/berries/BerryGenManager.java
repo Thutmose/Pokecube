@@ -333,6 +333,7 @@ public class BerryGenManager
         List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
         for (String s : args)
         {
+            if (!(s.startsWith("B") || s.startsWith("W"))) s = "W" + s;
             String name = s.substring(1);
             if (s.startsWith("B"))
             {

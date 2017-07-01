@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.playerdata.advancements.AdvancementGenerator;
+import pokecube.core.handlers.playerdata.advancements.SoundJsonGenerator;
 import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
@@ -195,10 +196,11 @@ public class PokecubePlayerStats extends PlayerData
     /** Comment these out to re-generate advancements. */
     public static void registerAchievements(PokedexEntry entry)
     {
-//        if (!entry.base) return;
-//        make(entry, "catch", "pokecube_mobs:capture/get_first_pokemob", "capture");
-//        make(entry, "kill", "pokecube_mobs:kill/root", "kill");
-//        make(entry, "hatch", "pokecube_mobs:hatch/root", "hatch");
+        // if (!entry.base) return;
+        // make(entry, "catch", "pokecube_mobs:capture/get_first_pokemob",
+        // "capture");
+        // make(entry, "kill", "pokecube_mobs:kill/root", "kill");
+        // make(entry, "hatch", "pokecube_mobs:hatch/root", "hatch");
     }
 
     protected static void make(PokedexEntry entry, String id, String parent, String path)
@@ -222,6 +224,21 @@ public class PokecubePlayerStats extends PlayerData
 
     public static void initMap()
     {
+        // Comment this in to generate a sounds.json.
+//        File dir = new File("./mods/pokecube/assets/pokecube_mobs/");
+//        if (!dir.exists()) dir.mkdirs();
+//        File file = new File(dir, "sounds.json");
+//        String json = SoundJsonGenerator.generateSoundJson();
+//        try
+//        {
+//            FileWriter write = new FileWriter(file);
+//            write.write(json);
+//            write.close();
+//        }
+//        catch (IOException e)
+//        {
+//            e.printStackTrace();
+//        }
     }
 
     public static void reset()

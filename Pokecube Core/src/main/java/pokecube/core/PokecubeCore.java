@@ -494,6 +494,7 @@ public class PokecubeCore extends PokecubeMod
         GameData.register_impl(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
         sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
         GameData.register_impl(new SoundEvent(sound).setRegistryName(sound));
+        FMLCommonHandler.instance().resetClientRecipeBook();
     }
 
     // TODO swap this to proper events for 1.11.2/1.12
@@ -785,7 +786,7 @@ public class PokecubeCore extends PokecubeMod
     public void WorldLoadEvent(FMLServerStartedEvent evt)
     {
         AISaveHandler.instance();
-        PokecubePlayerStats.initMap();FMLCommonHandler.instance().resetClientRecipeBook();
+        PokecubePlayerStats.initMap();
     }
 
     /** clears PC when server stops

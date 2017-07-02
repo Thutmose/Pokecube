@@ -63,6 +63,7 @@ public class PokecubeAdv
             + "after:thut_wearables;"
             + "after:thutessentials;"
             + "after:waila;"
+            + "after:Waila;"
             + "after:advancedrocketry;"
             + "after:thut_bling;"
             + "after:theoneprobe;"

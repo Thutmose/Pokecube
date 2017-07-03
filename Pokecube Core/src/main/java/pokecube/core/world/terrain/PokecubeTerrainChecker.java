@@ -4,7 +4,10 @@ import static thut.api.terrain.BiomeType.LAKE;
 import static thut.api.terrain.BiomeType.VILLAGE;
 import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 
+import java.util.Map;
+
 import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -12,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.Village;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -113,11 +117,27 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         TerrainSegment.defaultChecker = checker;
     }
 
+    public static Map<String, String> structureSubbiomeMap = Maps.newHashMap();
+
+
     @Override
     public int getSubBiome(World world, Vector3 v, TerrainSegment segment, Chunk chunk, boolean caveAdjusted)
     {
         if (caveAdjusted)
         {
+            if (world instanceof WorldServer)
+            {
+                WorldServer worldS = (WorldServer) world;
+                for (String key : structureSubbiomeMap.keySet())
+                {
+                    if (worldS.getChunkProvider().chunkGenerator.isInsideStructure(worldS, key, v.getPos()))
+                    {
+                        String mapping = structureSubbiomeMap.get(key);
+                        BiomeType biome = BiomeType.getBiome(mapping, true);
+                        return biome.getType();
+                    }
+                }
+            }
             if (world.provider.doesWaterVaporize() || chunk.canSeeSky(v.getPos())
                     || !PokecubeCore.core.getConfig().autoDetectSubbiomes)
                 return -1;
@@ -196,8 +216,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         }
         if (world.villageCollection != null)
         {
-            Village village = world.villageCollection.getNearestVillage(new BlockPos(MathHelper.floor(v.x),
-                    MathHelper.floor(v.y), MathHelper.floor(v.z)), 2);
+            Village village = world.villageCollection.getNearestVillage(
+                    new BlockPos(MathHelper.floor(v.x), MathHelper.floor(v.y), MathHelper.floor(v.z)), 2);
             if (village != null)
             {
                 biome = VILLAGE.getType();

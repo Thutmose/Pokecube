@@ -274,6 +274,9 @@ public class Config extends ConfigBase
     public String                        baseSizeFunction             = "8 + c/10 + h/10 + k/20";
     @Configure(category = world)
     public int                           baseMaxSize                  = 1;
+    @Configure(category = world, needsMcRestart = true)
+    public String[]                      structureSubiomes            = { "Stronghold:ruin", "Mineshaft:ruin",
+            "Temple:ruin", "EndCity:ruin", "Fortress:ruin", "Mansion:ruin", "Monument:monument", "Village:village" };
     // Mob Spawning settings
     @Configure(category = spawning, needsMcRestart = true)
     /** Do monsters not spawn. */

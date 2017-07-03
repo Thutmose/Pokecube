@@ -119,7 +119,6 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
 
     public static Map<String, String> structureSubbiomeMap = Maps.newHashMap();
 
-
     @Override
     public int getSubBiome(World world, Vector3 v, TerrainSegment segment, Chunk chunk, boolean caveAdjusted)
     {

@@ -40,6 +40,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
@@ -489,6 +490,11 @@ public class Config extends ConfigBase
     {
         WorldProviderSecretBase.init(baseSizeFunction);
         if (!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
+        for (String s : structureSubiomes)
+        {
+            String[] args = s.split(":");
+            PokecubeTerrainChecker.structureSubbiomeMap.put(args[0], args[1]);
+        }
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;

@@ -475,10 +475,10 @@ public class PokedexEntry
             }
         }
 
-        HashMap<ItemStack, PokedexEntry>    formes          = new HashMap<>();
-        HashMap<ItemStack, List<ItemStack>> stacks          = new HashMap<ItemStack, List<ItemStack>>();
-        Set<ItemStack>                      noMaleAllowed   = Sets.newHashSet();
-        Set<ItemStack>                      noFemaleAllowed = Sets.newHashSet();
+        public HashMap<ItemStack, PokedexEntry>    formes          = new HashMap<>();
+        public HashMap<ItemStack, List<ItemStack>> stacks          = new HashMap<ItemStack, List<ItemStack>>();
+        public Set<ItemStack>                      noMaleAllowed   = Sets.newHashSet();
+        public Set<ItemStack>                      noFemaleAllowed = Sets.newHashSet();
 
         boolean canInteract(ItemStack key)
         {
@@ -516,8 +516,8 @@ public class PokedexEntry
             }
             ItemStack stack = getStackKey(held);
 
-            if (!noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
-            if (!noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
+            if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
+            if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
 
             if (stack == CompatWrapper.nullStack)
             {

@@ -79,7 +79,6 @@ public class PokemobCategory implements IRecipeCategory<PokemobRecipeWrapper>
                 out, out, 4, 4);
         guiItemStacks.set(ingredients);
         recipeLayout.getIngredientsGroup(PokedexEntry.class).set(ingredients);
-        recipeLayout.getIngredientsGroup(PokedexEntry.class).set(ingredients);
     }
 
     @Override

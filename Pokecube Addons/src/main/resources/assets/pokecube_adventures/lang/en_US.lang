@@ -43,6 +43,7 @@ gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer
 
 gui.jei.pokemobs=Pokemob Evolution
+gui.jei.pokemobs.interact=Pokemob Interactions
 gui.jei.pokemob.evo.level=Level %s
 gui.jei.pokemob.evo.traded=When Traded
 gui.jei.pokemob.evo.night=At Night
@@ -56,6 +57,8 @@ gui.jei.pokemob.evo.chance=With chance %s
 
 gui.jei.pokemob.gender.male=Male
 gui.jei.pokemob.gender.female=Female
+
+gui.jei.pokemob.nogender=When not %s
 
 container.splicer=Splicer
 container.extractor=Gene Extractor

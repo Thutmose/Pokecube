@@ -56,8 +56,6 @@ public class JEICompat implements IModPlugin
     public static final IIngredientRenderer<PokedexEntry> ingredientRendererInput  = new PokedexEntryIngredientRenderer();
     public static final IIngredientRenderer<PokedexEntry> ingredientRendererOutput = new PokedexEntryIngredientRenderer();
 
-    static boolean                                        added                    = false;
-
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime)
     {

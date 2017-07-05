@@ -64,10 +64,14 @@ public class PokecubeAdv
             + "after:thutessentials;"
             + "after:waila;"
             + "after:Waila;"
+            + "after:reccomplex;"
             + "after:advancedrocketry;"
+            + "after:JEI;"
+            + "after:jeresources;"
             + "after:thut_bling;"
             + "after:theoneprobe;"
             + "after:tesla;"
+            + "after:Tesla;"
             + "after:lostcities;"
             + "after:minefactoryreloaded";
 

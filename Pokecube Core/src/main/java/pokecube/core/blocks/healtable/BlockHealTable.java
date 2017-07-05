@@ -34,7 +34,7 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
     public BlockHealTable()
     {
         super(Material.CLOTH);
-        setHardness(20);
+        setHardness(1000);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(FIXED,
                 Boolean.FALSE));
         this.setCreativeTab(CreativeTabs.REDSTONE);

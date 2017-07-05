@@ -329,9 +329,6 @@ public class GeneticsManager
             alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
             alleles = genes.getAlleles().get(EVSGENE);
             alleles.getExpressed().setValue(pokemob.getEVs());
-            alleles = genes.getAlleles().get(IVSGENE);
-            alleles.getExpressed().setValue(pokemob.getIVs());
-            alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
             alleles = genes.getAlleles().get(SPECIESGENE);
             Gene gene = alleles.getExpressed();
             SpeciesInfo info = gene.getValue();

@@ -98,6 +98,7 @@ pokecube.tooltip.ivs=IVs: %s
 pokecube.tooltip.evs=EVs: %s
 pokecube.tooltip.nature=N: %s
 pokecube.tooltip.ability=A: %s
+pokecube.tooltip.advanced=<Shift for more info>
 
 entity.pokecube.cube.name=Pokécube
 

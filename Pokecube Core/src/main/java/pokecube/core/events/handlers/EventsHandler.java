@@ -40,7 +40,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -578,9 +578,8 @@ public class EventsHandler
             {
                 if (shuckle.getPokemonOwner() != null)
                 {
-                    String message = "A sweet smell is coming from "
-                            + shuckle.getPokemonDisplayName().getFormattedText();
-                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(new TextComponentString(message));
+                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(
+                            new TextComponentTranslation("pokemob.info.berrybrew", shuckle.getPokemonDisplayName()));
                 }
                 shuckle.setHeldItem(new ItemStack(PokecubeItems.berryJuice));
                 return;
@@ -593,9 +592,8 @@ public class EventsHandler
 
                 if (shuckle.getPokemonOwner() != null)
                 {
-                    String message = "The smell coming from " + shuckle.getPokemonDisplayName().getFormattedText()
-                            + " has changed";
-                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(new TextComponentString(message));
+                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(new TextComponentTranslation(
+                            "pokemob.info.berrybrewtwice", shuckle.getPokemonDisplayName()));
                 }
                 shuckle.setHeldItem(candy);
                 return;

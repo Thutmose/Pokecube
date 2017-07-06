@@ -68,7 +68,7 @@ public class Pokecube extends Item implements IPokecube
 
         if (flag5)
         {
-             list.add(I18n.format(EnumDyeColor.byDyeDamage(nbt.getInteger("dye")).getUnlocalizedName()));//TODO
+            list.add(I18n.format(EnumDyeColor.byDyeDamage(nbt.getInteger("dye")).getUnlocalizedName()));// TODO
         }
     }
 
@@ -145,6 +145,7 @@ public class Pokecube extends Item implements IPokecube
                 list.add(I18n.format("pokecube.tooltip.nature", pokemob.getNature()));
                 list.add(I18n.format("pokecube.tooltip.ability", pokemob.getAbility()));
             }
+            else list.add(I18n.format("pokecube.tooltip.advanced"));
         }
 
         if (item.hasTagCompound())

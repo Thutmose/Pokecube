@@ -42,8 +42,8 @@ tile.pokesiphon.name=Energy Siphon
 gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer
 
-gui.jei.pokemobs=Pokemob Evolution
-gui.jei.pokemobs.interact=Pokemob Interactions
+gui.jei.pokemobs=Pokémob Evolution
+gui.jei.pokemobs.interact=Pokémob Interactions
 gui.jei.pokemob.evo.level=Level %s
 gui.jei.pokemob.evo.traded=When Traded
 gui.jei.pokemob.evo.night=At Night
@@ -128,6 +128,8 @@ achievement.achievement.pokeadv.get.badgedark=Get a dark Badge
 achievement.achievement.pokeadv.get.badgedark.desc=Get a dark Badge
 achievement.achievement.pokeadv.get.badgefairy=Get a fairy Badge
 achievement.achievement.pokeadv.get.badgefairy.desc=Get a fairy Badge
+
+pokecube.expshare.tooltip=Gives extra EXP if the Pokémob holding this is within 16 blocks of the battle.
 
 #Config Stuff
 

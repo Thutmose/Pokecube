@@ -228,7 +228,7 @@ public class Config extends ConfigBase
     @Configure(category = world)
     public boolean                       doSpawnBuilding              = true;
     @Configure(category = world)
-    public boolean                       basesLoaded                  = false;
+    public boolean                       basesLoaded                  = true;
     @Configure(category = world)
     public boolean                       autoPopulateLists            = true;
     @Configure(category = world)
@@ -386,7 +386,8 @@ public class Config extends ConfigBase
     @Configure(category = advanced)
     public boolean                       debug                        = false;
     @Configure(category = advanced)
-    public String[]                      damageBlocksWhitelist        = { "flash", "teleport" };
+    public String[]                      damageBlocksWhitelist        = { "flash", "teleport", "dig", "cut",
+            "rocksmash" };
     @Configure(category = advanced)
     public String[]                      damageBlocksBlacklist        = {};
     @Configure(category = advanced)

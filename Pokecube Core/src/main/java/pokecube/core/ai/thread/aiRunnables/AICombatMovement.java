@@ -217,6 +217,9 @@ public class AICombatMovement extends AIBase
     @Override
     public boolean shouldRun()
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING)
+                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
+            return false;
         return (target = attacker.getAttackTarget()) != null && pokemob.getPokemonAIState(IMoveConstants.ANGRY);
     }
 }

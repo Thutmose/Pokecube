@@ -168,7 +168,7 @@ public class AIIdle extends AIBase
         if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
                 && !mob.getPokemonAIState(IMoveConstants.STAYING))
             return false;
-        if (mob.getPokemonAIState(IMoveConstants.SLEEPING)) return false;
+        if (mob.getPokemonAIState(IPokemob.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
         else if (this.entity.isBeingRidden() || current != null)
         {
             return false;

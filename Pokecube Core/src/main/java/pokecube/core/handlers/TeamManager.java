@@ -1,8 +1,11 @@
 package pokecube.core.handlers;
 
+import java.util.UUID;
+
 import javax.annotation.Nonnull;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.scoreboard.Team;
 
 public class TeamManager
@@ -20,7 +23,13 @@ public class TeamManager
         public String getTeam(Entity entityIn)
         {
             Team team = entityIn.getTeam();
-            return team == null ? "" : team.getName();
+            String name = team == null ? "" : team.getName();
+            if (entityIn instanceof IEntityOwnable && team == null)
+            {
+                UUID id = ((IEntityOwnable) entityIn).getOwnerId();
+                if (id != null) name = id.toString();
+            }
+            return name;
         }
     }
 
@@ -34,6 +43,8 @@ public class TeamManager
 
     public static boolean sameTeam(Entity entityA, Entity entityB)
     {
-        return getTeam(entityA).equals(getTeam(entityB));
+        String teamA = getTeam(entityA);
+        String teamB = getTeam(entityB);
+        return !teamA.isEmpty() && teamA.equals(teamB);
     }
 }

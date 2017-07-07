@@ -17,7 +17,9 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
 import pokecube.core.entity.pokemobs.genetics.epigenes.MovesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.IVsGene;
+import pokecube.core.entity.pokemobs.genetics.genes.NatureGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokecubeSerializer;
@@ -190,6 +192,34 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         String[] moves = getMoves();
         moves[i] = moveName;
         setMoves(moves);
+    }
+
+    @Override
+    public void setNature(Nature nature)
+    {
+        if (genesNature == null) getNature();
+        if (genesNature != null) genesNature.getExpressed().setValue(nature);
+    }
+
+    @Override
+    public Nature getNature()
+    {
+        if (genesNature == null)
+        {
+            IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
+            if (genes == null) return Nature.HARDY;
+            genesNature = genes.getAlleles().get(NATUREGENE);
+            if (genesNature == null)
+            {
+                genesNature = new Alleles();
+                genes.getAlleles().put(NATUREGENE, genesNature);
+                NatureGene gene = new NatureGene();
+                genesNature.getAlleles()[0] = gene;
+                genesNature.getAlleles()[1] = gene;
+                genesNature.refreshExpressed();
+            }
+        }
+        return genesNature.getExpressed().getValue();
     }
 
     public void setMoves(String[] moves)

@@ -23,7 +23,6 @@ import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 
@@ -234,6 +233,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
 
     public void setMoves(String[] moves)
     {
+        if (!isServerWorld()) return;
         String movesString = "";
 
         if (moves != null && moves.length == 4)
@@ -277,22 +277,16 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void onGenesChanged()
     {
-        IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-        Alleles allele = genes.getAlleles().get(SIZEGENE);
-        if (allele != null) genesSize = allele;
-        else getSize();
-        allele = genes.getAlleles().get(IVSGENE);
-        if (allele != null) genesIVs = allele;
-        else getIVs();
-        allele = genes.getAlleles().get(EVSGENE);
-        if (allele != null) genesEVs = allele;
-        else getEVs();
-        allele = genes.getAlleles().get(MOVESGENE);
-        if (allele != null) genesMoves = allele;
-        else getMoves();
-        allele = genes.getAlleles().get(NATUREGENE);
-        if (allele != null) genesNature = allele;
-        else getNature();
+        genesSize = null;
+        getSize();
+        genesIVs = null;
+        getIVs();
+        genesEVs = null;
+        getEVs();
+        genesMoves = null;
+        getMoves();
+        genesNature = null;
+        getNature();
 
         // Refresh the datamanager for moves.
         setMoves(getMoves());

@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -114,7 +115,7 @@ public class AIStoreStuff extends AIBase
             {
                 stack = inv.getStackInSlot(i);
                 // If it wants a berry, search for a berry item, and take that.
-                if (stack != null && !hasBerry)
+                if (CompatWrapper.isValid(stack) && !hasBerry)
                 {
                     if (stack.getItem() instanceof ItemBerry)
                     {
@@ -129,15 +130,54 @@ public class AIStoreStuff extends AIBase
         if (!freeSlot)
         {
             IInventory inv = getStorageInventory();
-            if (inv != null) for (int i = 3; i < inventory.getSizeInventory(); i++)
+            if (inv != null)
             {
-                stack = inventory.getStackInSlot(i);
-                // If it has full inventory, deposit all but the berry
-                // stack.
-                if (ItemStackTools.addItemStackToInventory(inventory.getStackInSlot(i), inv, 0))
+                // First sort your inventory such that if you have multiple
+                // berries, the tastiest one is first
+                if (hasBerry)
                 {
-                    inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
-                    freeSlot = true;
+                    int weight = Integer.MIN_VALUE;
+                    int index = -1;
+                    Nature nature = pokemob.getNature();
+                    for (int i = 2; i < inventory.getSizeInventory(); i++)
+                    {
+                        stack = inventory.getStackInSlot(i);
+                        // If it wants a berry, search for a berry item, and
+                        // take that.
+                        if (CompatWrapper.isValid(stack) && !hasBerry)
+                        {
+                            if (stack.getItem() instanceof ItemBerry)
+                            {
+                                int testweight = Nature.getBerryWeight(stack.getItemDamage(), nature);
+                                if (testweight > weight)
+                                {
+                                    weight = testweight;
+                                    index = i;
+                                }
+                            }
+
+                        }
+                    }
+                    // Swap favourite berry stack to first item.
+                    if (index != -1)
+                    {
+                        ItemStack stack2 = inventory.getStackInSlot(index);
+                        stack = inventory.getStackInSlot(2);
+                        inventory.setInventorySlotContents(2, stack2);
+                        inventory.setInventorySlotContents(index, stack);
+                    }
+                }
+
+                for (int i = 3; i < inventory.getSizeInventory(); i++)
+                {
+                    stack = inventory.getStackInSlot(i);
+                    // If it has full inventory, deposit all but the berry
+                    // stack.
+                    if (ItemStackTools.addItemStackToInventory(inventory.getStackInSlot(i), inv, 0))
+                    {
+                        inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
+                        freeSlot = true;
+                    }
                 }
             }
         }

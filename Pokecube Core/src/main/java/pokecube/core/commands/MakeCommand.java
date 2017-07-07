@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -259,6 +260,7 @@ public class MakeCommand extends CommandBase
                             }
                         }
                         mob.specificSpawnInit();
+                        GeneticsManager.initMob((Entity) mob);
                         ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
                         text = TextFormatting.GREEN + "Spawned " + mob.getPokemonDisplayName().getFormattedText();
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");

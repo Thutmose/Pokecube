@@ -361,7 +361,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public float                         targetSize                   = 1;
     @Configure(category = client)
-    public int[]                         messagePos                   = { 0, 0 };
+    public int[]                         messagePos                   = { -150, -100 };
     @Configure(category = client)
     public int                           messageWidth                 = 150;;
     @Configure(category = client)

@@ -16,6 +16,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
+import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.AnimationLoader.Model;
 import pokecube.modelloader.client.render.wrappers.ModelWrapper;
 import thut.api.maths.Vector3;
@@ -83,33 +85,35 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         }
     }
 
-    public static final String          DEFAULTPHASE   = "idle";
+    public static final String          DEFAULTPHASE      = "idle";
     public String                       name;
-    public String                       currentPhase   = "idle";
-    public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
+    public String                       currentPhase      = "idle";
+    private boolean                     checkedForSleep   = false;
+    private boolean                     hasSleepAnimation = false;
+    public HashMap<String, PartInfo>    parts             = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>> global;
-    public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
-    public Set<String>                  headParts      = Sets.newHashSet();
+    public HashMap<String, Animation>   animations        = new HashMap<String, Animation>();
+    public Set<String>                  headParts         = Sets.newHashSet();
     public TextureHelper                texturer;
 
     public IAnimationChanger            animator;;
-    public Vector3                      offset         = Vector3.getNewVector();;
-    public Vector3                      scale          = Vector3.getNewVector();
+    public Vector3                      offset            = Vector3.getNewVector();;
+    public Vector3                      scale             = Vector3.getNewVector();
 
-    public Vector5                      rotations      = new Vector5();
+    public Vector5                      rotations         = new Vector5();
 
     public ModelWrapper                 model;
-    public int                          headDir        = 2;
-    public int                          headAxis       = 2;
-    public int                          headAxis2      = 0;
+    public int                          headDir           = 2;
+    public int                          headAxis          = 2;
+    public int                          headAxis2         = 0;
     /** A set of names of shearable parts. */
-    public Set<String>                  shearableParts = Sets.newHashSet();
+    public Set<String>                  shearableParts    = Sets.newHashSet();
 
     /** A set of namess of dyeable parts. */
-    public Set<String>                  dyeableParts   = Sets.newHashSet();
-    public float[]                      headCaps       = { -180, 180 };
+    public Set<String>                  dyeableParts      = Sets.newHashSet();
+    public float[]                      headCaps          = { -180, 180 };
 
-    public float[]                      headCaps1      = { -20, 40 };
+    public float[]                      headCaps1         = { -20, 40 };
     ResourceLocation                    texture;
 
     // Values used to properly reset the GL state after rendering.
@@ -278,5 +282,36 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     protected boolean canRenderName(T entity)
     {
         return entity.getEntityData().getBoolean("isPlayer");
+    }
+
+    @Override
+    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
+    {
+        super.applyRotations(par1EntityLiving, par2, par3, par4);
+        if (!checkedForSleep)
+        {
+            checkedForSleep = true;
+            hasSleepAnimation = hasPhase("sleeping") || hasPhase("sleep") || hasPhase("asleep");
+        }
+        if (hasSleepAnimation) return;
+        boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
+        if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
+        {
+            short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
+            float ratio = 1F;
+            if (status)
+            {
+                if (timer <= 200 && timer > 175)
+                {
+                    ratio = 1F - ((timer - 175F) / 25F);
+                }
+                if (timer >= 0 && timer <= 25)
+                {
+                    ratio = 1F - ((25F - timer) / 25F);
+                }
+            }
+            GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
+            GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
+        }
     }
 }

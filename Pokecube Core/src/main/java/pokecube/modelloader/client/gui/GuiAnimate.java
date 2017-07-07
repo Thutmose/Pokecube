@@ -23,7 +23,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.ModPokecubeML;
@@ -325,17 +324,20 @@ public class GuiAnimate extends GuiScreen
             {
                 state = TextureHelper.getState(tex);
             }
-            if (state >= 0)
+            if (state > 0)
             {
-                for (int i = 1; i < 32; i++)
+                for (int i = 0; i < 31; i++)
                     pokemob.setPokemonAIState(1 << i, false);
                 pokemob.setPokemonAIState(state, true);
             }
-        }
-        else
-        {
-            for (int i = 1; i < 31; i++)
-                pokemob.setPokemonAIState(1 << i, 1 << i == IMoveConstants.SITTING ? true : false);
+            else
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    int index = 1 << i;
+                    pokemob.setPokemonAIState(index, false);
+                }
+            }
         }
 
         EntityLiving entity = (EntityLiving) pokemob;

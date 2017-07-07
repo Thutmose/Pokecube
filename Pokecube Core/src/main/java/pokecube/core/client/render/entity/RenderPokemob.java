@@ -403,28 +403,4 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glPopMatrix();
 
     }
-
-    @Override
-    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
-    {
-        super.applyRotations(par1EntityLiving, par2, par3, par4);
-        if (((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP
-                || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
-        {
-            short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
-            // TODO see if this is ever called.
-            float ratio = 1F;
-            if (timer <= 200 && timer > 175)
-            {
-                ratio = 1F - ((timer - 175F) / 25F);
-            }
-            if (timer > 0 && timer <= 25)
-            {
-                ratio = 1F - ((25F - timer) / 25F);
-            }
-            // System.out.println("TIMER = "+timer+ " | RATIO = " + ratio);
-            GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
-            GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
-        }
-    }
 }

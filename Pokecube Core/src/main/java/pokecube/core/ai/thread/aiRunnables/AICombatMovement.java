@@ -131,6 +131,9 @@ public class AICombatMovement extends AIBase
             perp.clear();
         }
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
+        if (perp.magSq() > 0.3) perp.norm().scalarMultBy(0.3);
+        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !!attacker.onGround)
+            perp.scalarMultBy(0.2);
         perp.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getDodgeSound(),
                 SoundCategory.HOSTILE, 1, 1));
@@ -208,7 +211,11 @@ public class AICombatMovement extends AIBase
             new Exception().printStackTrace();
             dir.clear();
         }
-        if (!attacker.onGround) dir.y *= 2;
+        if (dir.magSq() > 3)
+        {
+            System.out.println(dir);
+        }
+        if (!attacker.onGround && dir.y > 1 && dir.y < 3) dir.y *= 2;
         dir.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getLeapSound(),
                 SoundCategory.HOSTILE, 1, 1));

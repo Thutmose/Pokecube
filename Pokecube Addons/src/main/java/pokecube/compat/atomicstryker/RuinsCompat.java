@@ -11,11 +11,11 @@ import thut.lib.CompatClass.Phase;
 
 public class RuinsCompat
 {
-    @Optional.Method(modid = "AS_Ruins")
+    @Optional.Method(modid = "ruins")
     @CompatClass(phase = Phase.POST)
     public static void AS_RuinsCompat()
     {
-        System.out.println("AS_Ruins Compat");
+        System.out.println("ruins Compat");
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 

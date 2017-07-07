@@ -61,6 +61,7 @@ public class PokecubeAdv
             + "after:theoneprobe;"
             + "after:tesla;"
             + "after:lostcities;"
+            + "after:ruins;"
             + "after:minefactoryreloaded";
 
     public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";

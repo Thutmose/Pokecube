@@ -55,6 +55,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             {
                 genesSize = new Alleles();
                 genes.getAlleles().put(SIZEGENE, genesSize);
+            }
+            if (genesSize.getAlleles()[0] == null || genesSize.getAlleles()[1] == null)
+            {
                 SizeGene size = new SizeGene();
                 float scale = 1 + scaleFactor * (float) (new Random()).nextGaussian();
                 size.setValue(scale);
@@ -104,6 +107,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 {
                     genesEVs = new Alleles();
                     genes.getAlleles().put(EVSGENE, genesEVs);
+                }
+                if (genesEVs.getAlleles()[0] == null || genesEVs.getAlleles()[1] == null)
+                {
                     EVsGene ivs = new EVsGene();
                     byte[] iv = new byte[] { 0, 0, 0, 0, 0, 0 };
                     ivs.setValue(iv);
@@ -129,6 +135,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             {
                 genesIVs = new Alleles();
                 genes.getAlleles().put(IVSGENE, genesIVs);
+            }
+            if (genesIVs.getAlleles()[0] == null || genesIVs.getAlleles()[1] == null)
+            {
                 IVsGene ivs = new IVsGene();
                 byte[] iv = new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
                         Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) };
@@ -147,7 +156,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         if (!isServerWorld())
         {
             String movesString = dataManager.get(MOVESDW);
-            String[] moves = getMoveStats().moves;
+            String[] moves = new String[4];
             if (movesString != null && movesString.length() > 2)
             {
                 String[] movesSplit = movesString.split(",");
@@ -175,6 +184,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 {
                     genesMoves = new Alleles();
                     genes.getAlleles().put(MOVESGENE, genesMoves);
+                }
+                if (genesMoves.getAlleles()[0] == null || genesMoves.getAlleles()[1] == null)
+                {
                     MovesGene gene = new MovesGene();
                     gene.setValue(moves);
                     genesMoves.getAlleles()[0] = gene;
@@ -213,6 +225,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             {
                 genesNature = new Alleles();
                 genes.getAlleles().put(NATUREGENE, genesNature);
+            }
+            if (genesNature.getAlleles()[0] == null || genesNature.getAlleles()[1] == null)
+            {
                 NatureGene gene = new NatureGene();
                 genesNature.getAlleles()[0] = gene;
                 genesNature.getAlleles()[1] = gene;
@@ -230,21 +245,14 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         {
             if (genesMoves == null)
             {
-                IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-                if (genes == null) return;
-                genesMoves = genes.getAlleles().get(MOVESGENE);
-                if (genesMoves == null)
-                {
-                    genesMoves = new Alleles();
-                    genes.getAlleles().put(MOVESGENE, genesMoves);
-                    MovesGene gene = new MovesGene();
-                    gene.setValue(moves);
-                    genesMoves.getAlleles()[0] = gene;
-                    genesMoves.getAlleles()[1] = gene;
-                    genesMoves.refreshExpressed();
-                }
+                getMoves();
             }
             genesMoves.getExpressed().setValue(getMoveStats().moves = moves);
+            int i = 0;
+            for (String s : moves)
+            {
+                if (s != null) movesString = i++ != 0 ? movesString + ("," + s) : s;
+            }
         }
         dataManager.set(MOVESDW, movesString);
     }
@@ -290,6 +298,11 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         allele = genes.getAlleles().get(NATUREGENE);
         if (allele != null) genesNature = allele;
         else getNature();
+
+        // Refresh the datamanager for moves.
+        setMoves(getMoves());
+        // Refresh the datamanager for evs
+        setEVs(getEVs());
     }
 
     /** Use this for anything that does not change or need to be updated. */

@@ -44,7 +44,6 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.pokemobs.PacketChangeForme;
@@ -62,7 +61,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
     double                moveSpeed;
 
-    protected Nature      nature           = Nature.HARDY;
     public int            oldLevel         = 0;
     public PokedexEntry   entry;
 
@@ -328,12 +326,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     }
 
     @Override
-    public Nature getNature()
-    {
-        return nature;
-    }
-
-    @Override
     public PokedexEntry getPokedexEntry()
     {
         if (entry == null)
@@ -401,7 +393,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         }
         if (PokecubeCore.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
-        nature = Nature.values()[(byte) (new Random()).nextInt(25)];
         setRandomColour();
     }
 
@@ -625,12 +616,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     private void setMaxHealth(float maxHealth)
     {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
-    }
-
-    @Override
-    public void setNature(Nature nature)
-    {
-        this.nature = nature;
     }
 
     @Override

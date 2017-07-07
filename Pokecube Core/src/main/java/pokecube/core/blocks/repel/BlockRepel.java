@@ -12,7 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.berries.ItemBerry;
@@ -66,13 +66,14 @@ public class BlockRepel extends Block implements ITileEntityProvider
             repel.invalidate();
             repel.distance = (byte) Math.max(5, heldStack.getItemDamage());
             repel.validate();
-            playerIn.sendMessage(new TextComponentString("" + repel.distance));
+            if (!worldIn.isRemote)
+                playerIn.sendMessage(new TextComponentTranslation("repel.info.setrange", repel.distance));
         }
         if (te instanceof TileEntityRepel && heldStack != null && heldStack.getItem() instanceof ItemPokedex
                 && !worldIn.isRemote)
         {
             TileEntityRepel repel = (TileEntityRepel) te;
-            playerIn.sendMessage(new TextComponentString("" + repel.distance));
+            playerIn.sendMessage(new TextComponentTranslation("repel.info.getrange", repel.distance));
         }
 
         return true;

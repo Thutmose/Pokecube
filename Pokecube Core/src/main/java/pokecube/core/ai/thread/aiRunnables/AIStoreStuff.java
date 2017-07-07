@@ -144,7 +144,7 @@ public class AIStoreStuff extends AIBase
                         stack = inventory.getStackInSlot(i);
                         // If it wants a berry, search for a berry item, and
                         // take that.
-                        if (CompatWrapper.isValid(stack) && !hasBerry)
+                        if (CompatWrapper.isValid(stack))
                         {
                             if (stack.getItem() instanceof ItemBerry)
                             {

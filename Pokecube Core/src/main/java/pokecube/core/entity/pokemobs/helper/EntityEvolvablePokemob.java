@@ -26,6 +26,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -35,6 +36,7 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
+import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
 
 /** @author Manchou */
@@ -351,6 +353,10 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 tag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.POKEDEXNB);
                 tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
                 ((IPokemob) evolution).readPokemobData(tag);
+                IMobGenetics oldGenes = getCapability(IMobGenetics.GENETICS_CAP, null);
+                IMobGenetics newGenes = evolution.getCapability(IMobGenetics.GENETICS_CAP, null);
+                newGenes.getAlleles().putAll(oldGenes.getAlleles());
+                GeneticsManager.handleEpigenetics((IPokemob) evolution);
                 evolution.getEntityData().merge(getEntityData());
                 evolution.setUniqueId(getUniqueID());
                 evolution.copyLocationAndAnglesFrom(this);

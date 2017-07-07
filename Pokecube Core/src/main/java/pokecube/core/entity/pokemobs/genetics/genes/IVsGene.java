@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
+import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Gene;
 import thut.core.common.genetics.genes.GeneByteArr;
 
@@ -11,7 +12,9 @@ public class IVsGene extends GeneByteArr
 {
     public IVsGene()
     {
-        value = new byte[6];
+        Random rand = new Random();
+        value = new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
+                Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) };
     }
 
     @Override

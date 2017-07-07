@@ -722,7 +722,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 }
                 setAbility(getPokedexEntry().getAbility(abilityNumber, this));
             }
-            setNature(Nature.values()[statsTag.getByte(NATURE)]);
         }
         // Read moves tag
         if (!movesTag.hasNoTags())
@@ -923,7 +922,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
         if (ability != null) ability.init(this);
         if (nbttagcompound.hasKey("personalityValue")) this.setRNGValue(nbttagcompound.getInteger("personalityValue"));
-        nature = Nature.values()[nbttagcompound.getByte("nature")];
+        setNature(Nature.values()[nbttagcompound.getByte("nature")]);
         // Sexe related
         setSexe((byte) nbttagcompound.getInteger(PokecubeSerializer.SEXE));
         loveTimer = nbttagcompound.getInteger("InLove2");
@@ -1047,7 +1046,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         statsTag.setInteger(HAPPY, bonusHappiness);
         statsTag.setInteger(ABILITYINDEX, abilityIndex);
         if (getAbility() != null) statsTag.setString(ABILITY, getAbility().toString());
-        statsTag.setByte(NATURE, (byte) getNature().ordinal());
 
         // Write moves tag
         NBTTagCompound movesTag = new NBTTagCompound();

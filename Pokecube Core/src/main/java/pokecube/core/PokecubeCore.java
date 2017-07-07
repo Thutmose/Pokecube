@@ -397,7 +397,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     private void init(FMLInitializationEvent evt)
     {
-        System.out.println("mod_pokecube.init() " + FMLCommonHandler.instance().getEffectiveSide());
+        System.out.println("Pokecube Init " + FMLCommonHandler.instance().getEffectiveSide());
         TerrainSegment.terrainEffectClasses.add(PokemobTerrainEffects.class);
         new PokedexInspector();
         proxy.initClient();

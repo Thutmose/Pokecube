@@ -13,6 +13,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
@@ -172,7 +173,9 @@ public class AIGatherStuff extends AIBase
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
                 if (state.getMaterial() != Material.GRASS)
                 {
-                    for (ItemStack stack : plant.getDrops(world, stuffLoc.getPos(), stuffLoc.getBlockState(world), 0))
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    plant.getDrops(list, world, stuffLoc.getPos(), stuffLoc.getBlockState(world), 0);
+                    for (ItemStack stack : list)
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));
                 }
                 stuffLoc.clear();

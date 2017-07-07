@@ -133,6 +133,12 @@ public class Config extends ConfigBase
     /** Will lithovores eat gravel */
     public boolean                       pokemobsEatGravel            = false;
     @Configure(category = mobAI)
+    /** Will lithovores eat rocks */
+    public boolean                       pokemobsEatRocks             = true;
+    @Configure(category = mobAI)
+    /** Will herbivores eat plants */
+    public boolean                       pokemobsEatPlants            = true;
+    @Configure(category = mobAI)
     /** Is there a warning before a wild pokémob attacks the player. */
     public boolean                       pokemobagresswarning         = true;
     @Configure(category = mobAI)
@@ -235,19 +241,29 @@ public class Config extends ConfigBase
     @Configure(category = world)
     public boolean                       refreshSubbiomes             = false;
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListCaveFloor           = {};
+    public String[]                      blocksStones                 = { "minecraft:stone variant=stone",
+            "minecraft:stone variant=granite", "minecraft:stone variant=diorite", "minecraft:stone variant=andesite",
+            "minecraft:netherrack", "minecraft:sandstone type=sandstone",
+            "minecraft:red_sandstone type=red_sandstone" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListSurface             = {};
+    public String[]                      blocksOre                    = { ".*:.*_ore", ".*:ore*" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListRocks               = {};
+    public String[]                      blocksGround                 = { "minecraft:sand", "minecraft:gravel",
+            "minecraft:stained_hardened_clay", "minecraft:hardened_clay", "minecraft:dirt", "minecraft:grass" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListTreeBlocks          = {};
+    public String[]                      blocksWood                   = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListHarvestablePlants   = {};
+    public String[]                      blocksLeaves                 = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListMiscTerrain         = {};
+    public String[]                      blocksPlants                 = { "minecraft:double_plant",
+            "minecraft:red_flower", "minecraft:yellow_flower", "minecraft:tallgrass", "minecraft:deadbush",
+            "minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "pokecube:berryfruit" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListIndustrialBlocks    = {};
+    public String[]                      blocksTerrain                = {};
+    @Configure(category = world, needsMcRestart = true)
+    public String[]                      blockListIndustrial          = { "minecraft:redstone_block",
+            "minecraft:furnace", "minecraft:lit_furnace", "minecraft:piston", "minecraft:sticky_piston",
+            "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:anvil" };
     @Configure(category = world)
     public boolean                       useConfigForBerryLocations   = false;
     @Configure(category = world)

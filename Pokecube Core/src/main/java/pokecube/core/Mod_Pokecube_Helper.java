@@ -16,13 +16,17 @@ import static pokecube.core.handlers.Config.GUITMTABLE_ID;
 import static pokecube.core.handlers.Config.GUITRADINGTABLE_ID;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.ItemHandler;
@@ -56,40 +60,20 @@ public class Mod_Pokecube_Helper
     {
         Config config = PokecubeCore.core.getConfig();
         if (!config.autoPopulateLists) return;
-        String[] STONES = { "minecraft:stone variant=stone", "minecraft:stone variant=granite",
-                "minecraft:stone variant=diorite", "minecraft:stone variant=andesite", "minecraft:netherrack",
-                "minecraft:sandstone type=sandstone", "minecraft:red_sandstone type=red_sandstone" };
-        String[] ORE = { "minecraft:.*_ore" };
-        String[] GROUND = { "minecraft:sand", "minecraft:gravel", "minecraft:stained_hardened_clay",
-                "minecraft:hardened_clay", "minecraft:dirt", "minecraft:grass" };
-        String[] PLANTS = { "minecraft:double_plant", "minecraft:red_flower", "minecraft:yellow_flower",
-                "minecraft:tallgrass", "minecraft:deadbush", "pokecube:berryfruit" };
-        String[] INDUSTRIAL = { "minecraft:redstone_block", "minecraft:furnace", "minecraft:lit_furnace",
-                "minecraft:piston", "minecraft:sticky_piston", "minecraft:dispenser", "minecraft:dropper",
-                "minecraft:hopper", "minecraft:anvil" };
 
-        addToList(config.getTerrain(), STONES);
-        addToList(config.getRocks(), STONES);
-        addToList(config.getCaveBlocks(), STONES);
-        addToList(config.getSurfaceBlocks(), GROUND);
-        addToList(config.getTerrain(), GROUND);
-        addToList(config.getSurfaceBlocks(), STONES);
-        addToList(config.getRocks(), ORE);
-        addToList(config.getDirtTypes(), GROUND);
-        addToList(config.getPlantTypes(), PLANTS);
-        addToList(config.getIndustrial(), INDUSTRIAL);
-
+        Set<String> detectedLeaves = Sets.newHashSet();
+        Set<String> detectedWood = Sets.newHashSet();
         for (Block block : allBlocks)
         {
             try
             {
                 if (block.isWood(null, null))
                 {
-                    addToList(config.getWoodTypes(), block.getRegistryName().toString());
+                    detectedWood.add(block.getRegistryName().toString());
                 }
                 if (block.isLeaves(block.getDefaultState(), null, null))
                 {
-                    addToList(config.getPlantTypes(), block.getRegistryName().toString());
+                    detectedLeaves.add(block.getRegistryName().toString());
                 }
             }
             catch (Exception e)
@@ -97,6 +81,13 @@ public class Mod_Pokecube_Helper
                 PokecubeMod.log("Error checking if " + block + " is wood or leaves");
             }
         }
+        for (String s : config.blocksLeaves)
+            detectedLeaves.add(s);
+        for (String s : config.blocksWood)
+            detectedWood.add(s);
+        config.blocksLeaves = detectedLeaves.toArray(new String[0]);
+        config.blocksWood = detectedWood.toArray(new String[0]);
+        config.setSettings();
     }
 
     public Mod_Pokecube_Helper()
@@ -127,13 +118,15 @@ public class Mod_Pokecube_Helper
     public void initAllBlocks()
     {
         allBlocks.clear();
-        for (int i = 0; i < 4096; i++)
+        Iterator<Block> iter = GameData.getWrapper(Block.class).iterator();
+        while (iter.hasNext())
         {
-            if (Block.getBlockById(i) != null) allBlocks.add(Block.getBlockById(i));
+            Block b = iter.next();
+            if (b != null) allBlocks.add(b);
         }
         initLists();
     }
-    
+
     public void registerRecipes(Object event)
     {
         RecipeHandler.initRecipes(event);
@@ -152,15 +145,23 @@ public class Mod_Pokecube_Helper
         GUIDISPLAYTELEPORTINFO_ID = 18;
         GUIPOKEMOB_ID = 19;
         GUITMTABLE_ID = 20;
-        addToList(PokecubeMod.core.getConfig().getCaveBlocks(), PokecubeMod.core.getConfig().blockListCaveFloor);
-        addToList(PokecubeMod.core.getConfig().getSurfaceBlocks(), PokecubeMod.core.getConfig().blockListSurface);
-        addToList(PokecubeMod.core.getConfig().getRocks(), PokecubeMod.core.getConfig().blockListRocks);
-        addToList(PokecubeMod.core.getConfig().getWoodTypes(), PokecubeMod.core.getConfig().blockListTreeBlocks);
-        addToList(PokecubeMod.core.getConfig().getPlantTypes(),
-                PokecubeMod.core.getConfig().blockListHarvestablePlants);
-        addToList(PokecubeMod.core.getConfig().getTerrain(), PokecubeMod.core.getConfig().blockListMiscTerrain);
-        addToList(PokecubeMod.core.getConfig().getIndustrial(),
-                PokecubeCore.core.getConfig().blockListIndustrialBlocks);
+
+        Config config = PokecubeCore.core.getConfig();
+
+        addToList(config.getTerrain(), config.blocksStones);
+        addToList(config.getTerrain(), config.blocksTerrain);
+        addToList(config.getRocks(), config.blocksStones);
+        addToList(config.getCaveBlocks(), config.blocksStones);
+        addToList(config.getSurfaceBlocks(), config.blocksGround);
+        addToList(config.getTerrain(), config.blocksGround);
+        addToList(config.getSurfaceBlocks(), config.blocksStones);
+        addToList(config.getRocks(), config.blocksOre);
+        addToList(config.getDirtTypes(), config.blocksGround);
+        addToList(config.getPlantTypes(), config.blocksPlants);
+        addToList(config.getIndustrial(), config.blocksStones);
+        addToList(config.getWoodTypes(), config.blocksWood);
+        addToList(config.getPlantTypes(), config.blocksLeaves);
+
         removeFromHoldables("tm");
     }
 }

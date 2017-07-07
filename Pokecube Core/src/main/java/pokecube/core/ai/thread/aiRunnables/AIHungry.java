@@ -16,9 +16,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeItems;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
@@ -244,14 +245,15 @@ public class AIHungry extends AIBase
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
             berry.setItem(new ItemStack(b.getBlock()));
             hungrymob.eat(berry);
-            if (PokecubeMod.core.getConfig().pokemobsDamageBlocks)
+            if (PokecubeMod.core.getConfig().pokemobsEatPlants)
             {
                 TickHandler.addBlockChange(foodLoc, entity.dimension,
                         location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
                 if (location.getBlockState(world).getMaterial() != Material.GRASS)
                 {
-                    for (ItemStack stack : b.getBlock().getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world),
-                            0))
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    b.getBlock().getDrops(list, world, foodLoc.getPos(), foodLoc.getBlockState(world), 0);
+                    for (ItemStack stack : list)
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));
                 }
             }
@@ -266,7 +268,8 @@ public class AIHungry extends AIBase
             Vector3 p, m;
             if (hungrymob.isHerbivore())
             {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                        PokecubeMod.core.getConfig().getPlantTypes());
                 if (temp != null)
                 {
                     block = true;
@@ -310,7 +313,7 @@ public class AIHungry extends AIBase
         diff = Math.max(diff, entity.width);
         if (dist < diff)
         {
-            if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
+            if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
             {
                 if (b.getBlock() == Blocks.COBBLESTONE)
                 {
@@ -411,7 +414,7 @@ public class AIHungry extends AIBase
             }
             else
             {
-                if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
+                if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
                 {
                     v.set(hungrymob).offsetBy(EnumFacing.DOWN);
                     if (b == Blocks.COBBLESTONE)
@@ -522,7 +525,8 @@ public class AIHungry extends AIBase
         {
             if (!block && hungrymob.isHerbivore())
             {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                        PokecubeCore.core.getConfig().getPlantTypes());
                 if (temp != null)
                 {
                     block = true;

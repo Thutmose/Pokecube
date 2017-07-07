@@ -706,8 +706,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Read stats tag
         if (!statsTag.hasNoTags())
         {
-            this.setEVs(statsTag.getByteArray(EVS));
-//            this.setIVs(statsTag.getByteArray(IVS));//TODO confirm this is in genes.
             this.setExp(statsTag.getInteger(EXP), false);
             this.setStatus(statsTag.getByte(STATUS));
             addHappiness(statsTag.getInteger(HAPPY));
@@ -1036,8 +1034,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         // Write stats tag
         NBTTagCompound statsTag = new NBTTagCompound();
-        statsTag.setByteArray(EVS, getEVs());
-//        statsTag.setByteArray(IVS, getIVs());//TODO confirm this is in genes.
         statsTag.setInteger(EXP, getExp());
         statsTag.setByte(STATUS, getStatus());
         statsTag.setInteger(HAPPY, bonusHappiness);
@@ -1047,12 +1043,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         // Write moves tag
         NBTTagCompound movesTag = new NBTTagCompound();
-        NBTTagCompound movesList = new NBTTagCompound();
-        for (int i = 0; i < 4; i++)
-        {
-            if (getMoveStats().moves[i] != null) movesList.setString("" + i, getMoveStats().moves[i]);
-        }
-        movesTag.setTag(MOVELIST, movesList);
         movesTag.setInteger(MOVEINDEX, getMoveIndex());
         movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);
         movesTag.setString(LASTUSED, getDataManager().get(LASTMOVE));

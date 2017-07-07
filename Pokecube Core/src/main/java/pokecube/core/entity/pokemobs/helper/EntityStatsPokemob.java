@@ -307,14 +307,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     }
 
     @Override
-    public byte[] getEVs()
-    {
-        int[] ints = new int[] { dataManager.get(EVS1DW), dataManager.get(EVS2DV) };
-        byte[] evs = PokecubeSerializer.intArrayAsByteArray(ints);
-        return evs;
-    }
-
-    @Override
     public int getExp()
     {
         return dataManager.get(EXPDW);
@@ -585,14 +577,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     public void setAncient(boolean ancient)
     {
         isAncient = ancient;
-    }
-
-    @Override
-    public void setEVs(byte[] evs)
-    {
-        int[] ints = PokecubeSerializer.byteArrayAsIntArray(evs);
-        dataManager.set(EVS1DW, ints[0]);
-        dataManager.set(EVS2DV, ints[1]);
     }
 
     @Override

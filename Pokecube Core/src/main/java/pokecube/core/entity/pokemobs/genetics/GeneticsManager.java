@@ -191,12 +191,6 @@ public class GeneticsManager
         alleles.getAlleles()[1] = moves;
         alleles.refreshExpressed();
 
-        alleles = genes.getAlleles().get(MOVESGENE);
-        moves.setValue(pokemob.getMoves());
-        alleles.getAlleles()[0] = moves;
-        alleles.getAlleles()[1] = moves;
-        alleles.refreshExpressed();
-
         alleles = genes.getAlleles().get(EVSGENE);
         evs.setValue(pokemob.getEVs());
         alleles.getAlleles()[0] = evs;
@@ -324,12 +318,7 @@ public class GeneticsManager
         }
         try
         {
-            Alleles alleles = genes.getAlleles().get(MOVESGENE);
-            alleles.getExpressed().setValue(pokemob.getMoves());
-            alleles.getExpressed().setValue(alleles.getExpressed().mutate().getValue());
-            alleles = genes.getAlleles().get(EVSGENE);
-            alleles.getExpressed().setValue(pokemob.getEVs());
-            alleles = genes.getAlleles().get(SPECIESGENE);
+            Alleles alleles = genes.getAlleles().get(SPECIESGENE);
             Gene gene = alleles.getExpressed();
             SpeciesInfo info = gene.getValue();
             info.entry = pokemob.getPokedexEntry();
@@ -354,7 +343,8 @@ public class GeneticsManager
     @SubscribeEvent
     public void attachItemCapability(AttachCapabilitiesEvent<ItemStack> event)
     {
-        if (event.getObject().getItem() instanceof ItemPokemobEgg && !event.getCapabilities().containsKey(POKECUBEGENETICS))
+        if (event.getObject().getItem() instanceof ItemPokemobEgg
+                && !event.getCapabilities().containsKey(POKECUBEGENETICS))
         {
             event.addCapability(POKECUBEGENETICS, new GeneticsProvider());
         }

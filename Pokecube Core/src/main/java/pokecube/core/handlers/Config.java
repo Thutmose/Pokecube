@@ -343,7 +343,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public String                        guiRef                       = "top_left";
     @Configure(category = client)
-    public String                        messageRef                   = "bottom_middle";
+    public String                        messageRef                   = "right_middle";
     @Configure(category = client)
     public String                        targetRef                    = "top_right";
     @Configure(category = client)
@@ -361,7 +361,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public float                         targetSize                   = 1;
     @Configure(category = client)
-    public int[]                         messagePos                   = { -75, -31 };
+    public int[]                         messagePos                   = { 0, 0 };
     @Configure(category = client)
     public int                           messageWidth                 = 150;;
     @Configure(category = client)

@@ -25,6 +25,8 @@ death.attack.terrain.hail=%1$s §cdied to Hail
 repel.info.setrange=Radius was set to %1$s blocks.
 repel.info.getrange=Radius is currently %1$s blocks.
 
+entity.cube.name=Pokécube
+
 pokemob.status.curse=%1$s was hurt by the curse
 pokemob.status.flinch=%1$s flinched
 pokemob.status.confuse.remove=%1$s is no longer confused

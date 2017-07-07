@@ -138,9 +138,17 @@ public class GuiDisplayPokecubeInfo extends Gui
             GlStateManager.scale(scale, scale, scale);
             dx = -1;
             break;
-        case "bottom_right":
+        case "right_bottom":
             w = scaledWidth - w - dims[0];
             h = scaledHeight - h - dims[1];
+            GlStateManager.translate(w, h, 0);
+            GlStateManager.scale(scale, scale, scale);
+            dx = -1;
+            dy = -1;
+            break;
+        case "right_middle":
+            w = scaledWidth - w - dims[0];
+            h = scaledHeight / 2 - h - dims[1];
             GlStateManager.translate(w, h, 0);
             GlStateManager.scale(scale, scale, scale);
             dx = -1;

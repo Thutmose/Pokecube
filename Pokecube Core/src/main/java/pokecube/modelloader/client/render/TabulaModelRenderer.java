@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import pokecube.modelloader.client.render.wrappers.TabulaWrapper;
@@ -107,5 +108,38 @@ public class TabulaModelRenderer<T extends EntityLiving> extends RenderLivingBas
     protected boolean canRenderName(T entity)
     {
         return entity.getEntityData().getBoolean("isPlayer");
+    }
+
+    private boolean       checkedForSleep   = false;
+    private boolean       hasSleepAnimation = false;
+    @Override
+    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
+    {
+        super.applyRotations(par1EntityLiving, par2, par3, par4);
+        if (!checkedForSleep)
+        {
+            checkedForSleep = true;
+            hasSleepAnimation = hasPhase("sleeping") || hasPhase("sleep") || hasPhase("asleep");
+        }
+        if (hasSleepAnimation) return;
+        boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
+        if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
+        {
+            short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
+            float ratio = 1F;
+            if (status)
+            {
+                if (timer <= 200 && timer > 175)
+                {
+                    ratio = 1F - ((timer - 175F) / 25F);
+                }
+                if (timer >= 0 && timer <= 25)
+                {
+                    ratio = 1F - ((25F - timer) / 25F);
+                }
+            }
+            GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
+            GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
+        }
     }
 }

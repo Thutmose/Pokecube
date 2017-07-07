@@ -110,11 +110,6 @@ public class Mod_Pokecube_Helper
         ItemHandler.registerTiles(iForgeRegistry);
     }
 
-    public void addVillagerTrades()
-    {
-        // TODO decide if I want to add these.
-    }
-
     public void initAllBlocks()
     {
         allBlocks.clear();

@@ -73,10 +73,13 @@ public class NBTEdit
         log.setLevel(Level.ALL);
 
         // Set up our file logging.
-        PatternLayout layout = PatternLayout.createLayout("[%d{MM-dd HH:mm:ss}] [%level]: %msg%n", null, null, null,
-                null, false, false, null, null);
-        FileAppender appender = FileAppender.createAppender("logs/NBTEditpqb.log", "false", "false",
-                "NBTEdit File Appender", "true", "false", "true", null, layout, null, "false", null, null);
+        PatternLayout layout = PatternLayout.newBuilder().withPattern("[%d{MM-dd HH:mm:ss}] [%level]: %msg%n")
+                .withPatternSelector(null).withConfiguration(null).withRegexReplacement(null).withCharset(null)
+                .withAlwaysWriteExceptions(false).withNoConsoleNoAnsi(false).withHeader(null).withFooter(null).build();
+        FileAppender appender = FileAppender.newBuilder().withAdvertise(false).withAdvertiseUri(null).withAppend(false)
+                .withBufferedIo(true).withBufferSize(8192).setConfiguration(null).withFileName("logs/NBTEditpqb.log")
+                .withFilter(null).withIgnoreExceptions(false).withImmediateFlush(true).withLayout(layout)
+                .withLocking(false).withName("NBTEdit File Appender").build();
         appender.start();
         log.addAppender(appender);
 

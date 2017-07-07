@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.playerdata.advancements.AdvancementGenerator;
-import pokecube.core.handlers.playerdata.advancements.SoundJsonGenerator;
 import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 

@@ -209,7 +209,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
         {
             pokecubes.clear();
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
-            for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
+            if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {
                 pokecubes.set(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
             }

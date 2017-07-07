@@ -83,7 +83,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         int[] ints = PokecubeSerializer.byteArrayAsIntArray(evs);
         dataManager.set(EVS1DW, ints[0]);
         dataManager.set(EVS2DV, ints[1]);
-        if (genesEVs == null) getIVs();
+        if (genesEVs == null) getEVs();
         if (genesEVs != null) genesEVs.getExpressed().setValue(evs);
     }
 
@@ -101,7 +101,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesEVs == null)
             {
                 IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-                if (genes == null) return new byte[] { 0, 0, 0, 0, 0, 0 };
+                if (genes == null) return new EVsGene().getValue();
                 genesEVs = genes.getAlleles().get(EVSGENE);
                 if (genesEVs == null)
                 {
@@ -111,12 +111,10 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 if (genesEVs.getAlleles()[0] == null || genesEVs.getAlleles()[1] == null)
                 {
                     EVsGene ivs = new EVsGene();
-                    byte[] iv = new byte[] { 0, 0, 0, 0, 0, 0 };
-                    ivs.setValue(iv);
                     genesEVs.getAlleles()[0] = ivs;
                     genesEVs.getAlleles()[1] = ivs;
                     genesEVs.refreshExpressed();
-                    genesEVs.getExpressed().setValue(new byte[] { 0, 0, 0, 0, 0, 0 });
+                    genesEVs.getExpressed().setValue(new EVsGene().getValue());
                 }
             }
             return genesEVs.getExpressed().getValue();
@@ -129,7 +127,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         if (genesIVs == null)
         {
             IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-            if (genes == null) return new byte[] { 0, 0, 0, 0, 0, 0 };
+            if (genes == null) return new IVsGene().getValue();
             genesIVs = genes.getAlleles().get(IVSGENE);
             if (genesIVs == null)
             {
@@ -139,9 +137,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesIVs.getAlleles()[0] == null || genesIVs.getAlleles()[1] == null)
             {
                 IVsGene ivs = new IVsGene();
-                byte[] iv = new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
-                        Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) };
-                ivs.setValue(iv);
                 genesIVs.getAlleles()[0] = ivs;
                 genesIVs.getAlleles()[1] = ivs;
                 genesIVs.refreshExpressed();

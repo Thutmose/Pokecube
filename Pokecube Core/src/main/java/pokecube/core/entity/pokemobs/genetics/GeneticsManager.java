@@ -132,10 +132,6 @@ public class GeneticsManager
         AbilityGene ability = new AbilityGene();
         ColourGene colours = new ColourGene();
         SpeciesGene species = new SpeciesGene();
-        IVsGene ivs = new IVsGene();
-        EVsGene evs = new EVsGene();
-        MovesGene moves = new MovesGene();
-        NatureGene nature = new NatureGene();
         ShinyGene shiny = new ShinyGene();
         SizeGene size = new SizeGene();
 
@@ -161,18 +157,6 @@ public class GeneticsManager
         alleles.getAlleles()[1] = species;
         alleles.refreshExpressed();
 
-        alleles = genes.getAlleles().get(IVSGENE);
-        ivs.setValue(pokemob.getIVs());
-        alleles.getAlleles()[0] = ivs;
-        alleles.getAlleles()[1] = ivs;
-        alleles.refreshExpressed();
-
-        alleles = genes.getAlleles().get(NATUREGENE);
-        nature.setValue(pokemob.getNature());
-        alleles.getAlleles()[0] = nature;
-        alleles.getAlleles()[1] = nature;
-        alleles.refreshExpressed();
-
         alleles = genes.getAlleles().get(SHINYGENE);
         shiny.setValue(pokemob.isShiny());
         alleles.getAlleles()[0] = shiny;
@@ -185,25 +169,14 @@ public class GeneticsManager
         alleles.getAlleles()[1] = size;
         alleles.refreshExpressed();
 
-        alleles = genes.getAlleles().get(MOVESGENE);
-        moves.setValue(pokemob.getMoves());
-        alleles.getAlleles()[0] = moves;
-        alleles.getAlleles()[1] = moves;
-        alleles.refreshExpressed();
-
-        alleles = genes.getAlleles().get(EVSGENE);
-        evs.setValue(pokemob.getEVs());
-        alleles.getAlleles()[0] = evs;
-        alleles.getAlleles()[1] = evs;
-        alleles.refreshExpressed();
-
-        if (!(mob instanceof IMobColourable)) return;
-
-        alleles = genes.getAlleles().get(COLOURGENE);
-        colours.setValue(((IMobColourable) mob).getRGBA());
-        alleles.getAlleles()[0] = colours;
-        alleles.getAlleles()[1] = colours;
-        alleles.refreshExpressed();
+        if ((mob instanceof IMobColourable))
+        {
+            alleles = genes.getAlleles().get(COLOURGENE);
+            colours.setValue(((IMobColourable) mob).getRGBA());
+            alleles.getAlleles()[0] = colours;
+            alleles.getAlleles()[1] = colours;
+            alleles.refreshExpressed();
+        }
 
         pokemob.onGenesChanged();
     }

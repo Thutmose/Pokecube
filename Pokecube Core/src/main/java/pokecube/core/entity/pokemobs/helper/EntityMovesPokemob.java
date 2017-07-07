@@ -322,23 +322,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             IPokemob to = (IPokemob) getTransformedTo();
             if (to.getTransformedTo() != this) return to.getMoves();
         }
-        String movesString = dataManager.get(MOVESDW);
-        String[] moves = new String[4];
-
-        if (movesString != null && movesString.length() > 2)
-        {
-            String[] movesSplit = movesString.split(",");
-            for (int i = 0; i < Math.min(4, movesSplit.length); i++)
-            {
-                String move = movesSplit[i];
-
-                if (move != null && move.length() > 1 && MovesUtils.isMoveImplemented(move))
-                {
-                    moves[i] = move;
-                }
-            }
-        }
-        return moves;
+        return super.getMoves();
     }
 
     @Override
@@ -500,14 +484,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     }
 
     @Override
-    public void setMove(int i, String moveName)
-    {
-        String[] moves = getMoves();
-        moves[i] = moveName;
-        setMoves(moves);
-    }
-
-    @Override
     public void setMoveIndex(int moveIndex)
     {
         if (moveIndex == getMoveIndex() || getPokemonAIState(NOMOVESWAP)) return;
@@ -541,25 +517,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         {
             dataManager.set(MOVEINDEXDW, (byte) moveIndex);
         }
-    }
-
-    public void setMoves(String[] moves)
-    {
-        String movesString = "";
-
-        if (moves != null && moves.length == 4)
-        {
-            for (int i = 0; i < moves.length; i++)
-            {
-                String move = moves[i];
-                getMoveStats().moves[i] = move;
-                if (move != null)
-                {
-                    movesString += move + ",";
-                }
-            }
-        }
-        dataManager.set(MOVESDW, movesString);
     }
 
     @Override

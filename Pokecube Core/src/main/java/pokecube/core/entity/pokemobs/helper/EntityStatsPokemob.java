@@ -29,10 +29,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
-import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
@@ -44,7 +41,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
-import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
@@ -299,33 +295,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     }
 
     @Override
-    public PokedexEntry getPokedexEntry()
-    {
-        if (entry == null)
-        {
-            entry = Database.getEntry(getPokedexNb());
-            if (entry == null)
-            {
-                if (getClass().getName().contains("GenericPokemob"))
-                {
-                    String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
-                    entry = Database.getEntry(Integer.parseInt(num));
-                    if (entry != null && entry.getPokedexNb() > 0)
-                    {
-                        init(entry.getPokedexNb());
-                        return entry;
-                    }
-                }
-                System.out.println(this.getClass() + " " + getPokedexNb());
-                Thread.dumpStack();
-                this.setDead();
-                return Database.missingno;
-            }
-        }
-        return entry.getForGender(getSexe());
-    }
-
-    @Override
     public String getPokemonNickname()
     {
         return dataManager.get(NICKNAMEDW);
@@ -558,24 +527,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     private void setMaxHealth(float maxHealth)
     {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
-    }
-
-    @Override
-    public IPokemob setPokedexEntry(PokedexEntry newEntry)
-    {
-        if (newEntry == null || newEntry == entry) return this;
-        IPokemob ret = this;
-        entry = newEntry;
-        if (newEntry.getPokedexNb() != getPokedexNb())
-        {
-            ret = megaEvolve(newEntry);
-        }
-        if (world != null) ret.setSize((float) (ret.getSize() / PokecubeMod.core.getConfig().scalefactor));
-        if (world != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-        {
-            PacketChangeForme.sendPacketToNear((Entity) ret, newEntry, 128);
-        }
-        return ret;
     }
 
     @Override

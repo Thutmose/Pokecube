@@ -3,7 +3,6 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.Random;
 import java.util.Vector;
 
 import net.minecraft.entity.Entity;
@@ -34,7 +33,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     protected Entity               egg   = null;
     private Entity                 lover;
     protected int                  loveTimer;
-    protected byte                 sexe  = 0;
     protected Vector<IBreedingMob> males = new Vector<>();
 
     /** @param par1World */
@@ -142,16 +140,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     }
 
     @Override
-    public byte getSexe()
-    {
-        return sexe;
-    }
-
-    @Override
     public void init(int nb)
     {
         super.init(nb);
-        setSexe(Tools.getSexe(getPokedexEntry().getSexeRatio(), new Random()));
         resetInLove();
     }
 
@@ -272,20 +263,6 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public void setLoveTimer(final int value)
     {
         loveTimer = value;
-    }
-
-    @Override
-    public void setSexe(byte sexe)
-    {
-        if (sexe == NOSEXE || sexe == FEMALE || sexe == MALE || sexe == SEXLEGENDARY)
-        {
-            this.sexe = sexe;
-        }
-        else
-        {
-            System.err.println("Illegal argument. Sexe cannot be " + sexe);
-            new Exception().printStackTrace();
-        }
     }
 
     // @Override

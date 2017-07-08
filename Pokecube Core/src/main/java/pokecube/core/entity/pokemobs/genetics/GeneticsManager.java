@@ -17,13 +17,9 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.Ability;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
 import pokecube.core.entity.pokemobs.genetics.epigenes.MovesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene;
-import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene.AbilityObject;
 import pokecube.core.entity.pokemobs.genetics.genes.ColourGene;
 import pokecube.core.entity.pokemobs.genetics.genes.IVsGene;
 import pokecube.core.entity.pokemobs.genetics.genes.NatureGene;
@@ -32,7 +28,6 @@ import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.entity.IMobColourable;
@@ -116,39 +111,13 @@ public class GeneticsManager
     public static void initMob(Entity mob)
     {
         IPokemob pokemob = (IPokemob) mob;
-        PokedexEntry entry = pokemob.getPokedexEntry();
         IMobGenetics genes = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
 
-        genes.getAlleles().put(ABILITYGENE, new Alleles());
-        genes.getAlleles().put(COLOURGENE, new Alleles());
-        genes.getAlleles().put(SIZEGENE, new Alleles());
-        genes.getAlleles().put(NATUREGENE, new Alleles());
-        genes.getAlleles().put(SHINYGENE, new Alleles());
-        genes.getAlleles().put(MOVESGENE, new Alleles());
-        genes.getAlleles().put(IVSGENE, new Alleles());
-        genes.getAlleles().put(EVSGENE, new Alleles());
-        genes.getAlleles().put(SPECIESGENE, new Alleles());
-
-        AbilityGene ability = new AbilityGene();
         ColourGene colours = new ColourGene();
         SpeciesGene species = new SpeciesGene();
         ShinyGene shiny = new ShinyGene();
-        SizeGene size = new SizeGene();
 
-        Alleles alleles = genes.getAlleles().get(ABILITYGENE);
-        AbilityObject abilityObj = ability.getValue();
-        abilityObj.abilityIndex = (byte) pokemob.getAbilityIndex();
-        Ability mobsA = pokemob.getAbility();
-        Ability entryA = entry.getAbility(abilityObj.abilityIndex, pokemob);
-        if (mobsA != null && (entryA == null || !pokemob.getAbility().toString().equals(entryA.toString())))
-        {
-            abilityObj.ability = pokemob.getAbility().toString();
-        }
-        alleles.getAlleles()[0] = ability;
-        alleles.getAlleles()[1] = ability;
-        alleles.refreshExpressed();
-
-        alleles = genes.getAlleles().get(SPECIESGENE);
+        Alleles alleles = genes.getAlleles().get(SPECIESGENE);
         SpeciesInfo info = new SpeciesInfo();
         info.value = pokemob.getSexe();
         info.entry = pokemob.getPokedexEntry();
@@ -161,12 +130,6 @@ public class GeneticsManager
         shiny.setValue(pokemob.isShiny());
         alleles.getAlleles()[0] = shiny;
         alleles.getAlleles()[1] = shiny;
-        alleles.refreshExpressed();
-
-        alleles = genes.getAlleles().get(SIZEGENE);
-        size.setValue(pokemob.getSize());
-        alleles.getAlleles()[0] = size;
-        alleles.getAlleles()[1] = size;
         alleles.refreshExpressed();
 
         if ((mob instanceof IMobColourable))
@@ -184,92 +147,11 @@ public class GeneticsManager
     public static void initFromGenes(IMobGenetics genes, IPokemob pokemob)
     {
         Entity mob = (Entity) pokemob;
-        PokedexEntry dexentry = pokemob.getPokedexEntry();
         IMobGenetics mobs = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
         if (genes != mobs)
         {
             mobs.getAlleles().putAll(genes.getAlleles());
         }
-        byte[] ivs = new byte[6];
-        byte[] evs = new byte[6];
-        for (Map.Entry<ResourceLocation, Alleles> entry : mobs.getAlleles().entrySet())
-        {
-            ResourceLocation loc = entry.getKey();
-            Alleles alleles = entry.getValue();
-            Gene gene = alleles.getExpressed();
-            if (loc.equals(ABILITYGENE))
-            {
-                AbilityObject abs = gene.getValue();
-                pokemob.setAbilityIndex(abs.abilityIndex);
-                if (!abs.ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(abs.ability));
-                else pokemob.setAbility(dexentry.getAbility(abs.abilityIndex, pokemob));
-                continue;
-            }
-            if (loc.equals(COLOURGENE) && (mob instanceof IMobColourable))
-            {
-                IMobColourable col = (IMobColourable) mob;
-                int[] colour = gene.getValue();
-                col.setRGBA(colour);
-                continue;
-            }
-            if (loc.equals(SPECIESGENE))
-            {
-                SpeciesInfo info = gene.getValue();
-                pokemob.setSexe(info.value);
-                pokemob.megaEvolve(info.entry);
-                continue;
-            }
-            if (loc.equals(IVSGENE))
-            {
-                ivs = gene.getValue();
-                continue;
-            }
-            if (loc.equals(EVSGENE))
-            {
-                evs = gene.getValue();
-                continue;
-            }
-            if (loc.equals(MOVESGENE))
-            {
-                String[] moves = gene.getValue();
-                for (int i = 0; i < moves.length; i++)
-                {
-                    if (moves[i] != null) pokemob.learn(moves[i]);
-                }
-                continue;
-            }
-            if (loc.equals(NATUREGENE))
-            {
-                Nature nat = gene.getValue();
-                pokemob.setNature(nat);
-                continue;
-            }
-            if (loc.equals(SHINYGENE))
-            {
-                boolean shiny = gene.getValue();
-                pokemob.setShiny(shiny);
-                continue;
-            }
-            if (loc.equals(SIZEGENE))
-            {
-                float size = gene.getValue();
-                pokemob.setSize(size);
-                continue;
-            }
-        }
-        for (int i = 0; i < 6; i++)
-        {
-            epigeneticParser.setVarValue("v", evs[i]);
-            double value = epigeneticParser.getValue();
-            if (!Double.isNaN(value))
-            {
-                value = Math.max(0, value);
-                ivs[i] += value;
-                ivs[i] = (byte) Math.min(ivs[i], 31);
-                ivs[i] = (byte) Math.max(ivs[i], 0);
-            }
-        }
-        pokemob.setIVs(ivs);
         pokemob.onGenesChanged();
     }
 

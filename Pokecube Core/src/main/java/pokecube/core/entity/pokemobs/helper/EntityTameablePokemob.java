@@ -156,7 +156,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     boolean                                         initHome         = true;
     protected AnimalChest                           pokeChest;
     boolean                                         returning        = false;
-    protected int                                   abilityIndex     = 0;
     protected boolean                               players          = false;
     private String                                  team             = "";
 

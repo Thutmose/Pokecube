@@ -36,7 +36,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.Ability;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
 import pokecube.core.events.LevelUpEvent;
@@ -57,8 +56,6 @@ import thut.lib.CompatWrapper;
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 {
-    protected Ability     ability;
-
     double                moveSpeed;
 
     public int            oldLevel         = 0;
@@ -289,19 +286,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 return true;
             }
         }
-    }
-
-    @Override
-    public Ability getAbility()
-    {
-        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0, this);
-        return ability;
-    }
-
-    @Override
-    public int getAbilityIndex()
-    {
-        return abilityIndex;
     }
 
     @Override
@@ -548,20 +532,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void setAbility(Ability ability)
-    {
-        if (this.ability != null && this.ability != ability) this.ability.destroy();
-        this.ability = ability;
-    }
-
-    @Override
-    public void setAbilityIndex(int ability)
-    {
-        this.abilityIndex = ability;
-        if (abilityIndex > 2 || abilityIndex < 0) abilityIndex = 0;
     }
 
     @Override

@@ -150,7 +150,7 @@ public class TeslaHandler
         }
         for (Map.Entry<IEnergyStorage, Integer> entry : tiles2.entrySet())
         {
-            Integer fraction = (int) (output / tiles.size());
+            Integer fraction = (int) (output / tiles2.size());
             Integer request = entry.getValue();
             if (request > fraction)
             {

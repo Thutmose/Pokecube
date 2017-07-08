@@ -56,7 +56,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     public void init(int nb)
     {
         super.init(nb);
-        if (worldObj != null) onGenesChanged();
+        if (world != null) onGenesChanged();
     }
 
     private void initAbilityGene()

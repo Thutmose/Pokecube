@@ -4,7 +4,6 @@
 package pokecube.core.entity.pokemobs.helper;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -649,12 +648,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound visualsTag = tag.getCompoundTag(VISUALSTAG);
         NBTTagCompound aiTag = tag.getCompoundTag(AITAG);
         NBTTagCompound miscTag = tag.getCompoundTag(MISCTAG);
-        int nb = 0;
-        String forme = "";
         // Read Ownership Tag
         if (!ownerShipTag.hasNoTags())
         {
-            nb = ownerShipTag.getInteger(POKEDEXNB);
             this.setPokemobTeam(ownerShipTag.getString(TEAM));
             this.setPokemonNickname(ownerShipTag.getString(NICKNAME));
             this.players = ownerShipTag.getBoolean(PLAYERS);
@@ -723,7 +719,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Read visuals tag
         if (!visualsTag.hasNoTags())
         {
-            forme = visualsTag.getString(FORME);
             this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
             setSize(getSize());
             this.initRidable();
@@ -754,8 +749,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.setAncient(miscTag.getBoolean(ANCIENT));
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
         }
-        if (!forme.isEmpty()) this.setPokedexEntry(Database.getEntry(forme));
-        else if (nb != 0) this.setPokedexEntry(Database.getEntry(nb));
     }
 
     private void readOldPokemobData(NBTTagCompound nbttagcompound)
@@ -950,6 +943,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         pokemobTag.setInteger(VERSION, 1);
         // Write Ownership tag
         NBTTagCompound ownerShipTag = new NBTTagCompound();
+        // This is still written for pokecubes to read from. Actual number is
+        // stored in genes.
         ownerShipTag.setInteger(POKEDEXNB, this.getPokedexNb());
         ownerShipTag.setString(NICKNAME, getPokemonNickname());
         ownerShipTag.setBoolean(PLAYERS, isPlayerOwned());
@@ -995,6 +990,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         // Write visuals tag
         NBTTagCompound visualsTag = new NBTTagCompound();
+
+        // This is still written for pokecubes to read from. Actual form is
+        // stored in genes.
         visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);

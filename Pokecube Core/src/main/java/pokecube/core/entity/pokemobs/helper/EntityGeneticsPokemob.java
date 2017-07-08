@@ -1,20 +1,26 @@
 package pokecube.core.entity.pokemobs.helper;
 
-import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.*;
+import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.ABILITYGENE;
+import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.COLOURGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.EVSGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.IVSGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.MOVESGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.NATUREGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.SHINYGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.SIZEGENE;
+import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.SPECIESGENE;
 
 import java.util.Random;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
@@ -27,10 +33,15 @@ import pokecube.core.entity.pokemobs.genetics.genes.IVsGene;
 import pokecube.core.entity.pokemobs.genetics.genes.NatureGene;
 import pokecube.core.entity.pokemobs.genetics.genes.ShinyGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
+import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 
@@ -72,7 +83,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesAbility == null)
             {
                 genesAbility = new Alleles();
-                genes.getAlleles().put(ABILITYGENE, genesSize);
+                genes.getAlleles().put(ABILITYGENE, genesAbility);
             }
             if (genesAbility.getAlleles()[0] == null)
             {
@@ -168,6 +179,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 genesSize.getAlleles()[0] = size;
                 genesSize.getAlleles()[1] = size;
                 genesSize.refreshExpressed();
+                setSize(scale);
             }
         }
         Float size = genesSize.getExpressed().getValue();
@@ -360,8 +372,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void setSize(float size)
     {
-        getSize();
-        if (genesSize == null) return;
+        if (genesSize == null) getSize();
         if (isAncient()) size = 2;
         float a = 1, b = 1, c = 1;
         PokedexEntry entry = getPokedexEntry();
@@ -390,7 +401,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesColour == null)
             {
                 genesColour = new Alleles();
-                genes.getAlleles().put(COLOURGENE, genesShiny);
+                genes.getAlleles().put(COLOURGENE, genesColour);
             }
             if (genesColour.getAlleles()[0] == null)
             {
@@ -448,6 +459,91 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     {
         if (genesShiny == null) isShiny();
         genesShiny.getExpressed().setValue(shiny);
+    }
+
+    @Override
+    public PokedexEntry getPokedexEntry()
+    {
+        if (genesSpecies == null)
+        {
+            IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
+            if (genes == null) throw new RuntimeException("This should not be called here");
+            genesSpecies = genes.getAlleles().get(SPECIESGENE);
+            if (genesSpecies == null)
+            {
+                genesSpecies = new Alleles();
+                genes.getAlleles().put(SPECIESGENE, genesSpecies);
+            }
+            if (genesSpecies.getAlleles()[0] == null)
+            {
+                SpeciesGene gene = new SpeciesGene();
+                SpeciesInfo info = gene.getValue();
+
+                if (getClass().getName().contains("GenericPokemob"))
+                {
+                    String num = getClass().getSimpleName().replace("GenericPokemob", "").trim();
+                    PokedexEntry entry = Database.getEntry(Integer.parseInt(num));
+                    info.entry = entry;
+                }
+                else
+                {
+                    System.out.println(this.getClass() + " " + getPokedexNb());
+                    Thread.dumpStack();
+                    this.setDead();
+                    info.entry = Database.missingno;
+                }
+                info.value = Tools.getSexe(info.entry.getSexeRatio(), new Random());
+                genesSpecies.getAlleles()[0] = gene;
+                genesSpecies.getAlleles()[1] = gene;
+                genesSpecies.refreshExpressed();
+            }
+        }
+        SpeciesInfo info = genesSpecies.getExpressed().getValue();
+        return info.entry.getForGender(getSexe());
+    }
+
+    @Override
+    public IPokemob setPokedexEntry(PokedexEntry newEntry)
+    {
+        PokedexEntry entry = getPokedexEntry();
+        SpeciesInfo info = genesSpecies.getExpressed().getValue();
+        if (newEntry == null || newEntry == entry) return this;
+        IPokemob ret = this;
+        info.entry = newEntry;
+        if (newEntry.getPokedexNb() != getPokedexNb())
+        {
+            ret = megaEvolve(newEntry);
+        }
+        if (worldObj != null) ret.setSize((float) (ret.getSize() / PokecubeMod.core.getConfig().scalefactor));
+        if (worldObj != null && FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        {
+            PacketChangeForme.sendPacketToNear((Entity) ret, newEntry, 128);
+        }
+        return ret;
+    }
+
+    @Override
+    public byte getSexe()
+    {
+        if (genesSpecies == null) getPokedexEntry();
+        SpeciesInfo info = genesSpecies.getExpressed().getValue();
+        return info.value;
+    }
+
+    @Override
+    public void setSexe(byte sexe)
+    {
+        if (genesSpecies == null) getPokedexEntry();
+        SpeciesInfo info = genesSpecies.getExpressed().getValue();
+        if (sexe == NOSEXE || sexe == FEMALE || sexe == MALE || sexe == SEXLEGENDARY)
+        {
+            info.value = sexe;
+        }
+        else
+        {
+            System.err.println("Illegal argument. Sexe cannot be " + sexe);
+            new Exception().printStackTrace();
+        }
     }
 
     @Override

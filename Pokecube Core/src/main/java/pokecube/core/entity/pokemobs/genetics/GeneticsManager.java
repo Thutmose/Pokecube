@@ -30,7 +30,6 @@ import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import thut.api.entity.IMobColourable;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.Gene;
 import thut.api.entity.genetics.GeneRegistry;
@@ -111,36 +110,6 @@ public class GeneticsManager
     public static void initMob(Entity mob)
     {
         IPokemob pokemob = (IPokemob) mob;
-        IMobGenetics genes = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
-
-        ColourGene colours = new ColourGene();
-        SpeciesGene species = new SpeciesGene();
-        ShinyGene shiny = new ShinyGene();
-
-        Alleles alleles = genes.getAlleles().get(SPECIESGENE);
-        SpeciesInfo info = new SpeciesInfo();
-        info.value = pokemob.getSexe();
-        info.entry = pokemob.getPokedexEntry();
-        species.setValue(info);
-        alleles.getAlleles()[0] = species;
-        alleles.getAlleles()[1] = species;
-        alleles.refreshExpressed();
-
-        alleles = genes.getAlleles().get(SHINYGENE);
-        shiny.setValue(pokemob.isShiny());
-        alleles.getAlleles()[0] = shiny;
-        alleles.getAlleles()[1] = shiny;
-        alleles.refreshExpressed();
-
-        if ((mob instanceof IMobColourable))
-        {
-            alleles = genes.getAlleles().get(COLOURGENE);
-            colours.setValue(((IMobColourable) mob).getRGBA());
-            alleles.getAlleles()[0] = colours;
-            alleles.getAlleles()[1] = colours;
-            alleles.refreshExpressed();
-        }
-
         pokemob.onGenesChanged();
     }
 
@@ -165,23 +134,7 @@ public class GeneticsManager
 
     public static void handleEpigenetics(IPokemob pokemob)
     {
-        Entity mob = (Entity) pokemob;
-        IMobGenetics genes = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
-        if (genes.getAlleles().isEmpty())
-        {
-            initMob(mob);
-        }
-        try
-        {
-            Alleles alleles = genes.getAlleles().get(SPECIESGENE);
-            Gene gene = alleles.getExpressed();
-            SpeciesInfo info = gene.getValue();
-            info.entry = pokemob.getPokedexEntry();
-        }
-        catch (Exception e)
-        {
-            initMob(mob);
-        }
+        pokemob.onGenesChanged();
     }
 
     public static void initEgg(IMobGenetics eggs, IMobGenetics mothers, IMobGenetics fathers)

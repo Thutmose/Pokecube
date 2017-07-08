@@ -1,5 +1,6 @@
 package pokecube.core.entity.pokemobs.helper;
 
+import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.ABILITYGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.EVSGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.IVSGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.MOVESGENE;
@@ -14,8 +15,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.Ability;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
 import pokecube.core.entity.pokemobs.genetics.epigenes.MovesGene;
+import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene;
+import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene.AbilityObject;
 import pokecube.core.entity.pokemobs.genetics.genes.IVsGene;
 import pokecube.core.entity.pokemobs.genetics.genes.NatureGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
@@ -31,15 +36,112 @@ import thut.api.entity.genetics.IMobGenetics;
 public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
 {
     public static float scaleFactor = 0.075f;
+
     Alleles             genesSize;
     Alleles             genesIVs;
     Alleles             genesEVs;
     Alleles             genesMoves;
     Alleles             genesNature;
+    Alleles             genesAbility;
+    Alleles             genesColour;
+    Alleles             genesShiny;
+    Alleles             genesSpecies;
 
     public EntityGeneticsPokemob(World world)
     {
         super(world);
+    }
+
+    @Override
+    public void init(int nb)
+    {
+        super.init(nb);
+        if (worldObj != null) onGenesChanged();
+    }
+
+    private void initAbilityGene()
+    {
+        if (genesAbility == null)
+        {
+            IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
+            if (genes == null) throw new RuntimeException("This should not be called here");
+            genesAbility = genes.getAlleles().get(ABILITYGENE);
+            if (genesAbility == null)
+            {
+                genesAbility = new Alleles();
+                genes.getAlleles().put(ABILITYGENE, genesSize);
+            }
+            if (genesAbility.getAlleles()[0] == null)
+            {
+                Random random = new Random(getRNGValue());
+                int abilityIndex = random.nextInt(100) % 2;
+                if (getPokedexEntry().getAbility(abilityIndex, this) == null)
+                {
+                    if (abilityIndex != 0) abilityIndex = 0;
+                    else abilityIndex = 1;
+                }
+                Ability ability = getPokedexEntry().getAbility(abilityIndex, this);
+                AbilityGene gene = new AbilityGene();
+                AbilityObject obj = gene.getValue();
+                obj.ability = ability != null ? ability.getName() : "";
+                obj.abilityObject = ability;
+                obj.abilityIndex = (byte) abilityIndex;
+                genesAbility.getAlleles()[0] = gene;
+                genesAbility.getAlleles()[1] = gene;
+                genesAbility.refreshExpressed();
+                setAbility(getAbility());
+            }
+        }
+    }
+
+    @Override
+    public Ability getAbility()
+    {
+        if (genesAbility == null) initAbilityGene();
+        if (getPokemonAIState(MEGAFORME)) return getPokedexEntry().getAbility(0, this);
+        AbilityObject obj = genesAbility.getExpressed().getValue();
+        if (obj.abilityObject == null && !obj.searched)
+        {
+            if (!obj.ability.isEmpty())
+            {
+                Ability ability = AbilityManager.getAbility(obj.ability);
+                obj.abilityObject = ability;
+            }
+            else
+            {
+                obj.abilityObject = getPokedexEntry().getAbility(obj.abilityIndex, this);
+            }
+        }
+        return obj.abilityObject;
+    }
+
+    @Override
+    public int getAbilityIndex()
+    {
+        if (genesAbility == null) initAbilityGene();
+        AbilityObject obj = genesAbility.getExpressed().getValue();
+        return obj.abilityIndex;
+    }
+
+    @Override
+    public void setAbility(Ability ability)
+    {
+        if (genesAbility == null) initAbilityGene();
+        AbilityObject obj = genesAbility.getExpressed().getValue();
+        Ability oldAbility = obj.abilityObject;
+        if (oldAbility != null && oldAbility != ability) oldAbility.destroy();
+        obj.abilityObject = ability;
+        obj.ability = ability.getName();
+        if (ability != null) ability.init(this);
+    }
+
+    @Override
+    public void setAbilityIndex(int ability)
+    {
+        if (genesAbility == null) initAbilityGene();
+        if (ability > 2 || ability < 0) ability = 0;
+        AbilityObject obj = genesAbility.getExpressed().getValue();
+        obj.abilityIndex = (byte) ability;
     }
 
     @Override
@@ -48,7 +150,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         if (genesSize == null)
         {
             IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-            if (genes == null) return 1;
+            if (genes == null) throw new RuntimeException("This should not be called here");
             genesSize = genes.getAlleles().get(SIZEGENE);
             if (genesSize == null)
             {
@@ -100,7 +202,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesEVs == null)
             {
                 IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-                if (genes == null) return new EVsGene().getValue();
+                if (genes == null) throw new RuntimeException("This should not be called here");
                 genesEVs = genes.getAlleles().get(EVSGENE);
                 if (genesEVs == null)
                 {
@@ -126,7 +228,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         if (genesIVs == null)
         {
             IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-            if (genes == null) return new IVsGene().getValue();
+            if (genes == null) throw new RuntimeException("This should not be called here");
             genesIVs = genes.getAlleles().get(IVSGENE);
             if (genesIVs == null)
             {
@@ -172,7 +274,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesMoves == null)
             {
                 IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-                if (genes == null) return moves;
+                if (genes == null) throw new RuntimeException("This should not be called here");
                 genesMoves = genes.getAlleles().get(MOVESGENE);
                 if (genesMoves == null)
                 {
@@ -213,7 +315,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         if (genesNature == null)
         {
             IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
-            if (genes == null) return Nature.HARDY;
+            if (genes == null) throw new RuntimeException("This should not be called here");
             genesNature = genes.getAlleles().get(NATUREGENE);
             if (genesNature == null)
             {
@@ -287,6 +389,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         getMoves();
         genesNature = null;
         getNature();
+        genesAbility = null;
+        getAbility();
 
         // Refresh the datamanager for moves.
         setMoves(getMoves());

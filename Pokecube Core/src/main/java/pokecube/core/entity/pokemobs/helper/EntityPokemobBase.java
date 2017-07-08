@@ -48,12 +48,10 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokemobBodies;
-import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
@@ -284,14 +282,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
 
         Random random = new Random(getRNGValue());
-        abilityIndex = random.nextInt(100) % 2;
-        if (getPokedexEntry().getAbility(abilityIndex, this) == null)
-        {
-            if (abilityIndex != 0) abilityIndex = 0;
-            else abilityIndex = 1;
-        }
-        setAbility(getPokedexEntry().getAbility(abilityIndex, this));
-        if (getAbility() != null) getAbility().init(this);
 
         setSize(getSize());
         this.initRidable();
@@ -708,18 +698,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.setExp(statsTag.getInteger(EXP), false);
             this.setStatus(statsTag.getByte(STATUS));
             addHappiness(statsTag.getInteger(HAPPY));
-            this.setAbilityIndex(statsTag.getInteger(ABILITYINDEX));
-            if (statsTag.hasKey(ABILITY, 8)) setAbility(AbilityManager.getAbility(statsTag.getString(ABILITY)));
-            if (getAbility() == null)
-            {
-                int abilityNumber = getAbilityIndex();
-                if (getPokedexEntry().getAbility(abilityNumber, this) == null)
-                {
-                    if (abilityNumber != 0) abilityNumber = 0;
-                    else abilityNumber = 1;
-                }
-                setAbility(getPokedexEntry().getAbility(abilityNumber, this));
-            }
         }
         // Read moves tag
         if (!movesTag.hasNoTags())
@@ -821,7 +799,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         // Ownership and Items
         int pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
-        abilityIndex = nbttagcompound.getInteger("abilityIndex");
         this.setPokedexEntry(Database.getEntry(pokedexNb));
         this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
         dataManager.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
@@ -883,24 +860,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             rgba[i] = rgbaBytes[i] + 128;
         shiny = nbttagcompound.getBoolean("shiny");
         addHappiness(nbttagcompound.getInteger("happiness"));
-        if (getAbility() != null) getAbility().destroy();
-        if (nbttagcompound.hasKey("ability", 8))
-            setAbility(AbilityManager.getAbility(nbttagcompound.getString("ability")));
-        else if (nbttagcompound.hasKey("ability", 3))
-            setAbility(getPokedexEntry().getAbility(nbttagcompound.getInteger("ability"), this));
-        if (ability == null)
-        {
-            int abilityNumber = abilityIndex;
-            if (getPokedexEntry().getAbility(abilityNumber, this) == null)
-            {
-                if (abilityNumber != 0) abilityNumber = 0;
-                else abilityNumber = 1;
-            }
-            setAbility(getPokedexEntry().getAbility(abilityNumber, this));
-        }
-        if (ability != null) ability.init(this);
         if (nbttagcompound.hasKey("personalityValue")) this.setRNGValue(nbttagcompound.getInteger("personalityValue"));
-        setNature(Nature.values()[nbttagcompound.getByte("nature")]);
         // Sexe related
         setSexe((byte) nbttagcompound.getInteger(PokecubeSerializer.SEXE));
         loveTimer = nbttagcompound.getInteger("InLove2");
@@ -1022,8 +982,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         statsTag.setInteger(EXP, getExp());
         statsTag.setByte(STATUS, getStatus());
         statsTag.setInteger(HAPPY, bonusHappiness);
-        statsTag.setInteger(ABILITYINDEX, abilityIndex);
-        if (getAbility() != null) statsTag.setString(ABILITY, getAbility().toString());
 
         // Write moves tag
         NBTTagCompound movesTag = new NBTTagCompound();

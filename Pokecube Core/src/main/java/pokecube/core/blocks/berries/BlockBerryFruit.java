@@ -101,6 +101,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
      * connections. */
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
+        if (!(worldIn.getTileEntity(pos) instanceof TileEntityBerries))
+            return state.withProperty(BerryManager.type, "cheri");
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
         if (tile == null) { return state.withProperty(BerryManager.type, "cheri"); }
         String name = BerryManager.berryNames.get(tile.getBerryId());
@@ -111,6 +113,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public ItemStack getBerryStack(IBlockAccess world, BlockPos pos)
     {
+        if (!(world.getTileEntity(pos) instanceof TileEntityBerries)) return CompatWrapper.nullStack;
         TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos);
         if (tile == null) return CompatWrapper.nullStack;
         return BerryManager.getBerryItem(BerryManager.berryNames.get(tile.getBerryId()));
@@ -119,6 +122,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
+        if (!(source.getTileEntity(pos) instanceof TileEntityBerries)) return BUSH_AABB;
         TileEntityBerries tile = (TileEntityBerries) source.getTileEntity(pos);
         if (TileEntityBerries.trees.containsKey(tile.getBerryId())) { return BUSH2_AABB; }
         return BUSH_AABB;

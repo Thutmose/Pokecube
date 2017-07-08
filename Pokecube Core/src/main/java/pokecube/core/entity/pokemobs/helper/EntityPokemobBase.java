@@ -281,25 +281,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.noClip = true;
         }
 
-        Random random = new Random(getRNGValue());
-
-        setSize(getSize());
         this.initRidable();
-        shiny = random.nextInt(8196) == 0;
-
-        int rand = (random).nextInt(1048576);
-        if (rand == 0)
-        {
-            rgba[0] = 0;
-        }
-        else if (rand == 1)
-        {
-            rgba[1] = 0;
-        }
-        else if (rand == 2)
-        {
-            rgba[2] = 0;
-        }
 
         isImmuneToFire = isType(PokeType.fire);
     }
@@ -732,11 +714,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Read visuals tag
         if (!visualsTag.hasNoTags())
         {
-            byte[] rgbaBytes = new byte[4];
-            rgbaBytes = visualsTag.getByteArray(COLOURS);
-            for (int i = 0; i < 4; i++)
-                rgba[i] = rgbaBytes[i] + 128;
-            this.setShiny(visualsTag.getBoolean(SHINY));
             forme = visualsTag.getString(FORME);
             this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
             setSize(getSize());
@@ -854,11 +831,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false);
         isAncient = nbttagcompound.getBoolean("isAncient");
         wasShadow = nbttagcompound.getBoolean("wasShadow");
-        byte[] rgbaBytes = new byte[4];
-        rgbaBytes = nbttagcompound.getByteArray("colours");
-        for (int i = 0; i < 4; i++)
-            rgba[i] = rgbaBytes[i] + 128;
-        shiny = nbttagcompound.getBoolean("shiny");
         addHappiness(nbttagcompound.getInteger("happiness"));
         if (nbttagcompound.hasKey("personalityValue")) this.setRNGValue(nbttagcompound.getInteger("personalityValue"));
         // Sexe related
@@ -1014,10 +986,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         // Write visuals tag
         NBTTagCompound visualsTag = new NBTTagCompound();
-        byte[] rgbaBytes = { (byte) (rgba[0] - 128), (byte) (rgba[1] - 128), (byte) (rgba[2] - 128),
-                (byte) (rgba[3] - 128) };
-        visualsTag.setByteArray(COLOURS, rgbaBytes);
-        visualsTag.setBoolean(SHINY, isShiny());
         visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);

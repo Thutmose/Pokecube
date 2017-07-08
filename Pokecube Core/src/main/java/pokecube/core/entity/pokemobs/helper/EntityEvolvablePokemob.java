@@ -367,7 +367,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 evolution.copyLocationAndAnglesFrom(this);
                 this.setPokemonOwner((UUID) null);
                 this.setDead();
-                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(getAbilityIndex(), ((IPokemob) evolution)));
                 if (this.addedToChunk)
                 {
                     long evoTime = world.getTotalWorldTime() + 2;
@@ -379,7 +379,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
             {
                 evolution = this;
                 ((IPokemob) evolution).setPokedexEntry(newEntry);
-                ((IPokemob) evolution).setAbility(newEntry.getAbility(abilityIndex, ((IPokemob) evolution)));
+                ((IPokemob) evolution).setAbility(newEntry.getAbility(getAbilityIndex(), ((IPokemob) evolution)));
             }
         }
         return (IPokemob) evolution;

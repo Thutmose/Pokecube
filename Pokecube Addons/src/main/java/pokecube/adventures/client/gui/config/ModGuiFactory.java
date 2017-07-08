@@ -5,7 +5,6 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
-import thut.core.client.config.ModGuiConfig;
 
 public class ModGuiFactory implements IModGuiFactory
 {

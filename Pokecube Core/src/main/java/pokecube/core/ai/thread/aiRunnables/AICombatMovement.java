@@ -60,6 +60,9 @@ public class AICombatMovement extends AIBase
     @Override
     public void run()
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING)
+                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
+            return;
         if (centre == null)
         {
             Vector3 targetLoc = Vector3.getNewVector().set(target);

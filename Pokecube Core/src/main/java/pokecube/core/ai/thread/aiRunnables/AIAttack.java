@@ -196,6 +196,8 @@ public class AIAttack extends AIBase implements IAICombat
             addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
             return;
         }
+        
+        //Make sure pokemob is still set to being angry.
         pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
         double var1 = (double) (this.attacker.width * 2.0F) * (this.attacker.width * 2.0F);
         boolean distanced = false;

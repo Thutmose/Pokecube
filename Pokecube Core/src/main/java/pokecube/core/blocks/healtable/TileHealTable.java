@@ -213,7 +213,7 @@ public class TileHealTable extends TileEntityOwnable implements IInventory, ITic
                 PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
             return;
         }
-        if (!noSound && !PokecubeCore.proxy.isSoundPlaying(here) && ticks <= 0)
+        if (!noSound && ticks <= 0 && !PokecubeCore.proxy.isSoundPlaying(here))
         {
             PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
             ticks = 10;

@@ -261,7 +261,7 @@ public class Config extends ConfigBase
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksTerrain                = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListIndustrial          = { "minecraft:redstone_block",
+    public String[]                      blockIndustrial              = { "minecraft:redstone_block",
             "minecraft:furnace", "minecraft:lit_furnace", "minecraft:piston", "minecraft:sticky_piston",
             "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:anvil" };
     @Configure(category = world)

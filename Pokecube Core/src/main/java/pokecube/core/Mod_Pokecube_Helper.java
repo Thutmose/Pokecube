@@ -153,7 +153,7 @@ public class Mod_Pokecube_Helper
         addToList(config.getRocks(), config.blocksOre);
         addToList(config.getDirtTypes(), config.blocksGround);
         addToList(config.getPlantTypes(), config.blocksPlants);
-        addToList(config.getIndustrial(), config.blocksStones);
+        addToList(config.getIndustrial(), config.blockListIndustrial);
         addToList(config.getWoodTypes(), config.blocksWood);
         addToList(config.getPlantTypes(), config.blocksLeaves);
 

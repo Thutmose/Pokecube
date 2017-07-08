@@ -15,7 +15,7 @@ public class ColourGene extends GeneIntArray
 
     public ColourGene()
     {
-        value = new int[] { 127, 127, 127, 127 };
+        value = new int[] { 127, 127, 127, 255 };
         setRandomColour();
     }
 

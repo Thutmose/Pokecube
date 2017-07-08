@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import pokecube.core.database.abilities.Ability;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import thut.api.entity.genetics.Gene;
 
@@ -11,8 +12,14 @@ public class AbilityGene implements Gene
 {
     public static class AbilityObject
     {
-        public String ability      = "";
-        public byte   abilityIndex = 0;
+        // This value is only set when a pokemob makes the ability, so should
+        // only exist in an expressed gene.
+        public Ability abilityObject = null;
+        // Have we searched for an ability yet, if not, will look for one first
+        // time ability is got.
+        public boolean searched      = false;
+        public String  ability       = "";
+        public byte    abilityIndex  = 0;
     }
 
     protected AbilityObject ability = new AbilityObject();

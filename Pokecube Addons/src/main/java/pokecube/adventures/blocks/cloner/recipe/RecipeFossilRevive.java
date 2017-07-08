@@ -124,14 +124,14 @@ public class RecipeFossilRevive implements IPoweredRecipe
         if (inv.getSizeInventory() < getRecipeSize()) return false;
         ItemStack dna = inv.getStackInSlot(0);
         ItemStack egg = inv.getStackInSlot(1);
-        if (!(CompatWrapper.isValid(egg) && CompatWrapper.isValid(dna))) return false;
+        if (!((CompatWrapper.isValid(egg) && CompatWrapper.isValid(dna)) || recipeItems.size() > 0)) return false;
         PokedexEntry entry = ClonerHelper.getFromGenes(dna);
         if (pokedexEntry == Database.missingno && entry != null)
         {
             tame = !entry.legendary;
             actualEntry = entry;
         }
-        if (entry != getPokedexEntry() || getPokedexEntry() == null) return false;
+        if ((entry != null && entry != getPokedexEntry()) || getPokedexEntry() == null) return false;
         List<ItemStack> list = Lists.newArrayList(recipeItems);
         for (int i = 2; i < inv.getSizeInventory(); i++)
         {

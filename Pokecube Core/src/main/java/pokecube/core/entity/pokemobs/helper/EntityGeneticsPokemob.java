@@ -1,10 +1,11 @@
 package pokecube.core.entity.pokemobs.helper;
 
-import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.ABILITYGENE;
+import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.*;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.EVSGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.IVSGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.MOVESGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.NATUREGENE;
+import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.SHINYGENE;
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.SIZEGENE;
 
 import java.util.Random;
@@ -21,8 +22,10 @@ import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
 import pokecube.core.entity.pokemobs.genetics.epigenes.MovesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene;
 import pokecube.core.entity.pokemobs.genetics.genes.AbilityGene.AbilityObject;
+import pokecube.core.entity.pokemobs.genetics.genes.ColourGene;
 import pokecube.core.entity.pokemobs.genetics.genes.IVsGene;
 import pokecube.core.entity.pokemobs.genetics.genes.NatureGene;
+import pokecube.core.entity.pokemobs.genetics.genes.ShinyGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
@@ -377,6 +380,77 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     }
 
     @Override
+    public int[] getRGBA()
+    {
+        if (genesColour == null)
+        {
+            IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
+            if (genes == null) throw new RuntimeException("This should not be called here");
+            genesColour = genes.getAlleles().get(COLOURGENE);
+            if (genesColour == null)
+            {
+                genesColour = new Alleles();
+                genes.getAlleles().put(COLOURGENE, genesShiny);
+            }
+            if (genesColour.getAlleles()[0] == null)
+            {
+                ColourGene gene = new ColourGene();
+                genesColour.getAlleles()[0] = gene;
+                genesColour.getAlleles()[1] = gene;
+                genesColour.refreshExpressed();
+            }
+        }
+        return genesColour.getExpressed().getValue();
+    }
+
+    @Override
+    public void setRGBA(int... colours)
+    {
+        int[] rgba = getRGBA();
+        for (int i = 0; i < colours.length && i < rgba.length; i++)
+        {
+            rgba[i] = colours[i];
+        }
+    }
+
+    @Override
+    public boolean isShiny()
+    {
+        if (genesShiny == null)
+        {
+            IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
+            if (genes == null) throw new RuntimeException("This should not be called here");
+            genesShiny = genes.getAlleles().get(SHINYGENE);
+            if (genesShiny == null)
+            {
+                genesShiny = new Alleles();
+                genes.getAlleles().put(SHINYGENE, genesShiny);
+            }
+            if (genesShiny.getAlleles()[0] == null || genesShiny.getAlleles()[1] == null)
+            {
+                ShinyGene gene = new ShinyGene();
+                genesShiny.getAlleles()[0] = gene;
+                genesShiny.getAlleles()[1] = gene;
+                genesShiny.refreshExpressed();
+            }
+        }
+        boolean shiny = genesShiny.getExpressed().getValue();
+        if (shiny && !getPokedexEntry().hasShiny)
+        {
+            shiny = false;
+            genesShiny.getExpressed().setValue(false);
+        }
+        return shiny;
+    }
+
+    @Override
+    public void setShiny(boolean shiny)
+    {
+        if (genesShiny == null) isShiny();
+        genesShiny.getExpressed().setValue(shiny);
+    }
+
+    @Override
     public void onGenesChanged()
     {
         genesSize = null;
@@ -391,6 +465,12 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         getNature();
         genesAbility = null;
         getAbility();
+        genesShiny = null;
+        isShiny();
+        genesSpecies = null;
+        getPokedexEntry();
+        genesColour = null;
+        getRGBA();
 
         // Refresh the datamanager for moves.
         setMoves(getMoves());

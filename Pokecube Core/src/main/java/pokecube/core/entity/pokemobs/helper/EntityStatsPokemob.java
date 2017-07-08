@@ -4,7 +4,6 @@
 package pokecube.core.entity.pokemobs.helper;
 
 import java.io.IOException;
-import java.util.Random;
 
 import javax.annotation.Nullable;
 
@@ -48,7 +47,6 @@ import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -67,15 +65,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     boolean               wasShadow        = false;
 
     boolean               isAncient        = false;
-    /** The higher this value, the more likely for mobs to range in colour. It
-     * is very sensitive to the size of this number. */
-    private double        colourDiffFactor = 0.25;
-
-    /** Used for the random colour differences */
-    int[]                 rgba             = { 255, 255, 255, 255 };
-
-    /** Used for if there is a special texture */
-    public boolean        shiny            = false;
     PokeType              type1, type2;
     private int           personalityValue = 0;
     private int           killCounter      = 0;
@@ -343,12 +332,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     }
 
     @Override
-    public int[] getRGBA()
-    {
-        return rgba;
-    }
-
-    @Override
     public PokeType getType1()
     {
         return type1 != null ? type1 : getPokedexEntry().getType1();
@@ -368,16 +351,12 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
         this.setRNGValue(rand.nextInt());
 
-        setEVs(PokecubeSerializer.noEVs);
-        setIVs(new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
-                Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) });
         if (this.isAncient())
         {
             setIVs(new byte[] { 31, 31, 31, 31, 31, 31 });
         }
         if (PokecubeCore.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
-        setRandomColour();
     }
 
     @Override
@@ -408,13 +387,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
             wasShadow = true;
         }
         return isShadow;
-    }
-
-    @Override
-    public boolean isShiny()
-    {
-        if (shiny && !getPokedexEntry().hasShiny) shiny = false;
-        return shiny;
     }
 
     /** This method gets called when the entity kills another one. */
@@ -629,60 +601,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         }
     }
 
-    void setRandomColour()
-    {
-        Random r = new Random();
-        int first = r.nextInt(3);
-        byte red = 127, green = 127, blue = 127;
-        if (first == 0)
-        {
-            int min = 0;
-            red = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-            min = red < 63 ? 63 : 0;
-
-            green = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-            min = green < 63 ? 63 : 0;
-
-            blue = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-        }
-        if (first == 1)
-        {
-            int min = 0;
-
-            green = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-            min = green < 63 ? 63 : 0;
-
-            red = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-            min = red < 63 ? 63 : 0;
-
-            blue = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-        }
-        if (first == 2)
-        {
-            int min = 0;
-            blue = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-            min = blue < 63 ? 63 : 0;
-
-            red = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-            min = red < 63 ? 63 : 0;
-
-            green = (byte) Math.max(Math.min(((5 - Math.abs(colourDiffFactor * r.nextGaussian())) * 32), 127), min);
-
-        }
-        rgba[0] = red + 128;
-        rgba[1] = green + 128;
-        rgba[2] = blue + 128;
-    }
-
-    @Override
-    public void setRGBA(int... colours)
-    {
-        for (int i = 0; i < colours.length && i < rgba.length; i++)
-        {
-            rgba[i] = colours[i];
-        }
-    }
-
     @Override
     public void setShadow(boolean shadow)
     {
@@ -699,12 +617,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             wasShadow = true;
         }
-    }
-
-    @Override
-    public void setShiny(boolean shiny)
-    {
-        this.shiny = shiny;
     }
 
     @Override

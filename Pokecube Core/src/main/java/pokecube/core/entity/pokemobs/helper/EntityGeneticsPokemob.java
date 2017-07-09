@@ -145,7 +145,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         Ability oldAbility = obj.abilityObject;
         if (oldAbility != null && oldAbility != ability) oldAbility.destroy();
         obj.abilityObject = ability;
-        obj.ability = ability.getName();
+        obj.ability = ability != null ? ability.getName() : "";
         if (ability != null) ability.init(this);
     }
 

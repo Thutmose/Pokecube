@@ -14,6 +14,7 @@ public class Triggers
     public static final HatchPokemobTrigger      HATCHPOKEMOB      = register(new HatchPokemobTrigger());
     public static final FirstPokemobTrigger      FIRSTPOKEMOB      = register(new FirstPokemobTrigger());
     public static final EvolvePokemobTrigger     EVOLVEPOKEMOB     = register(new EvolvePokemobTrigger());
+    public static final InspectPokemobTrigger    INSPECTPOKEMOB    = register(new InspectPokemobTrigger());
     public static final MegaEvolvePokemobTrigger MEGAEVOLVEPOKEMOB = register(new MegaEvolvePokemobTrigger());
     public static final BreedPokemobTrigger      BREEDPOKEMOB      = register(new BreedPokemobTrigger());
     public static final UseMoveTrigger           USEMOVE           = register(new UseMoveTrigger());

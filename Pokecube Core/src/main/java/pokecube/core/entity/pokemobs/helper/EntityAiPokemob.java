@@ -12,6 +12,7 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
@@ -70,6 +71,7 @@ import pokecube.core.events.EggEvent;
 import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -1023,9 +1025,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Open Pokedex Gui
         if (CompatWrapper.isValid(held) && held.getItem() instanceof ItemPokedex)
         {
-            if (PokecubeCore.isOnClientSide() && !player.isSneaking())
+            if (!player.isSneaking())
             {
                 player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, world, (int) posX, (int) posY, (int) posZ);
+                if (player instanceof EntityPlayerMP) Triggers.INSPECTPOKEMOB.trigger((EntityPlayerMP) player, this);
             }
             return true;
         }

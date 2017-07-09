@@ -97,7 +97,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 Ability ability = getPokedexEntry().getAbility(abilityIndex, this);
                 AbilityGene gene = new AbilityGene();
                 AbilityObject obj = gene.getValue();
-                obj.ability = ability != null ? ability.getName() : "";
+                obj.ability = ability != null ? ability.toString() : "";
                 obj.abilityObject = ability;
                 obj.abilityIndex = (byte) abilityIndex;
                 genesAbility.getAlleles()[0] = gene;
@@ -125,6 +125,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             {
                 obj.abilityObject = getPokedexEntry().getAbility(obj.abilityIndex, this);
             }
+            obj.searched = true;
         }
         return obj.abilityObject;
     }
@@ -145,7 +146,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         Ability oldAbility = obj.abilityObject;
         if (oldAbility != null && oldAbility != ability) oldAbility.destroy();
         obj.abilityObject = ability;
-        obj.ability = ability != null ? ability.getName() : "";
+        obj.ability = ability != null ? ability.toString() : "";
         if (ability != null) ability.init(this);
     }
 

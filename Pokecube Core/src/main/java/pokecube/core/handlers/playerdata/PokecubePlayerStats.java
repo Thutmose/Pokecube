@@ -163,9 +163,9 @@ public class PokecubePlayerStats extends PlayerData
                     addHatch(entry);
             }
         }
-        if (tag.hasKey("list"))
+        if (tag.hasKey("inspected"))
         {
-            NBTTagList list = (NBTTagList) tag.getTag("list");
+            NBTTagList list = (NBTTagList) tag.getTag("inspected");
             if (inspected == null) initMaps();
             for (int i = 0; i < list.tagCount(); i++)
             {

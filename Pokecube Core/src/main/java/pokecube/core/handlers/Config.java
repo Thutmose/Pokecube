@@ -94,26 +94,22 @@ public class Config extends ConfigBase
     public boolean                       mysterygift                  = true;
     @Configure(category = misc, needsMcRestart = true)
     public String                        defaultMobs                  = "";
-    @Configure(category = misc, needsMcRestart = true)
-    protected boolean                    tableRecipe                  = true;
     @Configure(category = misc) // TODO sync this to clients on servers.
     public double                        scalefactor                  = 1;
-    @Configure(category = misc)
-    public double                        contactAttackDistance        = 0;
-    @Configure(category = misc)
-    public double                        rangedAttackDistance         = 16;
     @Configure(category = misc)
     public boolean                       pcOnDrop                     = true;
     @Configure(category = misc)
     public int                           captureDelayTicks            = 50;
     @Configure(category = misc)
-    public boolean                       catchOrderRequired           = true;
-    @Configure(category = misc)
     public float                         expScaleFactor               = 1;
-
     @Configure(category = misc)
     public boolean                       pcHoldsOnlyPokecubes         = true;
+    
     // AI Related settings
+    @Configure(category = mobAI)
+    public double                        contactAttackDistance        = 0;
+    @Configure(category = mobAI)
+    public double                        rangedAttackDistance         = 16;
     @Configure(category = mobAI)
     public int                           mateMultiplier               = 1;
     @Configure(category = mobAI)
@@ -172,9 +168,6 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     /** Warning time before a wild pokémob attacks a player */
     public int                           pokemobagressticks           = 100;
-    @Configure(category = mobAI, needsMcRestart = true)
-    /** Number of threads allowed for AI. */
-    public int                           maxAIThreads                 = 1;
     @Configure(category = mobAI)
     public boolean                       pokemobsDamageOwner          = false;
     @Configure(category = mobAI)
@@ -261,7 +254,7 @@ public class Config extends ConfigBase
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksTerrain                = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blocksIndustrial              = { "minecraft:redstone_block",
+    public String[]                      blocksIndustrial             = { "minecraft:redstone_block",
             "minecraft:furnace", "minecraft:lit_furnace", "minecraft:piston", "minecraft:sticky_piston",
             "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:anvil" };
     @Configure(category = world)
@@ -458,9 +451,7 @@ public class Config extends ConfigBase
     @Configure(category = healthbars)
     public int                           plateSize                    = 25;
     @Configure(category = healthbars)
-    public int                           plateSizeBoss                = 50;
-    @Configure(category = healthbars)
-    public boolean                       showAttributes               = true;
+    public boolean                       showHeldItem               = true;
     @Configure(category = healthbars)
     public boolean                       showArmor                    = true;
     @Configure(category = healthbars)

@@ -255,8 +255,7 @@ public class Database
         }
         catch (Exception e)
         {
-            System.err.println(name + " " + n);
-            e.printStackTrace();
+            System.err.println(name + " " + n + " " + e);
         }
     }
 
@@ -448,7 +447,7 @@ public class Database
                     continue;
                 }
                 e1.event = new SoundEvent(e1.sound);
-                //Fix the annoying warning about wrong mod container...
+                // Fix the annoying warning about wrong mod container...
                 ModContainer mc = Loader.instance().activeModContainer();
                 for (ModContainer cont : Loader.instance().getActiveModList())
                 {
@@ -468,7 +467,7 @@ public class Database
             }
             if (e.sound == null) e.setSound("mobs." + e.getBaseName());
             e.event = new SoundEvent(e.sound);
-            //Fix the annoying warning about wrong mod container...
+            // Fix the annoying warning about wrong mod container...
             ModContainer mc = Loader.instance().activeModContainer();
             for (ModContainer cont : Loader.instance().getActiveModList())
             {

@@ -792,7 +792,7 @@ public class Config extends ConfigBase
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
     {
-        if (eventArgs.getModID().equals("pokecube"))
+        if (eventArgs.getModID().equals(PokecubeMod.ID))
         {
             populateSettings();
             applySettings();

@@ -225,7 +225,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
 
             if (health + 10 < maxHealth) mob.setHealth(health + 10);
             else mob.setHealth(maxHealth);
-            stack.splitStack(1);
             HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
             return true;
         }
@@ -238,7 +237,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
 
             if (health + maxHealth / 4 < maxHealth) mob.setHealth(health + maxHealth / 4);
             else mob.setHealth(maxHealth);
-            stack.splitStack(1);
             HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
             return true;
         }
@@ -254,7 +252,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
 
             if (health + maxHealth / 4 < maxHealth) mob.setHealth(health + maxHealth / 4);
             else mob.setHealth(maxHealth);
-            stack.splitStack(1);
             HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
             return true;
         }

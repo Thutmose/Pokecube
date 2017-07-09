@@ -9,11 +9,13 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemWrittenBook;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.packets.PacketPC;
 import thut.lib.CompatWrapper;
@@ -33,10 +35,10 @@ public class ContainerPC extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
-        // System.out.println(ConfigHandler.ONLYPOKECUBES);
         if (itemstack == CompatWrapper.nullStack) return false;
         boolean eggorCube = !PokecubeMod.core.getConfig().pcHoldsOnlyPokecubes || PokecubeManager.isFilled(itemstack)
-                || itemstack.getItem() == PokecubeItems.pokemobEgg;
+                || itemstack.getItem() instanceof ItemWrittenBook || itemstack.getItem() == PokecubeItems.pokemobEgg
+                || itemstack.getItem() instanceof ItemPokedex;
         return eggorCube;
     }
 

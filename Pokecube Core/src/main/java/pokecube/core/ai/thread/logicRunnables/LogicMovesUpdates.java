@@ -9,6 +9,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -105,11 +106,16 @@ public class LogicMovesUpdates extends LogicBase
         {
             pokemob.getAbility().onUpdate(pokemob);
         }
-        if (!entity.isDead && entity.getHeldItemMainhand() != null
+        if (!entity.isDead && CompatWrapper.isValid(entity.getHeldItemMainhand())
                 && entity.getHeldItemMainhand().getItem() instanceof ItemPokemobUseable)
         {
-            ((IPokemobUseable) entity.getHeldItemMainhand().getItem()).itemUse(entity.getHeldItemMainhand(), entity,
-                    null);
+            boolean used = ((IPokemobUseable) entity.getHeldItemMainhand().getItem())
+                    .itemUse(entity.getHeldItemMainhand(), entity, null);
+            if (used)
+            {
+                ItemStack stack = entity.getHeldItemMainhand().splitStack(1);
+                entity.setHeldItem(EnumHand.MAIN_HAND, stack);
+            }
         }
     }
 

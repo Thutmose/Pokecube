@@ -56,6 +56,7 @@ public class AbilityManager
         name = name.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
         nameMap.put(name, ability);
         nameMap2.put(ability, name);
+        nameMap.put(ability.getName(), ability);//Also add the unlocalized name.
         idMap.put(ability, nextID);
         idMap2.put(nextID, ability);
         nextID++;

@@ -14,6 +14,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.bags.InventoryBag;
@@ -167,6 +170,17 @@ public class Config extends ConfigBase
         TrainerSpawnHandler.trainerBox = trainerBox;
         DBLoader.FORCECOPY = forceDatabase;
         InventoryBag.PAGECOUNT = bagPageCount;
+    }
+
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs)
+    {
+        if (eventArgs.getModID().equals(PokecubeAdv.ID))
+        {
+            populateSettings();
+            applySettings();
+            save();
+        }
     }
 
     protected FluidStack getFluid(String toParse)

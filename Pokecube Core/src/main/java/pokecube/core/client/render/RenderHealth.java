@@ -40,6 +40,8 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -208,9 +210,12 @@ public class RenderHealth
                 GlStateManager.translate(0F, pastTranslate, 0F);
                 ITextComponent nameComp = pokemob.getPokemonDisplayName();
                 boolean nametag = pokemob.getPokemonAIState(IMoveConstants.TAMED);
-                nametag = nametag
-                        || StatsCollector.getCaptured(pokemob.getPokedexEntry(), Minecraft.getMinecraft().player) > 0
+                PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
+                        .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
+                boolean captureOrHatch = StatsCollector.getCaptured(pokemob.getPokedexEntry(),
+                        Minecraft.getMinecraft().player) > 0
                         || StatsCollector.getHatched(pokemob.getPokedexEntry(), Minecraft.getMinecraft().player) > 0;
+                nametag = nametag || captureOrHatch || stats.hasInspected(pokemob.getPokedexEntry());
                 if (!nametag)
                 {
                     nameComp.getStyle().setObfuscated(true);
@@ -290,7 +295,7 @@ public class RenderHealth
 
                 UUID owner = pokemob.getPokemonOwnerID();
                 boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
-                int colour = isOwner ? 0xFFFFFF : owner == null ? 0x888888 : 0xAA4444;
+                int colour = isOwner ? 0xFFFFFF : owner == null ? captureOrHatch ? 0x888888 : 0x444444 : 0xAA4444;
                 mc.fontRenderer.drawString(name, 0, 0, colour);
 
                 GlStateManager.pushMatrix();

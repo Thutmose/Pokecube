@@ -48,6 +48,8 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
@@ -442,8 +444,8 @@ public class GuiPokedex extends GuiScreen
                     }
                 }
                 drawString(fontRenderer, I18n.format(name), xOffset + 18, yO + n * 10, 0xFF0000);
-                drawString(fontRenderer, numbers, xOffset + 108 - fontRenderer.getStringWidth(numbers),
-                        yO + n * 10, 0xFF0000);
+                drawString(fontRenderer, numbers, xOffset + 108 - fontRenderer.getStringWidth(numbers), yO + n * 10,
+                        0xFF0000);
                 String time = "";
                 drawString(fontRenderer, time, xOffset + 85, yO + n * 10, 0xFF0000);
             }
@@ -506,8 +508,8 @@ public class GuiPokedex extends GuiScreen
             }
         }
         drawString(fontRenderer, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
-        drawString(fontRenderer, "" + count, xOffset + 120 - fontRenderer.getStringWidth((count + "")),
-                yOffset + 154, 0xffffff);
+        drawString(fontRenderer, "" + count, xOffset + 120 - fontRenderer.getStringWidth((count + "")), yOffset + 154,
+                0xffffff);
     }
 
     /** Draws the breeding information page
@@ -536,8 +538,7 @@ public class GuiPokedex extends GuiScreen
             Ability ability = pokemob.getAbility();
             if (ability != null)
             {
-                drawString(fontRenderer, "AB: " + I18n.format(ability.getName()), xOffset + 19, yOffset + 99,
-                        0xFFFFFF);
+                drawString(fontRenderer, "AB: " + I18n.format(ability.getName()), xOffset + 19, yOffset + 99, 0xFFFFFF);
             }
             int happiness = pokemob.getHappiness();
             String message = "";
@@ -648,8 +649,7 @@ public class GuiPokedex extends GuiScreen
 
         if (pokedexEntry != null)
         {
-            drawCenteredString(fontRenderer, "#" + pokedexEntry.getPokedexNb(), xOffset - 28, yOffset + 02,
-                    0xffffff);
+            drawCenteredString(fontRenderer, "#" + pokedexEntry.getPokedexNb(), xOffset - 28, yOffset + 02, 0xffffff);
             try
             {
                 drawCenteredString(fontRenderer, getTranslatedName(pokedexEntry.getType1()), xOffset - 88,
@@ -1354,30 +1354,24 @@ public class GuiPokedex extends GuiScreen
             if (entity instanceof IPokemob)
             {
                 pokemob = (IPokemob) entity;
+                pokemob.setSize(1);
+                pokemob.setShiny(false);
             }
-            if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
-                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().player) > 0
-                    || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().player) > 0)
-                    && !mc.player.capabilities.isCreativeMode)
+            PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
+                    .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
+            if ((StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
+                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().player) > 0)
+                    || mc.player.capabilities.isCreativeMode)
             {
-
-                if (entity instanceof IPokemob)
-                {
-                    IPokemob mob = (IPokemob) entity;
-                    mob.setSize(1);
-                    mob.setShiny(false);
-                }
-                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
+            }
+            else if (stats.hasInspected(pokedexEntry))
+            {
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(127, 127, 127, 255);
             }
             else
             {
-                if (entity instanceof IPokemob)
-                {
-                    IPokemob mob = (IPokemob) entity;
-                    mob.setSize(1);
-                    mob.setShiny(false);
-                }
-                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
             }
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);

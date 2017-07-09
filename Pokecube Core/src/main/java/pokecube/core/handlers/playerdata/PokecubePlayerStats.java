@@ -4,17 +4,22 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.playerdata.advancements.AdvancementGenerator;
 import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
+import pokecube.core.interfaces.IPokemob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
 /** Player capture/hatch/kill stats */
@@ -23,6 +28,7 @@ public class PokecubePlayerStats extends PlayerData
     private Map<PokedexEntry, Integer> hatches;
     private Map<PokedexEntry, Integer> captures;
     private Map<PokedexEntry, Integer> kills;
+    private Set<PokedexEntry>          inspected;
     protected boolean                  hasFirst = false;
 
     public PokecubePlayerStats()
@@ -35,6 +41,20 @@ public class PokecubePlayerStats extends PlayerData
         captures = Maps.newHashMap();
         hatches = Maps.newHashMap();
         kills = Maps.newHashMap();
+        inspected = Sets.newHashSet();
+    }
+
+    public boolean hasInspected(PokedexEntry entry)
+    {
+        if (inspected == null) initMap();
+        return inspected.contains(entry);
+    }
+
+    public boolean inspect(EntityPlayer player, IPokemob pokemob)
+    {
+        if (inspected == null) initMap();
+        if (player instanceof EntityPlayerMP) Triggers.INSPECTPOKEMOB.trigger((EntityPlayerMP) player, pokemob);
+        return inspected.add(pokemob.getPokedexEntry());
     }
 
     public void addCapture(PokedexEntry entry)
@@ -99,6 +119,12 @@ public class PokecubePlayerStats extends PlayerData
             tag.setInteger(e.getName(), getHatches().get(e));
         }
         tag_.setTag("hatches", tag);
+        NBTTagList list = new NBTTagList();
+        for (PokedexEntry e : inspected)
+        {
+            list.appendTag(new NBTTagString(e.getName()));
+        }
+        tag_.setTag("inspected", list);
         tag_.setBoolean("F", hasFirst);
     }
 
@@ -135,6 +161,17 @@ public class PokecubePlayerStats extends PlayerData
             {
                 for (int i = 0; i < num; i++)
                     addHatch(entry);
+            }
+        }
+        if (tag.hasKey("list"))
+        {
+            NBTTagList list = (NBTTagList) tag.getTag("list");
+            if (inspected == null) initMaps();
+            for (int i = 0; i < list.tagCount(); i++)
+            {
+                String s = list.getStringTagAt(i);
+                entry = Database.getEntry(s);
+                if (entry != null) inspected.add(entry);
             }
         }
     }
@@ -224,20 +261,20 @@ public class PokecubePlayerStats extends PlayerData
     public static void initMap()
     {
         // Comment this in to generate a sounds.json.
-//        File dir = new File("./mods/pokecube/assets/pokecube_mobs/");
-//        if (!dir.exists()) dir.mkdirs();
-//        File file = new File(dir, "sounds.json");
-//        String json = SoundJsonGenerator.generateSoundJson();
-//        try
-//        {
-//            FileWriter write = new FileWriter(file);
-//            write.write(json);
-//            write.close();
-//        }
-//        catch (IOException e)
-//        {
-//            e.printStackTrace();
-//        }
+        // File dir = new File("./mods/pokecube/assets/pokecube_mobs/");
+        // if (!dir.exists()) dir.mkdirs();
+        // File file = new File(dir, "sounds.json");
+        // String json = SoundJsonGenerator.generateSoundJson();
+        // try
+        // {
+        // FileWriter write = new FileWriter(file);
+        // write.write(json);
+        // write.close();
+        // }
+        // catch (IOException e)
+        // {
+        // e.printStackTrace();
+        // }
     }
 
     public static void reset()

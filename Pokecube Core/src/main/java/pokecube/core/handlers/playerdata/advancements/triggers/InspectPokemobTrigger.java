@@ -44,7 +44,7 @@ public class InspectPokemobTrigger implements ICriterionTrigger<InspectPokemobTr
 
     static class Listeners
     {
-        private final PlayerAdvancements                                             playerAdvancements;
+        private final PlayerAdvancements                                              playerAdvancements;
         private final Set<ICriterionTrigger.Listener<InspectPokemobTrigger.Instance>> listeners = Sets.<ICriterionTrigger.Listener<InspectPokemobTrigger.Instance>> newHashSet();
 
         public Listeners(PlayerAdvancements playerAdvancementsIn)

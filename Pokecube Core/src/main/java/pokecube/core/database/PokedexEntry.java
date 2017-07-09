@@ -606,12 +606,14 @@ public class PokedexEntry
 
         public int getMax(SpawnBiomeMatcher matcher)
         {
-            return 4;
+            SpawnEntry entry = matchers.get(matcher);
+            return entry == null ? 4 : entry.max;
         }
 
         public int getMin(SpawnBiomeMatcher matcher)
         {
-            return 2;
+            SpawnEntry entry = matchers.get(matcher);
+            return entry == null ? 2 : entry.min;
         }
 
         public float getWeight(SpawnBiomeMatcher matcher)

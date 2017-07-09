@@ -73,7 +73,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
             }
 
             this.entity.setAIMoveSpeed(f1);
-            this.entity.func_191989_p(this.moveForward);
+            this.entity.setMoveForward(this.moveForward);
             this.entity.setMoveStrafing(this.moveStrafe);
             this.action = EntityMoveHelper.Action.WAIT;
         }
@@ -98,7 +98,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
 
             if (d3 < 2.500000277905201E-7D)
             {
-                this.entity.func_191989_p(0.0F);
+                this.entity.setMoveForward(0.0F);
                 return;
             }
             boolean upLadder = d2 > 0 && entity.isOnLadder();
@@ -135,7 +135,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
         else
         {
-            this.entity.func_191989_p(0.0F);
+            this.entity.setMoveForward(0.0F);
         }
     }
 

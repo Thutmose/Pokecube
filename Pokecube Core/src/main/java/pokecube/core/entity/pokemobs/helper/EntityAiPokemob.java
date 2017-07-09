@@ -452,7 +452,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     /** Moves the entity based on the specified heading. Args: strafe,
      * forward */// TODO fix minor bugs here.
-    public void func_191986_a(float strafe, float up, float forward)
+    public void travel(float strafe, float up, float forward)
     {
         if (true)
         {
@@ -702,7 +702,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         if (this.scoreValue >= 0 && entitylivingbase != null)
         {
-            entitylivingbase.func_191956_a(this, this.scoreValue, damageSource);
+            entitylivingbase.awardKillScore(this, this.scoreValue, damageSource);
         }
         if (entity != null)
         {

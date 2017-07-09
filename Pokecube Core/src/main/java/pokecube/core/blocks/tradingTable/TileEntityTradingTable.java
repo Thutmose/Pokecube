@@ -314,7 +314,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         int size = trade ? 2 : 1;
         if (size != inventory.size())
         {
-            List<ItemStack> old = Lists.newArrayList();
+            List<ItemStack> old = Lists.newArrayList(inventory);
             inventory = CompatWrapper.makeList(size);
             inventory.set(0, old.get(0));
         }
@@ -394,8 +394,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     public void openGUI(EntityPlayer player)
     {
         boolean TMC = world.getBlockState(getPos()).getValue(BlockTradingTable.TMC);
-        player.openGui(PokecubeMod.core, TMC ? Config.GUITMTABLE_ID : Config.GUITRADINGTABLE_ID, world,
-                getPos().getX(), getPos().getY(), getPos().getZ());
+        player.openGui(PokecubeMod.core, TMC ? Config.GUITMTABLE_ID : Config.GUITRADINGTABLE_ID, world, getPos().getX(),
+                getPos().getY(), getPos().getZ());
     }
 
     public void pokeseal(ItemStack a, ItemStack b, IPokemob mob)
@@ -535,7 +535,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         {
             if (mob.getPokemonOwnerID() == null || player1.getUniqueID().equals(mob.getPokemonOwnerID()))
             {
-                PokecubeManager.setOwner(inventory.get(index), mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
+                PokecubeManager.setOwner(inventory.get(index),
+                        mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
                 player1.inventory.addItemStackToInventory(inventory.get(index));
                 inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
             }

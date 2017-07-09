@@ -56,7 +56,6 @@ public class AbilityManager
         name = name.trim().toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", "");
         nameMap.put(name, ability);
         nameMap2.put(ability, name);
-        nameMap.put(ability.getName(), ability);//Also add the unlocalized name.
         idMap.put(ability, nextID);
         idMap2.put(nextID, ability);
         nextID++;
@@ -89,6 +88,8 @@ public class AbilityManager
     public static Ability getAbility(String name, Object... args)
     {
         if (name == null) return null;
+        if (name.startsWith("ability.")) name = name.substring(7);
+        if (name.endsWith(".name")) name = name.substring(0, name.length() - 5);
         return makeAbility(name.toLowerCase(java.util.Locale.ENGLISH).replaceAll("[^\\w\\s ]", "").replaceAll(" ", ""),
                 args);
     }

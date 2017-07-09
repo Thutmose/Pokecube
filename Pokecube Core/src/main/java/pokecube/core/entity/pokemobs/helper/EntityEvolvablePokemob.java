@@ -357,7 +357,8 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 IMobGenetics newGenes = evolution.getCapability(IMobGenetics.GENETICS_CAP, null);
                 newGenes.getAlleles().putAll(oldGenes.getAlleles());
                 GeneticsManager.handleEpigenetics((IPokemob) evolution);
-                ((IPokemob)evolution).onGenesChanged();
+                ((IPokemob) evolution).onGenesChanged();
+                ((IPokemob) evolution).setPokedexEntry(newEntry);
                 evolution.getEntityData().merge(getEntityData());
                 evolution.setUniqueId(getUniqueID());
                 evolution.copyLocationAndAnglesFrom(this);

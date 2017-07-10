@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -86,8 +87,28 @@ public class PokemobMoveHelper extends EntityMoveHelper
             {
                 entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
             }
+            pokemob.setDirectionPitch(0);
+            entity.setMoveVertical(0);
             boolean water = entry.swims() && entity.isInWater();
             boolean air = entry.flys() || entry.floats();
+            boolean shouldGoDown = false;
+            boolean shouldGoUp = false;
+            PathPoint p = null;
+            if (!entity.getNavigator().noPath() && !entity.getNavigator().getPath().isFinished())
+            {
+                p = entity.getNavigator().getPath()
+                        .getPathPointFromIndex(entity.getNavigator().getPath().getCurrentPathIndex());
+                shouldGoDown = p.y < entity.posY - entity.stepHeight;
+                shouldGoUp = p.y > entity.posY + entity.stepHeight;
+                if (air || water)
+                {
+                    shouldGoUp = p.y > entity.posY - entity.stepHeight;
+                    shouldGoDown = !shouldGoUp;
+                }
+            }
+            if ((pokemob.getPokemonAIState(IPokemob.SLEEPING)
+                    || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0) && air)
+                shouldGoDown = true;
 
             this.action = EntityMoveHelper.Action.WAIT;
             double d0 = this.posX - this.entity.posX;
@@ -112,10 +133,12 @@ public class PokemobMoveHelper extends EntityMoveHelper
             this.entity.setAIMoveSpeed((float) (this.speed
                     * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
 
-            if (air || water)
+            if (shouldGoDown || shouldGoUp)
             {
                 entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
                 ((IPokemob) entity).setDirectionPitch(entity.rotationPitch);
+                float up = -MathHelper.sin(entity.rotationPitch * (float) Math.PI / 180.0F);
+                entity.setMoveVertical(up);
             }
             if (d2 > (double) this.entity.stepHeight && d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.entity.width))
             {

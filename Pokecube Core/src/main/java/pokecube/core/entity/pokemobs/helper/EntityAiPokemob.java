@@ -20,7 +20,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
@@ -469,36 +468,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             if (this.isServerWorld() || this.canPassengerSteer())
             {
-                boolean shouldGoDown = false;
-                boolean shouldGoUp = false;
-                PathPoint p = null;
-                if (!getNavigator().noPath() && !getNavigator().getPath().isFinished())
-                {
-                    p = getNavigator().getPath().getPathPointFromIndex(getNavigator().getPath().getCurrentPathIndex());
-                    shouldGoDown = p.y < posY - stepHeight;
-                    shouldGoUp = p.y > posY + stepHeight;
-                    if (isAbleToFly)
-                    {
-                        shouldGoUp = p.y > posY - stepHeight;
-                        shouldGoDown = !shouldGoUp;
-                    }
-                }
-                if (!(shouldGoDown || shouldGoUp) && entry.floats())
-                {
-                    setDirectionPitch(0);
-                }
-                if (!(shouldGoDown || shouldGoUp) && entry.flys())
-                {
-                    setDirectionPitch(0);
-                }
-                if (!(shouldGoDown || shouldGoUp) && entry.swims())
-                {
-                    setDirectionPitch(0);
-                }
-                if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ)
-                        && isAbleToFly)
-                    shouldGoDown = true;
-
                 if (!this.isInWater())
                 {
                     if (!this.isInLava())
@@ -671,7 +640,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     public void moveRelative(float strafe, float up, float forward, float friction)
     {
-        up = -MathHelper.sin(getDirectionPitch() * (float) Math.PI / 180.0F);
         float f = strafe * strafe + up * up + forward * forward;
 
         if (f >= 1.0E-4F)
@@ -1311,7 +1279,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void setJumpPower(int jumpPowerIn)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -1324,13 +1292,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void handleStartJump(int p_184775_1_)
     {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void handleStopJump()
     {
         // TODO Auto-generated method stub
-        
+
     }
 }

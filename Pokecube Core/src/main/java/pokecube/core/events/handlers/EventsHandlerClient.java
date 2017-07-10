@@ -136,6 +136,7 @@ public class EventsHandlerClient
         if (num != 0)
         {
             PokedexEntry entry = Database.getEntry(num);
+            if (entry == null) return null;
             IPokemob pokemob = renderMobs.get(entry);
             if (pokemob == null)
             {

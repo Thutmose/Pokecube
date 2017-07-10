@@ -44,11 +44,11 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     {
         if (!getPokemonAIState(IMoveConstants.TAMED))
         {
-            for (int i = 2; i < pokeChest.getSizeInventory(); i++)
+            for (int i = 2; i < getPokemobInventory().getSizeInventory(); i++)
             {
-                ItemStack stack = pokeChest.getStackInSlot(i);
-                if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
-                pokeChest.setInventorySlotContents(i, CompatWrapper.nullStack);
+                ItemStack stack = getPokemobInventory().getStackInSlot(i);
+                if (CompatWrapper.isValid(stack)) entityDropItem(stack, 0.5f);
+                getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
             }
         }
 
@@ -60,22 +60,22 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             if (isBurning() && stack != CompatWrapper.nullStack)
             {
                 ItemStack newDrop = FurnaceRecipes.instance().getSmeltingResult(stack);
-                if (newDrop != CompatWrapper.nullStack) stack = newDrop.copy();
+                if (CompatWrapper.isValid(newDrop)) stack = newDrop.copy();
             }
-            if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
+            if (CompatWrapper.isValid(stack)) entityDropItem(stack, 0.5f);
         }
         dropItem();
-        for (int i = 2; i < this.pokeChest.getSizeInventory(); i++)
+        for (int i = 2; i < this.getPokemobInventory().getSizeInventory(); i++)
         {
-            ItemStack stack = this.pokeChest.getStackInSlot(i);
-            if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
+            ItemStack stack = this.getPokemobInventory().getStackInSlot(i);
+            if (CompatWrapper.isValid(stack)) entityDropItem(stack, 0.5f);
         }
     }
 
     public void dropItem()
     {
         ItemStack toDrop = this.getHeldItemMainhand();
-        if (toDrop == CompatWrapper.nullStack) return;
+        if (!CompatWrapper.isValid(toDrop)) return;
 
         EntityItem drop = new EntityItem(this.world, this.posX, this.posY + 0.5, this.posZ, toDrop);
         this.world.spawnEntity(drop);

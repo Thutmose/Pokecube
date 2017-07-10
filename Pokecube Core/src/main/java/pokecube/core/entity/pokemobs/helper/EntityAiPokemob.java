@@ -1306,4 +1306,31 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // TODO Auto-generated method stub
 
     }
+
+    @Override
+    public void setJumpPower(int jumpPowerIn)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean canJump()
+    {
+        return true;
+    }
+
+    @Override
+    public void handleStartJump(int p_184775_1_)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void handleStopJump()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

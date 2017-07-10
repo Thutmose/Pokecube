@@ -399,6 +399,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!this.addedToChunk) return;
         boolean normalSize = this.height > 0.5 && this.width < 1 && this.width > 0.25 && this.length < 1
                 && this.length > 0.25;
+        float max = Math.max(width, length);
+        float min = Math.min(width, length);
+        if (max / min < 2) normalSize = true;
         if (!multibox || normalSize)
         {
             this.noClip = false;
@@ -454,6 +457,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 y = diffs.y;
                 z = diffs.z;
             }
+
+            // TODO implement stepping upwards
 
             this.posX = here.x;
             this.posY = here.y;
@@ -693,11 +698,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             {
                 NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 255;
-                if (j < this.pokeChest.getSizeInventory())
+                if (j < this.getPokemobInventory().getSizeInventory())
                 {
-                    this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
+                    this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-                dataManager.set(HELDITEM, this.pokeChest.getStackInSlot(1));
+                dataManager.set(HELDITEM, this.getPokemobInventory().getStackInSlot(1));
             }
             handleArmourAndSaddle();
         }
@@ -796,9 +801,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
             int j = nbttagcompound1.getByte("Slot") & 255;
-            if (j < this.pokeChest.getSizeInventory())
+            if (j < this.getPokemobInventory().getSizeInventory())
             {
-                this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
+                this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
             }
         }
         handleArmourAndSaddle();
@@ -853,7 +858,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public void setPokecube(ItemStack pokeballId)
     {
-        if (pokeballId != CompatWrapper.nullStack)
+        if (CompatWrapper.isValid(pokeballId))
         {
             pokeballId = pokeballId.copy();
             CompatWrapper.setStackSize(pokeballId, 1);
@@ -960,11 +965,11 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // Write Inventory tag
         NBTTagCompound inventoryTag = new NBTTagCompound();
         NBTTagList nbttaglist = new NBTTagList();
-        this.pokeChest.setInventorySlotContents(1, this.getHeldItemMainhand());
-        for (int i = 0; i < this.pokeChest.getSizeInventory(); ++i)
+        this.getPokemobInventory().setInventorySlotContents(1, this.getHeldItemMainhand());
+        for (int i = 0; i < this.getPokemobInventory().getSizeInventory(); ++i)
         {
-            ItemStack itemstack = this.pokeChest.getStackInSlot(i);
-            if (itemstack != CompatWrapper.nullStack)
+            ItemStack itemstack = this.getPokemobInventory().getStackInSlot(i);
+            if (CompatWrapper.isValid(itemstack))
             {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("Slot", (byte) i);

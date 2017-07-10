@@ -102,7 +102,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 return;
             }
             boolean upLadder = d2 > 0 && entity.isOnLadder();
-            if (upLadder || (d2 > 0.5 && d4 <= 2 * speed))
+            if (upLadder || (d2 > entity.stepHeight && d4 <= 2 * speed))
             {
                 this.entity.getJumpHelper().setJumping();
             }

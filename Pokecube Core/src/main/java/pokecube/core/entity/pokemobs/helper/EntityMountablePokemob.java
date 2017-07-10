@@ -44,7 +44,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     public EntityMountablePokemob(World world)
     {
         super(world);
-        this.stepHeight = 1;
+        this.stepHeight = 1.2f;
     }
 
     @Override

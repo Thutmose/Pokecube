@@ -7,11 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Optional;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -73,7 +76,7 @@ import thut.lib.CompatWrapper;
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal
         implements IPokemob, IMob, IInventoryChangedListener, IHungrymob, IPathingMob, IShearable, IBreedingMob,
-        IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob, IEntityAdditionalSpawnData
+        IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob, IEntityAdditionalSpawnData, IJumpingMount
 {
     public static int                          EXITCUBEDURATION = 40;
 
@@ -115,7 +118,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
 
     static final DataParameter<Byte>           BOOMSTATEDW      = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
-    static final DataParameter<Integer>             ZMOVECD          = EntityDataManager
+    static final DataParameter<Integer>        ZMOVECD          = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
 
     static final DataParameter<Float>          DIRECTIONPITCHDW = EntityDataManager
@@ -154,7 +157,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     protected Vector3                          vBak             = Vector3.getNewVector();
     boolean                                    named            = false;
     boolean                                    initHome         = true;
-    protected AnimalChest                      pokeChest;
+    private AnimalChest                        pokeChest;
     boolean                                    returning        = false;
     protected boolean                          players          = false;
     private String                             team             = "";
@@ -457,6 +460,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         }
         this.pokeChest.addInventoryChangeListener(this);
         this.handleArmourAndSaddle();
+        this.itemHandler = new net.minecraftforge.items.wrapper.InvWrapper(this.pokeChest);
     }
 
     private int invSize()
@@ -831,5 +835,30 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     public boolean isPlayerOwned()
     {
         return this.getPokemonAIState(IMoveConstants.TAMED) && players;
+    }
+
+    // FORGE
+    private net.minecraftforge.items.IItemHandler itemHandler = null; // Initialized
+                                                                      // by
+                                                                      // initHorseChest
+                                                                      // above.
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> T getCapability(net.minecraftforge.common.capabilities.Capability<T> capability,
+            @Nullable net.minecraft.util.EnumFacing facing)
+    {
+        if (capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) itemHandler;
+        return super.getCapability(capability, facing);
+    }
+
+    @Override
+    public boolean hasCapability(net.minecraftforge.common.capabilities.Capability<?> capability,
+            @Nullable net.minecraft.util.EnumFacing facing)
+    {
+        return capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+                || super.hasCapability(capability, facing);
     }
 }

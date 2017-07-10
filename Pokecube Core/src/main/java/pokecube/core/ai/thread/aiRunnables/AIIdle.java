@@ -128,7 +128,6 @@ public class AIIdle extends AIBase
 
         mob.setPokemonAIState(IMoveConstants.IDLE, true);
         Path path = this.entity.getNavigator().getPathToXYZ(this.x, this.y, this.z);
-        System.out.println(x + " " + y + " " + z);
         if (path != null && path.getCurrentPathLength() > maxLength) path = null;
         addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
         mob.setPokemonAIState(IMoveConstants.IDLE, false);

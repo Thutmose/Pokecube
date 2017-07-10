@@ -174,7 +174,7 @@ public class AIGatherStuff extends AIBase
                 if (state.getMaterial() != Material.GRASS)
                 {
                     NonNullList<ItemStack> list = NonNullList.create();
-                    plant.getDrops(list, world, stuffLoc.getPos(), stuffLoc.getBlockState(world), 0);
+                    plant.getDrops(list, entity.world, stuffLoc.getPos(), stuffLoc.getBlockState(entity.world), 0);
                     for (ItemStack stack : list)
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));
                 }

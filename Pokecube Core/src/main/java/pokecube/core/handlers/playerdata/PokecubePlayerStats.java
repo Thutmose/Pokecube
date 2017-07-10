@@ -133,6 +133,7 @@ public class PokecubePlayerStats extends PlayerData
     {
         NBTTagCompound temp = tag.getCompoundTag("kills");
         PokedexEntry entry;
+        initMaps();
         hasFirst = tag.getBoolean("F");
         for (String s : temp.getKeySet())
         {

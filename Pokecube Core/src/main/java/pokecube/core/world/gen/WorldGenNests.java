@@ -11,6 +11,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeItems;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class WorldGenNests implements IWorldGenerator
@@ -23,6 +24,10 @@ public class WorldGenNests implements IWorldGenerator
             IChunkProvider chunkProvider)
     {
         if (!PokecubeMod.core.getConfig().nests) return;
+        if (SpawnHandler.dimensionBlacklist.contains(world.provider.getDimension())) return;
+        if (PokecubeMod.core.getConfig().whiteListEnabled
+                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
+            return;
         PokecubeMod.core.getConfig().nestsPerChunk = 1;
         if (random.nextDouble() < 0.9) return;
 
@@ -67,7 +72,8 @@ public class WorldGenNests implements IWorldGenerator
                     Block b = state.getBlock();
                     Block bUp = stateUp.getBlock();
                     boolean validUp = bUp.isAir(state, world, pos.up());
-                    validUp = validUp || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.LAVA);
+                    validUp = validUp
+                            || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.LAVA);
                     if (!validUp)
                     {
                         continue;
@@ -104,7 +110,8 @@ public class WorldGenNests implements IWorldGenerator
                     Block b = state.getBlock();
                     Block bUp = stateUp.getBlock();
                     boolean validUp = bUp.isAir(state, world, pos.up());
-                    validUp = validUp || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.LAVA);
+                    validUp = validUp
+                            || (stateUp.getMaterial().isReplaceable() && stateUp.getMaterial() != Material.LAVA);
                     if (!validUp)
                     {
                         continue;

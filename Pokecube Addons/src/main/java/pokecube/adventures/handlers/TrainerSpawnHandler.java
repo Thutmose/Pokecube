@@ -142,7 +142,7 @@ public class TrainerSpawnHandler
     {
         if (w.isRemote || SpawnHandler.dimensionBlacklist.contains(w.provider.getDimension())) { return; }
         if (PokecubeMod.core.getConfig().whiteListEnabled
-                && SpawnHandler.dimensionWhitelist.contains(w.provider.getDimension()))
+                && !SpawnHandler.dimensionWhitelist.contains(w.provider.getDimension()))
             return;
         ArrayList<Object> players = new ArrayList<Object>();
         players.addAll(w.playerEntities);

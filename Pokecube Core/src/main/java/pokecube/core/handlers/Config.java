@@ -294,6 +294,8 @@ public class Config extends ConfigBase
     @Configure(category = world, needsMcRestart = true)
     public String[]                      structureSubiomes            = { "Stronghold:ruin", "Mineshaft:ruin",
             "Temple:ruin", "EndCity:ruin", "Fortress:ruin", "Mansion:ruin", "Monument:monument", "Village:village" };
+    @Configure(category = world)
+    public int                           spawnDimension               = 0;
     // Mob Spawning settings
     @Configure(category = spawning, needsMcRestart = true)
     /** Do monsters not spawn. */

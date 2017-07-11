@@ -607,6 +607,7 @@
             <TYPE type2="Normal" type1="Dark"/>
             <ABILITY normal="Gluttony, Hustle" hidden="Thick Fat"/>
             <MASSKG>3.8</MASSKG>
+            <ACTIVETIMES>dusk dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="bite" lvl_22="crunch" lvl_34="endeavor" lvl_7="focusenergy" lvl_13="pursuit" lvl_31="doubleedge" lvl_19="assurance" lvl_25="suckerpunch" lvl_1="tackle,tailwhip" lvl_4="quickattack" lvl_16="hyperfang" lvl_28="superfang"/>
@@ -642,6 +643,7 @@
                     <Drop id="minecraft:milk_bucket" n="1"/>
                 </Action>
             </Interact>
+            <ACTIVETIMES>dusk dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="bite" lvl_44="endeavor" lvl_34="superfang" lvl_13="pursuit" lvl_24="crunch" lvl_20="scaryface" lvl_7="focusenergy" lvl_29="assurance" lvl_19="suckerpunch" lvl_1="swordsdance,tackle,tailwhip,quickattack,focusenergy" lvl_4="quickattack" lvl_16="hyperfang" lvl_39="doubleedge"/>
@@ -668,6 +670,7 @@
                     <Drop id="minecraft:milk_bucket" n="1"/>
                 </Action>
             </Interact>
+            <ACTIVETIMES>dusk dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="bite" lvl_44="endeavor" lvl_34="superfang" lvl_13="pursuit" lvl_24="crunch" lvl_7="focusenergy" lvl_29="suckerpunch" lvl_19="assurance" lvl_1="scaryface,swordsdance,tackle,tailwhip,quickattack,focusenergy" lvl_4="quickattack" lvl_16="hyperfang" lvl_39="doubleedge"/>
@@ -699,6 +702,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="mirrormove" lvl_5="leer" lvl_33="roost" lvl_13="pursuit" lvl_9="furyattack" lvl_29="assurance" lvl_25="agility" lvl_1="peck,growl" lvl_37="drillpeck" lvl_17="aerialace"/>
@@ -727,6 +731,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_5="leer" lvl_23="mirrormove" lvl_13="pursuit" lvl_35="assurance" lvl_9="furyattack" lvl_41="roost" lvl_53="drillrun" lvl_29="agility" lvl_47="drillpeck" lvl_1="drillrun,pluck,peck,growl,leer,furyattack" lvl_17="aerialace"/>
@@ -1402,7 +1407,7 @@
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
-            <ACTIVETIMES>night</ACTIVETIMES>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="quickguard" lvl_11="bite" lvl_23="swift" lvl_13="wingattack" lvl_35="haze" lvl_41="airslash" lvl_31="acrobatics" lvl_5="supersonic" lvl_7="astonish" lvl_29="meanlook" lvl_19="aircutter" lvl_25="poisonfang" lvl_1="leechlife" lvl_37="venoshock" lvl_17="confuseray"/>
@@ -1430,7 +1435,7 @@
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
             <HATEDMATERIALRULES>light:0.5:despawn</HATEDMATERIALRULES>
-            <ACTIVETIMES>night</ACTIVETIMES>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="meanlook" lvl_43="venoshock" lvl_11="bite" lvl_13="wingattack" lvl_24="swift" lvl_35="acrobatics" lvl_40="haze" lvl_51="quickguard" lvl_5="supersonic" lvl_7="astonish" lvl_19="aircutter" lvl_1="screech,leechlife,supersonic,astonish,bite" lvl_48="airslash" lvl_27="poisonfang" lvl_17="confuseray"/>
@@ -2793,6 +2798,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="aircutter" lvl_43="feint" lvl_33="nightslash" lvl_55="bravebird" lvl_45="falseswipe" lvl_13="knockoff" lvl_31="agility" lvl_7="furyattack" lvl_9="aerialace" lvl_19="slash" lvl_25="swordsdance" lvl_1="bravebird,poisonjab,peck,sandattack,leer,furycutter" lvl_37="acrobatics" lvl_49="airslash"/>
@@ -5122,6 +5128,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>night</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="confusion" lvl_33="airslash" lvl_45="extrasensory" lvl_13="uproar" lvl_57="dreameater" lvl_41="synchronoise" lvl_53="roost" lvl_5="hypnosis" lvl_9="peck" lvl_29="takedown" lvl_25="echoedvoice" lvl_1="tackle,growl,foresight" lvl_37="zenheadbutt" lvl_49="psychoshift" lvl_17="reflect"/>
@@ -5148,6 +5155,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>night</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="takedown" lvl_22="confusion" lvl_67="dreameater" lvl_13="uproar" lvl_57="psychoshift" lvl_62="roost" lvl_52="extrasensory" lvl_42="zenheadbutt" lvl_5="hypnosis" lvl_9="peck" lvl_47="synchronoise" lvl_1="dreameater,skyattack,tackle,growl,foresight,hypnosis" lvl_37="airslash" lvl_27="echoedvoice" lvl_17="reflect"/>
@@ -5174,6 +5182,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_6="supersonic" lvl_22="batonpass" lvl_33="swift" lvl_9="cometpunch" lvl_30="agility" lvl_41="bugbuzz" lvl_14="lightscreen,reflect,safeguard" lvl_25="silverwind" lvl_1="tackle" lvl_38="doubleedge" lvl_17="machpunch"/>
@@ -5198,6 +5207,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_6="supersonic" lvl_24="batonpass" lvl_9="cometpunch" lvl_41="swift" lvl_53="bugbuzz" lvl_29="silverwind" lvl_14="lightscreen,reflect,safeguard" lvl_36="agility" lvl_1="tackle,supersonic,cometpunch" lvl_48="doubleedge" lvl_17="machpunch"/>
@@ -5227,6 +5237,7 @@
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
             <SHADOWREPLACEMENTS>spider</SHADOWREPLACEMENTS>
+            <ACTIVETIMES>night</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="poisonjab" lvl_22="furyswipes" lvl_33="agility" lvl_12="leechlife" lvl_50="stickyweb" lvl_40="psychic" lvl_5="scaryface" lvl_8="constrict" lvl_29="spiderweb" lvl_19="shadowsneak" lvl_36="pinmissile" lvl_47="crosspoison" lvl_1="poisonsting,stringshot" lvl_15="nightshade" lvl_26="suckerpunch"/>
@@ -5253,6 +5264,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>night</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="spiderweb" lvl_55="crosspoison" lvl_12="leechlife" lvl_23="furyswipes" lvl_46="psychic" lvl_50="poisonjab" lvl_41="pinmissile" lvl_5="scaryface" lvl_8="constrict" lvl_19="shadowsneak" lvl_58="stickyweb" lvl_1="venomdrench,fellstinger,bugbite,poisonsting,stringshot,scaryface,constrict" lvl_15="nightshade" lvl_37="agility" lvl_28="suckerpunch"/>
@@ -5278,6 +5290,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="meanlook" lvl_43="venoshock" lvl_11="bite" lvl_13="wingattack" lvl_24="swift" lvl_35="acrobatics" lvl_40="haze" lvl_51="quickguard" lvl_5="supersonic" lvl_7="astonish" lvl_19="aircutter" lvl_1="crosspoison,screech,leechlife,supersonic,astonish,bite" lvl_48="airslash" lvl_27="poisonfang" lvl_17="confuseray"/>
@@ -5788,6 +5801,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>floating:1.5</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="fairywind" lvl_43="gigadrain" lvl_22="leechseed" lvl_12="poisonpowder" lvl_34="cottonspore" lvl_46="bounce" lvl_40="worryseed" lvl_31="ragepowder" lvl_6="tailwhip" lvl_8="tackle" lvl_19="bulletseed" lvl_14="stunspore" lvl_25="megadrain" lvl_1="splash" lvl_37="uturn" lvl_4="synthesis" lvl_16="sleeppowder" lvl_49="memento" lvl_28="acrobatics"/>
@@ -5814,6 +5828,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="fairywind" lvl_32="acrobatics" lvl_44="uturn" lvl_12="poisonpowder" lvl_56="bounce" lvl_24="leechseed" lvl_40="cottonspore" lvl_52="gigadrain" lvl_20="bulletseed" lvl_60="memento" lvl_6="tailwhip" lvl_8="tackle" lvl_14="stunspore" lvl_36="ragepowder" lvl_1="splash,synthesis,tailwhip,tackle" lvl_48="worryseed" lvl_4="synthesis" lvl_16="sleeppowder" lvl_28="megadrain"/>
@@ -5840,6 +5855,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>floating:1.5</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="fairywind" lvl_54="worryseed" lvl_44="cottonspore" lvl_12="poisonpowder" lvl_34="acrobatics" lvl_24="leechseed" lvl_20="bulletseed" lvl_64="bounce" lvl_6="tailwhip" lvl_8="tackle" lvl_29="megadrain" lvl_14="stunspore" lvl_69="memento" lvl_1="splash,synthesis,tailwhip,tackle" lvl_59="gigadrain" lvl_4="synthesis" lvl_16="sleeppowder" lvl_49="uturn" lvl_39="ragepowder"/>
@@ -5867,6 +5883,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="doublehit" lvl_43="lastresort" lvl_11="batonpass" lvl_22="swift" lvl_8="astonish" lvl_18="furyswipes" lvl_29="agility" lvl_25="screech" lvl_36="fling" lvl_1="scratch,tailwhip" lvl_15="tickle" lvl_4="sandattack" lvl_39="nastyplot"/>
@@ -5950,6 +5967,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="wingattack" lvl_54="airslash" lvl_11="doubleteam" lvl_22="supersonic" lvl_33="ancientpower" lvl_46="screech" lvl_57="bugbuzz" lvl_30="pursuit" lvl_6="quickattack" lvl_14="sonicboom" lvl_1="tackle,foresight" lvl_27="uproar" lvl_38="hypnosis" lvl_49="uturn" lvl_17="detect"/>
@@ -6673,6 +6691,7 @@
             <LOGIC shoulder="FALSE"/>
             <MEGARULES forme="N___:I___"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="aerialace" lvl_43="closecombat" lvl_34="takedown" lvl_7="feint" lvl_46="reversal" lvl_31="pinmissile" lvl_19="counter" lvl_25="furyattack" lvl_1="armthrust,bulletseed,nightslash,tackle,leer,hornattack,endure" lvl_37="megahorn" lvl_16="chipaway" lvl_28="brickbreak"/>
@@ -7441,6 +7460,7 @@
                     <Drop id="minecraft:milk_bucket" n="1"/>
                 </Action>
             </Interact>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="milkdrink" lvl_24="bodyslam" lvl_35="captivate" lvl_50="wakeupslap" lvl_41="gyroball" lvl_5="defensecurl" lvl_8="stomp" lvl_29="zenheadbutt" lvl_19="rollout" lvl_1="tackle" lvl_15="bide" lvl_48="healbell" lvl_3="growl"/>
@@ -8078,6 +8098,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>dusk day dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="headbutt" lvl_12="babydolleyes" lvl_23="covet" lvl_13="odorsleuth" lvl_35="rest" lvl_41="fling" lvl_31="takedown" lvl_5="tailwhip" lvl_7="sandattack" lvl_29="flail" lvl_19="pinmissile" lvl_25="bestow" lvl_1="tackle,growl" lvl_37="bellydrum" lvl_17="mudsport"/>
@@ -8109,6 +8130,7 @@
                     <Drop id="minecraft:milk_bucket" n="1"/>
                 </Action>
             </Interact>
+            <ACTIVETIMES>dusk day dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="slash" lvl_43="bellydrum" lvl_11="headbutt" lvl_13="odorsleuth" lvl_24="covet" lvl_35="doubleedge" lvl_40="rest" lvl_5="tailwhip" lvl_7="sandattack" lvl_19="furyswipes" lvl_1="playrough,rototiller,switcheroo,tackle,growl,tailwhip,sandattack" lvl_48="fling" lvl_27="bestow" lvl_17="mudsport"/>
@@ -8189,6 +8211,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="gust" lvl_32="gigadrain" lvl_22="megadrain" lvl_12="absorb" lvl_35="bugbuzz" lvl_40="quiverdance" lvl_30="whirlwind" lvl_20="aircutter" lvl_25="silverwind" lvl_1="gust" lvl_15="stunspore" lvl_37="rage" lvl_27="attract" lvl_17="morningsun"/>
@@ -8240,6 +8263,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>night</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="gust" lvl_32="toxic" lvl_22="psybeam" lvl_12="confusion" lvl_35="bugbuzz" lvl_40="quiverdance" lvl_30="whirlwind" lvl_20="venoshock" lvl_25="silverwind" lvl_1="gust" lvl_15="poisonpowder" lvl_37="protect" lvl_27="lightscreen" lvl_17="moonlight"/>
@@ -8434,6 +8458,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="aerialace" lvl_5="focusenergy" lvl_33="airslash" lvl_13="wingattack" lvl_9="quickattack" lvl_41="bravebird" lvl_29="agility" lvl_25="quickguard" lvl_1="peck,growl" lvl_37="endeavor" lvl_17="doubleteam"/>
@@ -8460,6 +8485,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="aerialace" lvl_5="focusenergy" lvl_33="agility" lvl_45="airslash" lvl_13="wingattack" lvl_9="quickattack" lvl_51="bravebird" lvl_1="bravebird,airslash,pluck,peck,growl,focusenergy,quickattack" lvl_27="quickguard" lvl_17="doubleteam" lvl_39="endeavor"/>
@@ -8489,6 +8515,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="hurricane" lvl_22="aircutter" lvl_33="roost" lvl_12="mist" lvl_40="airslash" lvl_5="supersonic" lvl_8="wingattack" lvl_29="aerialace" lvl_19="quickattack" lvl_36="agility" lvl_1="growl,watergun" lvl_15="waterpulse" lvl_26="pursuit"/>
@@ -8515,6 +8542,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_22="roost" lvl_33="stockpile,swallow,spitup" lvl_44="tailwind" lvl_55="hurricane" lvl_12="mist" lvl_50="hydropump" lvl_5="supersonic" lvl_8="wingattack" lvl_19="payback" lvl_25="protect" lvl_1="hurricane,hydropump,tailwind,soak,growl,watergun,watersport,wingattack" lvl_15="waterpulse" lvl_28="brine" lvl_39="fling"/>
@@ -8543,6 +8571,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_32="futuresight" lvl_11="disarmingvoice" lvl_22="drainingkiss" lvl_34="charm" lvl_24="calmmind" lvl_42="storedpower" lvl_6="doubleteam" lvl_9="teleport" lvl_29="imprison" lvl_19="healpulse" lvl_14="luckychant" lvl_1="growl" lvl_37="hypnosis" lvl_4="confusion" lvl_27="psychic" lvl_17="magicalleaf" lvl_39="dreameater"/>
@@ -8569,6 +8598,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="disarmingvoice" lvl_33="imprison" lvl_44="hypnosis" lvl_23="drainingkiss" lvl_40="charm" lvl_51="storedpower" lvl_30="psychic" lvl_6="doubleteam" lvl_9="teleport" lvl_19="healpulse" lvl_14="luckychant" lvl_47="dreameater" lvl_1="growl,confusion,doubleteam,teleport" lvl_26="calmmind" lvl_37="futuresight" lvl_4="confusion" lvl_17="magicalleaf"/>
@@ -8595,6 +8625,7 @@
             <LOGIC shoulder="FALSE"/>
             <MEGARULES forme="N___:I___"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_11="disarmingvoice" lvl_44="captivate" lvl_23="drainingkiss" lvl_35="imprison" lvl_40="futuresight" lvl_62="moonblast" lvl_31="psychic" lvl_53="dreameater" lvl_6="doubleteam" lvl_9="teleport" lvl_19="healpulse" lvl_14="wish" lvl_58="storedpower" lvl_1="moonblast,storedpower,mistyterrain,healingwish,growl,confusion,doubleteam,teleport" lvl_26="calmmind" lvl_4="confusion" lvl_49="hypnosis" lvl_17="magicalleaf"/>
@@ -9462,6 +9493,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn day dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="encore" lvl_43="thunder" lvl_22="copycat" lvl_34="batonpass" lvl_13="bestow" lvl_46="nastyplot" lvl_40="lastresort" lvl_31="discharge" lvl_7="spark" lvl_19="electroball" lvl_25="charm" lvl_1="nuzzle,playnice,growl,thunderwave,quickattack" lvl_37="agility" lvl_4="helpinghand" lvl_16="swift" lvl_49="entrainment" lvl_28="charge"/>
@@ -9491,6 +9523,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn day dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="encore" lvl_43="thunder" lvl_22="copycat" lvl_34="batonpass" lvl_13="switcheroo" lvl_46="nastyplot" lvl_40="trumpcard" lvl_31="discharge" lvl_7="spark" lvl_19="electroball" lvl_25="faketears" lvl_1="nuzzle,playnice,growl,thunderwave,quickattack" lvl_37="agility" lvl_4="helpinghand" lvl_16="swift" lvl_49="entrainment" lvl_28="charge"/>
@@ -9518,6 +9551,7 @@
             <GENDERRATIO>0</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn night dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="playrough" lvl_22="tailglow" lvl_33="zenheadbutt" lvl_12="quickattack" lvl_40="bugbuzz" lvl_5="doubleteam" lvl_8="confuseray" lvl_29="protect" lvl_19="moonlight" lvl_36="helpinghand" lvl_47="doubleedge" lvl_1="flash,tackle" lvl_15="strugglebug" lvl_26="signalbeam"/>
@@ -9545,6 +9579,7 @@
             <GENDERRATIO>254</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn night dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="playrough" lvl_22="wish" lvl_33="zenheadbutt" lvl_12="quickattack" lvl_40="bugbuzz" lvl_5="sweetscent" lvl_9="charm" lvl_29="flatter" lvl_19="moonlight" lvl_36="helpinghand" lvl_47="covet" lvl_1="playnice,tackle" lvl_15="strugglebug" lvl_26="encore"/>
@@ -9557,6 +9592,7 @@
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <EVOLVESTO>407</EVOLVESTO>
             <SPECIES>Plant</SPECIES>
+            <FOODMATERIAL>light</FOODMATERIAL>
             <Spawn typesBlacklist="cold" types="forest" rate="0.3"/>
             <Spawn typesBlacklist="cold" types="flower" rate="0.3"/>
             <Spawn typesBlacklist="cold" types="jungle" rate="0.3"/>
@@ -9667,6 +9703,7 @@
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Fish</SPECIES>
             <PREY>Fish</PREY>
+            <FOODMATERIAL>water</FOODMATERIAL>
             <Drop r="1" id="minecraft:fish" n="1"/>
             <BASESTATS spdef="40" spatk="95" def="40" spd="95" hp="70" atk="120"/>
             <EVYIELD atk="2"/>
@@ -10045,6 +10082,7 @@
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <EVOLVESTO>332</EVOLVESTO>
             <SPECIES>Cactus</SPECIES>
+            <FOODMATERIAL>light</FOODMATERIAL>
             <Spawn typesBlacklist="cold" types="sandy" rate="0.6" night="false"/>
             <BASESTATS spdef="40" spatk="85" def="40" spd="35" hp="50" atk="85"/>
             <EVYIELD spatk="1"/>
@@ -10070,6 +10108,7 @@
             <EVOLUTIONMODE>L-1</EVOLUTIONMODE>
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Cactus</SPECIES>
+            <FOODMATERIAL>light</FOODMATERIAL>
             <BASESTATS spdef="60" spatk="115" def="60" spd="55" hp="70" atk="115"/>
             <EVYIELD spatk="1" atk="1"/>
             <SIZES length="0.5" width="0.5" height="1.3"/>
@@ -10235,6 +10274,7 @@
             <GENDERRATIO>255</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <ACTIVETIMES>night</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="rockslide" lvl_33="healblock" lvl_45="explosion" lvl_13="psywave" lvl_41="futuresight" lvl_5="hypnosis" lvl_9="rockpolish" lvl_29="psychic" lvl_25="cosmicpower" lvl_1="moonblast,tackle,harden,confusion,rockthrow" lvl_37="stoneedge" lvl_49="magicroom" lvl_17="embargo"/>
@@ -10263,6 +10303,7 @@
             <GENDERRATIO>255</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>floating</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="rockslide" lvl_33="healblock" lvl_45="explosion" lvl_13="psywave" lvl_41="solarbeam" lvl_5="firespin" lvl_9="rockpolish" lvl_29="psychic" lvl_25="cosmicpower" lvl_1="tackle,harden,confusion,rockthrow" lvl_37="stoneedge" lvl_49="wonderroom" lvl_17="embargo"/>
@@ -12019,6 +12060,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn day dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="whirlwind" lvl_5="quickattack" lvl_33="agility" lvl_13="doubleteam" lvl_9="wingattack" lvl_41="finalgambit" lvl_29="takedown" lvl_25="aerialace" lvl_1="tackle,growl" lvl_37="bravebird" lvl_17="endeavor"/>
@@ -12046,6 +12088,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn day dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="bravebird" lvl_5="quickattack" lvl_33="takedown" lvl_23="whirlwind" lvl_13="doubleteam" lvl_9="wingattack" lvl_18="endeavor" lvl_1="tackle,growl,quickattack" lvl_48="finalgambit" lvl_38="agility" lvl_28="aerialace"/>
@@ -12072,6 +12115,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn day dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_5="quickattack" lvl_33="takedown" lvl_23="whirlwind" lvl_34="closecombat" lvl_13="doubleteam" lvl_57="finalgambit" lvl_9="wingattack" lvl_41="agility" lvl_18="endeavor" lvl_1="tackle,growl,quickattack,wingattack" lvl_49="bravebird" lvl_28="aerialace"/>
@@ -12103,6 +12147,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>dusk day dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="hyperfang" lvl_5="growl" lvl_33="takedown" lvl_45="curse" lvl_13="rollout" lvl_9="defensecurl" lvl_41="superpower" lvl_29="amnesia" lvl_25="yawn" lvl_1="tackle" lvl_37="superfang" lvl_17="headbutt"/>
@@ -12137,6 +12182,7 @@
                     <Drop id="minecraft:milk_bucket" n="1"/>
                 </Action>
             </Interact>
+            <ACTIVETIMES>dusk day dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="superfang" lvl_33="amnesia" lvl_23="hyperfang" lvl_13="rollout" lvl_53="curse" lvl_5="growl" lvl_9="defensecurl" lvl_18="headbutt" lvl_1="rototiller,tackle,growl" lvl_15="watergun" lvl_48="superpower" lvl_38="takedown" lvl_28="yawn"/>
@@ -12163,6 +12209,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn night dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_6="strugglebug" lvl_1="growl,bide" lvl_16="bugbite"/>
@@ -12187,6 +12234,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>normal</MOVEMENTTYPE>
+            <ACTIVETIMES>dawn night dusk</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="furycutter" lvl_22="focusenergy" lvl_44="stickyweb" lvl_34="screech" lvl_46="bugbuzz" lvl_50="perishsong" lvl_30="xscissor" lvl_42="nightslash" lvl_18="sing" lvl_14="leechlife" lvl_36="fellstinger" lvl_1="growl,bide" lvl_26="slash" lvl_38="taunt"/>
@@ -12561,6 +12609,7 @@
             <GENDERRATIO>31</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_13="bugbite" lvl_29="bugbuzz" lvl_1="sweetscent,gust"/>
@@ -12585,6 +12634,7 @@
             <GENDERRATIO>254</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="slash" lvl_33="toxic" lvl_45="attackorder" lvl_13="furyswipes" lvl_57="fellstinger" lvl_41="captivate" lvl_53="destinybond" lvl_5="furycutter" lvl_9="pursuit" lvl_29="healorder" lvl_25="powergem" lvl_1="fellstinger,destinybond,sweetscent,gust,poisonsting,confuseray" lvl_37="airslash" lvl_49="swagger" lvl_17="defendorder"/>
@@ -15826,6 +15876,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="aircutter" lvl_32="airslash" lvl_12="assurance" lvl_41="psychic" lvl_8="gust" lvl_29="amnesia,calmmind" lvl_19="imprison" lvl_25="attract" lvl_36="futuresight" lvl_47="endeavor" lvl_1="confusion" lvl_15="heartstamp" lvl_4="odorsleuth"/>
@@ -15850,6 +15901,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="FALSE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_21="aircutter" lvl_32="airslash" lvl_12="assurance" lvl_41="psychic" lvl_8="gust" lvl_29="amnesia,calmmind" lvl_19="imprison" lvl_25="attract" lvl_36="futuresight" lvl_47="endeavor" lvl_1="confusion,odorsleuth,gust,assurance" lvl_15="heartstamp" lvl_4="odorsleuth"/>
@@ -20998,6 +21050,7 @@
             <GENDERRATIO>127</GENDERRATIO>
             <LOGIC shoulder="TRUE"/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="superfang" lvl_11="gust" lvl_23="aircutter" lvl_13="bite" lvl_35="tailwind" lvl_40="whirlwind" lvl_31="razorwind" lvl_5="leechlife" lvl_18="agility" lvl_58="hurricane" lvl_1="screech,supersonic,tackle" lvl_48="airslash" lvl_16="wingattack" lvl_27="roost"/>
@@ -21028,6 +21081,7 @@
                     <Drop id="minecraft:milk_bucket" n="1"/>
                 </Action>
             </Interact>
+            <ACTIVETIMES>dusk night dawn</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_43="superfang" lvl_11="gust" lvl_23="aircutter" lvl_13="bite" lvl_35="tailwind" lvl_40="whirlwind" lvl_62="hurricane" lvl_31="razorwind" lvl_53="airslash" lvl_75="boomburst" lvl_70="dragonpulse" lvl_5="leechlife" lvl_18="agility" lvl_1="moonlight,boomburst,dragonpulse,hurricane,screech,supersonic,tackle" lvl_16="wingattack" lvl_27="roost"/>
@@ -21762,6 +21816,7 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="strugglebug" lvl_21="sweetscent" lvl_7="stunspore" lvl_13="silverwind" lvl_41="quiverdance" lvl_31="dazzlinggleam" lvl_36="aromatherapy" lvl_1="absorb" lvl_26="bugbuzz" lvl_4="fairywind" lvl_16="drainingkiss"/>
@@ -21785,6 +21840,7 @@
             <FORMEITEMS/>
             <MEGARULES/>
             <MOVEMENTTYPE>flying</MOVEMENTTYPE>
+            <ACTIVETIMES>day</ACTIVETIMES>
         </STATS>
         <MOVES>
             <LVLUP lvl_10="strugglebug" lvl_21="sweetscent" lvl_7="stunspore" lvl_13="silverwind" lvl_35="dazzlinggleam" lvl_42="aromatherapy" lvl_1="pollenpuff,absorb,fairywind,stunspore,strugglebug" lvl_4="fairywind" lvl_16="drainingkiss" lvl_49="quiverdance" lvl_28="bugbuzz"/>
@@ -22587,7 +22643,7 @@
             <TYPE type2="Flying" type1="Rock"/>
             <ABILITY normal="Shields Down"/>
             <MASSKG>40.0</MASSKG>
-            <CAPTURERATE>30 (Meteorite) 255 (Core)</CAPTURERATE>
+            <CAPTURERATE>30</CAPTURERATE>
             <BASEFRIENDSHIP>70</BASEFRIENDSHIP>
             <EXPERIENCEMODE>Medium Slow</EXPERIENCEMODE>
             <LOGIC/>

@@ -82,6 +82,7 @@ pokecube.config.blocksGround.tooltip=Blocks considered to be surface blocks, use
 pokecube.config.blocksWood.tooltip=Blocks considered to be tree trunks, used for cut.
 pokecube.config.blocksLeaves.tooltip=Blocks considered to be tree leaves, used for cut.
 pokecube.config.blocksPlants.tooltip=Blocks considered to be plants, used for cut and herbivore food.
+pokecube.config.blocksFruits.tooltip=Blocks considered to be harvestable, used for gathering stuff AI.
 pokecube.config.blocksTerrain.tooltip=Blocks considered to be part of the terrain, used for surface and cave spawns.
 pokecube.config.blocksIndustrial.tooltip=Blocks which will convert the are to an Industrial Subbiome, used for spawning industrial pokemobs.
 pokecube.config.useConfigForBerryLocations.tooltip=Should berryLocations be used instead of defaults.

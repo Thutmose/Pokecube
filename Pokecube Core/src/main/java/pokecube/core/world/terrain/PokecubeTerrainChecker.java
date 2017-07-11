@@ -101,6 +101,16 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         return false;
     }
 
+    public static boolean isFruit(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getFruitTypes())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
     public static boolean isIndustrial(IBlockState state)
     {
         if (state.getMaterial() == Material.AIR) return false;

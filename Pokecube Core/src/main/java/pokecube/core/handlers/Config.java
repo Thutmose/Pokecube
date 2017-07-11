@@ -259,6 +259,10 @@ public class Config extends ConfigBase
             "minecraft:red_flower", "minecraft:yellow_flower", "minecraft:tallgrass", "minecraft:deadbush",
             "minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "pokecube:berryfruit" };
     @Configure(category = world, needsMcRestart = true)
+    public String[]                      blocksFruits                 = { "minecraft:wheat age=7",
+            "minecraft:nether_wart age=3", "minecraft:carrots age=7", "minecraft:potatoes age=7",
+            "minecraft:melon_block", "minecraft:pumpkin", "pokecube:berryfruit" };
+    @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksTerrain                = {};
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksIndustrial             = { "minecraft:redstone_block",
@@ -484,6 +488,7 @@ public class Config extends ConfigBase
     private List<Predicate<IBlockState>> terrain                      = Lists.newArrayList();
     private List<Predicate<IBlockState>> woodTypes                    = Lists.newArrayList();
     private List<Predicate<IBlockState>> plantTypes                   = Lists.newArrayList();
+    private List<Predicate<IBlockState>> fruitTypes                   = Lists.newArrayList();
     private List<Predicate<IBlockState>> dirtTypes                    = Lists.newArrayList();
     private List<Predicate<IBlockState>> industrial                   = Lists.newArrayList();
 
@@ -763,6 +768,11 @@ public class Config extends ConfigBase
     public List<Predicate<IBlockState>> getPlantTypes()
     {
         return plantTypes;
+    }
+
+    public List<Predicate<IBlockState>> getFruitTypes()
+    {
+        return fruitTypes;
     }
 
     public List<Predicate<IBlockState>> getDirtTypes()

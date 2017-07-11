@@ -3,22 +3,31 @@ package pokecube.core.ai.thread.aiRunnables;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pokecube.core.interfaces.IBerryFruitBlock;
+import net.minecraftforge.common.IPlantable;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -30,7 +39,54 @@ import thut.lib.ItemStackTools;
  * before it will run. */
 public class AIGatherStuff extends AIBase
 {
-    public static int  COOLDOWN  = 200;
+    public static int                           COOLDOWN     = 200;
+
+    // Matcher used to determine if a block is a fruit or crop to be picked.
+    private static final Predicate<IBlockState> berryMatcher = new Predicate<IBlockState>()
+                                                             {
+                                                                 @Override
+                                                                 public boolean apply(IBlockState input)
+                                                                 {
+                                                                     return PokecubeTerrainChecker.isFruit(input);
+                                                                 }
+                                                             };
+
+    private static class ReplantTask implements IRunnable
+    {
+        final int       entityID;
+        final ItemStack seeds;
+        final BlockPos  pos;
+
+        public ReplantTask(Entity entity, ItemStack seeds, BlockPos pos)
+        {
+            this.seeds = seeds.copy();
+            this.pos = new BlockPos(pos);
+            this.entityID = entity.getEntityId();
+        }
+
+        @Override
+        public boolean run(World world)
+        {
+            if (!CompatWrapper.isValid(seeds)) return true;
+            if (seeds.getItem() instanceof IPlantable)
+            {
+                EntityPlayer player = PokecubeCore.getFakePlayer(world);
+                player.setHeldItem(EnumHand.MAIN_HAND, seeds);
+                seeds.getItem().onItemUse(player, world, pos.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 1, 0.5f);
+                if (CompatWrapper.isValid(seeds))
+                {
+                    Entity mob = world.getEntityByID(entityID);
+                    if (!ItemStackTools.addItemStackToInventory(seeds, ((IPokemob) mob).getPokemobInventory(), 2))
+                    {
+                        mob.entityDropItem(seeds, 0);
+                    }
+                }
+            }
+            return true;
+        }
+
+    }
+
     final EntityLiving entity;
     final double       distance;
     IHungrymob         hungrymob;
@@ -116,7 +172,7 @@ public class AIGatherStuff extends AIBase
         v.set(entity).addTo(0, entity.getEyeHeight(), 0);
         if (!block && hungrymob.eatsBerries())
         {
-            Vector3 temp = v.findClosestVisibleObject(world, true, distance, IBerryFruitBlock.class);
+            Vector3 temp = v.findClosestVisibleObject(world, true, distance, berryMatcher);
             if (temp != null)
             {
                 block = true;
@@ -176,7 +232,11 @@ public class AIGatherStuff extends AIBase
                     NonNullList<ItemStack> list = NonNullList.create();
                     plant.getDrops(list, entity.world, stuffLoc.getPos(), stuffLoc.getBlockState(entity.world), 0);
                     for (ItemStack stack : list)
-                        toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                    {
+                        if (stack.getItem() instanceof IPlantable)
+                            toRun.addElement(new ReplantTask(entity, stack, stuffLoc.getPos()));
+                        else toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                    }
                 }
                 stuffLoc.clear();
                 addEntityPath(entity.getEntityId(), entity.dimension, null, 0);

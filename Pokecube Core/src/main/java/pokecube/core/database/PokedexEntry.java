@@ -45,6 +45,7 @@ import pokecube.core.database.PokedexEntryLoader.Key;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.entity.pokemobs.DispenseBehaviourInteract;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -472,6 +473,7 @@ public class PokedexEntry
                     }
                     entry.interactionLogic.stacks.put(keyStack, stacks);
                 }
+                DispenseBehaviourInteract.registerBehavior(keyStack);
             }
         }
 

@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.interfaces.IBerryFruitBlock;
@@ -209,5 +210,11 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     {
         int i = par1Random.nextInt(2) + 1;
         return i;
+    }
+
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos)
+    {
+        return EnumPlantType.Crop;
     }
 }

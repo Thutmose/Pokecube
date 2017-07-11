@@ -46,17 +46,6 @@ public class EVsGene extends GeneByteArr
     {
         EVsGene newGene = new EVsGene();
         newGene.value = value.clone();
-        byte[] ret = newGene.value;
-        Random rand = new Random();
-        float chance = MUTRATE;
-        for (int i = 0; i < 6; i++)
-        {
-            if (rand.nextFloat() > chance) continue;
-            int mi = rand.nextInt(value[i] + 129);
-            int fi = rand.nextInt(value[i] + 129);
-            int iv = (Math.min(mi + fi, 255));
-            ret[i] = (byte) (iv - 128);
-        }
         return newGene;
     }
 

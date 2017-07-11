@@ -35,7 +35,7 @@ import thut.api.entity.genetics.IMobGenetics;
 public class GeneticsManager
 {
     public static String                       epigeneticFunction = "rand()*(((2*v + 256) * 31) / 512)";
-    private static JEP                         epigeneticParser   = new JEP();
+    public static JEP                          epigeneticParser   = new JEP();
 
     public static final ResourceLocation       POKECUBEGENETICS   = new ResourceLocation(PokecubeMod.ID, "genetics");
     public static final String                 GENES              = "Genes";

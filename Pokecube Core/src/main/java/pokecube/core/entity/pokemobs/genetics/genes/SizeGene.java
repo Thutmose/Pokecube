@@ -28,13 +28,15 @@ public class SizeGene extends GeneFloat
     @Override
     public Gene mutate()
     {
-        if (rand.nextFloat() < GeneticsManager.mutationRates.get(getKey()))
-        {
-            SizeGene newGene = new SizeGene();
-            newGene.value = (1 + 0.075f * (float) (new Random()).nextGaussian());
-            return newGene;
-        }
-        return this;
+        SizeGene newGene = new SizeGene();
+        newGene.value = (1 + 0.075f * (float) (new Random()).nextGaussian());
+        return newGene;
+    }
+
+    @Override
+    public float getMutationRate()
+    {
+        return GeneticsManager.mutationRates.get(getKey());
     }
 
     @Override

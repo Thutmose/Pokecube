@@ -34,7 +34,9 @@ public class MovesGene implements Gene
     @Override
     public Gene mutate()
     {
-        return this;
+        MovesGene newGene = new MovesGene();
+        newGene.moves = moves.clone();
+        return newGene;
     }
 
     @SuppressWarnings("unchecked")

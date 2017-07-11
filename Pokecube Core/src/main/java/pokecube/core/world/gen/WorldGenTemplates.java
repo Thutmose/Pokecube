@@ -13,6 +13,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.database.BiomeMatcher;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.world.gen.template.PokecubeTemplates;
 import pokecube.core.world.gen.village.buildings.TemplateStructure;
@@ -128,7 +129,9 @@ public class WorldGenTemplates implements IWorldGenerator
         protected void getTemplate(Random random, int chunkX, int chunkZ, World world, StructureBoundingBox chunkBox)
         {
             building = null;
-            if (!PokecubeMod.core.getConfig().doSpawnBuilding || world.provider.getDimension() != 0) return;
+            if (!PokecubeMod.core.getConfig().doSpawnBuilding
+                    || world.provider.getDimension() != PokecubeMod.core.getConfig().spawnDimension)
+                return;
             int x = world.getSpawnPoint().getX() / 16;
             int z = world.getSpawnPoint().getZ() / 16;
             if (x != chunkX || z != chunkZ) return;
@@ -147,6 +150,9 @@ public class WorldGenTemplates implements IWorldGenerator
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
+        if (PokecubeMod.core.getConfig().whiteListEnabled
+                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
+            return;
         for (TemplateGen gen : templates)
             gen.generate(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
     }

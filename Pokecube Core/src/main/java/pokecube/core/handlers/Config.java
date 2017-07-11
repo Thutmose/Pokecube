@@ -70,7 +70,7 @@ public class Config extends ConfigBase
 
     public static Config                 instance;
 
-    private static Config                defaults                     = null;
+    private static Config                defaults                     = new Config();
     // Misc Settings
     @Configure(category = misc, needsMcRestart = true)
     public String[]                      defaultStarters              = {};
@@ -95,7 +95,8 @@ public class Config extends ConfigBase
     public boolean                       mysterygift                  = true;
     @Configure(category = misc, needsMcRestart = true)
     public String                        defaultMobs                  = "";
-    @Configure(category = misc) // TODO sync this to clients on servers.
+    @Configure(category = misc)
+    @SyncConfig
     public double                        scalefactor                  = 1;
     @Configure(category = misc)
     public boolean                       pcOnDrop                     = true;
@@ -104,6 +105,7 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     public float                         expScaleFactor               = 1;
     @Configure(category = misc)
+    @SyncConfig
     public boolean                       pcHoldsOnlyPokecubes         = true;
 
     // AI Related settings
@@ -122,9 +124,11 @@ public class Config extends ConfigBase
     public int                           eggHatchTime                 = 10000;
     @Configure(category = mobAI)
     /** do wild pokemobs which leave cullDistance despawn immediately */
+    @SyncConfig
     public boolean                       cull                         = false;
-    @Configure(category = mobAI)
     /** distance for culling */
+    @Configure(category = mobAI)
+    @SyncConfig
     public int                           cullDistance                 = 96;
     @Configure(category = mobAI)
     /** Will lithovores eat gravel */
@@ -139,6 +143,7 @@ public class Config extends ConfigBase
     /** Is there a warning before a wild pokémob attacks the player. */
     public boolean                       pokemobagresswarning         = true;
     @Configure(category = mobAI)
+    @SyncConfig
     /** Distance to player needed to agress the player */
     public int                           mobAggroRadius               = 3;
     @Configure(category = mobAI)
@@ -320,10 +325,12 @@ public class Config extends ConfigBase
     /** do Pokemobs spawn */
     public boolean                       pokemonSpawn                 = true;
     @Configure(category = spawning)
+    @SyncConfig
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
     public int                           maxSpawnRadius               = 32;
     @Configure(category = spawning)
+    @SyncConfig
     /** closest distance to a player the pokemob can spawn. */
     public int                           minSpawnRadius               = 16;
     @Configure(category = spawning)
@@ -343,20 +350,25 @@ public class Config extends ConfigBase
     @Configure(category = spawning)
     public double                        mobDensityMultiplier         = 1;
     @Configure(category = spawning)
+    @SyncConfig
     public int                           levelCap                     = 50;
     @Configure(category = spawning)
     public boolean                       shouldCap                    = true;
     @Configure(category = spawning)
+    @SyncConfig
     String[]                             spawnLevelFunctions          = { //@formatter:off
             "-1:abs((25)*(sin(x*8*10^-3)^3 + sin(y*8*10^-3)^3))",
             "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
             "1:1+r/1300;r"
             };//@formatter:on
     @Configure(category = spawning)
+    @SyncConfig
     public boolean                       expFunction                  = false;
     @Configure(category = spawning)
+    @SyncConfig
     public boolean                       spawnCentered                = true;
     @Configure(category = spawning)
+    @SyncConfig
     public int                           levelVariance                = 5;
     @Configure(category = spawning)
     public int[]                         dimensionBlacklist           = {};
@@ -423,6 +435,7 @@ public class Config extends ConfigBase
     @Configure(category = advanced)
     public int                           evolutionTicks               = 50;
     @Configure(category = advanced)
+    @SyncConfig
     public int                           baseRadarRange               = 64;
     @Configure(category = advanced)
     public String                        nonPokemobExpFunction        = "h*(a+1)";
@@ -503,12 +516,13 @@ public class Config extends ConfigBase
 
     public Config(File path)
     {
-        super(path, defaults = new Config());
-        instance = this;
-        MinecraftForge.EVENT_BUS.register(this);
+        super(path, defaults);
         populateSettings();
         applySettings();
         save();
+        if (path.getName().endsWith(".dummy")) return;
+        if (instance != null) MinecraftForge.EVENT_BUS.unregister(instance);
+        MinecraftForge.EVENT_BUS.register(instance = this);
     }
 
     @Override

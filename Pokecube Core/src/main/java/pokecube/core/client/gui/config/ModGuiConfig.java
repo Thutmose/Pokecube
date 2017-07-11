@@ -9,7 +9,7 @@ public class ModGuiConfig extends GuiConfig
 {
     public ModGuiConfig(GuiScreen guiScreen)
     {
-        super(guiScreen, Config.getConfigElements(Config.instance), PokecubeMod.ID, false, false,
-                GuiConfig.getAbridgedConfigPath(Config.instance.getConfigFile().getAbsolutePath()));
+        super(guiScreen, Config.getConfigElements(PokecubeMod.core.getConfig()), PokecubeMod.ID, false, false,
+                GuiConfig.getAbridgedConfigPath(PokecubeMod.core.getConfig().getConfigFile().getAbsolutePath()));
     }
 }

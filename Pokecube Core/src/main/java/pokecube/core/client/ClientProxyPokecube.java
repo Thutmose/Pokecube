@@ -421,7 +421,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void preInit(FMLPreInitializationEvent evt)
     {
         super.preInit(evt);
-
         RenderingRegistry.registerEntityRenderingHandler(EntityProfessor.class, new IRenderFactory<EntityLiving>()
         {
             @Override
@@ -609,6 +608,19 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (player == null || player.equals(Minecraft.getMinecraft().player.getUniqueID()))
             return Minecraft.getMinecraft().player.getStatFileWriter();
         return super.getManager(player);
+    }
+
+    @Override
+    public void handshake(boolean revert)
+    {
+        if (revert)
+        {
+            ((PokecubeCore) PokecubeMod.core).currentConfig = ((PokecubeCore) PokecubeMod.core).config;
+        }
+        else if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+        {
+            ((PokecubeCore) PokecubeMod.core).currentConfig = ((PokecubeCore) PokecubeMod.core).config_client;
+        }
     }
 
     public EntityPlayer getPlayer(UUID player)

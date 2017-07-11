@@ -132,15 +132,15 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     {
         return false;
     }
-    
+
     public void initItemModels()
     {
-        
+
     }
-    
+
     public void initBlockModels()
     {
-        
+
     }
 
     public void preInit(FMLPreInitializationEvent evt)
@@ -183,6 +183,11 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     public void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
         PacketParticle.sendMessage(world, location, velocity, par1Str, args);
+    }
+
+    public void handshake(boolean revert)
+    {
+
     }
 
 }

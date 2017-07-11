@@ -63,6 +63,7 @@ public class PokecubeAdv
             + "after:lostcities;"
             + "after:ruins;"
             + "after:ftbl;"
+            + "after:journeymap;"
             + "after:reccomplex;"
             + "after:minefactoryreloaded";
 

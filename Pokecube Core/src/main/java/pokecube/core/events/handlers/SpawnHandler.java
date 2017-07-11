@@ -119,6 +119,11 @@ public final class SpawnHandler
         return true;
     }
 
+    public static void clear()
+    {
+        forbiddenSpawningCoords.clear();
+    }
+
     public static boolean canPokemonSpawnHere(Vector3 location, World world, PokedexEntry entry)
     {
         if (!location.clearOfBlocks(world) || !canSpawn(null, entry.getSpawnData(), location, world, true))

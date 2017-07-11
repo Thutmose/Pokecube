@@ -3,15 +3,15 @@ package pokecube.core.interfaces;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -87,7 +87,7 @@ public abstract class PokecubeMod
 
     public static double                          MAX_DENSITY                = 1;
     public static Map<String, String>             gifts                      = Maps.newHashMap();
-    public static List<String>                    giftLocations              = Lists.newArrayList();
+    public static Set<String>                     giftLocations              = Sets.newHashSet();
     public static Map<PokedexEntry, Class<?>>     pokedexmap                 = Maps.newHashMap();
     public static Map<PokedexEntry, Class<?>>     genericMobClasses          = Maps.newHashMap();
 

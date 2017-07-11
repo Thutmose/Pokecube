@@ -41,6 +41,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLModIdMappingEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
@@ -221,7 +222,9 @@ public class PokecubeCore extends PokecubeMod
     public String              newVersion;
     public String              newAlphaVersion;
     public Mod_Pokecube_Helper helper;
-    private Config             config;
+    public Config              config;
+    public Config              config_client;
+    public Config              currentConfig;
     IEntityProvider            provider;
     EventsHandler              events;
 
@@ -236,7 +239,9 @@ public class PokecubeCore extends PokecubeMod
         String name = file.getName();
         folder = folder.replace(name, "pokecube" + seperator + name);
         file = new File(folder);
+        config_client = new Config(new Configuration(new File(folder + ".dummy")).getConfigFile());
         config = new Config(new Configuration(file).getConfigFile());
+        currentConfig = config;
         helper = new Mod_Pokecube_Helper();
     }
 
@@ -309,7 +314,7 @@ public class PokecubeCore extends PokecubeMod
     @Override
     public Config getConfig()
     {
-        return config;
+        return currentConfig;
     }
 
     /** Returns the class of the {@link EntityLiving} for the given pokedexNb.
@@ -747,6 +752,7 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new RecallCommand());
         event.registerServerCommand(new SecretBaseCommand());
         PokecubeTemplates.serverInit(event.getServer());
+        SpawnHandler.clear();
         registerSpawns();
         try
         {
@@ -800,4 +806,9 @@ public class PokecubeCore extends PokecubeMod
         AISaveHandler.clearInstance();
     }
 
+    @EventHandler
+    public void handshake(FMLModIdMappingEvent evt)
+    {
+        proxy.handshake(evt.isFrozen);
+    }
 }

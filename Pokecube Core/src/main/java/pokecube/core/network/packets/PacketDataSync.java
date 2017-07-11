@@ -1,12 +1,25 @@
 package pokecube.core.network.packets;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagFloat;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagLong;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -15,7 +28,9 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.client.gui.GuiTeleport;
+import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.SyncConfig;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
@@ -42,7 +57,99 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
     {
         PacketDataSync packet = new PacketDataSync();
         packet.data.setBoolean("I", true);
+        if (FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
+            packet.data.setTag("C", writeConfigs());
         PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
+    }
+
+    private static NBTTagCompound writeConfigs()
+    {
+        NBTTagCompound ret = new NBTTagCompound();
+        Config defaults = PokecubeCore.instance.getConfig();
+        NBTTagCompound longs = new NBTTagCompound();
+        NBTTagCompound ints = new NBTTagCompound();
+        NBTTagCompound bools = new NBTTagCompound();
+        NBTTagCompound floats = new NBTTagCompound();
+        NBTTagCompound doubles = new NBTTagCompound();
+        NBTTagCompound strings = new NBTTagCompound();
+        NBTTagCompound intarrs = new NBTTagCompound();
+        NBTTagCompound stringarrs = new NBTTagCompound();
+        for (Field f : Config.class.getDeclaredFields())
+        {
+            SyncConfig c = f.getAnnotation(SyncConfig.class);
+            if (c != null)
+            {
+                try
+                {
+                    f.setAccessible(true);
+                    if ((f.getType() == Long.TYPE) || (f.getType() == Long.class))
+                    {
+                        long defaultValue = f.getLong(defaults);
+                        longs.setTag(f.getName(), new NBTTagLong(defaultValue));
+                    }
+                    else if (f.getType() == String.class)
+                    {
+                        String defaultValue = (String) f.get(defaults);
+                        strings.setTag(f.getName(), new NBTTagString(defaultValue));
+                    }
+                    else if ((f.getType() == Integer.TYPE) || (f.getType() == Integer.class))
+                    {
+                        int defaultValue = f.getInt(defaults);
+                        ints.setTag(f.getName(), new NBTTagInt(defaultValue));
+                    }
+                    else if ((f.getType() == Float.TYPE) || (f.getType() == Float.class))
+                    {
+                        float defaultValue = f.getFloat(defaults);
+                        floats.setTag(f.getName(), new NBTTagFloat(defaultValue));
+                    }
+                    else if ((f.getType() == Double.TYPE) || (f.getType() == Double.class))
+                    {
+                        double defaultValue = f.getDouble(defaults);
+                        doubles.setTag(f.getName(), new NBTTagDouble(defaultValue));
+                    }
+                    else if ((f.getType() == Boolean.TYPE) || (f.getType() == Boolean.class))
+                    {
+                        boolean defaultValue = f.getBoolean(defaults);
+                        bools.setTag(f.getName(), new NBTTagByte((byte) (defaultValue ? 1 : 0)));
+                    }
+                    else
+                    {
+                        Object o = f.get(defaults);
+                        if (o instanceof String[])
+                        {
+                            String[] defaultValue = (String[]) o;
+                            NBTTagList arr = new NBTTagList();
+                            for (String s : defaultValue)
+                                arr.appendTag(new NBTTagString(s));
+                            stringarrs.setTag(f.getName(), arr);
+                        }
+                        else if (o instanceof int[])
+                        {
+                            int[] defaultValue = (int[]) o;
+                            intarrs.setTag(f.getName(), new NBTTagIntArray(defaultValue));
+                        }
+                        else System.err.println("Unknown Type " + f.getType() + " " + f.getName() + " " + o.getClass());
+                    }
+                }
+                catch (IllegalArgumentException e)
+                {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if (!longs.hasNoTags()) ret.setTag("L", longs);
+        if (!ints.hasNoTags()) ret.setTag("I", ints);
+        if (!bools.hasNoTags()) ret.setTag("B", bools);
+        if (!floats.hasNoTags()) ret.setTag("F", floats);
+        if (!doubles.hasNoTags()) ret.setTag("D", doubles);
+        if (!strings.hasNoTags()) ret.setTag("S", strings);
+        if (!intarrs.hasNoTags()) ret.setTag("A", intarrs);
+        if (!stringarrs.hasNoTags()) ret.setTag("R", stringarrs);
+        return ret;
     }
 
     public PacketDataSync()
@@ -96,11 +203,118 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
                 AISaveHandler.clearInstance();
                 GuiInfoMessages.clear();
                 GuiTeleport.create();
+                try
+                {
+                    if (FMLCommonHandler.instance().getMinecraftServerInstance() == null)
+                        syncConfigs(message.data.getCompoundTag("C"));
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
             else
             {
                 PlayerDataManager manager = PokecubePlayerDataHandler.getInstance().getPlayerData(player);
                 manager.getData(message.data.getString("type")).readFromNBT(message.data.getCompoundTag("data"));
+            }
+        }
+    }
+
+    private void syncConfigs(NBTTagCompound tag) throws Exception
+    {
+        Config defaults = PokecubeCore.instance.getConfig();
+        Field f;
+        if (tag.hasKey("L"))
+        {
+            NBTTagCompound longs = tag.getCompoundTag("L");
+            for (String s : longs.getKeySet())
+            {
+                long l = longs.getLong(s);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l + "");
+            }
+        }
+        if (tag.hasKey("I"))
+        {
+            NBTTagCompound ints = tag.getCompoundTag("I");
+            for (String s : ints.getKeySet())
+            {
+                int l = ints.getInteger(s);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l + "");
+            }
+        }
+        if (tag.hasKey("B"))
+        {
+            NBTTagCompound bools = tag.getCompoundTag("B");
+            for (String s : bools.getKeySet())
+            {
+                boolean l = bools.getByte(s) != 0;
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l + "");
+            }
+        }
+        if (tag.hasKey("F"))
+        {
+            NBTTagCompound floats = tag.getCompoundTag("F");
+            for (String s : floats.getKeySet())
+            {
+                float l = floats.getFloat(s);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l + "");
+            }
+        }
+        if (tag.hasKey("D"))
+        {
+            NBTTagCompound doubles = tag.getCompoundTag("D");
+            for (String s : doubles.getKeySet())
+            {
+                double l = doubles.getDouble(s);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l + "");
+            }
+        }
+        if (tag.hasKey("S"))
+        {
+            NBTTagCompound strings = tag.getCompoundTag("S");
+            for (String s : strings.getKeySet())
+            {
+                String l = strings.getString(s);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l + "");
+            }
+        }
+        if (tag.hasKey("A"))
+        {
+            NBTTagCompound intarrs = tag.getCompoundTag("A");
+            for (String s : intarrs.getKeySet())
+            {
+                int[] l = intarrs.getIntArray(s);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, l);
+            }
+        }
+        if (tag.hasKey("R"))
+        {
+            NBTTagCompound stringarrs = tag.getCompoundTag("R");
+            for (String s : stringarrs.getKeySet())
+            {
+                NBTTagList list = (NBTTagList) stringarrs.getTag(s);
+                List<String> vars = Lists.newArrayList();
+                for (int i = 0; i < list.tagCount(); i++)
+                    vars.add(list.getStringTagAt(i));
+                String[] arr = vars.toArray(new String[0]);
+                f = defaults.getClass().getDeclaredField(s);
+                f.setAccessible(true);
+                defaults.updateField(f, arr);
             }
         }
     }

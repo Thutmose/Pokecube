@@ -14,6 +14,11 @@ public class TeamManager
     {
         @Nonnull
         String getTeam(Entity entityIn);
+
+        default boolean areAllied(String team, Entity target)
+        {
+            return team.equals(getTeam(target));
+        }
     }
 
     public static class DefaultProvider implements ITeamProvider
@@ -44,7 +49,6 @@ public class TeamManager
     public static boolean sameTeam(Entity entityA, Entity entityB)
     {
         String teamA = getTeam(entityA);
-        String teamB = getTeam(entityB);
-        return !teamA.isEmpty() && teamA.equals(teamB);
+        return !teamA.isEmpty() && provider.areAllied(teamA, entityB);
     }
 }

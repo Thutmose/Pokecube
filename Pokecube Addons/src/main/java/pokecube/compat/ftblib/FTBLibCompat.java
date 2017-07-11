@@ -1,5 +1,6 @@
 package pokecube.compat.ftblib;
 
+import com.feed_the_beast.ftbl.api.EnumTeamStatus;
 import com.feed_the_beast.ftbl.api.FTBLibAPI;
 import com.feed_the_beast.ftbl.api.FTBLibPlugin;
 import com.feed_the_beast.ftbl.api.IFTBLibPlugin;
@@ -30,6 +31,7 @@ public class FTBLibCompat implements IFTBLibPlugin
         private String getPlayerTeam(EntityPlayer player)
         {
             IUniverse universe = api.getUniverse();
+            if (universe == null) return "";
             IForgePlayer iplayer = universe.getPlayer(player);
             if (iplayer == null) return "";
             IForgeTeam team = iplayer.getTeam();
@@ -48,6 +50,27 @@ public class FTBLibCompat implements IFTBLibPlugin
                 if (owner != null && !(owner instanceof IEntityOwnable)) return getTeam(pokemob.getOwner());
             }
             return defaults.getTeam(entityIn);
+        }
+
+        @Override
+        public boolean areAllied(String team, Entity target)
+        {
+            IUniverse universe = api.getUniverse();
+            if (universe == null) return false;
+            IForgeTeam aTeam = universe.getTeam(team);
+            if (aTeam == null) return false;
+            EntityPlayer player = null;
+            if (target instanceof EntityPlayer) player = (EntityPlayer) target;
+            else if (target instanceof IEntityOwnable && ((IEntityOwnable) target).getOwner() instanceof EntityPlayer)
+            {
+                player = (EntityPlayer) ((IEntityOwnable) target).getOwner();
+            }
+            if (player != null)
+            {
+                IForgePlayer iplayer = universe.getPlayer(player);
+                return aTeam.getHighestStatus(iplayer).isEqualOrGreaterThan(EnumTeamStatus.ALLY);
+            }
+            return false;
         }
     }
 

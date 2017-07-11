@@ -55,7 +55,6 @@ import pokecube.core.client.render.RenderHealth;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
-import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -63,7 +62,6 @@ import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
 import pokecube.core.utils.Tools;
-import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.core.client.ClientProxy;
 
 @SideOnly(Side.CLIENT)
@@ -365,20 +363,6 @@ public class EventsHandlerClient
     {
         if (addedLayers.contains(event.getRenderer())) { return; }
         addedLayers.add(event.getRenderer());
-    }
-
-    /** This is done here for when pokedex is checked, to compare to blacklist.
-     * 
-     * @param event */
-    @SubscribeEvent
-    public void onSpawnCheck(SpawnEvent.Check event)
-    {
-        if (!event.forSpawn && (SpawnHandler.dimensionBlacklist.contains(event.world.provider.getDimension())
-                || event.world.provider instanceof WorldProviderSecretBase))
-            event.setCanceled(true);
-        if (!event.forSpawn && PokecubeMod.core.getConfig().whiteListEnabled
-                && SpawnHandler.dimensionWhitelist.contains(event.world.provider.getDimension()))
-            event.setCanceled(true);
     }
 
     @SideOnly(Side.CLIENT)

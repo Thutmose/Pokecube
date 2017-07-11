@@ -66,6 +66,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
             player.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack.onItemUse(player, source.getWorld(), source.getBlockPos().offset(dir), EnumHand.MAIN_HAND,
                     EnumFacing.UP, 0.5f, 0.5f, 0.5f);
+            player.inventory.clear();
         }
         else if (stack.getItem() instanceof IPokecube)
         {

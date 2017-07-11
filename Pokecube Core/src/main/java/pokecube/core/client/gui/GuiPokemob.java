@@ -272,6 +272,7 @@ public class GuiPokemob extends GuiContainer
     @Override
     protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_)
     {
+        super.drawDefaultBackground();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(pokemobGuiTextures);
         int k = (this.width - this.xSize) / 2;

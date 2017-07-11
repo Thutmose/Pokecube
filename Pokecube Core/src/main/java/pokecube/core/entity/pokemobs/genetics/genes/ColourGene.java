@@ -40,6 +40,13 @@ public class ColourGene extends GeneIntArray
     }
 
     @Override
+    public float getMutationRate()
+    {
+        return GeneticsManager.mutationRates.get(getKey());
+    }
+
+
+    @Override
     public ResourceLocation getKey()
     {
         return GeneticsManager.COLOURGENE;

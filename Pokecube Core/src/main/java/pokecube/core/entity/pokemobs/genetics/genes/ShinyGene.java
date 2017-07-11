@@ -23,13 +23,15 @@ public class ShinyGene extends GeneBoolean
     @Override
     public Gene mutate()
     {
-        if (rand.nextFloat() < GeneticsManager.mutationRates.get(getKey()))
-        {
-            ShinyGene newGene = new ShinyGene();
-            newGene.value = Boolean.TRUE;
-            return newGene;
-        }
-        return this;
+        ShinyGene newGene = new ShinyGene();
+        newGene.value = Boolean.TRUE;
+        return newGene;
+    }
+
+    @Override
+    public float getMutationRate()
+    {
+        return GeneticsManager.mutationRates.get(getKey());
     }
 
     @Override

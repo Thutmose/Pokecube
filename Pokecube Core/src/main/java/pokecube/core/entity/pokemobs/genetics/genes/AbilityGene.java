@@ -41,14 +41,16 @@ public class AbilityGene implements Gene
     @Override
     public Gene mutate()
     {
-        if (Math.random() < GeneticsManager.mutationRates.get(getKey()))
-        {
-            AbilityGene newGene = new AbilityGene();
-            byte index = (byte) (ability.abilityIndex == 2 ? new Random().nextInt(2) : 2);
-            newGene.ability.abilityIndex = index;
-            return newGene;
-        }
-        return this;
+        AbilityGene newGene = new AbilityGene();
+        byte index = (byte) (ability.abilityIndex == 2 ? new Random().nextInt(2) : 2);
+        newGene.ability.abilityIndex = index;
+        return newGene;
+    }
+
+    @Override
+    public float getMutationRate()
+    {
+        return GeneticsManager.mutationRates.get(getKey());
     }
 
     @SuppressWarnings("unchecked")

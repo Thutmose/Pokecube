@@ -66,6 +66,9 @@ pokecube.config.surfEnabled.tooltip=Can you surf on swimming pokemobs.
 pokecube.config.diveEnabled.tooltip=Can you dive underwater on some swimming pokemobs.
 pokecube.config.dodgeSounds.tooltip=Sounds played when a pokemob dodges an attack, a random one is chosen from this list.
 pokecube.config.leapSounds.tooltip=Sounds played when a pokemob leaps in combat, a random one is chosen from this list.
+pokecube.config.guardBlacklistClass.tooltip=A List of classes that entities can inherit, and be ignored by guard AI.
+pokecube.config.guardBlacklistId.tooltip=A List of Entity IDs to ignore by guard AI.
+pokecube.config.interactHungerScale.tooltip=Scaling factor of hunger introduced by item interaction.
 
 #World
 pokecube.config.generation=World Generation and Interaction

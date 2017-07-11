@@ -222,6 +222,8 @@ public class Config extends ConfigBase
             "net.minecraft.entity.IProjectile" };
     @Configure(category = mobAI)
     public String[]                      guardBlacklistId             = {};
+    @Configure(category = mobAI)
+    public float                         interactHungerScale          = 1;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};

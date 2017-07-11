@@ -54,6 +54,7 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IHungrymob;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
@@ -472,6 +473,7 @@ public class PokedexEntry
                         if (stack != CompatWrapper.nullStack) stacks.add(stack);
                     }
                     entry.interactionLogic.stacks.put(keyStack, stacks);
+                    entry.interactionLogic.stacksMap.put(keyStack, interact);
                 }
                 DispenseBehaviourInteract.registerBehavior(keyStack);
             }
@@ -479,6 +481,7 @@ public class PokedexEntry
 
         public HashMap<ItemStack, PokedexEntry>    formes          = new HashMap<>();
         public HashMap<ItemStack, List<ItemStack>> stacks          = new HashMap<ItemStack, List<ItemStack>>();
+        public HashMap<ItemStack, Interact>        stacksMap       = Maps.newHashMap();
         public Set<ItemStack>                      noMaleAllowed   = Sets.newHashSet();
         public Set<ItemStack>                      noFemaleAllowed = Sets.newHashSet();
 
@@ -510,22 +513,15 @@ public class PokedexEntry
             EntityLiving entity = (EntityLiving) pokemob;
             NBTTagCompound data = entity.getEntityData();
             ItemStack held = player.getHeldItemMainhand();
-            if (data.hasKey("lastInteract"))
-            {
-                long time = data.getLong("lastInteract");
-                long diff = entity.world.getTotalWorldTime() - time;
-                if (diff < 100) { return false; }
-            }
             ItemStack stack = getStackKey(held);
 
-            if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
-            if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
-
-            if (stack == CompatWrapper.nullStack)
+            if (!CompatWrapper.isValid(stack))
             {
                 stack = getFormeKey(held);
-                if (!doInteract) return stack != CompatWrapper.nullStack;
-                if (stack != CompatWrapper.nullStack)
+                if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
+                if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
+                if (!doInteract) return CompatWrapper.isValid(stack);
+                if (CompatWrapper.isValid(stack))
                 {
                     PokedexEntry forme = formes.get(stack);
                     pokemob.setPokedexEntry(forme);
@@ -533,8 +529,21 @@ public class PokedexEntry
                 }
                 return false;
             }
+            Interact interact = stacksMap.get(stack);
+            if (data.hasKey("lastInteract"))
+            {
+                long time = data.getLong("lastInteract");
+                long diff = entity.world.getTotalWorldTime() - time;
+                if (diff < interact.delay) { return false; }
+            }
+            if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
+            if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
             if (!doInteract) return true;
-            data.setLong("lastInteract", entity.world.getTotalWorldTime());
+            int diff = interact.variance > 0 ? new Random().nextInt(interact.variance) : 0;
+            data.setLong("lastInteract", entity.world.getTotalWorldTime() + diff);
+            IHungrymob hungrymob = ((IHungrymob) pokemob);
+            hungrymob.setHungerTime((int) (hungrymob.getHungerTime()
+                    + interact.baseHunger * PokecubeMod.core.getConfig().interactHungerScale));
             List<ItemStack> results = stacks.get(stack);
             int index = player.getRNG().nextInt(results.size());
             ItemStack result = results.get(index).copy();

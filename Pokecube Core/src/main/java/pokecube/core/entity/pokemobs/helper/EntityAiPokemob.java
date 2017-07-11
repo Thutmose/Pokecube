@@ -939,43 +939,46 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             isOwner = getOwner().getEntityId() == player.getEntityId();
         }
-        // Either push pokemob around, or if sneaking, make it try to climb on
-        // shoulder
-        if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
+        if (isOwner)
         {
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
-            look.y = 0.2;
-            this.motionX += look.x;
-            this.motionY += look.y;
-            this.motionZ += look.z;
-            return false;
-        }
-        // Debug thing to maximize happiness
-        if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
-        {
-            if (player.capabilities.isCreativeMode && player.isSneaking())
+            // Either push pokemob around, or if sneaking, make it try to climb
+            // on shoulder
+            if (CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
             {
-                this.addHappiness(255);
+                Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
+                look.y = 0.2;
+                this.motionX += look.x;
+                this.motionY += look.y;
+                this.motionZ += look.z;
+                return false;
             }
-        }
-        // Debug thing to increase hunger time
-        if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
-        {
-            if (player.capabilities.isCreativeMode && player.isSneaking())
+            // Debug thing to maximize happiness
+            if (CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
             {
-                this.setHungerTime(this.getHungerTime() + 4000);
+                if (player.capabilities.isCreativeMode && player.isSneaking())
+                {
+                    this.addHappiness(255);
+                }
             }
-        }
-        // Use shiny charm to make shiny
-        if (isOwner && CompatWrapper.isValid(held)
-                && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
-        {
-            if (player.isSneaking())
+            // Debug thing to increase hunger time
+            if (CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
             {
-                this.setShiny(!this.isShiny());
-                held.splitStack(1);
+                if (player.capabilities.isCreativeMode && player.isSneaking())
+                {
+                    this.setHungerTime(this.getHungerTime() + 4000);
+                }
             }
-            return true;
+            // Use shiny charm to make shiny
+            if (CompatWrapper.isValid(held)
+                    && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
+            {
+                if (player.isSneaking())
+                {
+                    this.setShiny(!this.isShiny());
+                    held.splitStack(1);
+                }
+                return true;
+            }
         }
 
         // is Dyeable
@@ -1089,8 +1092,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
 
             // Check saddle for riding.
-            if (getPokemonAIState(SADDLED) && !player.isSneaking() && isOwner
-                    && (held == CompatWrapper.nullStack || held.getItem() != PokecubeItems.pokedex))
+            if (getPokemonAIState(SADDLED) && !player.isSneaking()
+                    && (!CompatWrapper.isValid(held) || !(held.getItem() instanceof ItemPokedex)))
             {
                 if (!handleHmAndSaddle(player, new ItemStack(Items.SADDLE)))
                 {
@@ -1101,11 +1104,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
 
             // Open Gui
-            if (!PokecubeCore.isOnClientSide() && isOwner)
-            {
-                openGUI(player);
-                return true;
-            }
+            openGUI(player);
+            return true;
         }
         return false;
     }

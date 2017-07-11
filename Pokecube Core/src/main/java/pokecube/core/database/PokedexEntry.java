@@ -534,12 +534,13 @@ public class PokedexEntry
             {
                 long time = data.getLong("lastInteract");
                 long diff = entity.world.getTotalWorldTime() - time;
-                if (diff < interact.delay) { return false; }
+                if (diff < 0) { return false; }
             }
             if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
             if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
             if (!doInteract) return true;
-            int diff = interact.variance > 0 ? new Random().nextInt(interact.variance) : 0;
+            int diff = interact.delay + interact.variance > 0 ? new Random().nextInt(interact.variance) : 0;
+            diff *= PokecubeMod.core.getConfig().interactDelayScale;
             data.setLong("lastInteract", entity.world.getTotalWorldTime() + diff);
             IHungrymob hungrymob = ((IHungrymob) pokemob);
             hungrymob.setHungerTime((int) (hungrymob.getHungerTime()

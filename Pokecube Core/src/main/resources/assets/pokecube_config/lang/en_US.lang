@@ -69,6 +69,7 @@ pokecube.config.leapSounds.tooltip=Sounds played when a pokemob leaps in combat,
 pokecube.config.guardBlacklistClass.tooltip=A List of classes that entities can inherit, and be ignored by guard AI.
 pokecube.config.guardBlacklistId.tooltip=A List of Entity IDs to ignore by guard AI.
 pokecube.config.interactHungerScale.tooltip=Scaling factor of hunger introduced by item interaction.
+pokecube.config.interactDelayScale.tooltip=Scaling factor of time between item interactions.
 
 #World
 pokecube.config.generation=World Generation and Interaction

@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.BlockDispenser;
@@ -13,7 +12,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -21,7 +20,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.registry.RegistryDefaulted;
 import net.minecraftforge.common.util.FakePlayer;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -64,24 +62,19 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
         player.posZ = source.getZ();
 
         Vector3 loc = Vector3.getNewVector().set(source.getBlockPos().offset(dir));
-        AxisAlignedBB box = loc.getAABB().grow(1);
-        List<EntityLivingBase> mobs = source.getWorld().getEntitiesWithinAABB(EntityLivingBase.class, box,
-                new Predicate<EntityLivingBase>()
-                {
-                    @Override
-                    public boolean apply(EntityLivingBase input)
-                    {
-                        return input instanceof IPokemob;
-                    }
-                });
+        AxisAlignedBB box = loc.getAABB().grow(1.5);
+        List<EntityLiving> mobs = source.getWorld().getEntitiesWithinAABB(EntityLiving.class, box);
         Collections.shuffle(mobs);
         if (!mobs.isEmpty())
         {
             player.inventory.clear();
             player.setHeldItem(EnumHand.MAIN_HAND, stack);
-            IPokemob mob = (IPokemob) mobs.get(0);
-            mob.getPokedexEntry().interact(player, mob, true);
+            boolean interacted = mobs.get(0).processInitialInteract(player, EnumHand.MAIN_HAND);
             boolean result = false;
+            if (!interacted)
+            {
+                result = stack.interactWithEntity(player, mobs.get(0), EnumHand.MAIN_HAND);
+            }
             for (ItemStack stack3 : player.inventory.mainInventory)
                 if (CompatWrapper.isValid(stack3))
                 {

@@ -11,7 +11,7 @@ import thut.lib.CompatClass.Phase;
 
 public class RuinsCompat
 {
-    @Optional.Method(modid = "AS_Ruins")
+    @Optional.Method(modid = "ruins")
     @CompatClass(phase = Phase.POST)
     public static void AS_RuinsCompat()
     {

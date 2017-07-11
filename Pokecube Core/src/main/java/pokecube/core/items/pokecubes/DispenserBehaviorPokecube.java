@@ -1,5 +1,7 @@
 package pokecube.core.items.pokecubes;
 
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.ItemStack;
@@ -15,28 +17,64 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
 {
 
     @Override
-    public ItemStack dispense(IBlockSource iblocksource, ItemStack itemstack)
+    public ItemStack dispense(IBlockSource source, ItemStack stack)
     {
-        FakePlayer player = PokecubeMod.getFakePlayer();
-        player.world = iblocksource.getWorld();
-        player.posX = iblocksource.getX();
-        player.posY = iblocksource.getY() - player.getEyeHeight();
-        player.posZ = iblocksource.getZ();
-
-        Vector3 direction = Vector3.getNewVector().set(iblocksource.getX(), iblocksource.getY(), iblocksource.getZ());
-
-        if (itemstack.getItem() == PokecubeItems.pokemobEgg)
+        EnumFacing dir = null;
+        IBlockState state = source.getBlockState();
+        for (IProperty<?> prop : state.getPropertyKeys())
         {
-            itemstack.onItemUse(player, iblocksource.getWorld(), iblocksource.getBlockPos(), EnumHand.MAIN_HAND,
+            if (prop.getValueClass() == EnumFacing.class)
+            {
+                dir = (EnumFacing) state.getValue(prop);
+                break;
+            }
+        }
+        if (dir == null) return stack;
+
+        FakePlayer player = PokecubeMod.getFakePlayer();
+        player.world = source.getWorld();
+        player.posX = source.getX();
+        player.posY = source.getY() - player.getEyeHeight();
+        player.posZ = source.getZ();
+
+        // Defaults are for south.
+        player.rotationPitch = 0;
+        player.rotationYaw = 0;
+
+        if (dir == EnumFacing.EAST)
+        {
+            player.rotationYaw = -90;
+        }
+        else if (dir == EnumFacing.WEST)
+        {
+            player.rotationYaw = 90;
+        }
+        else if (dir == EnumFacing.NORTH)
+        {
+            player.rotationYaw = 180;
+        }
+        else if (dir == EnumFacing.UP)
+        {
+            player.rotationPitch = -90;
+        }
+        else if (dir == EnumFacing.DOWN)
+        {
+            player.rotationPitch = 90;
+        }
+
+        if (stack.getItem() == PokecubeItems.pokemobEgg)
+        {
+            stack.onItemUse(player, source.getWorld(), source.getBlockPos().offset(dir), EnumHand.MAIN_HAND,
                     EnumFacing.UP, 0.5f, 0.5f, 0.5f);
         }
-        else if (itemstack.getItem() instanceof IPokecube)
+        else if (stack.getItem() instanceof IPokecube)
         {
-            IPokecube cube = (IPokecube) itemstack.getItem();
-            cube.throwPokecube(iblocksource.getWorld(), player, itemstack, direction, 0.5f);
+            IPokecube cube = (IPokecube) stack.getItem();
+            Vector3 direction = Vector3.getNewVector().set(dir);
+            cube.throwPokecube(source.getWorld(), player, stack, direction, 0.25f);
         }
-        itemstack.splitStack(1);
-        return itemstack;
+        stack.splitStack(1);
+        return stack;
     }
 
 }

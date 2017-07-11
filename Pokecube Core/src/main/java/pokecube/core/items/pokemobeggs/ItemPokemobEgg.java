@@ -316,7 +316,8 @@ public class ItemPokemobEgg extends Item
 
     public boolean dropEgg(World world, ItemStack stack, Vector3 location, Entity placer)
     {
-        if (!PokecubeMod.pokemobEggs.containsKey(getEntry(stack).getPokedexNb())) { return false; }
+        PokedexEntry entry = getEntry(stack);
+        if (entry == null || !PokecubeMod.pokemobEggs.containsKey(entry.getPokedexNb())) { return false; }
         ItemStack eggItemStack = new ItemStack(PokecubeItems.pokemobEgg, 1, stack.getItemDamage());
         if (stack.hasTagCompound()) eggItemStack.setTagCompound(stack.getTagCompound());
         else eggItemStack.setTagCompound(new NBTTagCompound());

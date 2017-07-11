@@ -62,8 +62,9 @@ public class PokecubeAdv
             + "after:tesla;"
             + "after:lostcities;"
             + "after:ruins;"
-            + "after:minefactoryreloaded;"
-            + "after:ftbl";
+            + "after:ftbl"
+            + "after:reccomplex;"
+            + "after:minefactoryreloaded";
 
     public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
     public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";

@@ -133,7 +133,7 @@ public class MovesParser
             try
             {
                 move.power = Integer.parseInt(var);
-                System.out.println(entry.readableName+" "+var);
+                System.out.println(entry.readableName + " " + var);
             }
             catch (NumberFormatException e)
             {
@@ -180,13 +180,23 @@ public class MovesParser
         if (entry.secondaryEffect == null) return;
         String var = entry.secondaryEffect.toLowerCase(Locale.ENGLISH).trim();
         boolean ratioHeal = var.contains("user recovers") && var.contains(" the damage inflicted.");
+        boolean healRatio = var.contains("user recovers") && var.contains(" the maximum hp.");
         if (ratioHeal)
         {
             var = var.replace("user recovers ", "");
             var = var.replace(" the damage inflicted.", "");
             var = var.trim();
-            if (var.equals("half")) move.damageHealRatio = 50;
-            if (var.equals("75%")) move.damageHealRatio = 75;
+            if (var.contains("half")) move.damageHealRatio = 50;
+            if (var.contains("75%")) move.damageHealRatio = 75;
+            return;
+        }
+        else if (healRatio)
+        {
+            var = var.replace("user recovers ", "");
+            var = var.replace(" the damage inflicted.", "");
+            var = var.trim();
+            if (var.contains("half")) move.selfHealRatio = 50;
+            if (var.contains("75%")) move.selfHealRatio = 75;
             return;
         }
         if (var.contains("user restores health"))

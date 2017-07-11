@@ -20,7 +20,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
     public ItemStack dispense(IBlockSource source, ItemStack stack)
     {
         EnumFacing dir = null;
-        IBlockState state = source.func_189992_e();
+        IBlockState state = source.getBlockState();
         for (IProperty<?> prop : state.getPropertyNames())
         {
             if (prop.getValueClass() == EnumFacing.class)
@@ -63,6 +63,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
 
         if (stack.getItem() == PokecubeItems.pokemobEgg)
         {
+            player.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack.onItemUse(player, source.getWorld(), source.getBlockPos().offset(dir), EnumHand.MAIN_HAND,
                     EnumFacing.UP, 0.5f, 0.5f, 0.5f);
         }

@@ -31,8 +31,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
         }
         if (dir == null) return stack;
 
-        FakePlayer player = PokecubeMod.getFakePlayer();
-        player.world = source.getWorld();
+        FakePlayer player = PokecubeMod.getFakePlayer(source.getWorld());
         player.posX = source.getX();
         player.posY = source.getY() - player.getEyeHeight();
         player.posZ = source.getZ();
@@ -64,6 +63,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
 
         if (stack.getItem() == PokecubeItems.pokemobEgg)
         {
+            player.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack.onItemUse(player, source.getWorld(), source.getBlockPos().offset(dir), EnumHand.MAIN_HAND,
                     EnumFacing.UP, 0.5f, 0.5f, 0.5f);
         }
@@ -72,8 +72,8 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
             IPokecube cube = (IPokecube) stack.getItem();
             Vector3 direction = Vector3.getNewVector().set(dir);
             cube.throwPokecube(source.getWorld(), player, stack, direction, 0.25f);
+            stack.splitStack(1);
         }
-        stack.splitStack(1);
         return stack;
     }
 

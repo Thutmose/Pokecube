@@ -8,6 +8,7 @@ import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.utils.PokeType;
+import thut.lib.CompatWrapper;
 
 public class Multitype extends Ability
 {
@@ -32,12 +33,11 @@ public class Multitype extends Ability
         PokedexEntry entry = mob.getPokedexEntry();
 
         if (!entry.getName().contains("Arceus")) return;
-
         ItemStack held = ((EntityLivingBase) mob).getHeldItemMainhand();
-        if (held != null && held.getItem().getRegistryName().getResourceDomain().contains("pokecube")
-                && held.getItem().getRegistryName().getResourcePath().contains("badge"))
+        if (CompatWrapper.isValid(held) && held.getItem().getRegistryName().getResourceDomain().contains("pokecube")
+                && held.getItem().getRegistryName().getResourcePath().contains("badge") && held.hasTagCompound())
         {
-            String name = held.getItem().getRegistryName().getResourcePath();
+            String name = held.getTagCompound().getString("type");
             String typename = name.replace("badge", "");
             PokeType type = PokeType.getType(typename);
             if (type != PokeType.unknown)
@@ -48,7 +48,7 @@ public class Multitype extends Ability
         }
         if (entry.getBaseForme() != null && entry.getBaseName().equals("Arceus"))
         {
-            mob.setPokedexEntry(entry);
+            mob.setPokedexEntry(entry.getBaseForme());
             return;
         }
 

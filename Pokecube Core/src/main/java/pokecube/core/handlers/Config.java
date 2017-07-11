@@ -274,6 +274,8 @@ public class Config extends ConfigBase
     public String                        baseSizeFunction             = "8 + c/10 + h/10 + k/20";
     @Configure(category = world)
     public int                           baseMaxSize                  = 1;
+    @Configure(category = world)
+    public int                           spawnDimension               = 0;
     // Mob Spawning settings
     @Configure(category = spawning, needsMcRestart = true)
     /** Do monsters not spawn. */

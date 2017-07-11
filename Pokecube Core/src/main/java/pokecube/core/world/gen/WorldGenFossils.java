@@ -11,6 +11,8 @@ import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 
@@ -22,6 +24,9 @@ public class WorldGenFossils implements IWorldGenerator
             IChunkProvider chunkProvider)
     {
         if (!world.provider.isSurfaceWorld() || !PokecubeCore.core.getConfig().generateFossils) return;
+        if (PokecubeMod.core.getConfig().whiteListEnabled
+                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
+            return;
 
         int fossilchance = random.nextInt(5) + 2;
         for (int i = fossilchance; i > 0; i--)

@@ -159,6 +159,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
         else
         {
             this.entity.setMoveForward(0.0F);
+            entity.setMoveVertical(0);
         }
     }
 

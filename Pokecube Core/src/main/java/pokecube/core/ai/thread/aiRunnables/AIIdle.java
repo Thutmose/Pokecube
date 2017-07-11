@@ -225,7 +225,7 @@ public class AIIdle extends AIBase
             int x = j % (distance) - distance / 2;
             int y = (j / distance) % (distance) - distance / 2;
             int z = (j / (distance * distance)) % (distance) - distance / 2;
-            y = Math.max(1, y);
+            y = Math.min(Math.max(1, y), 2);
             temp.set(ret).addTo(x, y, z);
             if (temp.isClearOfBlocks(world)
                     && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }

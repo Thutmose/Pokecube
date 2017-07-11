@@ -1,6 +1,5 @@
 package pokecube.core.ai.thread.aiRunnables;
 
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -158,7 +157,11 @@ public class AIHungry extends AIBase
         {
             if (!isGoodSleepingSpot(c))
             {
-
+                pokemob.setPokemonAIState(IMoveConstants.IDLE, true);
+                Path path = this.entity.getNavigator().getPathToPos(pokemob.getHome());
+                if (path != null && path.getCurrentPathLength() > 32) path = null;
+                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                pokemob.setPokemonAIState(IMoveConstants.IDLE, false);
             }
             else if (entity.getAttackTarget() == null && !ownedSleepCheck && entity.getNavigator().noPath())
             {
@@ -579,16 +582,14 @@ public class AIHungry extends AIBase
     // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
     public boolean isGoodSleepingSpot(ChunkCoordinate c)
     {
-        float light = entity.getBrightness();
-        List<TimePeriod> active = pokemob.getPokedexEntry().activeTimes();
-        if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 10) return false;
-
-        // TODO refine timing
-        for (TimePeriod p : active)
+        if (pokemob.getHome() == null
+                || (pokemob.getHome().getX() == 0 && pokemob.getHome().getY() == 0 & pokemob.getHome().getZ() == 0))
         {
-            if (p.contains(18000)) { return light < 0.1; }
+            v1.set(pokemob);
+            pokemob.setHome(v1.intX(), v1.intY(), v1.intZ(), 16);
         }
-
+        if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 9) return false;
+        // TODO search for possible better place to sleep
         return true;
     }
 

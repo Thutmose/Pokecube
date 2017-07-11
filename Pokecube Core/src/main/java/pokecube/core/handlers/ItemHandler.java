@@ -258,12 +258,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
     private static void addMiscTiles(Object registry)
     {
         CompatWrapper.registerTileEntity(TileEntityPokecubeTable.class, "pokecube:pokecube_table");
-        CompatWrapper.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecenter");
-        CompatWrapper.registerTileEntity(TileEntityNest.class, "pokemobnest");
-        CompatWrapper.registerTileEntity(TileEntityBasePortal.class, "pokecubebaseportal");
-        CompatWrapper.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");
-        CompatWrapper.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
-        CompatWrapper.registerTileEntity(TileEntityRepel.class, "repel");
+        CompatWrapper.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecube:pokecenter");
+        CompatWrapper.registerTileEntity(TileEntityNest.class, "pokecube:pokemobnest");
+        CompatWrapper.registerTileEntity(TileEntityBasePortal.class, "pokecube:pokecubebaseportal");
+        CompatWrapper.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pokecube:pc");
+        CompatWrapper.registerTileEntity(TileEntityTradingTable.class, "pokecube:tradingtable");
+        CompatWrapper.registerTileEntity(TileEntityRepel.class, "pokecube:repel");
     }
 
     private static void addMiscItems(Object registry)

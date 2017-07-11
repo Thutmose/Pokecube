@@ -30,13 +30,13 @@ public class BlockHandler
 
     public static void registerTiles(Object registry)
     {
-        CompatWrapper.registerTileEntity(TileEntityWarpPad.class, "warppad");
-        CompatWrapper.registerTileEntity(TileEntityCloner.class, "cloner");
-        CompatWrapper.registerTileEntity(TileEntitySplicer.class, "splicer");
-        CompatWrapper.registerTileEntity(TileEntityGeneExtractor.class, "extractor");
-        CompatWrapper.registerTileEntity(TileEntityAFA.class, "afa");
-        CompatWrapper.registerTileEntity(TileEntityDaycare.class, "daycare");
-        CompatWrapper.registerTileEntity(TileEntitySiphon.class, "pokesiphon");
+        CompatWrapper.registerTileEntity(TileEntityWarpPad.class, PokecubeAdv.ID + ":warppad");
+        CompatWrapper.registerTileEntity(TileEntityCloner.class, PokecubeAdv.ID + ":cloner");
+        CompatWrapper.registerTileEntity(TileEntitySplicer.class, PokecubeAdv.ID + ":splicer");
+        CompatWrapper.registerTileEntity(TileEntityGeneExtractor.class, PokecubeAdv.ID + ":extractor");
+        CompatWrapper.registerTileEntity(TileEntityAFA.class, PokecubeAdv.ID + ":afa");
+        CompatWrapper.registerTileEntity(TileEntityDaycare.class, PokecubeAdv.ID + ":daycare");
+        CompatWrapper.registerTileEntity(TileEntitySiphon.class, PokecubeAdv.ID + ":pokesiphon");
     }
 
     public static void registerBlocks(Object registry)

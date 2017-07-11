@@ -1,5 +1,7 @@
 package pokecube.core.blocks.repel;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -46,7 +48,6 @@ public class TileEntityRepel extends TileEntity implements ITickable
     @Override
     public void update()
     {
-        if (world.isRemote) return;
         int power = world.getStrongPower(getPos());
         if (power != 0 && enabled)
         {
@@ -80,21 +81,23 @@ public class TileEntityRepel extends TileEntity implements ITickable
         return nbt;
     }
 
-    /** Overriden in a sign to provide the text. */
     @Override
+    @Nullable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
-        this.writeToNBT(nbttagcompound);
-        return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        return new SPacketUpdateTileEntity(this.pos, 3, this.getUpdateTag());
     }
 
     @Override
     public NBTTagCompound getUpdateTag()
     {
-        NBTTagCompound nbt = new NBTTagCompound();
-        return writeToNBT(nbt);
+        return this.writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void handleUpdateTag(NBTTagCompound tag)
+    {
+        this.readFromNBT(tag);
     }
 
     /** Called when you receive a TileEntityData packet for the location this

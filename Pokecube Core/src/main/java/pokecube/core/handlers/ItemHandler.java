@@ -44,10 +44,12 @@ import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.ItemBlockMeta;
 import pokecube.core.blocks.berries.TileEntityBerries;
+import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.nests.BlockNest;
 import pokecube.core.blocks.nests.TileEntityBasePortal;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.blocks.pc.ItemBlockPC;
+import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
 import pokecube.core.blocks.repel.TileEntityRepel;
 import pokecube.core.blocks.tradingTable.ItemBlockTradingTable;
@@ -258,12 +260,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
     private static void addMiscTiles(Object registry)
     {
         CompatWrapper.registerTileEntity(TileEntityPokecubeTable.class, "pokecube:pokecube_table");
-        CompatWrapper.registerTileEntity(pokecube.core.blocks.healtable.TileHealTable.class, "pokecenter");
-        CompatWrapper.registerTileEntity(TileEntityNest.class, "pokemobnest");
-        CompatWrapper.registerTileEntity(TileEntityBasePortal.class, "pokecubebaseportal");
-        CompatWrapper.registerTileEntity(pokecube.core.blocks.pc.TileEntityPC.class, "pc");
-        CompatWrapper.registerTileEntity(TileEntityTradingTable.class, "tradingtable");
-        CompatWrapper.registerTileEntity(TileEntityRepel.class, "repel");
+        CompatWrapper.registerTileEntity(TileHealTable.class, "pokecube:pokecenter");
+        CompatWrapper.registerTileEntity(TileEntityNest.class, "pokecube:pokemobnest");
+        CompatWrapper.registerTileEntity(TileEntityBasePortal.class, "pokecube:pokecubebaseportal");
+        CompatWrapper.registerTileEntity(TileEntityPC.class, "pokecube:pc");
+        CompatWrapper.registerTileEntity(TileEntityTradingTable.class, "pokecube:tradingtable");
+        CompatWrapper.registerTileEntity(TileEntityRepel.class, "pokecube:repel");
     }
 
     private static void addMiscItems(Object registry)

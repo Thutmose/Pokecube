@@ -1,6 +1,7 @@
 package pokecube.core.moves.implementations.special;
 
 import net.minecraft.entity.EntityLivingBase;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.templates.Move_Basic;
@@ -20,7 +21,8 @@ public class MoveCounter extends Move_Basic
         if (packet.canceled || packet.failed) return;
         if (!packet.attacker.getMoveStats().biding)
         {
-            packet.attacker.getMoveStats().SELFRAISECOUNTER = 30;
+            packet.attacker.getMoveStats().SELFRAISECOUNTER = (int) (PokecubeMod.core.getConfig().attackCooldown * 1.5);
+            packet.attacker.setAttackCooldown(packet.attacker.getMoveStats().SELFRAISECOUNTER);
             packet.attacker.getMoveStats().biding = true;
             packet.attacker.getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
         }

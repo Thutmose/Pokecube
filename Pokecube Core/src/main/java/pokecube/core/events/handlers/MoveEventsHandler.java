@@ -93,8 +93,7 @@ public class MoveEventsHandler
                     {
                         int k = EntityXPOrb.getXPSplit(i1);
                         i1 -= k;
-                        world.spawnEntity(
-                                new EntityXPOrb(world, location.x, location.y + 1.5D, location.z + 0.5D, k));
+                        world.spawnEntity(new EntityXPOrb(world, location.x, location.y + 1.5D, location.z + 0.5D, k));
                     }
                     int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                     hunger = (int) Math.max(1, hunger / (float) attacker.getLevel());
@@ -450,8 +449,7 @@ public class MoveEventsHandler
                 break;
             }
 
-        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked
-                && applied.getMoveStats().blockTimer-- <= 0)
+        if (user && !blockMove && applied.getMoveStats().blocked && applied.getMoveStats().blockTimer-- <= 0)
         {
             applied.getMoveStats().blocked = false;
             applied.getMoveStats().blockTimer = 0;

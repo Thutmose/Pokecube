@@ -29,6 +29,7 @@ import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.templates.Move_Ongoing;
@@ -528,7 +529,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (status == STATUS_FRZ && isType(PokeType.ice)) return false;
         if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
         dataManager.set(STATUSDW, status);
-        setStatusTimer((short) 100);
+        setStatusTimer((short) (PokecubeMod.core.getConfig().attackCooldown * 5));
         return true;
     }
 

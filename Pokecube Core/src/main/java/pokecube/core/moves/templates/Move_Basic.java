@@ -626,7 +626,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             ((EntityLiving) attacker).setHealth(Math.min(((EntityLiving) attacker).getMaxHealth(),
                     ((EntityLiving) attacker).getHealth() + (((EntityLiving) attacker).getMaxHealth() * healRatio)));
-            attacker.getMoveStats().SELFRAISECOUNTER = 80;
+            attacker.getMoveStats().SELFRAISECOUNTER = (PokecubeMod.core.getConfig().attackCooldown * 4);
+            attacker.setAttackCooldown(attacker.getMoveStats().SELFRAISECOUNTER);
         }
 
         packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,

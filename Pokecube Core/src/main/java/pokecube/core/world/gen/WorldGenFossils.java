@@ -24,6 +24,7 @@ public class WorldGenFossils implements IWorldGenerator
             IChunkProvider chunkProvider)
     {
         if (!world.provider.isSurfaceWorld() || !PokecubeCore.core.getConfig().generateFossils) return;
+        if (SpawnHandler.dimensionBlacklist.contains(world.provider.getDimension())) return;
         if (PokecubeMod.core.getConfig().whiteListEnabled
                 && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
             return;

@@ -662,7 +662,7 @@ public final class SpawnHandler
     {
         if (dimensionBlacklist.contains(world.provider.getDimension())) return;
         if (PokecubeMod.core.getConfig().whiteListEnabled
-                && SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
+                && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
             return;
         if (world.provider instanceof WorldProviderSecretBase) return;
         try

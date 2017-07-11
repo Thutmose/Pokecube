@@ -62,7 +62,7 @@ public class PokecubeAdv
             + "after:tesla;"
             + "after:lostcities;"
             + "after:ruins;"
-            + "after:ftbl"
+            + "after:ftbl;"
             + "after:reccomplex;"
             + "after:minefactoryreloaded";
 

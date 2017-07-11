@@ -116,7 +116,7 @@ public class SpawnEventsHandler
                 || event.world.provider instanceof WorldProviderSecretBase))
             event.setCanceled(true);
         if (PokecubeMod.core.getConfig().whiteListEnabled
-                && SpawnHandler.dimensionWhitelist.contains(event.world.provider.getDimension()))
+                && !SpawnHandler.dimensionWhitelist.contains(event.world.provider.getDimension()))
             event.setCanceled(true);
     }
 }

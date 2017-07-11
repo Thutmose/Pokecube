@@ -213,9 +213,9 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public boolean                       diveEnabled                  = true;
     @Configure(category = mobAI)
-    public String[]                      dodgeSounds                  = { "entity.generic.small_fall" };
+    public String[]                      dodgeSounds                  = { "entity.witch.throw" };
     @Configure(category = mobAI)
-    public String[]                      leapSounds                   = { "entity.generic.small_fall" };
+    public String[]                      leapSounds                   = { "entity.witch.throw" };
     @Configure(category = mobAI)
     public String[]                      guardBlacklistClass          = { "net.minecraft.entity.IMerchant",
             "net.minecraft.entity.INpc", "pokecube.core.items.pokemobeggs.EntityPokemobEgg",
@@ -407,7 +407,7 @@ public class Config extends ConfigBase
     public boolean                       debug                        = false;
     @Configure(category = advanced)
     public String[]                      damageBlocksWhitelist        = { "flash", "teleport", "dig", "cut",
-            "rocksmash" };
+            "rocksmash", "secretpower" };
     @Configure(category = advanced)
     public String[]                      damageBlocksBlacklist        = {};
     @Configure(category = advanced)

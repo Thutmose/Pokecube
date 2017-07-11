@@ -207,7 +207,7 @@ public class AICombatMovement extends AIBase
         Vector3 dir = targetLoc.subtract(leaperLoc);
         double d = dir.mag();
         dir.norm();
-        dir.scalarMultBy(d * 0.1f);
+        dir.scalarMultBy(d * 0.2f);
         if (dir.magSq() < 1) dir.norm();
         if (dir.isNaN())
         {

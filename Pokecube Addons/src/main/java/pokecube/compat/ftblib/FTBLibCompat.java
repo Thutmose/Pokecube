@@ -1,5 +1,7 @@
 package pokecube.compat.ftblib;
 
+import java.util.UUID;
+
 import com.feed_the_beast.ftbl.api.EnumTeamStatus;
 import com.feed_the_beast.ftbl.api.FTBLibAPI;
 import com.feed_the_beast.ftbl.api.FTBLibPlugin;
@@ -30,6 +32,11 @@ public class FTBLibCompat implements IFTBLibPlugin
 
         private String getPlayerTeam(EntityPlayer player)
         {
+            return getPlayerTeam(player.getUniqueID());
+        }
+
+        private String getPlayerTeam(UUID player)
+        {
             IUniverse universe = api.getUniverse();
             if (universe == null) return "";
             IForgePlayer iplayer = universe.getPlayer(player);
@@ -48,6 +55,11 @@ public class FTBLibCompat implements IFTBLibPlugin
                 IEntityOwnable pokemob = (IEntityOwnable) entityIn;
                 Entity owner = pokemob.getOwner();
                 if (owner != null && !(owner instanceof IEntityOwnable)) return getTeam(pokemob.getOwner());
+                if (pokemob.getOwnerId() != null)
+                {
+                    String team = getPlayerTeam(pokemob.getOwnerId());
+                    if (!team.isEmpty()) return team;
+                }
             }
             return defaults.getTeam(entityIn);
         }

@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.recipes.XMLRecipeHandler;
@@ -104,7 +105,7 @@ public class Config extends ConfigBase
     public float                         expScaleFactor               = 1;
     @Configure(category = misc)
     public boolean                       pcHoldsOnlyPokecubes         = true;
-    
+
     // AI Related settings
     @Configure(category = mobAI)
     public double                        contactAttackDistance        = 0;
@@ -215,6 +216,12 @@ public class Config extends ConfigBase
     public String[]                      dodgeSounds                  = { "entity.generic.small_fall" };
     @Configure(category = mobAI)
     public String[]                      leapSounds                   = { "entity.generic.small_fall" };
+    @Configure(category = mobAI)
+    public String[]                      guardBlacklistClass          = { "net.minecraft.entity.IMerchant",
+            "net.minecraft.entity.INpc", "pokecube.core.items.pokemobeggs.EntityPokemobEgg",
+            "net.minecraft.entity.IProjectile" };
+    @Configure(category = mobAI)
+    public String[]                      guardBlacklistId             = {};
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};
@@ -451,7 +458,7 @@ public class Config extends ConfigBase
     @Configure(category = healthbars)
     public int                           plateSize                    = 25;
     @Configure(category = healthbars)
-    public boolean                       showHeldItem               = true;
+    public boolean                       showHeldItem                 = true;
     @Configure(category = healthbars)
     public boolean                       showArmor                    = true;
     @Configure(category = healthbars)
@@ -519,6 +526,23 @@ public class Config extends ConfigBase
         for (String loc : mystLocs)
         {
             PokecubeMod.giftLocations.add(loc);
+        }
+
+        for (String s : guardBlacklistClass)
+        {
+            try
+            {
+                Class<?> c = Class.forName(s, false, getClass().getClassLoader());
+                AIFindTarget.invalidClasses.add(c);
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        for (String s : guardBlacklistId)
+        {
+            AIFindTarget.invalidIDs.add(s);
         }
 
         for (String s : recipeDatabases)

@@ -1,6 +1,7 @@
 package pokecube.compat.tecompat;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
@@ -8,7 +9,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.handlers.TeamManager.ITeamProvider;
 import pokecube.core.interfaces.IPokecube;
-import pokecube.core.interfaces.IPokemob;
 import thut.essentials.events.DenyItemUseEvent;
 import thut.essentials.events.DenyItemUseEvent.UseType;
 import thut.essentials.land.LandManager;
@@ -44,11 +44,11 @@ public class EssentialsCompat
                 LandTeam team = LandManager.getTeam(entityIn);
                 return team.teamName;
             }
-            if (entityIn instanceof IPokemob)
+            if (entityIn instanceof IEntityOwnable)
             {
-                IPokemob pokemob = (IPokemob) entityIn;
-                Entity owner = pokemob.getPokemonOwner();
-                if (owner != null && !(owner instanceof IPokemob)) return getTeam(pokemob.getPokemonOwner());
+                IEntityOwnable pokemob = (IEntityOwnable) entityIn;
+                Entity owner = pokemob.getOwner();
+                if (owner != null && !(owner instanceof IEntityOwnable)) return getTeam(pokemob.getOwner());
             }
             return defaults.getTeam(entityIn);
         }

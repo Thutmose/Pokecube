@@ -88,6 +88,7 @@ pokecube.config.useConfigForBerryLocations.tooltip=Should berryLocations be used
 pokecube.config.baseSizeFunction.tooltip=Relation between world border size, and number of captured (c), hatched (h) and killed (k) types of pokemobs.
 pokecube.config.baseMaxSize.tooltip=Maximum number of chunks in radius a secret base can be, 1 results in 2x2, 2 in 4x4, 3 in 6x6, etc.
 pokecube.config.structureSubiomes.tooltip=Custom Subbiomes for vanilla structures.
+pokecube.config.spawnDimension.tooltip=DimensionID for the Spawn Pokecenter to generate in.
 
 #Spawning
 pokecube.config.spawning=Spawning Options

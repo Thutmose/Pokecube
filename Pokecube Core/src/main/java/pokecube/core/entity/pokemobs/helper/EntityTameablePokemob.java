@@ -91,10 +91,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Byte>                MOVEINDEXDW      = EntityDataManager
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
-    static final DataParameter<Integer>             EVS1DW           = EntityDataManager
-            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>             EVS2DV           = EntityDataManager
-            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>             SPECIALINFO      = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>             EVOLNBDW         = EntityDataManager
@@ -138,6 +134,15 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT),
             EntityDataManager.<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT) };
+
+    @SuppressWarnings("unchecked")
+    static final DataParameter<Byte>[]              EVS              = new DataParameter[] {
+            EntityDataManager.<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE),
+            EntityDataManager.<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE),
+            EntityDataManager.<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE),
+            EntityDataManager.<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE),
+            EntityDataManager.<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE),
+            EntityDataManager.<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE) };
 
     protected boolean                               looksWithInterest;
     protected float                                 headRotation;
@@ -212,8 +217,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         dataManager.register(HUNGERDW, new Integer(0));// Hunger time
         // // for sheared status
         dataManager.register(NICKNAMEDW, "");// nickname
-        dataManager.register(EVS1DW, new Integer(1));// evs
-        dataManager.register(EVS2DV, new Integer(1));// evs
         dataManager.register(HAPPYDW, new Integer(0));// Happiness
 
         // From EntityAiPokemob
@@ -246,6 +249,12 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         for (int i = 0; i < 5; i++)
         {
             dataManager.register(FLAVOURS[i], Integer.valueOf(0));
+        }
+
+        // Flavours for various berries eaten.
+        for (int i = 0; i < 6; i++)
+        {
+            dataManager.register(EVS[i], Byte.MIN_VALUE);
         }
         // ID of the owner.
         dataManager.register(OWNER_ID, Optional.<UUID> absent());

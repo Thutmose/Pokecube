@@ -40,7 +40,6 @@ import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketChangeForme;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
@@ -197,20 +196,25 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void setEVs(byte[] evs)
     {
-        int[] ints = PokecubeSerializer.byteArrayAsIntArray(evs);
-        dataManager.set(EVS1DW, ints[0]);
-        dataManager.set(EVS2DV, ints[1]);
+        for (int i = 0; i < 6; i++)
+        {
+            dataManager.set(EVS[i], evs[i]);
+        }
         if (genesEVs == null) getEVs();
         if (genesEVs != null) genesEVs.getExpressed().setValue(evs);
     }
+
+    byte[] evs = new byte[6];
 
     @Override
     public byte[] getEVs()
     {
         if (!isServerWorld())
         {
-            int[] ints = new int[] { dataManager.get(EVS1DW), dataManager.get(EVS2DV) };
-            byte[] evs = PokecubeSerializer.intArrayAsByteArray(ints);
+            for (int i = 0; i < 6; i++)
+            {
+                evs[i] = dataManager.get(EVS[i]);
+            }
             return evs;
         }
         else

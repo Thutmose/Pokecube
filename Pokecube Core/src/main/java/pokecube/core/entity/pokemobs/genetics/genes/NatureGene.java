@@ -25,12 +25,14 @@ public class NatureGene implements Gene
     @Override
     public Gene mutate()
     {
-        if (rand.nextFloat() < GeneticsManager.mutationRates.get(getKey()))
-        {
-            NatureGene newGene = new NatureGene();
-            return newGene;
-        }
-        return this;
+        NatureGene newGene = new NatureGene();
+        return newGene;
+    }
+
+    @Override
+    public float getMutationRate()
+    {
+        return GeneticsManager.mutationRates.get(getKey());
     }
 
     @SuppressWarnings("unchecked")

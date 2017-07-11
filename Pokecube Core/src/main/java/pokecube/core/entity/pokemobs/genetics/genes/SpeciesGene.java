@@ -113,6 +113,12 @@ public class SpeciesGene implements Gene
     }
 
     @Override
+    public float getMutationRate()
+    {
+        return 1;
+    }
+
+    @Override
     public NBTTagCompound save()
     {
         NBTTagCompound tag = new NBTTagCompound();

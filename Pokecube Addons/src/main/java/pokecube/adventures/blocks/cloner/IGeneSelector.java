@@ -14,8 +14,8 @@ public interface IGeneSelector
         Gene gene2 = destination.getExpressed();
         if (gene1.getEpigeneticRate() < rand.nextFloat())
         {
-            gene1 = source.getAlleles()[rand.nextInt(2)].mutate();
-            gene2 = destination.getAlleles()[rand.nextInt(2)].mutate();
+            gene1 = source.getAlleles()[rand.nextInt(2)];
+            gene2 = destination.getAlleles()[rand.nextInt(2)];
             return new Alleles(gene1, gene2);
         }
         return new Alleles(source.getExpressed(), destination.getExpressed());

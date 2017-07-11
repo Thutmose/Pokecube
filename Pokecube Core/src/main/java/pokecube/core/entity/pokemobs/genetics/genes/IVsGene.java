@@ -4,8 +4,11 @@ import java.util.Random;
 
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
+import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
 import pokecube.core.utils.Tools;
+import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.Gene;
+import thut.api.entity.genetics.IMobGenetics;
 import thut.core.common.genetics.genes.GeneByteArr;
 
 public class IVsGene extends GeneByteArr
@@ -23,17 +26,10 @@ public class IVsGene extends GeneByteArr
         IVsGene newGene = new IVsGene();
         byte[] ret = newGene.value;
         IVsGene otherI = (IVsGene) other;
-        Random rand = new Random();
-        float chance = GeneticsManager.mutationRates.get(getKey());
         for (int i = 0; i < 6; i++)
         {
             byte mi = value[i];
             byte fi = otherI.value[i];
-            if (rand.nextFloat() < chance)
-            {
-                ret[i] = (byte) Math.min(fi, mi);
-                continue;
-            }
             byte iv = (byte) ((mi + fi) / 2);
             ret[i] = iv;
         }
@@ -57,6 +53,47 @@ public class IVsGene extends GeneByteArr
             ret[i] = iv;
         }
         return newGene;
+    }
+
+    public Gene mutate(IMobGenetics parent1, IMobGenetics parent2)
+    {
+        Alleles evs1 = parent1.getAlleles().get(GeneticsManager.EVSGENE);
+        Alleles evs2 = parent2.getAlleles().get(GeneticsManager.EVSGENE);
+        Alleles ivs1 = parent1.getAlleles().get(GeneticsManager.IVSGENE);
+        Alleles ivs2 = parent2.getAlleles().get(GeneticsManager.IVSGENE);
+        IVsGene newGene = new IVsGene();
+        newGene.value = value.clone();
+        if (evs1 == null || evs2 == null || ivs1 == null || ivs2 == null)
+        {
+            // No Mutation, return clone of this gene.
+            return newGene;
+        }
+        Random rand = new Random();
+        EVsGene gene1 = evs1.getExpressed();
+        EVsGene gene2 = evs2.getExpressed();
+        byte[] ret = newGene.value;
+        byte[] ev1 = gene1.getValue();
+        byte[] ev2 = gene2.getValue();
+        byte[] iv1 = ivs1.getExpressed().getEpigeneticRate() > rand.nextFloat() ? ivs1.getExpressed().getValue()
+                : ivs1.getAlleles()[rand.nextInt(2)].getValue();
+        byte[] iv2 = ivs2.getExpressed().getEpigeneticRate() > rand.nextFloat() ? ivs2.getExpressed().getValue()
+                : ivs2.getAlleles()[rand.nextInt(2)].getValue();
+        for (int i = 0; i < 6; i++)
+        {
+            int v = (ev1[i] + ev2[2]) / 2;
+            GeneticsManager.epigeneticParser.setVarValue("v", v);
+            byte mi = (byte) rand.nextInt((int) (iv1[i] + 1 + GeneticsManager.epigeneticParser.getValue()));
+            byte fi = (byte) rand.nextInt((int) (iv2[i] + 1 + GeneticsManager.epigeneticParser.getValue()));
+            byte iv = (byte) (Math.min(mi + fi, 31));
+            ret[i] = iv;
+        }
+        return newGene;
+    }
+
+    @Override
+    public float getMutationRate()
+    {
+        return GeneticsManager.mutationRates.get(getKey());
     }
 
     @Override

@@ -3,10 +3,12 @@ package pokecube.modelloader.client.render;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
@@ -42,25 +44,41 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             checkedForSleep = true;
             hasSleepAnimation = hasPhase("sleeping") || hasPhase("sleep") || hasPhase("asleep");
         }
-        if (hasSleepAnimation) return;
-        boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
-        if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
+        if (par1EntityLiving.getHealth() <= 0)
         {
-            short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
-            float ratio = 1F;
-            if (status)
+            float f = ((float) par1EntityLiving.deathTime + par4 - 1.0F) / 20.0F * 1.6F;
+            f = MathHelper.sqrt_float(f);
+
+            if (f > 1.0F)
             {
-                if (timer <= 200 && timer > 175)
-                {
-                    ratio = 1F - ((timer - 175F) / 25F);
-                }
-                if (timer >= 0 && timer <= 25)
-                {
-                    ratio = 1F - ((25F - timer) / 25F);
-                }
+                f = 1.0F;
             }
-            GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
-            GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
+
+            GlStateManager.rotate(f * this.getDeathMaxRotation(par1EntityLiving), 0.0F, 0.0F, 1.0F);
+            return;
+        }
+        if (!hasSleepAnimation)
+        {
+            boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
+            if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
+            {
+                float timer = ((IPokemob) par1EntityLiving).getStatusTimer() + par4;
+                float ratio = 1F;
+                if (status)
+                {
+                    if (timer <= 200 && timer > 175)
+                    {
+                        ratio = 1F - ((timer - 175F) / 25F);
+                    }
+                    if (timer >= 0 && timer <= 25)
+                    {
+                        ratio = 1F - ((25F - timer) / 25F);
+                    }
+                }
+                GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
+                GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
+                return;
+            }
         }
     }
 

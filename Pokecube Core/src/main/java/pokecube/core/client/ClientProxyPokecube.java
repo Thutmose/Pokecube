@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.client.Minecraft;
@@ -319,10 +318,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void initBlockModels()
     {
         StateMap map;
-        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockCrops.AGE }).build();
-        if (PokecubeMod.core.getConfig().berryCropTexIgnoreAge)
-            ModelLoader.setCustomStateMapper(BerryManager.berryCrop, map);
-
         map = (new StateMap.Builder())
                 .ignore(new IProperty[] { BerryManager.type, BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build();
         ModelLoader.setCustomStateMapper(BerryManager.berryLeaf, map);

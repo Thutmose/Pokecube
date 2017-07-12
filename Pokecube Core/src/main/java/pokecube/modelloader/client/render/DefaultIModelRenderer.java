@@ -4,32 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.lwjgl.opengl.GL11;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.client.render.entity.RenderPokemob;
-import pokecube.core.client.render.entity.RenderPokemobs;
-import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.modelloader.client.render.AnimationLoader.Model;
 import pokecube.modelloader.client.render.wrappers.ModelWrapper;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
-import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.x3d.X3dModel;
 
-public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingBase<T> implements IModelRenderer<T>
+public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {
     public static class Vector5
     {
@@ -88,8 +80,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     public static final String          DEFAULTPHASE      = "idle";
     public String                       name;
     public String                       currentPhase      = "idle";
-    private boolean                     checkedForSleep   = false;
-    private boolean                     hasSleepAnimation = false;
     public HashMap<String, PartInfo>    parts             = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>> global;
     public HashMap<String, Animation>   animations        = new HashMap<String, Animation>();
@@ -115,12 +105,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
 
     public float[]                      headCaps1         = { -20, 40 };
     ResourceLocation                    texture;
-
-    // Values used to properly reset the GL state after rendering.
-    boolean                             blend;
-    boolean                             light;
-    int                                 src;
-    int                                 dst;
 
     public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, Model model)
     {
@@ -159,12 +143,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
             partsList.put(s, p);
         }
         return partsList;
-    }
-
-    @Override
-    protected ResourceLocation getEntityTexture(T var1)
-    {
-        return RenderPokemobs.getInstance().getEntityTexturePublic(var1);
     }
 
     private PartInfo getPartInfo(String partName)
@@ -236,34 +214,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
         }
     }
 
-    private void postRenderStatus()
-    {
-        if (light) GL11.glEnable(GL11.GL_LIGHTING);
-        if (!blend) GL11.glDisable(GL11.GL_BLEND);
-        GL11.glBlendFunc(src, dst);
-        model.statusRender = false;
-    }
-
-    private void preRenderStatus()
-    {
-        blend = GL11.glGetBoolean(GL11.GL_BLEND);
-        light = GL11.glGetBoolean(GL11.GL_LIGHTING);
-        src = GL11.glGetInteger(GL11.GL_BLEND_SRC);
-        dst = GL11.glGetInteger(GL11.GL_BLEND_DST);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        model.statusRender = true;
-    }
-
-    @Override
-    public void renderStatus(T entity, double d, double d1, double d2, float f, float partialTick)
-    {
-        preRenderStatus();
-        RenderPokemob.renderStatus(this, entity, d, d1, d2, f, partialTick);
-        postRenderStatus();
-    }
-
     @Override
     public void setPhase(String phase)
     {
@@ -279,39 +229,8 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends RenderLivingB
     }
 
     @Override
-    protected boolean canRenderName(T entity)
+    void setStatusRender(boolean value)
     {
-        return entity.getEntityData().getBoolean("isPlayer");
-    }
-
-    @Override
-    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
-    {
-        super.applyRotations(par1EntityLiving, par2, par3, par4);
-        if (!checkedForSleep)
-        {
-            checkedForSleep = true;
-            hasSleepAnimation = hasPhase("sleeping") || hasPhase("sleep") || hasPhase("asleep");
-        }
-        if (hasSleepAnimation) return;
-        boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
-        if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
-        {
-            short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
-            float ratio = 1F;
-            if (status)
-            {
-                if (timer <= 200 && timer > 175)
-                {
-                    ratio = 1F - ((timer - 175F) / 25F);
-                }
-                if (timer >= 0 && timer <= 25)
-                {
-                    ratio = 1F - ((25F - timer) / 25F);
-                }
-            }
-            GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
-            GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
-        }
+        model.statusRender = value;
     }
 }

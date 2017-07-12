@@ -75,7 +75,6 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
                         ratio = 1F - ((25F - timer) / 25F);
                     }
                 }
-                GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
                 GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
                 return;
             }

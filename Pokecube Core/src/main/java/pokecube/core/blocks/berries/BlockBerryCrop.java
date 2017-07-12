@@ -65,7 +65,9 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
         String name = BerryManager.berryNames.get(tile.getBerryId());
         if (name == null) name = "cheri";
-        return state.withProperty(BerryManager.type, name);
+        int age = state.getValue(AGE);
+        if (worldIn.getBlockState(pos.up()).getBlock() == BerryManager.berryFruit) age = 7;
+        return state.withProperty(BerryManager.type, name).withProperty(AGE, age);
     }
 
     @Override

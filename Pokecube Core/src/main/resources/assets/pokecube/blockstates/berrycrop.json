@@ -23,6 +23,17 @@
            "enigma": { "textures":{ "cross": "pokecube:blocks/enigmacrop" } },
            "jaboca": { "textures":{ "cross": "pokecube:blocks/jabocacrop" } },
            "rowap": { "textures":{ "cross": "pokecube:blocks/rowapcrop" } }
+        },
+        "age":
+        {
+            "0": {"model": "pokecube:berrycrop", "textures":{ "cross": "pokecube:blocks/berryseed" }},
+            "1": {"model": "pokecube:berrycrop2"},
+            "2": {"model": "pokecube:berrycrop3"},
+            "3": {"model": "pokecube:berrycrop4"},
+            "4": {"model": "pokecube:berrycrop5"},
+            "5": {"model": "pokecube:berrycrop6"},
+            "6": {"model": "pokecube:berrycrop7"},
+            "7": {"model": "pokecube:berrycrop"}
         }
     }
 }

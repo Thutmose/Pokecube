@@ -97,10 +97,11 @@ public class TileEntityBerries extends TileEntity implements ITickable
 
     public void growCrop()
     {
+        BlockPos up = pos.up();
+        if (!(worldObj.getBlockState(up).getBlock().isAir(worldObj.getBlockState(up), worldObj, up))) return;
         stage++;
         if (stage > 7) stage = 7;
-        BlockPos up = pos.up();
-        if (stage == 7 && worldObj.getBlockState(up).getBlock().isAir(worldObj.getBlockState(up), worldObj, up))
+        if (stage == 7)
         {
             TreeGrower grower = null;
             if ((grower = trees.get(berryId)) != null)

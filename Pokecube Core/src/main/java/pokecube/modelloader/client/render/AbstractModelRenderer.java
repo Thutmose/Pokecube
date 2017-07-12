@@ -34,9 +34,9 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     }
 
     @Override
-    protected void rotateCorpse(T par1EntityLiving, float par2, float par3, float par4)
+    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
     {
-        super.rotateCorpse(par1EntityLiving, par2, par3, par4);
+        super.applyRotations(par1EntityLiving, par2, par3, par4);
         if (!checkedForSleep)
         {
             checkedForSleep = true;

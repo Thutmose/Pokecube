@@ -165,7 +165,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                     : (EntityPlayerMP) male.getPokemonOwner();
             Triggers.BREEDPOKEMOB.trigger(player, this, male);
         }
-        Vector3 pos = Vector3.getNewVector().set(this);
+        Vector3 pos = Vector3.getNewVector().set(this).addTo(0, Math.max(this.height / 4, 0.5f), 0);
         if (pos.isClearOfBlocks(getEntityWorld()))
         {
             Entity eggItem = null;

@@ -5,6 +5,7 @@ import java.util.Random;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.genetics.epigenes.EVsGene;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.Gene;
@@ -66,6 +67,7 @@ public class IVsGene extends GeneByteArr
         if (evs1 == null || evs2 == null || ivs1 == null || ivs2 == null)
         {
             // No Mutation, return clone of this gene.
+            PokecubeMod.log("Someone has null genes: " + evs1 + " " + evs2 + " " + ivs1 + " " + ivs2);
             return newGene;
         }
         Random rand = new Random();

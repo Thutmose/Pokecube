@@ -3,10 +3,12 @@ package pokecube.modelloader.client.render;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
@@ -42,11 +44,25 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             checkedForSleep = true;
             hasSleepAnimation = hasPhase("sleeping") || hasPhase("sleep") || hasPhase("asleep");
         }
+        if (par1EntityLiving.getHealth() <= 0)
+        {
+            float f = ((float) par1EntityLiving.deathTime + par4 - 1.0F) / 20.0F * 1.6F;
+            f = MathHelper.sqrt_float(f);
+
+            if (f > 1.0F)
+            {
+                f = 1.0F;
+            }
+
+            GlStateManager.rotate(f * this.getDeathMaxRotation(par1EntityLiving), 0.0F, 0.0F, 1.0F);
+            return;
+        }
+
         if (hasSleepAnimation) return;
         boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
         if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
         {
-            short timer = ((IPokemob) par1EntityLiving).getStatusTimer();
+            float timer = ((IPokemob) par1EntityLiving).getStatusTimer() + par4;
             float ratio = 1F;
             if (status)
             {

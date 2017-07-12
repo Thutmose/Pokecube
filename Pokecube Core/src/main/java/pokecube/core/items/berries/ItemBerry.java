@@ -52,49 +52,9 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
     {
         String info = "";
         tooltip.add(I18n.format("item.berry.desc"));
-        switch (stack.getItemDamage())
-        {
-        case 1:
-            info = I18n.format("item.cheriBerry.desc");
-            tooltip.add(info);
-            break;
-        case 2:
-            info = I18n.format("item.chestoBerry.desc");
-            tooltip.add(info);
-            break;
-        case 3:
-            info = I18n.format("item.pechaBerry.desc");
-            tooltip.add(info);
-            break;
-        case 4:
-            info = I18n.format("item.rawstBerry.desc");
-            tooltip.add(info);
-            break;
-        case 5:
-            info = I18n.format("item.aspearBerry.desc");
-            tooltip.add(info);
-            break;
-        case 7:
-            info = I18n.format("item.oranBerry.desc");
-            tooltip.add(info);
-            break;
-        case 9:
-            info = I18n.format("item.lumBerry.desc");
-            tooltip.add(info);
-            break;
-        case 10:
-            info = I18n.format("item.sitrusBerry.desc");
-            tooltip.add(info);
-            break;
-        case 63:
-            info = I18n.format("item.jabocaBerry.desc");
-            tooltip.add(info);
-            break;
-        case 64:
-            info = I18n.format("item.rowapBerry.desc");
-            tooltip.add(info);
-            break;
-        }
+        String berryName = BerryManager.berryNames.get(stack.getItemDamage());
+        info = I18n.format("item." + berryName + "Berry.desc");
+        tooltip.add(info);
         if (TileEntityBerries.trees.containsKey(stack.getItemDamage()))
         {
             info = I18n.format("item.berry.istree.desc");

@@ -1,26 +1,28 @@
 {
 	"forge_marker": 1,
 	"defaults": {
-	    "transform":"forge:default-block"
+	    "transform":"forge:default-block",
+        "model": "pokecube:berrycrop"
 	},
 	"variants": {
 	    "type": {
-           "cheri": { "model": "pokecube:cheriCrop" },
-           "chesto": { "model": "pokecube:chestoCrop" },
-           "pecha": { "model": "pokecube:pechaCrop" },
-           "rawst": { "model": "pokecube:rawstCrop" },
-           "aspear": { "model": "pokecube:aspearCrop" },
-           "leppa": { "model": "pokecube:leppaCrop" },
-           "oran": { "model": "pokecube:oranCrop" },
-           "persim": { "model": "pokecube:persimCrop" },
-           "lum": { "model": "pokecube:lumCrop" },
-           "sitrus": { "model": "pokecube:sitrusCrop" },
-           "nanab": { "model": "pokecube:nanabCrop" },
-           "pinap": { "model": "pokecube:pinapCrop" },
-           "cornn": { "model": "pokecube:cornnCrop" },
-           "enigma": { "model": "pokecube:engimaCrop" },
-           "jaboca": { "model": "pokecube:jabocaCrop" },
-           "rowap": { "model": "pokecube:rowapCrop" }
+           "cheri": { "textures":{ "cross": "pokecube:blocks/chericrop" } },
+           "chesto": { "textures":{ "cross": "pokecube:blocks/chestocrop" } },
+           "pecha": { "textures":{ "cross": "pokecube:blocks/pechacrop" } },
+           "rawst": { "textures":{ "cross": "pokecube:blocks/rawstcrop" } },
+           "aspear": { "textures":{ "cross": "pokecube:blocks/aspearcrop" } },
+           "leppa": { "textures":{ "cross": "pokecube:blocks/leppacrop" } },
+           "oran": { "textures":{ "cross": "pokecube:blocks/orancrop" } },
+           "persim": { "textures":{ "cross": "pokecube:blocks/persimcrop" } },
+           "lum": { "textures":{ "cross": "pokecube:blocks/lumcrop" } },
+           "sitrus": { "textures":{ "cross": "pokecube:blocks/sitruscrop" } },
+           "nanab": { "textures":{ "cross": "pokecube:blocks/nanabcrop" } },
+           "pinap": { "textures":{ "cross": "pokecube:blocks/pinapcrop" } },
+           "grepa": { "textures":{ "cross": "pokecube:blocks/grepacrop" } },
+           "cornn": { "textures":{ "cross": "pokecube:blocks/cornncrop" } },
+           "enigma": { "textures":{ "cross": "pokecube:blocks/enigmacrop" } },
+           "jaboca": { "textures":{ "cross": "pokecube:blocks/jabocacrop" } },
+           "rowap": { "textures":{ "cross": "pokecube:blocks/rowapcrop" } }
         }
     }
 }

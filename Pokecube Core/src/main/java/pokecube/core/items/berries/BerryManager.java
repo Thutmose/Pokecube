@@ -12,6 +12,7 @@ import com.google.common.base.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BerryGenManager.GenericGrower;
@@ -180,5 +181,6 @@ public class BerryManager implements IMoveConstants
                 .withProperty(BlockBerryLog.VARIANT4, BlockBerryWood.EnumType.ENIGMA)));
         TileEntityBerries.trees.put(18, new PalmGrower(ItemHandler.log1.getDefaultState()
                 .withProperty(BlockBerryLog.VARIANT4, BlockBerryWood.EnumType.NANAB)));
+        TileEntityBerries.trees.put(25, new GenericGrower(Blocks.LOG.getDefaultState()));// Grepa
     }
 }

@@ -416,6 +416,8 @@ public class Config extends ConfigBase
     public boolean                       autoRecallPokemobs           = false;
     @Configure(category = client)
     public int                           autoRecallDistance           = 32;
+    @Configure(category = client)
+    public boolean                       berryCropTexIgnoreAge        = true;
     @Configure(category = advanced)
     String[]                             mystLocs                     = {};
     @Configure(category = advanced)

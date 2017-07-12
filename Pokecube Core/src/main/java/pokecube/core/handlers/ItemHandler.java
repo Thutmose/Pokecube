@@ -112,6 +112,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
                                                             // ingredient
         BerryManager.addBerry("pinap", 20, 10, 0, 0, 0, 10);// Pokeblock
                                                             // ingredient
+        BerryManager.addBerry("grepa", 25, 0, 10, 10, 0, 10);// EV Berry
         BerryManager.addBerry("cornn", 27, 0, 20, 10, 0, 0);// Pokeblock
                                                             // ingredient
         BerryManager.addBerry("enigma", 60, 40, 10, 0, 0, 0);// Restores 1/4 of

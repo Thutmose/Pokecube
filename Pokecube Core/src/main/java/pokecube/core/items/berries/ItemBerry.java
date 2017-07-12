@@ -44,49 +44,9 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     {
         String info = "";
         list.add(I18n.format("item.berry.desc"));
-        switch (stack.getItemDamage())
-        {
-        case 1:
-            info = I18n.format("item.cheriBerry.desc");
-            list.add(info);
-            break;
-        case 2:
-            info = I18n.format("item.chestoBerry.desc");
-            list.add(info);
-            break;
-        case 3:
-            info = I18n.format("item.pechaBerry.desc");
-            list.add(info);
-            break;
-        case 4:
-            info = I18n.format("item.rawstBerry.desc");
-            list.add(info);
-            break;
-        case 5:
-            info = I18n.format("item.aspearBerry.desc");
-            list.add(info);
-            break;
-        case 7:
-            info = I18n.format("item.oranBerry.desc");
-            list.add(info);
-            break;
-        case 9:
-            info = I18n.format("item.lumBerry.desc");
-            list.add(info);
-            break;
-        case 10:
-            info = I18n.format("item.sitrusBerry.desc");
-            list.add(info);
-            break;
-        case 63:
-            info = I18n.format("item.jabocaBerry.desc");
-            list.add(info);
-            break;
-        case 64:
-            info = I18n.format("item.rowapBerry.desc");
-            list.add(info);
-            break;
-        }
+        String berryName = BerryManager.berryNames.get(stack.getItemDamage());
+        info = I18n.format("item." + berryName + "Berry.desc");
+        list.add(info);
         if (TileEntityBerries.trees.containsKey(stack.getItemDamage()))
         {
             info = I18n.format("item.berry.istree.desc");

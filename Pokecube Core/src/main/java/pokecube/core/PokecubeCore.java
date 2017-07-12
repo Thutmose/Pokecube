@@ -244,7 +244,7 @@ public class PokecubeCore extends PokecubeMod
     {
         Entity entity = null;
         Class<?> clazz = null;
-        if (!registered.get(entry.getPokedexNb())) return null;
+        if (entry == null || !registered.get(entry.getPokedexNb())) return null;
         try
         {
             PokedexEntry base = entry.base ? entry : entry.getBaseForme();

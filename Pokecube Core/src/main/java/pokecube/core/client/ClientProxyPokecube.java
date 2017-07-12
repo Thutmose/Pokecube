@@ -17,7 +17,6 @@ import java.util.UUID;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockCrops;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
@@ -319,13 +318,10 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     @Override
     public void initBlockModels()
     {
-        Block crop = BerryManager.berryCrop;
-        StateMap map = (new StateMap.Builder()).withName(BerryManager.type).ignore(new IProperty[] { BlockCrops.AGE })
-                .withSuffix("crop").build();
-        ModelLoader.setCustomStateMapper(crop, map);
-
-        map = (new StateMap.Builder()).withName(BerryManager.type).withSuffix("fruit").build();
-        ModelLoader.setCustomStateMapper(BerryManager.berryFruit, map);
+        StateMap map;
+        map = (new StateMap.Builder()).ignore(new IProperty[] { BlockCrops.AGE }).build();
+        if (PokecubeMod.core.getConfig().berryCropTexIgnoreAge)
+            ModelLoader.setCustomStateMapper(BerryManager.berryCrop, map);
 
         map = (new StateMap.Builder())
                 .ignore(new IProperty[] { BerryManager.type, BlockLeaves.CHECK_DECAY, BlockLeaves.DECAYABLE }).build();
@@ -364,7 +360,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 if (entry != null)
                 {
                     int colour = entry.getType1().colour;
-                    if (tintIndex == 0) { return colour; }
+                    if (tintIndex == 0 || entry.getType2() == null) { return colour; }
                     colour = entry.getType2().colour;
                     return colour;
                 }

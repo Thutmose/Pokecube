@@ -47,7 +47,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         if (par1EntityLiving.getHealth() <= 0)
         {
             float f = ((float) par1EntityLiving.deathTime + par4 - 1.0F) / 20.0F * 1.6F;
-            f = MathHelper.sqrt_float(f);
+            f = MathHelper.sqrt(f);
 
             if (f > 1.0F)
             {

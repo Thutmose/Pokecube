@@ -57,26 +57,28 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
             GlStateManager.rotate(f * this.getDeathMaxRotation(par1EntityLiving), 0.0F, 0.0F, 1.0F);
             return;
         }
-
-        if (hasSleepAnimation) return;
-        boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
-        if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
+        if (!hasSleepAnimation)
         {
-            float timer = ((IPokemob) par1EntityLiving).getStatusTimer() + par4;
-            float ratio = 1F;
-            if (status)
+            boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
+            if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
             {
-                if (timer <= 200 && timer > 175)
+                float timer = ((IPokemob) par1EntityLiving).getStatusTimer() + par4;
+                float ratio = 1F;
+                if (status)
                 {
-                    ratio = 1F - ((timer - 175F) / 25F);
+                    if (timer <= 200 && timer > 175)
+                    {
+                        ratio = 1F - ((timer - 175F) / 25F);
+                    }
+                    if (timer >= 0 && timer <= 25)
+                    {
+                        ratio = 1F - ((25F - timer) / 25F);
+                    }
                 }
-                if (timer >= 0 && timer <= 25)
-                {
-                    ratio = 1F - ((25F - timer) / 25F);
-                }
+                GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
+                GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
+                return;
             }
-            GL11.glTranslatef(0.5F * ratio, 0.2F * ratio, 0.0F);
-            GL11.glRotatef(80 * ratio, 0.0F, 0.0F, 1F);
         }
     }
 

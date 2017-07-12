@@ -18,7 +18,9 @@
       "sitrus": {"textures": {"layer0": "pokecube:items/sitrusberry"}},
       "nanab": {"textures": {"layer0": "pokecube:items/nanabberry"}},
       "pinap": {"textures": {"layer0": "pokecube:items/pinapberry"}},
+      "grepa": {"textures": {"layer0": "pokecube:items/grepaberry"}},
       "cornn": {"textures": {"layer0": "pokecube:items/cornnberry"}},
+      "grepa": {"textures": {"layer0": "pokecube:items/grepaberry"}},
       "enigma": {"textures": {"layer0": "pokecube:items/enigmaberry"}},
       "jaboca": {"textures": {"layer0": "pokecube:items/jabocaberry"}},
       "rowap": {"textures": {"layer0": "pokecube:items/rowapberry"}}

@@ -158,13 +158,20 @@ public class Database
 
     public static final PokedexEntry                       missingno        = new PokedexEntry(0, "missingno");
 
+    //Init some stuff for the missignno entry.
+    static
+    {
+        missingno.type1 = PokeType.unknown;
+        missingno.type2 = PokeType.unknown;
+    }
+
     /** These are used for config added databasea <br>
      * Index 0 = pokemon<br>
      * Index 1 = moves<br>
     */
     @SuppressWarnings("unchecked")
-    public static List<ArrayList<String>>                  configDatabases  = Lists
-            .newArrayList(new ArrayList<String>(), new ArrayList<String>());
+    public static List<ArrayList<String>> configDatabases = Lists.newArrayList(new ArrayList<String>(),
+            new ArrayList<String>());
 
     public static void addDatabase(String file, EnumDatabase database)
     {

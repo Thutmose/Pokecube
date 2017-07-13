@@ -325,7 +325,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
-        this.tasks.addTask(8, new PokemobSitShoulder((EntityPokemob) this));
+        if (PokecubeCore.core.getConfig().pokemobsOnShoulder)
+            this.tasks.addTask(8, new PokemobSitShoulder((EntityPokemob) this));
         this.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
 
         for (int xy = 0; xy < entry.species.length; xy++)

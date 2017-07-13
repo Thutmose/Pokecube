@@ -391,6 +391,7 @@ public class EventsHandler
         if (evt.getEntity() instanceof IPokemob && evt.getEntity().getEntityData().getBoolean("onShoulder"))
         {
             ((IPokemob) evt.getEntity()).setPokemonAIState(IPokemob.SITTING, false);
+            evt.getEntity().getEntityData().removeTag("onShoulder");
         }
         if (evt.getEntity() instanceof EntityCreeper)
         {

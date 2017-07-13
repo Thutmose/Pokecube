@@ -27,6 +27,7 @@ public class PokemobSitShoulder extends EntityAIBase
                 && !((EntityPlayer) entitylivingbase).capabilities.isFlying && !entitylivingbase.isInWater()
                 && !this.entity.getPokemonAIState(IPokemob.SITTING);
         if (!flag) cooldownTicks = 100;
+        if (cooldownTicks < -100) cooldownTicks = 100;
         return flag && cooldownTicks-- <= 0;
     }
 

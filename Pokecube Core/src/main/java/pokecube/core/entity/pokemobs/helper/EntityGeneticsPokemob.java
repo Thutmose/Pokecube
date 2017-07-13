@@ -209,7 +209,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public byte[] getEVs()
     {
-        if (!isServerWorld())
+        if (!isServerWorld() && addedToChunk)
         {
             for (int i = 0; i < 6; i++)
             {

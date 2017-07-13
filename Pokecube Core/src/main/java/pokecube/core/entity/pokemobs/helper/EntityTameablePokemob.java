@@ -858,10 +858,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         this.setPokemonAIState(IPokemob.SITTING, true);
         this.getEntityData().setBoolean("onShoulder", true);
         this.writeToNBT(nbttagcompound);
-        player.addShoulderEntity(nbttagcompound);
-        this.setPokemonOwner((UUID) null);
-        this.world.removeEntity(this);
-        return true;
+        if (player.addShoulderEntity(nbttagcompound))
+        {
+            this.setPokemonOwner((UUID) null);
+            this.world.removeEntity(this);
+            return true;
+        }
+        return false;
     }
 
     // FORGE

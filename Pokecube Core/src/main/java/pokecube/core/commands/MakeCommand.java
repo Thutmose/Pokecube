@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
@@ -26,6 +28,7 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
@@ -121,90 +124,8 @@ public class MakeCommand extends CommandBase
                             return;
                         }
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
-
                         UUID owner = null;
-                        boolean shiny = false;
-                        boolean shadow = false;
-                        int red, green, blue;
-                        byte gender = -3;
-                        red = green = blue = 255;
-                        boolean ancient = false;
-                        String ability = null;
-                        int exp = 10;
-                        int level = -1;
-                        String[] moves = new String[4];
-                        int mindex = 0;
-                        boolean asWild = false;
-                        String ownerName = "";
-
-                        if (index < args.length)
-                        {
-                            for (int j = index; j < args.length; j++)
-                            {
-                                String[] vals = args[j].split(":");
-                                String arg = vals[0];
-                                String val = "";
-                                if (vals.length > 1) val = vals[1];
-                                if (arg.equalsIgnoreCase("s"))
-                                {
-                                    shiny = true;
-                                }
-                                else if (arg.equalsIgnoreCase("sh"))
-                                {
-                                    shadow = true;
-                                }
-                                else if (arg.equalsIgnoreCase("l"))
-                                {
-                                    level = Integer.parseInt(val);
-                                    exp = Tools.levelToXp(mob.getExperienceMode(), level);
-                                }
-                                else if (arg.equalsIgnoreCase("x"))
-                                {
-                                    if (val.equalsIgnoreCase("f")) gender = IPokemob.FEMALE;
-                                    if (val.equalsIgnoreCase("m")) gender = IPokemob.MALE;
-                                }
-                                else if (arg.equalsIgnoreCase("r"))
-                                {
-                                    red = Integer.parseInt(val);
-                                }
-                                else if (arg.equalsIgnoreCase("g"))
-                                {
-                                    green = Integer.parseInt(val);
-                                }
-                                else if (arg.equalsIgnoreCase("b"))
-                                {
-                                    blue = Integer.parseInt(val);
-                                }
-                                else if (arg.equalsIgnoreCase("o"))
-                                {
-                                    ownerName = val;
-                                }
-                                else if (arg.equalsIgnoreCase("a"))
-                                {
-                                    ability = val;
-                                }
-                                else if (arg.equalsIgnoreCase("m") && mindex < 4)
-                                {
-                                    moves[mindex] = val;
-                                    mindex++;
-                                }
-                                else if (arg.equalsIgnoreCase("v"))
-                                {
-                                    String[] vec = val.split(",");
-                                    offset.x = Double.parseDouble(vec[0].trim());
-                                    offset.y = Double.parseDouble(vec[1].trim());
-                                    offset.z = Double.parseDouble(vec[2].trim());
-                                }
-                                else if (arg.equalsIgnoreCase("w"))
-                                {
-                                    asWild = true;
-                                }
-                                else
-                                {
-                                    ownerName = args[j];
-                                }
-                            }
-                        }
+                        String ownerName = setToArgs(args, mob, index, offset);
                         if (ownerName != null && !ownerName.isEmpty())
                         {
                             player = getPlayer(server, sender, ownerName);
@@ -215,50 +136,13 @@ public class MakeCommand extends CommandBase
                             offset = offset.add(temp.set(player.getLookVec()));
                             owner = player.getUniqueID();
                         }
-                        temp.set(sender.getPosition()).addTo(offset);
-                        temp.moveEntity((Entity) mob);
-
-                        mob.setHp(((EntityLiving) mob).getMaxHealth());
                         if (owner != null)
                         {
                             mob.setPokemonOwner(owner);
                             mob.setPokemonAIState(IMoveConstants.TAMED, true);
                         }
-                        mob.setShiny(shiny);
-                        if (gender != -3) mob.setSexe(gender);
-                        if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
-                        if (shadow) mob.setShadow(shadow);
-                        if (ancient) mob.setAncient(ancient);
-                        if (asWild)
-                        {
-                            mob = mob.setForSpawn(exp);
-                        }
-                        else
-                        {
-                            mob = mob.setExp(exp, asWild);
-                            level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
-                            mob.levelUp(level);
-                        }
-                        if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
-
-                        for (int i1 = 0; i1 < 4; i1++)
-                        {
-                            if (moves[i1] != null)
-                            {
-                                String arg = moves[i1];
-                                if (!arg.isEmpty())
-                                {
-                                    if (arg.equalsIgnoreCase("none"))
-                                    {
-                                        mob.setMove(i1, null);
-                                    }
-                                    else
-                                    {
-                                        mob.setMove(i1, arg);
-                                    }
-                                }
-                            }
-                        }
+                        temp.set(sender.getPosition()).addTo(offset);
+                        temp.moveEntity((Entity) mob);
                         mob.specificSpawnInit();
                         GeneticsManager.initMob((Entity) mob);
                         ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
@@ -335,6 +219,151 @@ public class MakeCommand extends CommandBase
             ret = getListOfStringsMatchingLastWord(args, ret);
         }
         return ret;
+    }
+
+    /** @param args
+     * @param mob
+     * @param command
+     * @return owner name for pokemob if needed. */
+    public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset)
+    {
+        boolean shiny = false;
+        boolean shadow = false;
+        int red, green, blue;
+        byte gender = -3;
+        red = green = blue = 255;
+        boolean ancient = false;
+        String ability = null;
+        int exp = 10;
+        int level = -1;
+        String[] moves = new String[4];
+        int mindex = 0;
+        boolean asWild = false;
+        Nature nature = Nature.values()[new Random().nextInt(Nature.values().length)];
+        String ownerName = "";
+
+        if (index < args.length)
+        {
+            for (int j = index; j < args.length; j++)
+            {
+                String[] vals = args[j].split(":");
+                String arg = vals[0];
+                String val = "";
+                if (vals.length > 1) val = vals[1];
+                if (arg.equalsIgnoreCase("s"))
+                {
+                    shiny = true;
+                }
+                else if (arg.equalsIgnoreCase("sh"))
+                {
+                    shadow = true;
+                }
+                else if (arg.equalsIgnoreCase("l"))
+                {
+                    level = Integer.parseInt(val);
+                    exp = Tools.levelToXp(mob.getExperienceMode(), level);
+                }
+                else if (arg.equalsIgnoreCase("x"))
+                {
+                    if (val.equalsIgnoreCase("f")) gender = IPokemob.FEMALE;
+                    if (val.equalsIgnoreCase("m")) gender = IPokemob.MALE;
+                }
+                else if (arg.equalsIgnoreCase("r"))
+                {
+                    red = Integer.parseInt(val);
+                }
+                else if (arg.equalsIgnoreCase("g"))
+                {
+                    green = Integer.parseInt(val);
+                }
+                else if (arg.equalsIgnoreCase("b"))
+                {
+                    blue = Integer.parseInt(val);
+                }
+                else if (arg.equalsIgnoreCase("o"))
+                {
+                    ownerName = val;
+                }
+                else if (arg.equalsIgnoreCase("a"))
+                {
+                    ability = val;
+                }
+                else if (arg.equalsIgnoreCase("m") && mindex < 4)
+                {
+                    moves[mindex] = val;
+                    mindex++;
+                }
+                else if (arg.equalsIgnoreCase("v") && offset != null)
+                {
+                    String[] vec = val.split(",");
+                    offset.x = Double.parseDouble(vec[0].trim());
+                    offset.y = Double.parseDouble(vec[1].trim());
+                    offset.z = Double.parseDouble(vec[2].trim());
+                }
+                else if (arg.equalsIgnoreCase("w"))
+                {
+                    asWild = true;
+                }
+                else if (arg.equalsIgnoreCase("p"))
+                {
+                    try
+                    {
+                        nature = Nature.values()[Integer.parseInt(val)];
+                    }
+                    catch (NumberFormatException e)
+                    {
+                        nature = Nature.valueOf(val.toUpperCase(Locale.ENGLISH));
+                    }
+                }
+                else if (arg.equalsIgnoreCase("n") && !val.isEmpty())
+                {
+                    mob.setPokemonNickname(val);
+                }
+                else
+                {
+                    ownerName = args[j];
+                }
+            }
+        }
+        mob.setHp(((EntityLiving) mob).getMaxHealth());
+        mob.setNature(nature);
+        mob.setShiny(shiny);
+        if (gender != -3) mob.setSexe(gender);
+        if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
+        if (shadow) mob.setShadow(shadow);
+        if (ancient) mob.setAncient(ancient);
+        if (asWild)
+        {
+            mob = mob.setForSpawn(exp);
+        }
+        else
+        {
+            mob = mob.setExp(exp, asWild);
+            level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
+            mob.levelUp(level);
+        }
+        if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
+
+        for (int i1 = 0; i1 < 4; i1++)
+        {
+            if (moves[i1] != null)
+            {
+                String arg = moves[i1];
+                if (!arg.isEmpty())
+                {
+                    if (arg.equalsIgnoreCase("none"))
+                    {
+                        mob.setMove(i1, null);
+                    }
+                    else
+                    {
+                        mob.setMove(i1, arg);
+                    }
+                }
+            }
+        }
+
+        return ownerName;
     }
 
 }

@@ -207,7 +207,6 @@ public class ClonerHelper
         setGenes(destination, eggs);
     }
 
-    // TODO see why this is not working as intended...
     public static void spliceGenes(IMobGenetics genesIn, ItemStack destination, IGeneSelector selector)
     {
         IMobGenetics eggs = getGenes(destination);
@@ -220,10 +219,8 @@ public class ClonerHelper
             ResourceLocation loc = entry.getKey();
             Alleles alleles = entry.getValue();
             Alleles eggsAllele = eggs.getAlleles().get(loc);
-            if (eggsAllele != null)
-            {
-                eggs.getAlleles().put(loc, alleles);
-            }
+            alleles = selector.merge(alleles, eggsAllele);
+            if (alleles != null) eggs.getAlleles().put(loc, alleles);
         }
         setGenes(destination, eggs);
     }

@@ -62,13 +62,11 @@ public class GuiTradingTable extends GuiContainer
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
         GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_BLEND);
         GL11.glColor4f(1f, 1f, 1f, 1f);
         mc.renderEngine.bindTexture(new ResourceLocation(PokecubeMod.ID, "textures/gui/tradingtablegui.png"));
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-        GL11.glDisable(GL11.GL_BLEND);
         GL11.glPopMatrix();
     }
 
@@ -96,6 +94,7 @@ public class GuiTradingTable extends GuiContainer
     @Override
     public void drawScreen(int i, int j, float f)
     {
+        this.drawDefaultBackground();
         super.drawScreen(i, j, f);
 
         int x = width / 2 - 53;

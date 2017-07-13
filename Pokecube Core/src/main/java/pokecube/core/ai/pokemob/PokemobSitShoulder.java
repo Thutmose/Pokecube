@@ -22,7 +22,7 @@ public class PokemobSitShoulder extends EntityAIBase
     public boolean shouldExecute()
     {
         EntityLivingBase entitylivingbase = this.entity.getOwner();
-        if (!(entitylivingbase instanceof EntityPlayer)) return false;
+        if (!(entitylivingbase instanceof EntityPlayer) || entity.getPokemonAIState(IPokemob.STAYING)) return false;
         boolean flag = entitylivingbase != null && !((EntityPlayer) entitylivingbase).isSpectator()
                 && !((EntityPlayer) entitylivingbase).capabilities.isFlying && !entitylivingbase.isInWater()
                 && !this.entity.getPokemonAIState(IPokemob.SITTING);

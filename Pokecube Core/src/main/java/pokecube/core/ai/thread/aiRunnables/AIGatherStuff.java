@@ -224,18 +224,41 @@ public class AIGatherStuff extends AIBase
             if (dist < diff)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                IBlockState state = stuffLoc.getBlockState(world);
-                Block plant = stuffLoc.getBlock(world);
+                IBlockState state = stuffLoc.getBlockState(entity.world);
+                Block plant = stuffLoc.getBlock(entity.world);
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
                 if (state.getMaterial() != Material.GRASS)
                 {
                     NonNullList<ItemStack> list = NonNullList.create();
-                    plant.getDrops(list, entity.world, stuffLoc.getPos(), stuffLoc.getBlockState(entity.world), 0);
+                    plant.getDrops(list, entity.world, stuffLoc.getPos(), state, 0);
+                    boolean replanted = false;
                     for (ItemStack stack : list)
                     {
-                        if (stack.getItem() instanceof IPlantable)
-                            toRun.addElement(new ReplantTask(entity, stack, stuffLoc.getPos()));
-                        else toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                        if (stack.getItem() instanceof IPlantable && !replanted)
+                        {
+                            toRun.addElement(new ReplantTask(entity, stack.copy(), stuffLoc.getPos()));
+                            replanted = true;
+                        }
+                        else toRun.addElement(new InventoryChange(entity, 2, stack.copy(), true));
+                    }
+                    if (!replanted)
+                    {
+                        // Try to find a seed in our inventory for this plant.
+                        for (int i = 2; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
+                        {
+                            ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
+                            if (CompatWrapper.isValid(stack) && stack.getItem() instanceof IPlantable)
+                            {
+                                IPlantable plantable = (IPlantable) stack.getItem();
+                                IBlockState plantState = plantable.getPlant(world, stuffLoc.getPos().up());
+                                if (plantState.getBlock() == state.getBlock())
+                                {
+                                    toRun.addElement(new ReplantTask(entity, stack.copy(), stuffLoc.getPos()));
+                                    replanted = true;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 stuffLoc.clear();

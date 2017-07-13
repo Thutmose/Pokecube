@@ -195,6 +195,7 @@ public class GuiPC extends GuiContainer
     @Override
     public void drawScreen(int mouseX, int mouseY, float f)
     {
+        this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, f);
         textFieldSelectedBox.drawTextBox();
 

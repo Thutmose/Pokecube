@@ -23,6 +23,7 @@ import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.HappinessType;
 
 /** @author Oracion
  * @author Manchou */
@@ -90,6 +91,55 @@ public class BerryManager implements IMoveConstants
         if (!berryNames.containsKey(berry.getItemDamage())) return false;
 
         String berryName = berryNames.get(berry.getItemDamage());
+
+        if (berryName.equalsIgnoreCase("pomeg"))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
+            byte[] evs = pokemob.getEVs();
+            evs[0] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[0]) - 10);
+            pokemob.setEVs(evs);
+            return true;
+        }
+        if (berryName.equalsIgnoreCase("kelpsy"))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
+            byte[] evs = pokemob.getEVs();
+            evs[1] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[1]) - 10);
+            pokemob.setEVs(evs);
+            return true;
+        }
+        if (berryName.equalsIgnoreCase("qualot"))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
+            byte[] evs = pokemob.getEVs();
+            evs[2] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[2]) - 10);
+            pokemob.setEVs(evs);
+            return true;
+        }
+        if (berryName.equalsIgnoreCase("hondew"))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
+            byte[] evs = pokemob.getEVs();
+            evs[3] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[3]) - 10);
+            pokemob.setEVs(evs);
+            return true;
+        }
+        if (berryName.equalsIgnoreCase("grepa"))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
+            byte[] evs = pokemob.getEVs();
+            evs[4] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[4]) - 10);
+            pokemob.setEVs(evs);
+            return true;
+        }
+        if (berryName.equalsIgnoreCase("tamato"))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
+            byte[] evs = pokemob.getEVs();
+            evs[5] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[5]) - 10);
+            pokemob.setEVs(evs);
+            return true;
+        }
 
         if (status == STATUS_PAR && berryName.equalsIgnoreCase("cheri"))
         {
@@ -181,6 +231,13 @@ public class BerryManager implements IMoveConstants
                 .withProperty(BlockBerryLog.VARIANT4, BlockBerryWood.EnumType.ENIGMA)));
         TileEntityBerries.trees.put(18, new PalmGrower(ItemHandler.log1.getDefaultState()
                 .withProperty(BlockBerryLog.VARIANT4, BlockBerryWood.EnumType.NANAB)));
-        TileEntityBerries.trees.put(25, new GenericGrower(Blocks.LOG.getDefaultState()));// Grepa
+
+        // EV Berries
+        TileEntityBerries.trees.put(21, new GenericGrower(Blocks.LOG.getDefaultState()));
+        TileEntityBerries.trees.put(22, new GenericGrower(Blocks.LOG.getDefaultState()));
+        TileEntityBerries.trees.put(23, new GenericGrower(Blocks.LOG.getDefaultState()));
+        TileEntityBerries.trees.put(24, new GenericGrower(Blocks.LOG.getDefaultState()));
+        TileEntityBerries.trees.put(25, new GenericGrower(Blocks.LOG.getDefaultState()));
+        TileEntityBerries.trees.put(26, new GenericGrower(Blocks.LOG.getDefaultState()));
     }
 }

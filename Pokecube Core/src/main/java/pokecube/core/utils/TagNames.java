@@ -59,5 +59,7 @@ public interface TagNames
 
     // Tag names for Pokecubes
     public static final String POKEMOB      = "Pokemob";
+    public static final String OTHERMOB     = "Othermob";
+    public static final String MOBID        = "mobID";
     public static final String POKESEAL     = "Explosion";
 }

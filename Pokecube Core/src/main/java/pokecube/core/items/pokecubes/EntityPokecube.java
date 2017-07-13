@@ -11,9 +11,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -24,6 +26,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -31,8 +34,10 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.packets.PacketPokecube;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -135,16 +140,16 @@ public class EntityPokecube extends EntityPokecubeBase
             super.applyEntityCollision(e);
             return;
         }
+
         if (shootingEntity != null && e instanceof IPokemob
                 && ((IPokemob) e).getPokemonOwner() == shootingEntity) { return; }
-        if (e instanceof EntityLivingBase && e instanceof IPokemob && ((EntityLivingBase) e).getHealth() > 0
-                && tilt == -1)
+        if (e instanceof EntityLiving && e instanceof IPokemob && ((EntityLiving) e).getHealth() > 0 && tilt == -1)
         {
             captureAttempt(e);
         }
         else if (PokecubeManager.isFilled(getItem()))
         {
-            IPokemob entity1 = sendOut();
+            IPokemob entity1 = (IPokemob) sendOut();
             if (entity1 != null && shootingEntity != null)
             {
                 if (e instanceof EntityLivingBase)
@@ -169,6 +174,14 @@ public class EntityPokecube extends EntityPokecubeBase
                         }
                     }
                 }
+            }
+        }
+        else if (tilt == -1 && e instanceof EntityLiving && getItem().getItem() instanceof IPokecube)
+        {
+            IPokecube cube = (IPokecube) getItem().getItem();
+            if (cube.canCapture((EntityLiving) e, getItem()))
+            {
+                captureAttempt(e);
             }
         }
         else
@@ -240,14 +253,27 @@ public class EntityPokecube extends EntityPokecubeBase
             this.setDead();
             return;
         }
-        if (PokecubeManager.isFilled(getItem())) time--;
+        if (PokecubeManager.isFilled(getItem())
+                || (getItem().hasTagCompound() && getItem().getTagCompound().hasKey(TagNames.MOBID)))
+            time--;
 
         if (time == 0 && tilt >= 4) // Captured the pokemon
         {
             if (captureSucceed())
             {
-                CaptureEvent.Post event = new CaptureEvent.Post(this);
-                MinecraftForge.EVENT_BUS.post(event);
+                if (PokecubeManager.isFilled(getItem()))
+                {
+                    CaptureEvent.Post event = new CaptureEvent.Post(this);
+                    MinecraftForge.EVENT_BUS.post(event);
+                }
+                else if (shootingEntity != null && shootingEntity instanceof EntityPlayerMP)
+                {
+                    if (shootingEntity instanceof FakePlayer)
+                    {
+                        entityDropItem(getItem(), 0.5f);
+                    }
+                    else Tools.giveItem((EntityPlayer) shootingEntity, getItem());
+                }
             }
             setDead();
             return;
@@ -388,8 +414,11 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             if (!isReleasing())
             {
-                IPokemob pokemob = PokecubeManager.itemToPokemob(getItem(), world);
-                if (pokemob != null) sendOut();
+                if (PokecubeManager.isFilled(getItem())
+                        || (getItem().hasTagCompound() && (getItem().getTagCompound()).hasKey(TagNames.MOBID)))
+                {
+                    sendOut();
+                }
                 else
                 {
                     if (isLoot)
@@ -482,26 +511,53 @@ public class EntityPokecube extends EntityPokecubeBase
 
     protected void captureAttempt(Entity e)
     {
-        IPokemob hitten = (IPokemob) e;
-        if (hitten.getPokemonOwner() == shootingEntity) { return; }
-        int tiltBak = tilt;
-        CaptureEvent.Pre capturePre = new Pre(hitten, this);
-        MinecraftForge.EVENT_BUS.post(capturePre);
-        if (capturePre.isCanceled() || capturePre.getResult() == Result.DENY)
+        if (e instanceof IPokemob)
         {
-            if (tilt != tiltBak)
+            IPokemob hitten = (IPokemob) e;
+            if (hitten.getPokemonOwner() == shootingEntity) { return; }
+            int tiltBak = tilt;
+            CaptureEvent.Pre capturePre = new Pre(hitten, this);
+            MinecraftForge.EVENT_BUS.post(capturePre);
+            if (capturePre.isCanceled() || capturePre.getResult() == Result.DENY)
             {
-                if (tilt == 5)
+                if (tilt != tiltBak)
+                {
+                    if (tilt == 5)
+                    {
+                        time = 10;
+                    }
+                    else
+                    {
+                        time = 20 * tilt;
+                    }
+                    hitten.setPokecube(getItem());
+                    setItem(PokecubeManager.pokemobToItem(hitten));
+                    PokecubeManager.setTilt(getItem(), tilt);
+                    ((Entity) hitten).setDead();
+                    Vector3 v = Vector3.getNewVector();
+                    v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
+                    motionX = 0;
+                    motionY = 0.1;
+                    motionZ = 0;
+                }
+            }
+            else
+            {
+                int n = Tools.computeCatchRate(hitten, PokecubeItems.getCubeId(getItem()));
+                tilt = n;
+
+                if (n == 5)
                 {
                     time = 10;
                 }
                 else
                 {
-                    time = 20 * tilt;
+                    time = 20 * n;
                 }
+
                 hitten.setPokecube(getItem());
                 setItem(PokecubeManager.pokemobToItem(hitten));
-                PokecubeManager.setTilt(getItem(), tilt);
+                PokecubeManager.setTilt(getItem(), n);
                 ((Entity) hitten).setDead();
                 Vector3 v = Vector3.getNewVector();
                 v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
@@ -510,9 +566,44 @@ public class EntityPokecube extends EntityPokecubeBase
                 motionZ = 0;
             }
         }
-        else
+        else if (e instanceof EntityLiving && getItem().getItem() instanceof IPokecube)
         {
-            int n = Tools.computeCatchRate(hitten, PokecubeItems.getCubeId(getItem()));
+            IPokecube cube = (IPokecube) getItem().getItem();
+            EntityLiving mob = (EntityLiving) e;
+            int n = 0;
+            rate:
+            {
+                int catchRate = 250;// TODO configs for this?
+                double cubeBonus = cube.getCaptureModifier(mob, PokecubeItems.getCubeId(getItem()));
+                double statusbonus = 1;// TODO statuses for mobs?
+                double a = Tools.getCatchRate(mob.getMaxHealth(), mob.getHealth(), catchRate, cubeBonus, statusbonus);
+                if (a > 255)
+                {
+                    n = 5;
+                    break rate;
+                }
+                double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
+
+                if (rand.nextInt(65535) <= b)
+                {
+                    n++;
+                }
+
+                if (rand.nextInt(65535) <= b)
+                {
+                    n++;
+                }
+
+                if (rand.nextInt(65535) <= b)
+                {
+                    n++;
+                }
+
+                if (rand.nextInt(65535) <= b)
+                {
+                    n++;
+                }
+            }
             tilt = n;
 
             if (n == 5)
@@ -523,13 +614,17 @@ public class EntityPokecube extends EntityPokecubeBase
             {
                 time = 20 * n;
             }
-
-            hitten.setPokecube(getItem());
-            setItem(PokecubeManager.pokemobToItem(hitten));
+            ItemStack mobStack = getItem().copy();
+            if (!mobStack.hasTagCompound()) mobStack.setTagCompound(new NBTTagCompound());
+            mobStack.getTagCompound().setString(TagNames.MOBID, EntityList.getKey(mob).toString());
+            NBTTagCompound mobTag = new NBTTagCompound();
+            mob.writeToNBT(mobTag);
+            mobStack.getTagCompound().setTag(TagNames.OTHERMOB, mobTag);
+            setItem(mobStack);
             PokecubeManager.setTilt(getItem(), n);
-            ((Entity) hitten).setDead();
+            mob.setDead();
             Vector3 v = Vector3.getNewVector();
-            v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
+            v.set(this).addTo(0, mob.height / 2, 0).moveEntity(this);
             motionX = 0;
             motionY = 0.1;
             motionZ = 0;

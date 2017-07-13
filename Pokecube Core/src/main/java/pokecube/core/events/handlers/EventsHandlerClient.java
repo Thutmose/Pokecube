@@ -16,7 +16,10 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerEntityOnShoulder;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -44,6 +47,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
@@ -52,6 +56,7 @@ import pokecube.core.client.gui.GuiArranger;
 import pokecube.core.client.gui.GuiDisplayPokecubeInfo;
 import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.render.RenderHealth;
+import pokecube.core.client.render.entity.RenderPokemobOnShoulder;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
@@ -362,6 +367,19 @@ public class EventsHandlerClient
     public void onPlayerRender(RenderPlayerEvent.Post event)
     {
         if (addedLayers.contains(event.getRenderer())) { return; }
+        List<LayerRenderer<?>> layerRenderers = ReflectionHelper.getPrivateValue(RenderLivingBase.class,
+                event.getRenderer(), "layerRenderers", "field_177097_h", "i");
+        for (int i = 0; i < layerRenderers.size(); i++)
+        {
+            LayerRenderer<?> layer = layerRenderers.get(i);
+            if (layer instanceof LayerEntityOnShoulder)
+            {
+                layerRenderers.add(i, new RenderPokemobOnShoulder(event.getRenderer().getRenderManager(),
+                        (LayerEntityOnShoulder) layer));
+                layerRenderers.remove(layer);
+                break;
+            }
+        }
         addedLayers.add(event.getRenderer());
     }
 

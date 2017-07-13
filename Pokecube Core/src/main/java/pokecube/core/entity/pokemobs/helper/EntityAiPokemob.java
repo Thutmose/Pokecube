@@ -40,6 +40,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAILook;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
+import pokecube.core.ai.pokemob.PokemobSitShoulder;
 import pokecube.core.ai.thread.aiRunnables.AIAttack;
 import pokecube.core.ai.thread.aiRunnables.AICombatMovement;
 import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
@@ -65,6 +66,7 @@ import pokecube.core.ai.utils.PokemobJumpHelper;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
 import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
@@ -323,6 +325,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.tasks.addTask(5, guardAI);
         this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
+        this.tasks.addTask(8, new PokemobSitShoulder((EntityPokemob) this));
         this.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
 
         for (int xy = 0; xy < entry.species.length; xy++)
@@ -939,12 +942,19 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             // on shoulder
             if (CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
             {
-                Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
-                look.y = 0.2;
-                this.motionX += look.x;
-                this.motionY += look.y;
-                this.motionZ += look.z;
-                return false;
+                if (player.isSneaking())
+                {
+                    return moveToShoulder(player);
+                }
+                else
+                {
+                    Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
+                    look.y = 0.2;
+                    this.motionX += look.x;
+                    this.motionY += look.y;
+                    this.motionZ += look.z;
+                    return false;
+                }
             }
             // Debug thing to maximize happiness
             if (CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)

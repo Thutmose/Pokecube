@@ -7,9 +7,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -18,6 +21,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -35,6 +39,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -90,7 +95,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         {
             if (PokecubeManager.isFilled(getItem()))
             {
-                IPokemob mob = this.sendOut();
+                IPokemob mob = (IPokemob) this.sendOut();
                 if (mob != null) mob.returnToPokecube();
             }
             this.setDead();
@@ -232,6 +237,10 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 ((EntityCreature) entity1).setAttackTarget(shootingEntity);
             }
         }
+        else
+        {
+            sendOut();
+        }
     }
 
     protected boolean captureSucceed()
@@ -240,6 +249,33 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         IPokemob mob = PokecubeManager.itemToPokemob(getItem(), world);
         if (mob == null)
         {
+            if ((getItem().hasTagCompound() && getItem().getTagCompound().hasKey(TagNames.MOBID)))
+            {
+                Entity caught = EntityList.createEntityByIDFromName(
+                        new ResourceLocation(getItem().getTagCompound().getString(TagNames.MOBID)), world);
+                caught.readFromNBT(getItem().getTagCompound().getCompoundTag(TagNames.OTHERMOB));
+
+                if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
+                {
+                    if (caught instanceof EntityTameable)
+                    {
+                        ((EntityTameable) caught).setOwnerId(shootingEntity.getUniqueID());
+                    }
+                    else if (caught instanceof AbstractHorse)
+                    {
+                        ((AbstractHorse) caught).setOwnerUniqueId(shootingEntity.getUniqueID());
+                    }
+                    NBTTagCompound tag = new NBTTagCompound();
+                    caught.writeToNBT(tag);
+                    getItem().getTagCompound().setTag(TagNames.OTHERMOB, tag);
+                    getItem().setStackDisplayName(caught.getDisplayName().getFormattedText());
+                    ITextComponent mess = new TextComponentTranslation("pokecube.caught", caught.getDisplayName());
+                    ((EntityPlayer) shootingEntity).sendMessage(mess);
+                    this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
+                    this.playSound(POKECUBESOUND, 1, 1);
+                }
+                return true;
+            }
             new NullPointerException("Mob is null").printStackTrace();
             return false;
         }
@@ -311,7 +347,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         this.inGround = nbttagcompound.getByte("inGround") == 1;
     }
 
-    public IPokemob sendOut()
+    public EntityLivingBase sendOut()
     {
         if (world.isRemote || isReleasing()) { return null; }
         IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), world);
@@ -366,10 +402,39 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         }
         else
         {
+            NBTTagCompound tag;
+            if (getItem().hasTagCompound() && (tag = getItem().getTagCompound()).hasKey(TagNames.MOBID))
+            {
+                NBTTagCompound mobTag = tag.getCompoundTag(TagNames.OTHERMOB);
+                ResourceLocation id = new ResourceLocation(tag.getString(TagNames.MOBID));
+                Entity newMob = EntityList.createEntityByIDFromName(id, world);
+                if (newMob != null && newMob instanceof EntityLivingBase)
+                {
+                    newMob.readFromNBT(mobTag);
+                    Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
+                    Vector3 dv = v1.set(motionX, motionY, motionZ);
+                    v = Vector3.getNextSurfacePoint(world, v, dv, Math.max(2, dv.mag()));
+                    if (v == null) v = v0.set(this);
+                    v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
+                    IBlockState state = v.getBlockState(world);
+                    if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
+                    v.moveEntity(newMob);
+                    world.spawnEntity(newMob);
+                    tag.removeTag(TagNames.MOBID);
+                    tag.removeTag(TagNames.OTHERMOB);
+                    entityDropItem(getItem(), 0.5f);
+                    setReleased((Entity) newMob);
+                    motionX = motionY = motionZ = 0;
+                    time = 10;
+                    setReleasing(true);
+                    return (EntityLivingBase) newMob;
+                }
+            }
             System.err.println("Send out no pokemob?");
+            Thread.dumpStack();
             this.entityDropItem(getItem(), 0.5f);
             this.setDead();
         }
-        return entity1;
+        return (EntityLivingBase) entity1;
     }
 }

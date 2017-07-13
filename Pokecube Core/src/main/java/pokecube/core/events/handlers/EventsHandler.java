@@ -388,6 +388,10 @@ public class EventsHandler
             evt.setCanceled(true);
             return;
         }
+        if (evt.getEntity() instanceof IPokemob && evt.getEntity().getEntityData().getBoolean("onShoulder"))
+        {
+            ((IPokemob) evt.getEntity()).setPokemonAIState(IPokemob.SITTING, false);
+        }
         if (evt.getEntity() instanceof EntityCreeper)
         {
             EntityAIAvoidEntity<EntityPokemobBase> avoidAI;

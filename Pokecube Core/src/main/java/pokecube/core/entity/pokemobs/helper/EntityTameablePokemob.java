@@ -26,6 +26,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -844,6 +845,23 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     public boolean isPlayerOwned()
     {
         return this.getPokemonAIState(IMoveConstants.TAMED) && players;
+    }
+
+    @Override
+    public boolean moveToShoulder(EntityPlayer player)
+    {
+        boolean shoulderSized = this.height < 0.6 && this.length < 0.5 && this.width < 0.5;
+        if (!shoulderSized) return false;
+
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        nbttagcompound.setString("id", this.getEntityString());
+        this.setPokemonAIState(IPokemob.SITTING, true);
+        this.getEntityData().setBoolean("onShoulder", true);
+        this.writeToNBT(nbttagcompound);
+        player.addShoulderEntity(nbttagcompound);
+        this.setPokemonOwner((UUID) null);
+        this.world.removeEntity(this);
+        return true;
     }
 
     // FORGE

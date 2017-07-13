@@ -107,6 +107,9 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     @SyncConfig
     public boolean                       pcHoldsOnlyPokecubes         = true;
+    @Configure(category = misc)
+    public String[]                      snagblacklist                = { "net.minecraft.entity.boss.EntityDragon",
+            "net.minecraft.entity.boss.EntityWither" };
 
     // AI Related settings
     @Configure(category = mobAI)

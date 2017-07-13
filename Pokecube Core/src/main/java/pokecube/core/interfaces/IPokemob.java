@@ -22,6 +22,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -1182,4 +1183,6 @@ public interface IPokemob extends IMoveConstants
     void setAttackCooldown(int timer);
 
     String getLastMoveUsed();
+    
+    boolean moveToShoulder(EntityPlayer player);
 }

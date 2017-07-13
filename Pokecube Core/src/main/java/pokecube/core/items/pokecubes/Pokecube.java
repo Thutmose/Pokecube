@@ -1,8 +1,12 @@
 package pokecube.core.items.pokecubes;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -39,6 +43,24 @@ import thut.lib.CompatWrapper;
 
 public class Pokecube extends Item implements IPokecube
 {
+    public static final Set<Class<? extends EntityLivingBase>> snagblacklist = Sets.newHashSet();
+
+    private static final Predicate<EntityLivingBase>           capturable    = new Predicate<EntityLivingBase>()
+                                                                             {
+                                                                                 @Override
+                                                                                 public boolean test(EntityLivingBase t)
+                                                                                 {
+                                                                                     if (snagblacklist
+                                                                                             .contains(t.getClass()))
+                                                                                         return false;
+                                                                                     for (Class<? extends EntityLivingBase> claz : snagblacklist)
+                                                                                     {
+                                                                                         if (claz.isInstance(t))
+                                                                                             return false;
+                                                                                     }
+                                                                                     return true;
+                                                                                 }
+                                                                             };
 
     @SideOnly(Side.CLIENT)
     public static void displayInformation(NBTTagCompound nbt, List<String> list)
@@ -202,6 +224,13 @@ public class Pokecube extends Item implements IPokecube
         if (id == 14) return 0d;
 
         return 0;
+    }
+
+    @Override
+    public double getCaptureModifier(EntityLivingBase mob, int pokecubeId)
+    {
+        if (pokecubeId == 99) return 1;
+        return (mob instanceof IPokemob) ? getCaptureModifier((IPokemob) mob, pokecubeId) : 0;
     }
 
     @Override
@@ -450,5 +479,13 @@ public class Pokecube extends Item implements IPokecube
             x = 4;
         }
         return x;
+    }
+
+    @Override
+    public boolean canCapture(EntityLiving hit, ItemStack cube)
+    {
+        int id = PokecubeItems.getCubeId(cube);
+        if (id == 99) { return capturable.test(hit); }
+        return hit instanceof IPokemob;
     }
 }

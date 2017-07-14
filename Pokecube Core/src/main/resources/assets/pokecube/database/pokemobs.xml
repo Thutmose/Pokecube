@@ -21125,7 +21125,7 @@
             <Spawn types="forest" min="1" rate="0.0001" max="1"/>
             <BASESTATS spdef="98" spatk="131" def="95" spd="99" hp="126" atk="131"/>
             <EVYIELD hp="3"/>
-            <SIZES length="3.0" width="5.8" height="5.8"/>
+            <SIZES length="3.0" width="5.8" height="2.8"/>
             <TYPE type2="Flying" type1="Dark"/>
             <ABILITY normal="Dark Aura" hidden=""/>
             <MASSKG>203.0</MASSKG>

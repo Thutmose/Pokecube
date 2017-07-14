@@ -3,6 +3,7 @@ package pokecube.core.events.handlers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -12,6 +13,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
@@ -116,6 +118,21 @@ public class PCEventsHandler
     @SubscribeEvent
     public void PCLoggin(EntityJoinWorldEvent evt)
     {
+        // I will deal with some pokemob related bugs here, as to not have
+        // multiple event handlers for this.
+        if (evt.getWorld() instanceof WorldServer && evt.getEntity() instanceof IPokemob)
+        {
+            UUID id = evt.getEntity().getUniqueID();
+            WorldServer serer = (WorldServer) evt.getWorld();
+            if (serer.getEntityFromUuid(id) != null)
+            {
+                evt.setCanceled(true);
+                PokecubeMod.logger.log(Level.WARNING, "Tried to load duplicate " + evt.getEntity(),
+                        new IllegalArgumentException());
+            }
+            return;
+        }
+
         if (!(evt.getEntity() instanceof EntityPlayer)) return;
 
         EntityPlayer entityPlayer = (EntityPlayer) evt.getEntity();

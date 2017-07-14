@@ -6,6 +6,7 @@ package pokecube.core.entity.pokemobs.helper;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import javax.annotation.Nullable;
 
@@ -38,6 +39,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -659,6 +661,17 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             this.captureDrops = true;
             if (owner instanceof EntityPlayer && !isShadow())
             {
+                if (world instanceof WorldServer && PokecubeCore.core.getConfig().debug)
+                {
+                    WorldServer server = (WorldServer) world;
+                    PokecubeMod.logger.log(Level.INFO, "Recall: " + this, new Exception());
+                    PokecubeMod.log("Loaded List: " + world.loadedEntityList.contains(this));
+                    PokecubeMod.log("Unloaded List: " + world.unloadedEntityList.contains(this));
+                    PokecubeMod.log("Added: " + this.addedToChunk);
+                    PokecubeMod.log("Loaded Chunk: " + world.isAreaLoaded(getPosition(), 0));
+                    PokecubeMod.log("Is Mapped: " + (server.getEntityFromUuid(getUniqueID()) == this) + " : "
+                            + server.getEntityFromUuid(getUniqueID()));
+                }
                 ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                 EntityPlayer player = (EntityPlayer) owner;
                 boolean noRoom = false;
@@ -758,7 +771,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     @Override
     public void setDead()
     {
-        if (!this.returning && this.addedToChunk && !world.isRemote) returnToPokecube();
         super.setDead();
     }
 

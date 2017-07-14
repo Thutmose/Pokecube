@@ -13,7 +13,6 @@ public class MoveWhirlwind extends Move_Basic
     public MoveWhirlwind()
     {
         super("whirlwind");
-        setSound("mob.bat.loop");
     }
 
     @Override

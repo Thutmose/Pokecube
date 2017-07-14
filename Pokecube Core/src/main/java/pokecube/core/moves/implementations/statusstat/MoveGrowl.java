@@ -15,6 +15,6 @@ public class MoveGrowl extends Move_Basic
     public void preAttack(MovePacket packet)
     {
         super.preAttack(packet);
-        sound = packet.attacker.getSound();
+        soundUser = packet.attacker.getSound();
     }
 }

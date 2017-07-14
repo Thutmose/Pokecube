@@ -82,6 +82,8 @@ public class JsonMoves
         public String              zVersion;
 
         public String              defaultanimation;
+        public String              soundEffectSource;
+        public String              soundEffectTarget;
         public List<AnimationJson> animations;
     }
 

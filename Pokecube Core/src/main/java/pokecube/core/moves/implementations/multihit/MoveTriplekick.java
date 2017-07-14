@@ -18,10 +18,7 @@ public class MoveTriplekick extends Move_Basic
         int PWR = this.getPWR();
         for (int i = 0; i < 3; i++)
         {
-            if (sound != null)
-            {
-                ((Entity) packet.attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
-            }
+            playSounds((Entity) packet.attacker, packet.attacked, null);
             byte statusChange = STATUS_NON;
             byte changeAddition = CHANGE_NONE;
             if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)

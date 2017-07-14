@@ -110,10 +110,7 @@ public class Move_Explode extends Move_Basic
                 MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
                 return;
             }
-            if (sound != null)
-            {
-                ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
-            }
+            playSounds((Entity) attacker, attacked, null);
             float f1 = (float) (getPWR(pokemob, attacked) * PokecubeMod.core.getConfig().blastStrength
                     * pokemob.getStat(Stats.ATTACK, true) / 500000f);
 

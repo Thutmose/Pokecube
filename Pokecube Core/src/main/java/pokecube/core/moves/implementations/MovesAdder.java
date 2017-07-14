@@ -179,26 +179,17 @@ public class MovesAdder implements IMoveConstants
 
         registerDrainMoves();
 
-        registerRecoilMoves();
-
         registerSelfStatReducingMoves();
 
         registerStatMoves();
         registerStatusMoves();
 
         registerStandardDragonMoves();
-        registerStandardElectricMoves();
-        registerStandardFairyMoves();
-        registerStandardFightingMoves();
         registerStandardFireMoves();
-        registerStandardFlyingMoves();
-        registerStandardGhostMoves();
         registerStandardGrassMoves();
         registerStandardIceMoves();
         registerStandardNormalMoves();
-        registerStandardPoisonMoves();
         registerStandardPsychicMoves();
-        registerStandardSteelMoves();
         registerStandardWaterMoves();
 
         registerFixedOrCustomDamageMoves();
@@ -281,14 +272,6 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Ongoing(MOVE_SANDTOMB));
     }
 
-    static void registerRecoilMoves()
-    {
-
-        registerMove(new Move_Basic(MOVE_TAKEDOWN).setSound("game.neutral.hurt.fall.big"));
-        registerMove(new Move_Basic(MOVE_DOUBLEEDGE).setSound("game.neutral.hurt.fall.big"));
-        registerMove(new Move_Basic(MOVE_FLAREBLITZ).setSound("game.neutral.hurt.fall.big"));
-    }
-
     /** Only registers contact and self, as distances moves usually should have
      * some effect. */
     public static void registerRemainder()
@@ -330,70 +313,18 @@ public class MovesAdder implements IMoveConstants
 
     static void registerStandardDragonMoves()
     {
-        registerMove(new Move_Basic(MOVE_TWISTER).setSound("mob.bat.loop").setMultiTarget());
-
-    }
-
-    static void registerStandardElectricMoves()
-    {
-        registerMove(new Move_Basic(MOVE_THUNDERSHOCK).setSound("ambient.weather.thunder"));
-        registerMove(new Move_Basic(MOVE_THUNDERBOLT).setSound("ambient.weather.thunder"));
-        registerMove(new Move_Basic(MOVE_THUNDER).setSound("ambient.weather.thunder"));
-    }
-
-    static void registerStandardFairyMoves()
-    {
-        registerMove(new Move_Basic(MOVE_DAZZLINGGLEAM));
-    }
-
-    static void registerStandardFightingMoves()
-    {
+        registerMove(new Move_Basic(MOVE_TWISTER).setMultiTarget());
 
     }
 
     static void registerStandardFireMoves()
     {
-
-        registerMove(new Move_Basic(MOVE_EMBER));
         registerMove(new Move_Basic(MOVE_FLAMETHROWER).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_FIREBLAST).setSound("mob.wither.shoot").setMultiTarget());
-
-    }
-
-    static void registerStandardFlyingMoves()
-    {
-        registerMove(new Move_Basic(MOVE_PECK));
-        registerMove(new Move_Basic(MOVE_DRILLPECK));
-
-        registerMove(new Move_Basic(MOVE_WINGATTACK).setSound("mob.enderdragon.wings"));
-
-        registerMove(new Move_Basic(MOVE_AERIALACE).setSound("mob.enderdragon.wings"));
-
-        registerMove(new Move_Basic(MOVE_GUST).setSound("mob.bat.loop"));
-    }
-
-    static void registerStandardGhostMoves()
-    {
-
-        registerMove(new Move_Basic(MOVE_LICK).setSound("mob.silverfish.step"));
+        registerMove(new Move_Basic(MOVE_FIREBLAST).setMultiTarget());
     }
 
     static void registerStandardGrassMoves()
     {
-
-        registerMove(new Move_Basic(MOVE_VINEWHIP)
-        {
-            // @Override TODO make an IMoveAnimation for this.
-            // @SideOnly(Side.CLIENT)
-            // public void clientAnimation(Entity attacker, Vector3 target,
-            // Entity attacked,
-            // IWorldEventListener world) {
-            // attacked.world.spawnEntity(new
-            // EntityWhip(attacked.world, (EntityPokemob) attacker, 1));
-            // attacked.world.spawnEntity(new
-            // EntityWhip(attacked.world, (EntityPokemob) attacker, 2));
-            // }
-        }.setSound("random.bow"));
         registerMove(new Move_Basic(MOVE_RAZORLEAF).setMultiTarget());
     }
 
@@ -409,14 +340,9 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Explode(MOVE_EXPLOSION));
     }
 
-    static void registerStandardPoisonMoves()
-    {
-    }
-
     static void registerStandardPsychicMoves()
     {
-        registerMove(new Move_Basic(MOVE_CONFUSION).setSound("mob.guardian.curse").setNotInterceptable());
-        registerMove(new Move_Basic(MOVE_PSYBEAM).setSound("mob.guardian.curse"));
+        registerMove(new Move_Basic(MOVE_CONFUSION).setNotInterceptable());
         registerMove(new Move_Basic(MOVE_PSYWAVE)
         {
             @Override
@@ -427,7 +353,7 @@ public class MovesAdder implements IMoveConstants
 
                 return pwr;
             }
-        }.setSound("mob.guardian.curse"));
+        });
         registerMove(new Move_Basic(MOVE_STOREDPOWER)
         {
             @Override
@@ -445,13 +371,8 @@ public class MovesAdder implements IMoveConstants
                 }
                 return pwr;
             }
-        }.setSound("mob.guardian.curse"));
-        registerMove(new Move_Basic(MOVE_PSYCHIC).setSound("mob.guardian.curse").setNotInterceptable());
-    }
-
-    static void registerStandardSteelMoves()
-    {
-
+        });
+        registerMove(new Move_Basic(MOVE_PSYCHIC).setNotInterceptable());
     }
 
     static void registerStandardWaterMoves()
@@ -463,9 +384,6 @@ public class MovesAdder implements IMoveConstants
     static void registerStatMoves()
     {
         registerMove(new Move_Basic(MOVE_SANDATTACK).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_DOUBLETEAM)); // TODO make this make
-                                                       // multiple fake images
-
         registerMove(new Move_Basic(MOVE_SMOKESCREEN).setMultiTarget());
         registerMove(new Move_Basic(MOVE_SWEETSCENT).setMultiTarget());
 
@@ -478,7 +396,6 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Basic(MOVE_SLEEPPOWDER).setMultiTarget());
         registerMove(new Move_Basic(MOVE_STUNSPORE).setMultiTarget());
         registerMove(new Move_Basic(MOVE_SPORE).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_THUNDERWAVE).setSound("ambient.weather.thunder"));
     }
 
     /** Any move that affects the terrain or weather. */

@@ -46,7 +46,7 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
     public ItemStack dispense(IBlockSource source, ItemStack stack)
     {
         EnumFacing dir = null;
-        IBlockState state = source.func_189992_e();
+        IBlockState state = source.getBlockState();
         for (IProperty<?> prop : state.getPropertyNames())
         {
             if (prop.getValueClass() == EnumFacing.class)
@@ -69,7 +69,7 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
         {
             player.inventory.clear();
             player.setHeldItem(EnumHand.MAIN_HAND, stack);
-            boolean interacted = mobs.get(0).processInitialInteract(player, stack, EnumHand.MAIN_HAND);
+            boolean interacted = mobs.get(0).processInitialInteract(player, EnumHand.MAIN_HAND);
             boolean result = false;
             if (!interacted)
             {

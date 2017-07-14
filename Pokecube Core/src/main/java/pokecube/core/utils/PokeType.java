@@ -8,18 +8,15 @@ public enum PokeType
 {
     unknown(0, "???");
 
- // @formatter:off
     public static float[][] typeTable;
-    // @formatter:on
+
     public static float getAttackEfficiency(PokeType type, PokeType defenseType1, PokeType defenseType2)
     {
         float multiplier = typeTable[type.ordinal()][defenseType1.ordinal()];
-
-        if (defenseType2.compareTo(unknown) > 0)
+        if (defenseType2 != unknown)
         {
             multiplier *= typeTable[type.ordinal()][defenseType2.ordinal()];
         }
-
         return multiplier;
     }
 

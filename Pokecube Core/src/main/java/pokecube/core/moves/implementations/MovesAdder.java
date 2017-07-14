@@ -1,6 +1,10 @@
 package pokecube.core.moves.implementations;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -29,6 +33,14 @@ import thut.lib.CompatParser.ClassFinder;
 
 public class MovesAdder implements IMoveConstants
 {
+    public static Map<String, Class<? extends Move_Base>> presetMap = Maps.newHashMap();
+
+    static
+    {
+        presetMap.put("ongoing", Move_Ongoing.class);
+        presetMap.put("explode", Move_Explode.class);
+//        presetMap.put("terrain", Move_Terrain.class);
+    }
 
     public static void postInitMoves()
     {
@@ -50,13 +62,6 @@ public class MovesAdder implements IMoveConstants
         }
     }
 
-    static void registerDrainMoves()
-    {
-        registerMove(new Move_Basic(MOVE_ABSORB));
-        registerMove(new Move_Basic(MOVE_MEGADRAIN));
-        registerMove(new Move_Basic(MOVE_GIGADRAIN));
-    }
-
     /** Moves like low kick(weight based), dragon rage (fixed damage), etc */
     static void registerFixedOrCustomDamageMoves()
     {
@@ -76,22 +81,6 @@ public class MovesAdder implements IMoveConstants
                 return user.getLevel();
             }
         }.setFixedDamage());
-        registerMove(new Move_Basic(MOVE_SONICBOOM)
-        {
-            @Override
-            public int getPWR(IPokemob user, Entity target)
-            {
-                return 20;
-            }
-        });// setAnimtion(new ParticleFlow("note")));
-        registerMove(new Move_Basic(MOVE_DRAGONRAGE)
-        {
-            @Override
-            public int getPWR(IPokemob user, Entity target)
-            {
-                return 40;
-            }
-        });// setAnimtion(new ParticleFlow("flame")));
 
         registerMove(new Move_Basic(MOVE_LOWKICK)
         {
@@ -176,22 +165,7 @@ public class MovesAdder implements IMoveConstants
 
         // Ongoing moves
         registerOngoingMoves();
-
-        registerDrainMoves();
-
-        registerSelfStatReducingMoves();
-
-        registerStatMoves();
-        registerStatusMoves();
-
-        registerStandardDragonMoves();
-        registerStandardFireMoves();
-        registerStandardGrassMoves();
-        registerStandardIceMoves();
-        registerStandardNormalMoves();
         registerStandardPsychicMoves();
-        registerStandardWaterMoves();
-
         registerFixedOrCustomDamageMoves();
         registerTerrainMoves();
         registerAutodetect();
@@ -263,13 +237,6 @@ public class MovesAdder implements IMoveConstants
                 super.doOngoingEffect(mob);
             }
         });
-
-        registerMove(new Move_Ongoing(MOVE_WRAP));
-        registerMove(new Move_Ongoing(MOVE_WHIRLPOOL));
-        registerMove(new Move_Ongoing(MOVE_MAGMASTORM));
-        registerMove(new Move_Ongoing(MOVE_BIND));
-        registerMove(new Move_Ongoing(MOVE_CLAMP));
-        registerMove(new Move_Ongoing(MOVE_SANDTOMB));
     }
 
     /** Only registers contact and self, as distances moves usually should have
@@ -296,53 +263,28 @@ public class MovesAdder implements IMoveConstants
 
                 if (doesSomething)
                 {
-                    Move_Basic toAdd = new Move_Basic(e.name);
-                    registerMove(toAdd);
+                    Class<? extends Move_Base> moveClass = e.baseEntry.preset != null
+                            ? presetMap.get(e.baseEntry.preset) : Move_Basic.class;
+                    if (moveClass == null) moveClass = Move_Basic.class;
+
+                    Move_Base toAdd;
+                    try
+                    {
+                        toAdd = moveClass.getConstructor(String.class).newInstance(e.name);
+                        registerMove(toAdd);
+                    }
+                    catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+                            | InvocationTargetException | NoSuchMethodException | SecurityException e1)
+                    {
+                        e1.printStackTrace();
+                    }
                 }
             }
         }
     }
 
-    /** Moves that reduce the user's stats after dealing damage note: they use a
-     * different method for the stats effects, as they are 100% chance of
-     * occuring IF the attack did damage. */
-    static void registerSelfStatReducingMoves()
-    {
-        registerMove(new Move_Basic(MOVE_PSYCHOBOOST).setNotInterceptable());
-    }
-
-    static void registerStandardDragonMoves()
-    {
-        registerMove(new Move_Basic(MOVE_TWISTER).setMultiTarget());
-
-    }
-
-    static void registerStandardFireMoves()
-    {
-        registerMove(new Move_Basic(MOVE_FLAMETHROWER).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_FIREBLAST).setMultiTarget());
-    }
-
-    static void registerStandardGrassMoves()
-    {
-        registerMove(new Move_Basic(MOVE_RAZORLEAF).setMultiTarget());
-    }
-
-    static void registerStandardIceMoves()
-    {
-        registerMove(new Move_Basic(MOVE_AURORABEAM).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_ICEBEAM).setMultiTarget());
-    }
-
-    static void registerStandardNormalMoves()
-    {
-        registerMove(new Move_Explode(MOVE_SELFDESTRUCT));
-        registerMove(new Move_Explode(MOVE_EXPLOSION));
-    }
-
     static void registerStandardPsychicMoves()
     {
-        registerMove(new Move_Basic(MOVE_CONFUSION).setNotInterceptable());
         registerMove(new Move_Basic(MOVE_PSYWAVE)
         {
             @Override
@@ -372,30 +314,6 @@ public class MovesAdder implements IMoveConstants
                 return pwr;
             }
         });
-        registerMove(new Move_Basic(MOVE_PSYCHIC).setNotInterceptable());
-    }
-
-    static void registerStandardWaterMoves()
-    {
-        registerMove(new Move_Basic(MOVE_BUBBLEBEAM).setMultiTarget());
-    }
-
-    /** Moves that reduce or raise stats, but nothing else */
-    static void registerStatMoves()
-    {
-        registerMove(new Move_Basic(MOVE_SANDATTACK).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_SMOKESCREEN).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_SWEETSCENT).setMultiTarget());
-
-    }
-
-    /** Moves that cause status problems, but nothing else */
-    static void registerStatusMoves()
-    {
-        registerMove(new Move_Basic(MOVE_POISONPOWDER).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_SLEEPPOWDER).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_STUNSPORE).setMultiTarget());
-        registerMove(new Move_Basic(MOVE_SPORE).setMultiTarget());
     }
 
     /** Any move that affects the terrain or weather. */
@@ -411,7 +329,6 @@ public class MovesAdder implements IMoveConstants
         registerMove(new Move_Terrain(MOVE_SPIKES, PokemobTerrainEffects.EFFECT_SPIKES));
         registerMove(new Move_Terrain(MOVE_TOXICSPIKES, PokemobTerrainEffects.EFFECT_POISON));
         registerMove(new Move_Terrain(MOVE_STEALTHROCK, PokemobTerrainEffects.EFFECT_ROCKS));
-        registerMove(new Move_Terrain(MOVE_STICKYWEB, PokemobTerrainEffects.EFFECT_WEBS)); // Slows
-                                                                                           // entrants
+        registerMove(new Move_Terrain(MOVE_STICKYWEB, PokemobTerrainEffects.EFFECT_WEBS));
     }
 }

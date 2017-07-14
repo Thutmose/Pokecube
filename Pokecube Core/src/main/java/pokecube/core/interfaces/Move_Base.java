@@ -231,7 +231,7 @@ public abstract class Move_Base
      * @return */
     public Move_Base setMultiTarget()
     {
-        move.multiTarget = true;
+        move.baseEntry.multiTarget = true;
         return this;
     }
 
@@ -278,7 +278,7 @@ public abstract class Move_Base
                     soundUser = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectSource));
                     move.baseEntry.soundEffectSource = null;
                 }
-                attacker.playSound(soundUser, 0.5f, 1);
+                attacker.playSound(soundUser, 1f, 1);
             }
         }
         if (attacked != null)
@@ -290,7 +290,7 @@ public abstract class Move_Base
                     soundTarget = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectTarget));
                     move.baseEntry.soundEffectTarget = null;
                 }
-                attacked.playSound(soundTarget, 0.5f, 1);
+                attacked.playSound(soundTarget, 1f, 1);
             }
         }
         else if (attacker != null && targetPos != null)
@@ -302,9 +302,8 @@ public abstract class Move_Base
                     soundTarget = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectTarget));
                     move.baseEntry.soundEffectTarget = null;
                 }
-                attacker.playSound(soundTarget, 0.5f, 1);
                 attacker.getEntityWorld().playSound((EntityPlayer) null, targetPos.x, targetPos.y, targetPos.z,
-                        soundTarget, attacker.getSoundCategory(), 0.5f, 1);
+                        soundTarget, attacker.getSoundCategory(), 1f, 1);
             }
         }
     }

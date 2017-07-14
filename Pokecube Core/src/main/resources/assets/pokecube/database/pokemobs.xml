@@ -14690,6 +14690,7 @@
             <EVOLUTIONANIMATION>3</EVOLUTIONANIMATION>
             <SPECIES>Sea Drifter</SPECIES>
             <BASESTATS spdef="80" spatk="80" def="80" spd="80" hp="80" atk="80"/>
+            <Spawn types="monument" min="1" rate="1.0" max="1" air="false"/>
             <EVYIELD hp="1"/>
             <SIZES length="0.4" width="0.4" height="0.4"/>
             <TYPE type1="Water"/>
@@ -14716,6 +14717,7 @@
             <SPECIALEGGSPECIESRULES>0:Phione</SPECIALEGGSPECIESRULES>
             <Drop r="1" id="minecraft:nether_star" n="1"/>
             <Spawn types="ocean" min="1" rate="0.001" max="1" air="false"/>
+            <Spawn types="monument" min="1" rate="0.01" max="1" air="false"/>
             <BASESTATS spdef="100" spatk="100" def="100" spd="100" hp="100" atk="100"/>
             <EVYIELD hp="3"/>
             <SIZES length="0.3" width="0.3" height="0.3"/>
@@ -21123,7 +21125,7 @@
             <Spawn types="forest" min="1" rate="0.0001" max="1"/>
             <BASESTATS spdef="98" spatk="131" def="95" spd="99" hp="126" atk="131"/>
             <EVYIELD hp="3"/>
-            <SIZES length="3.0" width="5.8" height="5.8"/>
+            <SIZES length="3.0" width="5.8" height="2.8"/>
             <TYPE type2="Flying" type1="Dark"/>
             <ABILITY normal="Dark Aura" hidden=""/>
             <MASSKG>203.0</MASSKG>

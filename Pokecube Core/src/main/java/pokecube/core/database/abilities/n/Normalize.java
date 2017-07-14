@@ -13,7 +13,7 @@ public class Normalize extends Ability
         if (!move.pre) return;
         if (mob == move.attacker)
         {
-            move.attackType = PokeType.normal;
+            move.attackType = PokeType.getType("normal");
         }
     }
 }

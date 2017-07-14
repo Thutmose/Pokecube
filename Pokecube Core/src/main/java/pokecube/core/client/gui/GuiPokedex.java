@@ -3,7 +3,6 @@
  */
 package pokecube.core.client.gui;
 
-import static pokecube.core.utils.PokeType.flying;
 import static pokecube.core.utils.PokeType.getTranslatedName;
 
 import java.io.IOException;
@@ -596,7 +595,7 @@ public class GuiPokedex extends GuiScreen
             String loc = location.loc.toIntString();
             loc = loc.replace(" ", "");
             loc = fontRenderer.trimStringToWidth(loc, 90);
-            drawString(fontRenderer, loc, xOffset + 16, yOffset + 99 + 14 * index, PokeType.fire.colour);
+            drawString(fontRenderer, loc, xOffset + 16, yOffset + 99 + 14 * index, PokeType.getType("fire").colour);
         }
     }
 
@@ -1405,7 +1404,8 @@ public class GuiPokedex extends GuiScreen
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;
             entity.prevLimbSwingAmount = 0;
-            entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
+            PokeType flying = PokeType.getType("flying");
+            entity.onGround = !((IPokemob) entity).isType(flying);
 
             if (isAltKeyDown())
             {

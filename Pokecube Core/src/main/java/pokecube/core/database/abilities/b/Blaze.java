@@ -18,7 +18,7 @@ public class Blaze extends Ability
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         if (!move.pre) return;
-        if (mob == move.attacker && move.attackType == PokeType.fire
+        if (mob == move.attacker && move.attackType == PokeType.getType("fire")
                 && ((EntityLivingBase) mob).getHealth() < ((EntityLivingBase) mob).getMaxHealth() / 3)
         {
             move.PWR *= 1.5;

@@ -150,7 +150,7 @@ public class AIMate extends AIBase
             if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
         }
         if (!pokemob.getPokedexEntry().breeds && !transforms) return null;
-        if (pokemob.isType(PokeType.ghost) && !pokemob.getPokemonAIState(IMoveConstants.TAMED)) return null;
+        if (pokemob.isType(PokeType.getType("ghost")) && !pokemob.getPokemonAIState(IMoveConstants.TAMED)) return null;
         if (!(pokemob.getPokemonOwner() instanceof EntityPlayer)
                 && !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius,
                         PokecubeMod.core.getConfig().maxSpawnRadius / 4, entity))

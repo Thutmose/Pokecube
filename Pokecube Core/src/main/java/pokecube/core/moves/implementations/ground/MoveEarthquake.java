@@ -69,7 +69,7 @@ public class MoveEarthquake extends Move_Basic
                     if (attacked instanceof EntityCreeper)
                     {
                         EntityCreeper creeper = (EntityCreeper) attacked;
-                        if (move.type == PokeType.psychic && creeper.getHealth() > 0)
+                        if (move.type == PokeType.getType("psychic") && creeper.getHealth() > 0)
                         {
                             Accessor.explode(creeper);
                         }

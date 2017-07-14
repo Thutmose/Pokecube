@@ -194,7 +194,7 @@ public class PokeInfo extends PlayerData
     private void updateSwimming(EntityPlayer player)
     {
         if (pokemob == null) return;
-        if (pokemob.getPokedexEntry().swims() || pokemob.isType(PokeType.water)) player.setAir(300);
+        if (pokemob.getPokedexEntry().swims() || pokemob.isType(PokeType.getType("water"))) player.setAir(300);
     }
 
     @Override

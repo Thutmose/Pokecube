@@ -11,9 +11,9 @@ public class Aerilate extends Ability
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         if (!move.pre) return;
-        if (move.attackType == PokeType.normal && mob == move.attacker)
+        if (move.attackType == PokeType.getType("normal") && mob == move.attacker)
         {
-            move.attackType = PokeType.flying;
+            move.attackType = PokeType.getType("flying");
         }
     }
 }

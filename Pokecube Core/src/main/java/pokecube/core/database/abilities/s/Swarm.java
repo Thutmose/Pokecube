@@ -19,7 +19,7 @@ public class Swarm extends Ability
     {
 
         if (!move.pre) return;
-        if (mob == move.attacker && move.attackType == PokeType.bug
+        if (mob == move.attacker && move.attackType == PokeType.getType("bug")
                 && ((EntityLivingBase) mob).getHealth() < ((EntityLivingBase) mob).getMaxHealth() / 3)
         {
             move.PWR *= 1.5;

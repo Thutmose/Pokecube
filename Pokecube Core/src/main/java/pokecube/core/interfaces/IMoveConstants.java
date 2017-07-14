@@ -70,24 +70,24 @@ public interface IMoveConstants extends IMoveNames
      * Types
      */
     PokeType         unknown              = PokeType.unknown;
-    PokeType         normal               = PokeType.normal;
-    PokeType         fighting             = PokeType.fighting;
-    PokeType         flying               = PokeType.flying;
-    PokeType         poison               = PokeType.poison;
-    PokeType         ground               = PokeType.ground;
-    PokeType         rock                 = PokeType.rock;
-    PokeType         bug                  = PokeType.bug;
-    PokeType         ghost                = PokeType.ghost;
-    PokeType         steel                = PokeType.steel;
-    PokeType         fire                 = PokeType.fire;
-    PokeType         water                = PokeType.water;
-    PokeType         grass                = PokeType.grass;
-    PokeType         electric             = PokeType.electric;
-    PokeType         psychic              = PokeType.psychic;
-    PokeType         ice                  = PokeType.ice;
-    PokeType         dragon               = PokeType.dragon;
-    PokeType         dark                 = PokeType.dark;
-    PokeType         fairy                = PokeType.fairy;
+    PokeType         normal               = PokeType.getType("normal");
+    PokeType         fighting             = PokeType.getType("fighting");
+    PokeType         flying               = PokeType.getType("flying");
+    PokeType         poison               = PokeType.getType("poison");
+    PokeType         ground               = PokeType.getType("ground");
+    PokeType         rock                 = PokeType.getType("rock");
+    PokeType         bug                  = PokeType.getType("bug");
+    PokeType         ghost                = PokeType.getType("ghost");
+    PokeType         steel                = PokeType.getType("steel");
+    PokeType         fire                 = PokeType.getType("fire");
+    PokeType         water                = PokeType.getType("water");
+    PokeType         grass                = PokeType.getType("grass");
+    PokeType         electric             = PokeType.getType("electric");
+    PokeType         psychic              = PokeType.getType("psychic");
+    PokeType         ice                  = PokeType.getType("ice");
+    PokeType         dragon               = PokeType.getType("dragon");
+    PokeType         dark                 = PokeType.getType("dark");
+    PokeType         fairy                = PokeType.getType("fairy");
 
     /*
      * Flavours

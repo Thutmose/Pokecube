@@ -18,8 +18,8 @@ public class Entei extends Condition implements ISpecialCaptureCondition, ISpeci
     public boolean canCapture(Entity trainer, IPokemob pokemon)
     {
         if (!canCapture(trainer)) return false;
-        int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID(), PokeType.fire);
-        int count2 = SpecialCaseRegister.countSpawnableTypes(PokeType.fire);
+        int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID(), PokeType.getType("fire"));
+        int count2 = SpecialCaseRegister.countSpawnableTypes(PokeType.getType("fire"));
         if (((double) count1) / ((double) count2) >= 0.5) { return true; }
         if (pokemon != null && !trainer.getEntityWorld().isRemote)
         {

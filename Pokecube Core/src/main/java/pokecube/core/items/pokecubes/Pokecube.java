@@ -182,12 +182,12 @@ public class Pokecube extends Item implements IPokecube
         double x = 1;
         Entity entity = (Entity) mob;
         if (entity.getEntityWorld().getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
-                && mob.getType1() == PokeType.water)
+                && mob.getType1() == PokeType.getType("water"))
         {
             x = 3.5;
         }
         if (entity.getEntityWorld().getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
-                && mob.getType2() == PokeType.water)
+                && mob.getType2() == PokeType.getType("water"))
         {
             x = 3.5;
         }
@@ -265,19 +265,19 @@ public class Pokecube extends Item implements IPokecube
     public double net(IPokemob mob, int id)
     {
         double x = 1;
-        if (mob.getType1() == PokeType.bug)
+        if (mob.getType1() == PokeType.getType("bug"))
         {
             x = 2;
         }
-        if (mob.getType1() == PokeType.water)
+        if (mob.getType1() == PokeType.getType("water"))
         {
             x = 2;
         }
-        if (mob.getType2() == PokeType.bug)
+        if (mob.getType2() == PokeType.getType("bug"))
         {
             x = 2;
         }
-        if (mob.getType2() == PokeType.water)
+        if (mob.getType2() == PokeType.getType("water"))
         {
             x = 2;
         }

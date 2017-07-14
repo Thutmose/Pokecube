@@ -524,9 +524,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public boolean setStatus(byte status)
     {
         if (getStatus() != STATUS_NON) { return false; }
-        if (status == STATUS_BRN && isType(PokeType.fire)) return false;
-        if (status == STATUS_PAR && isType(PokeType.electric)) return false;
-        if (status == STATUS_FRZ && isType(PokeType.ice)) return false;
+        if (status == STATUS_BRN && isType(PokeType.getType("fire"))) return false;
+        if (status == STATUS_PAR && isType(PokeType.getType("electric"))) return false;
+        if (status == STATUS_FRZ && isType(PokeType.getType("ice"))) return false;
         if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
         dataManager.set(STATUSDW, status);
         setStatusTimer((short) (PokecubeMod.core.getConfig().attackCooldown * 5));

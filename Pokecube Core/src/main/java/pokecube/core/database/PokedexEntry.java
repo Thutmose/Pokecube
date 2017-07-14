@@ -412,8 +412,8 @@ public class PokedexEntry
             waterdrop.values.put(new QName("id"), "minecraft:water_bucket");
             water.action.drops.add(waterdrop);
 
-            defaults.put(PokeType.fire, Lists.newArrayList(fire));
-            defaults.put(PokeType.water, Lists.newArrayList(water));
+            defaults.put(PokeType.getType("fire"), Lists.newArrayList(fire));
+            defaults.put(PokeType.getType("water"), Lists.newArrayList(water));
         }
 
         protected static void initForEntry(PokedexEntry entry)

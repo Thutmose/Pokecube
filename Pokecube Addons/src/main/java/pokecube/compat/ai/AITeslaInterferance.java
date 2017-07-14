@@ -38,7 +38,7 @@ public class AITeslaInterferance extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
-        return pokemob.isType(PokeType.electric) && entity.ticksExisted % 5 == 0;
+        return pokemob.isType(PokeType.getType("electric")) && entity.ticksExisted % 5 == 0;
     }
 
     @Override

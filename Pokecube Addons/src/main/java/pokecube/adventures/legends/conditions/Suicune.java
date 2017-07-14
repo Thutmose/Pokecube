@@ -18,8 +18,8 @@ public class Suicune extends Condition implements ISpecialCaptureCondition, ISpe
     public boolean canCapture(Entity trainer, IPokemob pokemon)
     {
         if (!canCapture(trainer)) return false;
-        int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID(), PokeType.water);
-        int count2 = SpecialCaseRegister.countSpawnableTypes(PokeType.water);
+        int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID(), PokeType.getType("water"));
+        int count2 = SpecialCaseRegister.countSpawnableTypes(PokeType.getType("water"));
         if (((double) count1) / ((double) count2) >= 0.5) { return true; }
         if (pokemon != null && !trainer.getEntityWorld().isRemote)
         {

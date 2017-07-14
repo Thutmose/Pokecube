@@ -304,7 +304,7 @@ public class EnergyHandler
         @Override
         public boolean canExtract()
         {
-            return pokemob.isType(PokeType.electric);
+            return pokemob.isType(PokeType.getType("electric"));
         }
 
         @Override

@@ -76,7 +76,7 @@ public class MoveEntry implements IMoveConstants
     public float                   damageHealRatio          = 0;
     public float                   selfHealRatio            = 0;
     private boolean                multiTarget;
-    public boolean                 notIntercepable;
+    private boolean                notIntercepable;
     public boolean                 protect;
     public boolean                 magiccoat;
     public boolean                 snatch;
@@ -107,6 +107,18 @@ public class MoveEntry implements IMoveConstants
     {
         if (baseEntry != null) return baseEntry.multiTarget;
         return multiTarget;
+    }
+
+    public boolean isNotIntercepable()
+    {
+        if (baseEntry != null) return !baseEntry.interceptable;
+        return notIntercepable;
+    }
+
+    public void setNotIntercepable(boolean b)
+    {
+        if (baseEntry != null) baseEntry.interceptable = !b;
+        else notIntercepable = b;
     }
 
 }

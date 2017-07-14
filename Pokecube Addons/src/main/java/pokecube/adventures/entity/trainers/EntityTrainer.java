@@ -306,6 +306,7 @@ public class EntityTrainer extends EntityHasPokemobs
                 ITextComponent text = getMessage(MessageState.GIVEITEM, this.getDisplayName(), i.getDisplayName(),
                         player.getDisplayName());
                 defeater.sendMessage(text);
+                doAction(MessageState.GIVEITEM, player);
             }
             checkDefeatAchievement(player);
         }
@@ -313,6 +314,7 @@ public class EntityTrainer extends EntityHasPokemobs
         {
             ITextComponent text = getMessage(MessageState.DEFEAT, getDisplayName(), defeater.getDisplayName());
             defeater.sendMessage(text);
+            if (defeater instanceof EntityLivingBase) doAction(MessageState.DEFEAT, (EntityLivingBase) defeater);
             if (notifyDefeat && defeater instanceof EntityPlayerMP)
             {
                 PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);

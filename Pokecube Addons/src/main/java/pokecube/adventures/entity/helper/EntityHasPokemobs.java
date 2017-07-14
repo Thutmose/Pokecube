@@ -312,6 +312,7 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             ITextComponent text = getMessage(MessageState.SENDOUT, getDisplayName(), i.getDisplayName(),
                     target.getDisplayName());
             target.sendMessage(text);
+            if (target instanceof EntityLivingBase) doAction(MessageState.SENDOUT, (EntityLivingBase) target);
             nextSlot++;
             if (nextSlot >= 6 || getNextPokemob() == null) nextSlot = -1;
             return;
@@ -326,14 +327,16 @@ public abstract class EntityHasPokemobs extends EntityHasMessages
             attackCooldown = Config.instance.trainerBattleDelay;
             ITextComponent text = getMessage(MessageState.AGRESS, getDisplayName(), target.getDisplayName());
             target.sendMessage(text);
+            doAction(MessageState.AGRESS, target);
             this.setAIState(INBATTLE, true);
         }
         if (target == null)
         {
             if (this.target != null && this.getAIState(INBATTLE))
             {
-                this.target.sendMessage(
-                        getMessage(MessageState.DEAGRESS, getDisplayName(), this.target.getDisplayName()));
+                this.target
+                        .sendMessage(getMessage(MessageState.DEAGRESS, getDisplayName(), this.target.getDisplayName()));
+                doAction(MessageState.DEAGRESS, target);
             }
             this.setAIState(THROWING, false);
             this.setAIState(INBATTLE, false);

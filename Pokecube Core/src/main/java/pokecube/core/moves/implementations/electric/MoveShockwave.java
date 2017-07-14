@@ -23,7 +23,6 @@ public class MoveShockwave extends Move_Basic
     public MoveShockwave()
     {
         super("shockwave");
-        setSound("ambient.weather.thunder");
     }
 
     @Override
@@ -48,6 +47,7 @@ public class MoveShockwave extends Move_Basic
         int n = targets.size();
         if (n > 0)
         {
+            playSounds((Entity) attacker, null, location);
             for (Entity e : targets)
             {
                 if (e != null)
@@ -66,10 +66,6 @@ public class MoveShockwave extends Move_Basic
                         {
                             Accessor.explode(creeper);
                         }
-                    }
-                    if (sound != null)
-                    {
-                        ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
                     }
                     byte statusChange = STATUS_NON;
                     byte changeAddition = CHANGE_NONE;

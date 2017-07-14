@@ -384,7 +384,7 @@ public class AIAttack extends AIBase implements IAICombat
             // move use, allowing easier dodging.
             if ((entityTarget instanceof IPokemob
                     && !((IPokemob) entityTarget).getPokemonAIState(IMoveConstants.DODGING))
-                    || !(entityTarget instanceof IPokemob) || attack.move.notIntercepable)
+                    || !(entityTarget instanceof IPokemob) || attack.move.isNotIntercepable())
             {
                 targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
             }

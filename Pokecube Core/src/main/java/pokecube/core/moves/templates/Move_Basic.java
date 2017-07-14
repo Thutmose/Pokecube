@@ -163,7 +163,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         Entity entity = (Entity) attacker;
 
-        if (!move.notIntercepable && attacker.getPokemonAIState(IMoveConstants.ANGRY))
+        if (!move.isNotIntercepable() && attacker.getPokemonAIState(IMoveConstants.ANGRY))
         {
             Vec3d loc1 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3d loc2 = new Vec3d(location.x, location.y, location.z);
@@ -177,7 +177,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             targets.addAll(MovesUtils.targetsHit(((Entity) attacker), location));
         }
-        else if (!move.notIntercepable)
+        else if (!move.isNotIntercepable())
         {
             targets.add(MovesUtils.targetHit(entity, location));
         }

@@ -242,7 +242,7 @@ public abstract class Move_Base
      * @return */
     public Move_Base setNotInterceptable()
     {
-        move.notIntercepable = true;
+        move.setNotIntercepable(true);
         return this;
     }
 

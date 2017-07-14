@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 import static org.lwjgl.opengl.GL11.glRotatef;
 import static org.lwjgl.opengl.GL11.glScalef;
 import static org.lwjgl.opengl.GL11.glTranslatef;
-import static pokecube.core.utils.PokeType.flying;
 import static pokecube.core.utils.PokeType.getTranslatedName;
 
 import java.io.IOException;
@@ -402,7 +401,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;
-            entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
+            PokeType flying = PokeType.getType("flying");
+            entity.onGround = !((IPokemob)entity).isType(flying);
             Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_COLOR_MATERIAL);

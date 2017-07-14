@@ -1,11 +1,5 @@
 package pokecube.core.moves;
 
-import static pokecube.core.utils.PokeType.ground;
-import static pokecube.core.utils.PokeType.ice;
-import static pokecube.core.utils.PokeType.poison;
-import static pokecube.core.utils.PokeType.rock;
-import static pokecube.core.utils.PokeType.steel;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -81,13 +75,13 @@ public class PokemobTerrainEffects implements ITerrainEffect
         if (entity instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) entity;
-            if (effects[EFFECT_WEATHER_HAIL] > 0 && !mob.isType(ice))
+            if (effects[EFFECT_WEATHER_HAIL] > 0 && !mob.isType(PokeType.getType("ice")))
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 entity.attackEntityFrom(HAILDAMAGE, damage);
             }
-            if (effects[EFFECT_WEATHER_SAND] > 0 && !(mob.isType(rock) || mob.isType(steel) || mob.isType(ground)))
+            if (effects[EFFECT_WEATHER_SAND] > 0 && !(mob.isType(PokeType.getType("rock")) || mob.isType(PokeType.getType("steel")) || mob.isType(PokeType.getType("ground"))))
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
@@ -152,11 +146,11 @@ public class PokemobTerrainEffects implements ITerrainEffect
         if (entity instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) entity;
-            if (effects[EFFECT_POISON] > 0 && !mob.isType(poison) && !mob.isType(steel))
+            if (effects[EFFECT_POISON] > 0 && !mob.isType(PokeType.getType("poison")) && !mob.isType(PokeType.getType("steel")))
             {
                 mob.setStatus(IMoveConstants.STATUS_PSN);
             }
-            if (effects[EFFECT_POISON2] > 0 && !mob.isType(poison) && !mob.isType(steel))
+            if (effects[EFFECT_POISON2] > 0 && !mob.isType(PokeType.getType("poison")) && !mob.isType(PokeType.getType("steel")))
             {
                 mob.setStatus(IMoveConstants.STATUS_PSN2);
             }
@@ -171,7 +165,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-                double mult = PokeType.getAttackEfficiency(rock, mob.getType1(), mob.getType2());
+                double mult = PokeType.getAttackEfficiency(PokeType.getType("rock"), mob.getType1(), mob.getType2());
                 entity.attackEntityFrom(DamageSource.generic, (float) (damage * mult));
             }
             if (effects[EFFECT_WEBS] > 0 && mob.getOnGround())

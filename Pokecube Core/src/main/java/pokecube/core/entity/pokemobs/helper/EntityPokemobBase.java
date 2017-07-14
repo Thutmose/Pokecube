@@ -283,7 +283,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
         this.initRidable();
 
-        isImmuneToFire = isType(PokeType.fire);
+        isImmuneToFire = isType(PokeType.getType("fire"));
     }
 
     /** Checks if this entity is inside of an opaque block */

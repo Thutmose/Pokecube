@@ -24,7 +24,7 @@ public class EffectSpore extends Ability
         Move_Base attack = move.getMove();
 
         IPokemob attacker = move.attacker;
-        if (attacker == mob || move.pre || attacker == move.attacked || attacker.isType(PokeType.grass)) return;
+        if (attacker == mob || move.pre || attacker == move.attacked || attacker.isType(PokeType.getType("grass"))) return;
         if (move.hit && attack.getAttackCategory() == IMoveConstants.CATEGORY_CONTACT && Math.random() > 0.7)
         {
             int num = new Random().nextInt(30);

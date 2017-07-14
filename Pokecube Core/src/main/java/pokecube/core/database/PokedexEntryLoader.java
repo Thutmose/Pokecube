@@ -920,7 +920,7 @@ public class PokedexEntryLoader
         // Logics
         if (xmlStats.logics != null)
         {
-            entry.shouldFly = entry.isType(PokeType.flying);
+            entry.shouldFly = entry.isType(PokeType.getType("flying"));
             Map<QName, String> values = xmlStats.logics.values;
             for (QName key : values.keySet())
             {
@@ -998,7 +998,7 @@ public class PokedexEntryLoader
                 }
             }
         }
-        if (entry.isType(PokeType.ghost)) entry.foods[4] = true;
+        if (entry.isType(PokeType.getType("ghost"))) entry.foods[4] = true;
 
         if (xmlStats.activeTimes != null)
         {

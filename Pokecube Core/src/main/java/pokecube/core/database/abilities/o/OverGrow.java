@@ -19,7 +19,7 @@ public class OverGrow extends Ability
     {
 
         if (!move.pre) return;
-        if (mob == move.attacker && move.attackType == PokeType.grass
+        if (mob == move.attacker && move.attackType == PokeType.getType("grass")
                 && ((EntityLivingBase) mob).getHealth() < ((EntityLivingBase) mob).getMaxHealth() / 3)
         {
             move.PWR *= 1.5;

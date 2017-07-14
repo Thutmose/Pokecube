@@ -46,12 +46,13 @@ import pokecube.core.interfaces.PokecubeMod;
 import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
-        modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = PokecubeAdv.DEPSTRING, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS) // @formatter:on
+        modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = PokecubeAdv.DEPSTRING, acceptableRemoteVersions = PokecubeAdv.MINVERSION, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS) // @formatter:on
 public class PokecubeAdv
 {
     public static final String ID                 = "pokecube_adventures";
     public static final String version            = "@VERSION";
     public final static String MCVERSIONS         = "@MCVERSION";
+    public final static String MINVERSION         = "@MINVERSION";
     public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;"
             + "after:thut_wearables;"
             + "after:thutessentials;"

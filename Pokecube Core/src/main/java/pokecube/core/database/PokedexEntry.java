@@ -548,7 +548,7 @@ public class PokedexEntry
             List<ItemStack> results = stacks.get(stack);
             int index = player.getRNG().nextInt(results.size());
             ItemStack result = results.get(index).copy();
-            if (CompatWrapper.increment(held, -1) == 1)
+            if (CompatWrapper.increment(held, -1) == 0)
             {
                 player.inventory.setInventorySlotContents(player.inventory.currentItem, result);
             }

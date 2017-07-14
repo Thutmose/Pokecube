@@ -274,7 +274,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectTarget": "mob.enderdragon.flap"
+      "soundEffectTarget": "entity.enderdragon.flap"
     },
     {
       "name": "aeroblast",
@@ -904,6 +904,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "beam:paurora:d0.5",
@@ -1903,6 +1904,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "beam:pbubble:d0.5",
@@ -2626,6 +2628,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "interceptable": "false",
       "soundEffectTarget": "entity.elder_guardian.curse"
     },
     {
@@ -4296,7 +4299,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectSource": "ambient.weather.thunder"
+      "soundEffectSource": "entity.lightning.thunder"
     },
     {
       "name": "echoedvoice",
@@ -4739,7 +4742,8 @@
       "wideArea": "No",
       "magiccoat": "No",
       "protect": "Yes",
-      "mirrormove": "Yes"
+      "mirrormove": "Yes",
+      "preset": "explode"
     },
     {
       "name": "extrasensory",
@@ -5146,6 +5150,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "flow:pflame:f0:w2:l1",
@@ -5163,7 +5168,7 @@
           "starttick": "0"
         }
       ],
-      "soundEffectTarget": "mob.wither.shoot"
+      "soundEffectTarget": "entity.wither.shoot"
     },
     {
       "name": "firefang",
@@ -5462,6 +5467,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "beam:pflame:d0.2",
@@ -6907,7 +6913,7 @@
           "starttick": "0"
         }
       ],
-      "soundEffectTarget": "mob.bat.takeoff"
+      "soundEffectTarget": "entity.bat.loop"
     },
     {
       "name": "gyroball",
@@ -8064,6 +8070,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "beam",
@@ -9044,7 +9051,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectTarget": "mob.silverfish.step"
+      "soundEffectTarget": "entity.silverfish.step"
     },
     {
       "name": "lightofruin",
@@ -9572,7 +9579,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectSource": "ambient.weather.thunder"
+      "soundEffectSource": "entity.lightning.thunder"
     },
     {
       "name": "maliciousmoonsault",
@@ -11582,6 +11589,7 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Defense ?",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "powder:pportal",
@@ -12104,6 +12112,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "interceptable": "false",
       "soundEffectTarget": "entity.elder_guardian.curse"
     },
     {
@@ -12181,7 +12190,8 @@
       "wideArea": "No",
       "magiccoat": "No",
       "protect": "Yes",
-      "mirrormove": "Yes"
+      "mirrormove": "Yes",
+      "interceptable": "false"
     },
     {
       "name": "psychocut",
@@ -12697,6 +12707,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "flow:pleaf",
@@ -13638,6 +13649,7 @@
       "magiccoat": "Yes",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "zVersion": "Evasiveness ?"
     },
     {
@@ -14017,7 +14029,8 @@
       "wideArea": "No",
       "magiccoat": "No",
       "protect": "Yes",
-      "mirrormove": "Yes"
+      "mirrormove": "Yes",
+      "preset": "explode"
     },
     {
       "name": "shadowball",
@@ -14356,7 +14369,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectSource": "ambient.weather.thunder"
+      "soundEffectSource": "entity.lightning.thunder"
     },
     {
       "name": "shoreup",
@@ -14787,6 +14800,7 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Speed ?",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "powder",
@@ -15051,6 +15065,7 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Evasiveness ?",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "powder:plargesmoke",
@@ -15689,6 +15704,7 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Reset Stats",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "powder",
@@ -16194,6 +16210,7 @@
       "protect": "Yes",
       "mirrormove": "Yes",
       "zVersion": "Special Defense ?",
+      "multiTarget":"true",
       "animations": [
         {
           "preset": "powder",
@@ -16597,6 +16614,7 @@
       "magiccoat": "Yes",
       "protect": "Yes",
       "mirrormove": "Yes",
+      "multiTarget":"true",
       "zVersion": "Accuracy ?"
     },
     {
@@ -17244,7 +17262,7 @@
           "starttick": "0"
         }
       ],
-      "soundEffectTarget": "ambient.weather.thunder"
+      "soundEffectTarget": "entity.lightning.thunder"
     },
     {
       "name": "thunderbolt",
@@ -17277,7 +17295,7 @@
           "starttick": "0"
         }
       ],
-      "soundEffectTarget": "ambient.weather.thunder"
+      "soundEffectTarget": "entity.lightning.thunder"
     },
     {
       "name": "thunderfang",
@@ -17367,7 +17385,7 @@
           "starttick": "0"
         }
       ],
-      "soundEffectTarget": "ambient.weather.thunder"
+      "soundEffectTarget": "entity.lightning.thunder"
     },
     {
       "name": "thunderwave",
@@ -17402,7 +17420,7 @@
           "starttick": "0"
         }
       ],
-      "soundEffectTarget": "ambient.weather.thunder"
+      "soundEffectTarget": "entity.lightning.thunder"
     },
     {
       "name": "tickle",
@@ -17856,7 +17874,8 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectSource": "mob.bat.takeoff"
+      "soundEffectSource": "entity.bat.loop",
+      "multiTarget":"true"
     },
     {
       "name": "uproar",
@@ -18073,7 +18092,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectTarget": "random.bow"
+      "soundEffectTarget": "entity.arrow.shoot"
     },
     {
       "name": "vitalthrow",
@@ -18444,7 +18463,7 @@
       "protect": "No",
       "mirrormove": "Yes",
       "zVersion": "Special Defense ?",
-      "soundEffectTarget": "mob.bat.takeoff"
+      "soundEffectTarget": "entity.bat.loop"
     },
     {
       "name": "wideguard",
@@ -18550,7 +18569,7 @@
       "magiccoat": "No",
       "protect": "Yes",
       "mirrormove": "Yes",
-      "soundEffectTarget": "mob.enderdragon.flap"
+      "soundEffectTarget": "entity.enderdragon.flap"
     },
     {
       "name": "wish",

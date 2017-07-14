@@ -84,6 +84,10 @@ public class JsonMoves
         public String              defaultanimation;
         public String              soundEffectSource;
         public String              soundEffectTarget;
+
+        public boolean             multiTarget   = false;
+        public boolean             interceptable = true;
+        public String              preset;
         public List<AnimationJson> animations;
     }
 

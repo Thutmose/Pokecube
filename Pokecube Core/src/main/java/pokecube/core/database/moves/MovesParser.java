@@ -91,6 +91,7 @@ public class MovesParser
         parseFixedDamage(entry, move);
         parseHealing(entry, move);
         parseSelfDamage(entry, move);
+        parsePreset(entry);
     }
 
     static void parseCategory(String category, MoveEntry move)
@@ -316,6 +317,11 @@ public class MovesParser
         {
             move.attackCategory += IMoveConstants.CATEGORY_SELF;
         }
+    }
+
+    private static void parsePreset(MoveJsonEntry entry)
+    {
+        if (entry.secondaryEffect != null && entry.secondaryEffect.startsWith("Traps")) entry.preset = "ongoing";
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import pokecube.core.database.moves.json.JsonMoves;
+import pokecube.core.database.moves.json.JsonMoves.MoveJsonEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.utils.PokeType;
 
@@ -43,7 +44,7 @@ public class MoveEntry implements IMoveConstants
         confusion.snatch = false;
         confusion.kingsrock = false;
         confusion.notIntercepable = true;
-        confusion.multiTarget = false;
+        confusion.baseEntry = new MoveJsonEntry();
     }
 
     public static MoveEntry get(String name)
@@ -74,7 +75,7 @@ public class MoveEntry implements IMoveConstants
     public int                     attackedStatModProb      = 100;
     public float                   damageHealRatio          = 0;
     public float                   selfHealRatio            = 0;
-    public boolean                 multiTarget;
+    private boolean                multiTarget;
     public boolean                 notIntercepable;
     public boolean                 protect;
     public boolean                 magiccoat;
@@ -100,6 +101,12 @@ public class MoveEntry implements IMoveConstants
         this.name = name;
         this.index = index;
         movesNames.put(name, this);
+    }
+
+    public boolean isMultiTarget()
+    {
+        if (baseEntry != null) return baseEntry.multiTarget;
+        return multiTarget;
     }
 
 }

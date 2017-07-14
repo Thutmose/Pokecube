@@ -153,7 +153,7 @@ public class AIHungry extends AIBase
         }
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
-        if (sleepy && hungerTime < 0)
+        if (sleepy && hungerTime < 0 && !ownedSleepCheck)
         {
             if (!isGoodSleepingSpot(c))
             {
@@ -163,7 +163,7 @@ public class AIHungry extends AIBase
                 addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                 pokemob.setPokemonAIState(IMoveConstants.IDLE, false);
             }
-            else if (entity.getAttackTarget() == null && !ownedSleepCheck && entity.getNavigator().noPath())
+            else if (entity.getAttackTarget() == null && entity.getNavigator().noPath())
             {
                 pokemob.setPokemonAIState(IMoveConstants.SLEEPING, true);
                 pokemob.setPokemonAIState(IMoveConstants.HUNTING, false);

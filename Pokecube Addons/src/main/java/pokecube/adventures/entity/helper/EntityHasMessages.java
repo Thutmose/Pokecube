@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -12,6 +14,7 @@ import net.minecraft.world.World;
 public abstract class EntityHasMessages extends EntityHasAIStates
 {
     Map<MessageState, String> messages = Maps.newHashMap();
+    Map<MessageState, Action> actions  = Maps.newHashMap();
 
     public EntityHasMessages(World worldIn)
     {
@@ -29,6 +32,12 @@ public abstract class EntityHasMessages extends EntityHasAIStates
         return new TextComponentTranslation(messages.get(state), args);
     }
 
+    public void doAction(MessageState state, EntityLivingBase target)
+    {
+        Action action = actions.get(state);
+        if (action != null && target instanceof EntityPlayer) action.doAction((EntityPlayer) target);
+    }
+
     @Override
     public void readEntityFromNBT(NBTTagCompound nbt)
     {
@@ -38,6 +47,11 @@ public abstract class EntityHasMessages extends EntityHasAIStates
         for (MessageState state : MessageState.values())
         {
             if (messTag.hasKey(state.name())) messages.put(state, messTag.getString(state.name()));
+        }
+        NBTTagCompound actionTag = nbt.getCompoundTag("actions");
+        for (MessageState state : MessageState.values())
+        {
+            if (actionTag.hasKey(state.name())) actions.put(state, new Action(actionTag.getString(state.name())));
         }
     }
 
@@ -49,5 +63,9 @@ public abstract class EntityHasMessages extends EntityHasAIStates
         for (MessageState state : MessageState.values())
             if (messages.containsKey(state)) messTag.setString(state.name(), messages.get(state));
         nbt.setTag("messages", messTag);
+        NBTTagCompound actionTag = new NBTTagCompound();
+        for (MessageState state : MessageState.values())
+            if (actions.containsKey(state)) actionTag.setString(state.name(), actions.get(state).getCommand());
+        nbt.setTag("actions", actionTag);
     }
 }

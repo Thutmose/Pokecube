@@ -65,6 +65,7 @@ import pokecube.core.commands.RecallCommand;
 import pokecube.core.commands.SecretBaseCommand;
 import pokecube.core.commands.SettingsCommand;
 import pokecube.core.commands.TMCommand;
+import pokecube.core.database.CombatTypeLoader;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
@@ -243,6 +244,7 @@ public class PokecubeCore extends PokecubeMod
         config = new Config(new Configuration(file).getConfigFile());
         currentConfig = config;
         helper = new Mod_Pokecube_Helper();
+        CombatTypeLoader.loadTypes();
     }
 
     @Override

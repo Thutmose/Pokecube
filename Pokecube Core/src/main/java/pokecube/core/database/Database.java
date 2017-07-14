@@ -239,7 +239,7 @@ public class Database
         return ret;
     }
 
-    private static void copyDatabaseFile(String name)
+    static void copyDatabaseFile(String name)
     {
         File temp1 = new File(CONFIGLOC + name);
         if (temp1.exists() && !FORCECOPY)

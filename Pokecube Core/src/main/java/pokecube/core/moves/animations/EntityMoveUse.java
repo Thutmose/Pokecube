@@ -205,7 +205,7 @@ public class EntityMoveUse extends Entity
         if ((user = getUser()) == null || this.isDead || user.isDead) return;
         if (!world.isRemote)
         {
-            if (attack.move.notIntercepable)
+            if (attack.move.isNotIntercepable())
             {
                 MovesUtils.doAttack(attack.name, (IPokemob) user, getTarget());
             }

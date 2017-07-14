@@ -34,7 +34,7 @@ public class MoveEarthquake extends Move_Basic
 
         Entity entity = (Entity) attacker;
 
-        if (!move.notIntercepable)
+        if (!move.isNotIntercepable())
         {
             Vec3d loc1 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
             Vec3d loc2 = new Vec3d(location.x, location.y, location.z);

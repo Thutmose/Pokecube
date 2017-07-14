@@ -20,8 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -138,10 +136,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 Accessor.explode(creeper);
             }
         }
-        if (sound != null)
-        {
-            ((Entity) attacker).playSound(sound, 0.5F, 0.4F / (MovesUtils.rand.nextFloat() * 0.4F + 0.8F));
-        }
+        playSounds((Entity) attacker, attacked, null);
         byte statusChange = STATUS_NON;
         byte changeAddition = CHANGE_NONE;
         if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
@@ -198,6 +193,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             targets.add((Entity) attacker);
         }
         int n = targets.size();
+        playSounds((Entity) attacker, null, location);
         if (n > 0)
         {
             for (Entity e : targets)
@@ -256,19 +252,6 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     public Move_Base getMove(String name)
     {
         return MovesUtils.getMoveFromName(name);
-    }
-
-    /** Specify the sound this move should play when executed.
-     * 
-     * @param sound
-     *            the string id of the sound to play
-     * @return the move */
-    @Override
-    public Move_Basic setSound(String sound)
-    {
-        this.sound = new SoundEvent(new ResourceLocation(sound));
-
-        return this;
     }
 
     @Override

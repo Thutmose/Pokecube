@@ -28,8 +28,8 @@ public class MoveCurse extends Move_Basic
                 IPokemob target = (IPokemob) packet.attacked;
                 if ((target.getChanges() & CHANGE_CURSE) == 0)
                 {
-                    MovePacket move = new MovePacket(packet.attacker, packet.attacked, MOVE_CURSE, ghost, 0, 0,
-                            (byte) 0, CHANGE_CURSE, true);
+                    MovePacket move = new MovePacket(packet.attacker, packet.attacked, getName(), ghost, 0, 0, (byte) 0,
+                            CHANGE_CURSE, true);
                     target.onMoveUse(move);
                     if (!move.canceled)
                     {
@@ -42,7 +42,7 @@ public class MoveCurse extends Move_Basic
         }
         else if (packet.attacked != packet.attacker && packet.attacked != null)
         {
-            packet = new MovePacket(packet.attacker, packet.attacked, MovesUtils.getMoveFromName(MOVE_CURSE));
+            packet = new MovePacket(packet.attacker, packet.attacked, this);
             MovesUtils.handleStats(packet.attacker, packet.attacked, packet, true);
         }
     }

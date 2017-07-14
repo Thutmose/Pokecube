@@ -1,6 +1,9 @@
 package pokecube.core.interfaces;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import pokecube.core.database.moves.MoveEntry;
@@ -17,7 +20,8 @@ public abstract class Move_Base
     private IMoveAnimation animation;
     public boolean         aoe              = false;
     public boolean         fixedDamage      = false;
-    protected SoundEvent   sound;
+    protected SoundEvent   soundUser;
+    protected SoundEvent   soundTarget;
     public boolean         hasStatModSelf   = false;
     public boolean         hasStatModTarget = false;
     public final MoveEntry move;
@@ -253,17 +257,6 @@ public abstract class Move_Base
         return this;
     }
 
-    /** Specify the sound this move should play when executed.
-     * 
-     * @param sound
-     *            the string id of the sound to play
-     * @return the move */
-    public Move_Base setSound(String sound)
-    {
-        this.sound = new SoundEvent(new ResourceLocation(sound));
-        return this;
-    }
-
     public Category getCategory(IPokemob user)
     {
         return getCategory();
@@ -272,5 +265,47 @@ public abstract class Move_Base
     public Category getCategory()
     {
         return Category.values()[move.category];
+    }
+
+    public void playSounds(Entity attacker, @Nullable Entity attacked, @Nullable Vector3 targetPos)
+    {
+        if (attacker != null)
+        {
+            if (soundUser != null || move.baseEntry.soundEffectSource != null)
+            {
+                if (move.baseEntry.soundEffectSource != null)
+                {
+                    soundUser = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectSource));
+                    move.baseEntry.soundEffectSource = null;
+                }
+                attacker.playSound(soundUser, 0.5f, 1);
+            }
+        }
+        if (attacked != null)
+        {
+            if (soundTarget != null || move.baseEntry.soundEffectTarget != null)
+            {
+                if (move.baseEntry.soundEffectTarget != null)
+                {
+                    soundTarget = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectTarget));
+                    move.baseEntry.soundEffectTarget = null;
+                }
+                attacked.playSound(soundTarget, 0.5f, 1);
+            }
+        }
+        else if (attacker != null && targetPos != null)
+        {
+            if (soundTarget != null || move.baseEntry.soundEffectTarget != null)
+            {
+                if (move.baseEntry.soundEffectTarget != null)
+                {
+                    soundTarget = new SoundEvent(new ResourceLocation(move.baseEntry.soundEffectTarget));
+                    move.baseEntry.soundEffectTarget = null;
+                }
+                attacker.playSound(soundTarget, 0.5f, 1);
+                attacker.getEntityWorld().playSound((EntityPlayer) null, targetPos.x, targetPos.y, targetPos.z,
+                        soundTarget, attacker.getSoundCategory(), 0.5f, 1);
+            }
+        }
     }
 }

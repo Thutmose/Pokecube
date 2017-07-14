@@ -158,7 +158,7 @@ public class Database
 
     public static final PokedexEntry                       missingno        = new PokedexEntry(0, "missingno");
 
-    //Init some stuff for the missignno entry.
+    // Init some stuff for the missignno entry.
     static
     {
         missingno.type1 = PokeType.unknown;
@@ -240,7 +240,7 @@ public class Database
         return ret;
     }
 
-    private static void copyDatabaseFile(String name)
+    static void copyDatabaseFile(String name)
     {
         File temp1 = new File(CONFIGLOC + name);
         if (temp1.exists() && !FORCECOPY)

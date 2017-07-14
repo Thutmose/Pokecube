@@ -1,7 +1,5 @@
 package pokecube.core.client.gui.blocks;
 
-import static pokecube.core.utils.PokeType.flying;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -25,6 +23,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
+import pokecube.core.utils.PokeType;
 
 public class GuiTradingTable extends GuiContainer
 {
@@ -211,7 +210,8 @@ public class GuiTradingTable extends GuiContainer
         // LoggerPokecube.logError(""+triangle);
         entity.limbSwing = 0;
         entity.limbSwingAmount = 0;
-        entity.onGround = ((IPokemob) entity).getType1() != flying && ((IPokemob) entity).getType2() != flying;
+        PokeType flying = PokeType.getType("flying");
+        entity.onGround = !((IPokemob)entity).isType(flying);
 
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
 

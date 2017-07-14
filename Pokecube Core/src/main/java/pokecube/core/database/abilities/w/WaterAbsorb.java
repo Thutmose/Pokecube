@@ -11,7 +11,7 @@ public class WaterAbsorb extends Ability
     @Override
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
-        if(mob == move.attacked && move.pre && move.attackType == PokeType.water)
+        if(mob == move.attacked && move.pre && move.attackType == PokeType.getType("water"))
         {
             move.canceled = true;
             EntityLivingBase entity = (EntityLivingBase) mob;

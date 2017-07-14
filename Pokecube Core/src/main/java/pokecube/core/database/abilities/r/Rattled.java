@@ -12,7 +12,7 @@ public class Rattled extends Ability
 {
     private boolean isCorrectType(PokeType type)
     {
-        return type == PokeType.dark || type == PokeType.bug || type == PokeType.ghost;
+        return type == PokeType.getType("dark") || type == PokeType.getType("bug") || type == PokeType.getType("ghost");
     }
 
     @Override

@@ -11,9 +11,9 @@ public class Pixilate extends Ability
     public void onMoveUse(IPokemob mob, MovePacket move)
     {
         if (!move.pre) return;
-        if (move.attackType == PokeType.normal && mob == move.attacker)
+        if (move.attackType == PokeType.getType("normal") && mob == move.attacker)
         {
-            move.attackType = PokeType.fairy;
+            move.attackType = PokeType.getType("fairy");
         }
     }
 

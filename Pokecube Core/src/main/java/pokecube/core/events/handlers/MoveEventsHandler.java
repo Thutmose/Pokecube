@@ -273,15 +273,15 @@ public class MoveEventsHandler
                 MinecraftForge.EVENT_BUS.post(evt2);
                 if (evt2.isCanceled()) return false;
             }
-            if (move.getType(attacker) == PokeType.water) return doDefaultWater(attacker, move, location);
-            if (move.getType(attacker) == PokeType.ice
+            if (move.getType(attacker) == PokeType.getType("water")) return doDefaultWater(attacker, move, location);
+            if (move.getType(attacker) == PokeType.getType("ice")
                     && (move.move.attackCategory & IMoveConstants.CATEGORY_DISTANCE) > 0
                     && move.move.power > 0) { return doDefaultIce(attacker, move, location); }
-            if (move.getType(attacker) == PokeType.electric)
+            if (move.getType(attacker) == PokeType.getType("electric"))
             {
                 doDefaultElectric(attacker, move, location);
             }
-            if (move.getType(attacker) == PokeType.fire) { return doDefaultFire(attacker, move, location); }
+            if (move.getType(attacker) == PokeType.getType("fire")) { return doDefaultFire(attacker, move, location); }
             return false;
         }
 

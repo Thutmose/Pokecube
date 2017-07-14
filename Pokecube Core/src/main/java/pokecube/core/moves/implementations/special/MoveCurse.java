@@ -21,7 +21,7 @@ public class MoveCurse extends Move_Basic
     {
         super.postAttack(packet);
         if (packet.canceled || packet.failed) return;
-        if (packet.attacker.isType(PokeType.ghost))
+        if (packet.attacker.isType(PokeType.getType("ghost")))
         {
             if (packet.attacked instanceof IPokemob)
             {

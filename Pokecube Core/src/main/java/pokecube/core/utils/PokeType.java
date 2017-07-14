@@ -82,20 +82,11 @@ public enum PokeType
     @SideOnly(Side.CLIENT)
     public static String getTranslatedName(PokeType type)
     {
-        String translated = I18n.format("type." + getName(type));
+        String translated = I18n.format("type." + type.name);
 
-        if (translated == null || translated.startsWith("type.")) { return getName(type); }
+        if (translated == null || translated.startsWith("type.")) { return type.name; }
 
         return translated;
-    }
-
-    public static PokeType getType(int id)
-    {
-        for (PokeType type : values())
-        {
-            if (type.ordinal() == id) return type;
-        }
-        return unknown;
     }
 
     public static PokeType getType(String name)

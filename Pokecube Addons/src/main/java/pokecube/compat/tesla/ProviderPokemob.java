@@ -37,7 +37,7 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
     @Override
     public long takePower(long power, boolean simulated)
     {
-        if (!pokemob.isType(PokeType.electric)) return 0;
+        if (!pokemob.isType(PokeType.getType("electric"))) return 0;
         EntityLiving living = (EntityLiving) pokemob;
         int spAtk = pokemob.getStat(Stats.SPATTACK, true);
         int atk = pokemob.getStat(Stats.ATTACK, true);

@@ -18,10 +18,10 @@ public class Groudon extends Condition implements ISpecialCaptureCondition, ISpe
     public boolean canCapture(Entity trainer, IPokemob pokemon)
     {
         if (!canCapture(trainer)) return false;
-        int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID(), PokeType.ground);
-        int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getUniqueID(), PokeType.water);
-        int count4 = SpecialCaseRegister.countSpawnableTypes(PokeType.water);
-        int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.ground);
+        int count1 = CaptureStats.getTotalUniqueOfTypeCaughtBy(trainer.getUniqueID(), PokeType.getType("ground"));
+        int count2 = KillStats.getTotalUniqueOfTypeKilledBy(trainer.getUniqueID(), PokeType.getType("water"));
+        int count4 = SpecialCaseRegister.countSpawnableTypes(PokeType.getType("water"));
+        int count3 = SpecialCaseRegister.countSpawnableTypes(PokeType.getType("ground"));
         double captureFactor = (double) count1 / (double) count3;
         double killFactor = (double) count2 / (double) count4;
         if (killFactor >= 0.5 && captureFactor >= 0.5) { return true; }

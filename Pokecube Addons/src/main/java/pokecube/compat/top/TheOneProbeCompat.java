@@ -86,11 +86,11 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
             }
 
             int l = 0;
-            Minecraft.getMinecraft().fontRendererObj.drawString(have + "", l + x, y + 10, PokeType.grass.colour, true);
+            Minecraft.getMinecraft().fontRendererObj.drawString(have + "", l + x, y + 10, PokeType.getType("grass").colour, true);
             l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(have + "");
-            Minecraft.getMinecraft().fontRendererObj.drawString("/", l + x, y + 10, PokeType.normal.colour, true);
+            Minecraft.getMinecraft().fontRendererObj.drawString("/", l + x, y + 10, PokeType.getType("normal").colour, true);
             l += Minecraft.getMinecraft().fontRendererObj.getStringWidth("/");
-            Minecraft.getMinecraft().fontRendererObj.drawString(killed + "", l + x, y + 10, PokeType.fighting.colour,
+            Minecraft.getMinecraft().fontRendererObj.drawString(killed + "", l + x, y + 10, PokeType.getType("fighting").colour,
                     true);
 
         }

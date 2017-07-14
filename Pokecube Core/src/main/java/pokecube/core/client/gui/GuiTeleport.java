@@ -106,7 +106,7 @@ public class GuiTeleport extends Gui
                 // bind texture
                 minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                 this.drawTexturedModalRect(xOffset + w, shift, 44, 22, 91, 12);
-                fontRenderer.drawString(name, 5 + xOffset + w, shift + 2, PokeType.fire.colour);
+                fontRenderer.drawString(name, 5 + xOffset + w, shift + 2, PokeType.getType("fire").colour);
             }
             i++;
             GlStateManager.disableBlend();

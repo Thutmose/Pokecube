@@ -70,11 +70,11 @@ public class WailaCompat implements IWailaEntityProvider
                 int number = caught + hatched;
                 int killed = KillStats.getTotalNumberOfPokemobKilledBy(accessor.getPlayer().getUniqueID(),
                         pokemob.getPokedexEntry());
-                DisplayUtil.drawString(number + "", l, 0, PokeType.grass.colour, true);
+                DisplayUtil.drawString(number + "", l, 0, PokeType.getType("grass").colour, true);
                 l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(number + "");
-                DisplayUtil.drawString("/", l, 0, PokeType.normal.colour, true);
+                DisplayUtil.drawString("/", l, 0, PokeType.getType("normal").colour, true);
                 l += Minecraft.getMinecraft().fontRendererObj.getStringWidth("/");
-                DisplayUtil.drawString(killed + "", l, 0, PokeType.fighting.colour, true);
+                DisplayUtil.drawString(killed + "", l, 0, PokeType.getType("fighting").colour, true);
             }
         }
 

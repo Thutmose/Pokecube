@@ -1,10 +1,6 @@
 package pokecube.core.blocks.repel;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -21,7 +17,8 @@ public class TileEntityRepel extends TileEntity implements ITickable
 
     public boolean addForbiddenSpawningCoord()
     {
-        return SpawnHandler.addForbiddenSpawningCoord(pos, world.provider.getDimension(), distance);
+        if (getWorld().isRemote) return false;
+        return SpawnHandler.addForbiddenSpawningCoord(pos, getWorld().provider.getDimension(), distance);
     }
 
     @Override
@@ -39,23 +36,25 @@ public class TileEntityRepel extends TileEntity implements ITickable
         distance = nbt.getByte("distance");
         enabled = nbt.getBoolean("enabled");
     }
-    
+
     @Override
     public void onLoad()
     {
         removeForbiddenSpawningCoord();
-        if(enabled) addForbiddenSpawningCoord();
+        if (enabled) addForbiddenSpawningCoord();
     }
 
     public boolean removeForbiddenSpawningCoord()
     {
-        return SpawnHandler.removeForbiddenSpawningCoord(pos, world.provider.getDimension());
+        if (getWorld().isRemote) return false;
+        return SpawnHandler.removeForbiddenSpawningCoord(pos, getWorld().provider.getDimension());
     }
 
     @Override
     public void update()
     {
-        int power = world.getStrongPower(getPos());
+        if (getWorld().isRemote) return;
+        int power = getWorld().getStrongPower(getPos());
         if (power != 0 && enabled)
         {
             enabled = false;
@@ -86,43 +85,5 @@ public class TileEntityRepel extends TileEntity implements ITickable
         nbt.setByte("distance", distance);
         nbt.setBoolean("enabled", enabled);
         return nbt;
-    }
-
-    @Override
-    @Nullable
-    public SPacketUpdateTileEntity getUpdatePacket()
-    {
-        return new SPacketUpdateTileEntity(this.pos, 3, this.getUpdateTag());
-    }
-
-    @Override
-    public NBTTagCompound getUpdateTag()
-    {
-        return this.writeToNBT(new NBTTagCompound());
-    }
-
-    @Override
-    public void handleUpdateTag(NBTTagCompound tag)
-    {
-        this.readFromNBT(tag);
-    }
-
-    /** Called when you receive a TileEntityData packet for the location this
-     * TileEntity is currently in. On the client, the NetworkManager will always
-     * be the remote server. On the server, it will be whomever is responsible
-     * for sending the packet.
-     *
-     * @param net
-     *            The NetworkManager the packet originated from
-     * @param pkt
-     *            The data packet */
-    @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
-    {
-        if (world.isRemote)
-        {
-            NBTTagCompound nbt = pkt.getNbtCompound();
-            readFromNBT(nbt);
-        }
     }
 }

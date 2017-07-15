@@ -69,7 +69,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     public void init(int nb)
     {
         super.init(nb);
-        if (worldObj != null) onGenesChanged();
     }
 
     private void initAbilityGene()
@@ -87,23 +86,24 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesAbility.getAlleles()[0] == null)
             {
                 Random random = new Random(getRNGValue());
+                PokedexEntry entry = getPokedexEntry();
                 int abilityIndex = random.nextInt(100) % 2;
-                if (getPokedexEntry().getAbility(abilityIndex, this) == null)
+                if (entry.getAbility(abilityIndex, this) == null)
                 {
                     if (abilityIndex != 0) abilityIndex = 0;
                     else abilityIndex = 1;
                 }
-                Ability ability = getPokedexEntry().getAbility(abilityIndex, this);
+                Ability ability = entry.getAbility(abilityIndex, this);
                 AbilityGene gene = new AbilityGene();
                 AbilityObject obj = gene.getValue();
-                obj.ability = ability != null ? ability.toString() : "";
+                obj.ability = "";
                 obj.abilityObject = ability;
                 obj.abilityIndex = (byte) abilityIndex;
                 genesAbility.getAlleles()[0] = gene;
                 genesAbility.getAlleles()[1] = gene;
                 genesAbility.refreshExpressed();
-                setAbility(getAbility());
             }
+            setAbility(getAbility());
         }
     }
 
@@ -144,8 +144,10 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         AbilityObject obj = genesAbility.getExpressed().getValue();
         Ability oldAbility = obj.abilityObject;
         if (oldAbility != null && oldAbility != ability) oldAbility.destroy();
+        Ability defalt = getPokedexEntry().getAbility(getAbilityIndex(), this);
         obj.abilityObject = ability;
-        obj.ability = ability != null ? ability.toString() : "";
+        obj.ability = ability != null
+                ? defalt != null && defalt.getName().equals(ability.getName()) ? "" : ability.toString() : "";
         if (ability != null) ability.init(this);
     }
 
@@ -209,7 +211,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public byte[] getEVs()
     {
-        if (!isServerWorld())
+        if (!isServerWorld() && this.addedToChunk)
         {
             for (int i = 0; i < 6; i++)
             {
@@ -269,7 +271,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public String[] getMoves()
     {
-        if (!isServerWorld())
+        if (!isServerWorld() && this.addedToChunk)
         {
             String movesString = dataManager.get(MOVESDW);
             String[] moves = new String[4];
@@ -502,9 +504,11 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 genesSpecies.getAlleles()[1] = gene;
                 genesSpecies.refreshExpressed();
             }
+            SpeciesInfo info = genesSpecies.getExpressed().getValue();
+            info.entry = info.entry.getForGender(info.value);
         }
         SpeciesInfo info = genesSpecies.getExpressed().getValue();
-        return info.entry.getForGender(getSexe());
+        return info.entry;
     }
 
     @Override
@@ -554,6 +558,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void onGenesChanged()
     {
+        genesSpecies = null;
+        getPokedexEntry();
         genesSize = null;
         getSize();
         genesIVs = null;
@@ -568,8 +574,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         getAbility();
         genesShiny = null;
         isShiny();
-        genesSpecies = null;
-        getPokedexEntry();
         genesColour = null;
         getRGBA();
 

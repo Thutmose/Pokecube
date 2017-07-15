@@ -435,13 +435,6 @@ public class MoveEventsHandler
         {
             move.noFaint = true;
         }
-
-        if ((attack.getName().equals(IMoveNames.MOVE_PROTECT) || attack.getName().equals(IMoveNames.MOVE_DETECT)))
-        {
-            applied.getMoveStats().blockTimer = 30;
-            applied.getMoveStats().blocked = true;
-            applied.getMoveStats().BLOCKCOUNTER += 2;
-        }
         boolean blockMove = false;
         for (String s : MoveEntry.protectionMoves)
             if (s.equals(move.attack))
@@ -464,15 +457,20 @@ public class MoveEventsHandler
                 unblockable = true;
                 break;
             }
-
         if (move.attacked != move.attacker && !unblockable && other != null && other.getMoveStats().BLOCKCOUNTER > 0)
         {
-            float count = Math.max(0, other.getMoveStats().BLOCKCOUNTER - 1);
-            float chance = count != 0 ? Math.max(0.125f, ((1 / (count * 2)))) : 1;
-            if (chance < Math.random())
+            float count = Math.max(0, other.getMoveStats().BLOCKCOUNTER - 2);
+            float chance = count != 0 ? Math.max(0.125f, ((1 / (count)))) : 1;
+            if (chance > Math.random())
             {
                 move.failed = true;
             }
+        }
+        if ((attack.getName().equals(IMoveNames.MOVE_PROTECT) || attack.getName().equals(IMoveNames.MOVE_DETECT)))
+        {
+            applied.getMoveStats().blockTimer = PokecubeMod.core.getConfig().attackCooldown * 2;
+            applied.getMoveStats().blocked = true;
+            applied.getMoveStats().BLOCKCOUNTER += 2;
         }
         if (applied.getMoveStats().BLOCKCOUNTER > 0) applied.getMoveStats().BLOCKCOUNTER--;
     }

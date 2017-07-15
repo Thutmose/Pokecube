@@ -702,8 +702,9 @@ public class Database
                     e.type1 = base.type1;
                     e.type2 = base.type2;
                 }
-                if (e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
-                if (e.abilitiesHidden.isEmpty()) e.abilitiesHidden.addAll(base.abilitiesHidden);
+                boolean noAbilities;
+                if (noAbilities = e.abilities.isEmpty()) e.abilities.addAll(base.abilities);
+                if (noAbilities && e.abilitiesHidden.isEmpty()) e.abilitiesHidden.addAll(base.abilitiesHidden);
             }
             else
             {

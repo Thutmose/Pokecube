@@ -26,6 +26,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
     ItemStack stack    = CompatWrapper.nullStack;
     int[]     nums     = {};
     boolean   random   = false;
+    boolean   pubby    = false;
     int       stepTick = 20;
 
     public ItemStack getStack(ItemStack stack)
@@ -36,7 +37,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
     public void onInteract(EntityPlayer player)
     {
         if (world.isRemote || random) return;
-        if (canEdit(player))
+        if (canEdit(player) || pubby)
         {
             if (!CompatWrapper.isValid(stack) && PokecubeManager.isFilled(player.getHeldItemMainhand()))
             {
@@ -60,7 +61,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
         {
             IPokemob pokemob = getPokemob();
             if (pokemob != null) PokePlayer.PROXY.setPokemob(player, pokemob);
-            if (CompatWrapper.isValid(stack) && pokemob != null)
+            if (pokemob != null)
             {
                 stack = CompatWrapper.nullStack;
                 stepTick = 50;
@@ -84,6 +85,24 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             }
             PokePlayer.PROXY.setPokemob(player, null);
             stack = pokemob;
+            return;
+        }
+        else if (random && isPokemob)
+        {
+            stepTick = 50;
+            IPokemob poke = PokePlayer.PROXY.getPokemob(player);
+            NBTTagCompound tag = ((Entity) poke).getEntityData();
+            poke.setPokemonNickname(tag.getString("oldName"));
+            tag.removeTag("oldName");
+            tag.removeTag("isPlayer");
+            tag.removeTag("playerID");
+            if (player.capabilities.isFlying)
+            {
+                player.capabilities.isFlying = false;
+                player.sendPlayerAbilities();
+            }
+            PokePlayer.PROXY.setPokemob(player, null);
+            stack = CompatWrapper.nullStack;
             return;
         }
     }
@@ -128,6 +147,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
         }
         stepTick = tagCompound.getInteger("stepTick");
         random = tagCompound.getBoolean("random");
+        pubby = tagCompound.getBoolean("public");
     }
 
     public void setStack(ItemStack stack)
@@ -151,6 +171,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
         }
         tagCompound.setInteger("stepTick", stepTick);
         tagCompound.setBoolean("random", random);
+        tagCompound.setBoolean("public", pubby);
         return tagCompound;
     }
 

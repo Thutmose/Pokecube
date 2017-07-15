@@ -42,7 +42,7 @@ public class EventsHandler
     {
         IPokemob pokemob = proxy.getPokemob(event.getEntityPlayer());
         if (pokemob == null) return;
-        if (event.getItemStack() != null && event.getEntityPlayer().isSneaking()
+        if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking()
                 && event.getItemStack().getItem() instanceof ItemPokedex)
         {
             pokemob.getPokemobInventory().addInventoryChangeListener((IInventoryChangedListener) pokemob);
@@ -53,13 +53,14 @@ public class EventsHandler
                         0, 0, 0);
             }
         }
-        else if (event.getItemStack() != null)
+        else if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking())
         {
             CompatWrapper.processInitialInteract(((Entity) pokemob), event.getEntityPlayer(), event.getHand(),
                     event.getItemStack());
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
                     .getData(PokeInfo.class);
             info.save(event.getEntityPlayer());
+            event.setCanceled(true);
         }
     }
 

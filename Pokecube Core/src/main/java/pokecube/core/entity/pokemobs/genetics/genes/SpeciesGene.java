@@ -53,6 +53,12 @@ public class SpeciesGene implements Gene
             SpeciesInfo info = (SpeciesInfo) obj;
             return value == info.value && (entry == null ? true : entry.equals(info.entry));
         }
+
+        @Override
+        public String toString()
+        {
+            return entry + " " + value;
+        }
     }
 
     SpeciesInfo info = new SpeciesInfo();
@@ -135,6 +141,6 @@ public class SpeciesGene implements Gene
     @Override
     public String toString()
     {
-        return info.entry + " " + info.value;
+        return info.toString();
     }
 }

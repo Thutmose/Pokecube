@@ -36,6 +36,11 @@ public class TileEntityRepel extends TileEntity implements ITickable
         super.readFromNBT(nbt);
         distance = nbt.getByte("distance");
         enabled = nbt.getBoolean("enabled");
+    }
+    
+    @Override
+    public void onLoad()
+    {
         removeForbiddenSpawningCoord();
         if(enabled) addForbiddenSpawningCoord();
     }

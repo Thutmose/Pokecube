@@ -101,7 +101,6 @@ public class Mod_Pokecube_Helper
 
     public Mod_Pokecube_Helper()
     {
-        ItemHandler.initBerries();
     }
 
     public void itemRegistry(IForgeRegistry<Item> iForgeRegistry)

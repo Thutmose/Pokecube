@@ -1,4 +1,0 @@
-{"mobs.pikachu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/pikachu","stream": false}]},
-"mobs.raichu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/raichu","stream": false}]},
-"mobs.pichu": {"category": "hostile","sounds": [{"name": "pokecube_origin:mobs/pichu","stream": false}]}
-}

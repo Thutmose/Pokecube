@@ -4,6 +4,11 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.ForgeVersion.CheckResult;
@@ -19,16 +24,24 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.events.EvolveEvent;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.Tools;
 import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.render.ModelWrapperEvent;
 import pokecube.origin.render.ModelWrapperSpinda;
 import thut.core.client.ClientProxy;
+import thut.lib.CompatWrapper;
 
 @Mod(modid = PokecubeMobs.MODID, name = "Pokecube Mobs", version = PokecubeMobs.VERSION, dependencies = "required-after:pokecube", updateJSON = PokecubeMobs.UPDATEURL, acceptableRemoteVersions = "*", acceptedMinecraftVersions = PokecubeMobs.MCVERSIONS)
 public class PokecubeMobs implements IMobProvider
@@ -128,8 +141,8 @@ public class PokecubeMobs implements IMobProvider
         if (event.getSide() == Side.CLIENT)
         {
             new UpdateNotifier();
-            MinecraftForge.EVENT_BUS.register(this);
         }
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SideOnly(Side.CLIENT)
@@ -250,5 +263,59 @@ public class PokecubeMobs implements IMobProvider
     public Object getMod()
     {
         return this;
+    }
+
+    @SubscribeEvent
+    public void makeShedinja(EvolveEvent.Post evt)
+    {
+        Entity owner;
+        if ((owner = evt.mob.getPokemonOwner()) instanceof EntityPlayer)
+        {
+            makeShedinja(evt.mob, (EntityPlayer) owner);
+        }
+    }
+
+    void makeShedinja(IPokemob evo, EntityPlayer player)
+    {
+        if (evo.getPokedexEntry() == Database.getEntry("ninjask"))
+        {
+            InventoryPlayer inv = player.inventory;
+            boolean hasCube = false;
+            boolean hasSpace = false;
+            ItemStack cube = CompatWrapper.nullStack;
+            int m = -1;
+            for (int n = 0; n < inv.getSizeInventory(); n++)
+            {
+                ItemStack item = inv.getStackInSlot(n);
+                if (item == CompatWrapper.nullStack) hasSpace = true;
+                if (!hasCube && PokecubeItems.getCubeId(item) >= 0 && !PokecubeManager.isFilled(item))
+                {
+                    hasCube = true;
+                    cube = item;
+                    m = n;
+                }
+                if (hasCube && hasSpace) break;
+
+            }
+            if (hasCube && hasSpace)
+            {
+                Entity pokemon = PokecubeMod.core.createPokemob(Database.getEntry("shedinja"), player.getEntityWorld());
+                if (pokemon != null)
+                {
+                    ItemStack mobCube = cube.copy();
+                    CompatWrapper.setStackSize(mobCube, 1);
+                    IPokemob poke = (IPokemob) pokemon;
+                    poke.setPokecube(mobCube);
+                    poke.setPokemonOwner(player);
+                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true);
+                    ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
+                    ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
+                    StatsCollector.addCapture(poke);
+                    CompatWrapper.increment(cube, -1);
+                    if (!CompatWrapper.isValid(cube)) inv.setInventorySlotContents(m, CompatWrapper.nullStack);
+                    inv.addItemStackToInventory(shedinja);
+                }
+            }
+        }
     }
 }

@@ -65,7 +65,7 @@ public class Pokedex
         }
         while (pokedexNb < 1500);
 
-        return null;
+        return Database.missingno;
     }
 
     public PokedexEntry getLastEntry()
@@ -82,7 +82,7 @@ public class Pokedex
         }
         while (pokedexNb > 00);
 
-        return null;
+        return Database.missingno;
     }
 
     public PokedexEntry getNext(PokedexEntry pokedexEntry, int i)

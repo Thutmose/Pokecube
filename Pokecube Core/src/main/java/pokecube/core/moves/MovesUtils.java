@@ -26,6 +26,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
+import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.MoveEntry.Category;
 import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
@@ -688,6 +689,8 @@ public class MovesUtils implements IMoveConstants
     public static void registerMove(Move_Base move_Base)
     {
         moves.put(move_Base.name, move_Base);
+        if (move_Base.move.baseEntry.ohko) MoveEntry.oneHitKos.add(move_Base.name);
+        if (move_Base.move.baseEntry.protectionMoves) MoveEntry.protectionMoves.add(move_Base.name);
     }
 
     public static void setStatus(Entity attacked, byte status)

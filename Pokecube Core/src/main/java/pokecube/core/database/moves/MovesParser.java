@@ -125,6 +125,7 @@ public class MovesParser
     private static void parseFixedDamage(MoveJsonEntry entry, MoveEntry move)
     {
         if (entry.secondaryEffect == null) return;
+        if (entry.secondaryEffect.equalsIgnoreCase("May cause one-hit KO.")) entry.ohko = true;
         String var = entry.secondaryEffect.toLowerCase(Locale.ENGLISH).trim();
         boolean fixed = var.contains("inflicts") && var.contains("hp damage.");
         if (fixed)

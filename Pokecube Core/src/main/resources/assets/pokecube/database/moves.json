@@ -3431,7 +3431,8 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Evasiveness ?"
+      "zVersion": "Evasiveness ?",
+      "protectionMoves": "true"
     },
     {
       "name": "devastatingdrake",
@@ -4412,7 +4413,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Speed ?"
+      "zVersion": "Speed ?",
+      "extraInfo": "8",
+      "preset": "terrain"
     },
     {
       "name": "electrify",
@@ -4631,7 +4634,8 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Reset Stats"
+      "zVersion": "Reset Stats",
+      "protectionMoves": "true"
     },
     {
       "name": "energyball",
@@ -6628,7 +6632,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Defense ?"
+      "zVersion": "Defense ?",
+      "extraInfo": "7",
+      "preset": "terrain"
     },
     {
       "name": "gravity",
@@ -6966,7 +6972,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Speed ?"
+      "zVersion": "Speed ?",
+      "extraInfo": "3",
+      "preset": "terrain"
     },
     {
       "name": "hammerarm",
@@ -10229,7 +10237,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Restores HP"
+      "zVersion": "Restores HP",
+      "extraInfo": "10",
+      "preset": "terrain"
     },
     {
       "name": "mistball",
@@ -10282,7 +10292,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Special Defense ?"
+      "zVersion": "Special Defense ?",
+      "extraInfo": "9",
+      "preset": "terrain"
     },
     {
       "name": "moonblast",
@@ -10522,7 +10534,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Special Defense ?"
+      "zVersion": "Special Defense ?",
+      "extraInfo": "5",
+      "preset": "terrain"
     },
     {
       "name": "multiattack",
@@ -12053,7 +12067,8 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Reset Stats"
+      "zVersion": "Reset Stats",
+      "protectionMoves": "true"
     },
     {
       "name": "psybeam",
@@ -12656,7 +12671,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Speed ?"
+      "zVersion": "Speed ?",
+      "extraInfo": "2",
+      "preset": "terrain"
     },
     {
       "name": "rapidspin",
@@ -13677,7 +13694,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Speed ?"
+      "zVersion": "Speed ?",
+      "extraInfo": "1",
+      "preset": "terrain"
     },
     {
       "name": "sandtomb",
@@ -15544,7 +15563,9 @@
       "magiccoat": "Yes",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Defense ?"
+      "zVersion": "Defense ?",
+      "extraInfo": "11",
+      "preset": "terrain"
     },
     {
       "name": "spikyshield",
@@ -15765,7 +15786,9 @@
       "magiccoat": "Yes",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Defense ?"
+      "zVersion": "Defense ?",
+      "extraInfo": "12",
+      "preset": "terrain"
     },
     {
       "name": "steameruption",
@@ -15867,7 +15890,9 @@
       "magiccoat": "Yes",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Speed ?"
+      "zVersion": "Speed ?",
+      "extraInfo": "15",
+      "preset": "terrain"
     },
     {
       "name": "stockpile",
@@ -16346,7 +16371,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Speed ?"
+      "zVersion": "Speed ?",
+      "extraInfo": "4",
+      "preset": "terrain"
     },
     {
       "name": "sunsteelstrike",
@@ -17555,7 +17582,9 @@
       "wideArea": "No",
       "magiccoat": "Yes",
       "protect": "No",
-      "mirrormove": "No"
+      "mirrormove": "No",
+      "extraInfo": "13",
+      "preset": "terrain"
     },
     {
       "name": "toxicthread",
@@ -18359,7 +18388,9 @@
       "magiccoat": "No",
       "protect": "No",
       "mirrormove": "No",
-      "zVersion": "Special Defense ?"
+      "zVersion": "Special Defense ?",
+      "extraInfo": "6",
+      "preset": "terrain"
     },
     {
       "name": "waterspout",

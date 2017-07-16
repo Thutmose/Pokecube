@@ -23,10 +23,10 @@ public class Move_Terrain extends Move_Basic
      * 
      * @param name
      * @param effect */
-    public Move_Terrain(String name, int effect)
+    public Move_Terrain(String name)
     {
         super(name);
-        this.effect = effect;
+        this.effect = move.baseEntry.extraInfo;
     }
 
     @Override
@@ -54,7 +54,8 @@ public class Move_Terrain extends Move_Basic
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
-            PacketSyncTerrain.sendTerrainEffects((Entity) attacker, segment.chunkX, segment.chunkY, segment.chunkZ, teffect);
+            PacketSyncTerrain.sendTerrainEffects((Entity) attacker, segment.chunkX, segment.chunkY, segment.chunkZ,
+                    teffect);
         }
 
     }

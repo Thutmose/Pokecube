@@ -1,5 +1,7 @@
 package pokecube.core.interfaces;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -36,6 +38,7 @@ import pokecube.core.CreativeTabPokecubes;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.Config;
 import pokecube.core.network.NetworkWrapper;
+import pokecube.core.utils.LogFormatter;
 import thut.api.maths.Vector3;
 
 public abstract class PokecubeMod
@@ -108,8 +111,27 @@ public abstract class PokecubeMod
     public static HashMap<Integer, EntityEggInfo> pokemobEggs                = Maps.newHashMap();
 
     public static final UUID                      fakeUUID                   = new UUID(1234, 4321);
-    public static Logger                          logger                     = Logger.getLogger("Pokecube");
+    private static Logger                         logger                     = Logger.getLogger("Pokecube");
     protected static FileHandler                  logHandler                 = null;
+
+    private static void initLogger()
+    {
+        logger.setLevel(Level.ALL);
+        try
+        {
+            File logfile = new File(".", "Pokecube.log");
+            if ((logfile.exists() || logfile.createNewFile()) && logfile.canWrite() && logHandler == null)
+            {
+                logHandler = new FileHandler(logfile.getPath());
+                logHandler.setFormatter(new LogFormatter());
+                logger.addHandler(logHandler);
+            }
+        }
+        catch (SecurityException | IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     public static FakePlayer getFakePlayer()
     {
@@ -210,6 +232,19 @@ public abstract class PokecubeMod
 
     public static void log(String toLog)
     {
+        if (logHandler == null) initLogger();
         logger.log(Level.INFO, toLog);
+    }
+
+    public static void log(Level level, String toLog)
+    {
+        if (logHandler == null) initLogger();
+        logger.log(level, toLog);
+    }
+
+    public static void log(Level level, String toLog, Exception thrown)
+    {
+        if (logHandler == null) initLogger();
+        logger.log(level, toLog, thrown);
     }
 }

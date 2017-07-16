@@ -40,7 +40,7 @@ public class NetworkWrapper
         catch (Exception e)
         {
             // How is this possible?
-            PokecubeMod.logger.log(Level.SEVERE, "What? Netty isn't installed, what magic is this?", e);
+            PokecubeMod.log(Level.SEVERE, "What? Netty isn't installed, what magic is this?", e);
             throw new RuntimeException(e);
         }
     }
@@ -59,7 +59,7 @@ public class NetworkWrapper
         }
         catch (Exception e)
         {
-            PokecubeMod.logger.log(Level.SEVERE, "It appears we somehow have a not-standard pipeline. Huh", e);
+            PokecubeMod.log(Level.SEVERE, "It appears we somehow have a not-standard pipeline. Huh", e);
             throw new RuntimeException(e);
         }
     }

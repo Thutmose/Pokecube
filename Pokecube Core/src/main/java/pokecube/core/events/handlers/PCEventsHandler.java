@@ -127,7 +127,7 @@ public class PCEventsHandler
             if (serer.getEntityFromUuid(id) != null)
             {
                 evt.setCanceled(true);
-                PokecubeMod.logger.log(Level.WARNING, "Tried to load duplicate " + evt.getEntity(),
+                PokecubeMod.log(Level.WARNING, "Tried to load duplicate " + evt.getEntity(),
                         new IllegalArgumentException());
             }
             return;

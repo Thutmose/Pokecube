@@ -664,7 +664,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
                 if (world instanceof WorldServer && PokecubeCore.core.getConfig().debug)
                 {
                     WorldServer server = (WorldServer) world;
-                    PokecubeMod.logger.log(Level.INFO, "Recall: " + this, new Exception());
+                    PokecubeMod.log(Level.INFO, "Recall: " + this, new Exception());
                     PokecubeMod.log("Loaded List: " + world.loadedEntityList.contains(this));
                     PokecubeMod.log("Unloaded List: " + world.unloadedEntityList.contains(this));
                     PokecubeMod.log("Added: " + this.addedToChunk);

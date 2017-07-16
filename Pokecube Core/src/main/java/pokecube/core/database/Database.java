@@ -171,7 +171,7 @@ public class Database
         int index = database.ordinal();
         ArrayList<String> list = configDatabases.get(index);
         if (database == EnumDatabase.POKEMON && !file.endsWith(".xml")) file = file + ".xml";
-        else if (!file.endsWith(".json")) file = file + ".json";
+        else if (database == EnumDatabase.MOVES && !file.endsWith(".json")) file = file + ".json";
         for (String s : list)
         {
             if (s.equals(file)) return;

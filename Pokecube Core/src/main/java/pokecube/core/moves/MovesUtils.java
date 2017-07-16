@@ -407,11 +407,12 @@ public class MovesUtils implements IMoveConstants
      * @return muliplier on attack delay */
     public static float getDelayMultiplier(IPokemob attacker, String moveName)
     {
-        float statusMultiplier = 1F;
-        if (attacker.getStatus() == STATUS_PAR) statusMultiplier = 4F;
-        if (rechargeMoves.contains(moveName)) statusMultiplier = 4f;
+        float statusMultiplier = PokecubeMod.core.getConfig().attackCooldown / 20F;
+        if (attacker.getStatus() == STATUS_PAR) statusMultiplier *= 4F;
+        if (rechargeMoves.contains(moveName)) statusMultiplier *= 4f;
         Move_Base move = getMoveFromName(moveName);
-        if (move == null) return 0;
+        if (move == null) return 1;
+        statusMultiplier *= move.getPostDelayFactor(attacker);
         if (moveName == MOVE_NONE)
         {
             move = getMoveFromName(MOVE_TACKLE);

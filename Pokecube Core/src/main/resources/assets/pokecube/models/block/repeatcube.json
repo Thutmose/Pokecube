@@ -1,9 +1,0 @@
-{
-    "parent": "pokecube:block/pokecubes",
-    "textures": {
-        "top": "pokecube:items/repeatcubetop",
-        "bottom": "pokecube:items/repeatcubebottom",
-        "front": "pokecube:items/repeatcubefront",
-        "side": "pokecube:items/repeatcubeside"
-    }
-}

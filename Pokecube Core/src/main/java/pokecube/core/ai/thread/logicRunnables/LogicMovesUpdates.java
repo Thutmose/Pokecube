@@ -21,6 +21,7 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokemobUseable;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
@@ -178,7 +179,9 @@ public class LogicMovesUpdates extends LogicBase
             }
         }
 
-        if (entity.ticksExisted % 20 == rand.nextInt(20))
+        int statusTimer = Math.max(1, PokecubeMod.core.getConfig().attackCooldown);
+
+        if (entity.ticksExisted % statusTimer == rand.nextInt(statusTimer))
         {
             int statusChange = pokemob.getChanges();
 
@@ -203,7 +206,7 @@ public class LogicMovesUpdates extends LogicBase
             }
             return;
         }
-        if (entity.ticksExisted % 20 == rand.nextInt(20))
+        if (entity.ticksExisted % statusTimer == rand.nextInt(statusTimer))
         {
             StatusEffectEvent event = new StatusEffectEvent(entity, status);
             MinecraftForge.EVENT_BUS.post(event);

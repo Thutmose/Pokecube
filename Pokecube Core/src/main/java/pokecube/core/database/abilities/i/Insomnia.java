@@ -25,7 +25,7 @@ public class Insomnia extends Ability
     @Override
     public void onUpdate(IPokemob mob)
     {
-        if (mob.getStatus() == IMoveConstants.STATUS_SLP) mob.setStatus(IMoveConstants.STATUS_NON);
+        if (mob.getStatus() == IMoveConstants.STATUS_SLP) mob.healStatus();
     }
 
 }

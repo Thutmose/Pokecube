@@ -37,7 +37,7 @@ public class Aftermath extends Ability
             {
                 EntityLiving attacker = (EntityLiving) move.attacker;
                 float hp = attacker.getHealth();
-                attacker.attackEntityFrom(DamageSource.magic, hp/4);
+                attacker.attackEntityFrom(DamageSource.MAGIC, hp/4);
             }
         }
     }

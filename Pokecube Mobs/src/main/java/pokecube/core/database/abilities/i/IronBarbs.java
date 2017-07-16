@@ -17,7 +17,7 @@ public class IronBarbs extends Ability
             EntityLivingBase entity = (EntityLivingBase) move.attacker;
             float maxHp = entity.getMaxHealth();
             //TODO message about recoil
-            entity.attackEntityFrom(DamageSource.magic, 0.125f * maxHp);
+            entity.attackEntityFrom(DamageSource.MAGIC, 0.125f * maxHp);
         }
         return damage;
     }

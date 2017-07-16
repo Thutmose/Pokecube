@@ -67,7 +67,6 @@ import pokecube.core.database.CombatTypeLoader;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.stats.SpecialCaseRegister;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.professor.EntityProfessor;
@@ -443,7 +442,6 @@ public class PokecubeCore extends PokecubeMod
         PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);
-        SpecialCaseRegister.register();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
         MovesAdder.postInitMoves();
     }

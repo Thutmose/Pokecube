@@ -43,14 +43,16 @@ public class Move_Transform extends Move_Basic
         @Override
         public void setDuration(int arg0)
         {
-
         }
 
         @Override
         public void spawnClientEntities(MovePacketInfo info)
         {
-            // TODO Auto-generated method stub
+        }
 
+        @Override
+        public void reallyInitRGBA()
+        {
         }
 
     }

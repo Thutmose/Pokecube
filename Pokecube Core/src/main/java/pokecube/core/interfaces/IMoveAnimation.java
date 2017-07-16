@@ -58,5 +58,8 @@ public interface IMoveAnimation
      * @param duration */
     public void setDuration(int duration);
 
-    @SideOnly(Side.CLIENT) void reallyInitRGBA();
+    @SideOnly(Side.CLIENT)
+    default void reallyInitRGBA()
+    {
+    }
 }

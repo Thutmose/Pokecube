@@ -144,7 +144,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
             if (player != null) return useByPlayerOnPokemob(mob, stack);
             return useByPokemob(mob, stack);
         }
-
         return false;
     }
 
@@ -176,7 +175,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     @Override
     public boolean useByPlayerOnPokemob(EntityLivingBase mob, ItemStack stack)
     {
-        if (stack.isItemEqual(BerryManager.getBerryItem("oran")))
+        if (stack.getItemDamage() == 7)
         {
             float health = mob.getHealth();
             float maxHealth = mob.getMaxHealth();
@@ -188,27 +187,12 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
             HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
             return true;
         }
-        if (stack.isItemEqual(BerryManager.getBerryItem("sitrus")))
+        if (stack.getItemDamage() == 7 || stack.getItemDamage() == 60)
         {
             float health = mob.getHealth();
             float maxHealth = mob.getMaxHealth();
 
             if (health == maxHealth) return false;
-
-            if (health + maxHealth / 4 < maxHealth) mob.setHealth(health + maxHealth / 4);
-            else mob.setHealth(maxHealth);
-            HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
-            return true;
-        }
-        if (stack.isItemEqual(BerryManager.getBerryItem("enigma")))
-        {
-            float health = mob.getHealth();
-            float maxHealth = mob.getMaxHealth();
-
-            if (health == maxHealth) return false;
-
-            if (health >= maxHealth / 3) return false;
-            if (health == 0) return false;
 
             if (health + maxHealth / 4 < maxHealth) mob.setHealth(health + maxHealth / 4);
             else mob.setHealth(maxHealth);

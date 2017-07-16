@@ -92,46 +92,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
     public static Block log1 = new BlockBerryLog(4, names).setHardness(2.0F).setUnlocalizedName("log1")
             .setRegistryName(PokecubeMod.ID, "log1");
 
-    public static void initBerries()
-    {
-        BerryManager.addBerry("cheri", 1, 10, 0, 0, 0, 0);// Cures Paralysis
-        BerryManager.addBerry("chesto", 2, 0, 10, 0, 0, 0);// Cures sleep
-        BerryManager.addBerry("pecha", 3, 0, 0, 10, 0, 0);// Cures poison
-        BerryManager.addBerry("rawst", 4, 0, 0, 0, 10, 0);// Cures burn
-        BerryManager.addBerry("aspear", 5, 0, 0, 0, 0, 10);// Cures freeze
-        BerryManager.addBerry("leppa", 6, 10, 0, 10, 10, 10);// Restores 10PP
-        BerryManager.addBerry("oran", 7, 10, 10, 10, 10, 10);// Restores 10HP
-        BerryManager.addBerry("persim", 8, 10, 10, 10, 0, 10);// Cures confusion
-        BerryManager.addBerry("lum", 9, 10, 10, 10, 10, 0);// Cures any status
-                                                           // ailment
-        BerryManager.addBerry("sitrus", 10, 0, 10, 10, 10, 10);// Restores 1/4
-                                                               // HP
-        BerryManager.addBerry("nanab", 18, 0, 0, 10, 10, 0);// Pokeblock
-                                                            // ingredient
-        BerryManager.addBerry("pinap", 20, 10, 0, 0, 0, 10);// Pokeblock
-                                                            // ingredient
-        BerryManager.addBerry("pomeg", 21, 10, 0, 10, 10, 0);// EV Berry
-        BerryManager.addBerry("kelpsy", 22, 0, 10, 0, 10, 10);// EV Berry
-        BerryManager.addBerry("qualot", 23, 10, 0, 10, 0, 10);// EV Berry
-        BerryManager.addBerry("hondew", 24, 10, 10, 0, 10, 0);// EV Berry
-        BerryManager.addBerry("grepa", 25, 0, 10, 10, 0, 10);// EV Berry
-        BerryManager.addBerry("tamato", 26, 20, 10, 0, 0, 0);// EV Berry
-        BerryManager.addBerry("cornn", 27, 0, 20, 10, 0, 0);// Pokeblock
-                                                            // ingredient
-        BerryManager.addBerry("enigma", 60, 40, 10, 0, 0, 0);// Restores 1/4 of
-                                                             // HP
-        BerryManager.addBerry("jaboca", 63, 0, 0, 0, 40, 10);// 4th gen. Causes
-                                                             // recoil damage on
-                                                             // foe if holder is
-                                                             // hit by a
-                                                             // physical move
-        BerryManager.addBerry("rowap", 64, 10, 0, 0, 0, 40);// 4th gen. Causes
-                                                            // recoil damage on
-                                                            // foe if holder is
-                                                            // hit by a special
-                                                            // move
-    }
-
     private static void addBerryBlocks(Object registry)
     {
         BerryManager.berryCrop = new BlockBerryCrop().setRegistryName(PokecubeMod.ID, "berrycrop")

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
@@ -29,7 +28,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -40,7 +38,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -83,12 +80,9 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
-import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -567,43 +561,6 @@ public class EventsHandler
             if (!here.equals(old)) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
                     evt.getEntity().getEntityWorld());
         }
-
-        if (evt.getEntityLiving() instanceof IPokemob && ((IPokemob) evt.getEntityLiving()).getPokedexNb() == 213)
-        {
-            IPokemob shuckle = (IPokemob) evt.getEntityLiving();
-
-            if (evt.getEntityLiving().getEntityWorld().isRemote) return;
-
-            ItemStack item = evt.getEntityLiving().getHeldItemMainhand();
-            if (!CompatWrapper.isValid(item)) return;
-            Item itemId = item.getItem();
-            boolean berry = item.isItemEqual(BerryManager.getBerryItem("oran"));
-            Random r = new Random();
-            if (berry && r.nextGaussian() > juiceChance)
-            {
-                if (shuckle.getPokemonOwner() != null)
-                {
-                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(
-                            new TextComponentTranslation("pokemob.info.berrybrew", shuckle.getPokemonDisplayName()));
-                }
-                shuckle.setHeldItem(new ItemStack(PokecubeItems.berryJuice));
-                return;
-            }
-            berry = itemId == PokecubeItems.berryJuice;
-            if (berry && (r.nextGaussian() > candyChance))
-            {
-                ItemStack candy = PokecubeItems.makeCandyStack();
-                if (!CompatWrapper.isValid(candy)) return;
-
-                if (shuckle.getPokemonOwner() != null)
-                {
-                    ((EntityPlayer) shuckle.getPokemonOwner()).sendMessage(new TextComponentTranslation(
-                            "pokemob.info.berrybrewtwice", shuckle.getPokemonDisplayName()));
-                }
-                shuckle.setHeldItem(candy);
-                return;
-            }
-        }
     }
 
     @SubscribeEvent
@@ -698,19 +655,6 @@ public class EventsHandler
                 if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay)
                     mob.returnToPokecube();
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void evolveEvent(EvolveEvent.Pre evt)
-    {
-        if (evt.mob.getPokedexEntry() == Database.getEntry("Tyrogue"))
-        {
-            int atk = evt.mob.getStat(Stats.ATTACK, false);
-            int def = evt.mob.getStat(Stats.DEFENSE, false);
-            if (atk > def) evt.forme = Database.getEntry("Hitmonlee");
-            else if (def > atk) evt.forme = Database.getEntry("Hitmonchan");
-            else evt.forme = Database.getEntry("Hitmontop");
         }
     }
 

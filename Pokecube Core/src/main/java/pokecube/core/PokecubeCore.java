@@ -65,6 +65,7 @@ import pokecube.core.database.CombatTypeLoader;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.professor.EntityProfessor;
@@ -438,6 +439,7 @@ public class PokecubeCore extends PokecubeMod
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);
         helper.addVillagerTrades();
+        AbilityManager.init();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
         MovesAdder.postInitMoves();
     }

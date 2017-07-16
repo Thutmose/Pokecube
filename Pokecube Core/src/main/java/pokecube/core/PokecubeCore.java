@@ -442,13 +442,8 @@ public class PokecubeCore extends PokecubeMod
     {
         PokecubeItems.init();
         Database.postInit();
-<<<<<<< HEAD
         StarterInfo.processStarterInfo(config.defaultStarts);
-=======
-        StarterInfo.processStarterInfo(config.defaultStarts);
-        helper.addVillagerTrades();
         AbilityManager.init();
->>>>>>> refs/remotes/origin/1.11.x
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
         MovesAdder.postInitMoves();
     }

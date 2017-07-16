@@ -207,7 +207,7 @@ public class MovesUtils implements IMoveConstants
             }
             return;
         }
-        String attackName = getUnlocalizedMove(attack);
+        ITextComponent attackName = new TextComponentTranslation(getUnlocalizedMove(attack));
         text = CommandTools.makeTranslatedMessage("pokemob.move.used", "green",
                 attacker.getPokemonDisplayName().getFormattedText(), attackName);
         attacker.displayMessageToOwner(text);

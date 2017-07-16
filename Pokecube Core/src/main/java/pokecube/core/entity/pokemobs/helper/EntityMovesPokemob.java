@@ -379,8 +379,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
         if (getPokemonOwner() != null && !this.isDead)
         {
+            ITextComponent move = new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName));
             ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
-                    getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(moveName));
+                    getPokemonDisplayName().getFormattedText(), move);
             displayMessageToOwner(mess);
         }
         if (moves[0] == null)
@@ -460,8 +461,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
                     }
                     for (String s : moves)
                     {
-                        ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
-                                getPokemonDisplayName().getFormattedText(), MovesUtils.getUnlocalizedMove(s));
+                        ITextComponent move = new TextComponentTranslation(MovesUtils.getUnlocalizedMove(s));
+                        ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
+                                getPokemonDisplayName().getFormattedText(), move);
                         displayMessageToOwner(mess);
                         moveInfo.newMoves++;
                     }

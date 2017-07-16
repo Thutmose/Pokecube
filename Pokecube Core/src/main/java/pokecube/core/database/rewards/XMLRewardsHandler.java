@@ -1,6 +1,5 @@
 package pokecube.core.database.rewards;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +195,7 @@ public class XMLRewardsHandler
                     {
                         inputstream.close();
                     }
-                    catch (IOException e1)
+                    catch (Exception e1)
                     {
                         e1.printStackTrace();
                     }

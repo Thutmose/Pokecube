@@ -716,8 +716,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
                         StatsCollector.addCapture(this);
                     }
                 }
-                ITextComponent mess = new TextComponentTranslation("pokemob.action.return",
-                        getPokemonDisplayName().getFormattedText());
+                ITextComponent mess = new TextComponentTranslation("pokemob.action.return", getPokemonDisplayName());
                 displayMessageToOwner(mess);
             }
             else if (getPokemonOwnerID() != null)

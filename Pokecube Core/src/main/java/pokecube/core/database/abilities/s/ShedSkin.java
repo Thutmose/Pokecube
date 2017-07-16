@@ -15,7 +15,7 @@ public class ShedSkin extends Ability
             EntityLivingBase poke = (EntityLivingBase) mob;
             if (poke.ticksExisted % 20 == 0 && Math.random() < 0.3)
             {
-                mob.setStatus(IMoveConstants.STATUS_NON);
+                mob.healStatus();
             }
         }
     }

@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -94,7 +92,6 @@ import pokecube.core.network.EntityProvider;
 import pokecube.core.network.NetworkWrapper;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.StarterInfo;
-import pokecube.core.utils.LogFormatter;
 import pokecube.core.utils.PCSaveHandler;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -433,23 +430,6 @@ public class PokecubeCore extends PokecubeMod
         NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
         helper.postInit();
         removeAllMobs();
-
-        logger.setLevel(Level.ALL);
-
-        try
-        {
-            File logfile = new File(".", "Pokecube.log");
-            if ((logfile.exists() || logfile.createNewFile()) && logfile.canWrite() && logHandler == null)
-            {
-                logHandler = new FileHandler(logfile.getPath());
-                logHandler.setFormatter(new LogFormatter());
-                logger.addHandler(logHandler);
-            }
-        }
-        catch (SecurityException | IOException e)
-        {
-            e.printStackTrace();
-        }
     }
 
     @EventHandler

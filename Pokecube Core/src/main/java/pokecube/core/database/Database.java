@@ -51,12 +51,10 @@ import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipes;
 import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLReward;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLRewards;
-import pokecube.core.database.worldgen.XMLWorldgenHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokeType;
-import pokecube.core.world.gen.template.PokecubeTemplates;
 
 public class Database
 {
@@ -123,12 +121,8 @@ public class Database
     }
 
     /** <br>
-     * Index 0 = baseStats<br>
+     * Index 0 = pokemobs<br>
      * Index 1 = moves<br>
-     * Index 2 = moveLists<br>
-     * Index 3 = exsXp<br>
-     * Index 4 = abilities<br>
-     * Index 5 = spawndata<br>
     */
     public static enum EnumDatabase
     {
@@ -150,7 +144,7 @@ public class Database
 
     public static String                                   CONFIGLOC        = "";
 
-    static HashSet<String>                                 defaultDatabases = Sets.newHashSet("pokemobs.xml");
+    static HashSet<String>                                 defaultDatabases = Sets.newHashSet();
     static HashSet<String>                                 extraDatabases   = Sets.newHashSet();
     private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
     private static Set<String>                             dropDatabases    = Sets.newHashSet();
@@ -203,20 +197,6 @@ public class Database
     public static void addHeldData(String file)
     {
         heldDatabases.add(file);
-    }
-
-    public static void checkConfigFiles()
-    {
-        File file = new File("./config/pokecube.cfg");
-        String seperator = System.getProperty("file.separator");
-        String folder = file.getAbsolutePath();
-        String name = file.getName();
-        CONFIGLOC = folder.replace(name, "pokecube" + seperator + "database" + seperator + "");
-        PokecubeTemplates.TEMPLATES = folder.replace(name, "pokecube" + seperator + "structures" + seperator + "");
-        PokecubeTemplates.initFiles();
-        XMLWorldgenHandler.loadDefaults(new File(PokecubeTemplates.TEMPLATES, "worldgen.xml"));
-        writeDefaultConfig();
-        return;
     }
 
     public static boolean compare(String a, String b)
@@ -390,8 +370,7 @@ public class Database
 
     public static void init()
     {
-        checkConfigFiles();
-        for (String s : configDatabases.get(1))
+        for (String s : configDatabases.get(EnumDatabase.MOVES.ordinal()))
         {
             try
             {
@@ -972,27 +951,6 @@ public class Database
             {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private static void writeDefaultConfig()
-    {
-        try
-        {
-            File temp = new File(CONFIGLOC);
-            if (!temp.exists())
-            {
-                temp.mkdirs();
-            }
-            copyDatabaseFile("moves.json");
-            copyDatabaseFile("animations.json");
-            for (String s : defaultDatabases)
-                copyDatabaseFile(s);
-            DBLOCATION = CONFIGLOC;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
         }
     }
 }

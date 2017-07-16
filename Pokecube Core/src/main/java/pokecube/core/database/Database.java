@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -306,7 +307,7 @@ public class Database
         }
         catch (FileNotFoundException e)
         {
-            System.err.println("Missing a Database file " + file);
+            PokecubeMod.log(Level.SEVERE, "Missing a Database file " + file, e);
         }
         catch (NullPointerException e)
         {
@@ -319,15 +320,15 @@ public class Database
                     rows.add(line);
                 }
             }
-            catch (IOException e1)
+            catch (Exception e1)
             {
-                e1.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + file, e1);
             }
 
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.SEVERE, "Error with " + file, e);
         }
         finally
         {
@@ -337,9 +338,9 @@ public class Database
                 {
                     br.close();
                 }
-                catch (IOException e)
+                catch (Exception e)
                 {
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.SEVERE, "Error with " + file, e);
                 }
             }
         }
@@ -382,7 +383,7 @@ public class Database
             }
             catch (IOException e1)
             {
-                e1.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e1);
             }
         }
 
@@ -394,7 +395,7 @@ public class Database
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e);
             }
         }
 
@@ -406,12 +407,11 @@ public class Database
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + s, e);
             }
         }
 
-        System.out.println(
-                "Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
+        PokecubeMod.log("Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");
     }
 
     public static void initSounds(Object registry)
@@ -543,7 +543,7 @@ public class Database
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.SEVERE, "Error with " + file, e);
         }
     }
 

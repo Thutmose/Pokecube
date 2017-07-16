@@ -89,10 +89,8 @@ public class BerryManager implements IMoveConstants
 
         byte status = pokemob.getStatus();
         if (!berryNames.containsKey(berry.getItemDamage())) return false;
-
-        String berryName = berryNames.get(berry.getItemDamage());
-
-        if (berryName.equalsIgnoreCase("pomeg"))
+        int berryId = berry.getItemDamage();
+        if (berryId == 21)
         {
             HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
             byte[] evs = pokemob.getEVs();
@@ -100,7 +98,7 @@ public class BerryManager implements IMoveConstants
             pokemob.setEVs(evs);
             return true;
         }
-        if (berryName.equalsIgnoreCase("kelpsy"))
+        if (berryId == 22)
         {
             HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
             byte[] evs = pokemob.getEVs();
@@ -108,7 +106,7 @@ public class BerryManager implements IMoveConstants
             pokemob.setEVs(evs);
             return true;
         }
-        if (berryName.equalsIgnoreCase("qualot"))
+        if (berryId == 23)
         {
             HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
             byte[] evs = pokemob.getEVs();
@@ -116,7 +114,7 @@ public class BerryManager implements IMoveConstants
             pokemob.setEVs(evs);
             return true;
         }
-        if (berryName.equalsIgnoreCase("hondew"))
+        if (berryId == 24)
         {
             HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
             byte[] evs = pokemob.getEVs();
@@ -124,7 +122,7 @@ public class BerryManager implements IMoveConstants
             pokemob.setEVs(evs);
             return true;
         }
-        if (berryName.equalsIgnoreCase("grepa"))
+        if (berryId == 25)
         {
             HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
             byte[] evs = pokemob.getEVs();
@@ -132,7 +130,7 @@ public class BerryManager implements IMoveConstants
             pokemob.setEVs(evs);
             return true;
         }
-        if (berryName.equalsIgnoreCase("tamato"))
+        if (berryId == 26)
         {
             HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
             byte[] evs = pokemob.getEVs();
@@ -141,32 +139,32 @@ public class BerryManager implements IMoveConstants
             return true;
         }
 
-        if (status == STATUS_PAR && berryName.equalsIgnoreCase("cheri"))
+        if (status == STATUS_PAR && berryId == 1)
         {
             pokemob.healStatus();
             return true;
         }
-        if (status == STATUS_SLP && berryName.equalsIgnoreCase("chesto"))
+        if (status == STATUS_SLP && berryId == 2)
         {
             pokemob.healStatus();
             return true;
         }
-        if ((status == STATUS_PSN || status == STATUS_PSN2) && berryName.equalsIgnoreCase("pecha"))
+        if ((status == STATUS_PSN || status == STATUS_PSN2) && berryId == 3)
         {
             pokemob.healStatus();
             return true;
         }
-        if (status == STATUS_BRN && berryName.equalsIgnoreCase("rawst"))
+        if (status == STATUS_BRN && berryId == 4)
         {
             pokemob.healStatus();
             return true;
         }
-        if (status == STATUS_FRZ && berryName.equalsIgnoreCase("aspear"))
+        if (status == STATUS_FRZ && berryId == 5)
         {
             pokemob.healStatus();
             return true;
         }
-        if (status != STATUS_NON && berryName.equalsIgnoreCase("lum"))
+        if (status != STATUS_NON && berryId == 9)
         {
             pokemob.healStatus();
             return true;
@@ -176,17 +174,12 @@ public class BerryManager implements IMoveConstants
         float HPmax = entity.getMaxHealth();
         if (HP < HPmax / 3f)
         {
-            if (berryName.equalsIgnoreCase("oran"))
+            if (berryId == 7)
             {
                 entity.heal(10);
                 return true;
             }
-            else if (berryName.equalsIgnoreCase("sitrus"))
-            {
-                entity.heal(HPmax / 4f);
-                return true;
-            }
-            else if (berryName.equalsIgnoreCase("enigma"))
+            else if (berryId == 10 || berryId == 60)
             {
                 entity.heal(HPmax / 4f);
                 return true;

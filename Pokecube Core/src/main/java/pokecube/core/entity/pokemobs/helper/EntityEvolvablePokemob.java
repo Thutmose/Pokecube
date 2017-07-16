@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.ITextComponent;
@@ -25,12 +23,10 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
-import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokecubeSerializer;
@@ -241,21 +237,12 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
                 }
                 if (evo != null)
                 {
-                    Entity owner = evo.getPokemonOwner();
                     evt = new EvolveEvent.Post(evo);
                     MinecraftForge.EVENT_BUS.post(evt);
-                    EntityPlayer player = null;
-                    if (owner instanceof EntityPlayer) player = (EntityPlayer) owner;
                     if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
                     else if (data != null) ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
                     evo.levelUp(evo.getLevel());
                     this.setDead();
-                    // Try to make a shedinja, this only work for nincada.
-                    // TODO move this to event.
-                    if (player != null && !player.getEntityWorld().isRemote && !isShadow())
-                    {
-                        makeShedinja(evo, player);
-                    }
                 }
                 return evo;
             }
@@ -286,50 +273,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public boolean isServerWorld()
     {
         return worldObj != null && super.isServerWorld();
-    }
-
-    void makeShedinja(IPokemob evo, EntityPlayer player)
-    {
-        if (evo.getPokedexEntry() == Database.getEntry("ninjask"))
-        {
-            InventoryPlayer inv = player.inventory;
-            boolean hasCube = false;
-            boolean hasSpace = false;
-            ItemStack cube = CompatWrapper.nullStack;
-            int m = -1;
-            for (int n = 0; n < inv.getSizeInventory(); n++)
-            {
-                ItemStack item = inv.getStackInSlot(n);
-                if (item == CompatWrapper.nullStack) hasSpace = true;
-                if (!hasCube && PokecubeItems.getCubeId(item) >= 0 && !PokecubeManager.isFilled(item))
-                {
-                    hasCube = true;
-                    cube = item;
-                    m = n;
-                }
-                if (hasCube && hasSpace) break;
-
-            }
-            if (hasCube && hasSpace)
-            {
-                Entity pokemon = PokecubeMod.core.createPokemob(Database.getEntry("shedinja"), worldObj);
-                if (pokemon != null)
-                {
-                    ItemStack mobCube = cube.copy();
-                    CompatWrapper.setStackSize(mobCube, 1);
-                    IPokemob poke = (IPokemob) pokemon;
-                    poke.setPokecube(mobCube);
-                    poke.setPokemonOwner(player);
-                    poke.setExp(Tools.levelToXp(poke.getExperienceMode(), 20), true);
-                    ((EntityLivingBase) poke).setHealth(((EntityLivingBase) poke).getMaxHealth());
-                    ItemStack shedinja = PokecubeManager.pokemobToItem(poke);
-                    StatsCollector.addCapture(poke);
-                    CompatWrapper.increment(cube, -1);
-                    if (!CompatWrapper.isValid(cube)) inv.setInventorySlotContents(m, CompatWrapper.nullStack);
-                    inv.addItemStackToInventory(shedinja);
-                }
-            }
-        }
     }
 
     @Override

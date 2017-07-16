@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Maps;
 
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.lib.CompatParser.ClassFinder;
 
 @SuppressWarnings("unchecked")
@@ -25,13 +26,16 @@ public class AbilityManager
         try
         {
             foundClasses = ClassFinder.find(AbilityManager.class.getPackage().getName());
+            int num = 0;
             for (Class<?> candidateClass : foundClasses)
             {
                 if (Ability.class.isAssignableFrom(candidateClass) && candidateClass != Ability.class)
                 {
+                    num++;
                     addAbility((Class<? extends Ability>) candidateClass);
                 }
             }
+            PokecubeMod.log("Registered " + num + " Abilities");
         }
         catch (Exception e)
         {

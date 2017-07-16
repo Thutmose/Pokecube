@@ -147,8 +147,6 @@ public class LogicMovesUpdates extends LogicBase
             }
         }
         if (pokemob.getMoveStats().DEFENSECURLCOUNTER > 0) pokemob.getMoveStats().DEFENSECURLCOUNTER--;
-        if (pokemob.getMoveStats().SELFRAISECOUNTER > 0) pokemob.getMoveStats().SELFRAISECOUNTER--;
-        if (pokemob.getMoveStats().TARGETLOWERCOUNTER > 0) pokemob.getMoveStats().TARGETLOWERCOUNTER--;
         if (pokemob.getMoveStats().SPECIALCOUNTER > 0) pokemob.getMoveStats().SPECIALCOUNTER--;
     }
 

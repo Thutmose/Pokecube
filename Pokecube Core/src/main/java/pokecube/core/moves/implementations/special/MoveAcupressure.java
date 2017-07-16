@@ -20,9 +20,7 @@ public class MoveAcupressure extends Move_Basic
         super.postAttack(packet);
         if (packet.canceled || packet.failed) return;
         Random r = new Random(packet.attacked.getEntityWorld().rand.nextLong());
-
         int rand = r.nextInt(7);
-        packet.attacker.getMoveStats().SELFRAISECOUNTER = 80;
         for (int i = 0; i < 8; i++)
         {
             int stat = (rand);

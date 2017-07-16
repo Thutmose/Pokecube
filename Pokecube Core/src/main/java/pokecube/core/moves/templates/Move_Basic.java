@@ -273,7 +273,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Pre(packet.attacker, this, packet.attacked));
         IPokemob attacker = packet.attacker;
         attacker.getMoveStats().nextMoveTick = (int) (((Entity) attacker).ticksExisted
-                + PokecubeMod.core.getConfig().attackCooldown * this.getPostDelayFactor(attacker));
+                + PokecubeMod.core.getConfig().attackCooldown * MovesUtils.getDelayMultiplier(attacker, name));
         Entity attacked = packet.attacked;
         attacker.onMoveUse(packet);
         if (attacked instanceof IPokemob)
@@ -605,12 +605,10 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         healRatio = (move.selfHealRatio) / 100;
         boolean canHeal = ((EntityLiving) attacker).getHealth() < ((EntityLiving) attacker).getMaxHealth();
-        if (healRatio > 0 && canHeal && attacker.getMoveStats().SELFRAISECOUNTER == 0)
+        if (healRatio > 0 && canHeal)
         {
             ((EntityLiving) attacker).setHealth(Math.min(((EntityLiving) attacker).getMaxHealth(),
                     ((EntityLiving) attacker).getHealth() + (((EntityLiving) attacker).getMaxHealth() * healRatio)));
-            attacker.getMoveStats().SELFRAISECOUNTER = (PokecubeMod.core.getConfig().attackCooldown * 4);
-            attacker.setAttackCooldown(attacker.getMoveStats().SELFRAISECOUNTER);
         }
 
         packet = new MovePacket(attacker, attacked, attack, type, PWR, criticalLevel, statusChange, changeAddition,

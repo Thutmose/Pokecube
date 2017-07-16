@@ -422,13 +422,8 @@ public interface IPokemob extends IMoveConstants
         public boolean                        Exploding                  = false;
 
         public int                            SPECIALCOUNTER             = 0;
-        /** Used for cooldown of self stat raising moves */
-        public int                            SELFRAISECOUNTER           = 0;
         /** Used for cooldown of crit chance moves */
         public int                            SPECIALTYPE                = 0;
-
-        /** Used for cooldown of stat lowering moves */
-        public int                            TARGETLOWERCOUNTER         = 0;
 
         /** Used for moves such as bide/counter/mirror coat */
         public int                            PHYSICALDAMAGETAKENCOUNTER = 0;

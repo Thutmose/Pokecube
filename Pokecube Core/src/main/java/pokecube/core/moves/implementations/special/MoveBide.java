@@ -1,5 +1,6 @@
 package pokecube.core.moves.implementations.special;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.IPokemob.MovePacket;
@@ -19,18 +20,20 @@ public class MoveBide extends Move_Basic
     {
         super.postAttack(packet);
         if (packet.canceled || packet.failed) return;
+        Entity attacker = (Entity) packet.attacker;
         if (!packet.attacker.getMoveStats().biding)
         {
-            packet.attacker.getMoveStats().SELFRAISECOUNTER = (PokecubeMod.core.getConfig().attackCooldown * 5);
-            packet.attacker.setAttackCooldown(packet.attacker.getMoveStats().SELFRAISECOUNTER);
+            attacker.getEntityData().setLong("bideTime",
+                    attacker.getEntityWorld().getTotalWorldTime() + PokecubeMod.core.getConfig().attackCooldown * 5);
             packet.attacker.getMoveStats().biding = true;
             packet.attacker.getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;
             packet.attacker.getMoveStats().SPECIALDAMAGETAKENCOUNTER = 0;
         }
         else
         {
-            if (packet.attacker.getMoveStats().SELFRAISECOUNTER == 0)
+            if (attacker.getEntityData().getLong("bideTime") < attacker.getEntityWorld().getTotalWorldTime())
             {
+                attacker.getEntityData().removeTag("bideTime");
                 int damage = packet.attacker.getMoveStats().PHYSICALDAMAGETAKENCOUNTER
                         + packet.attacker.getMoveStats().SPECIALDAMAGETAKENCOUNTER;
                 packet.attacker.getMoveStats().PHYSICALDAMAGETAKENCOUNTER = 0;

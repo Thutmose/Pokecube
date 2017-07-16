@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -28,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.MegaRule;
@@ -1141,8 +1143,8 @@ public class PokedexEntryLoader
 
     public static void postInit()
     {
-        ProgressBar bar = ProgressManager.push("Databases",
-                Database.defaultDatabases.size() + Database.extraDatabases.size());
+        ProgressBar bar = ProgressManager.push("Databases", Database.defaultDatabases.size()
+                + Database.configDatabases.get(EnumDatabase.POKEMON.ordinal()).size() + Database.extraDatabases.size());
         for (String s : Database.defaultDatabases)
         {
             bar.step(s);
@@ -1152,7 +1154,19 @@ public class PokedexEntryLoader
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + Database.DBLOCATION + s, e);
+            }
+        }
+
+        for (String s : Database.configDatabases.get(EnumDatabase.POKEMON.ordinal()))
+        {
+            try
+            {
+                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.SEVERE, "Error with " + Database.DBLOCATION + s, e);
             }
         }
         for (String s : Database.extraDatabases)
@@ -1164,7 +1178,7 @@ public class PokedexEntryLoader
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.SEVERE, "Error with " + s, e);
             }
         }
         PokemobBodies.initBodies();

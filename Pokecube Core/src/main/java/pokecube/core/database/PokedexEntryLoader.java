@@ -1162,7 +1162,7 @@ public class PokedexEntryLoader
         {
             try
             {
-                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), true);
+                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
             }
             catch (Exception e)
             {

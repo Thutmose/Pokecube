@@ -20,29 +20,6 @@ public class AbilityManager
 
     static int                                                nextID   = 0;
 
-    static
-    {
-        List<Class<?>> foundClasses;
-        try
-        {
-            foundClasses = ClassFinder.find(AbilityManager.class.getPackage().getName());
-            int num = 0;
-            for (Class<?> candidateClass : foundClasses)
-            {
-                if (Ability.class.isAssignableFrom(candidateClass) && candidateClass != Ability.class)
-                {
-                    num++;
-                    addAbility((Class<? extends Ability>) candidateClass);
-                }
-            }
-            PokecubeMod.log("Registered " + num + " Abilities");
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     public static boolean abilityExists(String name)
     {
         if (name == null) return false;
@@ -134,5 +111,28 @@ public class AbilityManager
             e.printStackTrace();
         }
         return ret;
+    }
+
+    public static void init()
+    {
+        List<Class<?>> foundClasses;
+        try
+        {
+            foundClasses = ClassFinder.find(AbilityManager.class.getPackage().getName());
+            int num = 0;
+            for (Class<?> candidateClass : foundClasses)
+            {
+                if (Ability.class.isAssignableFrom(candidateClass) && candidateClass != Ability.class)
+                {
+                    num++;
+                    addAbility((Class<? extends Ability>) candidateClass);
+                }
+            }
+            PokecubeMod.log("Registered " + num + " Abilities");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 }

@@ -10,6 +10,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.stats.ISpecialCaptureCondition;
 import pokecube.core.database.stats.ISpecialSpawnCondition;
 import pokecube.core.database.stats.SpecialCaseRegister;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.lib.CompatParser.ClassFinder;
 
 public class LegendaryConditions
@@ -25,18 +26,22 @@ public class LegendaryConditions
         try
         {
             foundClasses = ClassFinder.find(Condition.class.getPackage().getName());
+            int num = 0;
             for (Class<?> candidateClass : foundClasses)
             {
                 if (Condition.class.isAssignableFrom(candidateClass) && candidateClass != Condition.class)
                 {
                     conditionclasses.add((Class<? extends Condition>) candidateClass);
+                    num++;
                 }
             }
+            PokecubeMod.log("Detected " + num + " Legendary Conditions.");
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+        int num = 0;
         for (Class<? extends Condition> c : conditionclasses)
         {
             try
@@ -47,6 +52,7 @@ public class LegendaryConditions
                 {
                     SpecialCaseRegister.register(e.getName(), (ISpecialCaptureCondition) cond);
                     SpecialCaseRegister.register(e.getName(), (ISpecialSpawnCondition) cond);
+                    num++;
                 }
             }
             catch (Exception e)
@@ -54,5 +60,6 @@ public class LegendaryConditions
                 e.printStackTrace();
             }
         }
+        PokecubeMod.log("Registered " + num + " Legendary Conditions.");
     }
 }

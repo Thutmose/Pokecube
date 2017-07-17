@@ -2,6 +2,7 @@ package pokecube.core.database;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +25,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -46,7 +51,26 @@ import thut.lib.CompatWrapper;
 
 public class PokedexEntryLoader
 {
-    private static Gson gson = new Gson();
+
+    private static final Gson gson;
+
+    static
+    {
+        gson = new GsonBuilder().registerTypeAdapter(QName.class, new TypeAdapter<QName>()
+        {
+            @Override
+            public void write(JsonWriter out, QName value) throws IOException
+            {
+                out.value(value.toString());
+            }
+
+            @Override
+            public QName read(JsonReader in) throws IOException
+            {
+                return new QName(in.nextString());
+            }
+        }).create();
+    }
 
     public static class MegaEvoRule implements MegaRule
     {

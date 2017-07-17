@@ -415,7 +415,7 @@ public class Config extends ConfigBase
     boolean                              forceRewards                 = true;
 
     @Configure(category = database, needsMcRestart = true)
-    String[]                             configDatabases              = { "pokemobs", "moves" };
+    String[]                             configDatabases              = { "pokemobs.json", "moves.json" };
 
     @Configure(category = database, needsMcRestart = true)
     String[]                             recipeDatabases              = { "recipes" };
@@ -612,7 +612,7 @@ public class Config extends ConfigBase
 
         if (configDatabases.length != 2)
         {
-            configDatabases = new String[] { "pokemobs", "moves" };
+            configDatabases = new String[] { "pokemobs.json", "moves.json" };
         }
 
         for (int i = 0; i < EnumDatabase.values().length; i++)
@@ -620,6 +620,7 @@ public class Config extends ConfigBase
             String[] args = configDatabases[i].split(",");
             for (String s : args)
             {
+                if (s.indexOf(".") == -1) s = s.trim() + ".json";
                 Database.addDatabase(s.trim(), EnumDatabase.values()[i]);
             }
         }

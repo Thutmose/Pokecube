@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
@@ -45,6 +46,8 @@ import thut.lib.CompatWrapper;
 
 public class PokedexEntryLoader
 {
+    private static Gson gson = new Gson();
+
     public static class MegaEvoRule implements MegaRule
     {
         ItemStack          stack;
@@ -91,18 +94,18 @@ public class PokedexEntryLoader
     public static class BodyNode
     {
         @XmlElement(name = "PART")
-        List<BodyPart> parts = Lists.newArrayList();
+        public List<BodyPart> parts = Lists.newArrayList();
     }
 
     @XmlRootElement(name = "PART")
     public static class BodyPart
     {
         @XmlAttribute(name = "name")
-        String name;
+        public String name;
         @XmlAttribute(name = "offset")
-        String offset;
+        public String offset;
         @XmlAttribute(name = "dimensions")
-        String dimensions;
+        public String dimensions;
     }
 
     @XmlRootElement(name = "Drop")
@@ -118,33 +121,33 @@ public class PokedexEntryLoader
     public static class Interact
     {
         @XmlAttribute
-        public boolean male   = true;
+        public Boolean male   = true;
         @XmlAttribute
-        public boolean female = true;
+        public Boolean female = true;
         @XmlElement(name = "Key")
-        Key            key;
+        public Key     key;
         @XmlElement(name = "Action")
-        Action         action;
+        public Action  action;
     }
 
     @XmlRootElement(name = "Key")
     public static class Key
     {
         @XmlAnyAttribute
-        Map<QName, String> values = Maps.newHashMap();
+        public Map<QName, String> values = Maps.newHashMap();
         @XmlElement(name = "tag")
-        String             tag;
+        public String             tag;
     }
 
     @XmlRootElement(name = "Action")
     public static class Action
     {
         @XmlAnyAttribute
-        Map<QName, String> values = Maps.newHashMap();
+        public Map<QName, String> values = Maps.newHashMap();
         @XmlElement(name = "tag")
-        String             tag;
+        public String             tag;
         @XmlElement(name = "Drop")
-        List<Drop>         drops  = Lists.newArrayList();
+        public List<Drop>         drops  = Lists.newArrayList();
     }
 
     @XmlRootElement(name = "Spawn")
@@ -161,14 +164,14 @@ public class PokedexEntryLoader
         public static class LvlUp
         {
             @XmlAnyAttribute
-            Map<QName, String> values = Maps.newHashMap();
+            public Map<QName, String> values = Maps.newHashMap();
         }
 
         @XmlRootElement(name = "MISC")
         public static class Misc
         {
             @XmlAttribute(name = "moves")
-            String moves;
+            public String moves;
 
             @Override
             public String toString()
@@ -178,10 +181,10 @@ public class PokedexEntryLoader
         }
 
         @XmlElement(name = "LVLUP")
-        LvlUp lvlupMoves;
+        public LvlUp lvlupMoves;
 
         @XmlElement(name = "MISC")
-        Misc  misc;
+        public Misc  misc;
     }
 
     @XmlRootElement(name = "STATS")
@@ -194,113 +197,115 @@ public class PokedexEntryLoader
         }
 
         @XmlAttribute
-        public String   spawns;
+        public String          spawns;
         // Evolution stuff
         @XmlElement(name = "EVOLUTIONMODE")
-        String          evoModes;
+        public String          evoModes       = "L-1";
         @XmlElement(name = "EVOLUTIONANIMATION")
-        String          evolAnims;
+        public String          evolAnims      = "3";
 
         @XmlElement(name = "EVOLVESTO")
-        String          evoTo;
+        public String          evoTo;
         // Species and food
         @XmlElement(name = "SPECIES")
-        String          species;
+        public String          species;
         @XmlElement(name = "PREY")
-        String          prey;
+        public String          prey;
         @XmlElement(name = "FOODMATERIAL")
-        String          foodMat;
+        public String          foodMat;
 
         @XmlElement(name = "SPECIALEGGSPECIESRULES")
-        String          specialEggRules;
+        public String          specialEggRules;
         // Drops and items
         @XmlElement(name = "Drop")
-        List<Drop>      drops          = Lists.newArrayList();
+        public List<Drop>      drops          = Lists.newArrayList();
         @XmlElement(name = "Held")
-        List<Drop>      held           = Lists.newArrayList();
+        public List<Drop>      held           = Lists.newArrayList();
         // Spawn Rules
         @XmlElement(name = "Spawn")
-        List<SpawnRule> spawnRules     = Lists.newArrayList();
+        public List<SpawnRule> spawnRules     = Lists.newArrayList();
         // STATS
         @XmlElement(name = "BASESTATS")
-        Stats           stats;
+        public Stats           stats;
         @XmlElement(name = "EVYIELD")
-        Stats           evs;
+        public Stats           evs;
         @XmlElement(name = "SIZES")
-        Stats           sizes;
+        public Stats           sizes;
         @XmlElement(name = "TYPE")
-        Stats           types;
+        public Stats           types;
         @XmlElement(name = "ABILITY")
-        Stats           abilities;
+        public Stats           abilities;
         @XmlElement(name = "MASSKG")
-        float           mass           = -1;
+        public Float           mass           = -1f;
         @XmlElement(name = "CAPTURERATE")
-        int             captureRate    = -1;
+        public Integer         captureRate    = -1;
         @XmlElement(name = "EXPYIELD")
-        int             baseExp        = -1;
+        public Integer         baseExp        = -1;
         @XmlElement(name = "BASEFRIENDSHIP")
-        int             baseFriendship = -1;
+        public Integer         baseFriendship = 70;
         @XmlElement(name = "EXPERIENCEMODE")
-        String          expMode;
+        public String          expMode;
 
         @XmlElement(name = "GENDERRATIO")
-        int             genderRatio    = -1;
+        public Integer         genderRatio    = -1;
         // MISC
         @XmlElement(name = "LOGIC")
-        Stats           logics;
+        public Stats           logics;
         @XmlElement(name = "FORMEITEMS")
-        Stats           formeItems;
+        public Stats           formeItems;
         @XmlElement(name = "MEGARULES")
-        Stats           megaRules;
+        public Stats           megaRules;
         @XmlElement(name = "MOVEMENTTYPE")
-        String          movementType;
+        public String          movementType   = "normal";
         @XmlElement(name = "Interact")
-        List<Interact>  interactions   = Lists.newArrayList();
+        public List<Interact>  interactions   = Lists.newArrayList();
         @XmlElement(name = "SHADOWREPLACEMENTS")
-        String          shadowReplacements;
+        public String          shadowReplacements;
         @XmlElement(name = "HATEDMATERIALRULES")
-        String          hatedMaterials;
+        public String          hatedMaterials;
 
         @XmlElement(name = "ACTIVETIMES")
-        String          activeTimes;
+        public String          activeTimes;
     }
 
     @XmlRootElement(name = "Document")
     public static class XMLDatabase
     {
         @XmlElement(name = "Pokemon")
-        private List<XMLPokedexEntry> pokemon = Lists.newArrayList();
+        public List<XMLPokedexEntry> pokemon = Lists.newArrayList();
     }
 
     @XmlRootElement(name = "Pokemon")
     public static class XMLPokedexEntry
     {
         @XmlAttribute
-        public String  name;
+        public String    name;
         @XmlAttribute
-        public int     number;
+        public Integer   number;
         @XmlAttribute
-        public String  special;
+        public String    special;
         @XmlAttribute
-        public boolean base       = false;
+        public Boolean   base       = false;
         @XmlAttribute
-        public boolean breed      = true;
+        public Boolean   breed      = true;
         @XmlAttribute
-        public boolean starter    = false;
+        public Boolean   starter    = false;
         @XmlAttribute
-        public boolean legend     = false;
+        public Boolean   ridable    = true;
         @XmlAttribute
-        public boolean hasShiny   = true;
+        public Boolean   legend     = false;
         @XmlAttribute
-        public String  gender     = "";
+        public Boolean   hasShiny   = true;
         @XmlAttribute
-        public String  genderBase = "";
+        public String    gender     = "";
+        @XmlAttribute
+        public String    genderBase = "";
         @XmlElement(name = "STATS")
-        StatsNode      stats;
+        public StatsNode stats;
         @XmlElement(name = "MOVES")
-        Moves          moves;
+        public Moves     moves;
         @XmlElement(name = "BODY")
-        BodyNode       body;
+        public BodyNode  body;
 
         @Override
         public String toString()
@@ -372,7 +377,7 @@ public class PokedexEntryLoader
         }
     }
 
-    static XMLDatabase          database;
+    public static XMLDatabase   database;
 
     static Set<XMLPokedexEntry> entries = Sets.newHashSet();
 
@@ -590,10 +595,23 @@ public class PokedexEntryLoader
 
     public static XMLDatabase loadDatabase(File file) throws Exception
     {
-        JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        XMLDatabase database = null;
         FileReader reader = new FileReader(file);
-        XMLDatabase database = (XMLDatabase) unmarshaller.unmarshal(reader);
+        if (file.getName().endsWith(".json"))
+        {
+            database = gson.fromJson(reader, XMLDatabase.class);
+        }
+        else if (file.getName().endsWith(".xml"))
+        {
+            JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            database = (XMLDatabase) unmarshaller.unmarshal(reader);
+        }
+        else
+        {
+            reader.close();
+            throw new IllegalArgumentException("File must be json or xml.");
+        }
         reader.close();
         return database;
     }
@@ -1214,6 +1232,7 @@ public class PokedexEntryLoader
             {
                 entry.breeds = xmlEntry.breed;
                 entry.isStarter = xmlEntry.starter;
+                entry.ridable = xmlEntry.ridable;
                 entry.legendary = xmlEntry.legend;
                 entry.hasShiny = xmlEntry.hasShiny;
                 try

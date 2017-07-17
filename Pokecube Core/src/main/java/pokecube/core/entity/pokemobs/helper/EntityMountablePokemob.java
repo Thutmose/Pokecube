@@ -157,6 +157,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
             System.err.println("Null Entry for " + this);
             return false;
         }
+        if (!entry.ridable) return false;
         return (entry.height * getSize() + entry.width * getSize()) > rider.width
                 && Math.max(entry.width, entry.length) * getSize() > rider.width * 1.8;
     }

@@ -781,6 +781,8 @@ public class PokedexEntry
     public float                                height           = -1;
     @CopyToGender
     public boolean                              isMega           = false;
+    @CopyToGender
+    public boolean                              ridable          = true;
 
     /** the key is the itemstack, the value is the chance */
 

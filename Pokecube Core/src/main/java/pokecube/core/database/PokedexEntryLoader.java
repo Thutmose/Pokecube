@@ -52,7 +52,9 @@ import thut.lib.CompatWrapper;
 public class PokedexEntryLoader
 {
 
-    private static final Gson gson;
+    private static final Gson     gson;
+
+    public static XMLPokedexEntry missingno = new XMLPokedexEntry();
 
     static
     {
@@ -70,6 +72,7 @@ public class PokedexEntryLoader
                 return new QName(in.nextString());
             }
         }).create();
+        missingno.stats = new StatsNode();
     }
 
     public static class MegaEvoRule implements MegaRule
@@ -592,12 +595,12 @@ public class PokedexEntryLoader
                 }
             }
         }
-        entry.catchRate = xmlStats.captureRate;
-        entry.baseXP = xmlStats.baseExp;
-        entry.baseHappiness = xmlStats.baseFriendship;
-        entry.sexeRatio = xmlStats.genderRatio;
-        entry.mass = xmlStats.mass;
-
+        if (xmlStats.captureRate != missingno.stats.captureRate) entry.catchRate = xmlStats.captureRate;
+        if (xmlStats.baseExp != missingno.stats.baseExp) entry.baseXP = xmlStats.baseExp;
+        if (xmlStats.baseFriendship != missingno.stats.baseFriendship) entry.baseHappiness = xmlStats.baseFriendship;
+        if (xmlStats.genderRatio != missingno.stats.genderRatio) entry.sexeRatio = xmlStats.genderRatio;
+        if (xmlStats.mass != missingno.stats.mass) entry.mass = xmlStats.mass;
+        if (entry.ridable != missingno.ridable) entry.ridable = missingno.ridable;
         if (xmlStats.movementType != null)
         {
             String[] strings = xmlStats.movementType.trim().split(":");
@@ -685,17 +688,22 @@ public class PokedexEntryLoader
             String name = xmlEntry.name;
             bar.step(name);
             int number = xmlEntry.number;
+            boolean newEntry = true;
             if (create)
             {
                 if (xmlEntry.gender.isEmpty())
                 {
-                    PokedexEntry entry = new PokedexEntry(number, name);
-                    if (xmlEntry.base)
+                    if (Database.getEntry(name) == null)
                     {
-                        entry.base = xmlEntry.base;
-                        Database.baseFormes.put(number, entry);
-                        Database.addEntry(entry);
+                        PokedexEntry entry = new PokedexEntry(number, name);
+                        if (xmlEntry.base)
+                        {
+                            entry.base = xmlEntry.base;
+                            Database.baseFormes.put(number, entry);
+                            Database.addEntry(entry);
+                        }
                     }
+                    else newEntry = false;
                 }
                 else
                 {
@@ -712,7 +720,7 @@ public class PokedexEntryLoader
                     }
                 }
             }
-            updateEntry(xmlEntry, create);
+            if (newEntry) updateEntry(xmlEntry, create);
         }
         ProgressManager.pop(bar);
         if (create)

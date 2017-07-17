@@ -138,6 +138,7 @@ public class ItemModelReloader extends Item
                         {
                             XMLPokedexEntry copy = new XMLPokedexEntry();
                             copy.name = entry.name;
+                            copy.number = entry.number;
                             newDatabase.pokemon.add((XMLPokedexEntry) getSerializableCopy(XMLPokedexEntry.class, copy));
                             file = "./pokemobs_blank.json";
                         }

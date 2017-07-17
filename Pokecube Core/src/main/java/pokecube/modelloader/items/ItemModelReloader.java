@@ -2,11 +2,7 @@ package pokecube.modelloader.items;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
@@ -20,6 +16,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntryLoader;
+import pokecube.core.database.PokedexEntryLoader.StatsNode;
 import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 import pokecube.modelloader.ModPokecubeML;
@@ -40,82 +37,6 @@ public class ItemModelReloader extends Item
         return onItemRightClick(player.getHeldItem(hand), world, player, hand);
     }
 
-    public Object getSerializableCopy(Class<?> type, Object original)
-            throws InstantiationException, IllegalAccessException
-    {
-        Field fields[] = new Field[] {};
-        try
-        {
-            // returns the array of Field objects representing the public fields
-            fields = type.getDeclaredFields();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        Object copy = null;
-        try
-        {
-            // if (type.isPrimitive()) copy = original;
-            // else
-            copy = type.newInstance();
-        }
-        catch (Exception e1)
-        {
-            copy = original;
-        }
-        if (copy == original) return copy;
-        Object value;
-        Object defaultvalue;
-        for (Field field : fields)
-        {
-            try
-            {
-                if (Modifier.isFinal(field.getModifiers())) continue;
-                if (Modifier.isStatic(field.getModifiers())) continue;
-                if (Modifier.isTransient(field.getModifiers())) continue;
-                field.setAccessible(true);
-                value = field.get(original);
-                defaultvalue = field.get(copy);
-                if (value == null) continue;
-                if (value.getClass().isPrimitive()) field.set(copy, value);
-                else if (defaultvalue != null && defaultvalue.equals(value))
-                {
-                    field.set(copy, null);
-                }
-                else if (value instanceof String)
-                {
-                    if (((String) value).isEmpty())
-                    {
-                        field.set(copy, null);
-                    }
-                    else field.set(copy, value);
-                }
-                else if (value instanceof Object[])
-                {
-                    if (((Object[]) value).length == 0) field.set(copy, null);
-                    else field.set(copy, value);
-                }
-                else if (value instanceof Map)
-                {
-                    if (((Map) value).isEmpty()) field.set(copy, null);
-                    else field.set(copy, value);
-                }
-                else if (value instanceof Collection)
-                {
-                    if (((Collection) value).isEmpty()) field.set(copy, null);
-                    else field.set(copy, value);
-                }
-                else field.set(copy, getSerializableCopy(value.getClass(), value));
-            }
-            catch (IllegalAccessException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return copy;
-    }
-
     // 1.10
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
@@ -124,6 +45,26 @@ public class ItemModelReloader extends Item
         {
             if (!world.isRemote)
             {
+
+                if (itemstack.getItemDamage() == 3)
+                {
+
+                    XMLPokedexEntry one = new XMLPokedexEntry();
+                    one.name = "Test";
+                    one.number = 5;
+                    one.stats = new StatsNode();
+                    one.stats.expMode = "testB";
+
+                    XMLPokedexEntry two = new XMLPokedexEntry();
+                    two.stats = new StatsNode();
+                    two.stats.hatedMaterials = "testA";
+                    two.gender = "derp";
+
+                    PokedexEntryLoader.mergeNonDefaults(new XMLPokedexEntry(), one, two);
+                    System.out.println(two.toString() + " " + two.stats.hatedMaterials + " " + two.stats.expMode);
+
+                    return new ActionResult<ItemStack>(EnumActionResult.PASS, itemstack);
+                }
 
                 try
                 {
@@ -138,7 +79,9 @@ public class ItemModelReloader extends Item
                         {
                             XMLPokedexEntry copy = new XMLPokedexEntry();
                             copy.name = entry.name;
-                            newDatabase.pokemon.add((XMLPokedexEntry) getSerializableCopy(XMLPokedexEntry.class, copy));
+                            copy.number = entry.number;
+                            newDatabase.pokemon.add((XMLPokedexEntry) PokedexEntryLoader
+                                    .getSerializableCopy(XMLPokedexEntry.class, copy));
                             file = "./pokemobs_blank.json";
                         }
                     }
@@ -146,8 +89,8 @@ public class ItemModelReloader extends Item
                     {
                         for (XMLPokedexEntry entry : list)
                         {
-                            newDatabase.pokemon
-                                    .add((XMLPokedexEntry) getSerializableCopy(XMLPokedexEntry.class, entry));
+                            newDatabase.pokemon.add((XMLPokedexEntry) PokedexEntryLoader
+                                    .getSerializableCopy(XMLPokedexEntry.class, entry));
                         }
                     }
                     String json = prettyGson.toJson(newDatabase);

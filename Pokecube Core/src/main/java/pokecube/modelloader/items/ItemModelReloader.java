@@ -128,17 +128,30 @@ public class ItemModelReloader extends Item
                 try
                 {
                     // Gson gson = new Gson();
-
                     Gson prettyGson = new GsonBuilder().setPrettyPrinting().create();
-
                     XMLDatabase newDatabase = new XMLDatabase();
                     List<XMLPokedexEntry> list = Lists.newArrayList(PokedexEntryLoader.database.pokemon);
-                    for (XMLPokedexEntry entry : list)
+                    String file = "./pokemobs.json";
+                    if (itemstack.getItemDamage() == 1)
                     {
-                        newDatabase.pokemon.add((XMLPokedexEntry) getSerializableCopy(XMLPokedexEntry.class, entry));
+                        for (XMLPokedexEntry entry : list)
+                        {
+                            XMLPokedexEntry copy = new XMLPokedexEntry();
+                            copy.name = entry.name;
+                            newDatabase.pokemon.add((XMLPokedexEntry) getSerializableCopy(XMLPokedexEntry.class, copy));
+                            file = "./pokemobs_blank.json";
+                        }
+                    }
+                    else
+                    {
+                        for (XMLPokedexEntry entry : list)
+                        {
+                            newDatabase.pokemon
+                                    .add((XMLPokedexEntry) getSerializableCopy(XMLPokedexEntry.class, entry));
+                        }
                     }
                     String json = prettyGson.toJson(newDatabase);
-                    FileWriter writer = new FileWriter(new File("./pokemobs.json"));
+                    FileWriter writer = new FileWriter(new File(file));
                     writer.append(json);
                     writer.close();
                 }

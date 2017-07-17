@@ -71,7 +71,7 @@ public class PokemobBodies
 
     public static void initBodies()
     {
-        for (XMLPokedexEntry xmlEntry : PokedexEntryLoader.entries)
+        for (XMLPokedexEntry xmlEntry : PokedexEntryLoader.database.pokemon)
         {
             PokedexEntry entry = Database.getEntry(xmlEntry.name);
             if (xmlEntry.body != null && !xmlEntry.body.parts.isEmpty() && entry != null)

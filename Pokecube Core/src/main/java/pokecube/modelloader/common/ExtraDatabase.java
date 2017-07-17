@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -22,6 +23,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.ModPokecubeML;
 
 public class ExtraDatabase
@@ -197,7 +199,7 @@ public class ExtraDatabase
             }
             catch (Exception e)
             {
-                System.out.println(xml + " " + entry);
+                PokecubeMod.log(Level.WARNING, xml + " " + entry, e);
             }
             for (XMLPokedexEntry fileEntry : file.entries)
             {
@@ -233,7 +235,7 @@ public class ExtraDatabase
                         PokedexEntryLoader.updateEntry(fileEntry, true);
                     }
                 }
-                if (fileEntry != null) PokedexEntryLoader.addOverrideEntry(fileEntry, true);
+                if (fileEntry != null) PokedexEntryLoader.database.addOverrideEntry(fileEntry, true);
             }
             if (entry != null && file.details != null)
             {
@@ -258,10 +260,13 @@ public class ExtraDatabase
                             throw new IllegalArgumentException("Wrong number of numbers for offset, must be 1 or 3");
                         }
                     }
-                    entry.passengerOffsets = new double[offsets.size()][];
-                    for (int i = 0; i < entry.passengerOffsets.length; i++)
+                    if (!offsets.isEmpty())
                     {
-                        entry.passengerOffsets[i] = offsets.get(i);
+                        entry.passengerOffsets = new double[offsets.size()][];
+                        for (int i = 0; i < entry.passengerOffsets.length; i++)
+                        {
+                            entry.passengerOffsets[i] = offsets.get(i);
+                        }
                     }
                 }
                 if (file.details.particles != null) entry.particleData = file.details.particles.split(":");

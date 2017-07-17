@@ -391,24 +391,33 @@ public class Database
         {
             try
             {
-                PokedexEntryLoader.makeEntries(new File(DBLOCATION + s), true);
+                PokedexEntryLoader.loadFile(new File(DBLOCATION + s));
             }
             catch (Exception e)
             {
                 PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e);
             }
         }
-
         for (String s : extraDatabases)
         {
             try
             {
-                PokedexEntryLoader.makeEntries(new File(s), true);
+                PokedexEntryLoader.loadFile(new File(s));
             }
             catch (Exception e)
             {
                 PokecubeMod.log(Level.SEVERE, "Error with " + s, e);
             }
+        }
+
+        try
+        {
+            PokedexEntryLoader.makeEntries(true);
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.SEVERE, "Error with databases", e);
+            throw new RuntimeException("Database loading failed, this is very bad.");
         }
 
         PokecubeMod.log("Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");

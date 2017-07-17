@@ -4,13 +4,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
@@ -23,7 +24,6 @@ import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -35,7 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.PokecubeItems;
-import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
 import pokecube.core.database.PokedexEntry.MegaRule;
@@ -52,9 +51,25 @@ import thut.lib.CompatWrapper;
 public class PokedexEntryLoader
 {
 
-    private static final Gson     gson;
+    private static final Gson                        gson;
 
-    public static XMLPokedexEntry missingno = new XMLPokedexEntry();
+    private static final Comparator<XMLPokedexEntry> ENTRYSORTER = new Comparator<XMLPokedexEntry>()
+                                                                 {
+                                                                     @Override
+                                                                     public int compare(XMLPokedexEntry o1,
+                                                                             XMLPokedexEntry o2)
+                                                                     {
+                                                                         int diff = o1.number - o2.number;
+                                                                         if (diff == 0)
+                                                                         {
+                                                                             if (o1.base && !o2.base) diff = -1;
+                                                                             else if (o2.base && !o1.base) diff = 1;
+                                                                         }
+                                                                         return diff;
+                                                                     }
+                                                                 };
+
+    public static XMLPokedexEntry                    missingno   = new XMLPokedexEntry();
 
     static
     {
@@ -300,6 +315,51 @@ public class PokedexEntryLoader
     {
         @XmlElement(name = "Pokemon")
         public List<XMLPokedexEntry> pokemon = Lists.newArrayList();
+
+        public void addEntry(XMLPokedexEntry toAdd)
+        {
+            if (map.containsKey(toAdd.name))
+            {
+                pokemon.remove(map.remove(toAdd.name));
+            }
+            pokemon.add(toAdd);
+            Collections.sort(pokemon, ENTRYSORTER);
+        }
+
+        public void addOverrideEntry(XMLPokedexEntry entry, boolean overwrite)
+        {
+            for (XMLPokedexEntry e : pokemon)
+            {
+                if (e.name.equals(entry.name))
+                {
+                    if (overwrite)
+                    {
+                        pokemon.remove(e);
+                        map.put(entry.name, entry);
+                        pokemon.add(entry);
+                        entry.mergeMissingFrom(e);
+                        return;
+                    }
+                    else
+                    {
+                        e.mergeMissingFrom(entry);
+                    }
+                    return;
+                }
+            }
+            pokemon.add(entry);
+            map.put(entry.name, entry);
+        }
+
+        Map<String, XMLPokedexEntry> map = Maps.newHashMap();
+
+        public void init()
+        {
+            for (XMLPokedexEntry e : pokemon)
+            {
+                map.put(e.name, e);
+            }
+        }
     }
 
     @XmlRootElement(name = "Pokemon")
@@ -404,28 +464,159 @@ public class PokedexEntryLoader
         }
     }
 
-    public static XMLDatabase   database;
-
-    static Set<XMLPokedexEntry> entries = Sets.newHashSet();
-
-    public static void addOverrideEntry(XMLPokedexEntry entry, boolean overwrite)
+    public static void mergeNonDefaults(Object defaults, Object outOf, Object inTo)
     {
-        for (XMLPokedexEntry e : entries)
+        if (outOf.getClass() != inTo.getClass())
+            throw new IllegalArgumentException("To and From must be of the same class!");
+        Field fields[] = new Field[] {};
+        try
         {
-            if (e.name.equals(entry.name))
+            fields = outOf.getClass().getDeclaredFields();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        Object valueOut;
+        Object valueIn;
+        Object valueDefault;
+        for (Field field : fields)
+        {
+            try
             {
-                if (overwrite)
+                if (Modifier.isFinal(field.getModifiers())) continue;
+                if (Modifier.isStatic(field.getModifiers())) continue;
+                if (Modifier.isTransient(field.getModifiers())) continue;
+                field.setAccessible(true);
+                valueOut = field.get(outOf);
+                valueIn = field.get(inTo);
+                valueDefault = field.get(defaults);
+                if (valueOut == null) continue;
+                if (valueIn == null && valueOut != null)
                 {
-                    entries.remove(e);
-                    entries.add(entry);
-                    entry.mergeMissingFrom(e);
-                    return;
+                    field.set(inTo, valueOut);
+                    continue;
                 }
-                return;
+
+                boolean outIsDefault = valueOut == valueDefault
+                        || (valueDefault != null && valueDefault.equals(valueOut));
+                if (!outIsDefault)
+                {
+                    if (valueOut instanceof String)
+                    {
+                        field.set(inTo, valueOut);
+                    }
+                    else if (valueOut instanceof Object[])
+                    {
+                        field.set(inTo, ((Object[]) valueOut).clone());
+                    }
+                    else if (valueOut instanceof Map)
+                    {
+                        field.set(inTo, valueOut);
+                    }
+                    else if (valueOut instanceof Collection)
+                    {
+                        field.set(inTo, valueOut);
+                    }
+                    else
+                    {
+                        try
+                        {
+                            valueDefault = valueOut.getClass().newInstance();
+                            mergeNonDefaults(valueDefault, valueOut, valueIn);
+                            field.set(inTo, valueIn);
+                        }
+                        catch (Exception e)
+                        {
+                            field.set(inTo, valueOut);
+                        }
+                    }
+                }
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
             }
         }
-        entries.add(entry);
     }
+
+    public static Object getSerializableCopy(Class<?> type, Object original)
+            throws InstantiationException, IllegalAccessException
+    {
+        Field fields[] = new Field[] {};
+        try
+        {
+            // returns the array of Field objects representing the public fields
+            fields = type.getDeclaredFields();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        Object copy = null;
+        try
+        {
+            // if (type.isPrimitive()) copy = original;
+            // else
+            copy = type.newInstance();
+        }
+        catch (Exception e1)
+        {
+            copy = original;
+        }
+        if (copy == original) return copy;
+        Object value;
+        Object defaultvalue;
+        for (Field field : fields)
+        {
+            try
+            {
+                if (Modifier.isFinal(field.getModifiers())) continue;
+                if (Modifier.isStatic(field.getModifiers())) continue;
+                if (Modifier.isTransient(field.getModifiers())) continue;
+                field.setAccessible(true);
+                value = field.get(original);
+                defaultvalue = field.get(copy);
+                if (value == null) continue;
+                if (value.getClass().isPrimitive()) field.set(copy, value);
+                else if (defaultvalue != null && defaultvalue.equals(value))
+                {
+                    field.set(copy, null);
+                }
+                else if (value instanceof String)
+                {
+                    if (((String) value).isEmpty())
+                    {
+                        field.set(copy, null);
+                    }
+                    else field.set(copy, value);
+                }
+                else if (value instanceof Object[])
+                {
+                    if (((Object[]) value).length == 0) field.set(copy, null);
+                    else field.set(copy, value);
+                }
+                else if (value instanceof Map)
+                {
+                    if (((Map<?, ?>) value).isEmpty()) field.set(copy, null);
+                    else field.set(copy, value);
+                }
+                else if (value instanceof Collection)
+                {
+                    if (((Collection<?>) value).isEmpty()) field.set(copy, null);
+                    else field.set(copy, value);
+                }
+                else field.set(copy, getSerializableCopy(value.getClass(), value));
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return copy;
+    }
+
+    public static XMLDatabase database;
 
     private static void initMoves(PokedexEntry entry, Moves xmlMoves)
     {
@@ -643,46 +834,45 @@ public class PokedexEntryLoader
         return database;
     }
 
-    public static void makeEntries(File file, boolean create) throws Exception
+    public static void loadFile(File file) throws Exception
     {
         ProgressBar bar = ProgressManager.push("Loading Database", 1);
+        bar.step("Loading...");
         if (database == null)
         {
             database = loadDatabase(file);
-            entries.addAll(database.pokemon);
+            database.init();
         }
-        else if (create)
+        else
         {
             XMLDatabase toAdd = loadDatabase(file);
             if (toAdd != null)
             {
+                ProgressBar bar2 = ProgressManager.push("Merging", toAdd.pokemon.size());
                 for (XMLPokedexEntry e : toAdd.pokemon)
                 {
-                    addOverrideEntry(e, true);
+                    bar2.step(e.name);
+                    XMLPokedexEntry old = database.map.get(e.name);
+                    if (old != null) mergeNonDefaults(missingno, e, old);
+                    else
+                    {
+                        database.addEntry(e);
+                    }
                 }
+                ProgressManager.pop(bar2);
             }
             else throw new NullPointerException(file + " Contains no database");
         }
-        bar.step("Done");
         ProgressManager.pop(bar);
-        List<XMLPokedexEntry> entries = Lists.newArrayList(PokedexEntryLoader.entries);
+    }
 
-        Collections.sort(entries, new Comparator<XMLPokedexEntry>()
-        {
-            @Override
-            public int compare(XMLPokedexEntry o1, XMLPokedexEntry o2)
-            {
-                int diff = o1.number - o2.number;
-                if (diff == 0)
-                {
-                    if (o1.base && !o2.base) diff = -1;
-                    else if (o2.base && !o1.base) diff = 1;
-                }
-                return diff;
-            }
-        });
+    public static void makeEntries(boolean create)
+    {
+        List<XMLPokedexEntry> entries = Lists.newArrayList(database.pokemon);
 
-        bar = ProgressManager.push("Loading Pokemon", entries.size());
+        Collections.sort(entries, ENTRYSORTER);
+
+        ProgressBar bar = ProgressManager.push("Loading Pokemon", entries.size());
         for (XMLPokedexEntry xmlEntry : entries)
         {
             String name = xmlEntry.name;
@@ -761,7 +951,7 @@ public class PokedexEntryLoader
                 }
                 if (father == null)
                 {
-                    System.err.println("Error with Father for Children for " + entry);
+                    PokecubeMod.log(Level.WARNING, "Error with Father for Children for " + entry);
                     break mates;
                 }
                 String[] args1 = args[1].split("`");
@@ -778,7 +968,7 @@ public class PokedexEntryLoader
                     }
                     if (childNbs[i] == null)
                     {
-                        System.err.println("Error with Children for " + entry + " " + args1[i]);
+                        PokecubeMod.log(Level.WARNING, "Error with Children for " + entry + " " + args1[i]);
                         break mates;
                     }
                 }
@@ -799,8 +989,7 @@ public class PokedexEntryLoader
             String[] evolFX = fxString.split(" ");
             if (evols.length != evolData.length)
             {
-                System.out.println("Error with evolution data for " + entry);
-                new Exception().printStackTrace();
+                PokecubeMod.log(Level.WARNING, "Error with evolution data for " + entry, new Exception());
             }
             else
             {
@@ -842,7 +1031,7 @@ public class PokedexEntryLoader
                             data.FX = s2;
                         }
                     }
-                    else if (error) System.out.println("No evolution " + s1 + " for " + entry);
+                    else if (error) PokecubeMod.log(Level.WARNING, "No evolution " + s1 + " for " + entry);
                 }
             }
         }
@@ -996,7 +1185,7 @@ public class PokedexEntryLoader
         }
         catch (Exception e)
         {
-            System.out.println("Error in expmode for " + entry);
+            PokecubeMod.log(Level.WARNING, "Error with expmode" + entry, e);
         }
         if (xmlStats.shadowReplacements != null)
         {
@@ -1193,44 +1382,7 @@ public class PokedexEntryLoader
 
     public static void postInit()
     {
-        ProgressBar bar = ProgressManager.push("Databases", Database.defaultDatabases.size()
-                + Database.configDatabases.get(EnumDatabase.POKEMON.ordinal()).size() + Database.extraDatabases.size());
-        for (String s : Database.defaultDatabases)
-        {
-            bar.step(s);
-            try
-            {
-                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.SEVERE, "Error with " + Database.DBLOCATION + s, e);
-            }
-        }
-
-        for (String s : Database.configDatabases.get(EnumDatabase.POKEMON.ordinal()))
-        {
-            try
-            {
-                PokedexEntryLoader.makeEntries(new File(Database.DBLOCATION + s), false);
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.SEVERE, "Error with " + Database.DBLOCATION + s, e);
-            }
-        }
-        for (String s : Database.extraDatabases)
-        {
-            bar.step(s);
-            try
-            {
-                PokedexEntryLoader.makeEntries(new File(s), false);
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.SEVERE, "Error with " + s, e);
-            }
-        }
+        makeEntries(false);
         PokemobBodies.initBodies();
     }
 
@@ -1244,7 +1396,7 @@ public class PokedexEntryLoader
         }
         catch (Exception e)
         {
-            System.out.println(xmlEntry + ", " + entry + ": " + e + " ");
+            PokecubeMod.log(Level.WARNING, "Error with " + xmlEntry + " entry? " + entry, e);
         }
 
     }
@@ -1273,7 +1425,7 @@ public class PokedexEntryLoader
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log("Error with stats for " + entry);
+                    PokecubeMod.log(Level.WARNING, "Error with stats for " + entry, e);
                 }
                 try
                 {
@@ -1281,7 +1433,7 @@ public class PokedexEntryLoader
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log("Error with spawns for " + entry);
+                    PokecubeMod.log(Level.WARNING, "Error with spawns for " + entry, e);
                 }
                 try
                 {
@@ -1289,7 +1441,7 @@ public class PokedexEntryLoader
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log("Error with evols for " + entry);
+                    PokecubeMod.log(Level.WARNING, "Error with evols for " + entry, e);
                 }
                 if (xmlEntry.special != null)
                 {
@@ -1299,14 +1451,14 @@ public class PokedexEntryLoader
                     }
                     catch (Exception e)
                     {
-                        PokecubeMod.log("Error with special for " + entry);
+                        PokecubeMod.log(Level.WARNING, "Error with special for " + entry, e);
                     }
                 }
             }
         }
         catch (Exception e)
         {
-            System.out.println(xmlEntry + ", " + entry + ": " + e + " " + init);
+            PokecubeMod.log(Level.WARNING, "Error with " + xmlEntry + " init? " + init, e);
         }
         if (moves != null) initMoves(entry, moves);
     }

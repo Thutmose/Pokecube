@@ -112,6 +112,9 @@ public class ItemModelReloader extends Item
                             if (!pEntry.evolutions.isEmpty())
                             {
                                 if (entry.stats == null) entry.stats = new StatsNode();
+                                entry.stats.evolAnims = null;
+                                entry.stats.evoModes = null;
+                                entry.stats.evoTo = null;
                                 if (entry.stats.evolutions == null || entry.stats.evolutions.isEmpty())
                                 {
                                     entry.stats.evolutions = Lists.newArrayList();
@@ -176,11 +179,14 @@ public class ItemModelReloader extends Item
                                                 key.values.put(new QName("d"), d.item.getItemDamage() + "");
                                             evol.item = key;
                                         }
-
-                                        entry.stats.evolAnims = null;
-                                        entry.stats.evoModes = null;
-                                        entry.stats.evoTo = null;
                                         entry.stats.evolutions.add(evol);
+                                    }
+                                }
+                                else
+                                {
+                                    for (Evolution e : entry.stats.evolutions)
+                                    {
+                                        e.clear = null;
                                     }
                                 }
                             }

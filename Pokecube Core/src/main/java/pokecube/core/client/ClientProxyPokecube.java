@@ -32,7 +32,6 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.resources.IResource;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -68,7 +67,6 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryLog;
 import pokecube.core.blocks.berries.BlockBerryWood;
-import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.blocks.pc.ContainerPC;
 import pokecube.core.blocks.pc.TileEntityPC;
 import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
@@ -336,17 +334,6 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public void initClient()
     {
         super.initClient();
-
-        ResourceLocation pokecenterloop = new ResourceLocation("pokecube:sounds/pokecenterloop.ogg");
-        try
-        {
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(pokecenterloop);
-            res.close();
-        }
-        catch (Exception e)
-        {
-            TileHealTable.noSound = true;
-        }
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor()
         {
             @Override

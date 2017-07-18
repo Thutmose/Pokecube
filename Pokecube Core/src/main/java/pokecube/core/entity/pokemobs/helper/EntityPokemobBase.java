@@ -398,7 +398,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         float max = Math.max(width, length);
         float min = Math.min(width, length);
         if (max / min < 2) normalSize = true;
-        if (!multibox || normalSize)
+        if (!multibox || normalSize || mainBox == null)
         {
             this.noClip = false;
             super.move(type, x, y, z);

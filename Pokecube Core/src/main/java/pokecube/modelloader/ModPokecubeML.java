@@ -35,6 +35,9 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.PokedexEntryLoader;
+import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
+import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.events.onload.RegisterPokemobsEvent;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
@@ -51,8 +54,8 @@ public class ModPokecubeML implements IMobProvider
 {
     /** The id of your mod */
     public final static String        ID                      = "pokecube_ml";
-    public static final String        MODELPATH               = "models/pokemobs/";
-    public static final String        TEXTUREPATH             = "textures/entities/";
+    public static final String        MODELPATH               = "entity/models/";
+    public static final String        TEXTUREPATH             = "entity/textures/";
 
     @Instance(ID)
     public static ModPokecubeML       instance;
@@ -62,7 +65,7 @@ public class ModPokecubeML implements IMobProvider
     public static ArrayList<String>   addedPokemon            = Lists.newArrayList();
     public static Map<String, String> textureProviders        = Maps.newHashMap();
 
-    public static Set<String>         scanPaths               = Sets.newHashSet("assets/pokecube_ml/models/pokemobs/");
+    public static Set<String>         scanPaths               = Sets.newHashSet("assets/pokecube_ml/entity/models/");
 
     public static boolean             preload                 = true;
 
@@ -127,6 +130,16 @@ public class ModPokecubeML implements IMobProvider
     @SubscribeEvent
     public void RegisterPokemobsEvent(InitDatabase.Load event)
     {
+        try
+        {
+            if (checkResourcesForModels)
+            {
+                processResources();
+            }
+        }
+        catch (Exception e)
+        {
+        }
         proxy.searchModels();
         if (PokecubeMod.core.getConfig().debug)
         {
@@ -212,17 +225,6 @@ public class ModPokecubeML implements IMobProvider
     {
         proxy.preInit();
         doMetastuff();
-
-        try
-        {
-            if (checkResourcesForModels)
-            {
-                processResources();
-            }
-        }
-        catch (Exception e)
-        {
-        }
     }
 
     @SubscribeEvent
@@ -257,20 +259,21 @@ public class ModPokecubeML implements IMobProvider
                             if (s.contains(modelDir))
                             {
                                 String name = s.replace(modelDir, "").split("\\.")[0];
-                                if (name.trim().isEmpty()) continue;
-                                boolean has = false;
-                                for (String s1 : toAdd)
+                                if (name.trim().isEmpty() || !(s.endsWith(".xml") || s.endsWith(".json"))) continue;
+                                boolean mobsDatabase = name.equals("_mobs_");
+                                if (mobsDatabase)
                                 {
-                                    if (s1.equals(name))
+                                    PokecubeMod.log("Adding From " + name + " " + s);
+                                    XMLDatabase database = PokedexEntryLoader.initDatabase(zip.getInputStream(entry),
+                                            s.endsWith(".json"));
+                                    for (XMLPokedexEntry xmlentry : database.pokemon)
                                     {
-                                        has = true;
-                                        break;
+                                        PokecubeMod.log("Adding " + xmlentry.name);
                                     }
                                 }
-                                if (!has)
+                                else if (name.equals("_moves_"))
                                 {
-                                    System.out.println("Adding " + name);
-                                    toAdd.add(name);
+                                    // TODO load in moves database from here.
                                 }
                             }
                         }

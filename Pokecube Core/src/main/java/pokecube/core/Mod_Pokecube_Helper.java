@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import pokecube.core.handlers.Config;
@@ -158,5 +159,10 @@ public class Mod_Pokecube_Helper
         addToList(config.getPlantTypes(), config.blocksLeaves);
 
         removeFromHoldables("tm");
+    }
+
+    public void registerSound(SoundEvent sound)
+    {
+        GameData.register_impl(sound);
     }
 }

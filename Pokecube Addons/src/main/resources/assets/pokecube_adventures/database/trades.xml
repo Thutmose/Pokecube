@@ -26,6 +26,9 @@
         <Trade chance="0.05" custom="allGenericHeld">
             <Buy n="16" id="minecraft:emerald"/>
         </Trade>
+        <Trade chance="0.025" custom="sellRandomBadge">
+            <Buy n="32" id="minecraft:emerald"/>
+        </Trade>
     </Trades>
     <Trades template="merchant">
         <Trade chance="1">

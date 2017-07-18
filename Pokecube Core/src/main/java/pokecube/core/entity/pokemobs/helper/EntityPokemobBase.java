@@ -21,11 +21,9 @@ import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
@@ -42,8 +40,6 @@ import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
-import pokecube.core.PokecubeItems;
-import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokemobBodies;
@@ -634,10 +630,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             NBTTagCompound pokemobTag = nbttagcompound.getCompoundTag(POKEMOBTAG);
             readPokemobData(pokemobTag);
-            GeneticsManager.handleLoad(this);
             return;
         }
-        readOldPokemobData(nbttagcompound);
+        GeneticsManager.handleLoad(this);
     }
 
     @Override
@@ -745,114 +740,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.setAncient(miscTag.getBoolean(ANCIENT));
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
         }
-    }
-
-    private void readOldPokemobData(NBTTagCompound nbttagcompound)
-    {
-        String s = "";
-
-        if (nbttagcompound.hasKey("OwnerUUID", 8))
-        {
-            s = nbttagcompound.getString("OwnerUUID");
-        }
-        else
-        {
-            String s1 = nbttagcompound.getString("Owner");
-            s = PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), s1);
-        }
-
-        if (!s.isEmpty())
-        {
-            try
-            {
-                this.setPokemonOwner(UUID.fromString(s));
-            }
-            catch (Throwable var4)
-            {
-            }
-        }
-
-        // Ownership and Items
-        int pokedexNb = nbttagcompound.getInteger(PokecubeSerializer.POKEDEXNB);
-        this.setPokedexEntry(Database.getEntry(pokedexNb));
-        this.setSpecialInfo(nbttagcompound.getInteger("specialInfo"));
-        dataManager.set(AIACTIONSTATESDW, nbttagcompound.getInteger("PokemobActionState"));
-        setHungerTime(nbttagcompound.getInteger("hungerTime"));
-        int[] home = nbttagcompound.getIntArray("homeLocation");
-        if (home.length == 4)
-        {
-            setHome(home[0], home[1], home[2], home[3]);
-        }
-        if (nbttagcompound.hasKey("OT"))
-        {
-            try
-            {
-                this.setOriginalOwnerUUID(UUID.fromString(nbttagcompound.getString("OT")));
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-        players = nbttagcompound.getBoolean("playerOwned");
-        this.initInventory();
-        NBTTagList nbttaglist = nbttagcompound.getTagList("Items", 10);
-        for (int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
-            NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-            int j = nbttagcompound1.getByte("Slot") & 255;
-            if (j < this.getPokemobInventory().getSizeInventory())
-            {
-                this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
-            }
-        }
-        handleArmourAndSaddle();
-        // Stats related
-        try
-        {
-            setEVs(PokecubeSerializer.longAsByteArray(nbttagcompound.getLong(PokecubeSerializer.EVS)));
-            long ivs = nbttagcompound.getLong(PokecubeSerializer.IVS);
-
-            if (ivs < 0)
-            {
-                ivs = PokecubeSerializer.byteArrayAsLong(
-                        new byte[] { Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand),
-                                Tools.getRandomIV(rand), Tools.getRandomIV(rand), Tools.getRandomIV(rand) });
-            }
-
-            setIVs(PokecubeSerializer.longAsByteArray(ivs));
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-        setExp(nbttagcompound.getInteger(PokecubeSerializer.EXP), false);
-        isAncient = nbttagcompound.getBoolean("isAncient");
-        wasShadow = nbttagcompound.getBoolean("wasShadow");
-        addHappiness(nbttagcompound.getInteger("happiness"));
-        if (nbttagcompound.hasKey("personalityValue")) this.setRNGValue(nbttagcompound.getInteger("personalityValue"));
-        // Sexe related
-        setSexe((byte) nbttagcompound.getInteger(PokecubeSerializer.SEXE));
-        loveTimer = nbttagcompound.getInteger("InLove2");
-        // Moves Related
-        setStatus(nbttagcompound.getByte(PokecubeSerializer.STATUS));
-        this.setPokemonAIState(LEARNINGMOVE, nbttagcompound.getBoolean("newMoves"));
-        getMoveStats().newMoves = nbttagcompound.getInteger("numberMoves");
-        String movesString = nbttagcompound.getString(PokecubeSerializer.MOVES);
-        dataManager.set(MOVESDW, movesString);
-        this.getEntityData().setString("lastMoveHitBy", "");
-        // Evolution
-        setTraded(nbttagcompound.getBoolean("traded"));
-        // Misc
-        this.getDataManager().set(NICKNAMEDW, nbttagcompound.getString(PokecubeSerializer.NICKNAME));
-        Item cube = PokecubeItems.getFilledCube(nbttagcompound.getInteger("PokeballId"));
-        setPokecube(new ItemStack(cube));
-        String forme = nbttagcompound.getString("forme");
-        if (!forme.isEmpty()) this.setPokedexEntry(Database.getEntry(forme));
-        setSize(nbttagcompound.getFloat("scale"));
-        this.initRidable();
-        uid = nbttagcompound.getInteger("PokemobUID");
-        if (nbttagcompound.hasKey("flavours")) flavourAmounts = nbttagcompound.getIntArray("flavours");
     }
 
     @Override

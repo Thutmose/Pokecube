@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -161,8 +162,8 @@ public class Mod_Pokecube_Helper
         removeFromHoldables("tm");
     }
 
-    public void registerSound(SoundEvent sound)
+    public void registerSound(SoundEvent sound, ResourceLocation location)
     {
-        GameData.register_impl(sound);
+        GameData.register_impl(sound.setRegistryName(location));
     }
 }

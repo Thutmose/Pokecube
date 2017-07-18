@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.utils.EntityTools;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
 import pokecube.modelloader.client.render.AnimationLoader;
@@ -231,11 +232,9 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
         {
             ageInTicks = 0.0F;
         }
-
-        mobModelBase.setLivingAnimations(player, limbSwing, limbSwingAmount, partialTick);
-        mobModelBase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor,
-                player);
-        mobModelBase.render((Entity) mob, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        EntityLivingBase living = (EntityLivingBase) mob;
+        EntityTools.copyEntityTransforms(living, player);
+        mobModelBase.render(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         GlStateManager.popMatrix();
         return new RenderPokemobOnShoulder.DataHolder(mobUUID, mobRenderer, mobModelBase, texture, mobClass, entry,
                 mob);

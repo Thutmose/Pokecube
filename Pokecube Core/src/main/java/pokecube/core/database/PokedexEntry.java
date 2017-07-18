@@ -32,7 +32,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,6 +39,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntryLoader.Action;
 import pokecube.core.database.PokedexEntryLoader.Drop;
+import pokecube.core.database.PokedexEntryLoader.Evolution;
 import pokecube.core.database.PokedexEntryLoader.Interact;
 import pokecube.core.database.PokedexEntryLoader.Key;
 import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
@@ -74,7 +74,9 @@ public class PokedexEntry
     public static class EvolutionData
     {
         public String             biome        = "";
-        public String             data;
+        public SpawnBiomeMatcher  matcher      = null;
+        public String             data_old;
+        public Evolution          data;
         public boolean            dayOnly      = false;
         public final PokedexEntry evolution;
         public String             FX           = "";
@@ -94,7 +96,7 @@ public class PokedexEntry
         public float              randomFactor = 1.0f;
         public boolean            traded       = false;
 
-        private EvolutionData(PokedexEntry evol)
+        public EvolutionData(PokedexEntry evol)
         {
             evolution = evol;
         }
@@ -103,82 +105,7 @@ public class PokedexEntry
         {
             this(evol);
             this.FX = FX;
-            this.data = data;
-        }
-
-        private boolean checkNormal(IPokemob mob, String biome)
-        {
-            int type = -1;
-            for (BiomeType b : BiomeType.values())
-            {
-                if (b.name.replaceAll(" ", "").equalsIgnoreCase(biome)) type = b.getType() + 256;
-            }
-            if (type == -1)
-            {
-                for (ResourceLocation key : Biome.REGISTRY.getKeys())
-                {
-                    Biome b = Biome.REGISTRY.getObject(key);
-                    if (b != null)
-                    {
-                        if (b.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(biome))
-                        {
-                            type = Biome.getIdForBiome(b);
-                        }
-                    }
-                }
-            }
-            Vector3 v = Vector3.getNewVector().set(mob);
-            World world = ((EntityLiving) mob).getEntityWorld();
-            if (type == -1)
-            {
-                Biome b = v.getBiome(world);
-                BiomeDictionary.Type t = CompatWrapper.getBiomeType(biome);
-                if (t != null) { return CompatWrapper.isOfType(b, t); }
-            }
-            else
-            {
-                TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
-                int tb = t.getBiome(v);
-                int vb = v.getBiomeID(world);
-                if (tb == type || vb == type) return true;
-            }
-            return false;
-        }
-
-        private boolean checkPerType(IPokemob mob, String biome)
-        {
-            String[] args = biome.split("\'");
-            List<BiomeDictionary.Type> neededTypes = Lists.newArrayList();
-            List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
-            for (String s : args)
-            {
-                if (!(s.startsWith("B") || s.startsWith("W"))) s = "W" + s;
-                String name = s.substring(1);
-                if (s.startsWith("B"))
-                {
-                    BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
-                    if (t != null) bannedTypes.add(t);
-                }
-                else if (s.startsWith("W"))
-                {
-                    BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
-                    if (t != null) neededTypes.add(t);
-                }
-            }
-            Vector3 v = Vector3.getNewVector().set(mob);
-            World world = ((EntityLiving) mob).getEntityWorld();
-            Biome b = v.getBiome(world);
-            boolean correctType = true;
-            boolean bannedType = false;
-            for (BiomeDictionary.Type t : neededTypes)
-            {
-                correctType = correctType && CompatWrapper.isOfType(b, t);
-            }
-            for (BiomeDictionary.Type t : bannedTypes)
-            {
-                bannedType = bannedType || CompatWrapper.isOfType(b, t);
-            }
-            return correctType && !bannedType;
+            this.data_old = data;
         }
 
         public Entity getEvolution(World world)
@@ -190,20 +117,44 @@ public class PokedexEntry
 
         public boolean isInBiome(IPokemob mob)
         {
-            String[] biomes = biome.split(",");
-            for (String biome : biomes)
+            if (matcher != null)
             {
-                if (biome.startsWith("T"))
-                {
-                    if (checkPerType(mob, biome.substring(1))) return true;
-                }
-                else if (checkNormal(mob, biome)) return true;
+                SpawnCheck check = new SpawnCheck(Vector3.getNewVector().set(mob), ((Entity) mob).getEntityWorld());
+                return matcher.matches(check);
             }
-            return false;
+            return true;
+        }
+
+        private void parse(Evolution data)
+        {
+            // PokecubeMod.log("Parsing for NEW " + preEvolution + " -> " +
+            // evolution);
+            if (data.level != null) this.level = data.level;
+            if (data.location != null) this.matcher = new SpawnBiomeMatcher(data.location);
+            if (data.animation != null) this.FX = data.animation;
+            if (data.item != null) this.item = Tools.getStack(data.item.values);
+            if (data.time != null)
+            {
+                if (data.time.equalsIgnoreCase("day")) dayOnly = true;
+                if (data.time.equalsIgnoreCase("night")) nightOnly = true;
+            }
+            if (data.trade != null) this.traded = data.trade;
+            if (data.rain != null) this.rainOnly = data.rain;
+            if (data.happy != null) this.happy = data.happy;
+            if (data.sexe != null)
+            {
+                if (data.sexe.equalsIgnoreCase("male")) gender = 1;
+                if (data.sexe.equalsIgnoreCase("female")) gender = 2;
+            }
+            if (data.move != null) this.move = data.move;
+            if (data.chance != null) this.randomFactor = data.chance;
+            if (level == -1) level = 0;
         }
 
         private void parse(String data)
         {
+            // PokecubeMod.log("Parsing for OLD " + preEvolution + " -> " +
+            // evolution);
             String[] parts = data.split(":");
             String itemName = "";
 
@@ -297,6 +248,7 @@ public class PokedexEntry
         {
             try
             {
+                if (data_old != null) parse(data_old);
                 if (data != null) parse(data);
             }
             catch (Exception e)
@@ -304,6 +256,7 @@ public class PokedexEntry
                 System.out.println(this);
                 e.printStackTrace();
             }
+            data_old = null;
             data = null;
         }
 
@@ -1051,7 +1004,8 @@ public class PokedexEntry
         String suffix = "";
         if (gender == IPokemob.MALE) suffix = " Male";
         else suffix = " Female";
-        PokedexEntry forme = new PokedexEntry(pokedexNb, name + suffix);
+        PokedexEntry forme = Database.getEntry(name + suffix);
+        if (forme == null) forme = new PokedexEntry(pokedexNb, name + suffix);
 
         forme.setBaseForme(this);
         if (gender == IPokemob.MALE)
@@ -1763,7 +1717,15 @@ public class PokedexEntry
 
         if (possibleMoves == null)
         {
-            possibleMoves = getBaseForme().possibleMoves;
+            try
+            {
+                possibleMoves = getBaseForme().possibleMoves;
+                possibleMoves.isEmpty();
+            }
+            catch (Exception e)
+            {
+                throw new RuntimeException(this.toString() + " no moves? " + getBaseForme());
+            }
         }
         if (lvlUpMoves == null)
         {

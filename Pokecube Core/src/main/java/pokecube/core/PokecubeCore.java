@@ -22,7 +22,6 @@ import net.minecraft.item.Item;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
@@ -52,7 +51,6 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
-import pokecube.core.blocks.healtable.ContainerHealTable;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
 import pokecube.core.commands.GiftCommand;
@@ -82,7 +80,6 @@ import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.EntityPokecube;
-import pokecube.core.items.pokecubes.EntityPokecubeBase;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -469,13 +466,8 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     public void registerSounds(FMLPostInitializationEvent evt)
     {
-        System.out.println("Regstering Sounds");
+        PokecubeMod.log("Regstering Sounds");
         Database.initSounds(evt);
-        ResourceLocation sound = new ResourceLocation(PokecubeMod.ID + ":pokecube_caught");
-        GameRegistry.register(EntityPokecubeBase.POKECUBESOUND = new SoundEvent(sound).setRegistryName(sound));
-        GameRegistry.register(ContainerHealTable.HEAL_SOUND.setRegistryName(PokecubeMod.ID + ":pokecenter"));
-        sound = new ResourceLocation(PokecubeMod.ID + ":pokecenterloop");
-        GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
     }
 
     // TODO swap this to proper events for 1.11.2/1.12

@@ -9,6 +9,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.core.events.CaptureEvent;
+import pokecube.core.events.CaptureEvent.Post;
+import pokecube.core.events.CaptureEvent.Pre;
 import thut.api.maths.Vector3;
 
 public interface IPokecube
@@ -32,6 +34,48 @@ public interface IPokecube
          * 
          * @param evt */
         public abstract void onPreCapture(CaptureEvent.Pre evt);
+
+        /** this is the capture strength of the cube, 0 is never capture, 255 is
+         * always capture. Override this and place something other than -1 if
+         * you wish to use it.
+         * 
+         * @param mob
+         * @param pokecubeId
+         * @return */
+        public abstract double getCaptureModifier(IPokemob mob);
+    }
+
+    /** helper class so extensions don't need to include blank onPostCapture and
+     * onPreCapture. */
+    public abstract static class DefaultPokecubeBehavior extends PokecubeBehavior
+    {
+
+        @Override
+        public void onPostCapture(Post evt)
+        {
+        }
+
+        @Override
+        public void onPreCapture(Pre evt)
+        {
+        }
+    }
+
+    public static class NormalPokecubeBehavoir extends DefaultPokecubeBehavior
+    {
+        final double rate;
+
+        public NormalPokecubeBehavoir(double rate)
+        {
+            this.rate = rate;
+        }
+
+        @Override
+        public double getCaptureModifier(IPokemob mob)
+        {
+            return rate;
+        }
+
     }
 
     /** These are used for custom behavior which can be modified during the

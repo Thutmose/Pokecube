@@ -28,7 +28,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -565,9 +564,9 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void onItemCapabilityAttach(AttachCapabilitiesEvent<Item> event)
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event)
     {
-        event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(((AttachCapabilitiesEvent.Item)event).getItemStack()));
+        event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(event.getObject()));
     }
 
     @SubscribeEvent

@@ -21,4 +21,12 @@ public class InitDatabase extends Event
     {
     }
 
+    /** This is called after the first database file has loaded, but before any
+     * others. This allows the resourcepacks to be loaded in first, then allows
+     * secondary config databases to override them. */
+    public static class Load extends InitDatabase
+    {
+
+    }
+
 }

@@ -33,12 +33,16 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
     private final RenderManager                            renderManager;
     private final LayerEntityOnShoulder                    parent;
     protected RenderLivingBase<? extends EntityLivingBase> leftRenderer;
+    protected IPokemob                                     leftMob;
     private ModelBase                                      leftModel;
+    private PokedexEntry                                   leftEntry;
     private ResourceLocation                               leftResource;
     private UUID                                           leftUniqueId;
     private Class<?>                                       leftEntityClass;
     protected RenderLivingBase<? extends EntityLivingBase> rightRenderer;
+    protected IPokemob                                     rightMob;
     private ModelBase                                      rightModel;
+    private PokedexEntry                                   rightEntry;
     private ResourceLocation                               rightResource;
     private UUID                                           rightUniqueId;
     private Class<?>                                       rightEntityClass;
@@ -65,7 +69,8 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             {
                 RenderPokemobOnShoulder.DataHolder holder = this.renderEntityOnShoulder(player, this.leftUniqueId,
                         nbttagcompound, this.leftRenderer, this.leftModel, this.leftResource, this.leftEntityClass,
-                        limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale, true);
+                        leftEntry, leftMob, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch,
+                        scale, true);
                 if (holder == null)
                 {
                     left = false;
@@ -77,7 +82,19 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
                     this.leftResource = holder.textureLocation;
                     this.leftModel = holder.model;
                     this.leftEntityClass = holder.clazz;
+                    this.leftEntry = holder.entry;
+                    this.leftMob = holder.mob;
                 }
+            }
+            else
+            {
+                this.leftUniqueId = null;
+                this.leftRenderer = null;
+                this.leftResource = null;
+                this.leftModel = null;
+                this.leftEntry = null;
+                this.leftEntityClass = null;
+                this.leftMob = null;
             }
 
             NBTTagCompound nbttagcompound1 = player.getRightShoulderEntity();
@@ -86,7 +103,8 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             {
                 RenderPokemobOnShoulder.DataHolder holder = this.renderEntityOnShoulder(player, this.rightUniqueId,
                         nbttagcompound1, this.rightRenderer, this.rightModel, this.rightResource, this.rightEntityClass,
-                        limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale, false);
+                        rightEntry, rightMob, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw,
+                        headPitch, scale, false);
                 if (holder == null)
                 {
                     right = false;
@@ -98,7 +116,19 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
                     this.rightResource = holder.textureLocation;
                     this.rightModel = holder.model;
                     this.rightEntityClass = holder.clazz;
+                    this.rightEntry = holder.entry;
+                    this.rightMob = holder.mob;
                 }
+            }
+            else
+            {
+                this.rightUniqueId = null;
+                this.rightRenderer = null;
+                this.rightResource = null;
+                this.rightModel = null;
+                this.rightEntry = null;
+                this.rightEntityClass = null;
+                this.rightMob = null;
             }
 
             GlStateManager.disableRescaleNormal();
@@ -142,11 +172,13 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
     @SuppressWarnings("unchecked")
     private RenderPokemobOnShoulder.DataHolder renderEntityOnShoulder(EntityPlayer player, @Nullable UUID mobUUID,
             NBTTagCompound mobNBTTag, RenderLivingBase<? extends EntityLivingBase> mobRenderer, ModelBase mobModelBase,
-            ResourceLocation texture, Class<?> mobClass, float limbSwing, float limbSwingAmount, float partialTick,
-            float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, boolean left)
+            ResourceLocation texture, Class<?> mobClass, PokedexEntry entry, IPokemob mob, float limbSwing,
+            float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch,
+            float scaleFactor, boolean left)
     {
 
-        if (mobUUID == null || !mobUUID.equals(mobNBTTag.getUniqueId("UUID")))
+        if (mobUUID == null || !mobUUID.equals(mobNBTTag.getUniqueId("UUID")) || mob == null
+                || entry != mob.getPokedexEntry())
         {
             mobUUID = mobNBTTag.getUniqueId("UUID");
             mobClass = EntityList.getClassFromName(mobNBTTag.getString("id"));
@@ -156,10 +188,10 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             mobModelBase = ((RenderLivingBase<?>) mobRenderer).getMainModel();
             Entity entity = EntityList.newEntity((Class<? extends Entity>) mobClass, player.world);
             entity.readFromNBT(mobNBTTag);
+            mob = (IPokemob) entity;
             texture = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
             if (mobModelBase == null)
             {
-                IPokemob mob = (IPokemob) entity;
                 IModelRenderer<?> model = (IModelRenderer<?>) RenderAdvancedPokemobModel
                         .getRenderer(mob.getPokedexEntry().getName(), (EntityLiving) entity);
                 if (model == null && mob.getPokedexEntry().getBaseForme() != null)
@@ -174,13 +206,13 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
                 }
                 if (mobModelBase == null)
                 {
-                    PokedexEntry entry = mob.getPokedexEntry();
-                    if (entry.getBaseForme() != null)
+                    PokedexEntry mobEntry = mob.getPokedexEntry();
+                    if (mobEntry.getBaseForme() != null)
                     {
-                        entry = entry.getBaseForme();
+                        mobEntry = mobEntry.getBaseForme();
                     }
-                    ((ClientProxy) ModPokecubeML.proxy).reloadModel(entry);
-                    for (PokedexEntry e : entry.forms.values())
+                    ((ClientProxy) ModPokecubeML.proxy).reloadModel(mobEntry);
+                    for (PokedexEntry e : mobEntry.forms.values())
                     {
                         ((ClientProxy) ModPokecubeML.proxy).reloadModel(e);
                     }
@@ -203,9 +235,10 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
         mobModelBase.setLivingAnimations(player, limbSwing, limbSwingAmount, partialTick);
         mobModelBase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor,
                 player);
-        mobModelBase.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+        mobModelBase.render((Entity) mob, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         GlStateManager.popMatrix();
-        return new RenderPokemobOnShoulder.DataHolder(mobUUID, mobRenderer, mobModelBase, texture, mobClass);
+        return new RenderPokemobOnShoulder.DataHolder(mobUUID, mobRenderer, mobModelBase, texture, mobClass, entry,
+                mob);
     }
 
     public boolean shouldCombineTextures()
@@ -221,15 +254,19 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
         public ModelBase                                    model;
         public ResourceLocation                             textureLocation;
         public Class<?>                                     clazz;
+        public IPokemob                                     mob;
+        public PokedexEntry                                 entry;
 
-        public DataHolder(UUID p_i47463_2_, RenderLivingBase<? extends EntityLivingBase> p_i47463_3_,
-                ModelBase p_i47463_4_, ResourceLocation p_i47463_5_, Class<?> p_i47463_6_)
+        public DataHolder(UUID uuid, RenderLivingBase<? extends EntityLivingBase> renderer, ModelBase model,
+                ResourceLocation texture, Class<?> clazz, PokedexEntry entry, IPokemob mob)
         {
-            this.entityId = p_i47463_2_;
-            this.renderer = p_i47463_3_;
-            this.model = p_i47463_4_;
-            this.textureLocation = p_i47463_5_;
-            this.clazz = p_i47463_6_;
+            this.entityId = uuid;
+            this.renderer = renderer;
+            this.model = model;
+            this.textureLocation = texture;
+            this.clazz = clazz;
+            this.entry = entry;
+            this.mob = mob;
         }
     }
 }

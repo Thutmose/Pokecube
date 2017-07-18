@@ -11,6 +11,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.PokecubeCore;
 import thut.api.maths.Vector3;
@@ -18,13 +19,14 @@ import thut.lib.CompatWrapper;
 
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
-    public static boolean   noSound   = false;
-    private List<ItemStack> inventory = CompatWrapper.makeList(9);
+    public static SoundEvent MUSICLOOP;
+    public static boolean    noSound   = false;
+    private List<ItemStack>  inventory = CompatWrapper.makeList(9);
 
-    Vector3                 here      = Vector3.getNewVector();
+    Vector3                  here      = Vector3.getNewVector();
 
-    int                     ticks     = 0;
-    boolean                 stopped   = false;
+    int                      ticks     = 0;
+    boolean                  stopped   = false;
 
     public TileHealTable()
     {
@@ -103,7 +105,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
+        if (getWorld().isRemote) return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(pos, 3, nbttagcompound);
     }
@@ -119,9 +121,9 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     public void invalidate()
     {
         super.invalidate();
-        if (worldObj.isRemote && PokecubeCore.proxy.isSoundPlaying(here))
+        if (getWorld().isRemote && PokecubeCore.proxy.isSoundPlaying(here))
         {
-            PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
+            PokecubeCore.proxy.toggleSound(MUSICLOOP, getPos());
         }
     }
 
@@ -134,7 +136,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public boolean isUseableByPlayer(EntityPlayer player)
     {
-        return worldObj.getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
+        return getWorld().getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
     }
 
     /** Called when you receive a TileEntityData packet for the location this
@@ -149,7 +151,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (getWorld().isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -204,18 +206,18 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void update()
     {
-        if (!worldObj.isRemote) return;
-        int power = worldObj.getStrongPower(pos);
+        if (!getWorld().isRemote) return;
+        int power = getWorld().getStrongPower(pos);
         here.set(this);
         if (power == 0)
         {
-            if (worldObj.isRemote && PokecubeCore.proxy.isSoundPlaying(here))
-                PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
+            if (getWorld().isRemote && PokecubeCore.proxy.isSoundPlaying(here))
+                PokecubeCore.proxy.toggleSound(MUSICLOOP, getPos());
             return;
         }
         if (!noSound && ticks <= 0 && !PokecubeCore.proxy.isSoundPlaying(here))
         {
-            PokecubeCore.proxy.toggleSound("pokecube:pokecenterloop", getPos());
+            PokecubeCore.proxy.toggleSound(MUSICLOOP, getPos());
             ticks = 1;
         }
         ticks--;

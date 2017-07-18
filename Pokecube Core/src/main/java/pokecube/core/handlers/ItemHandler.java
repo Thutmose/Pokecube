@@ -24,18 +24,16 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.Mod_Pokecube_Helper;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryFruit;
@@ -52,25 +50,16 @@ import pokecube.core.blocks.pokecubeTable.TileEntityPokecubeTable;
 import pokecube.core.blocks.repel.TileEntityRepel;
 import pokecube.core.blocks.tradingTable.ItemBlockTradingTable;
 import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
-import pokecube.core.database.stats.CaptureStats;
-import pokecube.core.database.stats.EggStats;
-import pokecube.core.events.CaptureEvent.Post;
-import pokecube.core.events.CaptureEvent.Pre;
-import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.events.onload.RegisterPokecubes;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemHeldItems;
 import pokecube.core.items.ItemPokemobUseableFood;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
-import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.Pokecube;
-import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.vitamins.ItemVitamin;
-import pokecube.core.utils.Tools;
-import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 public class ItemHandler extends Mod_Pokecube_Helper
@@ -312,112 +301,32 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addPokecubes(Object registry)
     {
-        String[] cubes = { "poke", "great", "ultra", "master", "snag", "dusk", "quick", "timer", "net", "nest", "dive",
-                "repeat", "premier", "cherish" };
-        int[] indecies = { 0, 1, 2, 3, 99, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+        RegisterPokecubes event = new RegisterPokecubes();
+        MinecraftForge.EVENT_BUS.post(event);
 
-        for (int i = 0; i < cubes.length; i++)
+        // Register any cube types from event.
+        for (Integer i : event.cubePrefixes.keySet())
         {
-            String name = cubes[i];
-            int index = indecies[i];
+            String name = event.cubePrefixes.get(i);
             Pokecube cube = new Pokecube();
             cube.setUnlocalizedName(name + "cube").setCreativeTab(creativeTabPokecubes);
             register(cube.setRegistryName(PokecubeMod.ID, name + "cube"), registry);
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
                 registerItemTexture(cube, 0, new ModelResourceLocation("pokecube:" + name + "cube", "inventory"));
-            PokecubeItems.addCube(index, new Object[] { cube });
-
+            PokecubeItems.addCube(i, new Object[] { cube });
         }
+        // Register any cube behaviours from event.
+        for (Integer i : event.behaviors.keySet())
+        {
+            PokecubeBehavior.addCubeBehavior(i, event.behaviors.get(i));
+        }
+
         Pokecube pokeseal = new Pokecube();
         pokeseal.setUnlocalizedName("pokeseal").setCreativeTab(creativeTabPokecubes);
         register(pokeseal.setRegistryName(PokecubeMod.ID, "pokeseal"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokeseal, 0, new ModelResourceLocation("pokecube:pokeseal", "inventory"));
         PokecubeItems.addCube(-2, new Object[] { pokeseal });
-
-        PokecubeBehavior snag = new PokecubeBehavior()
-        {
-
-            @Override
-            public void onPostCapture(Post evt)
-            {
-                IPokemob mob = evt.caught;
-                // mob.setPokemonOwnerByName("");
-                // mob.setPokemonAIState(IMoveConstants.TAMED, false);
-                evt.pokecube.entityDropItem(PokecubeManager.pokemobToItem(mob), 1.0F);
-                evt.setCanceled(true);
-            }
-
-            @Override
-            public void onPreCapture(Pre evt)
-            {
-                boolean tameSnag = !evt.caught.isPlayerOwned() && evt.caught.getPokemonAIState(IMoveConstants.TAMED);
-
-                if (evt.caught.isShadow())
-                {
-                    EntityPokecube cube = (EntityPokecube) evt.pokecube;
-
-                    IPokemob mob = (IPokemob) PokecubeCore.instance.createPokemob(evt.caught.getPokedexEntry(),
-                            cube.getEntityWorld());
-                    cube.tilt = Tools.computeCatchRate(mob, 1);
-                    cube.time = cube.tilt * 20;
-
-                    if (!tameSnag) evt.caught.setPokecube(evt.filledCube);
-
-                    cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
-                    PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
-                    Vector3.getNewVector().set(evt.pokecube).moveEntity(cube);
-                    ((Entity) evt.caught).setDead();
-                    cube.motionX = cube.motionZ = 0;
-                    cube.motionY = 0.1;
-                    cube.getEntityWorld().spawnEntityInWorld(cube.copy());
-                    evt.pokecube.setDead();
-                }
-                evt.setCanceled(true);
-            }
-        };
-
-        PokecubeBehavior repeat = new PokecubeBehavior()
-        {
-            @Override
-            public void onPostCapture(Post evt)
-            {
-
-            }
-
-            @Override
-            public void onPreCapture(Pre evt)
-            {
-                if (evt.getResult() == Result.DENY) return;
-
-                EntityPokecube cube = (EntityPokecube) evt.pokecube;
-
-                IPokemob mob = (IPokemob) PokecubeCore.instance.createPokemob(evt.caught.getPokedexEntry(),
-                        cube.getEntityWorld());
-                Vector3 v = Vector3.getNewVector();
-                Entity thrower = cube.shootingEntity;
-                int has = CaptureStats.getTotalNumberOfPokemobCaughtBy(thrower.getUniqueID(), mob.getPokedexEntry());
-                has = has + EggStats.getTotalNumberOfPokemobHatchedBy(thrower.getUniqueID(), mob.getPokedexEntry());
-                double rate = has > 0 ? 3 : 1;
-                cube.tilt = Tools.computeCatchRate(mob, rate);
-                cube.time = cube.tilt * 20;
-                evt.caught.setPokecube(evt.filledCube);
-                cube.setEntityItemStack(PokecubeManager.pokemobToItem(evt.caught));
-                PokecubeManager.setTilt(cube.getEntityItem(), cube.tilt);
-                v.set(evt.pokecube).moveEntity(cube);
-                v.moveEntity((Entity) mob);
-                ((Entity) evt.caught).setDead();
-                cube.motionX = cube.motionZ = 0;
-                cube.motionY = 0.1;
-                cube.getEntityWorld().spawnEntityInWorld(cube.copy());
-                evt.setCanceled(true);
-                evt.pokecube.setDead();
-            }
-
-        };
-
-        PokecubeBehavior.addCubeBehavior(99, snag);
-        PokecubeBehavior.addCubeBehavior(11, repeat);
 
     }
 

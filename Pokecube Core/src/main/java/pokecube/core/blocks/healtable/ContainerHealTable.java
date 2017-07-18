@@ -7,21 +7,19 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import pokecube.core.interfaces.IHealer;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 public class ContainerHealTable extends Container implements IHealer
 {
-    public static final SoundEvent HEAL_SOUND = new SoundEvent(new ResourceLocation(PokecubeMod.ID + ":pokecenter"));
+    public static SoundEvent HEAL_SOUND;
 
     /** Returns true if the item is a filled pokecube.
      *

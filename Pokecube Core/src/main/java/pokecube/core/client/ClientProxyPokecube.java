@@ -47,6 +47,7 @@ import net.minecraft.stats.StatisticsManager;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
@@ -372,7 +373,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     }
 
     @Override
-    public void toggleSound(String sound, BlockPos location)
+    public void toggleSound(SoundEvent sound, BlockPos location)
     {
         if (sound != null)
         {
@@ -383,9 +384,8 @@ public class ClientProxyPokecube extends CommonProxyPokecube
             }
             else
             {
-                ISound isound = new PositionedSoundRecord(new ResourceLocation(sound), SoundCategory.RECORDS, 2, 1,
-                        true, 0, AttenuationType.LINEAR, location.getX() + 0.5f, location.getY() + 0.5f,
-                        location.getZ() + 0.5f);
+                ISound isound = new PositionedSoundRecord(sound.getRegistryName(), SoundCategory.RECORDS, 2, 1, true, 0,
+                        AttenuationType.LINEAR, location.getX() + 0.5f, location.getY() + 0.5f, location.getZ() + 0.5f);
                 Minecraft.getMinecraft().getSoundHandler().playSound(isound);
                 Minecraft.getMinecraft().renderGlobal.mapSoundPositions.put(location, isound);
             }

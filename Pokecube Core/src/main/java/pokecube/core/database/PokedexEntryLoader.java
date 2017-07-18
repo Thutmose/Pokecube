@@ -1,8 +1,10 @@
 package pokecube.core.database;
 
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -849,47 +851,43 @@ public class PokedexEntryLoader
         }
     }
 
-    public static XMLDatabase loadDatabase(File file) throws Exception
+    public static XMLDatabase loadDatabase(InputStream stream, boolean json) throws Exception
     {
         XMLDatabase database = null;
-        FileReader reader = new FileReader(file);
-        if (file.getName().endsWith(".json"))
+        InputStreamReader reader = new InputStreamReader(stream);
+        if (json)
         {
             database = gson.fromJson(reader, XMLDatabase.class);
         }
-        else if (file.getName().endsWith(".xml"))
+        else
         {
             JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
             database = (XMLDatabase) unmarshaller.unmarshal(reader);
         }
-        else
-        {
-            reader.close();
-            throw new IllegalArgumentException("File must be json or xml.");
-        }
         reader.close();
         return database;
     }
 
-    public static void loadFile(File file) throws Exception
+    public static XMLDatabase initDatabase(InputStream stream, boolean json) throws Exception
     {
+        XMLDatabase newDatabase = null;
         ProgressBar bar = ProgressManager.push("Loading Database", 1);
         bar.step("Loading...");
         if (database == null)
         {
             // This is the first database file, so load it in as the instance.
-            database = loadDatabase(file);
+            database = newDatabase = loadDatabase(stream, json);
             database.init();
         }
         else
         {
             // This is a new database file, so merge it into the existing ones
-            XMLDatabase toAdd = loadDatabase(file);
-            if (toAdd != null)
+            newDatabase = loadDatabase(stream, json);
+            if (newDatabase != null)
             {
-                ProgressBar bar2 = ProgressManager.push("Merging", toAdd.pokemon.size());
-                for (XMLPokedexEntry e : toAdd.pokemon)
+                ProgressBar bar2 = ProgressManager.push("Merging", newDatabase.pokemon.size());
+                for (XMLPokedexEntry e : newDatabase.pokemon)
                 {
                     bar2.step(e.name);
                     XMLPokedexEntry old = database.map.get(e.name);
@@ -901,7 +899,7 @@ public class PokedexEntryLoader
                 }
                 ProgressManager.pop(bar2);
             }
-            else throw new NullPointerException(file + " Contains no database");
+            else throw new NullPointerException("Contains no database");
         }
 
         ProgressBar bar2 = ProgressManager.push("Checking Entries", database.pokemon.size());
@@ -931,6 +929,38 @@ public class PokedexEntryLoader
         }
         ProgressManager.pop(bar2);
         ProgressManager.pop(bar);
+        return newDatabase;
+    }
+
+    public static XMLDatabase initDatabase(File file) throws Exception
+    {
+        if (file.getName().endsWith(".json"))
+        {
+            try
+            {
+                return initDatabase(new FileInputStream(file), true);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, "Error with " + file, e);
+            }
+        }
+        else if (file.getName().endsWith(".xml"))
+        {
+            try
+            {
+                return initDatabase(new FileInputStream(file), false);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, "Error with " + file, e);
+            }
+        }
+        else
+        {
+            throw new IllegalArgumentException("File must be json or xml.");
+        }
+        return null;
     }
 
     public static void makeEntries(boolean create)

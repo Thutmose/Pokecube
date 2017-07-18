@@ -200,42 +200,8 @@ public class ClientProxy extends CommonProxy
             }
             catch (Exception e)
             {
-                try
-                {
-                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
-                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                    res.getInputStream().close();
-                    res.close();
-                    ArrayList<String> models = modModels.get(mod);
-                    if (models == null)
-                    {
-                        modModels.put(mod, models = new ArrayList<String>());
-                    }
-                    models.remove(name);
-                    if (!models.contains(name)) models.add(name);
-                }
-                catch (Exception e1)
-                {
-                    if (model.base) e1.printStackTrace();
-                    try
-                    {
-                        ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
-                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                        res.getInputStream().close();
-                        res.close();
-                        ArrayList<String> models = modModels.get(mod);
-                        if (models == null)
-                        {
-                            modModels.put(mod, models = new ArrayList<String>());
-                        }
-                        models.remove(name);
-                        if (!models.contains(name)) models.add(name);
-                    }
-                    catch (Exception e2)
-                    {
-
-                    }
-                }
+                PokecubeMod.log("No model for " + name + " in " + mod+" "+provider.getModelDirectory(p));
+                continue;
             }
             if (modModels.containsKey(mod))
             {

@@ -228,7 +228,7 @@ PokecubePlayerStats.initAchievements();
             {
                 player.openGui(PokecubeAdv.instance, 5, player.getEntityWorld(), 0, 0, 0);
             }
-            else if (player.isSneaking() && itemstack.getTagCompound().hasKey("min"))
+            else if (player.isSneaking() && itemstack.hasTagCompound() && itemstack.getTagCompound().hasKey("min"))
             {
                 String s = itemstack.getTagCompound().getString("biome");
                 BiomeType type = BiomeType.getBiome(s);

@@ -20,7 +20,6 @@ import thut.lib.CompatWrapper;
 public class TileHealTable extends TileEntity implements IInventory, ITickable
 {
     public static SoundEvent MUSICLOOP;
-    public static boolean    noSound   = false;
     private List<ItemStack>  inventory = CompatWrapper.makeList(9);
 
     Vector3                  here      = Vector3.getNewVector();
@@ -206,7 +205,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     @Override
     public void update()
     {
-        if (!getWorld().isRemote) return;
+        if (!getWorld().isRemote || MUSICLOOP == null) return;
         int power = getWorld().getStrongPower(pos);
         here.set(this);
         if (power == 0)
@@ -215,7 +214,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
                 PokecubeCore.proxy.toggleSound(MUSICLOOP, getPos());
             return;
         }
-        if (!noSound && ticks <= 0 && !PokecubeCore.proxy.isSoundPlaying(here))
+        if (ticks <= 0 && !PokecubeCore.proxy.isSoundPlaying(here))
         {
             PokecubeCore.proxy.toggleSound(MUSICLOOP, getPos());
             ticks = 1;

@@ -131,7 +131,7 @@ public class GeneticsManager
 
     public static void handleEpigenetics(IPokemob pokemob)
     {
-        pokemob.onGenesChanged();
+//        pokemob.onGenesChanged();
     }
 
     public static void initEgg(IMobGenetics eggs, IMobGenetics mothers, IMobGenetics fathers)

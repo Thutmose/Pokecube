@@ -390,7 +390,7 @@ public class Database
         {
             try
             {
-                PokedexEntryLoader.loadFile(new File(DBLOCATION + s));
+                PokedexEntryLoader.initDatabase(new File(DBLOCATION + s));
                 if (!loaded)
                 {
                     loaded = true;

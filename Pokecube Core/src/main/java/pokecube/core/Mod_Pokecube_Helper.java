@@ -23,6 +23,8 @@ import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.ItemHandler;
@@ -132,7 +134,7 @@ public class Mod_Pokecube_Helper
         }
         initLists();
     }
-    
+
     public void registerRecipes(Object event)
     {
         RecipeHandler.initRecipes(event);
@@ -161,5 +163,10 @@ public class Mod_Pokecube_Helper
         addToList(PokecubeMod.core.getConfig().getIndustrial(),
                 PokecubeCore.core.getConfig().blockListIndustrialBlocks);
         removeFromHoldables("tm");
+    }
+
+    public void registerSound(SoundEvent sound)
+    {
+        GameRegistry.register(sound);
     }
 }

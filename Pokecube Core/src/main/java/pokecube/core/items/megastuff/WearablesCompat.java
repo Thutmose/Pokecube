@@ -4,6 +4,7 @@ import java.util.Set;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -49,9 +50,9 @@ public class WearablesCompat
     }
 
     @SubscribeEvent
-    public void onItemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event)
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent<Item> event)
     {
-        if (event.getObject().getItem() instanceof ItemMegawearable)
+        if (event.getObject() instanceof ItemMegawearable)
         {
             event.addCapability(new ResourceLocation("pokecube:wearable"), new WearableMega());
         }

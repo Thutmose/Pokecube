@@ -15,7 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumDyeColor;
@@ -31,12 +30,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.commands.CommandTools;
-import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -177,52 +174,10 @@ public class Pokecube extends Item implements IPokecube
         }
     }
 
-    public double dive(IPokemob mob, int id)
-    {
-        double x = 1;
-        Entity entity = (Entity) mob;
-        if (entity.getEntityWorld().getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
-                && mob.getType1() == PokeType.getType("water"))
-        {
-            x = 3.5;
-        }
-        if (entity.getEntityWorld().getBlockState(entity.getPosition()).getBlock() == Blocks.WATER
-                && mob.getType2() == PokeType.getType("water"))
-        {
-            x = 3.5;
-        }
-        return x;
-    }
-
-    public double dusk(IPokemob mob, int id)
-    {
-        double x = 1;
-        Entity entity = (Entity) mob;
-        int light = entity.getEntityWorld().getLight(entity.getPosition());
-        if (light < 5)
-        {
-            x = 3.5;
-        }
-        return x;
-    }
-
     @Override
     public double getCaptureModifier(IPokemob mob, int id)
     {
-        if (id == 1) return 1.5d;
-        if (id == 2) return 2d;
-        if (id == 3) return 255d;
-        if (id == 0) return 1;
-        if (id == 5) return dusk(mob, id);
-        if (id == 6) return quick(mob, id);
-        if (id == 7) return timer(mob, id);
-        if (id == 8) return net(mob, id);
-        if (id == 9) return nest(mob, id);
-        if (id == 10) return dive(mob, id);
-        if (id == 12) return 1d;
-        if (id == 13) return 1d;
-        if (id == 14) return 0d;
-
+        if (IPokecube.map.containsKey(id)) return IPokecube.map.get(id).getCaptureModifier(mob);
         return 0;
     }
 
@@ -246,42 +201,6 @@ public class Pokecube extends Item implements IPokecube
     public int getMaxItemUseDuration(ItemStack stack)
     {
         return 2000;
-    }
-
-    public double nest(IPokemob mob, int id)
-    {
-        double x = 1;
-        if (mob.getLevel() < 20)
-        {
-            x = 3;
-        }
-        if (mob.getLevel() > 19 && mob.getLevel() < 30)
-        {
-            x = 2;
-        }
-        return x;
-    }
-
-    public double net(IPokemob mob, int id)
-    {
-        double x = 1;
-        if (mob.getType1() == PokeType.getType("bug"))
-        {
-            x = 2;
-        }
-        if (mob.getType1() == PokeType.getType("water"))
-        {
-            x = 2;
-        }
-        if (mob.getType2() == PokeType.getType("bug"))
-        {
-            x = 2;
-        }
-        if (mob.getType2() == PokeType.getType("water"))
-        {
-            x = 2;
-        }
-        return x;
     }
 
     // 1.11
@@ -368,18 +287,6 @@ public class Pokecube extends Item implements IPokecube
 
     }
 
-    public double quick(IPokemob mob, int id)
-    {
-        double x = 1;
-        Entity entity = (Entity) mob;
-        double alive = entity.ticksExisted;
-        if (mob.getPokemonAIState(IMoveConstants.ANGRY) == false && alive < 601)
-        {
-            x = 4;
-        }
-        return x;
-    }
-
     // Pokeseal stuff
 
     @SideOnly(Side.CLIENT)
@@ -459,26 +366,6 @@ public class Pokecube extends Item implements IPokecube
         }
         else if (!rightclick) { return false; }
         return true;
-    }
-
-    public double timer(IPokemob mob, int id)
-    {
-        double x = 1;
-        Entity entity = (Entity) mob;
-        double alive = entity.ticksExisted;
-        if (alive > 1500 && alive < 3001)
-        {
-            x = 2;
-        }
-        if (alive > 3000 && alive < 4501)
-        {
-            x = 3;
-        }
-        if (alive > 4500)
-        {
-            x = 4;
-        }
-        return x;
     }
 
     @Override

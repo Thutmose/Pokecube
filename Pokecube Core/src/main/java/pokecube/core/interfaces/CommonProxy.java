@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.StatisticsManager;
 import net.minecraft.stats.StatisticsManagerServer;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -26,7 +27,7 @@ public abstract class CommonProxy
         return false;
     }
 
-    public void toggleSound(String sound, BlockPos location)
+    public void toggleSound(SoundEvent sound, BlockPos location)
     {
 
     }

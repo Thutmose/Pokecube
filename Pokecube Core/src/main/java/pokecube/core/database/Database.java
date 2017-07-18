@@ -33,6 +33,7 @@ import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.ProgressManager;
@@ -52,6 +53,7 @@ import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipes;
 import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLReward;
 import pokecube.core.database.rewards.XMLRewardsHandler.XMLRewards;
+import pokecube.core.events.onload.InitDatabase;
 import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -146,7 +148,6 @@ public class Database
     public static String                                   CONFIGLOC        = "";
 
     static HashSet<String>                                 defaultDatabases = Sets.newHashSet();
-    static HashSet<String>                                 extraDatabases   = Sets.newHashSet();
     private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
     private static Set<String>                             dropDatabases    = Sets.newHashSet();
     private static Set<String>                             heldDatabases    = Sets.newHashSet();
@@ -384,27 +385,21 @@ public class Database
                 PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e1);
             }
         }
-
+        boolean loaded = false;
         for (String s : configDatabases.get(EnumDatabase.POKEMON.ordinal()))
         {
             try
             {
                 PokedexEntryLoader.loadFile(new File(DBLOCATION + s));
+                if (!loaded)
+                {
+                    loaded = true;
+                    MinecraftForge.EVENT_BUS.post(new InitDatabase.Load());
+                }
             }
             catch (Exception e)
             {
                 PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e);
-            }
-        }
-        for (String s : extraDatabases)
-        {
-            try
-            {
-                PokedexEntryLoader.loadFile(new File(s));
-            }
-            catch (Exception e)
-            {
-                PokecubeMod.log(Level.SEVERE, "Error with " + s, e);
             }
         }
 

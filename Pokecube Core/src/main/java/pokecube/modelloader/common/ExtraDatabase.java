@@ -201,42 +201,19 @@ public class ExtraDatabase
             {
                 PokecubeMod.log(Level.WARNING, xml + " " + entry, e);
             }
+            ProgressBar loading = ProgressManager.push("XML Files", file.entries.size());
             for (XMLPokedexEntry fileEntry : file.entries)
             {
-                if (entry == null && fileEntry != null)
+                if (PokecubeMod.core.getConfig().debug) PokecubeMod.log("ResourceEntry: " + fileEntry.name);
+                loading.step(fileEntry.name);
+                XMLPokedexEntry old = PokedexEntryLoader.database.map.get(fileEntry.name);
+                if (old != null) PokedexEntryLoader.mergeNonDefaults(PokedexEntryLoader.missingno, fileEntry, old);
+                else
                 {
-                    String name = fileEntry.name;
-                    int number = fileEntry.number;
-                    entry = new PokedexEntry(number, name);
-                    if (fileEntry.base)
-                    {
-                        entry.base = fileEntry.base;
-                        Database.baseFormes.put(number, entry);
-                        Database.addEntry(entry);
-                    }
-                    PokedexEntryLoader.updateEntry(fileEntry, true);
+                    PokedexEntryLoader.database.addEntry(fileEntry);
                 }
-                else if (entry != null && fileEntry != null && !entry.getName().equals(fileEntry.name))
-                {
-                    if (Database.getEntry(fileEntry.name) != null)
-                    {
-                        entry = Database.getEntry(fileEntry.name);
-                    }
-                    else
-                    {
-                        String name = fileEntry.name;
-                        int number = fileEntry.number;
-                        entry = new PokedexEntry(number, name);
-                        if (fileEntry.base)
-                        {
-                            Database.baseFormes.put(number, entry);
-                            Database.addEntry(entry);
-                        }
-                        PokedexEntryLoader.updateEntry(fileEntry, true);
-                    }
-                }
-                if (fileEntry != null) PokedexEntryLoader.database.addOverrideEntry(fileEntry, true);
             }
+            ProgressManager.pop(loading);
             if (entry != null && file.details != null)
             {
                 if (!file.details.offset.isEmpty())

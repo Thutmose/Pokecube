@@ -2,6 +2,7 @@ package pokecube.modelloader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -63,7 +64,6 @@ public class ModPokecubeML implements IMobProvider
 
     public static Set<String>         scanPaths               = Sets.newHashSet("assets/pokecube_ml/models/pokemobs/");
 
-    public static boolean             info                    = false;
     public static boolean             preload                 = true;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
@@ -96,7 +96,7 @@ public class ModPokecubeML implements IMobProvider
         registerDatabase(evt);
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Pre());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Register());
-        System.out.println("Registered " + PokecubeCore.pokedexmap.size());
+        PokecubeMod.log("Registered " + PokecubeCore.pokedexmap.size());
         MinecraftForge.EVENT_BUS.post(new RegisterPokemobsEvent.Post());
         postInitPokemobs();
     }
@@ -107,7 +107,7 @@ public class ModPokecubeML implements IMobProvider
         PokecubeTerrainChecker.init();
         MoveAnimationHelper.Instance();
         Database.init();
-        System.out.println("Registering Moves");
+        PokecubeMod.log("Registering Moves");
         MovesAdder.registerMoves();
         MinecraftForge.EVENT_BUS.post(new InitDatabase.Post());
     }
@@ -120,24 +120,19 @@ public class ModPokecubeML implements IMobProvider
             p.getSoundEvent();
             p.updateMoves();
         }
-        System.out.println("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
+        PokecubeMod.log("Loaded " + Pokedex.getInstance().getEntries().size() + " Pokemon and "
                 + Pokedex.getInstance().getRegisteredEntries().size() + " Formes");
     }
 
     @SubscribeEvent
-    public void RegisterPokemobsEvent(RegisterPokemobsEvent.Pre event)
+    public void RegisterPokemobsEvent(InitDatabase.Load event)
     {
         proxy.searchModels();
-    }
-
-    @SubscribeEvent
-    public void RegisterPokemobsEvent(RegisterPokemobsEvent.Register event)
-    {
-        if (info)
+        if (PokecubeMod.core.getConfig().debug)
         {
             for (PokedexEntry e : Database.allFormes)
             {
-                System.out.println(e.getName());
+                PokecubeMod.log(e.getName());
             }
         }
         proxy.providesModels(ID, this, addedPokemon.toArray(new String[0]));
@@ -146,7 +141,16 @@ public class ModPokecubeML implements IMobProvider
             loadMob(s.toLowerCase(Locale.ENGLISH));
         }
         ExtraDatabase.apply();
-        System.out.println(addedPokemon.size() + " " + addedPokemon);
+        if (PokecubeMod.core.getConfig().debug)
+        {
+            Collections.sort(addedPokemon);
+            PokecubeMod.log(addedPokemon + " " + addedPokemon.size());
+        }
+    }
+
+    @SubscribeEvent
+    public void RegisterPokemobsEvent(RegisterPokemobsEvent.Register event)
+    {
         for (String s : addedPokemon)
         {
             registerMob(s.toLowerCase(Locale.ENGLISH));

@@ -205,6 +205,38 @@ public class PokedexEntryLoader
         public Map<QName, String> values = Maps.newHashMap();
     }
 
+    public static class Evolution
+    {
+        @XmlAttribute(name = "clear")
+        public Boolean   clear;
+        @XmlAttribute(name = "Name")
+        public String    name;
+        @XmlAttribute(name = "Level")
+        public Integer   level;
+        @XmlAttribute(name = "Priority")
+        public Integer   priority;
+        @XmlElement(name = "Location")
+        public SpawnRule location;
+        @XmlAttribute(name = "Animation")
+        public String    animation;
+        @XmlElement(name = "Key")
+        public Key       item;
+        @XmlAttribute(name = "Time")
+        public String    time;
+        @XmlAttribute(name = "Trade")
+        public Boolean   trade;
+        @XmlAttribute(name = "Rain")
+        public Boolean   rain;
+        @XmlAttribute(name = "Happy")
+        public Boolean   happy;
+        @XmlAttribute(name = "Sexe")
+        public String    sexe;
+        @XmlAttribute(name = "Move")
+        public String    move;
+        @XmlAttribute(name = "Chance")
+        public Float     chance;
+    }
+
     @XmlRootElement(name = "MOVES")
     public static class Moves
     {
@@ -247,13 +279,19 @@ public class PokedexEntryLoader
         @XmlAttribute
         public String          spawns;
         // Evolution stuff
+
+        // OLD Evolution Stuff
         @XmlElement(name = "EVOLUTIONMODE")
         public String          evoModes       = "L-1";
         @XmlElement(name = "EVOLUTIONANIMATION")
         public String          evolAnims      = "3";
-
         @XmlElement(name = "EVOLVESTO")
         public String          evoTo;
+
+        // New Evolution Stuff
+        @XmlElement(name = "Evolution")
+        public List<Evolution> evolutions     = Lists.newArrayList();
+
         // Species and food
         @XmlElement(name = "SPECIES")
         public String          species;
@@ -357,7 +395,7 @@ public class PokedexEntryLoader
             map.put(entry.name, entry);
         }
 
-        Map<String, XMLPokedexEntry> map = Maps.newHashMap();
+        public Map<String, XMLPokedexEntry> map = Maps.newHashMap();
 
         public void init()
         {
@@ -846,11 +884,13 @@ public class PokedexEntryLoader
         bar.step("Loading...");
         if (database == null)
         {
+            // This is the first database file, so load it in as the instance.
             database = loadDatabase(file);
             database.init();
         }
         else
         {
+            // This is a new database file, so merge it into the existing ones
             XMLDatabase toAdd = loadDatabase(file);
             if (toAdd != null)
             {
@@ -869,6 +909,33 @@ public class PokedexEntryLoader
             }
             else throw new NullPointerException(file + " Contains no database");
         }
+
+        ProgressBar bar2 = ProgressManager.push("Checking Entries", database.pokemon.size());
+        // Make all of the pokedex entries added by the database.
+        for (XMLPokedexEntry entry : database.pokemon)
+        {
+            bar2.step(entry.name);
+            if (Database.getEntry(entry.name) == null)
+            {
+                PokedexEntry pentry = new PokedexEntry(entry.number, entry.name);
+                if (entry.base)
+                {
+                    pentry.base = entry.base;
+                    Database.baseFormes.put(entry.number, pentry);
+                    Database.addEntry(pentry);
+                }
+            }
+        }
+        ProgressManager.pop(bar2);
+        bar2 = ProgressManager.push("Checking Evolutions", database.pokemon.size());
+        // Init all of the evolutions, this is so that the relations between the
+        // mobs can be known later.
+        for (XMLPokedexEntry entry : database.pokemon)
+        {
+            bar2.step(entry.name);
+            preCheckEvolutions(entry);
+        }
+        ProgressManager.pop(bar2);
         ProgressManager.pop(bar);
     }
 
@@ -884,7 +951,6 @@ public class PokedexEntryLoader
             String name = xmlEntry.name;
             bar.step(name);
             int number = xmlEntry.number;
-            boolean newEntry = true;
             if (create)
             {
                 if (xmlEntry.gender.isEmpty())
@@ -899,7 +965,6 @@ public class PokedexEntryLoader
                             Database.addEntry(entry);
                         }
                     }
-                    else newEntry = false;
                 }
                 else
                 {
@@ -916,19 +981,9 @@ public class PokedexEntryLoader
                     }
                 }
             }
-            if (newEntry) updateEntry(xmlEntry, create);
+            updateEntry(xmlEntry, create);
         }
         ProgressManager.pop(bar);
-        if (create)
-        {
-            bar = ProgressManager.push("Loading Evolutions", entries.size());
-            for (XMLPokedexEntry xmlEntry : entries)
-            {
-                bar.step(xmlEntry.name);
-                preCheckEvolutions(xmlEntry);
-            }
-            ProgressManager.pop(bar);
-        }
     }
 
     private static void parseEvols(PokedexEntry entry, StatsNode xmlStats, boolean error)
@@ -981,63 +1036,89 @@ public class PokedexEntryLoader
                 entry.childNumbers.put(father, childNbs);
             }
         }
-
-        String numberString = xmlStats.evoTo;
-        String dataString = xmlStats.evoModes;
-        String fxString = xmlStats.evolAnims;
-        if (numberString == null || dataString == null) return;
-        if (fxString == null) fxString = "";
-        String evolutionNbs = numberString;
-        if (!evolutionNbs.isEmpty())
+        if (xmlStats.evolutions != null && !xmlStats.evolutions.isEmpty())
         {
-            String[] evols = numberString.split(" ");
-            String[] evolData = dataString.split(" ");
-            String[] evolFX = fxString.split(" ");
-            if (evols.length != evolData.length)
+            for (Evolution evol : xmlStats.evolutions)
             {
-                PokecubeMod.log(Level.WARNING, "Error with evolution data for " + entry, new Exception());
-            }
-            else
-            {
-                entry.evolutions.clear();
-                for (int i = 0; i < evols.length; i++)
+                String name = evol.name;
+                PokedexEntry evolEntry = Database.getEntry(name);
+                EvolutionData data = null;
+                for (EvolutionData d : entry.evolutions)
                 {
-                    String s1 = evols[i];
-                    String s2 = evolFX[i % evolFX.length];
-                    PokedexEntry evol;
-                    try
+                    if (d.evolution == evolEntry)
                     {
-                        int num = Integer.parseInt(s1);
-                        evol = Database.getEntry(num);
+                        data = d;
+                        break;
                     }
-                    catch (NumberFormatException e)
+                }
+                if (data == null || evol.clear != null && evol.clear)
+                {
+                    data = new EvolutionData(evolEntry);
+                    data.data = evol;
+                    data.preEvolution = entry;
+                    entry.addEvolution(data);
+                }
+            }
+        }
+        else
+        {
+            String numberString = xmlStats.evoTo;
+            String dataString = xmlStats.evoModes;
+            String fxString = xmlStats.evolAnims;
+            if (numberString == null || dataString == null) return;
+            if (fxString == null) fxString = "";
+            String evolutionNbs = numberString;
+            if (!evolutionNbs.isEmpty())
+            {
+                String[] evols = numberString.split(" ");
+                String[] evolData = dataString.split(" ");
+                String[] evolFX = fxString.split(" ");
+                if (evols.length != evolData.length)
+                {
+                    PokecubeMod.log(Level.WARNING, "Error with evolution data for " + entry, new Exception());
+                }
+                else
+                {
+                    entry.evolutions.clear();
+                    for (int i = 0; i < evols.length; i++)
                     {
-                        evol = Database.getEntry(s1);
-                    }
-                    if (evol != null)
-                    {
-                        EvolutionData data = null;
-                        for (EvolutionData d : entry.evolutions)
+                        String s1 = evols[i];
+                        String s2 = evolFX[i % evolFX.length];
+                        PokedexEntry evol;
+                        try
                         {
-                            if (d.evolution == evol)
+                            int num = Integer.parseInt(s1);
+                            evol = Database.getEntry(num);
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            evol = Database.getEntry(s1);
+                        }
+                        if (evol != null)
+                        {
+                            EvolutionData data = null;
+                            for (EvolutionData d : entry.evolutions)
                             {
-                                data = d;
-                                break;
+                                if (d.evolution == evol)
+                                {
+                                    data = d;
+                                    break;
+                                }
+                            }
+                            if (data == null)
+                            {
+                                data = new EvolutionData(evol, evolData[i], s2);
+                                data.preEvolution = entry;
+                                entry.addEvolution(data);
+                            }
+                            else
+                            {
+                                data.data_old = evolData[i];
+                                data.FX = s2;
                             }
                         }
-                        if (data == null)
-                        {
-                            data = new EvolutionData(evol, evolData[i], s2);
-                            data.preEvolution = entry;
-                            entry.addEvolution(data);
-                        }
-                        else
-                        {
-                            data.data = evolData[i];
-                            data.FX = s2;
-                        }
+                        else if (error) PokecubeMod.log(Level.WARNING, "No evolution " + s1 + " for " + entry);
                     }
-                    else if (error) PokecubeMod.log(Level.WARNING, "No evolution " + s1 + " for " + entry);
                 }
             }
         }

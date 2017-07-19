@@ -48,17 +48,16 @@ import thut.api.entity.genetics.IMobGenetics;
  * provider quick getters and setters for the genes. */
 public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
 {
-    public static float scaleFactor = 0.075f;
 
-    Alleles             genesSize;
-    Alleles             genesIVs;
-    Alleles             genesEVs;
-    Alleles             genesMoves;
-    Alleles             genesNature;
-    Alleles             genesAbility;
-    Alleles             genesColour;
-    Alleles             genesShiny;
-    Alleles             genesSpecies;
+    Alleles genesSize;
+    Alleles genesIVs;
+    Alleles genesEVs;
+    Alleles genesMoves;
+    Alleles genesNature;
+    Alleles genesAbility;
+    Alleles genesColour;
+    Alleles genesShiny;
+    Alleles genesSpecies;
 
     public EntityGeneticsPokemob(World world)
     {
@@ -175,13 +174,11 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             }
             if (genesSize.getAlleles()[0] == null || genesSize.getAlleles()[1] == null)
             {
-                SizeGene size = new SizeGene();
-                float scale = 1 + scaleFactor * (float) (new Random()).nextGaussian();
-                size.setValue(scale);
-                genesSize.getAlleles()[0] = size;
-                genesSize.getAlleles()[1] = size;
+                SizeGene gene = new SizeGene();
+                genesSize.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesSize.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSize.refreshExpressed();
-                setSize(scale);
+                setSize(genesSize.getExpressed().getValue());
             }
         }
         Float size = genesSize.getExpressed().getValue();
@@ -234,8 +231,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 if (genesEVs.getAlleles()[0] == null || genesEVs.getAlleles()[1] == null)
                 {
                     EVsGene ivs = new EVsGene();
-                    genesEVs.getAlleles()[0] = ivs;
-                    genesEVs.getAlleles()[1] = ivs;
+                    genesEVs.getAlleles()[0] = ivs.getMutationRate() > rand.nextFloat() ? ivs.mutate() : ivs;
+                    genesEVs.getAlleles()[1] = ivs.getMutationRate() > rand.nextFloat() ? ivs.mutate() : ivs;
                     genesEVs.refreshExpressed();
                     genesEVs.getExpressed().setValue(new EVsGene().getValue());
                 }
@@ -259,9 +256,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             }
             if (genesIVs.getAlleles()[0] == null || genesIVs.getAlleles()[1] == null)
             {
-                IVsGene ivs = new IVsGene();
-                genesIVs.getAlleles()[0] = ivs;
-                genesIVs.getAlleles()[1] = ivs;
+                IVsGene gene = new IVsGene();
+                genesIVs.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesIVs.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesIVs.refreshExpressed();
             }
         }
@@ -307,8 +304,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                 {
                     MovesGene gene = new MovesGene();
                     gene.setValue(moves);
-                    genesMoves.getAlleles()[0] = gene;
-                    genesMoves.getAlleles()[1] = gene;
+                    genesMoves.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                    genesMoves.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                     genesMoves.refreshExpressed();
                 }
             }
@@ -347,8 +344,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesNature.getAlleles()[0] == null || genesNature.getAlleles()[1] == null)
             {
                 NatureGene gene = new NatureGene();
-                genesNature.getAlleles()[0] = gene;
-                genesNature.getAlleles()[1] = gene;
+                genesNature.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesNature.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesNature.refreshExpressed();
             }
         }
@@ -413,8 +410,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesColour.getAlleles()[0] == null)
             {
                 ColourGene gene = new ColourGene();
-                genesColour.getAlleles()[0] = gene;
-                genesColour.getAlleles()[1] = gene;
+                genesColour.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesColour.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesColour.refreshExpressed();
             }
         }
@@ -447,8 +444,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             if (genesShiny.getAlleles()[0] == null || genesShiny.getAlleles()[1] == null)
             {
                 ShinyGene gene = new ShinyGene();
-                genesShiny.getAlleles()[0] = gene;
-                genesShiny.getAlleles()[1] = gene;
+                genesShiny.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesShiny.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesShiny.refreshExpressed();
             }
         }
@@ -500,8 +497,8 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
                     info.entry = Database.missingno;
                 }
                 info.value = Tools.getSexe(info.entry.getSexeRatio(), new Random());
-                genesSpecies.getAlleles()[0] = gene;
-                genesSpecies.getAlleles()[1] = gene;
+                genesSpecies.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesSpecies.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSpecies.refreshExpressed();
             }
             SpeciesInfo info = genesSpecies.getExpressed().getValue();

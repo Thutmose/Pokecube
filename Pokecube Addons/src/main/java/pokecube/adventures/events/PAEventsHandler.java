@@ -1,9 +1,5 @@
 package pokecube.adventures.events;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -229,9 +225,11 @@ public class PAEventsHandler
     {
         if (!event.getEntity().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return;
         IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        if (mobs.getType() != null) return;
         EntityLiving npc = (EntityLiving) event.getEntity();
-        List<TypeTrainer> list = Lists.newArrayList(TypeTrainer.typeMap.values());
-        mobs.setType(list.get(0));
+        TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc);
+        if (newType == null) return;
+        mobs.setType(newType);
         int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
                 Database.getEntry(1));
         TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());

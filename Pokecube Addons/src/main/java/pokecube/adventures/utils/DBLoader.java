@@ -12,21 +12,29 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.Database;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class DBLoader
 {
-    public static boolean      FORCECOPY  = true;
-    private static String      DBLOCATION = "/assets/pokecube_adventures/database/";
-    public static String       CONFIGLOC  = "";
+    public static boolean      FORCECOPY        = true;
+    private static String      DBLOCATION       = "/assets/pokecube_adventures/database/";
+    public static String       CONFIGLOC        = "";
 
-    static String              female     = "female:,Alice,Bridget,Carrie,Connie,Dana,Ellen,Krise,Laura,Linda,Michelle,Shannon,Gina,Brooke,Cindy,Debra,Edna,Erin,Heidi,Hope,Liz,Sharon,Tanya,Tiffany,Beth,Carol,Emma,Fran,Cara,Jenn,Kate,Cybil,Gwen,Irene,Kelly,Joyce,Lola,Megan,Quinn,Reena,Valerie";
+    static String              female           = "female:,Alice,Bridget,Carrie,Connie,Dana,Ellen,Krise,Laura,Linda,Michelle,Shannon,Gina,Brooke,Cindy,Debra,Edna,Erin,Heidi,Hope,Liz,Sharon,Tanya,Tiffany,Beth,Carol,Emma,Fran,Cara,Jenn,Kate,Cybil,Gwen,Irene,Kelly,Joyce,Lola,Megan,Quinn,Reena,Valerie";
 
-    static String              male       = "male:,Anthony,Bailey,Benjamin,Daniel,Erik,Jim,Kenny,Leonard,Michael,Parry,Philip,Russell,Sidney,Tim,Timothy,Wade,Al,Arnie,Benny,Don,Doug,Ed,Josh,Ken,Rob,Joey,Mikey,Albert,Gordon,Ian,Jason,Jimmy,Owen,Samuel,Warren,Aaron,Allen,Blake,Brian,Abe";
+    static String              male             = "male:,Anthony,Bailey,Benjamin,Daniel,Erik,Jim,Kenny,Leonard,Michael,Parry,Philip,Russell,Sidney,Tim,Timothy,Wade,Al,Arnie,Benny,Don,Doug,Ed,Josh,Ken,Rob,Joey,Mikey,Albert,Gordon,Ian,Jason,Jimmy,Owen,Samuel,Warren,Aaron,Allen,Blake,Brian,Abe";
+
+    public static List<String> trainerDatabases = Lists.newArrayList("villagers.xml");
+    public static List<String> tradeDatabases   = Lists.newArrayList();
 
     public static void checkConfigFiles(FMLPreInitializationEvent evt)
     {
@@ -43,8 +51,7 @@ public class DBLoader
         {
             temp.mkdirs();
         }
-        copyDatabaseFile("trainers.xml");
-        copyDatabaseFile("trades.xml");
+        copyDatabaseFile("villagers.xml");
         copyDatabaseFile("names.csv");
         DBLOCATION = CONFIGLOC;
         return;
@@ -142,15 +149,14 @@ public class DBLoader
     {
         try
         {
-            File file;
-            TrainerEntryLoader.loadDatabase(file = new File(DBLOCATION + "trainers.xml"));
-            TrainerEntryLoader.makeEntries(file);
-            TradeEntryLoader.loadDatabase(file = new File(DBLOCATION + "trades.xml"));
-            TradeEntryLoader.makeEntries(file);
+            for (String s : trainerDatabases)
+                TrainerEntryLoader.makeEntries(new File(DBLOCATION + s));
+            for (String s : tradeDatabases)
+                TradeEntryLoader.makeEntries(new File(DBLOCATION + s));
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "error loading databases.", e);
         }
         loadNames();
         TypeTrainer.postInitTrainers();
@@ -212,7 +218,7 @@ public class DBLoader
             File file = new File(CONFIGLOC + name);
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
             for (int i = 0; i < rows.size(); i++)
-                out.write(rows.get(i)+"\n");
+                out.write(rows.get(i) + "\n");
             out.close();
         }
         catch (IOException e)
@@ -224,7 +230,7 @@ public class DBLoader
     private static void writeDefaultNames(File file) throws IOException
     {
         Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
-        out.write(female+"\n");
+        out.write(female + "\n");
         out.write(male);
         out.close();
     }

@@ -64,6 +64,8 @@ import thut.lib.CompatWrapper;
 /** @author Manchou */
 public class PokedexEntry
 {
+    public static final String TEXTUREPATH = "entity/textures/";
+
     // Annotation used to specify which fields should be shared to all gender
     // formes.
     @Retention(RetentionPolicy.RUNTIME)
@@ -839,7 +841,7 @@ public class PokedexEntry
     @CopyToGender
     public String[][]                           textureDetails   = { { "" }, null };
     @CopyToGender
-    public String                               texturePath      = "textures/entities/";
+    public String                               texturePath      = TEXTUREPATH;
 
     @CopyToGender
     protected PokeType                          type1;

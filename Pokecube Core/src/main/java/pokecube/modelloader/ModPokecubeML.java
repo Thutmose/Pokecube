@@ -57,7 +57,7 @@ public class ModPokecubeML implements IMobProvider
     /** The id of your mod */
     public final static String        ID                      = "pokecube_ml";
     public static final String        MODELPATH               = "entity/models/";
-    public static final String        TEXTUREPATH             = "entity/textures/";
+    public static final String        TEXTUREPATH             = PokedexEntry.TEXTUREPATH;
 
     @Instance(ID)
     public static ModPokecubeML       instance;
@@ -208,7 +208,7 @@ public class ModPokecubeML implements IMobProvider
     {
         for (PokedexEntry e : Database.allFormes)
         {
-            if (e.getBaseForme() != null && e.texturePath.equals("textures/entities/"))
+            if (e.getBaseForme() != null && e.texturePath.equals(TEXTUREPATH))
                 e.texturePath = e.getBaseForme().texturePath;
         }
     }

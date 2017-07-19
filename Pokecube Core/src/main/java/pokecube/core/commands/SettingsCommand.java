@@ -118,7 +118,7 @@ public class SettingsCommand extends CommandBase
                     {
                         throw new CommandException("This can only by done for arrays.");
                     }
-                    sender.addChatMessage(
+                    sender.sendMessage(
                             new TextComponentString("Changed index " + num + " from " + oldValue + " to " + value));
                     PokecubeMod.core.getConfig().updateField(field, toSet);
                     return;
@@ -191,8 +191,7 @@ public class SettingsCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         List<String> ret = new ArrayList<String>();
         if (args.length == 1)

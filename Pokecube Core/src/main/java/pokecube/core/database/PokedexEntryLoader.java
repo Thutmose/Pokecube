@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -275,85 +276,108 @@ public class PokedexEntryLoader
         public static class Stats
         {
             @XmlAnyAttribute
-            Map<QName, String> values = Maps.newHashMap();
+            public Map<QName, String> values = Maps.newHashMap();
         }
 
         @XmlAttribute
-        public String          spawns;
+        public String            spawns;
         // Evolution stuff
 
         // OLD Evolution Stuff
         @XmlElement(name = "EVOLUTIONMODE")
-        public String          evoModes       = "L-1";
+        public String            evoModes       = "L-1";
         @XmlElement(name = "EVOLUTIONANIMATION")
-        public String          evolAnims      = "3";
+        public String            evolAnims      = "3";
         @XmlElement(name = "EVOLVESTO")
-        public String          evoTo;
+        public String            evoTo;
 
         // New Evolution Stuff
         @XmlElement(name = "Evolution")
-        public List<Evolution> evolutions     = Lists.newArrayList();
+        public List<Evolution>   evolutions     = Lists.newArrayList();
 
         // Species and food
         @XmlElement(name = "SPECIES")
-        public String          species;
+        public String            species;
         @XmlElement(name = "PREY")
-        public String          prey;
+        public String            prey;
         @XmlElement(name = "FOODMATERIAL")
-        public String          foodMat;
+        public String            foodMat;
 
         @XmlElement(name = "SPECIALEGGSPECIESRULES")
-        public String          specialEggRules;
+        public String            specialEggRules;
         // Drops and items
         @XmlElement(name = "Drop")
-        public List<Drop>      drops          = Lists.newArrayList();
+        public List<Drop>        drops          = Lists.newArrayList();
         @XmlElement(name = "Held")
-        public List<Drop>      held           = Lists.newArrayList();
+        public List<Drop>        held           = Lists.newArrayList();
         // Spawn Rules
         @XmlElement(name = "Spawn")
-        public List<SpawnRule> spawnRules     = Lists.newArrayList();
+        public List<SpawnRule>   spawnRules     = Lists.newArrayList();
         // STATS
         @XmlElement(name = "BASESTATS")
-        public Stats           stats;
+        public Stats             stats;
         @XmlElement(name = "EVYIELD")
-        public Stats           evs;
+        public Stats             evs;
         @XmlElement(name = "SIZES")
-        public Stats           sizes;
+        public Stats             sizes;
         @XmlElement(name = "TYPE")
-        public Stats           types;
+        public Stats             types;
         @XmlElement(name = "ABILITY")
-        public Stats           abilities;
+        public Stats             abilities;
         @XmlElement(name = "MASSKG")
-        public Float           mass           = -1f;
+        public Float             mass           = -1f;
         @XmlElement(name = "CAPTURERATE")
-        public Integer         captureRate    = -1;
+        public Integer           captureRate    = -1;
         @XmlElement(name = "EXPYIELD")
-        public Integer         baseExp        = -1;
+        public Integer           baseExp        = -1;
         @XmlElement(name = "BASEFRIENDSHIP")
-        public Integer         baseFriendship = 70;
+        public Integer           baseFriendship = 70;
         @XmlElement(name = "EXPERIENCEMODE")
-        public String          expMode;
+        public String            expMode;
 
         @XmlElement(name = "GENDERRATIO")
-        public Integer         genderRatio    = -1;
+        public Integer           genderRatio    = -1;
         // MISC
         @XmlElement(name = "LOGIC")
-        public Stats           logics;
+        public Stats             logics;
         @XmlElement(name = "FORMEITEMS")
-        public Stats           formeItems;
+        public Stats             formeItems;
+
+        // Old mega rules
         @XmlElement(name = "MEGARULES")
-        public Stats           megaRules;
+        public Stats             megaRules_old;
+        // New Mega rules
+        @XmlElement(name = "MegaRules")
+        public List<XMLMegaRule> megaRules      = Lists.newArrayList();
+
         @XmlElement(name = "MOVEMENTTYPE")
-        public String          movementType   = "normal";
+        public String            movementType   = "normal";
         @XmlElement(name = "Interact")
-        public List<Interact>  interactions   = Lists.newArrayList();
+        public List<Interact>    interactions   = Lists.newArrayList();
         @XmlElement(name = "SHADOWREPLACEMENTS")
-        public String          shadowReplacements;
+        public String            shadowReplacements;
         @XmlElement(name = "HATEDMATERIALRULES")
-        public String          hatedMaterials;
+        public String            hatedMaterials;
 
         @XmlElement(name = "ACTIVETIMES")
-        public String          activeTimes;
+        public String            activeTimes;
+    }
+
+    @XmlRootElement(name = "MegaRule")
+    public static class XMLMegaRule
+    {
+        @XmlAttribute(name = "Name")
+        public String name;
+        @XmlAttribute(name = "Preset")
+        public String preset;
+        @XmlAttribute(name = "Move")
+        public String move;
+        @XmlAttribute(name = "Ability")
+        public String ability;
+        @XmlElement(name = "Key")
+        public Key    item;
+        @XmlElement(name = "Key_Template")
+        public String item_preset;
     }
 
     @XmlRootElement(name = "Document")
@@ -1430,68 +1454,64 @@ public class PokedexEntryLoader
                 }
             }
         }
-        if (xmlStats.megaRules != null)
-        {
-            entry.megaRules.clear();
-            Map<QName, String> values = xmlStats.megaRules.values;
-            for (QName key : values.keySet())
-            {
-                String keyString = key.toString();
-                String value = values.get(key);
-                if (keyString.equals("forme"))
-                {
-                    String[] args = value.split(",");
-                    for (String s : args)
-                    {
-                        String forme = "";
-                        String item = "";
-                        String move = "";
-                        String ability = "";
-                        String[] args2 = s.split(":");
-                        for (String s1 : args2)
-                        {
-                            String arg1 = s1.trim().substring(0, 1);
-                            String arg2 = s1.trim().substring(1);
-                            if (arg1.equals("N"))
-                            {
-                                forme = arg2;
-                            }
-                            else if (arg1.equals("I"))
-                            {
-                                item = arg2;
-                            }
-                            else if (arg1.equals("M"))
-                            {
-                                move = arg2;
-                            }
-                            else if (arg1.equals("A"))
-                            {
-                                ability = arg2;
-                            }
-                        }
-                        if (forme.contains("___"))
-                        {
-                            forme = forme.replace("___", entry.getName() + " Mega");
-                        }
-                        if (item.equals("___"))
-                        {
-                            item = forme.replace(" ", "").toLowerCase(java.util.Locale.ENGLISH);
-                        }
 
-                        PokedexEntry formeEntry = Database.getEntry(forme);
-                        if (!forme.isEmpty() && formeEntry != null)
+        if (xmlStats.megaRules != null && !xmlStats.megaRules.isEmpty())
+        {
+            for (XMLMegaRule rule : xmlStats.megaRules)
+            {
+
+                String forme = rule.name != null ? rule.name : null;
+                if (forme == null)
+                {
+                    if (rule.preset != null)
+                    {
+                        if (rule.preset.startsWith("Mega"))
                         {
-                            ItemStack stack = item.isEmpty() ? CompatWrapper.nullStack
-                                    : PokecubeItems.getStack(item, false);
-                            if (move.isEmpty() && !CompatWrapper.isValid(stack) && ability.isEmpty()) continue;
-                            MegaEvoRule rule = new MegaEvoRule(entry);
-                            rule.ability = ability;
-                            rule.moveName = move;
-                            rule.stack = stack;
-                            formeEntry.isMega = true;
-                            entry.megaRules.put(formeEntry, rule);
+                            forme = entry.getName() + " " + rule.preset;
+                            if (rule.item_preset == null)
+                                rule.item_preset = entry.getTrimmedName() + rule.preset.toLowerCase(Locale.ENGLISH);
                         }
                     }
+                }
+                String move = rule.move;
+                String ability = rule.ability;
+                String item_preset = rule.item_preset;
+
+                if (forme == null)
+                {
+                    PokecubeMod.log("Error with mega evolution for " + entry + " rule: preset=" + rule.name + " name="
+                            + rule.name);
+                    continue;
+                }
+
+                PokedexEntry formeEntry = Database.getEntry(forme);
+                if (!forme.isEmpty() && formeEntry != null)
+                {
+                    ItemStack stack = CompatWrapper.nullStack;
+                    if (item_preset != null && !item_preset.isEmpty())
+                    {
+                        stack = item_preset.isEmpty() ? CompatWrapper.nullStack
+                                : PokecubeItems.getStack(item_preset, false);
+                    }
+                    else if (rule.item != null)
+                    {
+                        stack = Tools.getStack(rule.item.values);
+                    }
+                    if ((move == null || move.isEmpty()) && !CompatWrapper.isValid(stack)
+                            && (ability == null || ability.isEmpty()))
+                    {
+                        if (PokecubeMod.core.getConfig().debug) PokecubeMod.log("Skipping Mega: " + entry + " -> "
+                                + formeEntry + " as it has no conditions, or conditions cannot be met.");
+                        continue;
+                    }
+                    MegaEvoRule mrule = new MegaEvoRule(entry);
+                    if (ability != null) mrule.ability = ability;
+                    if (move != null) mrule.moveName = move;
+                    if (CompatWrapper.isValid(stack)) mrule.stack = stack;
+                    formeEntry.isMega = true;
+                    entry.megaRules.put(formeEntry, mrule);
+                    if (PokecubeMod.core.getConfig().debug)
+                        PokecubeMod.log("Added Mega: " + entry + " -> " + formeEntry);
                 }
             }
         }

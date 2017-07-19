@@ -234,7 +234,8 @@ public class SpawnBiomeMatcher
                 }
                 if (subBiome == null)
                 {
-                    BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);;//
+                    BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);
+                    ;//
                     if (type != null)
                     {
                         if (type == BiomeDictionary.Type.WATER)
@@ -311,7 +312,8 @@ public class SpawnBiomeMatcher
             parse();
         }
         if (validSubBiomes.contains(BiomeType.ALL)) { return true; }
-        if (validSubBiomes.contains(BiomeType.NONE) || (validBiomes.isEmpty() && validSubBiomes.isEmpty()))
+        if (validSubBiomes.contains(BiomeType.NONE) || (validBiomes.isEmpty() && validSubBiomes.isEmpty()
+                && blackListSubBiomes.isEmpty() && blackListBiomes.isEmpty()))
             return false;
         boolean rightBiome = validBiomes.contains(checker.biome) || validBiomes.isEmpty();
         boolean rightSubBiome = (validSubBiomes.isEmpty() && checker.type == null)

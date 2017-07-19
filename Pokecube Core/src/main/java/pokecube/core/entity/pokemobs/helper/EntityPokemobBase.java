@@ -400,6 +400,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (max / min < 2) normalSize = true;
         if (!multibox || normalSize || mainBox == null)
         {
+            if (mainBox == null) setSize(getSize());
             this.noClip = false;
             super.move(type, x, y, z);
             return;

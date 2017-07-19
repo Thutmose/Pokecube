@@ -17,12 +17,12 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.entity.trainers.TypeTrainer;
-import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 
@@ -42,25 +42,21 @@ public class TrainerEntryLoader
     public static class TrainerEntry
     {
         @XmlAttribute
-        String  tradeTemplate = "default";
+        String          tradeTemplate = "default";
         @XmlElement(name = "TYPE")
-        String  type;
+        String          type;
         @XmlElement(name = "POKEMON")
-        String  pokemon;
-        @XmlElement(name = "BIOMES")
-        String  biomes;
-        @XmlElement(name = "RATE")
-        int     spawnRate;
+        String          pokemon;
+        @XmlElement(name = "Spawns")
+        List<SpawnRule> spawns        = Lists.newArrayList();
         @XmlElement(name = "GENDER")
-        String  gender;
-        @XmlElement(name = "MATERIAL")
-        String  material      = "air";
+        String          gender;
         @XmlElement(name = "BAG")
-        Bag     bag;
+        Bag             bag;
         @XmlElement(name = "BELT")
-        boolean belt          = true;
+        boolean         belt          = true;
         @XmlElement(name = "HELD")
-        Held    held;
+        Held            held;
     }
 
     @XmlRootElement(name = "BAG")
@@ -113,26 +109,23 @@ public class TrainerEntryLoader
                 ItemStack bag = Tools.getStack(entry.bag.values);
                 type.bag = bag;
             }
+            for (SpawnRule rule : entry.spawns)
+            {
+                Float weight = Float.parseFloat(rule.values.get(new QName("rate")));
+                SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
+                type.matchers.put(matcher, weight);
+            }
+
             type.hasBelt = entry.belt;
-            type.weight = entry.spawnRate;
             type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male
                     : entry.gender.equalsIgnoreCase("female") ? female : male + female);
-
             String[] pokeList = entry.pokemon == null ? new String[] {} : entry.pokemon.split(",");
-            if (!entry.material.equalsIgnoreCase("air"))
-            {
-                if (entry.material.equalsIgnoreCase("water"))
-                {
-                    type.material = Material.WATER;
-                }
-            }
             if (entry.held != null)
             {
                 if (entry.held.tag != null) entry.held.values.put(new QName("tag"), entry.held.tag);
                 ItemStack held = Tools.getStack(entry.held.values);
                 type.held = held;
             }
-            if (entry.biomes != null) type.matcher = new BiomeMatcher(entry.biomes);
             if (pokeList.length == 0) continue;
             if (!pokeList[0].startsWith("-"))
             {

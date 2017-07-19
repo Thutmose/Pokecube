@@ -2,7 +2,7 @@ package pokecube.adventures.handlers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map.Entry;
 
 import org.nfunk.jep.JEP;
 
@@ -14,7 +14,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -30,6 +29,8 @@ import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.ai.properties.GuardAICapability;
 import pokecube.core.database.Database;
+import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
@@ -160,31 +161,29 @@ public class TrainerSpawnHandler
 
         if (count < 2)
         {
-            TypeTrainer ttype;
+            TypeTrainer ttype = null;
             Material m = v.getBlockMaterial(w);
 
             if (m == Material.AIR && v.offset(EnumFacing.DOWN).getBlockMaterial(w) == Material.AIR)
             {
                 v = v.getTopBlockPos(w).offsetBy(EnumFacing.UP);
             }
-            Biome biome = v.getBiome(w);
-            List<TypeTrainer> trainers = TypeTrainer.biomeMap.get(biome);
-            if (trainers == null || trainers.size() == 0) return;
-            ttype = trainers.get(w.rand.nextInt(trainers.size()));
-            if (ttype.matcher == null || !ttype.matcher.matches(v, w)) return;
-            if (m != ttype.material)
+            SpawnCheck checker = new SpawnCheck(v, w);
+            types:
+            for (TypeTrainer type : TypeTrainer.typeMap.values())
             {
-                for (TypeTrainer b : trainers)
+                for (Entry<SpawnBiomeMatcher, Float> entry : type.matchers.entrySet())
                 {
-                    if (b.material == m)
+                    SpawnBiomeMatcher matcher = entry.getKey();
+                    Float value = entry.getValue();
+                    if (w.rand.nextFloat() < value && matcher.matches(checker))
                     {
-                        ttype = b;
-                        if ((m == b.material)) break;
+                        ttype = type;
+                        break types;
                     }
                 }
             }
-            if (m != ttype.material) { return; }
-
+            if (ttype == null) return;
             int level = SpawnHandler.getSpawnLevel(w, v, Database.getEntry(1));
             long time = System.nanoTime();
             EntityTrainer t = new EntityTrainer(w, ttype, level);

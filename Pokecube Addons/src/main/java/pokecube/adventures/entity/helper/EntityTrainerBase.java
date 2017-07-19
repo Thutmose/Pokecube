@@ -111,7 +111,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades implements IHasP
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {
-                getPokecubes().add(CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                getPokecubes().set(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
             }
             setType(TypeTrainer.getTrainer(nbt.getString("type")));
             setCooldown(nbt.getLong("nextBattle"));

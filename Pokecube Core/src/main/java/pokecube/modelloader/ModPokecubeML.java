@@ -208,8 +208,11 @@ public class ModPokecubeML implements IMobProvider
     {
         for (PokedexEntry e : Database.allFormes)
         {
-            if (e.getBaseForme() != null && e.texturePath.equals(TEXTUREPATH))
+            if (e.getBaseForme() != null)
+            {
                 e.texturePath = e.getBaseForme().texturePath;
+                e.setModId(e.getBaseForme().getModId());
+            }
         }
     }
 

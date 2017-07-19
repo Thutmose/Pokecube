@@ -187,12 +187,12 @@ public class TypeTrainer
 
         return CompatWrapper.nullStack;
     }
-    
+
     public static void initSpawns()
     {
-        for(TypeTrainer type: typeMap.values())
+        for (TypeTrainer type : typeMap.values())
         {
-            for(SpawnBiomeMatcher matcher: type.matchers.keySet())
+            for (SpawnBiomeMatcher matcher : type.matchers.keySet())
             {
                 matcher.parse();
             }
@@ -209,6 +209,7 @@ public class TypeTrainer
                 toRemove.add(t);
             }
         }
+        if (!toRemove.isEmpty()) PokecubeMod.log("Removing Trainer Types: " + toRemove);
         for (TypeTrainer t : toRemove)
         {
             typeMap.remove(t.name);
@@ -239,7 +240,7 @@ public class TypeTrainer
     public TypeTrainer(String name)
     {
         this.name = name;
-        typeMap.put(name, this);
+        addTrainer(name, this);
     }
 
     @SideOnly(Side.CLIENT)

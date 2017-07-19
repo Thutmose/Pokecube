@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Level;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -15,21 +15,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 
 public class TrainerEntryLoader
 {
-    static XMLDatabase       database;
-    static Set<TrainerEntry> entries = Sets.newHashSet();
+    static XMLDatabase database;
 
     @XmlRootElement(name = "TYPETRAINERSET")
     public static class XMLDatabase
@@ -47,7 +46,7 @@ public class TrainerEntryLoader
         String          type;
         @XmlElement(name = "POKEMON")
         String          pokemon;
-        @XmlElement(name = "Spawns")
+        @XmlElement(name = "Spawn")
         List<SpawnRule> spawns        = Lists.newArrayList();
         @XmlElement(name = "GENDER")
         String          gender;
@@ -57,6 +56,12 @@ public class TrainerEntryLoader
         boolean         belt          = true;
         @XmlElement(name = "HELD")
         Held            held;
+
+        @Override
+        public String toString()
+        {
+            return type + " " + spawns;
+        }
     }
 
     @XmlRootElement(name = "BAG")
@@ -77,7 +82,7 @@ public class TrainerEntryLoader
         String             tag;
     }
 
-    public static XMLDatabase loadDatabase(File file) throws Exception
+    private static XMLDatabase loadDatabase(File file) throws Exception
     {
         JAXBContext jaxbContext = JAXBContext.newInstance(XMLDatabase.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
@@ -87,18 +92,51 @@ public class TrainerEntryLoader
         return database;
     }
 
-    public static void makeEntries(File file) throws Exception
+    public static void makeEntries(File file)
     {
         if (database == null)
         {
-            database = loadDatabase(file);
-            entries.addAll(database.trainers);
+            try
+            {
+                database = loadDatabase(file);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, file + "", e);
+                throw new RuntimeException();
+            }
         }
-        for (TrainerEntry entry : entries)
+        else
+        {
+            try
+            {
+                XMLDatabase newDatabase = loadDatabase(file);
+                for (TrainerEntry entry : newDatabase.trainers)
+                {
+                    for (TrainerEntry old : database.trainers)
+                    {
+                        if (old.type.equals(entry.type))
+                        {
+                            database.trainers.remove(old);
+                            break;
+                        }
+                    }
+                    database.trainers.add(entry);
+                }
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.WARNING, file + "", e);
+                throw new RuntimeException();
+            }
+        }
+        for (TrainerEntry entry : database.trainers)
         {
             String name = entry.type;
             TypeTrainer type = TypeTrainer.typeMap.get(name);
             if (type == null) type = new TypeTrainer(name);
+            type.matchers.clear();
+            type.pokemon.clear();
             byte male = 1;
             byte female = 2;
             type.tradeTemplate = entry.tradeTemplate;
@@ -109,9 +147,19 @@ public class TrainerEntryLoader
                 ItemStack bag = Tools.getStack(entry.bag.values);
                 type.bag = bag;
             }
-            for (SpawnRule rule : entry.spawns)
+            if (entry.spawns != null) for (SpawnRule rule : entry.spawns)
             {
-                Float weight = Float.parseFloat(rule.values.get(new QName("rate")));
+                Float weight;
+                try
+                {
+                    weight = Float.parseFloat(rule.values.get(new QName("rate")));
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING,
+                            "Error with weight for " + type.name + " " + rule.values + " " + entry.spawns);
+                    continue;
+                }
                 SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
                 type.matchers.put(matcher, weight);
             }
@@ -132,7 +180,7 @@ public class TrainerEntryLoader
                 for (String s : pokeList)
                 {
                     PokedexEntry e = Database.getEntry(s);
-                    if (s != null && !type.pokemon.contains(e) && e != null)
+                    if (e != null && !type.pokemon.contains(e))
                     {
                         type.pokemon.add(e);
                     }

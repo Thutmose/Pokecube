@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -16,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.entity.trainers.TypeTrainer;
@@ -34,12 +32,11 @@ import thut.lib.CompatWrapper;
 
 public class TradeEntryLoader
 {
-    static final QName     MIN     = new QName("min");
-    static final QName     MAX     = new QName("max");
-    static final QName     CHANCE  = new QName("chance");
+    static final QName MIN    = new QName("min");
+    static final QName MAX    = new QName("max");
+    static final QName CHANCE = new QName("chance");
 
-    static XMLDatabase     database;
-    static Set<TradeEntry> entries = Sets.newHashSet();
+    static XMLDatabase database;
 
     @XmlRootElement(name = "AllTrades")
     public static class XMLDatabase
@@ -115,9 +112,8 @@ public class TradeEntryLoader
         if (database == null)
         {
             database = loadDatabase(file);
-            entries.addAll(database.trades);
         }
-        for (TradeEntry entry : entries)
+        for (TradeEntry entry : database.trades)
         {
             TrainerTrades trades = new TrainerTrades();
             inner:

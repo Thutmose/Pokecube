@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<TYPETRAINERSET>
+    <TYPETRAINER>
+        <TYPE>Farmer</TYPE>
+        <POKEMON>-normal</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Fisherman</TYPE>
+        <POKEMON>-water</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Shepherd</TYPE>
+        <POKEMON>-normal</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Fletcher</TYPE>
+        <POKEMON>-flying</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Librarian</TYPE>
+        <POKEMON>-normal</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Cartographer</TYPE>
+        <POKEMON>-normal</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Cleric</TYPE>
+        <POKEMON>-psychic</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Armorer</TYPE>
+        <POKEMON>-steel</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Weapon Smith</TYPE>
+        <POKEMON>-steel</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Tool Smith</TYPE>
+        <POKEMON>-steel</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Butcher</TYPE>
+        <POKEMON>-normal</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Leatherworker</TYPE>
+        <POKEMON>-normal</POKEMON>
+    </TYPETRAINER>
+    <TYPETRAINER>
+        <TYPE>Nitwit</TYPE>
+        <POKEMON>-fairy</POKEMON>
+    </TYPETRAINER>
+</TYPETRAINERSET>

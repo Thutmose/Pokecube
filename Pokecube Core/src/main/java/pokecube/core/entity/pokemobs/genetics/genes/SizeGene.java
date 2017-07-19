@@ -9,7 +9,8 @@ import thut.core.common.genetics.genes.GeneFloat;
 
 public class SizeGene extends GeneFloat
 {
-    Random rand = new Random();
+    public static float scaleFactor = 0.075f;
+    Random              rand        = new Random();
 
     public SizeGene()
     {
@@ -29,7 +30,7 @@ public class SizeGene extends GeneFloat
     public Gene mutate()
     {
         SizeGene newGene = new SizeGene();
-        newGene.value = (1 + 0.075f * (float) (new Random()).nextGaussian());
+        newGene.value = (1 + scaleFactor * (float) (new Random()).nextGaussian());
         return newGene;
     }
 

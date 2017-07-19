@@ -17,6 +17,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
 import thut.core.common.config.Configure;
@@ -90,6 +91,39 @@ public class SettingsCommand extends CommandBase
             try
             {
                 String val = args[1];
+
+                if (val.equals("!set"))
+                {
+                    int num = parseInt(args[2]);
+                    String value = args[3];
+                    for (int i = 4; i < args.length; i++)
+                    {
+                        value = value + " " + args[i];
+                    }
+                    String oldValue = "";
+                    Object toSet = null;
+                    if (o instanceof String[])
+                    {
+                        oldValue = ((String[]) o)[num];
+                        ((String[]) o)[num] = value;
+                        toSet = ((String[]) o).clone();
+                    }
+                    else if (o instanceof int[])
+                    {
+                        oldValue = ((int[]) o)[num] + "";
+                        ((int[]) o)[num] = parseInt(value);
+                        toSet = ((int[]) o).clone();
+                    }
+                    else
+                    {
+                        throw new CommandException("This can only by done for arrays.");
+                    }
+                    sender.addChatMessage(
+                            new TextComponentString("Changed index " + num + " from " + oldValue + " to " + value));
+                    PokecubeMod.core.getConfig().updateField(field, toSet);
+                    return;
+                }
+
                 if (args.length > 2)
                 {
                     for (int i = 2; i < args.length; i++)

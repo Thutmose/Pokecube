@@ -1,5 +1,6 @@
 package pokecube.modelloader.client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -187,6 +188,7 @@ public class ClientProxy extends CommonProxy
             String name = p.getTrimmedName().toLowerCase(Locale.ENGLISH);
             try
             {
+                // First check to see if it has an XML
                 ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".xml");
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
                 res.close();
@@ -200,8 +202,42 @@ public class ClientProxy extends CommonProxy
             }
             catch (Exception e)
             {
-                PokecubeMod.log("No model for " + name + " in " + mod+" "+provider.getModelDirectory(p));
-                continue;
+                try
+                {
+                    // Then look for an x3d model
+                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
+                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                    res.close();
+                    ArrayList<String> models = modModels.get(mod);
+                    if (models == null)
+                    {
+                        modModels.put(mod, models = new ArrayList<String>());
+                    }
+                    models.remove(name);
+                    if (!models.contains(name)) models.add(name);
+                }
+                catch (IOException e1)
+                {
+                    try
+                    {
+                        // finally look for an tbl model
+                        ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".tbl");
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                        res.close();
+                        ArrayList<String> models = modModels.get(mod);
+                        if (models == null)
+                        {
+                            modModels.put(mod, models = new ArrayList<String>());
+                        }
+                        models.remove(name);
+                        if (!models.contains(name)) models.add(name);
+                    }
+                    catch (IOException e2)
+                    {
+                        PokecubeMod.log("No model for " + name + " in " + mod + " " + provider.getModelDirectory(p));
+                        continue;
+                    }
+                }
             }
             if (modModels.containsKey(mod))
             {

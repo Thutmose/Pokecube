@@ -98,7 +98,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
                 {
                     trainer.setItemStackToSlot(slot, null);
                 }
-                trainer.initTrainer(trainer.type, maxXp);
+                trainer.initTrainer(trainer.getType(), maxXp);
             }
             else
             {

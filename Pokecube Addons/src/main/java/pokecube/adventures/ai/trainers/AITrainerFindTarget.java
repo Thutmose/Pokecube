@@ -8,9 +8,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import pokecube.adventures.comands.Config;
-import pokecube.adventures.entity.helper.EntityHasAIStates;
-import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import thut.api.maths.Vector3;
 
 public class AITrainerFindTarget extends EntityAIBase
@@ -19,26 +20,31 @@ public class AITrainerFindTarget extends EntityAIBase
 
     // The entity (normally a player) that is the target of this trainer.
     Class<? extends EntityLivingBase> targetClass;
-    // The trainer Entity
-    final EntityTrainer               trainer;
+    final EntityLivingBase            entity;
+    final IHasAIStates                aiStates;
+    final IHasPokemobs                trainer;
 
-    public AITrainerFindTarget(EntityTrainer trainer, Class<? extends EntityLivingBase> targetClass)
+    public AITrainerFindTarget(EntityLivingBase trainer, Class<? extends EntityLivingBase> targetClass)
     {
-        this.trainer = trainer;
+        this.entity = trainer;
+        if (trainer.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
+            this.aiStates = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
+        else this.aiStates = (IHasAIStates) trainer;
+        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            this.trainer = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        else this.trainer = (IHasPokemobs) trainer;
         this.world = trainer.getEntityWorld();
-        this.setMutexBits(3);
+        this.setMutexBits(0);
         this.targetClass = targetClass;
     }
 
     @Override
     public boolean shouldExecute()
     {
-        trainer.lowerCooldowns();
         // Dead trainers can't fight.
-        if (!trainer.isEntityAlive()) return false;
+        if (!entity.isEntityAlive()) return false;
         // Trainers on cooldown shouldn't fight, neither should friendly ones
-        if (trainer.cooldown > trainer.getEntityWorld().getTotalWorldTime() || trainer.friendlyCooldown > 0)
-            return false;
+        if (trainer.getCooldown() > entity.getEntityWorld().getTotalWorldTime() || !trainer.isAgressive()) return false;
         return true;
     }
 
@@ -51,8 +57,7 @@ public class AITrainerFindTarget extends EntityAIBase
             public boolean apply(EntityLivingBase input)
             {
                 if (input instanceof EntityPlayer) { return ((EntityPlayer) input).capabilities.isCreativeMode
-                        || ((EntityPlayer) input).isSpectator() || trainer.hasDefeated(input); }
-
+                        || ((EntityPlayer) input).isSpectator() || !trainer.canBattle(input); }
                 return false;
             }
         };
@@ -67,17 +72,18 @@ public class AITrainerFindTarget extends EntityAIBase
         if (trainer.getTarget() != null) return;
 
         // Look for targets
-        Vector3 here = Vector3.getNewVector().set(trainer);
+        Vector3 here = Vector3.getNewVector().set(entity);
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
                 here.getAABB().expand(16, 16, 16));
-        int sight = trainer.sight <= 0 ? Config.instance.trainerSightRange : trainer.sight;
+
+        int sight = trainer.getAgressDistance();
         for (Object o : targets)
         {
             EntityLivingBase e = (EntityLivingBase) o;
             // Only visible or valid targets.
-            if (Vector3.isVisibleEntityFromEntity(trainer, e) && !matcher.apply(e)
-                    && e.getDistanceToEntity(trainer) < sight)
+            if (Vector3.isVisibleEntityFromEntity(entity, e) && !matcher.apply(e)
+                    && e.getDistanceToEntity(entity) < sight)
             {
                 target = e;
                 break;
@@ -88,8 +94,8 @@ public class AITrainerFindTarget extends EntityAIBase
         {
             // If trainer was in battle (any of these 3) reset trainer before
             // returning.
-            if (trainer.outMob != null || trainer.getAIState(EntityHasAIStates.THROWING)
-                    || trainer.getAIState(EntityHasAIStates.INBATTLE))
+            if (trainer.getOutMob() != null || aiStates.getAIState(IHasAIStates.THROWING)
+                    || aiStates.getAIState(IHasAIStates.INBATTLE))
             {
                 trainer.resetPokemob();
             }

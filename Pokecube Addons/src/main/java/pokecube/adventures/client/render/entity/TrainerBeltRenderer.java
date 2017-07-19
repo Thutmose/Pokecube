@@ -92,7 +92,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         dx = 0.25f;
         for (int i = 0; i < 6; i++)
         {
-            ItemStack stack = trainer.pokecubes.get(i);
+            ItemStack stack = trainer.getPokecubes().get(i);
             if (CompatWrapper.isValid(stack) && !Tools.isSameStack(stack, trainer.getHeldItemMainhand()))
             {
                 GlStateManager.pushMatrix();

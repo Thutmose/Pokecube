@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.stats.Achievement;
 import net.minecraftforge.common.AchievementPage;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -27,6 +28,18 @@ import pokecube.adventures.achievements.AchievementDefeatTrainer;
 import pokecube.adventures.achievements.AchievementGetBadge;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.DefaultAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.DefaultMessager;
+import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -61,19 +74,9 @@ public class PokecubeAdv
     public final static String MCVERSIONS         = "@MCVERSION";
     public final static String MINVERSION         = "@MINVERSION";
     public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;"
-            + "after:thut_wearables;"
-            + "after:thutessentials;"
-            + "after:waila;"
-            + "after:Waila;"
-            + "after:reccomplex;"
-            + "after:advancedrocketry;"
-            + "after:JEI;"
-            + "after:jeresources;"
-            + "after:thut_bling;"
-            + "after:theoneprobe;"
-            + "after:tesla;"
-            + "after:Tesla;"
-            + "after:lostcities;"
+            + "after:thut_wearables;" + "after:thutessentials;" + "after:waila;" + "after:Waila;" + "after:reccomplex;"
+            + "after:advancedrocketry;" + "after:JEI;" + "after:jeresources;" + "after:thut_bling;"
+            + "after:theoneprobe;" + "after:tesla;" + "after:Tesla;" + "after:lostcities;"
             + "after:minefactoryreloaded";
 
     public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
@@ -181,6 +184,15 @@ public class PokecubeAdv
         MinecraftForge.EVENT_BUS.register(new ItemHandler());
         proxy.preinit();
         RecipeHandler.preInit();
+
+        CapabilityManager.INSTANCE.register(IHasPokemobs.class,
+                CapabilityHasPokemobs.storage = new CapabilityHasPokemobs.Storage(), DefaultPokemobs.class);
+        CapabilityManager.INSTANCE.register(IHasAIStates.class,
+                CapabilityAIStates.storage = new CapabilityAIStates.Storage(), DefaultAIStates.class);
+        CapabilityManager.INSTANCE.register(IHasMessages.class,
+                CapabilityMessages.storage = new CapabilityMessages.Storage(), DefaultMessager.class);
+        CapabilityManager.INSTANCE.register(IHasRewards.class,
+                CapabilityHasRewards.storage = new CapabilityHasRewards.Storage(), DefaultRewards.class);
     }
 
     @SubscribeEvent

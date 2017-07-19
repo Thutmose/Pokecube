@@ -3,7 +3,9 @@ package pokecube.modelloader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -72,6 +74,35 @@ public class ModPokecubeML implements IMobProvider
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy         proxy;
     public static File                configDir               = new File("./config/");
+
+    public static void sort(List<String> list)
+    {
+        Collections.sort(list, new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                PokedexEntry e1 = Database.getEntry(o1);
+                PokedexEntry e2 = Database.getEntry(o2);
+                return new Comparator<PokedexEntry>()
+                {
+                    @Override
+                    public int compare(PokedexEntry o1, PokedexEntry o2)
+                    {
+                        int diff = o1.getPokedexNb() - o2.getPokedexNb();
+                        if (diff == 0)
+                        {
+                            boolean o1base = o1.base;
+                            boolean o2base = o2.base;
+                            if (o1base && !o2base) diff = -1;
+                            else if (o2base && !o1base) diff = 1;
+                        }
+                        return diff;
+                    }
+                }.compare(e1, e2);
+            }
+        });
+    }
 
     private void doMetastuff()
     {
@@ -156,7 +187,7 @@ public class ModPokecubeML implements IMobProvider
         ExtraDatabase.apply();
         if (PokecubeMod.core.getConfig().debug)
         {
-            Collections.sort(addedPokemon);
+            sort(addedPokemon);
             PokecubeMod.log(addedPokemon + " " + addedPokemon.size());
         }
     }
@@ -164,8 +195,10 @@ public class ModPokecubeML implements IMobProvider
     @SubscribeEvent
     public void RegisterPokemobsEvent(RegisterPokemobsEvent.Register event)
     {
+        sort(addedPokemon);
         for (String s : addedPokemon)
         {
+            if (PokecubeMod.core.getConfig().debug) PokecubeMod.log("reg: " + s);
             registerMob(s.toLowerCase(Locale.ENGLISH));
         }
     }
@@ -237,8 +270,6 @@ public class ModPokecubeML implements IMobProvider
 
     private void processResources()
     {
-        ArrayList<String> toAdd = Lists.newArrayList();
-
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
         ArrayList<File> files = Lists.newArrayList(resourceDir.listFiles());
         for (File pack : files)
@@ -268,7 +299,9 @@ public class ModPokecubeML implements IMobProvider
                                             s.endsWith(".json"));
                                     for (XMLPokedexEntry xmlentry : database.pokemon)
                                     {
-                                        PokecubeMod.log("Adding " + xmlentry.name);
+                                        PokedexEntry pEntry = Database.getEntry(xmlentry.name);
+                                        PokecubeMod.log("Adding " + pEntry);
+                                        addedPokemon.add(pEntry.getTrimmedName().toLowerCase(Locale.ENGLISH));
                                     }
                                 }
                                 else if (name.equals("_moves_"))
@@ -290,7 +323,6 @@ public class ModPokecubeML implements IMobProvider
                 // System.err.println("No Resource Pack " + pack);
             }
         }
-        addedPokemon = toAdd;
     }
 
     private void registerMob(String mob)

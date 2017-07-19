@@ -645,6 +645,7 @@ public class Database
                 removed.add(p);
             }
         }
+        PokecubeMod.log("Removing " + toRemove);
         ProgressManager.pop(bar);
         bar = ProgressManager.push("Removal", toRemove.size());
         for (PokedexEntry p : toRemove)

@@ -284,6 +284,7 @@ public class CommonProxy implements IGuiHandler
 
     public void searchModels()
     {
+        PokecubeMod.log("Searching for Models...");
         ArrayList<String> toAdd = ModPokecubeML.addedPokemon;
         if (toAdd == null)
         {

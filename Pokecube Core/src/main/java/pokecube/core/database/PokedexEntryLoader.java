@@ -206,6 +206,12 @@ public class PokedexEntryLoader
     {
         @XmlAnyAttribute
         public Map<QName, String> values = Maps.newHashMap();
+
+        @Override
+        public String toString()
+        {
+            return values + "";
+        }
     }
 
     public static class Evolution

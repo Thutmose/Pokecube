@@ -41,10 +41,10 @@ public class Config extends ConfigBase
 
     public static Config               instance;
 
-    public static Map<String, Integer> biomeMap             = new HashMap<String, Integer>();
+    public static Map<String, Integer> biomeMap              = new HashMap<String, Integer>();
 
     @Configure(category = world)
-    String[]                           structureBiomes      = {
+    String[]                           structureBiomes       = {
             // @formatter:off
             "meteorsite:" + BiomeType.METEOR.name, "smallfortruins:" + BiomeType.RUIN.name,
             "VillageForgeLarge:" + BiomeType.INDUSTRIAL.name, "VillageGuardTower:" + BiomeType.VILLAGE.name,
@@ -66,91 +66,95 @@ public class Config extends ConfigBase
             // @formatter:on
     };
     @Configure(category = world)
-    public boolean                     exp_shareLoot        = true;
+    public boolean                     exp_shareLoot         = true;
     @Configure(category = world)
-    public boolean                     HMLoot               = true;
+    public boolean                     HMLoot                = true;
 
     @Configure(category = machines)
-    public int                         afaShinyRate         = 4096;
+    public int                         afaShinyRate          = 4096;
     @Configure(category = machines)
-    public int                         maxOutput            = 256;
+    public int                         maxOutput             = 256;
     @Configure(category = machines)
-    public int                         daycareTicks         = 100;
+    public int                         daycareTicks          = 100;
     @Configure(category = machines)
-    public int                         daycareExp           = 100;
+    public int                         daycareExp            = 100;
     @Configure(category = machines)
-    public int                         daycareCost          = 1;
+    public int                         daycareCost           = 1;
     @Configure(category = machines)
-    public String                      powerFunction        = "a*x/10";
+    public String                      powerFunction         = "a*x/10";
     @Configure(category = machines)
-    public boolean                     warpPadEnergy        = true;
+    public boolean                     warpPadEnergy         = true;
     @Configure(category = machines)
-    public boolean                     theft                = false;
+    public boolean                     theft                 = false;
     @Configure(category = machines)
-    public int                         warpPadRange         = -1;
+    public int                         warpPadRange          = -1;
     @Configure(category = machines)
-    public int                         warpPadMaxEnergy     = 100000000;
+    public int                         warpPadMaxEnergy      = 100000000;
     @Configure(category = machines)
-    public int                         fossilReanimateCost  = 20000;
+    public int                         fossilReanimateCost   = 20000;
     @Configure(category = machines)
-    public String                      afaCostFunction      = "(d^3)/(10 + 5*l)";
+    public String                      afaCostFunction       = "(d^3)/(10 + 5*l)";
     @Configure(category = machines)
-    public String                      afaCostFunctionShiny = "(d^3)/10";
+    public String                      afaCostFunctionShiny  = "(d^3)/10";
     @Configure(category = machines)
-    public int                         afaMaxEnergy         = 3200;
+    public int                         afaMaxEnergy          = 3200;
     @Configure(category = machines)
-    public int                         energyHungerCost     = 5;
+    public int                         energyHungerCost      = 5;
     @Configure(category = machines)
-    String[]                           ranchables           = {
+    String[]                           ranchables            = {
             // @formatter:off
             "arceus:nether_star:100000", "chinchou:glowstone_dust:500", "lanturn:glowstone_dust,2:500",
             "lotad:waterlily:100", "tangela:vine:100", "bulbasaur:vine:100", "octillery:dye:100", "camerupt::lava:1000"
             // @formatter:on
     };
     @Configure(category = spawning)
-    String[]                           biomeLevels          = { "mound:5-10" };
+    String[]                           biomeLevels           = { "mound:5-10" };
 
     @Configure(category = trainers)
-    public boolean                     trainerSpawn         = true;
+    public boolean                     trainerSpawn          = true;
     @Configure(category = trainers)
-    public boolean                     trainersInvul        = false;
+    public boolean                     trainersInvul         = false;
     @Configure(category = trainers)
-    public boolean                     trainerslevel        = true;
+    public boolean                     trainerslevel         = true;
     @Configure(category = trainers)
-    public boolean                     trainersTradeMobs    = true;
+    public boolean                     trainersTradeMobs     = true;
     @Configure(category = trainers)
-    public boolean                     trainersTradeItems   = true;
+    public boolean                     trainersTradeItems    = true;
     @Configure(category = trainers)
-    public int                         trainerBox           = 128;
+    public int                         trainerBox            = 128;
     @Configure(category = trainers)
-    public int                         trainerCooldown      = 10000;
+    public int                         trainerCooldown       = 10000;
     @Configure(category = trainers)
-    public int                         trainerSendOutDelay  = 50;
+    public int                         trainerSendOutDelay   = 50;
     @Configure(category = trainers)
-    public int                         trainerBattleDelay   = 100;
+    public int                         trainerBattleDelay    = 100;
     @Configure(category = trainers)
-    public int                         trainerSightRange    = 10;
+    public int                         trainerSightRange     = 10;
     @Configure(category = trainers)
-    public int                         trainerDeAgressTicks = 50;
+    public int                         trainerDeAgressTicks  = 50;
     @Configure(category = trainers)
-    public boolean                     npcsAreTrainers      = true;
+    public boolean                     npcsAreTrainers       = true;
 
     @Configure(category = misc)
-    public boolean                     bagHoldAll           = false;
+    public boolean                     bagHoldAll            = false;
     @Configure(category = misc)
-    public int                         bagPageCount         = 32;
+    public int                         bagPageCount          = 32;
     @Configure(category = misc)
-    public boolean                     legendaryConditions  = true;
+    public boolean                     legendaryConditions   = true;
     @Configure(category = database)
-    protected boolean                  forceDatabase        = true;
+    protected boolean                  forceDatabase         = true;
     @Configure(category = database)
-    public boolean                     forceRecipes         = true;
+    public boolean                     forceRecipes          = true;
     @Configure(category = database)
-    public boolean                     autoAddFossils       = true;
+    public boolean                     autoAddFossils        = true;
     @Configure(category = database)
     public boolean                     anyReanimate         = true;
     @Configure(category = client)
     public boolean                     journeymapRepels     = true;
+    @Configure(category = database)
+    public String[]                    extraTrainerDatabases = {};
+    @Configure(category = database)
+    public String[]                    extraTradeDatabases   = {};
 
     public Config()
     {
@@ -175,6 +179,14 @@ public class Config extends ConfigBase
         TrainerSpawnHandler.trainerBox = trainerBox;
         DBLoader.FORCECOPY = forceDatabase;
         InventoryBag.PAGECOUNT = bagPageCount;
+        for (String s : extraTradeDatabases)
+        {
+            if (!DBLoader.tradeDatabases.contains(s)) DBLoader.tradeDatabases.add(s);
+        }
+        for (String s : extraTrainerDatabases)
+        {
+            if (!DBLoader.trainerDatabases.contains(s)) DBLoader.trainerDatabases.add(s);
+        }
     }
 
     @SubscribeEvent

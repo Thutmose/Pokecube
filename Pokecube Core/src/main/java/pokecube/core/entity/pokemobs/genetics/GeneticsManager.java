@@ -71,7 +71,7 @@ public class GeneticsManager
         mutationRates.put(COLOURGENE, 0.01f);
         mutationRates.put(SIZEGENE, 0.1f);
         mutationRates.put(NATUREGENE, 0.05f);
-        mutationRates.put(SHINYGENE, 1 / 4096f);
+        mutationRates.put(SHINYGENE, 1 / 96f);
         mutationRates.put(MOVESGENE, 0.0f);
         mutationRates.put(IVSGENE, 0.1f);
         mutationRates.put(EVSGENE, 0.1f);

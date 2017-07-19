@@ -3,29 +3,33 @@
     <TYPETRAINER>
         <TYPE>Bug Catcher</TYPE>
         <POKEMON>weedle,caterpie,ledyba,wurmple,kricketot,paras,nincada,burmy,venonat,yanma,spinarak,volbeat,illumise,pinsir,scyther,heracross,surskit</POKEMON>
-        <BIOMES>BTforest'Bcold</BIOMES>
-        <RATE>20</RATE>
+        <Spawns>
+            <Spawn types="forest" typesBlacklist="cold" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Youngster</TYPE>
         <POKEMON>rattata,zubat,nidoranm,poochyena,tailow,zigzagoon,starly,kricketot,magikarp,bidoof,ekans,sandshrew,wooper,seedot,geodude,lotad,electrike,burmy,slowpoke,spearow,mankey,diglett,machop,bellsprout,growlithe,aron,trapinch,shroomish,onix,gastly,gligar,buizel</POKEMON>
-        <BIOMES>BBcave</BIOMES>
-        <RATE>10</RATE>
+        <Spawns>
+            <Spawn typesBlacklist="cave" rate="0.5"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Lass</TYPE>
         <POKEMON>nidoranm,nidoranf,pidgey,rattata,pikachu,meowth,bellsprout,oddish,clefairy,jigglypuff,paras,chingling,buneary,pachirisu,budew,abra,starly,psyduck,bidoof,hoppip,luvdisc,wailmer,lotad,shroomish,marill,skitty,urrloin,woobat,seedot,deerling,gothita,ducklett,vulpix,lillipup</POKEMON>
-        <BIOMES>BBcave</BIOMES>
-        <RATE>10</RATE>
+        <Spawns>
+            <Spawn typesBlacklist="cave" rate="0.5"/>
+        </Spawn>
         <GENDER>Female</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Hiker</TYPE>
         <POKEMON>geodude,onix,machop,diglett,sandshrew,swinub,nosepass,numel,baltoy,zubat,bronzor,dunsparce,woobat,timburr,roggenrola,aron</POKEMON>
-        <BIOMES>BTcave'Tmountain</BIOMES>
-        <RATE>5</RATE>
+        <Spawns>
+            <Spawn types="cave, mountain" rate="0.5"/>
+        </Spawn>
         <GENDER>Male</GENDER>
         <BAG id="pokecube_adventures:pokecubebag">
             <tag>{dyeColour:2}</tag>
@@ -34,178 +38,202 @@
     <TYPETRAINER>
         <TYPE>Fisherman</TYPE>
         <POKEMON>tentacool,magikarp,goldeen,polywag,staryu,shellder,horsea,qwilfish,remoraid,carvanha,feebas,barboach,wailmer,finneon,basculin,stunfisk,frillish,krabby</POKEMON>
-        <BIOMES>BTwater'Tbeach'Tlake</BIOMES>
-        <RATE>5</RATE>
+        <Spawns>
+            <Spawn types="water, beach, lake" rate="0.25"/>
+        </Spawn>
         <GENDER>Male</GENDER>
         <HELD id="minecraft:fishing_rod"/>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Cooltrainer</TYPE>
         <POKEMON>-all</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Both</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Psychic</TYPE>
         <POKEMON>-Psychic</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Both</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Super Nerd</TYPE>
         <POKEMON>grimer,magnemite,voltorb,koffing,growlith,vulpix,porygon,slowpoke,ponyta</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Scientist</TYPE>
         <POKEMON>grimer,magnemite,voltorb,koffing,porygon,ditto,abra,ralts,munna,drowsey,klink,deerling,elgyem</POKEMON>
-        <BIOMES>BTindustrial'Tvillage</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="industrial, village" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Bird Keeper</TYPE>
         <POKEMON>pidgey,spearow,tailow,wingull,starly,pidove,fletchling,natu,skarmory,doduo,farfetch&apos;d,swablu,hoothoot,murkrow</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Both</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Beauty</TYPE>
         <POKEMON>bellsprout,oddish,exeggcute,rattata,clefairy,meowth,jigglypuff,goldeen,poliwag,staryu,horsea,cloyster,paras,corsola,hoppip,sentret,marill,wailmer,keckleon,seviper,lotad,shroomish,numel,carvanha,clamperl,corphish,luvdisc,glameow,burmy,skitty,finneon,buneary,fletchling,espurr,roserade,blitzle,mareep</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Female</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Biker</TYPE>
         <POKEMON>grimer,koffing,voltorb,magmar,gulpin,ekans,surviper,croagunk,skorupi</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Black Belt</TYPE>
         <POKEMON>-Fighting</POKEMON>
-        <BIOMES>BTcave'Tmountain</BIOMES>
-        <RATE>5</RATE>
+        <Spawns>
+            <Spawn types="cave,mountain" rate="0.25"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Burglar</TYPE>
         <POKEMON>koffing,magmar,growlithe,vulpix</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Channeler</TYPE>
         <POKEMON>gastly</POKEMON>
-        <BIOMES>BTShell</BIOMES>
-        <RATE>10</RATE>
+        <Spawns>
+            <Spawn types="nether" rate="0.5"/>
+        </Spawn>
         <GENDER>Female</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>RoughNeck</TYPE>
         <POKEMON>machop,mankey,sandile,scraggy</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Engineer</TYPE>
         <POKEMON>magnemite</POKEMON>
-        <BIOMES>BTindustrial'Tvillage</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="industrial,village" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>PI</TYPE>
         <POKEMON>poliwag,growlithe,vulpix,goldeen</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
         </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Gentleman</TYPE>
         <POKEMON>growlithe,pikachu,electrike,zigzagoon,chatot</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Camper</TYPE>
         <POKEMON>diglett,rattata,sandshrew,ekans,mankey,zubat,zigzagoon,tailow,seedot,baltoy,spearow,nidoranM</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Picknicker</TYPE>
         <POKEMON>goldeen,pidgey,rattata,pikachu,poliwag,meowth,oddish,ponyta,hoppip,bellsprout,shroomish,marill,swablu,lotad,clefairy,nidoranF,paras,pachirisu,bidoof,psyduck,shinx,cherubi</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Female</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Juggler</TYPE>
         <POKEMON>abra,drowzee,mrmime,voltorb</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Poke Maniac</TYPE>
         <POKEMON>cubone,slowpoke,kangaskhan,lickitung,nidoranM,nidoranF,rhyhorn,aron</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Rocker</TYPE>
         <POKEMON>voltorb,magnemite,mareep</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Sailor</TYPE>
         <POKEMON>machop,tentacool,cloyster,horsea,krabby,poliwag,rattata,wingull,spheal,wailmer,mantine,shellos,magikarp,marill,wooper</POKEMON>
-        <BIOMES>BTocean'Tbeach</BIOMES>
-        <RATE>5</RATE>
+        <Spawns>
+            <Spawn types="ocean,beach" rate="0.25"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Swimmer</TYPE>
         <POKEMON>horsea,cloyster,goldeen,staryu,poilwag,tentacool,psyduck,remoraid,magikarp,wingull,wailmer,marill,carvanha,luvdisc,spheal,chinchou,mantine,seel,finneon,buizel,qwilfish,bidoof,lapras,frillish,clamperl,skrelp</POKEMON>
-        <BIOMES>BTwater'Tbeach'Tlake</BIOMES>
-        <RATE>5</RATE>
+        <Spawns>
+            <Spawn types="water,beach,lake" rate="0.25" water="true"/>
+        </Spawn>
         <GENDER>Both</GENDER>
-        <MATERIAL>water</MATERIAL>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Tamer</TYPE>
         <POKEMON>ekans,sandshrew</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Notch</TYPE>
         <POKEMON>arceus</POKEMON>
-        <BIOMES>BTSsky</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="sky" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
     </TYPETRAINER>
     <TYPETRAINER>
         <TYPE>Red</TYPE>
         <POKEMON>omanyte,pidgey,lapras,nidoranm,venonat,zapdos</POKEMON>
-        <BIOMES>BTall</BIOMES>
-        <RATE>1</RATE>
+        <Spawns>
+            <Spawn types="all" rate="0.05"/>
+        </Spawn>
         <GENDER>Male</GENDER>
         <BAG id="pokecube_adventures:pokecubebag">
         </BAG>

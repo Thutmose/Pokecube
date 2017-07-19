@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
@@ -22,22 +22,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.helper.EntityHasTrades;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.core.PokecubeItems;
-import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
-import thut.api.terrain.BiomeType;
 import thut.lib.CompatWrapper;
 
 public class TypeTrainer
@@ -101,56 +99,14 @@ public class TypeTrainer
         }
     }
 
-    public static HashMap<String, TrainerTrades>    tradesMap   = Maps.newHashMap();
-    public static HashMap<String, TypeTrainer>      typeMap     = new HashMap<String, TypeTrainer>();
-    public static HashMap<Biome, List<TypeTrainer>> biomeMap    = Maps.newHashMap();
-    public static ArrayList<String>                 maleNames   = new ArrayList<String>();
-    public static ArrayList<String>                 femaleNames = new ArrayList<String>();
+    public static HashMap<String, TrainerTrades> tradesMap   = Maps.newHashMap();
+    public static HashMap<String, TypeTrainer>   typeMap     = new HashMap<String, TypeTrainer>();
+    public static ArrayList<String>              maleNames   = new ArrayList<String>();
+    public static ArrayList<String>              femaleNames = new ArrayList<String>();
 
     public static void addTrainer(String name, TypeTrainer type)
     {
         typeMap.put(name, type);
-    }
-
-    public static void initSpawns()
-    {
-        biomeMap.clear();
-        for (TypeTrainer t : typeMap.values())
-        {
-            if (t.matcher != null)
-            {
-                t.matcher.parse();
-                if (!t.matcher.validBiomes.isEmpty())
-                {
-                    for (Biome b : t.matcher.validBiomes)
-                    {
-                        addSpawn(b, t);
-                    }
-                }
-                else if (!t.matcher.validSubBiomes.contains(BiomeType.NONE))
-                {
-                    for (ResourceLocation key : Biome.REGISTRY.getKeys())
-                    {
-                        Biome b = Biome.REGISTRY.getObject(key);
-                        if (b != null)
-                        {
-                            addSpawn(b, t);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private static void addSpawn(Biome b, TypeTrainer t)
-    {
-        List<TypeTrainer> types = biomeMap.get(b);
-        if (types == null)
-        {
-            biomeMap.put(b, types = Lists.newArrayList());
-        }
-        for (int i = 0; i < t.weight; i++)
-            types.add(t);
     }
 
     public static void getRandomTeam(IHasPokemobs trainer, EntityLivingBase owner, int level, World world)
@@ -231,6 +187,17 @@ public class TypeTrainer
 
         return CompatWrapper.nullStack;
     }
+    
+    public static void initSpawns()
+    {
+        for(TypeTrainer type: typeMap.values())
+        {
+            for(SpawnBiomeMatcher matcher: type.matchers.keySet())
+            {
+                matcher.parse();
+            }
+        }
+    }
 
     public static void postInitTrainers()
     {
@@ -248,39 +215,31 @@ public class TypeTrainer
         }
     }
 
-    public final String       name;
+    public final String                  name;
     /** 1 = male, 2 = female, 3 = both */
-    public byte               genders       = 1;
+    public byte                          genders       = 1;
 
-    public Material           material      = Material.AIR;
-    public BiomeMatcher       matcher       = null;
-    public int                weight;
-    public boolean            hasBag        = false;
-    public ItemStack          bag;
-    public boolean            hasBelt       = false;
-    private ResourceLocation  texture;
+    public Map<SpawnBiomeMatcher, Float> matchers      = Maps.newHashMap();
+    public boolean                       hasBag        = false;
+    public ItemStack                     bag;
+    public boolean                       hasBelt       = false;
+    private ResourceLocation             texture;
 
-    private ResourceLocation  femaleTexture;
+    private ResourceLocation             femaleTexture;
 
-    public String             tradeTemplate = "default";
-    public List<PokedexEntry> pokemon       = Lists.newArrayList();
-    public TrainerTrades      trades;
+    public String                        tradeTemplate = "default";
+    public List<PokedexEntry>            pokemon       = Lists.newArrayList();
+    public TrainerTrades                 trades;
 
-    private ItemStack[]       loot          = CompatWrapper.makeList(4).toArray(new ItemStack[4]);
+    private ItemStack[]                  loot          = CompatWrapper.makeList(4).toArray(new ItemStack[4]);
 
-    public String             drops         = "";
-    public ItemStack          held          = CompatWrapper.nullStack;
+    public String                        drops         = "";
+    public ItemStack                     held          = CompatWrapper.nullStack;
 
     public TypeTrainer(String name)
     {
         this.name = name;
         typeMap.put(name, this);
-    }
-
-    public TypeTrainer(String name, Material material)
-    {
-        this(name);
-        this.material = material;
     }
 
     @SideOnly(Side.CLIENT)
@@ -412,14 +371,5 @@ public class TypeTrainer
             trades.addTrades(ret, trader);
         }
         return ret;
-    }
-
-    public boolean validMaterial(Material m)
-    {
-        if (this.material == Material.WATER) return m == Material.WATER;
-        if (this.material == Material.AIR) { return m == material
-                || (!m.isLiquid() && !m.isSolid() && m.isReplaceable()); }
-
-        return false;
     }
 }

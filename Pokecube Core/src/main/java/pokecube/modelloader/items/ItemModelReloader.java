@@ -23,6 +23,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -32,6 +33,7 @@ import pokecube.core.database.PokedexEntryLoader.Key;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.database.PokedexEntryLoader.StatsNode;
 import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
+import pokecube.core.database.PokedexEntryLoader.XMLMegaRule;
 import pokecube.core.database.PokedexEntryLoader.XMLPokedexEntry;
 import pokecube.modelloader.ModPokecubeML;
 import thut.lib.CompatWrapper;
@@ -189,6 +191,84 @@ public class ItemModelReloader extends Item
                                         e.clear = null;
                                     }
                                 }
+                            }
+                            if (entry.stats != null && entry.stats.megaRules_old != null)
+                            {
+                                if (entry.stats.megaRules_old.values != null)
+                                {
+                                    String value = entry.stats.megaRules_old.values.get(new QName("forme"));
+                                    entry.stats.megaRules = Lists.newArrayList();
+                                    if (value.equals("N___-Y:I___,N___-X:I___"))
+                                    {
+                                        XMLMegaRule rule = new XMLMegaRule();
+                                        rule.preset = "Mega-X";
+                                        entry.stats.megaRules.add(rule);
+                                        rule = new XMLMegaRule();
+                                        rule.preset = "Mega-Y";
+                                        entry.stats.megaRules.add(rule);
+                                    }
+                                    else if (value.equals("N___:I___"))
+                                    {
+                                        XMLMegaRule rule = new XMLMegaRule();
+                                        rule.preset = "Mega";
+                                        entry.stats.megaRules.add(rule);
+                                    }
+                                    else
+                                    {
+                                        String[] args = value.split(",");
+                                        for (String s : args)
+                                        {
+                                            String forme = "";
+                                            String itemN = "";
+                                            String move = "";
+                                            String ability = "";
+                                            String[] args2 = s.split(":");
+                                            for (String s1 : args2)
+                                            {
+                                                String arg1 = s1.trim().substring(0, 1);
+                                                String arg2 = s1.trim().substring(1);
+                                                if (arg1.equals("N"))
+                                                {
+                                                    forme = arg2;
+                                                }
+                                                else if (arg1.equals("I"))
+                                                {
+                                                    itemN = arg2;
+                                                }
+                                                else if (arg1.equals("M"))
+                                                {
+                                                    move = arg2;
+                                                }
+                                                else if (arg1.equals("A"))
+                                                {
+                                                    ability = arg2;
+                                                }
+                                            }
+                                            XMLMegaRule rule = new XMLMegaRule();
+                                            if (!forme.isEmpty()) rule.name = forme.replace("'", "");
+                                            if (!move.isEmpty()) rule.move = move;
+                                            if (!ability.isEmpty()) rule.ability = ability;
+                                            ItemStack stack = itemN.isEmpty() ? CompatWrapper.nullStack
+                                                    : PokecubeItems.getStack(itemN, false);
+                                            if (CompatWrapper.isValid(stack))
+                                            {
+                                                Item item = stack.getItem();
+                                                Key key = new Key();
+                                                if (stack.hasTagCompound())
+                                                {
+                                                    key.values.put(new QName("tag"), stack.getTagCompound().toString());
+                                                }
+                                                key.values.put(new QName("id"), item.getRegistryName().toString());
+                                                if (stack.getItemDamage() != 0)
+                                                    key.values.put(new QName("d"), stack.getItemDamage() + "");
+                                                rule.item = key;
+                                            }
+                                            entry.stats.megaRules.add(rule);
+                                        }
+
+                                    }
+                                }
+                                entry.stats.megaRules_old = null;
                             }
                             if (entry.moves != null && entry.moves.lvlupMoves != null)
                             {

@@ -18,7 +18,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentString;
-import pokecube.adventures.entity.helper.EntityHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -128,14 +128,14 @@ public class GuiTrainerEdit extends GuiScreen
                     index++;
                 }
             }
-            trainer.type = TypeTrainer.getTrainer(types.get(index));
+            trainer.setType(TypeTrainer.getTrainer(types.get(index)));
             textFieldType.setText(types.get(index));
             if (textFieldName.getText().startsWith(oldType))
             {
-                textFieldName.setText(textFieldName.getText().replaceFirst(oldType, trainer.type.name));
+                textFieldName.setText(textFieldName.getText().replaceFirst(oldType, trainer.getType().name));
             }
             sendChooseToServer();
-            oldType = trainer.type.name;
+            oldType = trainer.getType().name;
         }
     }
 
@@ -216,9 +216,9 @@ public class GuiTrainerEdit extends GuiScreen
         textFieldType.setEnabled(false);
 
         oldName = trainer.name;
-        oldType = trainer.type.name;
+        oldType = trainer.getType().name;
 
-        String next = (stationary = trainer.getAIState(EntityHasAIStates.STATIONARY)) ? F : T;
+        String next = (stationary = trainer.aiStates.getAIState(IHasAIStates.STATIONARY)) ? F : T;
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
         yOffset = 0;
@@ -253,7 +253,7 @@ public class GuiTrainerEdit extends GuiScreen
         }
 
         textFieldName.setText(trainer.getCustomNameTag());
-        textFieldType.setText(trainer.type.name);
+        textFieldType.setText(trainer.getType().name);
     }
 
     private PokedexEntry getEntry(int num)

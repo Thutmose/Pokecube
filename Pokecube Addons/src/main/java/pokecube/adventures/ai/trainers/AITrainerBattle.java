@@ -4,14 +4,19 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
-import pokecube.adventures.entity.helper.EntityHasAIStates;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -23,34 +28,49 @@ import thut.lib.CompatWrapper;
 
 public class AITrainerBattle extends EntityAIBase
 {
-    World               world;
+    World                  world;
     // The trainer Entity
-    final EntityTrainer trainer;
-    int                 noSeeTicks = 0;
+    final EntityLivingBase entity;
+    final IHasPokemobs     trainer;
+    final IHasAIStates     aiTracker;
+    final IHasMessages     messages;
+    final boolean          valid;
+    int                    noSeeTicks = 0;
 
-    public AITrainerBattle(EntityTrainer trainer)
+    public AITrainerBattle(EntityLivingBase trainer)
     {
-        this.trainer = trainer;
+        this.entity = trainer;
         this.world = trainer.getEntityWorld();
+        if (trainer.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
+            this.aiTracker = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
+        else this.aiTracker = (IHasAIStates) trainer;
+        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            this.trainer = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        else this.trainer = (IHasPokemobs) trainer;
+        if (trainer.hasCapability(CapabilityMessages.MESSAGES_CAP, null))
+            this.messages = trainer.getCapability(CapabilityMessages.MESSAGES_CAP, null);
+        else this.messages = (IHasMessages) trainer;
+        valid = trainer != null && aiTracker != null && messages != null;
     }
 
     @Override
     public boolean shouldExecute()
     {
-        return trainer.getTarget() != null;
+        trainer.lowerCooldowns();
+        return valid && trainer.getTarget() != null;
     }
 
     private boolean checkPokemobTarget()
     {
-        Entity mobTarget = ((EntityLiving) trainer.outMob).getAttackTarget();
+        Entity mobTarget = ((EntityLiving) trainer.getOutMob()).getAttackTarget();
         // check if pokemob's target is same as trainers.
         if (mobTarget != trainer.getTarget() && !(mobTarget instanceof IPokemob))
         {
             // If not, set it as such.
-            ((EntityLiving) trainer.outMob).setAttackTarget(trainer.getTarget());
+            ((EntityLiving) trainer.getOutMob()).setAttackTarget(trainer.getTarget());
         }
         // Return if trainer's pokemob's target is also a pokemob.
-        return ((EntityLiving) trainer.outMob).getAttackTarget() instanceof IPokemob;
+        return ((EntityLiving) trainer.getOutMob()).getAttackTarget() instanceof IPokemob;
     }
 
     private void considerSwapMove()
@@ -69,14 +89,14 @@ public class AITrainerBattle extends EntityAIBase
     void doAggression()
     {
         // If target is no longer visbile, forget about it and reset.
-        if (!Vector3.isVisibleEntityFromEntity(trainer, trainer.getTarget()))
+        if (!Vector3.isVisibleEntityFromEntity(entity, trainer.getTarget()))
         {
             if (noSeeTicks++ > PokecubeAdv.conf.trainerDeAgressTicks) trainer.resetPokemob();
             return;
         }
         noSeeTicks = 0;
         // Check if maybe mob was sent out, but just not seen
-        List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(trainer);
+        List<IPokemob> pokemobs = PCEventsHandler.getOutMobs(entity);
         if (!pokemobs.isEmpty())
         {
             for (IPokemob pokemob : pokemobs)
@@ -85,7 +105,7 @@ public class AITrainerBattle extends EntityAIBase
                 // exit.
                 if (((Entity) pokemob).addedToChunk)
                 {
-                    trainer.outMob = pokemob;
+                    trainer.setOutMob(pokemob);
                     return;
                 }
             }
@@ -93,22 +113,22 @@ public class AITrainerBattle extends EntityAIBase
         }
         // If no mob was found, then it means trainer was not throwing cubes, as
         // those are counted along with active pokemobs.
-        trainer.setAIState(EntityHasAIStates.THROWING, false);
+        aiTracker.setAIState(IHasAIStates.THROWING, false);
         // If the trainer is on attack cooldown, then check if to send message
         // about next pokemob, or to return early.
-        if (trainer.attackCooldown > 0)
+        if (trainer.getAttackCooldown() > 0)
         {
             // If no next pokemob, reset trainer and return early.
             if (!CompatWrapper.isValid(trainer.getNextPokemob()))
             {
-                trainer.setAIState(EntityHasAIStates.INBATTLE, false);
+                aiTracker.setAIState(IHasAIStates.INBATTLE, false);
                 trainer.onDefeated(trainer.getTarget());
                 trainer.resetPokemob();
                 return;
             }
             // If cooldown is at specific number, send the message for sending
             // out next pokemob.
-            if (trainer.attackCooldown == Config.instance.trainerSendOutDelay / 2)
+            if (trainer.getAttackCooldown() == Config.instance.trainerSendOutDelay / 2)
             {
                 ItemStack nextStack = trainer.getNextPokemob();
                 if (CompatWrapper.isValid(nextStack))
@@ -116,10 +136,9 @@ public class AITrainerBattle extends EntityAIBase
                     IPokemob next = PokecubeManager.itemToPokemob(nextStack, world);
                     if (next != null)
                     {
-                        trainer.getTarget()
-                        .sendMessage(trainer.getMessage(MessageState.ABOUTSEND, trainer.getDisplayName(),
-                                next.getPokemonDisplayName(), trainer.getTarget().getDisplayName()));
-                        trainer.doAction(MessageState.ABOUTSEND, trainer.getTarget());
+                        messages.sendMessage(MessageState.ABOUTSEND, trainer.getTarget(), entity.getDisplayName(),
+                                next.getPokemonDisplayName(), trainer.getTarget().getDisplayName());
+                        messages.doAction(MessageState.ABOUTSEND, trainer.getTarget());
                     }
                 }
             }
@@ -160,7 +179,7 @@ public class AITrainerBattle extends EntityAIBase
      * as current attack */
     private void setMostDamagingMove()
     {
-        IPokemob outMob = trainer.outMob;
+        IPokemob outMob = trainer.getOutMob();
         int index = outMob.getMoveIndex();
         int max = 0;
         Entity target = ((EntityLiving) outMob).getAttackTarget();
@@ -194,13 +213,14 @@ public class AITrainerBattle extends EntityAIBase
         if (trainer.getTarget() == null) return;
         // Check if in range, if too far, target has run away, so forget about
         // it.
-        double distance = trainer.getDistanceSqToEntity(trainer.getTarget());
+        double distance = entity.getDistanceSqToEntity(trainer.getTarget());
         if (distance > 1024)
         {
             trainer.setTarget(null);
             trainer.resetPokemob();
         }
-        else if (trainer.outMob != null && !((Entity) trainer.outMob).isDead && ((Entity) trainer.outMob).addedToChunk)
+        else if (trainer.getOutMob() != null && !((Entity) trainer.getOutMob()).isDead
+                && ((Entity) trainer.getOutMob()).addedToChunk)
         {
             // If trainer has a living, real mob out, tell it to do stuff.
             // Check if pokemob has a valid Pokemob as a target.
@@ -217,7 +237,7 @@ public class AITrainerBattle extends EntityAIBase
         {
             // Set out mob to null if it is dead so the trainer forgets about
             // it.
-            trainer.outMob = null;
+            trainer.setOutMob(null);
             // Do agression code for sending out next pokemob.
             doAggression();
         }

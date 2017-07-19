@@ -132,6 +132,9 @@ public class Config extends ConfigBase
     public int                         trainerSightRange    = 10;
     @Configure(category = trainers)
     public int                         trainerDeAgressTicks = 50;
+    @Configure(category = trainers)
+    public boolean                     npcsAreTrainers      = true;
+
     @Configure(category = misc)
     public boolean                     bagHoldAll           = false;
     @Configure(category = misc)

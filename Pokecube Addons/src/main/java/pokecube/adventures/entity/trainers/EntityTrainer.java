@@ -16,7 +16,6 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
@@ -29,19 +28,19 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.advancements.Triggers;
-import pokecube.adventures.ai.trainers.AITrainerBattle;
 import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.entity.helper.EntityHasPokemobs;
+import pokecube.adventures.entity.helper.EntityTrainerBase;
 import pokecube.adventures.entity.helper.MessageState;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -58,7 +57,7 @@ import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
-public class EntityTrainer extends EntityHasPokemobs
+public class EntityTrainer extends EntityTrainerBase
 {
     public static class DefeatEntry
     {
@@ -129,7 +128,7 @@ public class EntityTrainer extends EntityHasPokemobs
     public EntityTrainer(World par1World, Vector3 location, boolean stationary)
     {
         super(par1World);
-        this.resetTime = battleCooldown;
+        if (pokemobsCap instanceof DefaultPokemobs) this.resetTime = ((DefaultPokemobs) pokemobsCap).battleCooldown;
         this.setSize(0.6F, 1.8F);
         initAI(location, stationary);
     }
@@ -144,7 +143,7 @@ public class EntityTrainer extends EntityHasPokemobs
             {
                 if (resetTime > 0)
                 {
-                    long diff = world.getTotalWorldTime() - s.defeatTime;
+                    long diff = getEntityWorld().getTotalWorldTime() - s.defeatTime;
                     if (diff > resetTime)
                     {
                         defeaters.remove(s);
@@ -159,13 +158,13 @@ public class EntityTrainer extends EntityHasPokemobs
 
     private void addMobTrades(ItemStack buy1)
     {
-        for (int i = 0; i < pokecubes.size(); i++)
+        for (int i = 0; i < getPokecubes().size(); i++)
         {
-            ItemStack stack = pokecubes.get(i);
+            ItemStack stack = getPokecubes().get(i);
             if (PokecubeManager.isFilled(stack))
             {
-                IPokemob mon = PokecubeManager.itemToPokemob(stack, world);
-                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, world);
+                IPokemob mon = PokecubeManager.itemToPokemob(stack, getEntityWorld());
+                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, getEntityWorld());
                 int stat = getBaseStats(mon);
                 int stat1 = getBaseStats(mon1);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
@@ -186,7 +185,7 @@ public class EntityTrainer extends EntityHasPokemobs
     protected void addRandomTrades()
     {
         itemList.clear();
-        itemList.addAll(type.getRecipes(this));
+        itemList.addAll(getType().getRecipes(this));
     }
 
     @Override
@@ -203,7 +202,7 @@ public class EntityTrainer extends EntityHasPokemobs
                     entity = ((IEntityOwnable) entity).getOwner();
                 }
             }
-            if (attackCooldown <= 0)
+            if (getAttackCooldown() <= 0)
             {
                 setTrainerTarget(entity);
                 if (entity != source.getTrueSource()) return false;
@@ -254,7 +253,7 @@ public class EntityTrainer extends EntityHasPokemobs
             IPokemob mob = (IPokemob) entity;
             if (mob.getPokemonOwner() != null && getTarget() == null)
             {
-                if (attackCooldown <= 0) setTarget(mob.getPokemonOwner());
+                if (getAttackCooldown() <= 0) setTarget(mob.getPokemonOwner());
                 this.throwCubeAt(entity);
             }
         }
@@ -264,7 +263,6 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(1, new AITrainerFindTarget(this, EntityPlayer.class));
-        this.tasks.addTask(1, new AITrainerBattle(this));
         this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));
@@ -285,51 +283,29 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         if (hasDefeated(defeater)) return;
         if (defeater != null)
-            defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), world.getTotalWorldTime()));
-        if (reward != null && defeater instanceof EntityPlayer)
+            defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), getEntityWorld().getTotalWorldTime()));
+        if (getRewards() != null && defeater instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) defeater;
-            for (ItemStack i : reward)
-            {
-                if (!CompatWrapper.isValid(i)) continue;
-                if (!player.inventory.addItemStackToInventory(i.copy()))
-                {
-                    EntityItem item = defeater.entityDropItem(i.copy(), 0.5f);
-                    if (item == null)
-                    {
-                        System.out.println("Test" + item + " " + i);
-                        continue;
-                    }
-                    item.setPickupDelay(0);
-                }
-                checkItemAchievement(i, player);
-                ITextComponent text = getMessage(MessageState.GIVEITEM, this.getDisplayName(), i.getDisplayName(),
-                        player.getDisplayName());
-                defeater.sendMessage(text);
-                doAction(MessageState.GIVEITEM, player);
-            }
+            giveReward(player, this);
             checkDefeatAchievement(player);
         }
         if (defeater != null)
         {
-            ITextComponent text = getMessage(MessageState.DEFEAT, getDisplayName(), defeater.getDisplayName());
-            defeater.sendMessage(text);
-            if (defeater instanceof EntityLivingBase) doAction(MessageState.DEFEAT, (EntityLivingBase) defeater);
+            messages.sendMessage(MessageState.DEFEAT, defeater, getDisplayName(), defeater.getDisplayName());
+            if (defeater instanceof EntityLivingBase)
+                messages.doAction(MessageState.DEFEAT, (EntityLivingBase) defeater);
             if (notifyDefeat && defeater instanceof EntityPlayerMP)
             {
                 PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
                 packet.data.setInteger("I", getEntityId());
-                packet.data.setLong("L", world.getTotalWorldTime() + resetTime);
+                packet.data.setLong("L", getEntityWorld().getTotalWorldTime() + resetTime);
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) defeater);
             }
         }
         this.setTrainerTarget(null);
     }
-
-    public void checkItemAchievement(ItemStack item, EntityPlayer player)
-    {
-    }
-
+    
     public void checkDefeatAchievement(EntityPlayer player)
     {
         boolean leader = this instanceof EntityLeader;
@@ -347,11 +323,11 @@ public class EntityTrainer extends EntityHasPokemobs
         }
 
         super.onLivingUpdate();
-        if (world.isRemote) return;
+        if (getEntityWorld().isRemote) return;
 
-        if (getTarget() == null && getAIState(INBATTLE))
+        if (getTarget() == null && aiStates.getAIState(IHasAIStates.INBATTLE))
         {
-            setAIState(INBATTLE, false);
+            aiStates.setAIState(IHasAIStates.INBATTLE, false);
         }
 
         if (!added)
@@ -360,7 +336,7 @@ public class EntityTrainer extends EntityHasPokemobs
             TrainerSpawnHandler.addTrainerCoord(this);
         }
         ItemStack next;
-        if (cooldown > world.getTotalWorldTime()) next = CompatWrapper.nullStack;
+        if (getCooldown() > getEntityWorld().getTotalWorldTime()) next = CompatWrapper.nullStack;
         else next = getNextPokemob();
         if (CompatWrapper.isValid(next))
         {
@@ -371,9 +347,9 @@ public class EntityTrainer extends EntityHasPokemobs
             this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, CompatWrapper.nullStack);
         }
 
-        if (CompatWrapper.isValid(type.held))
+        if (CompatWrapper.isValid(getType().held))
         {
-            this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, type.held);
+            this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, getType().held);
         }
 
         EntityLivingBase target = getAttackTarget() != null ? getAttackTarget()
@@ -389,7 +365,7 @@ public class EntityTrainer extends EntityHasPokemobs
     @Override
     public void onUpdate()
     {
-        if (getNavigator().getPath() != null && getAIState(STATIONARY))
+        if (getNavigator().getPath() != null && aiStates.getAIState(IHasAIStates.STATIONARY))
         {
             if (guardAI.capability.getPos().distanceSq(0, 0, 0) == 0)
             {
@@ -433,16 +409,17 @@ public class EntityTrainer extends EntityHasPokemobs
     {
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
-            if (getType() != null && !world.isRemote && !CompatWrapper.isValid(player.getHeldItemMainhand()))
+            if (getType() != null && !getEntityWorld().isRemote && !CompatWrapper.isValid(player.getHeldItemMainhand()))
             {
-                String message = this.getName() + " " + getAIState(STATIONARY) + " " + countPokemon() + " ";
-                for (ItemStack i : pokecubes)
+                String message = this.getName() + " " + aiStates.getAIState(IHasAIStates.STATIONARY) + " "
+                        + countPokemon() + " ";
+                for (ItemStack i : getPokecubes())
                 {
                     if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";
                 }
                 player.sendMessage(new TextComponentString(message));
             }
-            else if (!world.isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
+            else if (!getEntityWorld().isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
             {
                 throwCubeAt(player);
             }
@@ -453,7 +430,7 @@ public class EntityTrainer extends EntityHasPokemobs
             if (CompatWrapper.isValid(player.getHeldItemMainhand())
                     && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
             {
-                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, world, getEntityId(), 0, 0);
+                player.openGui(PokecubeAdv.instance, PokecubeAdv.GUITRAINER_ID, getEntityWorld(), getEntityId(), 0, 0);
             }
         }
         else
@@ -476,7 +453,7 @@ public class EntityTrainer extends EntityHasPokemobs
             else if (friendlyCooldown >= 0)
             {
                 this.setCustomer(player);
-                if (!this.world.isRemote && trades && (getRecipes(player) == null || this.tradeList.size() > 0))
+                if (!this.getEntityWorld().isRemote && trades && (getRecipes(player) == null || this.tradeList.size() > 0))
                 {
                     player.displayVillagerTradeGui(this);
                     return true;
@@ -528,14 +505,14 @@ public class EntityTrainer extends EntityHasPokemobs
         this.location = location;
         if (location == null)
         {
-            setAIState(STATIONARY, false);
+            aiStates.setAIState(IHasAIStates.STATIONARY, false);
             guardAI.setPos(new BlockPos(0, 0, 0));
             guardAI.setTimePeriod(new TimePeriod(0, 0));
             return;
         }
         guardAI.setTimePeriod(TimePeriod.fullDay);
         guardAI.setPos(getPosition());
-        setAIState(STATIONARY, true);
+        aiStates.setAIState(IHasAIStates.STATIONARY, true);
     }
 
     public void setTrainerTarget(Entity e)
@@ -549,7 +526,7 @@ public class EntityTrainer extends EntityHasPokemobs
         {
             int index = getEntityId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
             name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
-            this.setCustomNameTag(type.name + " " + name);
+            this.setCustomNameTag(getType().name + " " + name);
         }
     }
 
@@ -562,7 +539,7 @@ public class EntityTrainer extends EntityHasPokemobs
 
         int num = poke2.getTagCompound().getInteger("slotnum");
         EntityLivingBase player2 = this;
-        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, world);
+        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, getEntityWorld());
         UUID trader2 = player2.getUniqueID();
         mon1.setPokemonOwner(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
@@ -573,12 +550,12 @@ public class EntityTrainer extends EntityHasPokemobs
 
     public void initTrainer(TypeTrainer type, int level)
     {
-        this.type = type;
+        this.setType(type);
         byte genders = type.genders;
         if (genders == 1) male = true;
         if (genders == 2) male = false;
         if (genders == 3) male = Math.random() < 0.5;
-        TypeTrainer.getRandomTeam(this, level, pokecubes, world);
+        TypeTrainer.getRandomTeam(pokemobsCap, this, level, getEntityWorld());
         if (randomize) shouldrefresh = true;
         if (type.hasBag)
         {
@@ -613,7 +590,7 @@ public class EntityTrainer extends EntityHasPokemobs
     // TODO new mechant method names.
     public World func_190670_t_()
     {
-        return this.world;
+        return this.getEntityWorld();
     }
 
     // TODO new mechant method names.
@@ -625,5 +602,17 @@ public class EntityTrainer extends EntityHasPokemobs
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
         return processInteract(player, hand, player.getHeldItem(hand));
+    }
+
+    @Override
+    public int getAgressDistance()
+    {
+        return sight <= 0 ? Config.instance.trainerSightRange : sight;
+    }
+
+    @Override
+    public boolean canBattle(EntityLivingBase target)
+    {
+        return !hasDefeated(target);
     }
 }

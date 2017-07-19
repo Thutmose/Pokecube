@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.AITrainerBattle;
 import pokecube.adventures.ai.trainers.AITrainerFindTarget;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.core.database.Database;
 import pokecube.core.utils.Tools;
@@ -23,7 +24,7 @@ public class EntityLeader extends EntityTrainer
     public EntityLeader(World world)
     {
         super(world);
-        setAIState(STATIONARY, true);
+        aiStates.setAIState(IHasAIStates.STATIONARY, true);
         trades = false;
         resetTime = 0;
     }
@@ -59,13 +60,13 @@ public class EntityLeader extends EntityTrainer
         int alevel = Tools.xpToLevel(Database.getEntry(1).getEvolutionMode(), level);
         level = Tools.levelToXp(Database.getEntry(1).getEvolutionMode(), alevel + 5);
 
-        this.type = type;
+        this.setType(type);
         byte genders = type.genders;
         if (genders == 1) male = true;
         if (genders == 2) male = false;
         if (genders == 3) male = Math.random() < 0.5;
 
-        TypeTrainer.getRandomTeam(this, level, pokecubes, world);
+        TypeTrainer.getRandomTeam(pokemobsCap, this, level, getEntityWorld());
         setTypes();
         trades = false;
     }
@@ -77,11 +78,11 @@ public class EntityLeader extends EntityTrainer
 
         if (ItemBadge.isBadge(player.getHeldItem(hand)))
         {
-            if (!reward.isEmpty()) reward.set(0, player.getHeldItem(hand).copy());
-            else reward.add(player.getHeldItem(hand).copy());
-            if (!world.isRemote) player.sendMessage(
+            if (!getRewards().isEmpty()) getRewards().set(0, player.getHeldItem(hand).copy());
+            else getRewards().add(player.getHeldItem(hand).copy());
+            if (!getEntityWorld().isRemote) player.sendMessage(
                     new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
-            this.setHeldItem(EnumHand.OFF_HAND, reward.get(0));
+            this.setHeldItem(EnumHand.OFF_HAND, getRewards().get(0));
         }
         return super.processInteract(player, hand, stack);
     }

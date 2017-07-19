@@ -254,7 +254,7 @@ public class CapabilityHasPokemobs
                 NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
                 if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
                 {
-                    instance.getPokecubes().add(CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                    instance.getPokecubes().set(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
                 }
             }
             instance.setType(TypeTrainer.getTrainer(nbt.getString("type")));

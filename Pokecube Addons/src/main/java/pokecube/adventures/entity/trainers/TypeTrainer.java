@@ -27,6 +27,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.helper.EntityHasTrades;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.BiomeMatcher;
 import pokecube.core.database.Pokedex;
@@ -152,12 +153,12 @@ public class TypeTrainer
             types.add(t);
     }
 
-    public static void getRandomTeam(EntityTrainer trainer, int level, List<ItemStack> pokecubes, World world)
+    public static void getRandomTeam(IHasPokemobs trainer, EntityLivingBase owner, int level, World world)
     {
         TypeTrainer type = trainer.getType();
 
         for (int i = 0; i < 6; i++)
-            pokecubes.set(i, CompatWrapper.nullStack);
+            trainer.getPokecubes().set(i, CompatWrapper.nullStack);
 
         if (level == 0) level = 5;
         int variance = PokecubeMod.core.getConfig().levelVariance;
@@ -173,11 +174,11 @@ public class TypeTrainer
                 if (s != null)
                 {
                     variance = new Random().nextInt(Math.max(1, variance));
-                    item = makeStack(s, trainer, world, level + variance);
+                    item = makeStack(s, owner, world, level + variance);
                 }
                 if (CompatWrapper.isValid(item)) break;
             }
-            pokecubes.set(i, item);
+            trainer.getPokecubes().set(i, item);
         }
     }
 

@@ -1,14 +1,41 @@
 package pokecube.adventures.events;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.ai.trainers.AITrainerBattle;
+import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
-import pokecube.adventures.entity.helper.EntityHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.DefaultAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.DefaultMessager;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.database.Database;
 import pokecube.core.events.PCEvent;
@@ -24,6 +51,10 @@ import thut.api.terrain.TerrainManager;
 
 public class PAEventsHandler
 {
+    final ResourceLocation POKEMOBSCAP = new ResourceLocation(PokecubeAdv.ID, "pokemobs");
+    final ResourceLocation AICAP       = new ResourceLocation(PokecubeAdv.ID, "ai");
+    final ResourceLocation MESSAGECAP  = new ResourceLocation(PokecubeAdv.ID, "messages");
+    final ResourceLocation REWARDSCAP  = new ResourceLocation(PokecubeAdv.ID, "rewards");
 
     public static void randomizeTrainerTeam(EntityTrainer trainer)
     {
@@ -59,14 +90,18 @@ public class PAEventsHandler
     {
         IPokemob recalled = evt.recalled;
         EntityLivingBase owner = recalled.getPokemonOwner();
-        if (owner instanceof EntityTrainer)
+        if (owner == null) return;
+        IHasPokemobs pokemobHolder = null;
+        if (owner.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            pokemobHolder = owner.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        else if (owner instanceof IHasPokemobs) pokemobHolder = (IHasPokemobs) owner;
+        if (pokemobHolder != null)
         {
-            EntityTrainer t = (EntityTrainer) owner;
-            if (recalled == t.outMob)
+            if (recalled == pokemobHolder.getOutMob())
             {
-                t.outMob = null;
+                pokemobHolder.setOutMob(null);
             }
-            t.addPokemob(PokecubeManager.pokemobToItem(recalled));
+            pokemobHolder.addPokemob(PokecubeManager.pokemobToItem(recalled));
         }
     }
 
@@ -107,20 +142,50 @@ public class PAEventsHandler
     {
         IPokemob sent = evt.pokemob;
         EntityLivingBase owner = sent.getPokemonOwner();
-        if (owner instanceof EntityTrainer)
+        if (owner == null || owner instanceof EntityPlayer) return;
+        IHasPokemobs pokemobHolder = null;
+        if (owner.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            pokemobHolder = owner.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        if (pokemobHolder != null)
         {
-            EntityTrainer t = (EntityTrainer) owner;
-            if (t.outMob != null && t.outMob != evt.pokemob)
+            if (pokemobHolder.getOutMob() != null && pokemobHolder.getOutMob() != evt.pokemob)
             {
-                t.outMob.returnToPokecube();
-                t.outMob = evt.pokemob;
-                t.setAIState(EntityHasAIStates.THROWING, false);
+                pokemobHolder.getOutMob().returnToPokecube();
+                pokemobHolder.setOutMob(evt.pokemob);
             }
             else
             {
-                t.outMob = evt.pokemob;
-                t.setAIState(EntityHasAIStates.THROWING, false);
+                pokemobHolder.setOutMob(evt.pokemob);
             }
+            IHasAIStates aiStates = null;
+            if (owner.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
+                aiStates = owner.getCapability(CapabilityAIStates.AISTATES_CAP, null);
+            if (aiStates != null) aiStates.setAIState(IHasAIStates.THROWING, false);
+        }
+    }
+
+    @SubscribeEvent
+    public void livingHurtEvent(LivingHurtEvent evt)
+    {
+        IHasPokemobs pokemobHolder = null;
+        if (evt.getEntityLiving().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            pokemobHolder = evt.getEntityLiving().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        if (pokemobHolder != null && pokemobHolder.getTarget() == null
+                && evt.getSource().getSourceOfDamage() instanceof EntityLivingBase)
+        {
+            pokemobHolder.setTarget((EntityLivingBase) evt.getSource().getSourceOfDamage());
+        }
+    }
+
+    @SubscribeEvent
+    public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
+    {
+        IHasPokemobs pokemobHolder = null;
+        if (evt.getTarget().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            pokemobHolder = evt.getTarget().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        if (pokemobHolder != null && pokemobHolder.getTarget() == null)
+        {
+            pokemobHolder.setTarget((EntityLivingBase) evt.getEntityLiving());
         }
     }
 
@@ -138,5 +203,38 @@ public class PAEventsHandler
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.getEntityPlayer());
             }
         }
+    }
+
+    @SubscribeEvent
+    public void attachCapabilities(AttachCapabilitiesEvent<Entity> event)
+    {
+        if (!((event.getObject() instanceof INpc) && (event.getObject() instanceof EntityLiving))) return;
+        if (!Config.instance.npcsAreTrainers && !(event.getObject() instanceof EntityTrainer)) return;
+        if (event.getCapabilities().containsKey(POKEMOBSCAP)) return;
+        DefaultPokemobs mobs = new DefaultPokemobs();
+        DefaultRewards rewards = new DefaultRewards();
+        rewards.getRewards().add(new ItemStack(Items.EMERALD));
+        DefaultAIStates aiStates = new DefaultAIStates();
+        DefaultMessager messages = new DefaultMessager();
+        mobs.init((EntityLivingBase) event.getObject(), aiStates, messages, rewards);
+        event.addCapability(POKEMOBSCAP, mobs);
+        event.addCapability(AICAP, aiStates);
+        event.addCapability(MESSAGECAP, messages);
+        event.addCapability(REWARDSCAP, rewards);
+    }
+
+    @SubscribeEvent
+    public void joinWorld(EntityJoinWorldEvent event)
+    {
+        if (!event.getEntity().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return;
+        IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        EntityLiving npc = (EntityLiving) event.getEntity();
+        List<TypeTrainer> list = Lists.newArrayList(TypeTrainer.typeMap.values());
+        mobs.setType(list.get(0));
+        int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
+                Database.getEntry(1));
+        TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());
+        npc.tasks.addTask(2, new AITrainerBattle(npc));
+        npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
     }
 }

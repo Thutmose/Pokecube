@@ -181,6 +181,7 @@ public class PAEventsHandler
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
         IHasPokemobs pokemobHolder = null;
+        if (evt.getTarget() == null) return;
         if (evt.getTarget().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
             pokemobHolder = evt.getTarget().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
         if (pokemobHolder != null && pokemobHolder.getTarget() == null)

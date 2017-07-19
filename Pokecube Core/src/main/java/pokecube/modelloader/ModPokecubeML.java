@@ -235,7 +235,7 @@ public class ModPokecubeML implements IMobProvider
             }
             else
             {
-                System.err.println("Failed to aquire XML for " + mob);
+                PokecubeMod.log("No XML for " + mob);
             }
         }
         catch (Exception e1)
@@ -330,14 +330,14 @@ public class ModPokecubeML implements IMobProvider
         PokedexEntry e;
         if ((e = Database.getEntry(mob)) != null)
         {
-            if (textureProviders.containsKey(e.getTrimmedName().toLowerCase(Locale.ENGLISH)))
-            {
-                e.setModId(textureProviders.get(e.getTrimmedName().toLowerCase(Locale.ENGLISH)));
-            }
-            else if (e.getBaseForme() != null
+            if (e.getBaseForme() != null
                     && textureProviders.containsKey(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)))
             {
                 e.setModId(textureProviders.get(e.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
+            }
+            else if (textureProviders.containsKey(e.getTrimmedName().toLowerCase(Locale.ENGLISH)))
+            {
+                e.setModId(textureProviders.get(e.getTrimmedName().toLowerCase(Locale.ENGLISH)));
             }
             else
             {

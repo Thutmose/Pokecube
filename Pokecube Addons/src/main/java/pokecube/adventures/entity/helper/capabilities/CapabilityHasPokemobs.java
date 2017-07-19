@@ -116,6 +116,12 @@ public class CapabilityHasPokemobs
 
         List<ItemStack> getPokecubes();
 
+        default void clear()
+        {
+            for (int i = 0; i < 6; i++)
+                getPokecubes().set(i, CompatWrapper.nullStack);
+        }
+
         /** The next pokemob to be sent out */
         default ItemStack getNextPokemob()
         {
@@ -250,7 +256,7 @@ public class CapabilityHasPokemobs
             NBTTagCompound nbt = (NBTTagCompound) base;
             if (nbt.hasKey("pokemobs", 9))
             {
-                instance.getPokecubes().clear();
+                instance.clear();
                 NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
                 if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
                 {

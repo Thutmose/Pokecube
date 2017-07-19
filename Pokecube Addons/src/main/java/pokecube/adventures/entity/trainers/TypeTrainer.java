@@ -16,12 +16,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
@@ -40,6 +43,8 @@ import thut.lib.CompatWrapper;
 
 public class TypeTrainer
 {
+    private static final int CAREERFIELDINDEX = 13;
+
     public static class TrainerTrades
     {
         public List<TrainerTrade> tradesList = Lists.newArrayList();
@@ -99,10 +104,30 @@ public class TypeTrainer
         }
     }
 
-    public static HashMap<String, TrainerTrades> tradesMap   = Maps.newHashMap();
-    public static HashMap<String, TypeTrainer>   typeMap     = new HashMap<String, TypeTrainer>();
-    public static ArrayList<String>              maleNames   = new ArrayList<String>();
-    public static ArrayList<String>              femaleNames = new ArrayList<String>();
+    public static interface ITypeMapper
+    {
+        default TypeTrainer getType(EntityLivingBase mob)
+        {
+            if (mob instanceof EntityVillager)
+            {
+                EntityVillager villager = (EntityVillager) mob;
+                VillagerProfession profession = villager.getProfessionForge();
+                int career = ReflectionHelper.getPrivateValue(EntityVillager.class, villager, CAREERFIELDINDEX);
+                String type = profession.getCareer(career).getName();
+                return getTrainer(type);
+            }
+            return null;
+        }
+    }
+
+    public static ITypeMapper                    mobTypeMapper = new ITypeMapper()
+                                                               {
+                                                               };
+
+    public static HashMap<String, TrainerTrades> tradesMap     = Maps.newHashMap();
+    public static HashMap<String, TypeTrainer>   typeMap       = new HashMap<String, TypeTrainer>();
+    public static ArrayList<String>              maleNames     = new ArrayList<String>();
+    public static ArrayList<String>              femaleNames   = new ArrayList<String>();
 
     public static void addTrainer(String name, TypeTrainer type)
     {
@@ -141,9 +166,16 @@ public class TypeTrainer
     public static TypeTrainer getTrainer(String name)
     {
         TypeTrainer ret = typeMap.get(name);
-        if (ret == null) for (TypeTrainer t : typeMap.values())
+        if (ret == null)
         {
-            if (t != null) return t;
+            for (TypeTrainer t : typeMap.values())
+            {
+                if (t != null && t.name.equalsIgnoreCase(name)) return t;
+            }
+            for (TypeTrainer t : typeMap.values())
+            {
+                if (t != null) return t;
+            }
         }
         return ret;
     }

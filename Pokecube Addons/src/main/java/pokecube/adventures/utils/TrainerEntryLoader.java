@@ -165,7 +165,7 @@ public class TrainerEntryLoader
             }
 
             type.hasBelt = entry.belt;
-            type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male
+            if (entry.gender != null) type.genders = (byte) (entry.gender.equalsIgnoreCase("male") ? male
                     : entry.gender.equalsIgnoreCase("female") ? female : male + female);
             String[] pokeList = entry.pokemon == null ? new String[] {} : entry.pokemon.split(",");
             if (entry.held != null)

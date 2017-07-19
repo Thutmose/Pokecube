@@ -13,6 +13,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.database.Database;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class DBLoader
 {
@@ -32,7 +34,7 @@ public class DBLoader
     static String              male             = "male:,Anthony,Bailey,Benjamin,Daniel,Erik,Jim,Kenny,Leonard,Michael,Parry,Philip,Russell,Sidney,Tim,Timothy,Wade,Al,Arnie,Benny,Don,Doug,Ed,Josh,Ken,Rob,Joey,Mikey,Albert,Gordon,Ian,Jason,Jimmy,Owen,Samuel,Warren,Aaron,Allen,Blake,Brian,Abe";
 
     public static List<String> trainerDatabases = Lists.newArrayList("villagers.xml");
-    public static List<String> tradeDatabases   = Lists.newArrayList("trades.xml");
+    public static List<String> tradeDatabases   = Lists.newArrayList();
 
     public static void checkConfigFiles(FMLPreInitializationEvent evt)
     {
@@ -49,8 +51,7 @@ public class DBLoader
         {
             temp.mkdirs();
         }
-        copyDatabaseFile("trainers.xml");
-        copyDatabaseFile("trades.xml");
+        copyDatabaseFile("villagers.xml");
         copyDatabaseFile("names.csv");
         DBLOCATION = CONFIGLOC;
         return;
@@ -155,7 +156,7 @@ public class DBLoader
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "error loading databases.", e);
         }
         loadNames();
         TypeTrainer.postInitTrainers();

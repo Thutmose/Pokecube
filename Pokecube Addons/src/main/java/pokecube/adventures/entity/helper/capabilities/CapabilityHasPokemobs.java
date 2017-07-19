@@ -238,7 +238,7 @@ public class CapabilityHasPokemobs
             nbt.setTag("pokemobs", nbttaglist);
             nbt.setInteger("nextSlot", instance.getNextSlot());
             if (instance.getOutID() != null) nbt.setString("outPokemob", instance.getOutID().toString());
-            nbt.setString("type", instance.getType().name);
+            if (instance.getType() != null) nbt.setString("type", instance.getType().name);
             nbt.setLong("nextBattle", instance.getCooldown());
             if (instance instanceof DefaultPokemobs)
             {

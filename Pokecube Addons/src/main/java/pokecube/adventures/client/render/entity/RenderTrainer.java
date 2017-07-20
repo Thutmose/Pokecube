@@ -78,13 +78,13 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
     @Override
     /** Returns the location of an entity's texture. Doesn't seem to be called
      * unless you call Render.bindEntityTexture. */
-    protected ResourceLocation getEntityTexture(T villager)
+    protected ResourceLocation getEntityTexture(T entity)
     {
         ResourceLocation texture = null;
 
-        if (villager instanceof EntityTrainer)
+        if (entity instanceof EntityTrainer)
         {
-            EntityTrainer trainer = ((EntityTrainer) villager);
+            EntityTrainer trainer = ((EntityTrainer) entity);
             if (!trainer.playerName.isEmpty())
             {
                 if (players.containsKey(trainer.playerName)) return players.get(trainer.playerName);
@@ -142,7 +142,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
             }
             if (texture == null)
             {
-                texture = type == null ? super.getEntityTexture(villager) : type.getTexture(trainer);
+                texture = type == null ? super.getEntityTexture(entity) : type.getTexture(trainer);
 
                 if (trainer.male)
                 {

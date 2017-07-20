@@ -1,5 +1,9 @@
 package pokecube.adventures.events;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -9,9 +13,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -220,9 +228,29 @@ public class PAEventsHandler
         event.addCapability(REWARDSCAP, rewards);
     }
 
+    public static final Map<Class<? extends Entity>, DataParameter<String>> parameters = Maps.newHashMap();
+
+    @SubscribeEvent
+    public void onConstruct(EntityConstructing event)
+    {
+        if (!((event.getEntity() instanceof INpc) && (event.getEntity() instanceof EntityLiving))) return;
+        if (!Config.instance.npcsAreTrainers && !(event.getEntity() instanceof EntityTrainer)) return;
+
+        // TODO this should be found via class checking the entitylist, and
+        // initialize thise at startup.
+        if (!parameters.containsKey(event.getEntity().getClass()))
+        {
+            DataParameter<String> value = EntityDataManager.<String> createKey(event.getEntity().getClass(),
+                    DataSerializers.STRING);
+            parameters.put(event.getEntity().getClass(), value);
+        }
+        event.getEntity().getDataManager().register(parameters.get(event.getEntity().getClass()), "");
+    }
+
     @SubscribeEvent
     public void joinWorld(EntityJoinWorldEvent event)
     {
+        if (event.getEntity().getEntityWorld().isRemote) return;
         if (!event.getEntity().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return;
         IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
         if (mobs.getType() != null) return;

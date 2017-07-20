@@ -1,11 +1,7 @@
 package pokecube.adventures.entity.helper.capabilities;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -19,9 +15,6 @@ public class CapabilityAIStates
 
     public static interface IHasAIStates
     {
-        public static final DataParameter<Integer> AIACTIONSTATESDW = EntityDataManager
-                .<Integer> createKey(EntityLivingBase.class, DataSerializers.VARINT);
-
         public static final int                    STATIONARY       = 1;
         public static final int                    INBATTLE         = 2;
         public static final int                    THROWING         = 4;

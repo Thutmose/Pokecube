@@ -11,12 +11,12 @@ import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -32,7 +32,7 @@ public class AITrainerBattle extends EntityAIBase
     // The trainer Entity
     final EntityLivingBase entity;
     final IHasPokemobs     trainer;
-    final IHasAIStates     aiTracker;
+    final IHasNPCAIStates  aiTracker;
     final IHasMessages     messages;
     final boolean          valid;
     int                    noSeeTicks = 0;
@@ -41,15 +41,9 @@ public class AITrainerBattle extends EntityAIBase
     {
         this.entity = trainer;
         this.world = trainer.getEntityWorld();
-        if (trainer.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
-            this.aiTracker = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
-        else this.aiTracker = null;
-        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            this.trainer = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        else this.trainer = null;
-        if (trainer.hasCapability(CapabilityMessages.MESSAGES_CAP, null))
-            this.messages = trainer.getCapability(CapabilityMessages.MESSAGES_CAP, null);
-        else this.messages = null;
+        this.aiTracker = CapabilityNPCAIStates.getNPCAIStates(trainer);
+        this.trainer = CapabilityHasPokemobs.getHasPokemobs(trainer);
+        this.messages = CapabilityNPCMessages.getMessages(trainer);
         valid = trainer != null && aiTracker != null && messages != null;
     }
 
@@ -114,7 +108,7 @@ public class AITrainerBattle extends EntityAIBase
         }
         // If no mob was found, then it means trainer was not throwing cubes, as
         // those are counted along with active pokemobs.
-        aiTracker.setAIState(IHasAIStates.THROWING, false);
+        aiTracker.setAIState(IHasNPCAIStates.THROWING, false);
         // If the trainer is on attack cooldown, then check if to send message
         // about next pokemob, or to return early.
         if (trainer.getAttackCooldown() > 0)
@@ -122,7 +116,7 @@ public class AITrainerBattle extends EntityAIBase
             // If no next pokemob, reset trainer and return early.
             if (!CompatWrapper.isValid(trainer.getNextPokemob()))
             {
-                aiTracker.setAIState(IHasAIStates.INBATTLE, false);
+                aiTracker.setAIState(IHasNPCAIStates.INBATTLE, false);
                 trainer.onDefeated(trainer.getTarget());
                 trainer.resetPokemob();
                 return;

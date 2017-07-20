@@ -14,9 +14,10 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import thut.lib.CompatWrapper;
 
 public class CapabilityHasRewards
@@ -24,6 +25,14 @@ public class CapabilityHasRewards
     @CapabilityInject(IHasRewards.class)
     public static final Capability<IHasRewards> REWARDS_CAP = null;
     public static Storage                       storage;
+
+    public static IHasRewards getHasRewards(ICapabilityProvider entityIn)
+    {
+        IHasRewards pokemobHolder = null;
+        if (entityIn.hasCapability(REWARDS_CAP, null)) pokemobHolder = entityIn.getCapability(REWARDS_CAP, null);
+        else if (entityIn instanceof IHasRewards) return (IHasRewards) entityIn;
+        return pokemobHolder;
+    }
 
     public static interface IHasRewards
     {
@@ -43,8 +52,7 @@ public class CapabilityHasRewards
                     }
                     item.setPickupDelay(0);
                 }
-                IHasMessages messageSender = rewarder instanceof IHasMessages ? (IHasMessages) rewarder
-                        : rewarder.getCapability(CapabilityMessages.MESSAGES_CAP, null);
+                IHasMessages messageSender = CapabilityNPCMessages.getMessages(rewarder);
                 if (messageSender != null)
                 {
                     messageSender.sendMessage(MessageState.GIVEITEM, player, rewarder.getDisplayName(),

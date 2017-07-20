@@ -633,7 +633,7 @@ public class AIHungry extends AIBase
         {
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
-        if (world == null || pokemob.isAncient() || entity.getAttackTarget() != null) return false;
+        if (world == null || entity.getAttackTarget() != null) return false;
         hungrymob.setHungerCooldown(hungrymob.getHungerCooldown() - 1);
         hungrymob.setHungerTime(hungrymob.getHungerTime() + 1);
         boolean hunting = pokemob.getPokemonAIState(IMoveConstants.HUNTING);

@@ -16,13 +16,14 @@ import net.minecraft.stats.Achievement;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
@@ -45,6 +46,15 @@ public class CapabilityHasPokemobs
     @CapabilityInject(IHasPokemobs.class)
     public static final Capability<IHasPokemobs> HASPOKEMOBS_CAP = null;
     public static Storage                        storage;
+
+    public static IHasPokemobs getHasPokemobs(ICapabilityProvider entityIn)
+    {
+        IHasPokemobs pokemobHolder = null;
+        if (entityIn.hasCapability(HASPOKEMOBS_CAP, null))
+            pokemobHolder = entityIn.getCapability(HASPOKEMOBS_CAP, null);
+        else if (entityIn instanceof IHasPokemobs) return (IHasPokemobs) entityIn;
+        return pokemobHolder;
+    }
 
     public static interface IHasPokemobs
     {
@@ -364,7 +374,7 @@ public class CapabilityHasPokemobs
         public int                    battleCooldown   = -1;
         private byte                  gender           = 1;
         private EntityLivingBase      user;
-        private IHasAIStates          aiStates;
+        private IHasNPCAIStates          aiStates;
         private IHasMessages          messages;
         private IHasRewards           rewards;
         private int                   nextSlot;
@@ -382,7 +392,7 @@ public class CapabilityHasPokemobs
         DataParamHolder               holder;
         // DataParameter<String> PARAM;
 
-        public void init(EntityLivingBase user, IHasAIStates aiStates, IHasMessages messages, IHasRewards rewards)
+        public void init(EntityLivingBase user, IHasNPCAIStates aiStates, IHasMessages messages, IHasRewards rewards)
         {
             this.user = user;
             this.aiStates = aiStates;
@@ -433,8 +443,8 @@ public class CapabilityHasPokemobs
         {
             setNextSlot(0);
             PCEventsHandler.recallAllPokemobs(user);
-            aiStates.setAIState(IHasAIStates.THROWING, false);
-            aiStates.setAIState(IHasAIStates.INBATTLE, false);
+            aiStates.setAIState(IHasNPCAIStates.THROWING, false);
+            aiStates.setAIState(IHasNPCAIStates.INBATTLE, false);
             setOutMob(null);
             setCooldown(user.getEntityWorld().getTotalWorldTime() + battleCooldown);
         }
@@ -448,7 +458,7 @@ public class CapabilityHasPokemobs
         @Override
         public void lowerCooldowns()
         {
-            if (aiStates.getAIState(IHasAIStates.PERMFRIENDLY)) { return; }
+            if (aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY)) { return; }
             if (friendlyCooldown-- >= 0) return;
             boolean done = getAttackCooldown() <= 0;
             if (done)
@@ -456,11 +466,11 @@ public class CapabilityHasPokemobs
                 setAttackCooldown(-1);
                 setNextSlot(0);
             }
-            else if (getOutMob() == null && !aiStates.getAIState(IHasAIStates.THROWING))
+            else if (getOutMob() == null && !aiStates.getAIState(IHasNPCAIStates.THROWING))
             {
                 setAttackCooldown(getAttackCooldown() - 1);
             }
-            if (aiStates.getAIState(IHasAIStates.INBATTLE)) return;
+            if (aiStates.getAIState(IHasNPCAIStates.INBATTLE)) return;
             if (!done && getTarget() != null)
             {
                 setTarget(null);
@@ -475,18 +485,18 @@ public class CapabilityHasPokemobs
                 attackCooldown = Config.instance.trainerBattleDelay;
                 messages.sendMessage(MessageState.AGRESS, target, user.getDisplayName(), target.getDisplayName());
                 messages.doAction(MessageState.AGRESS, target);
-                aiStates.setAIState(IHasAIStates.INBATTLE, true);
+                aiStates.setAIState(IHasNPCAIStates.INBATTLE, true);
             }
             if (target == null)
             {
-                if (this.target != null && aiStates.getAIState(IHasAIStates.INBATTLE))
+                if (this.target != null && aiStates.getAIState(IHasNPCAIStates.INBATTLE))
                 {
                     messages.sendMessage(MessageState.DEAGRESS, this.target, user.getDisplayName(),
                             this.target.getDisplayName());
                     messages.doAction(MessageState.DEAGRESS, target);
                 }
-                aiStates.setAIState(IHasAIStates.THROWING, false);
-                aiStates.setAIState(IHasAIStates.INBATTLE, false);
+                aiStates.setAIState(IHasNPCAIStates.THROWING, false);
+                aiStates.setAIState(IHasNPCAIStates.INBATTLE, false);
             }
             this.target = target;
         }
@@ -573,11 +583,11 @@ public class CapabilityHasPokemobs
         @Override
         public void onAddMob()
         {
-            if (getTarget() == null || aiStates.getAIState(IHasAIStates.THROWING) || getOutMob() != null
+            if (getTarget() == null || aiStates.getAIState(IHasNPCAIStates.THROWING) || getOutMob() != null
                     || CompatWrapper.isValid(getNextPokemob()))
                 return;
-            aiStates.setAIState(IHasAIStates.INBATTLE, false);
-            if (getOutMob() == null && !aiStates.getAIState(IHasAIStates.THROWING))
+            aiStates.setAIState(IHasNPCAIStates.INBATTLE, false);
+            if (getOutMob() == null && !aiStates.getAIState(IHasNPCAIStates.THROWING))
             {
                 if (getCooldown() <= user.getEntityWorld().getTotalWorldTime())
                 {
@@ -591,17 +601,17 @@ public class CapabilityHasPokemobs
         @Override
         public void throwCubeAt(Entity target)
         {
-            if (target == null || aiStates.getAIState(IHasAIStates.THROWING)) return;
+            if (target == null || aiStates.getAIState(IHasNPCAIStates.THROWING)) return;
             ItemStack i = getNextPokemob();
             if (CompatWrapper.isValid(i))
             {
-                aiStates.setAIState(IHasAIStates.INBATTLE, true);
+                aiStates.setAIState(IHasNPCAIStates.INBATTLE, true);
                 IPokecube cube = (IPokecube) i.getItem();
                 Vector3 here = Vector3.getNewVector().set(user);
                 Vector3 t = Vector3.getNewVector().set(target);
                 t.set(t.subtractFrom(here).scalarMultBy(0.5).addTo(here));
                 cube.throwPokecubeAt(user.getEntityWorld(), user, i, t, null);
-                aiStates.setAIState(IHasAIStates.THROWING, true);
+                aiStates.setAIState(IHasNPCAIStates.THROWING, true);
                 attackCooldown = Config.instance.trainerSendOutDelay;
                 messages.sendMessage(MessageState.SENDOUT, target, user.getDisplayName(), i.getDisplayName(),
                         target.getDisplayName());

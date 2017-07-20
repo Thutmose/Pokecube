@@ -8,8 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import thut.api.maths.Vector3;
@@ -21,18 +21,14 @@ public class AITrainerFindTarget extends EntityAIBase
     // The entity (normally a player) that is the target of this trainer.
     Class<? extends EntityLivingBase> targetClass;
     final EntityLivingBase            entity;
-    final IHasAIStates                aiStates;
+    final IHasNPCAIStates             aiStates;
     final IHasPokemobs                trainer;
 
     public AITrainerFindTarget(EntityLivingBase trainer, Class<? extends EntityLivingBase> targetClass)
     {
         this.entity = trainer;
-        if (trainer.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
-            this.aiStates = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
-        else this.aiStates = (IHasAIStates) trainer;
-        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            this.trainer = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        else this.trainer = (IHasPokemobs) trainer;
+        this.aiStates = CapabilityNPCAIStates.getNPCAIStates(trainer);
+        this.trainer = CapabilityHasPokemobs.getHasPokemobs(trainer);
         this.world = trainer.getEntityWorld();
         this.setMutexBits(0);
         this.targetClass = targetClass;
@@ -94,8 +90,8 @@ public class AITrainerFindTarget extends EntityAIBase
         {
             // If trainer was in battle (any of these 3) reset trainer before
             // returning.
-            if (trainer.getOutMob() != null || aiStates.getAIState(IHasAIStates.THROWING)
-                    || aiStates.getAIState(IHasAIStates.INBATTLE))
+            if (trainer.getOutMob() != null || aiStates.getAIState(IHasNPCAIStates.THROWING)
+                    || aiStates.getAIState(IHasNPCAIStates.INBATTLE))
             {
                 trainer.resetPokemob();
             }

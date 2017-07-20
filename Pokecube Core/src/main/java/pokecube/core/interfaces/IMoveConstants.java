@@ -113,43 +113,55 @@ public interface IMoveConstants extends IMoveNames
     /** A sleeping pokemon will try to sit at its home location */
     static final int SLEEPING             = 1 << 6;
     /** Indicates that the pokemon is going to execute a utility move. */
+    @NonPersistantAI
     static final int EXECUTINGMOVE        = 1 << 7;
     /** Indeicates that there is a new utility move to use. */
+    @NonPersistantAI
     static final int NEWEXECUTEMOVE       = 1 << 8;
     /** Pokemon is held by the player. */
     static final int NOITEMUSE            = 1 << 9;
     /** Pokemon is on the player's shoulder */
     static final int NOMOVESWAP           = 1 << 10;
     /** Pokemon is idle. */
+    @NonPersistantAI
     static final int IDLE                 = 1 << 11;
     /** Has the Pokemon been traded */
     static final int TRADED               = 1 << 12;
     /** Does the pokemon have a saddle on it */
     static final int SADDLED              = 1 << 13;
     /** is the pokemon leaping, used for the leap AI */
+    @NonPersistantAI
     static final int LEAPING              = 1 << 14;
     /** in the process of dodging, used to determine if to use the old attack
      * location, or new */
+    @NonPersistantAI
     static final int DODGING              = 1 << 15;
     /** Pokemon is fighting over mate, should stop when hp hits 50%. */
+    @NonPersistantAI
     static final int MATEFIGHT            = 1 << 16;
     /** Is the pokemon just exiting the pokecube */
     static final int EXITINGCUBE          = 1 << 17;
     /** Is the pokemob currently trying to mate */
+    @NonPersistantAI
     static final int MATING               = 1 << 18;
     /** does the pokemob have a new move to learn */
     static final int LEARNINGMOVE         = 1 << 19;
     // /** is the pokemob pathing to owner */
+    @NonPersistantAI
     static final int PATHING              = 1 << 20;
     /** is the pokemob jumping */
+    @NonPersistantAI
     static final int JUMPING              = 1 << 21;
     /** is the pokemob in lava */
+    @NonPersistantAI
     static final int INLAVA               = 1 << 22;
     /** is the pokemob in water */
+    @NonPersistantAI
     static final int INWATER              = 1 << 23;
     /** is the pokemob tired */
     static final int TIRED                = 1 << 24;
     /** is the pokemob evolving */
+    @NonPersistantAI
     static final int EVOLVING             = 1 << 25;
     /** is the pokemob sheared */
     static final int SHEARED              = 1 << 26;

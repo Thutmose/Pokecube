@@ -32,14 +32,14 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.ai.trainers.AITrainerBattle;
 import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.DefaultAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.DefaultMessager;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.DefaultMessager;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -97,10 +97,7 @@ public class PAEventsHandler
         IPokemob recalled = evt.recalled;
         EntityLivingBase owner = recalled.getPokemonOwner();
         if (owner == null) return;
-        IHasPokemobs pokemobHolder = null;
-        if (owner.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            pokemobHolder = owner.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        else if (owner instanceof IHasPokemobs) pokemobHolder = (IHasPokemobs) owner;
+        IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(owner);
         if (pokemobHolder != null)
         {
             if (recalled == pokemobHolder.getOutMob())
@@ -149,9 +146,7 @@ public class PAEventsHandler
         IPokemob sent = evt.pokemob;
         EntityLivingBase owner = sent.getPokemonOwner();
         if (owner == null || owner instanceof EntityPlayer) return;
-        IHasPokemobs pokemobHolder = null;
-        if (owner.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            pokemobHolder = owner.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(owner);
         if (pokemobHolder != null)
         {
             if (pokemobHolder.getOutMob() != null && pokemobHolder.getOutMob() != evt.pokemob)
@@ -163,19 +158,15 @@ public class PAEventsHandler
             {
                 pokemobHolder.setOutMob(evt.pokemob);
             }
-            IHasAIStates aiStates = null;
-            if (owner.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
-                aiStates = owner.getCapability(CapabilityAIStates.AISTATES_CAP, null);
-            if (aiStates != null) aiStates.setAIState(IHasAIStates.THROWING, false);
+            IHasNPCAIStates aiStates = CapabilityNPCAIStates.getNPCAIStates(owner);
+            if (aiStates != null) aiStates.setAIState(IHasNPCAIStates.THROWING, false);
         }
     }
 
     @SubscribeEvent
     public void livingHurtEvent(LivingHurtEvent evt)
     {
-        IHasPokemobs pokemobHolder = null;
-        if (evt.getEntityLiving().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            pokemobHolder = evt.getEntityLiving().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(evt.getEntityLiving());
         if (pokemobHolder != null && pokemobHolder.getTarget() == null
                 && evt.getSource().getSourceOfDamage() instanceof EntityLivingBase)
         {
@@ -186,10 +177,8 @@ public class PAEventsHandler
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
-        IHasPokemobs pokemobHolder = null;
         if (evt.getTarget() == null) return;
-        if (evt.getTarget().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            pokemobHolder = evt.getTarget().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(evt.getTarget());
         if (pokemobHolder != null && pokemobHolder.getTarget() == null)
         {
             pokemobHolder.setTarget((EntityLivingBase) evt.getEntityLiving());
@@ -200,8 +189,7 @@ public class PAEventsHandler
     public void TrainerWatchEvent(StartTracking event)
     {
         if (event.getEntity().getEntityWorld().isRemote) return;
-        if (!event.getEntity().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return;
-        IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(event.getEntity());
         if (!(mobs instanceof DefaultPokemobs)) return;
         DefaultPokemobs pokemobs = (DefaultPokemobs) mobs;
         if (event.getEntityPlayer() instanceof EntityPlayerMP)
@@ -255,7 +243,7 @@ public class PAEventsHandler
                     npc.tasks.addTask(0, new AITrainerBattle(npc));
                     npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
                     stale.add(npc);
-                    IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+                    IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
                     TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc);
                     if (newType == null) continue;
                     mobs.setType(newType);

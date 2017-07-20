@@ -42,9 +42,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
     public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        if (entitylivingbaseIn.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            this.pokemobCap = entitylivingbaseIn.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        else this.pokemobCap = (IHasPokemobs) entitylivingbaseIn;
+        this.pokemobCap = CapabilityHasPokemobs.getHasPokemobs(entitylivingbaseIn);
         if (pokemobCap.countPokemon() <= 0) return;
 
         int brightness = entitylivingbaseIn.getBrightnessForRender(partialTicks);

@@ -13,7 +13,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.AITrainerBattle;
 import pokecube.adventures.ai.trainers.AITrainerFindTarget;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.core.database.Database;
@@ -25,7 +25,7 @@ public class EntityLeader extends EntityTrainer
     public EntityLeader(World world)
     {
         super(world);
-        aiStates.setAIState(IHasAIStates.STATIONARY, true);
+        aiStates.setAIState(IHasNPCAIStates.STATIONARY, true);
         trades = false;
         ((DefaultPokemobs) pokemobsCap).resetTime = 0;
     }

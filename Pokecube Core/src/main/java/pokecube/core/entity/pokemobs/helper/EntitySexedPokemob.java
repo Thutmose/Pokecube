@@ -63,8 +63,9 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             else if (transforms || otherTransforms) // Anything else will mate
                                                     // with ditto
                 return true;
-
-            return thisEntry.areRelated(thatEntry) && ((IPokemob) entityAnimal).getSexe() != this.getSexe();
+            boolean neutral = this.getSexe() == IPokemob.NOSEXE;
+            return thisEntry.areRelated(thatEntry)
+                    && (neutral || ((IPokemob) entityAnimal).getSexe() != this.getSexe());
 
         }
 

@@ -61,7 +61,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     boolean               wasShadow        = false;
 
     boolean               isAncient        = false;
-    PokeType              type1, type2;
     private int           personalityValue = 0;
     private int           killCounter      = 0;
     private int           resetTick        = 0;
@@ -301,37 +300,13 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     }
 
     @Override
-    public PokeType getType1()
-    {
-        return type1 != null ? type1 : getPokedexEntry().getType1();
-    }
-
-    @Override
-    public PokeType getType2()
-    {
-        return type2 != null ? type2 : getPokedexEntry().getType2();
-    }
-
-    @Override
     public void init(int nb)
     {
         super.init(nb);
         getPokedexEntry();
-
         this.setRNGValue(rand.nextInt());
-
-        if (this.isAncient())
-        {
-            setIVs(new byte[] { 31, 31, 31, 31, 31, 31 });
-        }
         if (PokecubeCore.isOnClientSide()) this.setHealth(getMaxHealth());
         else this.setHealth(0);
-    }
-
-    @Override
-    public boolean isAncient()
-    {
-        return isAncient;
     }
 
     @Override
@@ -476,12 +451,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     }
 
     @Override
-    public void setAncient(boolean ancient)
-    {
-        isAncient = ancient;
-    }
-
-    @Override
     public IPokemob setExp(int exp, boolean notifyLevelUp)
     {
         if (this.isDead) return this;
@@ -550,36 +519,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 dataManager.set(NICKNAMEDW, nickname);
             }
         }
-    }
-
-    @Override
-    public void setShadow(boolean shadow)
-    {
-        PokedexEntry entry = getPokedexEntry();
-        if (entry.isShadowForme && !shadow)
-        {
-            this.setPokedexEntry(entry);
-        }
-        else if (shadow && !entry.isShadowForme && entry.shadowForme != null)
-        {
-            this.setPokedexEntry(entry.shadowForme);
-        }
-        if (shadow && !wasShadow)
-        {
-            wasShadow = true;
-        }
-    }
-
-    @Override
-    public void setType1(PokeType type1)
-    {
-        this.type1 = type1;
-    }
-
-    @Override
-    public void setType2(PokeType type2)
-    {
-        this.type2 = type2;
     }
 
     /** Handles health update.

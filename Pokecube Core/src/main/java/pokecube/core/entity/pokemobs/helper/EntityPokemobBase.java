@@ -103,7 +103,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     {
         boolean canDespawn = getHungerTime() > PokecubeMod.core.getConfig().pokemobLifeSpan;
         boolean checks = getPokemonAIState(IMoveConstants.TAMED) || this.getPokemonOwner() != null
-                || getPokemonAIState(ANGRY) || getAttackTarget() != null || this.hasCustomName() || isAncient()
+                || getPokemonAIState(ANGRY) || getAttackTarget() != null || this.hasCustomName()
                 || isNoDespawnRequired();
         despawntimer--;
         if (checks) return false;
@@ -275,8 +275,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             this.noClip = true;
         }
-
-        this.initRidable();
 
         isImmuneToFire = isType(PokeType.getType("fire"));
     }
@@ -565,12 +563,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             }
         }
         if (uid == -1) this.uid = PokecubeSerializer.getInstance().getNextID();
-        if (isAncient())
-        {
-            // BossStatus.setBossStatus(this, true);
-            // BossStatus.bossName = getPokemonDisplayName();
-            // TODO Boss Stuff
-        }
     }
 
     @Override
@@ -709,7 +701,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             this.setSpecialInfo(visualsTag.getInteger(SPECIALTAG));
             setSize(getSize());
-            this.initRidable();
             flavourAmounts = visualsTag.getIntArray(FLAVOURSTAG);
             if (visualsTag.hasKey(POKECUBE))
             {
@@ -734,7 +725,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         {
             this.setRNGValue(miscTag.getInteger(RNGVAL));
             this.uid = miscTag.getInteger(UID);
-            this.setAncient(miscTag.getBoolean(ANCIENT));
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
         }
     }
@@ -892,7 +882,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         NBTTagCompound miscTag = new NBTTagCompound();
         miscTag.setInteger(RNGVAL, getRNGValue());
         miscTag.setInteger(UID, uid);
-        miscTag.setBoolean(ANCIENT, isAncient());
         miscTag.setBoolean(WASSHADOW, wasShadow);
 
         // Set tags to the pokemob tag.

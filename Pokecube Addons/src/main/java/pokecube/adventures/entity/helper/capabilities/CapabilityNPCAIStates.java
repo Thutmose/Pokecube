@@ -5,15 +5,25 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
-public class CapabilityAIStates
+public class CapabilityNPCAIStates
 {
-    @CapabilityInject(IHasAIStates.class)
-    public static final Capability<IHasAIStates> AISTATES_CAP = null;
+    @CapabilityInject(IHasNPCAIStates.class)
+    public static final Capability<IHasNPCAIStates> AISTATES_CAP = null;
     public static Storage                        storage;
 
-    public static interface IHasAIStates
+    public static IHasNPCAIStates getNPCAIStates(ICapabilityProvider entityIn)
+    {
+        IHasNPCAIStates pokemobHolder = null;
+        if (entityIn.hasCapability(AISTATES_CAP, null))
+            pokemobHolder = entityIn.getCapability(AISTATES_CAP, null);
+        else if (entityIn instanceof IHasNPCAIStates) return (IHasNPCAIStates) entityIn;
+        return pokemobHolder;
+    }
+    
+    public static interface IHasNPCAIStates
     {
         public static final int                    STATIONARY       = 1;
         public static final int                    INBATTLE         = 2;
@@ -29,24 +39,24 @@ public class CapabilityAIStates
         void setTotalState(int state);
     }
 
-    public static class Storage implements Capability.IStorage<IHasAIStates>
+    public static class Storage implements Capability.IStorage<IHasNPCAIStates>
     {
 
         @Override
-        public NBTBase writeNBT(Capability<IHasAIStates> capability, IHasAIStates instance, EnumFacing side)
+        public NBTBase writeNBT(Capability<IHasNPCAIStates> capability, IHasNPCAIStates instance, EnumFacing side)
         {
             return new NBTTagInt(instance.getTotalState());
         }
 
         @Override
-        public void readNBT(Capability<IHasAIStates> capability, IHasAIStates instance, EnumFacing side, NBTBase nbt)
+        public void readNBT(Capability<IHasNPCAIStates> capability, IHasNPCAIStates instance, EnumFacing side, NBTBase nbt)
         {
             if (nbt instanceof NBTTagInt) instance.setTotalState(((NBTTagInt) nbt).getInt());
         }
 
     }
 
-    public static class DefaultAIStates implements IHasAIStates, ICapabilitySerializable<NBTTagInt>
+    public static class DefaultAIStates implements IHasNPCAIStates, ICapabilitySerializable<NBTTagInt>
     {
         int state = 0;
 

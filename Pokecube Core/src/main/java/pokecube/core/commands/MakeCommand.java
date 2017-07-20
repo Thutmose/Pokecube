@@ -228,11 +228,9 @@ public class MakeCommand extends CommandBase
     public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset)
     {
         boolean shiny = false;
-        boolean shadow = false;
         int red, green, blue;
         byte gender = -3;
         red = green = blue = 255;
-        boolean ancient = false;
         String ability = null;
         int exp = 10;
         int level = -1;
@@ -253,10 +251,6 @@ public class MakeCommand extends CommandBase
                 if (arg.equalsIgnoreCase("s"))
                 {
                     shiny = true;
-                }
-                else if (arg.equalsIgnoreCase("sh"))
-                {
-                    shadow = true;
                 }
                 else if (arg.equalsIgnoreCase("l"))
                 {
@@ -330,8 +324,6 @@ public class MakeCommand extends CommandBase
         mob.setShiny(shiny);
         if (gender != -3) mob.setSexe(gender);
         if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
-        if (shadow) mob.setShadow(shadow);
-        if (ancient) mob.setAncient(ancient);
         if (asWild)
         {
             mob = mob.setForSpawn(exp);

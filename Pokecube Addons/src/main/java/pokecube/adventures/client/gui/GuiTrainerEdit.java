@@ -19,8 +19,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentString;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -50,7 +50,7 @@ public class GuiTrainerEdit extends GuiScreen
     String                         oldName;
 
     private final IHasPokemobs     pokemobCap;
-    private final IHasAIStates     aiCap;
+    private final IHasNPCAIStates  aiCap;
     private final EntityLivingBase trainer;
 
     String                         F                 = "false";
@@ -62,12 +62,8 @@ public class GuiTrainerEdit extends GuiScreen
 
     public GuiTrainerEdit(EntityLivingBase trainer)
     {
-        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            this.pokemobCap = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        else this.pokemobCap = (IHasPokemobs) trainer;
-        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
-            this.aiCap = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
-        else this.aiCap = (IHasAIStates) trainer;
+        this.pokemobCap = CapabilityHasPokemobs.getHasPokemobs(trainer);
+        this.aiCap = CapabilityNPCAIStates.getNPCAIStates(trainer);
         this.trainer = trainer;
     }
 
@@ -231,7 +227,7 @@ public class GuiTrainerEdit extends GuiScreen
         oldName = trainer instanceof EntityTrainer ? ((EntityTrainer) trainer).name : "";
         oldType = pokemobCap.getType().name;
 
-        String next = (stationary = aiCap.getAIState(IHasAIStates.STATIONARY)) ? F : T;
+        String next = (stationary = aiCap.getAIState(IHasNPCAIStates.STATIONARY)) ? F : T;
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
         yOffset = 0;

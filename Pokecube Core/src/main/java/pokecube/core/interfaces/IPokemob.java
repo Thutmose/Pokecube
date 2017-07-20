@@ -4,27 +4,22 @@
 package pokecube.core.interfaces;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-
-import javax.annotation.Nonnull;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -32,23 +27,23 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.Ability;
+import pokecube.core.PokecubeCore;
 import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.events.AttackEvent;
-import pokecube.core.events.MoveUse;
+import pokecube.core.interfaces.pokemob.ICanEvolve;
+import pokecube.core.interfaces.pokemob.IHasMobAIStates;
+import pokecube.core.interfaces.pokemob.IHasMoves;
+import pokecube.core.interfaces.pokemob.IHasOwner;
+import pokecube.core.interfaces.pokemob.IHasStats;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.Tools;
-import thut.api.maths.Vector3;
 
 /** @author Manchou */
-public interface IPokemob extends IMoveConstants
+public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats
 {
     public static enum HappinessType
     {
@@ -215,6 +210,8 @@ public interface IPokemob extends IMoveConstants
         final Map<String, IStatsModifiers> modifiers       = Maps.newHashMap();
         public List<IStatsModifiers>       sortedModifiers = Lists.newArrayList();
         public Map<String, Integer>        indecies        = Maps.newHashMap();
+        /** This are types which may be modified via abilities or moves. */
+        public PokeType                    type1, type2;
         DefaultModifiers                   defaultmods;
 
         public StatModifiers()
@@ -259,7 +256,7 @@ public interface IPokemob extends IMoveConstants
             }
         }
 
-        public int getStat(IPokemob pokemob, Stats stat, boolean modified)
+        public int getStat(IHasStats pokemob, Stats stat, boolean modified)
         {
             int index = stat.ordinal();
             byte nature = 0;
@@ -494,142 +491,33 @@ public interface IPokemob extends IMoveConstants
      * @return whether the change has actually been added */
     boolean addChange(int change);
 
-    /** At the end of a fight as a XP. {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @param evsToAdd
-     *            the Effort Values to add */
-    void addEVs(byte[] evsToAdd);
-
-    /** adds to how happy is the pokemob, see {@link HappinessType} */
-    void addHappiness(int toAdd);
-
-    /** Sets a Move_Base and as an ongoing effect for moves which cause effects
-     * over time
-     * 
-     * @param effect */
-    boolean addOngoingEffect(Move_Base effect);
-
-    boolean attackEntityFrom(DamageSource generic, float damage);
-
-    void cancelEvolve();
-
-    /** Called when give item. to override when the pokemob evolve with a stone.
-     *
-     * @param itemId
-     *            the shifted index of the item
-     * @return whether should evolve */
-    boolean canEvolve(ItemStack stack);
-
     /** Whether this mob can use the item HMDive to be ridden underwater.
      * 
      * @return whether this mob can be ridden with HMDive */
-    boolean canUseDive();
+    default boolean canUseDive()
+    {
+        return (getPokedexEntry().shouldDive && PokecubeCore.core.getConfig().diveEnabled && canUseSurf());
+    }
 
     /** Whether this mob can use the item HMFly to be ridden in the air.
      * 
      * @return whether this mob can be ridden with HMFly */
-    boolean canUseFly();
+    default boolean canUseFly()
+    {
+        return getPokedexEntry().flys()
+                || getPokedexEntry().shouldFly && (isType(PokeType.getType("flying")) && getPokedexEntry().shouldFly);
+    }
 
     /** Whether this mob can use the item HMSurf to be ridden on water.
      * 
      * @return whether this mob can be ridden with HMSurf */
-    boolean canUseSurf();
-
-    /** Displays a message in the console of the owner player (if this pokemob
-     * is tamed).
-     * 
-     * @param message */
-    void displayMessageToOwner(ITextComponent message);
+    default boolean canUseSurf()
+    {
+        return getPokedexEntry().shouldSurf || getPokedexEntry().shouldDive || getPokedexEntry().swims()
+                || isType(PokeType.getType("water"));
+    }
 
     void eat(Entity eaten);
-
-    /** Evolve the pokemob.
-     *
-     * @param delayed
-     *            true if we want to display the evolution animation
-     * @return the evolution or null if the evolution failed */
-    IPokemob evolve(boolean delayed, boolean init);
-
-    /** Evolve the pokemob via handed item.
-     *
-     * @param delayed
-     *            true if we want to display the evolution animation
-     * @return the evolution or null if the evolution failed */
-    IPokemob evolve(boolean delayed, boolean init, ItemStack item);
-
-    /** Used by Gui Pokedex. Exchange the two moves.
-     *
-     * @param moveIndex0
-     *            index of 1st move
-     * @param moveIndex1
-     *            index of 2nd move */
-    void exchangeMoves(int moveIndex0, int moveIndex1);
-
-    /** Called by attackEntity(Entity entity, float f). Executes the move it's
-     * supposed to do according to his trainer command or a random one if it's
-     * wild.
-     * 
-     * @param target
-     *            the Entity to attack
-     * @param f
-     *            the float parameter of the attackEntity method */
-    void executeMove(Entity target, Vector3 targetLocation, float f);
-
-    Ability getAbility();
-
-    int getAbilityIndex();
-
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @return the pokedex stats */
-    default int getStat(Stats stat, boolean modified)
-    {
-        return getModifiers().getStat(this, stat, modified);
-    }
-
-    /** Computes an attack strength from stats. Only used against non-poke-mobs.
-     *
-     * @return the attack strength */
-    default float getAttackStrength()
-    {
-        int ATT = getStat(Stats.ATTACK, true);
-        int ATTSPE = getStat(Stats.SPATTACK, true);
-        float mult = getPokedexEntry().isShadowForme ? 2 : 1;
-        return mult * ((ATT + ATTSPE) / 6f);
-    }
-
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @return the pokedex stats */
-    default int getBaseStat(Stats stat)
-    {
-        if (stat.ordinal() > 5) return 1;
-        return getPokedexEntry().getStats()[stat.ordinal()];
-    }
-
-    /** To compute exp at the end of a fight.
-     *
-     * @return in base XP */
-    default int getBaseXP()
-    {
-        return getPokedexEntry().getBaseXP();
-    }
-
-    /** Pokecube catch rate.
-     *
-     * @return the catch rate */
-    default int getCatchRate()
-    {
-        return getPokedexEntry().isShadowForme ? 0 : isAncient() ? 0 : getPokedexEntry().getCatchRate();
-    }
-
-    /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
-     *
-     * @return the change state */
-    default int getChanges()
-    {
-        return getMoveStats().changes;
-    }
 
     float getDirectionPitch();
 
@@ -638,22 +526,6 @@ public interface IPokemob extends IMoveConstants
      * 
      * @return the evolutionTicks */
     int getEvolutionTicks();
-
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @return the Effort Values */
-    byte[] getEVs();
-
-    /** @return all the experience */
-    int getExp();
-
-    /** 0, 1, 2, or 3 {@link Tools#xpToLevel(int, int)}
-     *
-     * @return in evolution mode */
-    default int getExperienceMode()
-    {
-        return getPokedexEntry().getEvolutionMode();
-    }
 
     int getExplosionState();
 
@@ -672,121 +544,11 @@ public interface IPokemob extends IMoveConstants
      * @return the float interested angle */
     float getInterestedAngle(float f);
 
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @return the Individual Values */
-    byte[] getIVs();
-
-    /** @return the level 1-100 */
-    default int getLevel()
-    {
-        return Tools.xpToLevel(getExperienceMode(), getExp());
-    }
-
-    /** @return the Modifiers on stats */
-    StatModifiers getModifiers();
-
-    /** Gets the {@link String} id of the specified move.
-     *
-     * @param i
-     *            from 0 to 3
-     * @return the String name of the move */
-    default String getMove(int index)
-    {
-        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
-        {
-            IPokemob to = (IPokemob) getTransformedTo();
-            if (to.getTransformedTo() != this) return to.getMove(index);
-        }
-
-        String[] moves = getMoves();
-
-        if (index >= 0 && index < 4) { return moves[index]; }
-        if (index == 4 && moves[3] != null && getPokemonAIState(LEARNINGMOVE))
-        {
-            List<String> list;
-            List<String> lastMoves = new ArrayList<String>();
-            int n = getLevel();
-
-            while (n > 0)
-            {
-                list = getPokedexEntry().getMovesForLevel(this.getLevel(), --n);
-                if (!list.isEmpty())
-                {
-                    list:
-                    for (String s : list)
-                    {
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) continue list;
-                        }
-                        lastMoves.add(s);
-                    }
-                    break;
-                }
-            }
-
-            if (!lastMoves.isEmpty()) { return lastMoves.get(getMoveStats().num % lastMoves.size()); }
-        }
-
-        if (index == 5) { return IMoveConstants.MOVE_NONE; }
-        return null;
-    }
-
-    /** Returns the index of the move to be executed in executeMove method.
-     * 
-     * @return the index from 0 to 3; */
-    public int getMoveIndex();
-
     double getMovementSpeed();
-
-    /** Returns all the 4 available moves name.
-     *
-     * @return an array of 4 {@link String} */
-    String[] getMoves();
-
-    PokemobMoveStats getMoveStats();
-
-    /** {@link IMoveConstants#HARDY} for an example of a nature byte
-     * 
-     * @return the nature */
-    Nature getNature();
-
-    default HashMap<Move_Ongoing, Integer> getOngoingEffects()
-    {
-        return getMoveStats().ongoingEffects;
-    }
 
     boolean getOnGround();
 
-    /** @return UUID of original Trainer, used to prevent nicknaming of traded
-     *         pokemobs */
-    UUID getOriginalOwnerUUID();
-
-    /** Returns the pokecube id to know whether its a greatcube, ultracube...
-     * 
-     * @return the shifted index of the item */
-    ItemStack getPokecube();
-
-    /** @return the {@link PokedexEntry} of the species of this Pokemob */
-    PokedexEntry getPokedexEntry();
-
-    /** @return the int pokedex number */
-    default Integer getPokedexNb()
-    {
-        return getPokedexEntry().getPokedexNb();
-    }
-
     AnimalChest getPokemobInventory();
-
-    @Nonnull
-    String getPokemobTeam();
-
-    void setPokemobTeam(@Nonnull String team);
-
-    /** @param state
-     * @return the value of the AI state state. */
-    boolean getPokemonAIState(int state);
 
     /** Returns the name to display in any GUI. Can be the nickname or the
      * Pokemob translated name.
@@ -798,16 +560,6 @@ public interface IPokemob extends IMoveConstants
             return new TextComponentTranslation(getPokedexEntry().getUnlocalizedName());
         return new TextComponentString(this.getPokemonNickname());
     }
-
-    /** @return the String nickname */
-    String getPokemonNickname();
-
-    /** Gets the owner as an EntityLivingBase, may be null if not in world, or
-     * if no owner. */
-    EntityLivingBase getPokemonOwner();
-
-    /** Gets the UUID of the owner, might be null */
-    UUID getPokemonOwnerID();
 
     int getPokemonUID();
 
@@ -821,8 +573,6 @@ public interface IPokemob extends IMoveConstants
      *
      * @return the float shake angle */
     float getShakeAngle(float f, float f1);
-
-    float getSize();
 
     SoundEvent getSound();
 
@@ -847,65 +597,10 @@ public interface IPokemob extends IMoveConstants
     @SideOnly(Side.CLIENT)
     ResourceLocation getTexture();
 
-    Entity getTransformedTo();
-
-    /** Returns 1st type.
-     * 
-     * @see PokeType
-     * @return the byte type */
-    PokeType getType1();
-
-    /** Returns 2nd type.
-     * 
-     * @see PokeType
-     * @return the byte type */
-    PokeType getType2();
-
-    EntityAIBase getUtilityMoveAI();
-
-    default Entity getWeapon(int index)
-    {
-        return index == 0 ? getMoveStats().weapon1 : getMoveStats().weapon2;
-    }
-
-    default double getWeight()
-    {
-        return this.getSize() * this.getSize() * this.getSize() * getPokedexEntry().mass;
-    }
-
     boolean hasHomeArea();
 
     /** Removes the current status. */
     void healStatus();
-
-    boolean isAncient();
-
-    boolean isEvolving();
-
-    boolean isShadow();
-
-    boolean isShiny();
-
-    default boolean isType(PokeType typeIn)
-    {
-        return this.getType1() == typeIn || getType2() == typeIn;
-    }
-
-    /** The pokemob learns the specified move. It will be set to an available
-     * position or erase an existing one if non are available.
-     *
-     * @param moveName
-     *            an existing move (registered in {@link MovesUtils}) */
-    void learn(String moveName);
-
-    /** Called when the level is up. Should be overridden to handle level up
-     * events like evolution or move learning.
-     * 
-     * @param level
-     *            the new level */
-    IPokemob levelUp(int level);
-
-    IPokemob megaEvolve(PokedexEntry forme);
 
     /** Returns modified texture to account for shininess, animation, etc.
      * 
@@ -920,67 +615,13 @@ public interface IPokemob extends IMoveConstants
 
     }
 
-    /** This is called during move use to both the attacker and the attacked
-     * entity, in that order. This can be used to add in abilities, In
-     * EntityMovesPokemob, this is used for accounting for moves like curse,
-     * detect, protect, etc, moves which either have different effects per
-     * pokemon type, or moves that prevent damage.
-     * 
-     * @param move */
-    default void onMoveUse(MovePacket move)
-    {
-        Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == this)
-                : new MoveUse.DuringUse.Post(move, move.attacker == this);
-        MinecraftForge.EVENT_BUS.post(toPost);
-    }
-
     /** Called to init the mob after it went out of its pokecube. */
     void popFromPokecube();
-
-    /** @param change
-     *            the changes to set */
-    default void removeChanges(int changes)
-    {
-        this.getMoveStats().changes -= changes;
-    }
 
     /** The mob returns to its pokecube. */
     void returnToPokecube();
 
-    void setAbility(Ability ability);
-
-    void setAbilityIndex(int index);
-
-    void setAncient(boolean toSet);
-
     void setDirectionPitch(float pitch);
-
-    /** Allows to set the evolution in some specific rare case.
-     * 
-     * @param name
-     *            of the entity this mob should evolve to */
-    void setEvolution(String evolution);
-
-    /** The evolution tick will be set when the mob evolves and then is
-     * decreased each tick. It is used to render a special effect.
-     * 
-     * @param evolutionTicks
-     *            the evolutionTicks to set */
-    void setEvolutionTicks(int evolutionTicks);
-
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @param evs
-     *            the Effort Values */
-    void setEVs(byte[] evs);
-
-    /** Sets the experience.
-     *
-     * @param exp
-     * @param notifyLevelUp
-     *            should be false in an initialize step and true in a true exp
-     *            earning */
-    IPokemob setExp(int exp, boolean notifyLevelUp);
 
     /** Sets the experience.
      *
@@ -1001,138 +642,22 @@ public interface IPokemob extends IMoveConstants
 
     void setHome(int x, int y, int z, int distance);
 
-    void setHp(float min);
-
-    /** {HP, ATT, DEF, ATTSPE, DEFSPE, VIT}
-     *
-     * @param evs
-     *            the Individual Values */
-    void setIVs(byte[] ivs);
-
-    default void setLeaningMoveIndex(int num)
-    {
-        this.getMoveStats().num = num;
-    }
-
-    /** Sets the {@link String} id of the specified move.
-     *
-     * @param i
-     *            from 0 to 3
-     * @param moveName */
-    void setMove(int i, String moveName);
-
-    /** Sets the move index.
-     * 
-     * @param i
-     *            must be a value from 0 to 3 */
-    public void setMoveIndex(int i);
-
-    /** Sets the pokemobs's nature {@link IMoveConstants#HARDY} for an example
-     * of a nature byte
-     * 
-     * @param nature */
-    void setNature(Nature nature);
-
-    /** Sets owner uuid
-     * 
-     * @param original
-     *            trainer's UUID */
-    void setOriginalOwnerUUID(UUID original);
-
-    /** Sets the pokecube id to know whether its a greatcube, ultracube...
-     * 
-     * @param pokeballId */
-    void setPokecube(ItemStack pokecube);
-
-    /** @return the {@link PokedexEntry} of the species of this Pokemob */
-    IPokemob setPokedexEntry(PokedexEntry newEntry);
-
-    /*
-     * Sets AI state state to flag.
-     */
-    void setPokemonAIState(int state, boolean flag);
-
-    /** Sets the nickname */
-    void setPokemonNickname(String nickname);
-
-    /** from wolf code */
-    void setPokemonOwner(EntityLivingBase e);
-
-    /** from wolf code */
-    void setPokemonOwner(UUID id);
-
     /** {@link #MALE} or {@link #FEMALE} or {@link #NOSEXE}
      *
      * @param sexe
      *            the byte sexe */
     void setSexe(byte sexe);
 
-    void setShadow(boolean toSet);
-
     void setShiny(boolean shiny);
-
-    void setSize(float size);
 
     /** first 4 bits are used for colour, can be used for other things if needed
      * 
      * @return */
     void setSpecialInfo(int info);
 
-    /** Statuses: {@link IMoveConstants#STATUS_PSN} for example. The set can
-     * fail because the mob is immune against this status (a fire-type Pokemon
-     * can't be burned for example) or because it already have a status. If so,
-     * the method returns false.
-     * 
-     * @param status
-     *            the status to set
-     * @return whether the status has actually been set */
-    boolean setStatus(byte status);
-
-    /** Sets the initial status timer. The timer will be decreased until 0. The
-     * timer for SLP. When reach 0, the mob wakes up.
-     * 
-     * @param timer
-     *            the initial value to set */
-    void setStatusTimer(short timer);
-
-    default void setToHiddenAbility()
-    {
-        this.setAbilityIndex(2);
-        this.setAbility(getPokedexEntry().getHiddenAbility(this));
-    }
-
-    default void setTraded(boolean trade)
-    {
-        setPokemonAIState(TRADED, trade);
-    }
-
-    void setTransformedTo(Entity to);
-
-    void setType1(PokeType type1);
-
-    void setType2(PokeType type2);
-
-    /** Used by moves such as vine whip to set the pokemob as using something.
-     * 
-     * @param index
-     * @param weapon */
-    default void setWeapon(int index, Entity weapon)
-    {
-        if (index == 0) getMoveStats().weapon1 = weapon;
-        else getMoveStats().weapon2 = weapon;
-    }
-
     /** Called when the mob spawns naturally. Used to set held item for
      * example. */
     void specificSpawnInit();
-
-    /** Has pokemob been traded
-     * 
-     * @return */
-    default boolean traded()
-    {
-        return getPokemonAIState(TRADED);
-    }
 
     /** Returns the held item this pokemob should have when found wild.
      * 
@@ -1154,8 +679,6 @@ public interface IPokemob extends IMoveConstants
 
     void setSubParts(EntityPokemobPart[] subParts);
 
-    boolean isPlayerOwned();
-
     /** @param index
      * @return the value of the flavour amount for this mob, this will be used
      *         for particle effects, and possibly for boosts based on how much
@@ -1172,9 +695,8 @@ public interface IPokemob extends IMoveConstants
 
     NBTTagCompound writePokemobData();
 
-    int getAttackCooldown();
-
-    void setAttackCooldown(int timer);
-
-    String getLastMoveUsed();
+    default boolean moveToShoulder(EntityPlayer player)
+    {
+        return false;
+    }
 }

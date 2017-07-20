@@ -9,6 +9,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -19,6 +22,7 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIS
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.TypeTrainer;
+import pokecube.adventures.events.PAEventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -299,6 +303,7 @@ public class CapabilityHasPokemobs
         private UUID             outID;
         private IPokemob         outMob;
         private List<ItemStack>  pokecubes      = CompatWrapper.makeList(6);
+        DataParameter<String>    PARAM;
 
         public void init(EntityLivingBase user, IHasAIStates aiStates, IHasMessages messages, IHasRewards rewards)
         {
@@ -307,6 +312,16 @@ public class CapabilityHasPokemobs
             this.messages = messages;
             this.rewards = rewards;
             battleCooldown = Config.instance.trainerCooldown;
+
+            // TODO this should be found via class checking the entitylist, and
+            // initialize thise at startup.
+            if (!PAEventsHandler.parameters.containsKey(user.getClass()))
+            {
+                DataParameter<String> value = EntityDataManager.<String> createKey(user.getClass(),
+                        DataSerializers.STRING);
+                PAEventsHandler.parameters.put(user.getClass(), value);
+            }
+            PARAM = PAEventsHandler.parameters.get(user.getClass());
         }
 
         @Override
@@ -386,6 +401,11 @@ public class CapabilityHasPokemobs
         @Override
         public TypeTrainer getType()
         {
+            if (!user.isServerWorld())
+            {
+                String t = user.getDataManager().get(PARAM);
+                return t.isEmpty() ? null : TypeTrainer.getTrainer(t);
+            }
             return type;
         }
 
@@ -501,6 +521,7 @@ public class CapabilityHasPokemobs
         public void setType(TypeTrainer type)
         {
             this.type = type;
+            if (user.isServerWorld()) user.getDataManager().set(PARAM, type == null ? "" : type.name);
         }
 
         @Override

@@ -393,6 +393,10 @@ public class MoveEventsHandler
             ((Entity) applied).getEntityData().setString("lastMoveHitBy", move.attack);
             applied.setPokemonAIState(IMoveConstants.NOITEMUSE, false);
         }
+        if (MoveEntry.oneHitKos.contains(attack.name) && target != null && target.getLevel() < attacker.getLevel())
+        {
+            move.failed = true;
+        }
         if (target != null && target.getMoveStats().substituteHP > 0 && !user)
         {
             float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked,

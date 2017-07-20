@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import pokecube.adventures.ai.trainers.AITrainerBattle;
 import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.core.database.Database;
 import pokecube.core.utils.Tools;
@@ -26,7 +27,7 @@ public class EntityLeader extends EntityTrainer
         super(world);
         aiStates.setAIState(IHasAIStates.STATIONARY, true);
         trades = false;
-        resetTime = 0;
+        ((DefaultPokemobs) pokemobsCap).resetTime = 0;
     }
 
     public EntityLeader(World world, TypeTrainer type, int maxXp, Vector3 location)

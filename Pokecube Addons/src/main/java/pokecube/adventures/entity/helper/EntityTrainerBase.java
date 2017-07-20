@@ -262,4 +262,16 @@ public abstract class EntityTrainerBase extends EntityHasTrades implements IHasP
     {
         return friendlyCooldown < 0;
     }
+
+    @Override
+    public void onDefeated(Entity defeater)
+    {
+        pokemobsCap.onDefeated(defeater);
+    }
+
+    @Override
+    public boolean canBattle(EntityLivingBase target)
+    {
+        return pokemobsCap.canBattle(target);
+    }
 }

@@ -3,6 +3,7 @@ package pokecube.adventures.network.packets;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
@@ -120,8 +121,8 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         if (message.message == MESSAGENOTIFYDEFEAT)
         {
             int id = message.data.getInteger("I");
-            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
-            trainer.visibleTime = message.data.getLong("L");
+            EntityLivingBase mob = (EntityLivingBase) player.getEntityWorld().getEntityByID(id);
+            if (mob instanceof EntityTrainer) ((EntityTrainer) mob).visibleTime = message.data.getLong("L");
             return;
         }
         if (message.message == MESSAGEKILLTRAINER)

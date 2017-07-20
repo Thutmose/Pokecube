@@ -1,10 +1,13 @@
 package pokecube.adventures.entity.helper.capabilities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,6 +15,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.stats.Achievement;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -19,14 +23,22 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
+import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
+import pokecube.adventures.items.ItemBadge;
+import pokecube.adventures.network.packets.PacketTrainer;
+import pokecube.core.PokecubeItems;
 import pokecube.core.events.handlers.PCEventsHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -249,6 +261,16 @@ public class CapabilityHasPokemobs
                 DefaultPokemobs mobs = (DefaultPokemobs) instance;
                 if (mobs.battleCooldown < 0) mobs.battleCooldown = Config.instance.trainerCooldown;
                 nbt.setInteger("battleCD", mobs.battleCooldown);
+                nbttaglist = new NBTTagList();
+                for (DefeatEntry entry : mobs.defeaters)
+                {
+                    NBTTagCompound nbttagcompound = new NBTTagCompound();
+                    entry.writeToNBT(nbttagcompound);
+                    nbttaglist.appendTag(nbttagcompound);
+                }
+                nbt.setTag("DefeatList", nbttaglist);
+                nbt.setBoolean("notifyDefeat", mobs.notifyDefeat);
+                nbt.setLong("resetTime", mobs.resetTime);
             }
             return nbt;
         }
@@ -280,6 +302,16 @@ public class CapabilityHasPokemobs
                 DefaultPokemobs mobs = (DefaultPokemobs) instance;
                 if (nbt.hasKey("battleCD")) mobs.battleCooldown = nbt.getInteger("battleCD");
                 if (mobs.battleCooldown < 0) mobs.battleCooldown = Config.instance.trainerCooldown;
+
+                mobs.defeaters.clear();
+                if (nbt.hasKey("resetTime")) mobs.resetTime = nbt.getLong("resetTime");
+                if (nbt.hasKey("DefeatList", 9))
+                {
+                    NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
+                    for (int i = 0; i < nbttaglist.tagCount(); i++)
+                        mobs.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
+                }
+                mobs.notifyDefeat = nbt.getBoolean("notifyDefeat");
             }
         }
 
@@ -287,23 +319,55 @@ public class CapabilityHasPokemobs
 
     public static class DefaultPokemobs implements IHasPokemobs, ICapabilitySerializable<NBTTagCompound>
     {
+        public static class DefeatEntry
+        {
+            public static DefeatEntry createFromNBT(NBTTagCompound nbt)
+            {
+                String defeater = nbt.getString("player");
+                long time = nbt.getLong("time");
+                return new DefeatEntry(defeater, time);
+            }
+
+            final String defeater;
+
+            final long   defeatTime;
+
+            public DefeatEntry(String defeater, long time)
+            {
+                this.defeater = defeater;
+                this.defeatTime = time;
+            }
+
+            void writeToNBT(NBTTagCompound nbt)
+            {
+                nbt.setString("player", defeater);
+                nbt.setLong("time", defeatTime);
+            }
+        }
+
+        public long                   resetTime      = 0;
+        public ArrayList<DefeatEntry> defeaters      = new ArrayList<DefeatEntry>();
+
+        // Should the client be notified of the defeat via a packet?
+        public boolean                notifyDefeat   = false;
+
         // This is the reference cooldown.
-        public int               battleCooldown = -1;
-        private EntityLivingBase user;
-        private IHasAIStates     aiStates;
-        private IHasMessages     messages;
-        private IHasRewards      rewards;
-        private int              nextSlot;
+        public int                    battleCooldown = -1;
+        private EntityLivingBase      user;
+        private IHasAIStates          aiStates;
+        private IHasMessages          messages;
+        private IHasRewards           rewards;
+        private int                   nextSlot;
         // Cooldown between sending out pokemobs
-        private int              attackCooldown = 0;
+        private int                   attackCooldown = 0;
         // Cooldown between agression
-        private long             cooldown       = 0;
-        private TypeTrainer      type;
-        private EntityLivingBase target;
-        private UUID             outID;
-        private IPokemob         outMob;
-        private List<ItemStack>  pokecubes      = CompatWrapper.makeList(6);
-        DataParameter<String>    PARAM;
+        private long                  cooldown       = 0;
+        private TypeTrainer           type;
+        private EntityLivingBase      target;
+        private UUID                  outID;
+        private IPokemob              outMob;
+        private List<ItemStack>       pokecubes      = CompatWrapper.makeList(6);
+        DataParameter<String>         PARAM;
 
         public void init(EntityLivingBase user, IHasAIStates aiStates, IHasMessages messages, IHasRewards rewards)
         {
@@ -312,6 +376,7 @@ public class CapabilityHasPokemobs
             this.messages = messages;
             this.rewards = rewards;
             battleCooldown = Config.instance.trainerCooldown;
+            resetTime = battleCooldown;
 
             // TODO this should be found via class checking the entitylist, and
             // initialize thise at startup.
@@ -322,6 +387,29 @@ public class CapabilityHasPokemobs
                 PAEventsHandler.parameters.put(user.getClass(), value);
             }
             PARAM = PAEventsHandler.parameters.get(user.getClass());
+        }
+
+        public boolean hasDefeated(Entity e)
+        {
+            if (e == null) return false;
+            String name = e.getCachedUniqueIdString();
+            for (DefeatEntry s : defeaters)
+            {
+                if (s.defeater.equals(name))
+                {
+                    if (resetTime > 0)
+                    {
+                        long diff = user.getEntityWorld().getTotalWorldTime() - s.defeatTime;
+                        if (diff > resetTime)
+                        {
+                            defeaters.remove(s);
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
 
         @Override
@@ -412,8 +500,63 @@ public class CapabilityHasPokemobs
         @Override
         public void onDefeated(Entity defeater)
         {
-            // TODO give rewards here if there are any to give.
-            rewards.getRewards();
+            if (hasDefeated(defeater)) return;
+            if (defeater != null) defeaters.add(
+                    new DefeatEntry(defeater.getCachedUniqueIdString(), user.getEntityWorld().getTotalWorldTime()));
+            System.out.println(defeater + " " + rewards.getRewards());
+            if (rewards.getRewards() != null && defeater instanceof EntityPlayer)
+            {
+                EntityPlayer player = (EntityPlayer) defeater;
+                rewards.giveReward(player, user);
+                for (ItemStack i : rewards.getRewards())
+                {
+                    if (!CompatWrapper.isValid(i)) continue;
+                    checkItemAchievement(i, player);
+                }
+                checkDefeatAchievement(player);
+            }
+            if (defeater != null)
+            {
+                messages.sendMessage(MessageState.DEFEAT, defeater, user.getDisplayName(), defeater.getDisplayName());
+                if (defeater instanceof EntityLivingBase)
+                    messages.doAction(MessageState.DEFEAT, (EntityLivingBase) defeater);
+                if (notifyDefeat && defeater instanceof EntityPlayerMP)
+                {
+                    PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
+                    packet.data.setInteger("I", user.getEntityId());
+                    packet.data.setLong("L", user.getEntityWorld().getTotalWorldTime() + resetTime);
+                    PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) defeater);
+                }
+            }
+            this.setTarget(null);
+        }
+
+        public void checkItemAchievement(ItemStack item, EntityPlayer player)
+        {
+            Achievement stat = null;
+            if (item.getItem() instanceof ItemBadge)
+            {
+                for (String s : ItemBadge.variants)
+                {
+                    if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
+                    {
+                        stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
+                        break;
+                    }
+                }
+            }
+            if (stat != null)
+            {
+                player.addStat(stat);
+            }
+        }
+
+        public void checkDefeatAchievement(EntityPlayer player)
+        {
+            boolean leader = user instanceof EntityLeader;
+            Achievement achieve = PokecubePlayerStats
+                    .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
+            player.addStat(achieve);
         }
 
         @Override
@@ -449,7 +592,7 @@ public class CapabilityHasPokemobs
                 cube.throwPokecubeAt(user.getEntityWorld(), user, i, t, null);
                 aiStates.setAIState(IHasAIStates.THROWING, true);
                 attackCooldown = Config.instance.trainerSendOutDelay;
-                messages.sendMessage(MessageState.SENDOUT, user, user.getDisplayName(), i.getDisplayName(),
+                messages.sendMessage(MessageState.SENDOUT, target, user.getDisplayName(), i.getDisplayName(),
                         target.getDisplayName());
                 if (target instanceof EntityLivingBase)
                     messages.doAction(MessageState.SENDOUT, (EntityLivingBase) target);
@@ -527,7 +670,7 @@ public class CapabilityHasPokemobs
         @Override
         public boolean canBattle(EntityLivingBase target)
         {
-            return true;
+            return !hasDefeated(target);
         }
 
         @Override

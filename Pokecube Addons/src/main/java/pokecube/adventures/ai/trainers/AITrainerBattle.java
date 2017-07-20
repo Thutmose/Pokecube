@@ -43,21 +43,22 @@ public class AITrainerBattle extends EntityAIBase
         this.world = trainer.getEntityWorld();
         if (trainer.hasCapability(CapabilityAIStates.AISTATES_CAP, null))
             this.aiTracker = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
-        else this.aiTracker = (IHasAIStates) trainer;
+        else this.aiTracker = null;
         if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
             this.trainer = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        else this.trainer = (IHasPokemobs) trainer;
+        else this.trainer = null;
         if (trainer.hasCapability(CapabilityMessages.MESSAGES_CAP, null))
             this.messages = trainer.getCapability(CapabilityMessages.MESSAGES_CAP, null);
-        else this.messages = (IHasMessages) trainer;
+        else this.messages = null;
         valid = trainer != null && aiTracker != null && messages != null;
     }
 
     @Override
     public boolean shouldExecute()
     {
+        if (!valid) return false;
         trainer.lowerCooldowns();
-        return valid && trainer.getTarget() != null;
+        return trainer.getTarget() != null;
     }
 
     private boolean checkPokemobTarget()

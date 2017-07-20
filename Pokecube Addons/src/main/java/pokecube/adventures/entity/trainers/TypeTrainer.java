@@ -143,14 +143,18 @@ public class TypeTrainer
 
         if (level == 0) level = 5;
         int variance = PokecubeMod.core.getConfig().levelVariance;
-        int number = 1 + new Random().nextInt(7);
+        int number = 1 + new Random().nextInt(6);
         number = Math.min(number, 6);
+
+        List<PokedexEntry> values = Lists.newArrayList();
+        if (type.pokemon != null) values.addAll(type.pokemon);
+        else PokecubeMod.log("No mobs for " + type);
 
         for (int i = 0; i < number; i++)
         {
-            Collections.shuffle(type.pokemon);
+            Collections.shuffle(values);
             ItemStack item = CompatWrapper.nullStack;
-            for (PokedexEntry s : type.pokemon)
+            for (PokedexEntry s : values)
             {
                 if (s != null)
                 {
@@ -388,7 +392,7 @@ public class TypeTrainer
     @Override
     public String toString()
     {
-        return "" + name + " " + pokemon;
+        return "" + name;
     }
 
     public Collection<MerchantRecipe> getRecipes(EntityHasTrades trader)

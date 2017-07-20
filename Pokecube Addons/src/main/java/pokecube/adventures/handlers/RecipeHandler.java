@@ -30,6 +30,7 @@ import pokecube.core.database.recipes.XMLRecipeHandler.XMLRecipeInput;
 import pokecube.core.database.rewards.XMLRewardsHandler;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.entity.genetics.Alleles;
 import thut.lib.CompatWrapper;
 
@@ -196,20 +197,22 @@ public class RecipeHandler
 
     public static void preInit()
     {
-        File temp = new File(Database.CONFIGLOC);
+        String CONFIGLOC = "./config/pokecube/database/";
+        File temp = new File(CONFIGLOC);
         if (!temp.exists())
         {
             temp.mkdirs();
         }
         String name = "pokeadvrecipes.xml";
-        File temp1 = new File(Database.CONFIGLOC + name);
+        File temp1 = new File(CONFIGLOC + name);
+        PokecubeMod.log("Setting");
         if (!temp1.exists() || Config.instance.forceRecipes)
         {
             ArrayList<String> rows = Database.getFile("/assets/pokecube_adventures/database/" + name);
             int n = 0;
             try
             {
-                File file = new File(Database.CONFIGLOC + name);
+                File file = new File(CONFIGLOC + name);
                 Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
                 for (int i = 0; i < rows.size(); i++)
                 {
@@ -220,19 +223,19 @@ public class RecipeHandler
             }
             catch (Exception e)
             {
-                System.err.println(name + " " + n);
+                PokecubeMod.log(name + " " + n);
                 e.printStackTrace();
             }
         }
         name = "pokeadvrewards.xml";
-        temp1 = new File(Database.CONFIGLOC + name);
+        temp1 = new File(CONFIGLOC + name);
         if (!temp1.exists() || Config.instance.forceRecipes)
         {
             ArrayList<String> rows = Database.getFile("/assets/pokecube_adventures/database/" + name);
             int n = 0;
             try
             {
-                File file = new File(Database.CONFIGLOC + name);
+                File file = new File(CONFIGLOC + name);
                 Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
                 for (int i = 0; i < rows.size(); i++)
                 {
@@ -243,7 +246,7 @@ public class RecipeHandler
             }
             catch (Exception e)
             {
-                System.err.println(name + " " + n);
+                PokecubeMod.log(name + " " + n);
                 e.printStackTrace();
             }
         }

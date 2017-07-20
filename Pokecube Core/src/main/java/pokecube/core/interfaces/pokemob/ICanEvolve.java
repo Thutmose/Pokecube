@@ -1,11 +1,14 @@
 package pokecube.core.interfaces.pokemob;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -16,15 +19,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.commands.CommandTools;
+import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.helper.EntityEvolvablePokemob;
-import pokecube.core.entity.pokemobs.helper.EntityMovesPokemob;
 import pokecube.core.events.EvolveEvent;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.TagNames;
@@ -123,7 +129,52 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
      * 
      * @param level
      *            the new level */
-    IPokemob levelUp(int level);
+    default IPokemob levelUp(int level)
+    {
+        EntityLivingBase theEntity = getEntity();
+        IPokemob theMob = CapabilityPokemob.getPokemobs(theEntity);
+        List<String> moves = Database.getLevelUpMoves(theMob.getPokedexEntry(), level, theMob.getMoveStats().oldLevel);
+        Collections.shuffle(moves);
+        if (!theEntity.getEntityWorld().isRemote)
+        {
+            ITextComponent mess = new TextComponentTranslation("pokemob.info.levelup", theMob.getPokemonDisplayName(),
+                    level + "");
+            theMob.displayMessageToOwner(mess);
+        }
+        HappinessType.applyHappiness(theMob, HappinessType.LEVEL);
+        if (moves != null)
+        {
+            if (theMob.getPokemonAIState(IMoveConstants.TAMED))
+            {
+                String[] current = theMob.getMoves();
+                if (current[3] != null)
+                {
+                    for (String s : current)
+                    {
+                        for (String s1 : moves)
+                        {
+                            if (s.equals(s1)) return theMob;
+                        }
+                    }
+                    for (String s : moves)
+                    {
+                        ITextComponent move = new TextComponentTranslation(MovesUtils.getUnlocalizedMove(s));
+                        ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
+                                theMob.getPokemonDisplayName(), move);
+                        theMob.displayMessageToOwner(mess);
+                        theMob.getMoveStats().newMoves++;
+                    }
+                    theMob.setPokemonAIState(LEARNINGMOVE, true);
+                    return theMob;
+                }
+            }
+            for (String s : moves)
+            {
+                theMob.learn(s);
+            }
+        }
+        return theMob;
+    }
 
     default IPokemob megaEvolve(PokedexEntry newEntry)
     {
@@ -221,16 +272,16 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 // Remove held item if it had one.
                 if (neededItem)
                 {
-                    ((EntityEvolvablePokemob) evo).setHeldItem(CompatWrapper.nullStack);
+                    evo.getEntity().setHeldItem(EnumHand.MAIN_HAND, CompatWrapper.nullStack);
                 }
                 // Init things like moves.
                 evo.specificSpawnInit();
-                ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
+                evo.getMoveStats().oldLevel = data.level - 1;
                 evo.levelUp(evo.getLevel());
                 // Send post evolve event.
                 evt = new EvolveEvent.Post(evo);
                 MinecraftForge.EVENT_BUS.post(evt);
-                ((Entity) this).setDead();
+                getEntity().setDead();
                 return evo;
             }
             return null;
@@ -283,8 +334,8 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 {
                     evt = new EvolveEvent.Post(evo);
                     MinecraftForge.EVENT_BUS.post(evt);
-                    if (delayed) ((EntityMovesPokemob) evo).oldLevel = evo.getLevel() - 1;
-                    else if (data != null) ((EntityMovesPokemob) evo).oldLevel = data.level - 1;
+                    if (delayed) evo.getMoveStats().oldLevel = evo.getLevel() - 1;
+                    else if (data != null) evo.getMoveStats().oldLevel = data.level - 1;
                     evo.levelUp(evo.getLevel());
                     thisEntity.setDead();
                 }

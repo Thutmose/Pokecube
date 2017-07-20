@@ -9,7 +9,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -775,9 +774,9 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     }
 
     @Override
-    public boolean moveToShoulder(EntityPlayer player)
+    public void setMoves(String[] moves)
     {
         // TODO Auto-generated method stub
-        return false;
+        
     }
 }

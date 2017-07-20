@@ -17,7 +17,36 @@ public interface IHasStats extends IHasEntry
      *
      * @param evsToAdd
      *            the Effort Values to add */
-    void addEVs(byte[] evsToAdd);
+    default void addEVs(byte[] evsToAdd)
+    {
+        byte[] evs = getEVs();
+        for (int i = 0; i < 6; i++)
+        {
+            if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)
+            {
+                evs[i] = (byte) (evs[i] + evsToAdd[i]);
+            }
+            else
+            {
+                evs[i] = (byte) 127;
+            }
+        }
+
+        int sum = 0;
+
+        for (byte ev : evs)
+        {
+            sum += ev + 128;
+        }
+
+        if (sum < 510)
+        {
+            setEVs(evs);
+        }
+    }
+
+    /** Bulk setting of all moves. This array must have length of 4. */
+    void setMoves(String[] moves);
 
     /** adds to how happy is the pokemob, see {@link HappinessType} */
     void addHappiness(int toAdd);

@@ -52,7 +52,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 {
     double                moveSpeed;
 
-    public int            oldLevel         = 0;
     public PokedexEntry   entry;
 
     /** The happiness value of the pokemob */
@@ -69,35 +68,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     public EntityStatsPokemob(World world)
     {
         super(world);
-    }
-
-    @Override
-    public void addEVs(byte[] evsToAdd)
-    {
-        byte[] evs = getEVs();
-        for (int i = 0; i < 6; i++)
-        {
-            if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)
-            {
-                evs[i] = (byte) (evs[i] + evsToAdd[i]);
-            }
-            else
-            {
-                evs[i] = (byte) 127;
-            }
-        }
-
-        int sum = 0;
-
-        for (byte ev : evs)
-        {
-            sum += ev + 128;
-        }
-
-        if (sum < 510)
-        {
-            setEVs(evs);
-        }
     }
 
     @Override
@@ -456,7 +426,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         if (this.isDead) return this;
 
         int old = dataManager.get(EXPDW);
-        oldLevel = this.getLevel();
+        getMoveStats().oldLevel = this.getLevel();
         int lvl100xp = Tools.maxXPs[getExperienceMode()];
         exp = Math.min(lvl100xp, exp);
 
@@ -467,7 +437,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         if (oldLvl != newLvl)
         {
             // Fire event to allow others to interfere
-            LevelUpEvent lvlup = new LevelUpEvent(this, newLvl, oldLevel);
+            LevelUpEvent lvlup = new LevelUpEvent(this, newLvl, getMoveStats().oldLevel);
             MinecraftForge.EVENT_BUS.post(lvlup);
             if (!lvlup.isCanceled())
             {
@@ -571,7 +541,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     public IPokemob setForSpawn(int exp, boolean evolve)
     {
         int level = Tools.xpToLevel(getExperienceMode(), exp);
-        this.oldLevel = 0;
+        getMoveStats().oldLevel = 0;
         dataManager.set(EXPDW, exp);
         EntityPokemobBase ret = (EntityPokemobBase) this.levelUp(level);
         ItemStack held = getHeldItemMainhand();

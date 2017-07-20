@@ -4,29 +4,63 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import pokecube.core.PokecubeCore;
+import pokecube.core.commands.CommandTools;
 import pokecube.core.events.MoveUse;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.PokemobMoveStats;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import thut.api.maths.Vector3;
 
 public interface IHasMoves extends IHasStats
 {
+    /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example. The set can
+     * fail because the mob is immune against this change or because it already
+     * has the change. If so, the method returns false.
+     * 
+     * @param change
+     *            the change to add
+     * @return whether the change has actually been added */
+    default boolean addChange(int change)
+    {
+        int old = getMoveStats().changes;
+        getMoveStats().changes |= change;
+        return getMoveStats().changes != old;
+    }
 
     /** Sets a Move_Base and as an ongoing effect for moves which cause effects
      * over time
      * 
      * @param effect */
-    boolean addOngoingEffect(Move_Base effect);
+    default boolean addOngoingEffect(Move_Base effect)
+    {
+        if (effect instanceof Move_Ongoing)
+        {
+            if (!getMoveStats().ongoingEffects.containsKey(effect))
+            {
+                getMoveStats().ongoingEffects.put((Move_Ongoing) effect, ((Move_Ongoing) effect).getDuration());
+                return true;
+            }
+        }
+        return false;
+    }
 
     boolean attackEntityFrom(DamageSource generic, float damage);
 
@@ -36,7 +70,62 @@ public interface IHasMoves extends IHasStats
      *            index of 1st move
      * @param moveIndex1
      *            index of 2nd move */
-    void exchangeMoves(int moveIndex0, int moveIndex1);
+    default void exchangeMoves(int moveIndex0, int moveIndex1)
+    {
+        if (PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
+        {
+            String[] moves = getMoves();
+            if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)
+            {
+                getMoveStats().num++;
+            }
+            try
+            {
+                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
+                buffer.writeByte(MessageServer.MOVESWAP);
+                buffer.writeInt(getEntity().getEntityId());
+                buffer.writeByte((byte) moveIndex0);
+                buffer.writeByte((byte) moveIndex1);
+                buffer.writeInt(getMoveStats().num);
+                MessageServer packet = new MessageServer(buffer);
+                PokecubePacketHandler.sendToServer(packet);
+
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        else
+        {
+            String[] moves = getMoves();
+
+            if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)
+            {
+                getMoveStats().num++;
+            }
+            else if (moveIndex0 >= moves.length || moveIndex1 >= moves.length)
+            {
+                if (getMove(4) == null) return;
+
+                getMoveStats().newMoves--;
+                moves[3] = getMove(4);
+                setMoves(moves);
+                if (getMoveStats().newMoves <= 0) this.setPokemonAIState(LEARNINGMOVE, false);
+            }
+            else
+            {
+                String move0 = moves[moveIndex0];
+                String move1 = moves[moveIndex1];
+                if (move0 != null && move1 != null)
+                {
+                    moves[moveIndex0] = move1;
+                    moves[moveIndex1] = move0;
+                }
+                setMoves(moves);
+            }
+        }
+    }
 
     /** Called by attackEntity(Entity entity, float f). Executes the move it's
      * supposed to do according to his trainer command or a random one if it's
@@ -138,7 +227,74 @@ public interface IHasMoves extends IHasStats
      *
      * @param moveName
      *            an existing move (registered in {@link MovesUtils}) */
-    void learn(String moveName);
+    default void learn(String moveName)
+    {
+        if (moveName == null) return;
+        if (!MovesUtils.isMoveImplemented(moveName)) { return; }
+        String[] moves = getMoves();
+        EntityLivingBase thisEntity = getEntity();
+        IPokemob thisMob = CapabilityPokemob.getPokemobs(thisEntity);
+        // check it's not already known or forgotten
+        for (String move : moves)
+        {
+            if (moveName.equals(move)) return;
+        }
+
+        if (thisMob.getPokemonOwner() != null && !thisEntity.isDead)
+        {
+            ITextComponent move = new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName));
+            ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
+                    thisMob.getPokemonDisplayName(), move);
+            thisMob.displayMessageToOwner(mess);
+        }
+        if (moves[0] == null)
+        {
+            setMove(0, moveName);
+        }
+        else if (moves[1] == null)
+        {
+            setMove(1, moveName);
+        }
+        else if (moves[2] == null)
+        {
+            setMove(2, moveName);
+        }
+        else if (moves[3] == null)
+        {
+            setMove(3, moveName);
+        }
+        else
+        {
+            if (getPokemonAIState(IMoveConstants.TAMED))
+            {
+                String[] current = getMoves();
+                if (current[3] != null)
+                {
+                    for (String s : current)
+                    {
+                        for (String s1 : moves)
+                        {
+                            if (s.equals(s1)) return;
+                        }
+                    }
+                    for (String s : moves)
+                    {
+                        ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
+                                thisMob.getPokemonDisplayName().getFormattedText(), s);
+                        thisMob.displayMessageToOwner(mess);
+                        getMoveStats().newMoves++;
+                    }
+                    setPokemonAIState(LEARNINGMOVE, true);
+                    return;
+                }
+            }
+            else
+            {
+                int index = thisEntity.getRNG().nextInt(4);
+                setMove(index, moveName);
+            }
+        }
+    }
 
     /** This is called during move use to both the attacker and the attacked
      * entity, in that order. This can be used to add in abilities, In

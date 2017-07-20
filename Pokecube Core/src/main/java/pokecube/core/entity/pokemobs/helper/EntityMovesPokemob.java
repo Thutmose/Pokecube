@@ -5,7 +5,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
@@ -16,23 +15,19 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.moves.MoveEntry;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
-import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
@@ -49,28 +44,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public EntityMovesPokemob(World world)
     {
         super(world);
-    }
-
-    @Override
-    public boolean addChange(int change)
-    {
-        int old = moveInfo.changes;
-        moveInfo.changes |= change;
-        return moveInfo.changes != old;
-    }
-
-    @Override
-    public boolean addOngoingEffect(Move_Base effect)
-    {
-        if (effect instanceof Move_Ongoing)
-        {
-            if (!moveInfo.ongoingEffects.containsKey(effect))
-            {
-                moveInfo.ongoingEffects.put((Move_Ongoing) effect, ((Move_Ongoing) effect).getDuration());
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -110,71 +83,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (getLover() == entity) return;
         Vector3 v = Vector3.getNewVector().set(entity);
         executeMove(entity, v, f);
-    }
-
-    @Override
-    public void exchangeMoves(int moveIndex0, int moveIndex1)
-    {
-        if (PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
-        {
-            String[] moves = getMoves();
-            if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)
-            {
-                moveInfo.num++;
-            }
-            else if (moveIndex0 >= moves.length || moveIndex1 >= moves.length)
-            {
-
-            }
-
-            try
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-                buffer.writeByte(MessageServer.MOVESWAP);
-                buffer.writeInt(getEntityId());
-                buffer.writeByte((byte) moveIndex0);
-                buffer.writeByte((byte) moveIndex1);
-                buffer.writeInt(moveInfo.num);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
-        }
-        else
-        {
-            String[] moves = getMoves();
-
-            if (moveIndex0 >= moves.length && moveIndex1 >= moves.length)
-            {
-                moveInfo.num++;
-            }
-            else if (moveIndex0 >= moves.length || moveIndex1 >= moves.length)
-            {
-                if (getMove(4) == null) return;
-
-                moveInfo.newMoves--;
-                moves[3] = getMove(4);
-                setMoves(moves);
-                if (moveInfo.newMoves <= 0) this.setPokemonAIState(LEARNINGMOVE, false);
-            }
-            else
-            {
-                String move0 = moves[moveIndex0];
-                String move1 = moves[moveIndex1];
-
-                if (move0 != null && move1 != null)
-                {
-                    moves[moveIndex0] = move1;
-                    moves[moveIndex1] = move0;
-                }
-
-                setMoves(moves);
-            }
-        }
     }
 
     @Override
@@ -362,121 +270,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     public void healStatus()
     {
         dataManager.set(STATUSDW, (byte) 0);
-    }
-
-    @Override
-    public void learn(String moveName)
-    {
-        if (moveName == null) return;
-        if (!MovesUtils.isMoveImplemented(moveName)) { return; }
-        String[] moves = getMoves();
-
-        // check it's not already known or forgotten
-        for (String move : moves)
-        {
-            if (moveName.equals(move)) return;
-        }
-
-        if (getPokemonOwner() != null && !this.isDead)
-        {
-            ITextComponent move = new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName));
-            ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
-                    getPokemonDisplayName(), move);
-            displayMessageToOwner(mess);
-        }
-        if (moves[0] == null)
-        {
-            setMove(0, moveName);
-        }
-        else if (moves[1] == null)
-        {
-            setMove(1, moveName);
-        }
-        else if (moves[2] == null)
-        {
-            setMove(2, moveName);
-        }
-        else if (moves[3] == null)
-        {
-            setMove(3, moveName);
-        }
-        else
-        {
-            if (getPokemonAIState(IMoveConstants.TAMED))
-            {
-                String[] current = getMoves();
-                if (current[3] != null)
-                {
-                    for (String s : current)
-                    {
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) return;
-                        }
-                    }
-                    for (String s : moves)
-                    {
-                        ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
-                                getPokemonDisplayName().getFormattedText(), s);
-                        displayMessageToOwner(mess);
-                        moveInfo.newMoves++;
-                    }
-                    setPokemonAIState(LEARNINGMOVE, true);
-                    return;
-                }
-            }
-            else
-            {
-                int index = rand.nextInt(4);
-                setMove(index, moveName);
-            }
-        }
-    }
-
-    @Override
-    public IPokemob levelUp(int level)
-    {
-        List<String> moves = Database.getLevelUpMoves(this.getPokedexEntry(), level, oldLevel);
-        Collections.shuffle(moves);
-        if (!world.isRemote)
-        {
-            ITextComponent mess = new TextComponentTranslation("pokemob.info.levelup",
-                    getPokemonDisplayName(), level + "");
-            displayMessageToOwner(mess);
-        }
-        HappinessType.applyHappiness(this, HappinessType.LEVEL);
-        if (moves != null)
-        {
-            if (this.getPokemonAIState(IMoveConstants.TAMED))
-            {
-                String[] current = getMoves();
-                if (current[3] != null)
-                {
-                    for (String s : current)
-                    {
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) return this;
-                        }
-                    }
-                    for (String s : moves)
-                    {
-                        ITextComponent move = new TextComponentTranslation(MovesUtils.getUnlocalizedMove(s));
-                        ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
-                                getPokemonDisplayName(), move);
-                        displayMessageToOwner(mess);
-                        moveInfo.newMoves++;
-                    }
-                    setPokemonAIState(LEARNINGMOVE, true);
-                    return this;
-                }
-            }
-            for (String s : moves)
-            {
-                ((EntityPokemob) this).learn(s);
-            }
-        }
-        return this;
     }
 
     @Override

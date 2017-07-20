@@ -15,11 +15,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.stats.Achievement;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
@@ -27,18 +27,15 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.Defa
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.EntityLeader;
+import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
-import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.network.packets.PacketTrainer;
-import pokecube.core.PokecubeItems;
 import pokecube.core.events.handlers.PCEventsHandler;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -508,11 +505,6 @@ public class CapabilityHasPokemobs
             {
                 EntityPlayer player = (EntityPlayer) defeater;
                 rewards.giveReward(player, user);
-                for (ItemStack i : rewards.getRewards())
-                {
-                    if (!CompatWrapper.isValid(i)) continue;
-                    checkItemAchievement(i, player);
-                }
                 checkDefeatAchievement(player);
             }
             if (defeater != null)
@@ -531,32 +523,12 @@ public class CapabilityHasPokemobs
             this.setTarget(null);
         }
 
-        public void checkItemAchievement(ItemStack item, EntityPlayer player)
-        {
-            Achievement stat = null;
-            if (item.getItem() instanceof ItemBadge)
-            {
-                for (String s : ItemBadge.variants)
-                {
-                    if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
-                    {
-                        stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
-                        break;
-                    }
-                }
-            }
-            if (stat != null)
-            {
-                player.addStat(stat);
-            }
-        }
-
         public void checkDefeatAchievement(EntityPlayer player)
         {
+            if(!(user instanceof EntityTrainer)) return;
             boolean leader = user instanceof EntityLeader;
-            Achievement achieve = PokecubePlayerStats
-                    .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
-            player.addStat(achieve);
+            if (leader) Triggers.BEATLEADER.trigger((EntityPlayerMP) player, (EntityTrainer) user);
+            else Triggers.BEATTRAINER.trigger((EntityPlayerMP) player, (EntityTrainer) user);
         }
 
         @Override

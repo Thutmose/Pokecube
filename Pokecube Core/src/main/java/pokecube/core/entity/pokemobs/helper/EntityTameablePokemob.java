@@ -99,8 +99,8 @@ public abstract class EntityTameablePokemob extends EntityAnimal
             .<Byte> createKey(EntityTameablePokemob.class, DataSerializers.BYTE);
     static final DataParameter<Integer>        SPECIALINFO      = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
-    static final DataParameter<Integer>        EVOLNBDW         = EntityDataManager
-            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
+//    static final DataParameter<Integer>        EVOLNBDW         = EntityDataManager
+//            .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>        EVOLTICKDW       = EntityDataManager
             .<Integer> createKey(EntityTameablePokemob.class, DataSerializers.VARINT);
     static final DataParameter<Integer>        HAPPYDW          = EntityDataManager
@@ -231,7 +231,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         dataManager.register(AIACTIONSTATESDW, Integer.valueOf(0));
 
         // from EntityEvolvablePokemob
-        dataManager.register(EVOLNBDW, new Integer(0));// current evolution nb
+//        dataManager.register(EVOLNBDW, new Integer(0));// current evolution nb
         dataManager.register(EVOLTICKDW, new Integer(0));// evolution tick
 
         // From EntityMovesPokemb
@@ -335,7 +335,13 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     }
 
     @Override
-    public EntityLivingBase getOwner()
+    public AnimalChest getPokemobInventory()
+    {
+        return pokeChest;
+    }
+
+    @Override
+    public EntityLivingBase getPokemonOwner()
     {
         UUID ownerID = this.getOwnerId();
         if (ownerID == null) return null;
@@ -364,27 +370,9 @@ public abstract class EntityTameablePokemob extends EntityAnimal
     }
 
     @Override
-    public AnimalChest getPokemobInventory()
-    {
-        return pokeChest;
-    }
-
-    @Override
-    public EntityLivingBase getPokemonOwner()
-    {
-        return getOwner();
-    }
-
-    @Override
     public UUID getPokemonOwnerID()
     {
         return this.dataManager.get(OWNER_ID).orNull();
-    }
-
-    @Override
-    public UUID getOwnerId()
-    {
-        return getPokemonOwnerID();
     }
 
     public boolean getPokemonShaking()

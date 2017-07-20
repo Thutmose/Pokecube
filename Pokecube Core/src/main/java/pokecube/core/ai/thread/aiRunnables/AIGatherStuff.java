@@ -293,8 +293,7 @@ public class AIGatherStuff extends AIBase
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
         boolean wildCheck = !PokecubeMod.core.getConfig().wildGather
                 && !pokemob.getPokemonAIState(IMoveConstants.TAMED);
-        if (world == null || pokemob.isAncient() || tameCheck() || entity.getAttackTarget() != null || wildCheck)
-            return false;
+        if (world == null || tameCheck() || entity.getAttackTarget() != null || wildCheck) return false;
         int rate = pokemob.getPokemonAIState(IMoveConstants.TAMED) ? PokecubeMod.core.getConfig().tameGatherDelay
                 : PokecubeMod.core.getConfig().wildGatherDelay;
         Random rand = new Random(pokemob.getRNGValue());

@@ -1,0 +1,212 @@
+package pokecube.core.interfaces.pokemob;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.util.DamageSource;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import pokecube.core.events.MoveUse;
+import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.MovePacket;
+import pokecube.core.interfaces.IPokemob.PokemobMoveStats;
+import pokecube.core.interfaces.Move_Base;
+import pokecube.core.moves.MovesUtils;
+import pokecube.core.moves.templates.Move_Ongoing;
+import thut.api.maths.Vector3;
+
+public interface IHasMoves extends IHasStats
+{
+
+    /** Sets a Move_Base and as an ongoing effect for moves which cause effects
+     * over time
+     * 
+     * @param effect */
+    boolean addOngoingEffect(Move_Base effect);
+
+    boolean attackEntityFrom(DamageSource generic, float damage);
+
+    /** Used by Gui Pokedex. Exchange the two moves.
+     *
+     * @param moveIndex0
+     *            index of 1st move
+     * @param moveIndex1
+     *            index of 2nd move */
+    void exchangeMoves(int moveIndex0, int moveIndex1);
+
+    /** Called by attackEntity(Entity entity, float f). Executes the move it's
+     * supposed to do according to his trainer command or a random one if it's
+     * wild.
+     * 
+     * @param target
+     *            the Entity to attack
+     * @param f
+     *            the float parameter of the attackEntity method */
+    void executeMove(Entity target, Vector3 targetLocation, float f);
+
+    int getAttackCooldown();
+
+    /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
+     *
+     * @return the change state */
+    default int getChanges()
+    {
+        return getMoveStats().changes;
+    }
+
+    String getLastMoveUsed();
+
+    /** Gets the {@link String} id of the specified move.
+     *
+     * @param i
+     *            from 0 to 3
+     * @return the String name of the move */
+    default String getMove(int index)
+    {
+        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
+        {
+            IPokemob to = (IPokemob) getTransformedTo();
+            if (to.getTransformedTo() != this) return to.getMove(index);
+        }
+
+        String[] moves = getMoves();
+
+        if (index >= 0 && index < 4) { return moves[index]; }
+        if (index == 4 && moves[3] != null && getPokemonAIState(IMoveConstants.LEARNINGMOVE))
+        {
+            List<String> list;
+            List<String> lastMoves = new ArrayList<String>();
+            int n = getLevel();
+
+            while (n > 0)
+            {
+                list = getPokedexEntry().getMovesForLevel(this.getLevel(), --n);
+                if (!list.isEmpty())
+                {
+                    list:
+                    for (String s : list)
+                    {
+                        for (String s1 : moves)
+                        {
+                            if (s.equals(s1)) continue list;
+                        }
+                        lastMoves.add(s);
+                    }
+                    break;
+                }
+            }
+
+            if (!lastMoves.isEmpty()) { return lastMoves.get(getMoveStats().num % lastMoves.size()); }
+        }
+
+        if (index == 5) { return IMoveConstants.MOVE_NONE; }
+        return null;
+    }
+
+    /** Returns the index of the move to be executed in executeMove method.
+     * 
+     * @return the index from 0 to 3; */
+    public int getMoveIndex();
+
+    /** Returns all the 4 available moves name.
+     *
+     * @return an array of 4 {@link String} */
+    String[] getMoves();
+
+    PokemobMoveStats getMoveStats();
+
+    default HashMap<Move_Ongoing, Integer> getOngoingEffects()
+    {
+        return getMoveStats().ongoingEffects;
+    }
+
+    Entity getTransformedTo();
+
+    EntityAIBase getUtilityMoveAI();
+
+    default Entity getWeapon(int index)
+    {
+        return index == 0 ? getMoveStats().weapon1 : getMoveStats().weapon2;
+    }
+
+    /** The pokemob learns the specified move. It will be set to an available
+     * position or erase an existing one if non are available.
+     *
+     * @param moveName
+     *            an existing move (registered in {@link MovesUtils}) */
+    void learn(String moveName);
+
+    /** This is called during move use to both the attacker and the attacked
+     * entity, in that order. This can be used to add in abilities, In
+     * EntityMovesPokemob, this is used for accounting for moves like curse,
+     * detect, protect, etc, moves which either have different effects per
+     * pokemon type, or moves that prevent damage.
+     * 
+     * @param move */
+    default void onMoveUse(MovePacket move)
+    {
+        Event toPost = move.pre ? new MoveUse.DuringUse.Pre(move, move.attacker == getEntity())
+                : new MoveUse.DuringUse.Post(move, move.attacker == getEntity());
+        MinecraftForge.EVENT_BUS.post(toPost);
+    }
+
+    /** @param change
+     *            the changes to set */
+    default void removeChanges(int changes)
+    {
+        this.getMoveStats().changes -= changes;
+    }
+
+    void setAttackCooldown(int timer);
+
+    default void setLeaningMoveIndex(int num)
+    {
+        this.getMoveStats().num = num;
+    }
+
+    /** Sets the {@link String} id of the specified move.
+     *
+     * @param i
+     *            from 0 to 3
+     * @param moveName */
+    void setMove(int i, String moveName);
+
+    /** Sets the move index.
+     * 
+     * @param i
+     *            must be a value from 0 to 3 */
+    public void setMoveIndex(int i);
+
+    /** Statuses: {@link IMoveConstants#STATUS_PSN} for example. The set can
+     * fail because the mob is immune against this status (a fire-type Pokemon
+     * can't be burned for example) or because it already have a status. If so,
+     * the method returns false.
+     * 
+     * @param status
+     *            the status to set
+     * @return whether the status has actually been set */
+    boolean setStatus(byte status);
+
+    /** Sets the initial status timer. The timer will be decreased until 0. The
+     * timer for SLP. When reach 0, the mob wakes up.
+     * 
+     * @param timer
+     *            the initial value to set */
+    void setStatusTimer(short timer);
+
+    void setTransformedTo(Entity to);
+
+    /** Used by moves such as vine whip to set the pokemob as using something.
+     * 
+     * @param index
+     * @param weapon */
+    default void setWeapon(int index, Entity weapon)
+    {
+        if (index == 0) getMoveStats().weapon1 = weapon;
+        else getMoveStats().weapon2 = weapon;
+    }
+}

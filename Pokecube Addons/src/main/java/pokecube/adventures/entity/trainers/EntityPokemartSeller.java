@@ -8,7 +8,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.events.handlers.EventsHandler;
 import thut.api.maths.Vector3;
@@ -24,7 +24,7 @@ public class EntityPokemartSeller extends EntityTrainer
     public EntityPokemartSeller(World par1World)
     {
         super(par1World, merchant, 100);
-        this.aiStates.setAIState(IHasAIStates.PERMFRIENDLY, true);
+        this.aiStates.setAIState(IHasNPCAIStates.PERMFRIENDLY, true);
         pokemobsCap.friendlyCooldown = Integer.MAX_VALUE;
     }
 

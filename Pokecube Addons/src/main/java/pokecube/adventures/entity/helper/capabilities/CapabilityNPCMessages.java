@@ -13,16 +13,25 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import pokecube.adventures.entity.helper.Action;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.core.interfaces.PokecubeMod;
 
-public class CapabilityMessages
+public class CapabilityNPCMessages
 {
     @CapabilityInject(IHasMessages.class)
     public static final Capability<IHasMessages> MESSAGES_CAP = null;
     public static Storage                        storage;
+
+    public static IHasMessages getMessages(ICapabilityProvider entityIn)
+    {
+        IHasMessages pokemobHolder = null;
+        if (entityIn.hasCapability(MESSAGES_CAP, null)) pokemobHolder = entityIn.getCapability(MESSAGES_CAP, null);
+        else if (entityIn instanceof IHasMessages) return (IHasMessages) entityIn;
+        return pokemobHolder;
+    }
 
     public static interface IHasMessages
     {

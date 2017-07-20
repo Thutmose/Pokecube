@@ -35,7 +35,7 @@ import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
@@ -228,9 +228,9 @@ public class EntityTrainer extends EntityTrainerBase
         super.onLivingUpdate();
         if (getEntityWorld().isRemote) return;
 
-        if (pokemobsCap.getTarget() == null && aiStates.getAIState(IHasAIStates.INBATTLE))
+        if (pokemobsCap.getTarget() == null && aiStates.getAIState(IHasNPCAIStates.INBATTLE))
         {
-            aiStates.setAIState(IHasAIStates.INBATTLE, false);
+            aiStates.setAIState(IHasNPCAIStates.INBATTLE, false);
         }
 
         if (!added)
@@ -268,7 +268,7 @@ public class EntityTrainer extends EntityTrainerBase
     @Override
     public void onUpdate()
     {
-        if (getNavigator().getPath() != null && aiStates.getAIState(IHasAIStates.STATIONARY))
+        if (getNavigator().getPath() != null && aiStates.getAIState(IHasNPCAIStates.STATIONARY))
         {
             if (guardAI.capability.getPos().distanceSq(0, 0, 0) == 0)
             {
@@ -315,7 +315,7 @@ public class EntityTrainer extends EntityTrainerBase
             if (pokemobsCap.getType() != null && !getEntityWorld().isRemote
                     && !CompatWrapper.isValid(player.getHeldItemMainhand()))
             {
-                String message = this.getName() + " " + aiStates.getAIState(IHasAIStates.STATIONARY) + " "
+                String message = this.getName() + " " + aiStates.getAIState(IHasNPCAIStates.STATIONARY) + " "
                         + pokemobsCap.countPokemon() + " ";
                 for (ItemStack i : pokemobsCap.getPokecubes())
                 {
@@ -413,14 +413,14 @@ public class EntityTrainer extends EntityTrainerBase
         this.location = location;
         if (location == null)
         {
-            aiStates.setAIState(IHasAIStates.STATIONARY, false);
+            aiStates.setAIState(IHasNPCAIStates.STATIONARY, false);
             guardAI.setPos(new BlockPos(0, 0, 0));
             guardAI.setTimePeriod(new TimePeriod(0, 0));
             return;
         }
         guardAI.setTimePeriod(TimePeriod.fullDay);
         guardAI.setPos(getPosition());
-        aiStates.setAIState(IHasAIStates.STATIONARY, true);
+        aiStates.setAIState(IHasNPCAIStates.STATIONARY, true);
     }
 
     public void setTypes()

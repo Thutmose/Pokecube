@@ -23,18 +23,18 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.advancements.Triggers;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.DefaultAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.DefaultAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.DefaultRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.DefaultMessager;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.DefaultMessager;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.EntityPokemartSeller;
 import pokecube.adventures.entity.trainers.EntityTrainer;
@@ -196,10 +196,10 @@ public class PokecubeAdv
 
         CapabilityManager.INSTANCE.register(IHasPokemobs.class,
                 CapabilityHasPokemobs.storage = new CapabilityHasPokemobs.Storage(), DefaultPokemobs.class);
-        CapabilityManager.INSTANCE.register(IHasAIStates.class,
-                CapabilityAIStates.storage = new CapabilityAIStates.Storage(), DefaultAIStates.class);
+        CapabilityManager.INSTANCE.register(IHasNPCAIStates.class,
+                CapabilityNPCAIStates.storage = new CapabilityNPCAIStates.Storage(), DefaultAIStates.class);
         CapabilityManager.INSTANCE.register(IHasMessages.class,
-                CapabilityMessages.storage = new CapabilityMessages.Storage(), DefaultMessager.class);
+                CapabilityNPCMessages.storage = new CapabilityNPCMessages.Storage(), DefaultMessager.class);
         CapabilityManager.INSTANCE.register(IHasRewards.class,
                 CapabilityHasRewards.storage = new CapabilityHasRewards.Storage(), DefaultRewards.class);
     }

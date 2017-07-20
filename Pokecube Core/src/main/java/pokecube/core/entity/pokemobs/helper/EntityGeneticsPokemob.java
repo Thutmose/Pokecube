@@ -377,7 +377,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     public void setSize(float size)
     {
         if (genesSize == null) getSize();
-        if (isAncient()) size = 2;
         float a = 1, b = 1, c = 1;
         PokedexEntry entry = getPokedexEntry();
         if (entry != null)

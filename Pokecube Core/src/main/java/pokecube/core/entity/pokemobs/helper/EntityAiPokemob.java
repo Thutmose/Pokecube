@@ -67,7 +67,6 @@ import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.events.EggEvent;
 import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
@@ -80,7 +79,6 @@ import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.berries.ItemBerry;
-import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.PokemobTerrainEffects;
@@ -718,22 +716,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     }
                 }
             }
-
             captureDrops = false;
-            if (this.isAncient())
-            {
-
-                ItemStack eggItemStack = ItemPokemobEgg.getEggStack(getPokedexEntry());
-                Entity eggItem = new EntityPokemobEgg(world, posX, posY, posZ, eggItemStack, this);
-                EggEvent.Lay event = new EggEvent.Lay(eggItem);
-                MinecraftForge.EVENT_BUS.post(event);
-
-                if (!event.isCanceled())
-                {
-                    egg = eggItem;
-                    world.spawnEntity(egg);
-                }
-            }
             if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, damageSource, capturedDrops, i,
                     recentlyHit > 0))
             {

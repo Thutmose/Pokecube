@@ -14,9 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.utils.PokeType;
 import thut.api.entity.IMultiplePassengerEntity;
 
 /** Handles the HM behaviour.
@@ -29,10 +27,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     public float      waterSpeedFactor   = 0.25f;
     public float      airbornSpeedFactor = 0.02f;
     public float      speedFactor        = 1;
-    public boolean    canUseSaddle       = false;
-    private boolean   canFly             = false;
-    private boolean   canSurf            = false;
-    private boolean   canDive            = false;
     protected double  yOffset;
 
     public int        counterMount       = 0;
@@ -56,24 +50,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
             counterMount = 0;
         }
         return super.attackEntityFrom(source, i);
-    }
-
-    @Override
-    public boolean canUseDive()
-    {
-        return canDive && PokecubeCore.core.getConfig().diveEnabled;
-    }
-
-    @Override
-    public boolean canUseFly()
-    {
-        return canFly;
-    }
-
-    @Override
-    public boolean canUseSurf()
-    {
-        return canSurf;
     }
 
     public boolean checkHunger()
@@ -126,24 +102,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
         return false;
     }
 
-    public void initRidable()
-    {
-        if (isType(PokeType.getType("water")) || getPokedexEntry().swims() || getPokedexEntry().shouldSurf
-                || getPokedexEntry().shouldDive)
-        {
-            this.setCanSurf(true);
-        }
-        if (canUseSurf() && getPokedexEntry().shouldDive)
-        {
-            this.setCanDive(true);
-        }
-        if ((isType(PokeType.getType("flying")) && getPokedexEntry().shouldFly) || (getPokedexEntry().flys())
-                || getPokedexEntry().shouldFly)
-        {
-            this.setCanFly(true);
-        }
-    }
-
     public boolean isPokemobJumping()
     {
         return this.pokemobJumping;
@@ -185,45 +143,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
                 counterMount = 0;
             }
         }
-    }
-
-    public EntityMountablePokemob setCanDive(boolean bool)
-    {
-        this.canDive = bool;
-        this.setCanSurf(bool);
-        return this;
-    }
-
-    /** Sets can use saddle and can use fly, and sets airspeed factor to 3 if
-     * bool is true;
-     * 
-     * @param bool
-     * @return */
-    public EntityMountablePokemob setCanFly(boolean bool)
-    {
-        this.canFly = bool;
-        this.airbornSpeedFactor = bool ? 3 : airbornSpeedFactor;
-        return this;
-    }
-
-    /** Sets both can use saddle and can use surf, also sets waterspeed factor
-     * to 2 if bool is true.
-     * 
-     * @param bool
-     * @return */
-    public EntityMountablePokemob setCanSurf(boolean bool)
-    {
-        this.canSurf = bool;
-        this.waterSpeedFactor = bool ? 2 : waterSpeedFactor;
-        return this;
-    }
-
-    public EntityMountablePokemob setSpeedFactors(double land, double air, double water)
-    {
-        landSpeedFactor = (float) land;
-        waterSpeedFactor = (float) water;
-        airbornSpeedFactor = (float) air;
-        return this;
     }
 
     /** If the rider should be dismounted from the entity when the entity goes

@@ -8,14 +8,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages;
-import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.interfaces.IPokemob;
 import thut.lib.CompatWrapper;
@@ -26,7 +26,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades
     public DefaultPokemobs pokemobsCap;
     protected IHasMessages messages;
     protected IHasRewards  rewardsCap;
-    public IHasAIStates    aiStates;
+    public IHasNPCAIStates    aiStates;
     int                    despawncounter  = 0;
 
     public EntityTrainerBase(World worldIn)
@@ -34,8 +34,8 @@ public abstract class EntityTrainerBase extends EntityHasTrades
         super(worldIn);
         pokemobsCap = (DefaultPokemobs) this.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
         rewardsCap = this.getCapability(CapabilityHasRewards.REWARDS_CAP, null);
-        this.messages = getCapability(CapabilityMessages.MESSAGES_CAP, null);
-        this.aiStates = getCapability(CapabilityAIStates.AISTATES_CAP, null);
+        this.messages = getCapability(CapabilityNPCMessages.MESSAGES_CAP, null);
+        this.aiStates = getCapability(CapabilityNPCAIStates.AISTATES_CAP, null);
     }
 
     @Override
@@ -49,8 +49,8 @@ public abstract class EntityTrainerBase extends EntityHasTrades
                     .getEntityFromUuid(pokemobsCap.getOutID()));
             if (pokemobsCap.getOutMob() == null) pokemobsCap.setOutID(null);
         }
-        if (pokemobsCap.countPokemon() == 0 && !aiStates.getAIState(IHasAIStates.STATIONARY)
-                && !aiStates.getAIState(IHasAIStates.PERMFRIENDLY))
+        if (pokemobsCap.countPokemon() == 0 && !aiStates.getAIState(IHasNPCAIStates.STATIONARY)
+                && !aiStates.getAIState(IHasNPCAIStates.PERMFRIENDLY))
         {
             despawncounter++;
             if (despawncounter > 50)

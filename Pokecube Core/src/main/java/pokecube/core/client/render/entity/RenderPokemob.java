@@ -23,10 +23,7 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.client.Resources;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.entity.pokemobs.helper.EntityEvolvablePokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -71,14 +68,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             GL11.glDepthMask(false);
             GL11.glPushMatrix();
             GL11.glTranslatef(0.0F, pokemob.getPokedexEntry().height * pokemob.getSize() / 2, 0.0F);
-            PokedexEntry entry = pokemob.getPokedexEntry();
-            if (pokemob instanceof EntityEvolvablePokemob)
-            {
-                if ((entry = Database.getEntry(((EntityPokemob) pokemob).getEvolNumber())) == null)
-                {
-                    entry = pokemob.getPokedexEntry();
-                }
-            }
+            PokedexEntry entry = pokemob.getEvolutionEntry();
 
             int color1 = entry.getType1().colour;
             int color2 = entry.getType2().colour;

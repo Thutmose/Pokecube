@@ -496,8 +496,8 @@ public class Commands extends CommandBase
         {
             try
             {
-                File moves = new File(Database.DBLOCATION + args[1] + ".json");
-                File anims = new File(Database.DBLOCATION + args[2] + ".json");
+                File moves = new File(Database.CONFIGLOC + args[1] + ".json");
+                File anims = new File(Database.CONFIGLOC + args[2] + ".json");
                 JsonMoves.loadMoves(moves);
                 JsonMoves.merge(anims, moves);
                 MovesParser.load(moves);

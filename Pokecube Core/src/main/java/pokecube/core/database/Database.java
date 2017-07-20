@@ -143,9 +143,10 @@ public class Database
     public static HashMap<String, ArrayList<PokedexEntry>> mobReplacements  = new HashMap<String, ArrayList<PokedexEntry>>();
 
     public static List<PokedexEntry>                       spawnables       = new ArrayList<PokedexEntry>();
-    public static String                                   DBLOCATION       = "/assets/pokecube/database/";
+    public static final String                             DBLOCATION       = "/assets/pokecube/database/";
 
-    public static String                                   CONFIGLOC        = "";
+    public static final String                             CONFIGLOC        = "." + File.separator + "config"
+            + File.separator + "pokecube" + File.separator + "database" + File.separator;
 
     static HashSet<String>                                 defaultDatabases = Sets.newHashSet();
     private static HashSet<String>                         spawnDatabases   = Sets.newHashSet();
@@ -374,15 +375,15 @@ public class Database
         {
             try
             {
-                File moves = new File(DBLOCATION + s);
-                File anims = new File(Database.DBLOCATION + "animations.json");
+                File moves = new File(CONFIGLOC + s);
+                File anims = new File(Database.CONFIGLOC + "animations.json");
                 JsonMoves.loadMoves(moves);
                 JsonMoves.merge(anims, moves);
                 MovesParser.load(moves);
             }
             catch (IOException e1)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e1);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s, e1);
             }
         }
         boolean loaded = false;
@@ -390,7 +391,7 @@ public class Database
         {
             try
             {
-                PokedexEntryLoader.initDatabase(new File(DBLOCATION + s));
+                PokedexEntryLoader.initDatabase(new File(CONFIGLOC + s));
                 if (!loaded)
                 {
                     loaded = true;
@@ -399,7 +400,7 @@ public class Database
             }
             catch (Exception e)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + DBLOCATION + s, e);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s, e);
             }
         }
 

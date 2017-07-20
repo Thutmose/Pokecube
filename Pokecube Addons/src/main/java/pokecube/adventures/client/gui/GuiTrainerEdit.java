@@ -15,10 +15,14 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentString;
+import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.network.packets.PacketTrainer;
@@ -35,27 +39,35 @@ import thut.lib.CompatWrapper;
 
 public class GuiTrainerEdit extends GuiScreen
 {
-    GuiTextField[]              textFieldPokemobs = new GuiTextField[6];
-    GuiTextField[]              textFieldLevels   = new GuiTextField[6];
+    GuiTextField[]                 textFieldPokemobs = new GuiTextField[6];
+    GuiTextField[]                 textFieldLevels   = new GuiTextField[6];
 
-    GuiTextField                textFieldName;
+    GuiTextField                   textFieldName;
 
-    GuiTextField                textFieldType;
+    GuiTextField                   textFieldType;
 
-    String                      oldType;
-    String                      oldName;
+    String                         oldType;
+    String                         oldName;
 
-    private final EntityTrainer trainer;
+    private final IHasPokemobs     pokemobCap;
+    private final IHasAIStates     aiCap;
+    private final EntityLivingBase trainer;
 
-    String                      F                 = "false";
+    String                         F                 = "false";
 
-    String                      T                 = "true";
+    String                         T                 = "true";
 
-    boolean                     stationary        = false;
-    boolean                     resetTeam         = false;
+    boolean                        stationary        = false;
+    boolean                        resetTeam         = false;
 
-    public GuiTrainerEdit(EntityTrainer trainer)
+    public GuiTrainerEdit(EntityLivingBase trainer)
     {
+        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            this.pokemobCap = trainer.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        else this.pokemobCap = (IHasPokemobs) trainer;
+        if (trainer.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            this.aiCap = trainer.getCapability(CapabilityAIStates.AISTATES_CAP, null);
+        else this.aiCap = (IHasAIStates) trainer;
         this.trainer = trainer;
     }
 
@@ -75,8 +87,9 @@ public class GuiTrainerEdit extends GuiScreen
         }
         else if (guibutton.id == 5)
         {
-            trainer.male = !trainer.male;
-            guibutton.displayString = trainer.male ? "\u2642" : "\u2640";
+            byte gender = pokemobCap.getGender();
+            pokemobCap.setGender((byte) (gender == 1 ? 2 : 1));
+            guibutton.displayString = gender == 1 ? "\u2642" : "\u2640";
             sendChooseToServer();
         }
         else if (guibutton.id == 6)
@@ -128,14 +141,14 @@ public class GuiTrainerEdit extends GuiScreen
                     index++;
                 }
             }
-            trainer.setType(TypeTrainer.getTrainer(types.get(index)));
+            pokemobCap.setType(TypeTrainer.getTrainer(types.get(index)));
             textFieldType.setText(types.get(index));
             if (textFieldName.getText().startsWith(oldType))
             {
-                textFieldName.setText(textFieldName.getText().replaceFirst(oldType, trainer.getType().name));
+                textFieldName.setText(textFieldName.getText().replaceFirst(oldType, pokemobCap.getType().name));
             }
             sendChooseToServer();
-            oldType = trainer.getType().name;
+            oldType = pokemobCap.getType().name;
         }
     }
 
@@ -182,7 +195,7 @@ public class GuiTrainerEdit extends GuiScreen
                     GL11.glTranslatef(i1 + 8, j1 + 14, 50F);
                     GL11.glScaled(scale, scale, scale);
                     EventsHandlerClient.renderMob(
-                            EventsHandlerClient.getPokemobForRender(trainer.getPokemob(n), trainer.getEntityWorld()),
+                            EventsHandlerClient.getPokemobForRender(pokemobCap.getPokemob(n), trainer.getEntityWorld()),
                             partialTicks, true);
                     GL11.glPopMatrix();
                 }
@@ -215,10 +228,10 @@ public class GuiTrainerEdit extends GuiScreen
         textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
         textFieldType.setEnabled(false);
 
-        oldName = trainer.name;
-        oldType = trainer.getType().name;
+        oldName = trainer instanceof EntityTrainer ? ((EntityTrainer) trainer).name : "";
+        oldType = pokemobCap.getType().name;
 
-        String next = (stationary = trainer.aiStates.getAIState(IHasAIStates.STATIONARY)) ? F : T;
+        String next = (stationary = aiCap.getAIState(IHasAIStates.STATIONARY)) ? F : T;
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
         buttonList.add(new GuiButton(2, width / 2 - xOffset + 80, height / 2 - yOffset + 20, 50, 20, "Save"));
         yOffset = 0;
@@ -228,7 +241,7 @@ public class GuiTrainerEdit extends GuiScreen
         // Cycle Trainer Type buttons
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 90, height / 2 - yOffset - 60, 50, 20, prev));
         buttonList.add(new GuiButton(4, width / 2 - xOffset + 80, height / 2 - yOffset - 60, 50, 20, next));
-        String gender = trainer.male ? "\u2642" : "\u2640";
+        String gender = pokemobCap.getGender() == 2 ? "\u2642" : "\u2640";
         buttonList.add(new GuiButton(5, width / 2 - xOffset - 90, height / 2 - yOffset - 90, 20, 20, gender));
         buttonList.add(new GuiButton(6, width / 2 - xOffset + 80, height / 2 - yOffset - 90, 50, 20, "Reset"));
         buttonList.add(new GuiButton(7, width / 2 - xOffset + 80, height / 2 - yOffset + 60, 50, 20, "Kill"));
@@ -242,7 +255,7 @@ public class GuiTrainerEdit extends GuiScreen
             textFieldLevels[i] = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset,
                     height / 4 + 60 + i * 20 + yOffset, 30, 10);
 
-            ItemStack stack = trainer.getPokemob(i);
+            ItemStack stack = pokemobCap.getPokemob(i);
             if (stack == null) continue;
             IPokemob pokemob = PokecubeManager.itemToPokemob(stack, trainer.getEntityWorld());
             if (pokemob != null)
@@ -253,12 +266,12 @@ public class GuiTrainerEdit extends GuiScreen
         }
 
         textFieldName.setText(trainer.getCustomNameTag());
-        textFieldType.setText(trainer.getType().name);
+        textFieldType.setText(pokemobCap.getType().name);
     }
 
     private PokedexEntry getEntry(int num)
     {
-        ItemStack stack = trainer.getPokemob(num);
+        ItemStack stack = pokemobCap.getPokemob(num);
         if (PokecubeManager.isFilled(stack))
         {
             int number = PokecubeManager.getPokedexNb(stack);
@@ -325,13 +338,13 @@ public class GuiTrainerEdit extends GuiScreen
                         {
                             level = 1;
                         }
-                        ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.worldObj, level);
-                        trainer.setPokemob(i, newMob);
+                        ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.getEntityWorld(), level);
+                        pokemobCap.setPokemob(i, newMob);
                         textFieldPokemobs[i].setText(entry.getName());
                     }
                     else if (entry == null)
                     {
-                        trainer.setPokemob(i, CompatWrapper.nullStack);
+                        pokemobCap.setPokemob(i, CompatWrapper.nullStack);
                         textFieldPokemobs[i].setText("");
                     }
                 }
@@ -342,7 +355,7 @@ public class GuiTrainerEdit extends GuiScreen
                     {
                         int level = Integer.parseInt(textFieldLevels[i].getText());
                         int exp = Tools.levelToXp(entry.getEvolutionMode(), level);
-                        ItemStack stack = trainer.getPokemob(i);
+                        ItemStack stack = pokemobCap.getPokemob(i);
                         NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob");
                         pokemob.setInteger("exp", exp);
                         stack.getTagCompound().setTag("Pokemob", pokemob);
@@ -398,13 +411,13 @@ public class GuiTrainerEdit extends GuiScreen
                 if (entry != null && entry != getEntry(i))
                 {
                     int level = Integer.parseInt(textFieldLevels[i].getText());
-                    ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.worldObj, level);
-                    trainer.setPokemob(i, newMob);
+                    ItemStack newMob = TypeTrainer.makeStack(entry, trainer, trainer.getEntityWorld(), level);
+                    pokemobCap.setPokemob(i, newMob);
                     textFieldPokemobs[i].setText(entry.getName());
                 }
                 else if (entry == null)
                 {
-                    trainer.setPokemob(i, CompatWrapper.nullStack);
+                    pokemobCap.setPokemob(i, CompatWrapper.nullStack);
                     textFieldPokemobs[i].setText("");
                 }
             }
@@ -415,7 +428,7 @@ public class GuiTrainerEdit extends GuiScreen
                 {
                     int level = Integer.parseInt(textFieldLevels[i].getText());
                     int exp = Tools.levelToXp(entry.getEvolutionMode(), level);
-                    ItemStack stack = trainer.getPokemob(i);
+                    ItemStack stack = pokemobCap.getPokemob(i);
                     NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob")
                             .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.STATSTAG);
                     pokemob.setInteger(TagNames.EXP, exp);

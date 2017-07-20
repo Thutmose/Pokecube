@@ -13,7 +13,8 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.core.PokecubeCore;
 import pokecube.core.utils.Tools;
 import thut.core.client.render.model.IExtendedModelPart;
@@ -28,6 +29,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
     ResourceLocation                  belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
 
     private final RenderLivingBase<?> livingEntityRenderer;
+    private IHasPokemobs              pokemobCap;
 
     public TrainerBeltRenderer(RenderLivingBase<?> livingEntityRendererIn)
     {
@@ -40,8 +42,10 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
     public void doRenderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount,
             float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        EntityTrainer trainer = (EntityTrainer) entitylivingbaseIn;
-        if (trainer.countPokemon() <= 0) return;
+        if (entitylivingbaseIn.hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            this.pokemobCap = entitylivingbaseIn.getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        else this.pokemobCap = (IHasPokemobs) entitylivingbaseIn;
+        if (pokemobCap.countPokemon() <= 0) return;
 
         int brightness = entitylivingbaseIn.getBrightnessForRender(partialTicks);
         // First pass of render
@@ -92,8 +96,8 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         dx = 0.25f;
         for (int i = 0; i < 6; i++)
         {
-            ItemStack stack = trainer.getPokecubes().get(i);
-            if (CompatWrapper.isValid(stack) && !Tools.isSameStack(stack, trainer.getHeldItemMainhand()))
+            ItemStack stack = pokemobCap.getPokecubes().get(i);
+            if (CompatWrapper.isValid(stack) && !Tools.isSameStack(stack, entitylivingbaseIn.getHeldItemMainhand()))
             {
                 GlStateManager.pushMatrix();
                 if (i < 3)
@@ -131,7 +135,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
                 GlStateManager.rotate(ry, 0, 1, 0);
                 GlStateManager.rotate(rz, 0, 0, 1);
                 GlStateManager.scale(0.15, 0.15, 0.15);
-                Minecraft.getMinecraft().getItemRenderer().renderItem(trainer, stack, null);
+                Minecraft.getMinecraft().getItemRenderer().renderItem(entitylivingbaseIn, stack, null);
                 GlStateManager.popMatrix();
             }
         }

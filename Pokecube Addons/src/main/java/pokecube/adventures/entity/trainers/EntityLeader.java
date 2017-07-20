@@ -61,11 +61,11 @@ public class EntityLeader extends EntityTrainer
         int alevel = Tools.xpToLevel(Database.getEntry(1).getEvolutionMode(), level);
         level = Tools.levelToXp(Database.getEntry(1).getEvolutionMode(), alevel + 5);
 
-        this.setType(type);
+        pokemobsCap.setType(type);
         byte genders = type.genders;
-        if (genders == 1) male = true;
-        if (genders == 2) male = false;
-        if (genders == 3) male = Math.random() < 0.5;
+        if (genders == 1) pokemobsCap.setGender((byte) 1);
+        if (genders == 2) pokemobsCap.setGender((byte) 2);
+        if (genders == 3) pokemobsCap.setGender((byte) (Math.random() < 0.5 ? 1 : 2));
 
         TypeTrainer.getRandomTeam(pokemobsCap, this, level, getEntityWorld());
         setTypes();
@@ -79,11 +79,11 @@ public class EntityLeader extends EntityTrainer
 
         if (ItemBadge.isBadge(player.getHeldItem(hand)))
         {
-            if (!getRewards().isEmpty()) getRewards().set(0, player.getHeldItem(hand).copy());
-            else getRewards().add(player.getHeldItem(hand).copy());
+            if (!rewardsCap.getRewards().isEmpty()) rewardsCap.getRewards().set(0, player.getHeldItem(hand).copy());
+            else rewardsCap.getRewards().add(player.getHeldItem(hand).copy());
             if (!getEntityWorld().isRemote) player.addChatMessage(
                     new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
-            this.setHeldItem(EnumHand.OFF_HAND, getRewards().get(0));
+            this.setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0));
         }
         return super.processInteract(player, hand, stack);
     }

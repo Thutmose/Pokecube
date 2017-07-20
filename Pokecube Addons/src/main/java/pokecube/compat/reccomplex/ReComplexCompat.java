@@ -103,7 +103,7 @@ public class ReComplexCompat
     {
         Vector3 loc = Vector3.getNewVector().set(trainer);
         int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
-        trainer.initTrainer(trainer.getType(), maxXp);
+        trainer.initTrainer(trainer.pokemobsCap.getType(), maxXp);
         System.out.println("Randomized " + trainer.name);
     }
 

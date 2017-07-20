@@ -12,9 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.stats.Achievement;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,6 +26,7 @@ import pokecube.adventures.entity.helper.capabilities.CapabilityMessages.IHasMes
 import pokecube.adventures.entity.trainers.EntityLeader;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.adventures.events.PAEventsHandler;
+import pokecube.adventures.events.PAEventsHandler.DataParamHolder;
 import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeItems;
@@ -232,6 +230,12 @@ public class CapabilityHasPokemobs
 
         /** If we are agressive, is this a valid target? */
         boolean canBattle(EntityLivingBase target);
+
+        /** 1 = male 2= female */
+        byte getGender();
+
+        /** 1 = male 2= female */
+        void setGender(byte value);
     }
 
     public static class Storage implements Capability.IStorage<IHasPokemobs>
@@ -271,6 +275,8 @@ public class CapabilityHasPokemobs
                 nbt.setTag("DefeatList", nbttaglist);
                 nbt.setBoolean("notifyDefeat", mobs.notifyDefeat);
                 nbt.setLong("resetTime", mobs.resetTime);
+                if (mobs.sight != -1) nbt.setInteger("sight", mobs.sight);
+                nbt.setInteger("friendly", mobs.friendlyCooldown);
             }
             return nbt;
         }
@@ -300,6 +306,7 @@ public class CapabilityHasPokemobs
             if (instance instanceof DefaultPokemobs)
             {
                 DefaultPokemobs mobs = (DefaultPokemobs) instance;
+                mobs.sight = nbt.hasKey("sight") ? nbt.getInteger("sight") : -1;
                 if (nbt.hasKey("battleCD")) mobs.battleCooldown = nbt.getInteger("battleCD");
                 if (mobs.battleCooldown < 0) mobs.battleCooldown = Config.instance.trainerCooldown;
 
@@ -319,6 +326,7 @@ public class CapabilityHasPokemobs
 
     public static class DefaultPokemobs implements IHasPokemobs, ICapabilitySerializable<NBTTagCompound>
     {
+
         public static class DefeatEntry
         {
             public static DefeatEntry createFromNBT(NBTTagCompound nbt)
@@ -345,29 +353,34 @@ public class CapabilityHasPokemobs
             }
         }
 
-        public long                   resetTime      = 0;
-        public ArrayList<DefeatEntry> defeaters      = new ArrayList<DefeatEntry>();
+        public long                   resetTime        = 0;
+        public int                    friendlyCooldown = 0;
+        public ArrayList<DefeatEntry> defeaters        = new ArrayList<DefeatEntry>();
 
         // Should the client be notified of the defeat via a packet?
-        public boolean                notifyDefeat   = false;
+        public boolean                notifyDefeat     = false;
 
         // This is the reference cooldown.
-        public int                    battleCooldown = -1;
+        public int                    battleCooldown   = -1;
+        private byte                  gender           = 1;
         private EntityLivingBase      user;
         private IHasAIStates          aiStates;
         private IHasMessages          messages;
         private IHasRewards           rewards;
         private int                   nextSlot;
         // Cooldown between sending out pokemobs
-        private int                   attackCooldown = 0;
+        private int                   attackCooldown   = 0;
         // Cooldown between agression
-        private long                  cooldown       = 0;
+        private long                  cooldown         = 0;
+        private int                   sight            = -1;
         private TypeTrainer           type;
         private EntityLivingBase      target;
         private UUID                  outID;
         private IPokemob              outMob;
-        private List<ItemStack>       pokecubes      = CompatWrapper.makeList(6);
-        DataParameter<String>         PARAM;
+        private List<ItemStack>       pokecubes        = CompatWrapper.makeList(6);
+
+        DataParamHolder               holder;
+        // DataParameter<String> PARAM;
 
         public void init(EntityLivingBase user, IHasAIStates aiStates, IHasMessages messages, IHasRewards rewards)
         {
@@ -377,16 +390,7 @@ public class CapabilityHasPokemobs
             this.rewards = rewards;
             battleCooldown = Config.instance.trainerCooldown;
             resetTime = battleCooldown;
-
-            // TODO this should be found via class checking the entitylist, and
-            // initialize thise at startup.
-            if (!PAEventsHandler.parameters.containsKey(user.getClass()))
-            {
-                DataParameter<String> value = EntityDataManager.<String> createKey(user.getClass(),
-                        DataSerializers.STRING);
-                PAEventsHandler.parameters.put(user.getClass(), value);
-            }
-            PARAM = PAEventsHandler.parameters.get(user.getClass());
+            holder = PAEventsHandler.getParameterHolder(user.getClass());
         }
 
         public boolean hasDefeated(Entity e)
@@ -445,6 +449,7 @@ public class CapabilityHasPokemobs
         public void lowerCooldowns()
         {
             if (aiStates.getAIState(IHasAIStates.PERMFRIENDLY)) { return; }
+            if (friendlyCooldown-- >= 0) return;
             boolean done = getAttackCooldown() <= 0;
             if (done)
             {
@@ -491,10 +496,16 @@ public class CapabilityHasPokemobs
         {
             if (!user.isServerWorld())
             {
-                String t = user.getDataManager().get(PARAM);
+                String t = user.getDataManager().get(holder.TYPE);
                 return t.isEmpty() ? null : TypeTrainer.getTrainer(t);
             }
             return type;
+        }
+
+        @Override
+        public int getAgressDistance()
+        {
+            return sight <= 0 ? Config.instance.trainerSightRange : sight;
         }
 
         @Override
@@ -664,7 +675,7 @@ public class CapabilityHasPokemobs
         public void setType(TypeTrainer type)
         {
             this.type = type;
-            if (user.isServerWorld()) user.getDataManager().set(PARAM, type == null ? "" : type.name);
+            if (user.isServerWorld()) user.getDataManager().set(holder.TYPE, type == null ? "" : type.name);
         }
 
         @Override
@@ -696,6 +707,24 @@ public class CapabilityHasPokemobs
         public void deserializeNBT(NBTTagCompound nbt)
         {
             storage.readNBT(HASPOKEMOBS_CAP, this, null, nbt);
+        }
+
+        @Override
+        public boolean isAgressive()
+        {
+            return friendlyCooldown < 0;
+        }
+
+        @Override
+        public byte getGender()
+        {
+            return gender;
+        }
+
+        @Override
+        public void setGender(byte value)
+        {
+            this.gender = value;
         }
     }
 }

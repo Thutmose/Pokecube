@@ -25,7 +25,7 @@ public class EntityPokemartSeller extends EntityTrainer
     {
         super(par1World, merchant, 100);
         this.aiStates.setAIState(IHasAIStates.PERMFRIENDLY, true);
-        friendlyCooldown = Integer.MAX_VALUE;
+        pokemobsCap.friendlyCooldown = Integer.MAX_VALUE;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class EntityPokemartSeller extends EntityTrainer
     protected void addRandomTrades()
     {
         itemList.clear();
-        itemList.addAll(getType().getRecipes(this));
+        itemList.addAll(pokemobsCap.getType().getRecipes(this));
     }
 
     @Override
@@ -63,6 +63,6 @@ public class EntityPokemartSeller extends EntityTrainer
             location.moveEntity(this);
             if (stationary) setStationary(location);
         }
-        this.getRewards().clear();
+        rewardsCap.getRewards().clear();
     }
 }

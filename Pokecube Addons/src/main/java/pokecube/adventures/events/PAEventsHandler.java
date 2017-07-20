@@ -236,7 +236,7 @@ public class PAEventsHandler
         event.addCapability(AICAP, aiStates);
         event.addCapability(MESSAGECAP, messages);
         event.addCapability(REWARDSCAP, rewards);
-        needsAI.add((EntityLiving) event.getObject());
+        if (!event.getObject().getEntityWorld().isRemote) needsAI.add((EntityLiving) event.getObject());
     }
 
     private List<EntityLiving> needsAI = Lists.newArrayList();
@@ -244,7 +244,7 @@ public class PAEventsHandler
     @SubscribeEvent
     public void onTick(LivingUpdateEvent event)
     {
-        if (!needsAI.isEmpty())
+        if (!needsAI.isEmpty() && !event.getEntity().getEntityWorld().isRemote)
         {
             synchronized (needsAI)
             {

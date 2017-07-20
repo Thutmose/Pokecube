@@ -772,4 +772,11 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
         // TODO Auto-generated method stub
         return null;
     }
+
+    @Override
+    public void setMoves(String[] moves)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

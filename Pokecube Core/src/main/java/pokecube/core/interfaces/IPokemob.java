@@ -447,8 +447,14 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
          * to ignite */
         public int                            timeSinceIgnited;
         public int                            fuseTime                   = 30;
+
+        /** The Previous lvl, used to determine which moves to try to learn. */
+        public int                            oldLevel                   = 0;
+
+        // these two are used for tracking learning new moves.
         public int                            num                        = 0;
         public int                            newMoves                   = 0;
+
         // next tick when a move can be used
         public int                            nextMoveTick               = 0;
         public String[]                       moves                      = new String[4];
@@ -481,15 +487,6 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
     byte SEXLEGENDARY = -2;
 
     int  TYPE_CRIT    = 2;
-
-    /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example. The set can
-     * fail because the mob is immune against this change or because it already
-     * has the change. If so, the method returns false.
-     * 
-     * @param change
-     *            the change to add
-     * @return whether the change has actually been added */
-    boolean addChange(int change);
 
     /** Whether this mob can use the item HMDive to be ridden underwater.
      * 

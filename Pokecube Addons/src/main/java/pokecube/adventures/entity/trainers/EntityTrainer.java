@@ -73,13 +73,13 @@ public class EntityTrainer extends EntityTrainerBase
     public EntityTrainer(World world, TypeTrainer type, int level)
     {
         this(world);
-        initTrainer(type, level);
+        if (!world.isRemote) initTrainer(type, level);
     }
 
     public EntityTrainer(World world, TypeTrainer type, int level, Vector3 location, boolean stationary)
     {
         this(world, location, true);
-        initTrainer(type, level);
+        if (!world.isRemote) initTrainer(type, level);
     }
 
     public EntityTrainer(World world, Vector3 location)

@@ -33,7 +33,7 @@ public class EntityLeader extends EntityTrainer
     public EntityLeader(World world, TypeTrainer type, int maxXp, Vector3 location)
     {
         this(world, location);
-        initTrainer(type, maxXp);
+        if (!world.isRemote) initTrainer(type, maxXp);
     }
 
     public EntityLeader(World par1World, Vector3 location)

@@ -193,7 +193,8 @@ public class TrainerSpawnHandler
                     FMLCommonHandler.instance().getEffectiveSide() + " Trainer " + ttype.name + " " + dt + "ms ");
 
             v.offsetBy(EnumFacing.UP).moveEntity(t);
-            if (t.countPokemon() > 0 && SpawnHandler.checkNoSpawnerInArea(w, (int) t.posX, (int) t.posY, (int) t.posZ))
+            if (t.pokemobsCap.countPokemon() > 0
+                    && SpawnHandler.checkNoSpawnerInArea(w, (int) t.posX, (int) t.posY, (int) t.posZ))
             {
                 addTrainerCoord(t);
                 w.spawnEntityInWorld(t);

@@ -317,7 +317,8 @@ public class TypeTrainer
             {
                 texture = new ResourceLocation(PokecubeAdv.TRAINERTEXTUREPATH + "male.png");
             }
-            return trainer.male ? texture : femaleTexture;
+
+            return trainer.pokemobsCap.getGender() == 1 ? texture : femaleTexture;
         }
         return texture;
     }

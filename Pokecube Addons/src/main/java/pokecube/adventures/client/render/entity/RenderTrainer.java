@@ -62,7 +62,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
     {
         long time = entity.worldObj.getTotalWorldTime();
         if (((EntityTrainer) entity).visibleTime > time) return;
-        if (((EntityTrainer) entity).male)
+        if (((EntityTrainer) entity).pokemobsCap.getGender() == 1)
         {
             mainModel = male;
         }
@@ -130,9 +130,9 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
                 }
                 return urlSkins.get(trainer.urlSkin);
             }
-            TypeTrainer type = trainer.getType();
-
-            if (trainer.male)
+            TypeTrainer type = trainer.pokemobsCap.getType();
+            boolean male;
+            if (male = trainer.pokemobsCap.getGender() == 1)
             {
                 texture = males.get(type);
             }
@@ -144,7 +144,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
             {
                 texture = type == null ? super.getEntityTexture(entity) : type.getTexture(trainer);
 
-                if (trainer.male)
+                if (male)
                 {
                     males.put(type, texture);
                 }

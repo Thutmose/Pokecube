@@ -98,7 +98,7 @@ public class CapabilityMessages
         @Override
         public void sendMessage(MessageState state, Entity target, Object... args)
         {
-            target.sendMessage(new TextComponentTranslation(messages.get(state), args));
+            target.addChatMessage(new TextComponentTranslation(messages.get(state), args));
             if (PokecubeMod.core.getConfig().debug) PokecubeMod.log(state + ": " + messages.get(state));
         }
 

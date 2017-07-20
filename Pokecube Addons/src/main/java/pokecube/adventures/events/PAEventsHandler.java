@@ -1,7 +1,9 @@
 package pokecube.adventures.events;
 
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
@@ -21,6 +23,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
@@ -197,14 +200,19 @@ public class PAEventsHandler
     @SubscribeEvent
     public void TrainerWatchEvent(StartTracking event)
     {
-        if (event.getTarget() instanceof EntityTrainer && event.getEntityPlayer() instanceof EntityPlayerMP)
+        if (event.getEntity().getEntityWorld().isRemote) return;
+        if (!event.getEntity().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return;
+        IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+        if (!(mobs instanceof DefaultPokemobs)) return;
+        DefaultPokemobs pokemobs = (DefaultPokemobs) mobs;
+        if (event.getEntityPlayer() instanceof EntityPlayerMP)
         {
             EntityTrainer trainer = (EntityTrainer) event.getTarget();
-            if (trainer.notifyDefeat)
+            if (pokemobs.notifyDefeat)
             {
                 PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
                 packet.data.setInteger("I", trainer.getEntityId());
-                packet.data.setBoolean("V", trainer.hasDefeated(event.getEntityPlayer()));
+                packet.data.setBoolean("V", pokemobs.hasDefeated(event.getEntityPlayer()));
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) event.getEntityPlayer());
             }
         }
@@ -215,7 +223,9 @@ public class PAEventsHandler
     {
         if (!((event.getObject() instanceof INpc) && (event.getObject() instanceof EntityLiving))) return;
         if (!Config.instance.npcsAreTrainers && !(event.getObject() instanceof EntityTrainer)) return;
-        if (event.getCapabilities().containsKey(POKEMOBSCAP)) return;
+        if (event.getCapabilities().containsKey(POKEMOBSCAP)
+                || event.getObject().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
+            return;
         DefaultPokemobs mobs = new DefaultPokemobs();
         DefaultRewards rewards = new DefaultRewards();
         rewards.getRewards().add(new ItemStack(Items.EMERALD));
@@ -226,6 +236,38 @@ public class PAEventsHandler
         event.addCapability(AICAP, aiStates);
         event.addCapability(MESSAGECAP, messages);
         event.addCapability(REWARDSCAP, rewards);
+        needsAI.add((EntityLiving) event.getObject());
+    }
+
+    private List<EntityLiving> needsAI = Lists.newArrayList();
+
+    @SubscribeEvent
+    public void onTick(LivingUpdateEvent event)
+    {
+        if (!needsAI.isEmpty())
+        {
+            synchronized (needsAI)
+            {
+                List<EntityLiving> stale = Lists.newArrayList();
+                List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
+                for (EntityLiving npc : toProcess)
+                {
+                    if (npc.ticksExisted == 0) continue;
+                    stale.add(npc);
+                    IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
+                    TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc);
+                    if (newType == null) continue;
+                    mobs.setType(newType);
+                    int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
+                            Database.getEntry(1));
+                    TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());
+                    npc.tasks.addTask(0, new AITrainerBattle(npc));
+                    npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
+
+                }
+                needsAI.removeAll(stale);
+            }
+        }
     }
 
     public static final Map<Class<? extends Entity>, DataParameter<String>> parameters = Maps.newHashMap();
@@ -250,18 +292,6 @@ public class PAEventsHandler
     @SubscribeEvent
     public void joinWorld(EntityJoinWorldEvent event)
     {
-        if (event.getEntity().getEntityWorld().isRemote) return;
-        if (!event.getEntity().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null)) return;
-        IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
-        if (mobs.getType() != null) return;
-        EntityLiving npc = (EntityLiving) event.getEntity();
-        TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc);
-        if (newType == null) return;
-        mobs.setType(newType);
-        int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
-                Database.getEntry(1));
-        TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());
-        npc.tasks.addTask(2, new AITrainerBattle(npc));
-        npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
+
     }
 }

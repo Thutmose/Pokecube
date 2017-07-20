@@ -1,6 +1,5 @@
 package pokecube.adventures.entity.trainers;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -17,14 +16,12 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityAIWatchClosest2;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.stats.Achievement;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -38,21 +35,17 @@ import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
-import pokecube.adventures.entity.helper.MessageState;
 import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
-import pokecube.adventures.items.ItemBadge;
 import pokecube.adventures.items.ItemTrainer;
-import pokecube.adventures.network.packets.PacketTrainer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
@@ -61,47 +54,17 @@ import thut.lib.CompatWrapper;
 
 public class EntityTrainer extends EntityTrainerBase
 {
-    public static class DefeatEntry
-    {
-        static DefeatEntry createFromNBT(NBTTagCompound nbt)
-        {
-            String defeater = nbt.getString("player");
-            long time = nbt.getLong("time");
-            return new DefeatEntry(defeater, time);
-        }
-
-        final String defeater;
-
-        final long   defeatTime;
-
-        public DefeatEntry(String defeater, long time)
-        {
-            this.defeater = defeater;
-            this.defeatTime = time;
-        }
-
-        void writeToNBT(NBTTagCompound nbt)
-        {
-            nbt.setString("player", defeater);
-            nbt.setLong("time", defeatTime);
-        }
-    }
-
-    long                          resetTime    = 0;
-    public ArrayList<DefeatEntry> defeaters    = new ArrayList<DefeatEntry>();
-
-    private boolean               randomize    = false;
-    public int                    sight        = 0;
-    public Vector3                location     = null;
-    public String                 name         = "";
-    public String                 playerName   = "";
-    public String                 urlSkin      = "";
-    public boolean                male         = true;
-    boolean                       added        = false;
-    protected boolean             trades       = true;
-    public GuardAI                guardAI;
-    public long                   visibleTime  = 0;
-    public boolean                notifyDefeat = false;
+    private boolean   randomize   = false;
+    public int        sight       = 0;
+    public Vector3    location    = null;
+    public String     name        = "";
+    public String     playerName  = "";
+    public String     urlSkin     = "";
+    public boolean    male        = true;
+    boolean           added       = false;
+    protected boolean trades      = true;
+    public GuardAI    guardAI;
+    public long       visibleTime = 0;
 
     public EntityTrainer(World par1World)
     {
@@ -130,32 +93,8 @@ public class EntityTrainer extends EntityTrainerBase
     public EntityTrainer(World par1World, Vector3 location, boolean stationary)
     {
         super(par1World);
-        if (pokemobsCap instanceof DefaultPokemobs) this.resetTime = ((DefaultPokemobs) pokemobsCap).battleCooldown;
         this.setSize(0.6F, 1.8F);
         initAI(location, stationary);
-    }
-
-    public boolean hasDefeated(Entity e)
-    {
-        if (e == null) return false;
-        String name = e.getCachedUniqueIdString();
-        for (DefeatEntry s : defeaters)
-        {
-            if (s.defeater.equals(name))
-            {
-                if (resetTime > 0)
-                {
-                    long diff = getEntityWorld().getTotalWorldTime() - s.defeatTime;
-                    if (diff > resetTime)
-                    {
-                        defeaters.remove(s);
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
     }
 
     private void addMobTrades(ItemStack buy1)
@@ -281,67 +220,6 @@ public class EntityTrainer extends EntityTrainerBase
     }
 
     @Override
-    public void onDefeated(Entity defeater)
-    {
-        if (hasDefeated(defeater)) return;
-        if (defeater != null)
-            defeaters.add(new DefeatEntry(defeater.getCachedUniqueIdString(), getEntityWorld().getTotalWorldTime()));
-        if (getRewards() != null && defeater instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) defeater;
-            giveReward(player, this);
-            for (ItemStack i : getRewards())
-            {
-                if (!CompatWrapper.isValid(i)) continue;
-                checkItemAchievement(i, player);
-            }
-            checkDefeatAchievement(player);
-        }
-        if (defeater != null)
-        {
-            messages.sendMessage(MessageState.DEFEAT, defeater, getDisplayName(), defeater.getDisplayName());
-            if (defeater instanceof EntityLivingBase)
-                messages.doAction(MessageState.DEFEAT, (EntityLivingBase) defeater);
-            if (notifyDefeat && defeater instanceof EntityPlayerMP)
-            {
-                PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGENOTIFYDEFEAT);
-                packet.data.setInteger("I", getEntityId());
-                packet.data.setLong("L", getEntityWorld().getTotalWorldTime() + resetTime);
-                PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) defeater);
-            }
-        }
-        this.setTrainerTarget(null);
-    }
-
-    public void checkItemAchievement(ItemStack item, EntityPlayer player)
-    {
-        Achievement stat = null;
-        if (item.getItem() instanceof ItemBadge)
-        {
-            for (String s : ItemBadge.variants)
-            {
-                if (Tools.isSameStack(item, PokecubeItems.getStack(s)))
-                {
-                    stat = PokecubePlayerStats.getAchievement("pokeadv." + s);
-                    break;
-                }
-            }
-        }
-        if (stat != null)
-        {
-            player.addStat(stat);
-        }
-    }
-
-    public void checkDefeatAchievement(EntityPlayer player)
-    {
-        boolean leader = this instanceof EntityLeader;
-        Achievement achieve = PokecubePlayerStats
-                .getAchievement(leader ? "pokeadv.defeat.leader" : "pokeadv.defeat.trainer");
-        player.addStat(achieve);
-    }
-
-    @Override
     public void onLivingUpdate()
     {
         if (GeneralCommands.TRAINERSDIE)
@@ -447,7 +325,8 @@ public class EntityTrainer extends EntityTrainerBase
                 }
                 player.addChatMessage(new TextComponentString(message));
             }
-            else if (!getEntityWorld().isRemote && player.isSneaking() && player.getHeldItemMainhand().getItem() == Items.STICK)
+            else if (!getEntityWorld().isRemote && player.isSneaking()
+                    && player.getHeldItemMainhand().getItem() == Items.STICK)
             {
                 throwCubeAt(player);
             }
@@ -481,7 +360,8 @@ public class EntityTrainer extends EntityTrainerBase
             else if (friendlyCooldown >= 0)
             {
                 this.setCustomer(player);
-                if (!this.getEntityWorld().isRemote && trades && (getRecipes(player) == null || this.tradeList.size() > 0))
+                if (!this.getEntityWorld().isRemote && trades
+                        && (getRecipes(player) == null || this.tradeList.size() > 0))
                 {
                     player.displayVillagerTradeGui(this);
                     return true;
@@ -505,15 +385,19 @@ public class EntityTrainer extends EntityTrainerBase
         name = nbt.getString("name");
         sight = nbt.getInteger("sight");
         setTypes();
-        defeaters.clear();
-        if (nbt.hasKey("resetTime")) resetTime = nbt.getLong("resetTime");
-        if (nbt.hasKey("DefeatList", 9))
+        if (nbt.hasKey("DefeatList") && pokemobsCap instanceof DefaultPokemobs)
         {
-            NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
-            for (int i = 0; i < nbttaglist.tagCount(); i++)
-                defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
+            DefaultPokemobs mobs = (DefaultPokemobs) pokemobsCap;
+            mobs.defeaters.clear();
+            if (nbt.hasKey("resetTime")) mobs.resetTime = nbt.getLong("resetTime");
+            if (nbt.hasKey("DefeatList", 9))
+            {
+                NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
+                for (int i = 0; i < nbttaglist.tagCount(); i++)
+                    mobs.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
+            }
+            mobs.notifyDefeat = nbt.getBoolean("notifyDefeat");
         }
-        notifyDefeat = nbt.getBoolean("notifyDefeat");
     }
 
     /** Will get destroyed next tick. */
@@ -603,16 +487,6 @@ public class EntityTrainer extends EntityTrainerBase
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
         nbt.setInteger("sight", sight);
-        nbt.setLong("resetTime", resetTime);
-        NBTTagList nbttaglist = new NBTTagList();
-        for (DefeatEntry entry : defeaters)
-        {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            entry.writeToNBT(nbttagcompound);
-            nbttaglist.appendTag(nbttagcompound);
-        }
-        nbt.setTag("DefeatList", nbttaglist);
-        nbt.setBoolean("notifyDefeat", notifyDefeat);
     }
 
     // TODO new mechant method names.
@@ -636,11 +510,5 @@ public class EntityTrainer extends EntityTrainerBase
     public int getAgressDistance()
     {
         return sight <= 0 ? Config.instance.trainerSightRange : sight;
-    }
-
-    @Override
-    public boolean canBattle(EntityLivingBase target)
-    {
-        return !hasDefeated(target);
     }
 }

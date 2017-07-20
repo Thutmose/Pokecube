@@ -16,6 +16,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import pokecube.adventures.entity.helper.Action;
 import pokecube.adventures.entity.helper.MessageState;
+import pokecube.core.interfaces.PokecubeMod;
 
 public class CapabilityMessages
 {
@@ -98,6 +99,7 @@ public class CapabilityMessages
         public void sendMessage(MessageState state, Entity target, Object... args)
         {
             target.addChatMessage(new TextComponentTranslation(messages.get(state), args));
+            PokecubeMod.log(state + ": " + messages.get(state));
         }
 
         @Override

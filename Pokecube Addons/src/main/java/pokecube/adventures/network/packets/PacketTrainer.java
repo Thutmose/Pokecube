@@ -5,7 +5,6 @@ import java.io.IOException;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -14,10 +13,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.entity.trainers.EntityTrainer;
 import pokecube.core.PokecubeCore;
-import pokecube.core.database.Database;
-import pokecube.core.events.handlers.SpawnHandler;
-import thut.api.maths.Vector3;
-import thut.api.network.PacketHandler;
 
 public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, IMessage>
 {
@@ -87,35 +82,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         }
         if (message.message == MESSAGEUPDATETRAINER)
         {
-            int id = message.data.getInteger("I");
-            EntityTrainer trainer = (EntityTrainer) player.getEntityWorld().getEntityByID(id);
-            boolean reset = message.data.getBoolean("R");
-            boolean stationary = message.data.getBoolean("S");
-            if (reset)
-            {
-                int maxXp = SpawnHandler.getSpawnLevel(trainer.getEntityWorld(), Vector3.getNewVector().set(trainer),
-                        Database.getEntry(1));
-                for (EntityEquipmentSlot slot : EntityEquipmentSlot.values())
-                {
-                    trainer.setItemStackToSlot(slot, null);
-                }
-                trainer.initTrainer(trainer.getType(), maxXp);
-            }
-            else
-            {
-                trainer.readEntityFromNBT(message.data.getCompoundTag("T"));
-                boolean rename = message.data.hasKey("N");
-                if (rename)
-                {
-                    String name = message.data.getString("N");
-                    trainer.setCustomNameTag(name);
-                }
-            }
-            if (player.isServerWorld())
-            {
-                if (stationary) trainer.setStationary(stationary);
-                PacketHandler.sendEntityUpdate(trainer);
-            }
+            // TODO fix this.
             return;
         }
         if (message.message == MESSAGENOTIFYDEFEAT)

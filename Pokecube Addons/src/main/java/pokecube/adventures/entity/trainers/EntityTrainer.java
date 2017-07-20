@@ -36,7 +36,6 @@ import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
 import pokecube.adventures.entity.helper.capabilities.CapabilityAIStates.IHasAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
@@ -55,12 +54,10 @@ import thut.lib.CompatWrapper;
 public class EntityTrainer extends EntityTrainerBase
 {
     private boolean   randomize   = false;
-    public int        sight       = 0;
     public Vector3    location    = null;
     public String     name        = "";
     public String     playerName  = "";
     public String     urlSkin     = "";
-    public boolean    male        = true;
     boolean           added       = false;
     protected boolean trades      = true;
     public GuardAI    guardAI;
@@ -99,9 +96,9 @@ public class EntityTrainer extends EntityTrainerBase
 
     private void addMobTrades(ItemStack buy1)
     {
-        for (int i = 0; i < getPokecubes().size(); i++)
+        for (int i = 0; i < pokemobsCap.getPokecubes().size(); i++)
         {
-            ItemStack stack = getPokecubes().get(i);
+            ItemStack stack = pokemobsCap.getPokecubes().get(i);
             if (PokecubeManager.isFilled(stack))
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, getEntityWorld());
@@ -126,7 +123,7 @@ public class EntityTrainer extends EntityTrainerBase
     protected void addRandomTrades()
     {
         itemList.clear();
-        itemList.addAll(getType().getRecipes(this));
+        itemList.addAll(pokemobsCap.getType().getRecipes(this));
     }
 
     @Override
@@ -143,9 +140,9 @@ public class EntityTrainer extends EntityTrainerBase
                     entity = ((IEntityOwnable) entity).getOwner();
                 }
             }
-            if (getAttackCooldown() <= 0)
+            if (pokemobsCap.getAttackCooldown() <= 0)
             {
-                setTrainerTarget(entity);
+                pokemobsCap.setTarget((EntityLivingBase) entity);
                 if (entity != source.getTrueSource()) return false;
             }
         }
@@ -170,7 +167,7 @@ public class EntityTrainer extends EntityTrainerBase
     @Override
     public EntityLivingBase getAttackTarget()
     {
-        return this.getTarget();
+        return pokemobsCap.getTarget();
     }
 
     private int getBaseStats(IPokemob mob)
@@ -192,10 +189,10 @@ public class EntityTrainer extends EntityTrainerBase
         if (entity instanceof IPokemob)
         {
             IPokemob mob = (IPokemob) entity;
-            if (mob.getPokemonOwner() != null && getTarget() == null)
+            if (mob.getPokemonOwner() != null && pokemobsCap.getTarget() == null)
             {
-                if (getAttackCooldown() <= 0) setTarget(mob.getPokemonOwner());
-                this.throwCubeAt(entity);
+                if (pokemobsCap.getAttackCooldown() <= 0) pokemobsCap.setTarget(mob.getPokemonOwner());
+                pokemobsCap.throwCubeAt(entity);
             }
         }
     }
@@ -231,7 +228,7 @@ public class EntityTrainer extends EntityTrainerBase
         super.onLivingUpdate();
         if (getEntityWorld().isRemote) return;
 
-        if (getTarget() == null && aiStates.getAIState(IHasAIStates.INBATTLE))
+        if (pokemobsCap.getTarget() == null && aiStates.getAIState(IHasAIStates.INBATTLE))
         {
             aiStates.setAIState(IHasAIStates.INBATTLE, false);
         }
@@ -242,8 +239,8 @@ public class EntityTrainer extends EntityTrainerBase
             TrainerSpawnHandler.addTrainerCoord(this);
         }
         ItemStack next;
-        if (getCooldown() > getEntityWorld().getTotalWorldTime()) next = CompatWrapper.nullStack;
-        else next = getNextPokemob();
+        if (pokemobsCap.getCooldown() > getEntityWorld().getTotalWorldTime()) next = CompatWrapper.nullStack;
+        else next = pokemobsCap.getNextPokemob();
         if (CompatWrapper.isValid(next))
         {
             this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, next);
@@ -253,9 +250,9 @@ public class EntityTrainer extends EntityTrainerBase
             this.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, CompatWrapper.nullStack);
         }
 
-        if (CompatWrapper.isValid(getType().held))
+        if (CompatWrapper.isValid(pokemobsCap.getType().held))
         {
-            this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, getType().held);
+            this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, pokemobsCap.getType().held);
         }
 
         EntityLivingBase target = getAttackTarget() != null ? getAttackTarget()
@@ -315,11 +312,12 @@ public class EntityTrainer extends EntityTrainerBase
     {
         if (player.capabilities.isCreativeMode && player.isSneaking())
         {
-            if (getType() != null && !getEntityWorld().isRemote && !CompatWrapper.isValid(player.getHeldItemMainhand()))
+            if (pokemobsCap.getType() != null && !getEntityWorld().isRemote
+                    && !CompatWrapper.isValid(player.getHeldItemMainhand()))
             {
                 String message = this.getName() + " " + aiStates.getAIState(IHasAIStates.STATIONARY) + " "
-                        + countPokemon() + " ";
-                for (ItemStack i : getPokecubes())
+                        + pokemobsCap.countPokemon() + " ";
+                for (ItemStack i : pokemobsCap.getPokecubes())
                 {
                     if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";
                 }
@@ -328,11 +326,11 @@ public class EntityTrainer extends EntityTrainerBase
             else if (!getEntityWorld().isRemote && player.isSneaking()
                     && player.getHeldItemMainhand().getItem() == Items.STICK)
             {
-                throwCubeAt(player);
+                pokemobsCap.throwCubeAt(player);
             }
             else if (CompatWrapper.isValid(player.getHeldItemMainhand())
                     && player.getHeldItemMainhand().getItem() == Items.STICK)
-                setTarget(player);
+                pokemobsCap.setTarget(player);
 
             if (CompatWrapper.isValid(player.getHeldItemMainhand())
                     && player.getHeldItemMainhand().getItem() instanceof ItemTrainer)
@@ -342,22 +340,22 @@ public class EntityTrainer extends EntityTrainerBase
         }
         else
         {
-            if (CompatWrapper.isValid(player.getHeldItemMainhand()) && friendlyCooldown <= 0)
+            if (CompatWrapper.isValid(player.getHeldItemMainhand()) && pokemobsCap.friendlyCooldown <= 0)
             {
                 if (player.getHeldItemMainhand().getItem() == Item.REGISTRY
                         .getObject(new ResourceLocation("minecraft:emerald")))
                 {
                     Item item = Item.REGISTRY.getObject(new ResourceLocation("minecraft:emerald"));
                     player.inventory.clearMatchingItems(item, 0, 1, null);
-                    setTrainerTarget(null);
+                    pokemobsCap.setTarget(null);
                     for (IPokemob pokemob : currentPokemobs)
                     {
                         pokemob.returnToPokecube();
                     }
-                    friendlyCooldown = 2400;
+                    pokemobsCap.friendlyCooldown = 2400;
                 }
             }
-            else if (friendlyCooldown >= 0)
+            else if (pokemobsCap.friendlyCooldown >= 0)
             {
                 this.setCustomer(player);
                 if (!this.getEntityWorld().isRemote && trades
@@ -381,22 +379,20 @@ public class EntityTrainer extends EntityTrainerBase
         playerName = nbt.getString("playerName");
         urlSkin = nbt.getString("urlSkin");
         randomize = nbt.getBoolean("randomTeam");
-        male = nbt.getBoolean("gender");
         name = nbt.getString("name");
-        sight = nbt.getInteger("sight");
         setTypes();
-        if (nbt.hasKey("DefeatList") && pokemobsCap instanceof DefaultPokemobs)
+        if (nbt.hasKey("DefeatList"))
         {
-            DefaultPokemobs mobs = (DefaultPokemobs) pokemobsCap;
-            mobs.defeaters.clear();
-            if (nbt.hasKey("resetTime")) mobs.resetTime = nbt.getLong("resetTime");
+            pokemobsCap.defeaters.clear();
+            pokemobsCap.setGender((byte) (nbt.getBoolean("gender") ? 1 : 2));
+            if (nbt.hasKey("resetTime")) pokemobsCap.resetTime = nbt.getLong("resetTime");
             if (nbt.hasKey("DefeatList", 9))
             {
                 NBTTagList nbttaglist = nbt.getTagList("DefeatList", 10);
                 for (int i = 0; i < nbttaglist.tagCount(); i++)
-                    mobs.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
+                    pokemobsCap.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
             }
-            mobs.notifyDefeat = nbt.getBoolean("notifyDefeat");
+            pokemobsCap.notifyDefeat = nbt.getBoolean("notifyDefeat");
         }
     }
 
@@ -427,18 +423,15 @@ public class EntityTrainer extends EntityTrainerBase
         aiStates.setAIState(IHasAIStates.STATIONARY, true);
     }
 
-    public void setTrainerTarget(Entity e)
-    {
-        setTarget((EntityLivingBase) e);
-    }
-
     public void setTypes()
     {
         if (name.isEmpty())
         {
-            int index = getEntityId() % (male ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
-            name = (male ? TypeTrainer.maleNames.get(index) : TypeTrainer.femaleNames.get(index));
-            this.setCustomNameTag(getType().name + " " + name);
+            int index = getEntityId()
+                    % (pokemobsCap.getGender() == 1 ? TypeTrainer.maleNames.size() : TypeTrainer.femaleNames.size());
+            name = (pokemobsCap.getGender() == 1 ? TypeTrainer.maleNames.get(index)
+                    : TypeTrainer.femaleNames.get(index));
+            this.setCustomNameTag(pokemobsCap.getType().name + " " + name);
         }
     }
 
@@ -456,17 +449,17 @@ public class EntityTrainer extends EntityTrainerBase
         mon1.setPokemonOwner(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;
-        setPokemob(num, poke2);
+        pokemobsCap.setPokemob(num, poke2);
         shouldrefresh = true;
     }
 
     public void initTrainer(TypeTrainer type, int level)
     {
-        this.setType(type);
+        pokemobsCap.setType(type);
         byte genders = type.genders;
-        if (genders == 1) male = true;
-        if (genders == 2) male = false;
-        if (genders == 3) male = Math.random() < 0.5;
+        if (genders == 1) pokemobsCap.setGender((byte) 1);
+        if (genders == 2) pokemobsCap.setGender((byte) 2);
+        if (genders == 3) pokemobsCap.setGender((byte) (Math.random() < 0.5 ? 1 : 2));
         TypeTrainer.getRandomTeam(pokemobsCap, this, level, getEntityWorld());
         if (randomize) shouldrefresh = true;
         if (type.hasBag)
@@ -483,10 +476,8 @@ public class EntityTrainer extends EntityTrainerBase
         nbt.setString("playerName", playerName);
         nbt.setString("urlSkin", urlSkin);
         nbt.setBoolean("trades", trades);
-        nbt.setBoolean("gender", male);
         nbt.setBoolean("randomTeam", randomize);
         nbt.setString("name", name);
-        nbt.setInteger("sight", sight);
     }
 
     // TODO new mechant method names.
@@ -504,11 +495,5 @@ public class EntityTrainer extends EntityTrainerBase
     public boolean processInteract(EntityPlayer player, EnumHand hand)
     {
         return processInteract(player, hand, player.getHeldItem(hand));
-    }
-
-    @Override
-    public int getAgressDistance()
-    {
-        return sight <= 0 ? Config.instance.trainerSightRange : sight;
     }
 }

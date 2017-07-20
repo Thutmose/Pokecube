@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -68,7 +67,7 @@ public class PAEventsHandler
         Vector3 loc = Vector3.getNewVector().set(trainer);
         int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
         trainer.name = "";
-        trainer.initTrainer(trainer.getType(), maxXp);
+        trainer.initTrainer(trainer.pokemobsCap.getType(), maxXp);
         trainer.populateBuyingList();
         System.out.println("Randomized " + trainer.name);
     }
@@ -253,6 +252,8 @@ public class PAEventsHandler
                 for (EntityLiving npc : toProcess)
                 {
                     if (npc.ticksExisted == 0) continue;
+                    npc.tasks.addTask(0, new AITrainerBattle(npc));
+                    npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
                     stale.add(npc);
                     IHasPokemobs mobs = event.getEntity().getCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null);
                     TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc);
@@ -261,8 +262,6 @@ public class PAEventsHandler
                     int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),
                             Database.getEntry(1));
                     TypeTrainer.getRandomTeam(mobs, npc, level, npc.getEntityWorld());
-                    npc.tasks.addTask(0, new AITrainerBattle(npc));
-                    npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
 
                 }
                 needsAI.removeAll(stale);
@@ -270,28 +269,44 @@ public class PAEventsHandler
         }
     }
 
-    public static final Map<Class<? extends Entity>, DataParameter<String>> parameters = Maps.newHashMap();
+    private static final Map<Class<? extends Entity>, DataParamHolder> parameters = Maps.newHashMap();
 
     @SubscribeEvent
     public void onConstruct(EntityConstructing event)
     {
         if (!((event.getEntity() instanceof INpc) && (event.getEntity() instanceof EntityLiving))) return;
         if (!Config.instance.npcsAreTrainers && !(event.getEntity() instanceof EntityTrainer)) return;
-
-        // TODO this should be found via class checking the entitylist, and
-        // initialize thise at startup.
-        if (!parameters.containsKey(event.getEntity().getClass()))
-        {
-            DataParameter<String> value = EntityDataManager.<String> createKey(event.getEntity().getClass(),
-                    DataSerializers.STRING);
-            parameters.put(event.getEntity().getClass(), value);
-        }
-        event.getEntity().getDataManager().register(parameters.get(event.getEntity().getClass()), "");
+        initDataManager(event.getEntity());
     }
 
-    @SubscribeEvent
-    public void joinWorld(EntityJoinWorldEvent event)
+    public static DataParamHolder initDataManager(Entity e)
     {
+        DataParamHolder holder = getParameterHolder(e.getClass());
+        e.getDataManager().register(holder.TYPE, "");
+        return holder;
+    }
+
+    public static DataParamHolder getParameterHolder(Class<? extends Entity> clazz)
+    {
+        // TODO this should be found via class checking the entitylist, and
+        // initialize thise at startup.
+        if (parameters.containsKey(clazz)) return parameters.get(clazz);
+        DataParameter<String> value = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
+        DataParamHolder holder = new DataParamHolder(value);
+        parameters.put(clazz, holder);
+        return holder;
+    }
+
+    public static class DataParamHolder
+    {
+        public final DataParameter<String> TYPE;
+        @SuppressWarnings("rawtypes")
+        public final DataParameter[]       pokemobs = new DataParameter[6];
+
+        DataParamHolder(DataParameter<String> type)
+        {
+            this.TYPE = type;
+        }
 
     }
 }

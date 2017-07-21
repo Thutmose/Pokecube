@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -428,7 +426,7 @@ public class CapabilityHasPokemobs
         public ItemStack getPokemob(int slot)
         {
             if (pokecubes != null) return pokecubes.get(slot);
-            return user.getDataManager().get(holder.pokemobs[slot]).orNull();
+            return user.getDataManager().get(holder.pokemobs[slot]);
         }
 
         @Override
@@ -439,8 +437,7 @@ public class CapabilityHasPokemobs
                 pokecubes.set(slot, cube);
                 return;
             }
-            if (CompatWrapper.isValid(cube)) user.getDataManager().set(holder.pokemobs[slot], Optional.of(cube));
-            else user.getDataManager().set(holder.pokemobs[slot], Optional.<ItemStack> absent());
+            user.getDataManager().set(holder.pokemobs[slot], cube);
         }
 
         @Override

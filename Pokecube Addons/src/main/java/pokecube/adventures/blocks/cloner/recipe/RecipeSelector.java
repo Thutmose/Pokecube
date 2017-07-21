@@ -1,14 +1,18 @@
 package pokecube.adventures.blocks.cloner.recipe;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.IGeneSelector;
 import pokecube.core.utils.Tools;
@@ -70,6 +74,13 @@ public class RecipeSelector implements IDefaultRecipe
         {
             if (!tag.hasKey("S") || !tag.hasKey("D")) return defaultSelector;
             return new SelectorValue(tag.getFloat("S"), tag.getFloat("D"));
+        }
+
+        @SideOnly(Side.CLIENT)
+        public void addToTooltip(List<String> toolTip)
+        {
+            toolTip.add(I18n.format("container.geneselector.tooltip.a", selectorDestructChance));
+            toolTip.add(I18n.format("container.geneselector.tooltip.b", dnaDestructChance));
         }
     }
 

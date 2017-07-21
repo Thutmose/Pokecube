@@ -76,7 +76,7 @@ public class RenderHandler
                     }
                 }
                 SelectorValue value = ClonerHelper.getSelectorValue(stack);
-                evt.getToolTip().add(value.toString());
+                value.addToTooltip(evt.getToolTip());
             }
             if (stack.getTagCompound().hasKey("ivs"))
             {

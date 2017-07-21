@@ -16,6 +16,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
@@ -28,6 +29,14 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
     public final IPokemob      parent;
     public final Vector3f      offset;
     public final AxisAlignedBB defaultBox;
+
+    public EntityPokemobPart(World world)
+    {
+        super(null, null, 0, 0);
+        this.parent = null;
+        this.offset = null;
+        this.defaultBox = null;
+    }
 
     public EntityPokemobPart(IPokemob parent, String partName, Vector3f offset, Vector3f[] dimensions)
     {

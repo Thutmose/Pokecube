@@ -87,7 +87,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades
             NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
             if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
             {
-                pokemobsCap.getPokecubes().set(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                pokemobsCap.setPokemob(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
             }
             pokemobsCap.setType(TypeTrainer.getTrainer(nbt.getString("type")));
             pokemobsCap.setCooldown(nbt.getLong("nextBattle"));

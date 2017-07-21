@@ -518,6 +518,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
                 NBTTagCompound cube = new NBTTagCompound();
                 stack = second.copy();
                 second.writeToNBT(cube);
+                if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
                 visualsTag.setTag(TagNames.POKECUBE, cube);
                 stack.getTagCompound().setTag(TagNames.POKEMOB,
                         first.getTagCompound().getCompoundTag(TagNames.POKEMOB).copy());
@@ -535,7 +536,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         {
             if (mob.getPokemonOwnerID() == null || player1.getUniqueID().equals(mob.getPokemonOwnerID()))
             {
-                PokecubeManager.setOwner(inventory.get(index), mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
+                PokecubeManager.setOwner(inventory.get(index),
+                        mob.getPokemonOwnerID() == null ? player1.getUniqueID() : null);
                 player1.inventory.addItemStackToInventory(inventory.get(index));
                 inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
             }

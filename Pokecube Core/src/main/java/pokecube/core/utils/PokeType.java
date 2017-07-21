@@ -12,8 +12,13 @@ public enum PokeType
 
     public static float getAttackEfficiency(PokeType type, PokeType defenseType1, PokeType defenseType2)
     {
-        float multiplier = typeTable[type.ordinal()][defenseType1.ordinal()];
-        if (defenseType2 != unknown)
+        float multiplier = 1;
+        if (type == null) return multiplier;
+        if (defenseType1 != unknown && defenseType1 != null)
+        {
+            multiplier *= typeTable[type.ordinal()][defenseType1.ordinal()];
+        }
+        if (defenseType2 != unknown && defenseType2 != null)
         {
             multiplier *= typeTable[type.ordinal()][defenseType2.ordinal()];
         }

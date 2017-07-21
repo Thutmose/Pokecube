@@ -132,6 +132,12 @@ public class Config extends ConfigBase
     /** Will lithovores eat gravel */
     public boolean                       pokemobsEatGravel            = false;
     @Configure(category = mobAI)
+    /** Will lithovores eat rocks */
+    public boolean                       pokemobsEatRocks             = true;
+    @Configure(category = mobAI)
+    /** Will herbivores eat plants */
+    public boolean                       pokemobsEatPlants            = true;
+    @Configure(category = mobAI)
     /** Is there a warning before a wild pokémob attacks the player. */
     public boolean                       pokemobagresswarning         = true;
     @Configure(category = mobAI)

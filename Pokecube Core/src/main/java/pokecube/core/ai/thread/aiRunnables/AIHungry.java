@@ -18,7 +18,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeItems;
+import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
@@ -64,7 +64,7 @@ public class AIHungry extends AIBase
     }
 
     final EntityLiving entity;
-    // final World worldObj;
+    // final World world;
     final EntityItem   berry;
     final double       distance;
     IHungrymob         hungrymob;
@@ -144,7 +144,8 @@ public class AIHungry extends AIBase
                         new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
                 else pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
-                if (!pokemob.isPlayerOwned())
+                boolean tameCheck = !pokemob.isPlayerOwned() || pokemob.getPokemonAIState(IMoveConstants.STAYING);
+                if (tameCheck)
                 {
                     toRun.add(new GenBerries(pokemob));
                 }
@@ -152,13 +153,17 @@ public class AIHungry extends AIBase
         }
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
-        if (sleepy && hungerTime < 0)
+        if (sleepy && hungerTime < 0 && !ownedSleepCheck)
         {
             if (!isGoodSleepingSpot(c))
             {
-
+                pokemob.setPokemonAIState(IMoveConstants.IDLE, true);
+                Path path = this.entity.getNavigator().getPathToPos(pokemob.getHome());
+                if (path != null && path.getCurrentPathLength() > 32) path = null;
+                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                pokemob.setPokemonAIState(IMoveConstants.IDLE, false);
             }
-            else if (entity.getAttackTarget() == null && !ownedSleepCheck && entity.getNavigator().noPath())
+            else if (entity.getAttackTarget() == null && entity.getNavigator().noPath())
             {
                 pokemob.setPokemonAIState(IMoveConstants.SLEEPING, true);
                 pokemob.setPokemonAIState(IMoveConstants.HUNTING, false);
@@ -244,14 +249,15 @@ public class AIHungry extends AIBase
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
             berry.setEntityItemStack(new ItemStack(b.getBlock()));
             hungrymob.eat(berry);
-            if (PokecubeMod.core.getConfig().pokemobsDamageBlocks)
+            if (PokecubeMod.core.getConfig().pokemobsEatPlants)
             {
                 TickHandler.addBlockChange(foodLoc, entity.dimension,
                         location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
                 if (location.getBlockState(world).getMaterial() != Material.GRASS)
                 {
-                    for (ItemStack stack : b.getBlock().getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world),
-                            0))
+                    List<ItemStack> list;
+                    list = b.getBlock().getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0);
+                    for (ItemStack stack : list)
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));
                 }
             }
@@ -266,7 +272,8 @@ public class AIHungry extends AIBase
             Vector3 p, m;
             if (hungrymob.isHerbivore())
             {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                        PokecubeMod.core.getConfig().getPlantTypes());
                 if (temp != null)
                 {
                     block = true;
@@ -310,7 +317,7 @@ public class AIHungry extends AIBase
         diff = Math.max(diff, entity.width);
         if (dist < diff)
         {
-            if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
+            if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
             {
                 if (b.getBlock() == Blocks.COBBLESTONE)
                 {
@@ -411,7 +418,7 @@ public class AIHungry extends AIBase
             }
             else
             {
-                if (PokecubeMod.pokemobsDamageBlocks && Math.random() > 0.0075)
+                if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
                 {
                     v.set(hungrymob).offsetBy(EnumFacing.DOWN);
                     if (b == Blocks.COBBLESTONE)
@@ -522,7 +529,8 @@ public class AIHungry extends AIBase
         {
             if (!block && hungrymob.isHerbivore())
             {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance, PokecubeItems.grasses);
+                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                        PokecubeCore.core.getConfig().getPlantTypes());
                 if (temp != null)
                 {
                     block = true;
@@ -574,16 +582,14 @@ public class AIHungry extends AIBase
     // 0 is sunrise, 6000 noon, 12000 dusk, 18000 midnight, 23999
     public boolean isGoodSleepingSpot(ChunkCoordinate c)
     {
-        float light = entity.getBrightness(0);
-        List<TimePeriod> active = pokemob.getPokedexEntry().activeTimes();
-        if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 10) return false;
-
-        // TODO refine timing
-        for (TimePeriod p : active)
+        if (pokemob.getHome() == null
+                || (pokemob.getHome().getX() == 0 && pokemob.getHome().getY() == 0 & pokemob.getHome().getZ() == 0))
         {
-            if (p.contains(18000)) { return light < 0.1; }
+            v1.set(pokemob);
+            pokemob.setHome(v1.intX(), v1.intY(), v1.intZ(), 16);
         }
-
+        if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 9) return false;
+        // TODO search for possible better place to sleep
         return true;
     }
 

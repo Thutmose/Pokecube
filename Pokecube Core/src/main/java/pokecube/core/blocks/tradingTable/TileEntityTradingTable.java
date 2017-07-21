@@ -518,6 +518,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
                 NBTTagCompound cube = new NBTTagCompound();
                 stack = second.copy();
                 second.writeToNBT(cube);
+                if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
                 visualsTag.setTag(TagNames.POKECUBE, cube);
                 stack.getTagCompound().setTag(TagNames.POKEMOB,
                         first.getTagCompound().getCompoundTag(TagNames.POKEMOB).copy());

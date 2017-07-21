@@ -99,9 +99,9 @@ public class EntityTrainer extends EntityTrainerBase
         ItemStack buy = buy1.copy();
         IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, getEntityWorld());
         int stat1 = getBaseStats(mon1);
-        for (int i = 0; i < pokemobsCap.getPokecubes().size(); i++)
+        for (int i = 0; i < 6; i++)
         {
-            ItemStack stack = pokemobsCap.getPokecubes().get(i);
+            ItemStack stack = pokemobsCap.getPokemob(i);
             if (PokecubeManager.isFilled(stack))
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, getEntityWorld());
@@ -321,8 +321,9 @@ public class EntityTrainer extends EntityTrainerBase
             {
                 String message = this.getName() + " " + aiStates.getAIState(IHasNPCAIStates.STATIONARY) + " "
                         + pokemobsCap.countPokemon() + " ";
-                for (ItemStack i : pokemobsCap.getPokecubes())
+                for (int ind = 0; ind < 6; ind++)
                 {
+                    ItemStack i = pokemobsCap.getPokemob(ind);
                     if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";
                 }
                 player.sendMessage(new TextComponentString(message));

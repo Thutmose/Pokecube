@@ -106,6 +106,8 @@ public class TypeTrainer
 
     public static interface ITypeMapper
     {
+        /** Mapping of EntityLivingBase to a TypeTrainer. EntityTrainers set
+         * this on spawn, so it isn't needed for them. */
         default TypeTrainer getType(EntityLivingBase mob)
         {
             if (mob instanceof EntityVillager)
@@ -117,6 +119,14 @@ public class TypeTrainer
                 return getTrainer(type);
             }
             return null;
+        }
+
+        /** Should the IHasPokemobs for this mob sync the values to client? if
+         * not, it will use a server-side list of mobs instead of datamanager
+         * values. */
+        default boolean shouldSync(EntityLivingBase mob)
+        {
+            return mob instanceof EntityTrainer;
         }
     }
 
@@ -139,7 +149,7 @@ public class TypeTrainer
         TypeTrainer type = trainer.getType();
 
         for (int i = 0; i < 6; i++)
-            trainer.getPokecubes().set(i, CompatWrapper.nullStack);
+            trainer.setPokemob(i, CompatWrapper.nullStack);
 
         if (level == 0) level = 5;
         int variance = PokecubeMod.core.getConfig().levelVariance;
@@ -163,7 +173,7 @@ public class TypeTrainer
                 }
                 if (CompatWrapper.isValid(item)) break;
             }
-            trainer.getPokecubes().set(i, item);
+            trainer.setPokemob(i, item);
         }
     }
 

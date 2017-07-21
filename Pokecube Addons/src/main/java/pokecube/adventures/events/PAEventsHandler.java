@@ -3,6 +3,7 @@ package pokecube.adventures.events;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -271,6 +272,8 @@ public class PAEventsHandler
     {
         DataParamHolder holder = getParameterHolder(e.getClass());
         e.getDataManager().register(holder.TYPE, "");
+        for (int i = 0; i < 6; i++)
+            e.getDataManager().register(holder.pokemobs[i], Optional.<ItemStack> absent());
         return holder;
     }
 
@@ -281,15 +284,22 @@ public class PAEventsHandler
         if (parameters.containsKey(clazz)) return parameters.get(clazz);
         DataParameter<String> value = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
         DataParamHolder holder = new DataParamHolder(value);
+        for (int i = 0; i < 6; i++)
+        {
+            DataParameter<Optional<ItemStack>> CUBE = EntityDataManager.<Optional<ItemStack>> createKey(clazz,
+                    DataSerializers.OPTIONAL_ITEM_STACK);// I Suspect conflict.
+
+            holder.pokemobs[i] = CUBE;
+        }
         parameters.put(clazz, holder);
         return holder;
     }
 
     public static class DataParamHolder
     {
-        public final DataParameter<String> TYPE;
-        @SuppressWarnings("rawtypes")
-        public final DataParameter[]       pokemobs = new DataParameter[6];
+        public final DataParameter<String>                TYPE;
+        @SuppressWarnings({ "unchecked" }) // I Suspect conflict below
+        public final DataParameter<Optional<ItemStack>>[] pokemobs = new DataParameter[6];
 
         DataParamHolder(DataParameter<String> type)
         {

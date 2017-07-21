@@ -153,15 +153,15 @@ public class AIAttack extends AIBase implements IAICombat
             if (!previousCaptureAttempt && PokecubeMod.core.getConfig().pokemobagresswarning && delayTime == -1
                     && entityTarget instanceof EntityPlayerMP && !(entityTarget instanceof FakePlayer)
                     && !((IPokemob) attacker).getPokemonAIState(IMoveConstants.TAMED)
-                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker
-                    && ((EntityPlayer) entityTarget).getLastAttackedEntity()!= attacker)
+                    && ((EntityPlayer) entityTarget).getRevengeTarget() != attacker//getRevengeTarget in 1.12
+                    && ((EntityPlayer) entityTarget).getLastAttackedEntity() != attacker)//getLastAttackedEntity in 1.12
             {
                 delayTime = PokecubeMod.core.getConfig().pokemobagressticks;
                 ITextComponent message = new TextComponentTranslation("pokemob.agress",
                         ((IPokemob) attacker).getPokemonDisplayName().getFormattedText());
                 try
                 {
-                    entityTarget.sendMessage(message);
+                    entityTarget.sendMessage(message);//sendMessage in 1.12
                 }
                 catch (Exception e)
                 {
@@ -292,7 +292,7 @@ public class AIAttack extends AIBase implements IAICombat
                     AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
                     AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                             dz + attackedLength);
-                    inRange = box.intersects(box2);
+                    inRange = box.intersects(box2);//intersects 1.12
                 }
             }
             else
@@ -312,7 +312,7 @@ public class AIAttack extends AIBase implements IAICombat
                 AxisAlignedBB box = new AxisAlignedBB(0, 0, 0, attackerWidth, attackerHeight, attackerLength);
                 AxisAlignedBB box2 = new AxisAlignedBB(dx, dy, dz, dx + attackedWidth, dy + attackedHeight,
                         dz + attackedLength);
-                inRange = box.intersects(box2);
+                inRange = box.intersects(box2);//intersects 1.12
                 if (shouldPath && !(distanced || self))
                     setPokemobAIState((IPokemob) attacker, IMoveConstants.LEAPING, true);
 

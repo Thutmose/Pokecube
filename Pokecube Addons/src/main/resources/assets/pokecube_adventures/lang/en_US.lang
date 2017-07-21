@@ -60,6 +60,8 @@ gui.jei.pokemob.gender.female=Female
 container.splicer=Splicer
 container.extractor=Gene Extractor
 container.cloner=Reanimator
+container.geneselector.tooltip.a=Chance of Selector Loss: %s
+container.geneselector.tooltip.b=Chance of DNA Loss: %s
 
 msg.nohere.txt=%s §cwill not spawn here.
 msg.noregi.txt=§cThis does not seem to be the correct location to build this.

@@ -22,9 +22,9 @@ public class AIIdle extends AIBase
     final private EntityLiving entity;
     final IPokemob             mob;
     final PokedexEntry         entry;
-    private double             xPosition;
-    private double             yPosition;
-    private double             zPosition;
+    private double             x;
+    private double             y;
+    private double             z;
     private double             speed;
     private double             maxLength = 16;
 
@@ -42,10 +42,10 @@ public class AIIdle extends AIBase
 
     private void doFloatingIdle()
     {
-        v.set(xPosition, yPosition, zPosition);
+        v.set(x, y, z);
         Vector3 temp = Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y);
         if (temp == null) return;
-        yPosition = temp.y + entry.preferedHeight;
+        y = temp.y + entry.preferedHeight;
     }
 
     private void doFlyingIdle()
@@ -76,16 +76,16 @@ public class AIIdle extends AIBase
 
     private void doGroundIdle()
     {
-        v.set(xPosition, yPosition, zPosition);
+        v.set(x, y, z);
         v.set(Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y));
-        if (v != null) yPosition = v.y;
+        if (v != null) y = v.y;
     }
 
     public void doStationaryIdle()
     {
-        xPosition = entity.posX;
-        yPosition = entity.posY;
-        zPosition = entity.posZ;
+        x = entity.posX;
+        y = entity.posY;
+        z = entity.posZ;
     }
 
     public void doWaterIdle()
@@ -122,12 +122,12 @@ public class AIIdle extends AIBase
             doGroundIdle();
         }
         v1.set(entity);
-        v.set(this.xPosition, this.yPosition, this.zPosition);
+        v.set(this.x, this.y, this.z);
 
         if (v.isEmpty() || v1.distToSq(v) <= 1 || mob.getPokemonAIState(IMoveConstants.SITTING)) return;
 
         mob.setPokemonAIState(IMoveConstants.IDLE, true);
-        Path path = this.entity.getNavigator().getPathToXYZ(this.xPosition, this.yPosition, this.zPosition);
+        Path path = this.entity.getNavigator().getPathToXYZ(this.x, this.y, this.z);
         if (path != null && path.getCurrentPathLength() > maxLength) path = null;
         addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
         mob.setPokemonAIState(IMoveConstants.IDLE, false);
@@ -168,7 +168,7 @@ public class AIIdle extends AIBase
         if (mob.getPokemonAIState(IMoveConstants.SITTING) && mob.getPokemonAIState(IMoveConstants.TAMED)
                 && !mob.getPokemonAIState(IMoveConstants.STAYING))
             return false;
-        if (mob.getPokemonAIState(IMoveConstants.SLEEPING)) return false;
+        if (mob.getPokemonAIState(IPokemob.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
         else if (this.entity.isBeingRidden() || current != null)
         {
             return false;
@@ -204,9 +204,9 @@ public class AIIdle extends AIBase
 
             diff = Math.max(2, diff);
             if (v == null || this.v.distToSq(v) < diff) { return false; }
-            this.xPosition = v.x;
-            this.yPosition = Math.round(v.y);
-            this.zPosition = v.z;
+            this.x = v.x;
+            this.y = Math.round(v.y);
+            this.z = v.z;
             return true;
         }
         return false;
@@ -225,7 +225,7 @@ public class AIIdle extends AIBase
             int x = j % (distance) - distance / 2;
             int y = (j / distance) % (distance) - distance / 2;
             int z = (j / (distance * distance)) % (distance) - distance / 2;
-            y = Math.max(1, y);
+            y = Math.min(Math.max(1, y), 2);
             temp.set(ret).addTo(x, y, z);
             if (temp.isClearOfBlocks(world)
                     && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }

@@ -1496,7 +1496,8 @@ public class PokedexEntryLoader
                     else if (rule.item != null)
                     {
                         stack = Tools.getStack(rule.item.values);
-                    }
+                    }if (rule.item != null)
+                    PokecubeMod.log(stack+" "+rule.item.values);
                     if ((move == null || move.isEmpty()) && !CompatWrapper.isValid(stack)
                             && (ability == null || ability.isEmpty()))
                     {
@@ -1507,7 +1508,14 @@ public class PokedexEntryLoader
                     MegaEvoRule mrule = new MegaEvoRule(entry);
                     if (ability != null) mrule.ability = ability;
                     if (move != null) mrule.moveName = move;
-                    if (CompatWrapper.isValid(stack)) mrule.stack = stack;
+                    if (CompatWrapper.isValid(stack))
+                    {
+                        mrule.stack = stack;
+                        if (!PokecubeItems.isValidHeldItem(stack))
+                        {
+                            PokecubeItems.addToHoldables(stack);
+                        }
+                    }
                     formeEntry.isMega = true;
                     entry.megaRules.put(formeEntry, mrule);
                     if (PokecubeMod.core.getConfig().debug)

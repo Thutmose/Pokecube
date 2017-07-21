@@ -432,6 +432,7 @@ public class PokecubeCore extends PokecubeMod
     @EventHandler
     private void postInit(FMLPostInitializationEvent evt)
     {
+        PokecubeMod.log("Pokecube Core Post Init");
         PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);

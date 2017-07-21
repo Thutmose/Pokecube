@@ -256,6 +256,13 @@ public class PokecubeItems extends Items
         if (CompatWrapper.isValid(stack)) evoItems.add(stack);
     }
 
+    public static void addToHoldables(ItemStack stack)
+    {
+        if (!CompatWrapper.isValid(stack))
+            System.out.println(new NullPointerException("Cannot add null stack to holdables " + stack));
+        else heldItems.add(stack);
+    }
+
     public static void addToHoldables(String item)
     {
         ItemStack stack = getStack(item);
@@ -539,7 +546,7 @@ public class PokecubeItems extends Items
         for (ItemStack s : heldItems)
         {
             if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
-            hasANull = true;
+            hasANull = hasANull || !CompatWrapper.isValid(s);
         }
         while (hasANull)
         {
@@ -558,7 +565,7 @@ public class PokecubeItems extends Items
         for (ItemStack s : evoItems)
         {
             if (CompatWrapper.isValid(s) && Tools.isSameStack(s, stack)) return true;
-            hasANull = true;
+            hasANull = hasANull || !CompatWrapper.isValid(s);
         }
         while (hasANull)
         {

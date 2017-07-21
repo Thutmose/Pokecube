@@ -582,6 +582,7 @@ public class Database
 
     public static void postInit()
     {
+        PokecubeMod.log("Post Init of Database.");
         PokedexEntryLoader.postInit();
         loadSpawns();
         loadDrops();

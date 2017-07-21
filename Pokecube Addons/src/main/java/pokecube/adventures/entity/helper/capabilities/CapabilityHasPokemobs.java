@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.common.base.Optional;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -79,13 +81,13 @@ public class CapabilityHasPokemobs
             int foundID = -1;
             for (int i = 0; i < 6; i++)
             {
-                if (CompatWrapper.isValid(getPokecubes().get(i)))
+                if (CompatWrapper.isValid(getPokemob(i)))
                 {
-                    if (getPokecubes().get(i).hasTagCompound())
+                    if (getPokemob(i).hasTagCompound())
                     {
-                        if (getPokecubes().get(i).getTagCompound().hasKey("Pokemob"))
+                        if (getPokemob(i).getTagCompound().hasKey("Pokemob"))
                         {
-                            NBTTagCompound nbt = getPokecubes().get(i).getTagCompound().getCompoundTag("Pokemob");
+                            NBTTagCompound nbt = getPokemob(i).getTagCompound().getCompoundTag("Pokemob");
                             uuidLeastTest = nbt.getLong("UUIDLeast");
                             uuidMostTest = nbt.getLong("UUIDMost");
                             if (uuidLeast == uuidLeastTest && uuidMost == uuidMostTest)
@@ -95,7 +97,7 @@ public class CapabilityHasPokemobs
                                     found = true;
                                     foundID = i;
                                     PokecubeManager.heal(mob);
-                                    getPokecubes().set(i, mob.copy());
+                                    setPokemob(i, mob.copy());
                                 }
                                 break;
                             }
@@ -105,27 +107,27 @@ public class CapabilityHasPokemobs
             }
             for (int i = 0; i < 6; i++)
             {
-                if (found && foundID == i) if (!CompatWrapper.isValid(getPokecubes().get(i)))
+                if (found && foundID == i) if (!CompatWrapper.isValid(getPokemob(i)))
                 {
                     PokecubeManager.heal(mob);
-                    getPokecubes().set(i, mob.copy());
+                    setPokemob(i, mob.copy());
                     break;
                 }
-                else if (CompatWrapper.isValid(getPokecubes().get(i)))
+                else if (CompatWrapper.isValid(getPokemob(i)))
                 {
-                    PokecubeManager.heal(getPokecubes().get(i));
+                    PokecubeManager.heal(getPokemob(i));
                 }
             }
             for (int i = 0; i < 6; i++)
             {
-                ItemStack stack = getPokecubes().get(i);
+                ItemStack stack = getPokemob(i);
                 if (!CompatWrapper.isValid(stack))
                 {
                     found = true;
                     for (int j = i; j < 5; j++)
                     {
-                        getPokecubes().set(j, getPokecubes().get(j + 1));
-                        getPokecubes().set(j + 1, CompatWrapper.nullStack);
+                        setPokemob(j, getPokemob(j + 1));
+                        setPokemob(j + 1, CompatWrapper.nullStack);
                     }
                 }
             }
@@ -133,58 +135,49 @@ public class CapabilityHasPokemobs
             return found;
         }
 
+        void setPokemob(int slot, ItemStack cube);
+
+        ItemStack getPokemob(int slot);
+
         /** The next slot to be sent out. */
         int getNextSlot();
 
         void setNextSlot(int value);
 
-        List<ItemStack> getPokecubes();
-
         default void clear()
         {
             for (int i = 0; i < 6; i++)
-                getPokecubes().set(i, CompatWrapper.nullStack);
+                setPokemob(i, CompatWrapper.nullStack);
         }
 
         /** The next pokemob to be sent out */
         default ItemStack getNextPokemob()
         {
             if (getNextSlot() < 0) return CompatWrapper.nullStack;
-            List<ItemStack> pokecubes = getPokecubes();
             for (int i = 0; i < 6; i++)
             {
-                ItemStack stack = pokecubes.get(i);
+                ItemStack stack = getPokemob(i);
                 if (!CompatWrapper.isValid(stack))
                 {
                     for (int j = i; j < 5; j++)
                     {
-                        pokecubes.set(j, pokecubes.get(j + 1));
-                        pokecubes.set(j + 1, CompatWrapper.nullStack);
+                        setPokemob(j, getPokemob(j + 1));
+                        setPokemob(j + 1, CompatWrapper.nullStack);
                     }
                 }
             }
-            return pokecubes.get(getNextSlot());
+            return getPokemob(getNextSlot());
         }
 
         /** Resets the pokemobs; */
         void resetPokemob();
 
-        default ItemStack getPokemob(int slot)
-        {
-            return getPokecubes().get(slot);
-        }
-
-        default void setPokemob(int slot, ItemStack cube)
-        {
-            getPokecubes().set(slot, cube);
-        }
-
         default int countPokemon()
         {
             int ret = 0;
-            for (ItemStack i : getPokecubes())
+            for (int i = 0; i < 6; i++)
             {
-                if (PokecubeManager.getPokedexNb(i) != 0) ret++;
+                if (PokecubeManager.getPokedexNb(getPokemob(i)) != 0) ret++;
             }
             return ret;
         }
@@ -256,8 +249,9 @@ public class CapabilityHasPokemobs
         {
             NBTTagCompound nbt = new NBTTagCompound();
             NBTTagList nbttaglist = new NBTTagList();
-            for (ItemStack i : instance.getPokecubes())
+            for (int index = 0; index < 6; index++)
             {
+                ItemStack i = instance.getPokemob(index);
                 NBTTagCompound nbttagcompound = new NBTTagCompound();
                 if (CompatWrapper.isValid(i))
                 {
@@ -302,7 +296,7 @@ public class CapabilityHasPokemobs
                 NBTTagList nbttaglist = nbt.getTagList("pokemobs", 10);
                 if (nbttaglist.tagCount() != 0) for (int i = 0; i < Math.min(nbttaglist.tagCount(), 6); ++i)
                 {
-                    instance.getPokecubes().set(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
+                    instance.setPokemob(i, CompatWrapper.fromTag(nbttaglist.getCompoundTagAt(i)));
                 }
             }
             instance.setType(TypeTrainer.getTrainer(nbt.getString("type")));
@@ -329,6 +323,7 @@ public class CapabilityHasPokemobs
                         mobs.defeaters.add(DefeatEntry.createFromNBT(nbttaglist.getCompoundTagAt(i)));
                 }
                 mobs.notifyDefeat = nbt.getBoolean("notifyDefeat");
+                mobs.friendlyCooldown = nbt.getInteger("friendly");
             }
         }
 
@@ -374,7 +369,7 @@ public class CapabilityHasPokemobs
         public int                    battleCooldown   = -1;
         private byte                  gender           = 1;
         private EntityLivingBase      user;
-        private IHasNPCAIStates          aiStates;
+        private IHasNPCAIStates       aiStates;
         private IHasMessages          messages;
         private IHasRewards           rewards;
         private int                   nextSlot;
@@ -387,10 +382,9 @@ public class CapabilityHasPokemobs
         private EntityLivingBase      target;
         private UUID                  outID;
         private IPokemob              outMob;
-        private List<ItemStack>       pokecubes        = CompatWrapper.makeList(6);
+        private List<ItemStack>       pokecubes;
 
         DataParamHolder               holder;
-        // DataParameter<String> PARAM;
 
         public void init(EntityLivingBase user, IHasNPCAIStates aiStates, IHasMessages messages, IHasRewards rewards)
         {
@@ -401,6 +395,7 @@ public class CapabilityHasPokemobs
             battleCooldown = Config.instance.trainerCooldown;
             resetTime = battleCooldown;
             holder = PAEventsHandler.getParameterHolder(user.getClass());
+            if (!TypeTrainer.mobTypeMapper.shouldSync(user)) pokecubes = CompatWrapper.makeList(6);
         }
 
         public boolean hasDefeated(Entity e)
@@ -433,9 +428,22 @@ public class CapabilityHasPokemobs
         }
 
         @Override
-        public List<ItemStack> getPokecubes()
+        public ItemStack getPokemob(int slot)
         {
-            return pokecubes;
+            if (pokecubes != null) return pokecubes.get(slot);
+            return user.getDataManager().get(holder.pokemobs[slot]).orNull();
+        }
+
+        @Override
+        public void setPokemob(int slot, ItemStack cube)
+        {
+            if (pokecubes != null)
+            {
+                pokecubes.set(slot, cube);
+                return;
+            }
+            if (CompatWrapper.isValid(cube)) user.getDataManager().set(holder.pokemobs[slot], Optional.of(cube));
+            else user.getDataManager().set(holder.pokemobs[slot], Optional.<ItemStack> absent());
         }
 
         @Override
@@ -524,7 +532,6 @@ public class CapabilityHasPokemobs
             if (hasDefeated(defeater)) return;
             if (defeater != null) defeaters.add(
                     new DefeatEntry(defeater.getCachedUniqueIdString(), user.getEntityWorld().getTotalWorldTime()));
-            System.out.println(defeater + " " + rewards.getRewards());
             if (rewards.getRewards() != null && defeater instanceof EntityPlayer)
             {
                 EntityPlayer player = (EntityPlayer) defeater;

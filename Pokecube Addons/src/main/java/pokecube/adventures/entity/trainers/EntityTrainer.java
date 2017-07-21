@@ -96,15 +96,15 @@ public class EntityTrainer extends EntityTrainerBase
 
     private void addMobTrades(ItemStack buy1)
     {
+        IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, getEntityWorld());
+        int stat1 = getBaseStats(mon1);
         for (int i = 0; i < pokemobsCap.getPokecubes().size(); i++)
         {
             ItemStack stack = pokemobsCap.getPokecubes().get(i);
             if (PokecubeManager.isFilled(stack))
             {
                 IPokemob mon = PokecubeManager.itemToPokemob(stack, getEntityWorld());
-                IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, getEntityWorld());
                 int stat = getBaseStats(mon);
-                int stat1 = getBaseStats(mon1);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 UUID trader1 = mon1.getPokemonOwnerID();
                 boolean everstone = CompatWrapper.isValid(PokecubeManager.getHeldItemMainhand(stack)) && Tools
@@ -300,12 +300,12 @@ public class EntityTrainer extends EntityTrainerBase
             itemList = new MerchantRecipeList();
             addRandomTrades();
         }
-        if (Config.instance.trainersTradeItems) tradeList.addAll(itemList);
         ItemStack buy = buyingPlayer.getHeldItemMainhand();
         if (PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
         {
             addMobTrades(buy);
         }
+        if (Config.instance.trainersTradeItems) tradeList.addAll(itemList);
     }
 
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
@@ -449,7 +449,7 @@ public class EntityTrainer extends EntityTrainerBase
         mon1.setPokemonOwner(trader2);
         poke1 = PokecubeManager.pokemobToItem(mon1);
         clear = true;
-        pokemobsCap.setPokemob(num, poke2);
+        pokemobsCap.setPokemob(num, poke1);
         shouldrefresh = true;
     }
 

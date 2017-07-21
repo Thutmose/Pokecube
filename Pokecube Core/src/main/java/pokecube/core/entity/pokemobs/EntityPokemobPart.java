@@ -38,14 +38,6 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
         this.defaultBox = null;
     }
 
-    public EntityPokemobPart(World world)
-    {
-        super(null, null, 0, 0);
-        this.parent = null;
-        this.offset = null;
-        this.defaultBox = null;
-    }
-
     public EntityPokemobPart(IPokemob parent, String partName, Vector3f offset, Vector3f[] dimensions)
     {
         super((IEntityMultiPart) parent, partName, 1, 1);

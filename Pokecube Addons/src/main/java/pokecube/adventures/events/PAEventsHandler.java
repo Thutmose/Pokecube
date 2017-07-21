@@ -287,7 +287,7 @@ public class PAEventsHandler
         for (int i = 0; i < 6; i++)
         {
             DataParameter<ItemStack> CUBE = EntityDataManager.<ItemStack> createKey(clazz,
-                    DataSerializers.OPTIONAL_ITEM_STACK);
+                    DataSerializers.ITEM_STACK);
 
             holder.pokemobs[i] = CUBE;
         }

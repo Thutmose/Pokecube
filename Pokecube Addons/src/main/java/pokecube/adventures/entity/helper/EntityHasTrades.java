@@ -90,7 +90,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         if (this.tradeList == null || shouldrefresh)
         {
             shouldrefresh = false;
-            this.populateBuyingList();
+            this.populateBuyingList(player);
         }
         return this.tradeList;
     }
@@ -137,7 +137,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         return null;
     }
 
-    public abstract void populateBuyingList();
+    public abstract void populateBuyingList(EntityPlayer player);
 
     protected abstract void addRandomTrades();
 

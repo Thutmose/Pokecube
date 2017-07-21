@@ -35,8 +35,8 @@ import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs.DefeatEntry;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.ItemTrainer;
 import pokecube.core.PokecubeItems;
@@ -96,6 +96,7 @@ public class EntityTrainer extends EntityTrainerBase
 
     private void addMobTrades(ItemStack buy1)
     {
+        ItemStack buy = buy1.copy();
         IPokemob mon1 = PokecubeManager.itemToPokemob(buy1, getEntityWorld());
         int stat1 = getBaseStats(mon1);
         for (int i = 0; i < pokemobsCap.getPokecubes().size(); i++)
@@ -114,7 +115,7 @@ public class EntityTrainer extends EntityTrainerBase
                 mon.setTraded(!everstone);
                 stack = PokecubeManager.pokemobToItem(mon);
                 stack.getTagCompound().setInteger("slotnum", i);
-                tradeList.add(new MerchantRecipe(buy1, stack));
+                tradeList.add(new MerchantRecipe(buy, stack));
             }
         }
     }
@@ -290,7 +291,7 @@ public class EntityTrainer extends EntityTrainerBase
     }
 
     @Override
-    public void populateBuyingList()
+    public void populateBuyingList(EntityPlayer player)
     {
         tradeList = new MerchantRecipeList();
         if (shouldrefresh) itemList = null;
@@ -300,10 +301,13 @@ public class EntityTrainer extends EntityTrainerBase
             itemList = new MerchantRecipeList();
             addRandomTrades();
         }
-        ItemStack buy = buyingPlayer.getHeldItemMainhand();
-        if (PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
+        if (player != null)
         {
-            addMobTrades(buy);
+            ItemStack buy = player.getHeldItemMainhand();
+            if (PokecubeManager.isFilled(buy) && Config.instance.trainersTradeMobs)
+            {
+                addMobTrades(buy);
+            }
         }
         if (Config.instance.trainersTradeItems) tradeList.addAll(itemList);
     }
@@ -357,14 +361,12 @@ public class EntityTrainer extends EntityTrainerBase
             }
             else if (pokemobsCap.friendlyCooldown >= 0)
             {
-                this.setCustomer(player);
-                if (!this.getEntityWorld().isRemote && trades
-                        && (getRecipes(player) == null || this.tradeList.size() > 0))
+                if (!this.getEntityWorld().isRemote && trades)
                 {
+                    this.setCustomer(player);
                     player.displayVillagerTradeGui(this);
                     return true;
                 }
-                this.setCustomer(null);
                 return true;
             }
         }
@@ -438,6 +440,7 @@ public class EntityTrainer extends EntityTrainerBase
     @Override
     protected void trade(MerchantRecipe recipe)
     {
+        System.out.println("Test:" + recipe);
         ItemStack poke1 = recipe.getItemToBuy();
         ItemStack poke2 = recipe.getItemToSell();
         if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }

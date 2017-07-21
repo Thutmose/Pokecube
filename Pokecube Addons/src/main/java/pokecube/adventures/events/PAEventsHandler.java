@@ -68,7 +68,7 @@ public class PAEventsHandler
         int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
         trainer.name = "";
         trainer.initTrainer(trainer.pokemobsCap.getType(), maxXp);
-        trainer.populateBuyingList();
+        trainer.populateBuyingList(null);
         System.out.println("Randomized " + trainer.name);
     }
 

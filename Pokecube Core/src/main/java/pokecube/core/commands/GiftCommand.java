@@ -15,6 +15,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class GiftCommand extends CommandBase
 {
@@ -60,8 +61,8 @@ public class GiftCommand extends CommandBase
 
                     String name = gift[0];
 
-                    IPokemob mob = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(name),
-                            sender.getEntityWorld());
+                    IPokemob mob = CapabilityPokemob.getPokemobFor(
+                            PokecubeMod.core.createPokemob(Database.getEntry(name), sender.getEntityWorld()));
                     MakeCommand.setToArgs(gift, mob, 1, null);
                     mob.setOriginalOwnerUUID(new UUID(12345, 54321));
                     mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(13)));

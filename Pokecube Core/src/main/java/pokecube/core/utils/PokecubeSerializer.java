@@ -12,8 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -38,6 +36,7 @@ import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerData;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
@@ -577,17 +576,17 @@ public class PokecubeSerializer
     public ItemStack starter(int pokedexNb, EntityPlayer owner)
     {
         World worldObj = owner.getEntityWorld();
-        IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb),
-                worldObj);
+        IPokemob entity = CapabilityPokemob
+                .getPokemobFor(PokecubeMod.core.createPokemob(Database.getEntry(pokedexNb), worldObj));
 
         if (entity != null)
         {
             entity.setForSpawn(Tools.levelToXp(entity.getExperienceMode(), 5));
-            ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
+            entity.getEntity().setHealth(entity.getEntity().getMaxHealth());
             entity.setPokemonOwner(owner.getUniqueID());
             entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
             ItemStack item = PokecubeManager.pokemobToItem(entity);
-            ((Entity) entity).isDead = true;
+            entity.getEntity().isDead = true;
             return item;
         }
 

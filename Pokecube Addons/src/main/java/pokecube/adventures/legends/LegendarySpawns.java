@@ -16,6 +16,7 @@ import pokecube.core.database.stats.ISpecialCaptureCondition;
 import pokecube.core.database.stats.ISpecialSpawnCondition;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -50,14 +51,14 @@ public class LegendarySpawns
                 if (condition.canSpawn(playerIn, location))
                 {
                     EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(entry, worldIn);
-                    if (condition2 != null && !condition2.canCapture(playerIn, (IPokemob) entity)) return;
+                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+                    if (condition2 != null && !condition2.canCapture(playerIn, pokemob)) return;
                     entity.setHealth(entity.getMaxHealth());
                     location.add(0, 1, 0).moveEntity(entity);
-                    condition.onSpawn((IPokemob) entity);
-                    if (((IPokemob) entity).getExp() < 100)
+                    condition.onSpawn(pokemob);
+                    if (pokemob.getExp() < 100)
                     {
-                        entity = (EntityLiving) ((IPokemob) entity)
-                                .setForSpawn(Tools.levelToXp(entry.getEvolutionMode(), 50));
+                        entity = pokemob.setForSpawn(Tools.levelToXp(entry.getEvolutionMode(), 50)).getEntity();
                     }
                     worldIn.spawnEntityInWorld(entity);
                 }

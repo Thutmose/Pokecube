@@ -36,6 +36,7 @@ import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.berries.BerryManager;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
@@ -216,8 +217,9 @@ public class JERCompat
             if (drops == null) continue;
             Entity poke = PokecubeMod.core.createPokemob(e, PokecubeCore.proxy.getWorld());
             if (poke == null) continue;
-            ((IPokemob) poke).setShiny(false);
-            ((IPokemob) poke).setSize(1);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(poke);
+            pokemob.setShiny(false);
+            pokemob.setSize(1);
             JERAPI.getMobRegistry().register((EntityLivingBase) poke, getLightLevel(e), getSpawns(e), drops);
             JERAPI.getMobRegistry()
                     .registerRenderHook(PokecubeMod.core.getEntityClassFromPokedexNumber(e.getPokedexNb()), POKEMOB);

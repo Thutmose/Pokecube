@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
@@ -257,8 +259,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(pokedexEntry);
         if (pokemob == null || pokemob.getPokedexEntry() != pokedexEntry)
         {
-            EventsHandlerClient.renderMobs.put(pokedexEntry,
-                    pokemob = (IPokemob) PokecubeMod.core.createPokemob(pokedexEntry, mc.theWorld));
+            Entity mob = PokecubeMod.core.createPokemob(pokedexEntry, mc.theWorld);
+            EventsHandlerClient.renderMobs.put(pokedexEntry, pokemob = CapabilityPokemob.getPokemobFor(mob));
             if (pokemob == null)
             {
                 System.out.println("Error with " + pokedexEntry);

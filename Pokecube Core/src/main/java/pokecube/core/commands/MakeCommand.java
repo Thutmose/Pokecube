@@ -30,6 +30,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
@@ -55,7 +56,6 @@ public class MakeCommand extends CommandBase
         if (deobfuscated || commandBlock)
         {
             String name;
-            IPokemob mob = null;
             if (args.length > 0)
             {
                 int num = 1;
@@ -116,16 +116,16 @@ public class MakeCommand extends CommandBase
                             }
                             else entry = Database.getEntry(name);
                         }
-                        mob = (IPokemob) PokecubeMod.core.createPokemob(entry, sender.getEntityWorld());
-
+                        Entity mob = PokecubeMod.core.createPokemob(entry, sender.getEntityWorld());
                         if (mob == null)
                         {
                             CommandTools.sendError(sender, "pokecube.command.makeinvalid");
                             return;
                         }
+                        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
                         UUID owner = null;
-                        String ownerName = setToArgs(args, mob, index, offset);
+                        String ownerName = setToArgs(args, pokemob, index, offset);
                         if (ownerName != null && !ownerName.isEmpty())
                         {
                             player = getPlayer(server, sender, ownerName);
@@ -138,15 +138,15 @@ public class MakeCommand extends CommandBase
                         }
                         if (owner != null)
                         {
-                            mob.setPokemonOwner(owner);
-                            mob.setPokemonAIState(IMoveConstants.TAMED, true);
+                            pokemob.setPokemonOwner(owner);
+                            pokemob.setPokemonAIState(IMoveConstants.TAMED, true);
                         }
                         temp.set(sender.getPosition()).addTo(offset);
                         temp.moveEntity((Entity) mob);
-                        mob.specificSpawnInit();
+                        pokemob.specificSpawnInit();
                         GeneticsManager.initMob((Entity) mob);
                         ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
-                        text = TextFormatting.GREEN + "Spawned " + mob.getPokemonDisplayName().getFormattedText();
+                        text = TextFormatting.GREEN + "Spawned " + pokemob.getPokemonDisplayName().getFormattedText();
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);
                         return;

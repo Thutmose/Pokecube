@@ -50,6 +50,7 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
@@ -842,7 +843,7 @@ public class GuiPokedex extends GuiScreen
             pokemob = (EntityLiving) PokecubeMod.core.createPokemob(pokedexEntry, entityPlayer.getEntityWorld());
             if (pokemob != null)
             {
-                ((IPokemob) pokemob).specificSpawnInit();
+                CapabilityPokemob.getPokemobFor(pokemob).specificSpawnInit();
                 entityToDisplayMap.put(pokedexEntry.getPokedexNb(), pokemob);
             }
         }
@@ -1411,7 +1412,7 @@ public class GuiPokedex extends GuiScreen
             entity.limbSwingAmount = 0;
             entity.prevLimbSwingAmount = 0;
             PokeType flying = PokeType.getType("flying");
-            entity.onGround = !((IPokemob)entity).isType(flying);
+            entity.onGround = !((IPokemob) entity).isType(flying);
 
             if (isAltKeyDown())
             {

@@ -15,6 +15,7 @@ import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
 import thut.lib.CompatWrapper;
 
+@Deprecated
 public class BiomeMatcher
 {
     final String          toMatch;

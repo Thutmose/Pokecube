@@ -33,7 +33,6 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
@@ -117,7 +116,7 @@ public class PokedexEntryLoader
             boolean rule = false;
             if (CompatWrapper.isValid(stack))
             {
-                rightStack = Tools.isSameStack(stack, ((EntityLivingBase) mobIn).getHeldItemMainhand());
+                rightStack = Tools.isSameStack(stack, mobIn.getEntity().getHeldItemMainhand());
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())

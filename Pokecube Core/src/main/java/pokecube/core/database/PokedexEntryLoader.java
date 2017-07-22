@@ -224,6 +224,8 @@ public class PokedexEntryLoader
         public String    animation;
         @XmlElement(name = "Key")
         public Key       item;
+        @XmlElement(name = "PresetItem")
+        public String    item_preset;
         @XmlAttribute(name = "Time")
         public String    time;
         @XmlAttribute(name = "Trade")
@@ -282,16 +284,6 @@ public class PokedexEntryLoader
         @XmlAttribute
         public String            spawns;
         // Evolution stuff
-
-        // OLD Evolution Stuff
-        @XmlElement(name = "EVOLUTIONMODE")
-        public String            evoModes       = "L-1";
-        @XmlElement(name = "EVOLUTIONANIMATION")
-        public String            evolAnims      = "3";
-        @XmlElement(name = "EVOLVESTO")
-        public String            evoTo;
-
-        // New Evolution Stuff
         @XmlElement(name = "Evolution")
         public List<Evolution>   evolutions     = Lists.newArrayList();
 
@@ -1114,68 +1106,6 @@ public class PokedexEntryLoader
                 }
             }
         }
-        else
-        {
-            String numberString = xmlStats.evoTo;
-            String dataString = xmlStats.evoModes;
-            String fxString = xmlStats.evolAnims;
-            if (numberString == null || dataString == null) return;
-            if (fxString == null) fxString = "";
-            String evolutionNbs = numberString;
-            if (!evolutionNbs.isEmpty())
-            {
-                String[] evols = numberString.split(" ");
-                String[] evolData = dataString.split(" ");
-                String[] evolFX = fxString.split(" ");
-                if (evols.length != evolData.length)
-                {
-                    PokecubeMod.log(Level.WARNING, "Error with evolution data for " + entry, new Exception());
-                }
-                else
-                {
-                    entry.evolutions.clear();
-                    for (int i = 0; i < evols.length; i++)
-                    {
-                        String s1 = evols[i];
-                        String s2 = evolFX[i % evolFX.length];
-                        PokedexEntry evol;
-                        try
-                        {
-                            int num = Integer.parseInt(s1);
-                            evol = Database.getEntry(num);
-                        }
-                        catch (NumberFormatException e)
-                        {
-                            evol = Database.getEntry(s1);
-                        }
-                        if (evol != null)
-                        {
-                            EvolutionData data = null;
-                            for (EvolutionData d : entry.evolutions)
-                            {
-                                if (d.evolution == evol)
-                                {
-                                    data = d;
-                                    break;
-                                }
-                            }
-                            if (data == null)
-                            {
-                                data = new EvolutionData(evol, evolData[i], s2);
-                                data.preEvolution = entry;
-                                entry.addEvolution(data);
-                            }
-                            else
-                            {
-                                data.data_old = evolData[i];
-                                data.FX = s2;
-                            }
-                        }
-                        else if (error) PokecubeMod.log(Level.WARNING, "No evolution " + s1 + " for " + entry);
-                    }
-                }
-            }
-        }
     }
 
     public static void handleAddSpawn(SpawnData spawnData, SpawnRule rule)
@@ -1496,8 +1426,8 @@ public class PokedexEntryLoader
                     else if (rule.item != null)
                     {
                         stack = Tools.getStack(rule.item.values);
-                    }if (rule.item != null)
-                    PokecubeMod.log(stack+" "+rule.item.values);
+                    }
+                    if (rule.item != null) PokecubeMod.log(stack + " " + rule.item.values);
                     if ((move == null || move.isEmpty()) && !CompatWrapper.isValid(stack)
                             && (ability == null || ability.isEmpty()))
                     {

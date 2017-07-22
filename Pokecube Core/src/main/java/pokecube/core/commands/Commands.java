@@ -40,6 +40,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesUtils;
@@ -96,13 +97,13 @@ public class Commands extends CommandBase
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 World world = cSender.getEntityWorld();
-                List<?> entities = new ArrayList<Object>(world.loadedEntityList);
+                List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
                 int count = 0;
-                for (Object o : entities)
+                for (Entity o : entities)
                 {
-                    if (o instanceof IPokemob)
+                    IPokemob e = CapabilityPokemob.getPokemobFor(o);
+                    if (e != null)
                     {
-                        IPokemob e = (IPokemob) o;
                         if (id == -1 && !e.getPokemonAIState(IMoveConstants.TAMED) || all)
                         {
                             ((Entity) e).setDead();
@@ -128,7 +129,7 @@ public class Commands extends CommandBase
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 World world = cSender.getEntityWorld();
-                List<?> entities = new ArrayList<Object>(world.loadedEntityList);
+                List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
                 int count1 = 0;
                 int count2 = 0;
                 String name = "";
@@ -137,16 +138,14 @@ public class Commands extends CommandBase
                 {
                     name = args[1];
                 }
-                for (Object o : entities)
+                for (Entity o : entities)
                 {
-                    if (o instanceof IPokemob)
+                    IPokemob e = CapabilityPokemob.getPokemobFor(o);
+                    if (e != null)
                     {
-                        IPokemob e = (IPokemob) o;
-                        // System.out.println(e);
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            if (((Entity) e).getDistance(cSender.getPositionVector().xCoord,
-                                    cSender.getPositionVector().yCoord,
+                            if (o.getDistance(cSender.getPositionVector().xCoord, cSender.getPositionVector().yCoord,
                                     cSender.getPositionVector().zCoord) > PokecubeMod.core.getConfig().maxSpawnRadius)
                                 count2++;
                             else count1++;
@@ -170,25 +169,25 @@ public class Commands extends CommandBase
             if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
             {
                 World world = cSender.getEntityWorld();
-                List<?> entities = new ArrayList<Object>(world.loadedEntityList);
+                List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
                 String name = "";
                 if (all)
                 {
                     name = args[1];
                 }
                 int n = 0;
-                for (Object o : entities)
+                for (Entity o : entities)
                 {
-                    if (o instanceof IPokemob)
+                    IPokemob e = CapabilityPokemob.getPokemobFor(o);
+                    if (e != null)
                     {
-                        IPokemob e = (IPokemob) o;
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            if (((Entity) e).getEntityWorld().getClosestPlayerToEntity((Entity) e,
+                            if (o.getEntityWorld().getClosestPlayerToEntity((Entity) e,
                                     PokecubeMod.core.getConfig().maxSpawnRadius) == null
                                     && !e.getPokemonAIState(IMoveConstants.TAMED))
                             {
-                                ((Entity) e).setDead();
+                                o.setDead();
                                 n++;
                             }
                         }

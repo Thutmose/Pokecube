@@ -13,6 +13,7 @@ import net.minecraft.world.WorldServer;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 
@@ -80,11 +81,9 @@ public class RecallCommand extends CommandBase
             // the player has died far from the loaded area.
             if (world.unloadedEntityList.contains(o)) continue;
             if (!o.addedToChunk) continue;
-
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
             if (!cubes && o instanceof IPokemob)
             {
-                IPokemob mob = (IPokemob) o;
-
                 boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
                 if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)
                         && (named || all || (stay == isStaying)) && (named == specificName
@@ -114,7 +113,7 @@ public class RecallCommand extends CommandBase
                     {
                         if (PokecubeManager.isFilled(cube.getEntityItem()))
                         {
-                            IPokemob mob = cube.sendOut();
+                            mob = cube.sendOut();
                             if (mob != null) mob.returnToPokecube();
                             else PokecubeMod.log(cube.getEntityItem().getDisplayName());
                         }

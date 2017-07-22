@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** This event is called to apply the effects of the status. It will by default
  * be handled by Pokecube, with priority listener of LOWEST. Cancel this event
@@ -18,7 +19,7 @@ public class StatusEffectEvent extends EntityEvent
     {
         super(entity);
         this.status = status;
-        this.pokemob = (IPokemob) entity;
+        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
     }
 
     public byte getStatus()

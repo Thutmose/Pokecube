@@ -14,6 +14,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
@@ -125,9 +126,9 @@ public class PokecubeManager
         PokedexEntry entry = getPokedexEntry(itemStack);
         if (entry != null)
         {
-            IPokemob pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
             if (pokemob == null) { return null; }
-            Entity poke = (Entity) pokemob;
+            Entity poke = pokemob.getEntity();
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB);
             poke.readFromNBT(pokeTag);
             ItemStack cubeStack = pokemob.getPokecube();

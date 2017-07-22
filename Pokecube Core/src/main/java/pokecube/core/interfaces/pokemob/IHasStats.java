@@ -202,7 +202,7 @@ public interface IHasStats extends IHasEntry
     default void setToHiddenAbility()
     {
         this.setAbilityIndex(2);
-        this.setAbility(getPokedexEntry().getHiddenAbility(CapabilityPokemob.getPokemobs(getEntity())));
+        this.setAbility(getPokedexEntry().getHiddenAbility(CapabilityPokemob.getPokemobFor(getEntity())));
     }
 
     default void setType1(PokeType type1)

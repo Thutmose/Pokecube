@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.animations.EntityMoveUse;
 
 public class MoveQueue
@@ -103,9 +104,10 @@ public class MoveQueue
             }
             if (toUse)
             {
+                IPokemob mob = CapabilityPokemob.getPokemobFor(move.getUser());
                 world.spawnEntity(move);
-                move.getMove().applyHungerCost((IPokemob) move.getUser());
-                MovesUtils.displayMoveMessages((IPokemob) move.getUser(), move.getTarget(), move.getMove().name);
+                move.getMove().applyHungerCost(mob);
+                MovesUtils.displayMoveMessages(mob, move.getTarget(), move.getMove().name);
             }
         }
         moves.clear();

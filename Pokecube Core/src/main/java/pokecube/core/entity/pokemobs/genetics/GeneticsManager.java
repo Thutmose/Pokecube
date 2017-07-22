@@ -112,7 +112,7 @@ public class GeneticsManager
 
     public static void initFromGenes(IMobGenetics genes, IPokemob pokemob)
     {
-        Entity mob = (Entity) pokemob;
+        Entity mob = pokemob.getEntity();
         IMobGenetics mobs = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
         if (genes != mobs)
         {
@@ -123,7 +123,7 @@ public class GeneticsManager
 
     public static void handleLoad(IPokemob pokemob)
     {
-        Entity mob = (Entity) pokemob;
+        Entity mob = pokemob.getEntity();
         IMobGenetics genes = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
         if (!genes.getAlleles().isEmpty()) return;
         initMob(mob);
@@ -131,7 +131,7 @@ public class GeneticsManager
 
     public static void handleEpigenetics(IPokemob pokemob)
     {
-//        pokemob.onGenesChanged();
+        // pokemob.onGenesChanged();
     }
 
     public static void initEgg(IMobGenetics eggs, IMobGenetics mothers, IMobGenetics fathers)

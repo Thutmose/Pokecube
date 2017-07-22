@@ -13,7 +13,6 @@ import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -35,6 +34,7 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IHealer;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.PokecubeMessageHandlerClient;
@@ -397,25 +397,25 @@ public class PokecubePacketHandler
             PokedexEntry entry = (name != null) ? Database.getEntry(name) : Database.getEntry(number);
             if (entry != null)
             {
-                World world = owner.getEntityWorld();
-                IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
-                if (entity != null)
+                World worldObj = owner.getEntityWorld();
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, worldObj));
+                if (pokemob != null)
                 {
-                    ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-                    entity.setPokemonOwner(owner.getUniqueID());
-                    entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
-                    entity.setExp(Tools.levelToXp(entity.getExperienceMode(), 5), true);
-                    if (shiny) entity.setShiny(true);
+                    pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
+                    pokemob.setPokemonOwner(owner.getUniqueID());
+                    pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+                    pokemob.setExp(Tools.levelToXp(pokemob.getExperienceMode(), 5), true);
+                    if (shiny) pokemob.setShiny(true);
                     PokedexEntry entry2;
                     if (red == 0 && (entry2 = Database.getEntry(entry.getName() + "R")) != null)
-                        entity.setPokedexEntry(entry2);
+                        pokemob.setPokedexEntry(entry2);
                     if (green == 0 && (entry2 = Database.getEntry(entry.getName() + "G")) != null)
-                        entity.setPokedexEntry(entry2);
+                        pokemob.setPokedexEntry(entry2);
                     if (blue == 0 && (entry2 = Database.getEntry(entry.getName() + "B")) != null)
-                        entity.setPokedexEntry(entry2);
+                        pokemob.setPokedexEntry(entry2);
                     if (ability != null && AbilityManager.abilityExists(ability))
                     {
-                        entity.setAbility(AbilityManager.getAbility(ability));
+                        pokemob.setAbility(AbilityManager.getAbility(ability));
                     }
                     if (moves.size() > 4)
                     {
@@ -424,11 +424,11 @@ public class PokecubePacketHandler
                     for (int i = 0; i < Math.min(4, moves.size()); i++)
                     {
                         String move = moves.get(i);
-                        if (MovesUtils.isMoveImplemented(move)) entity.setMove(i, move);
+                        if (MovesUtils.isMoveImplemented(move)) pokemob.setMove(i, move);
                     }
 
-                    ItemStack item = PokecubeManager.pokemobToItem(entity);
-                    ((Entity) entity).isDead = true;
+                    ItemStack item = PokecubeManager.pokemobToItem(pokemob);
+                    ((Entity) pokemob).isDead = true;
                     return item;
                 }
 

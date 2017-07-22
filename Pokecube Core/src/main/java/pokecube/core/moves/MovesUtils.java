@@ -34,6 +34,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.StatModifiers;
 import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -64,19 +65,20 @@ public class MovesUtils implements IMoveConstants
         rechargeMoves.add("roaroftime");
     }
 
-    public static void addChange(Entity attacked, byte change)
+    public static void addChange(Entity target, byte change)
     {
-        if (attacked instanceof IPokemob)
+        IPokemob attacked = CapabilityPokemob.getPokemobFor(target);
+        if (attacked != null)
         {
-            ((IPokemob) attacked).addChange(change);
+            attacked.addChange(change);
         }
-        else if (attacked instanceof EntityLivingBase)
+        else if (target instanceof EntityLivingBase)
         {
             int duration = 250;
 
             if (change == IMoveConstants.CHANGE_CONFUSED)
             {
-                ((EntityLivingBase) attacked)
+                ((EntityLivingBase) target)
                         .addPotionEffect(new PotionEffect(Potion.getPotionFromResourceLocation("nausea"), duration));
             }
 
@@ -97,23 +99,24 @@ public class MovesUtils implements IMoveConstants
             float criticalRatio)
     {
         ITextComponent text;
+        IPokemob attackedPokemob = CapabilityPokemob.getPokemobFor(attacked);
         if (efficiency == -1)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 text = new TextComponentTranslation("pokemob.move.missed.theirs",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                        attackedPokemob.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
                 text = new TextComponentTranslation("pokemob.move.missed.ours",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                        attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
                 return;
             }
             else if (attacked == null)
             {
-                if (((EntityLiving) attacker).getAttackTarget() != null)
+                if (attacker.getEntity().getAttackTarget() != null)
                 {
-                    attacked = ((EntityLiving) attacker).getAttackTarget();
+                    attacked = attacker.getEntity().getAttackTarget();
                     String name = attacked.getName();
                     text = new TextComponentTranslation("pokemob.move.missed.ours", name);
                     attacker.displayMessageToOwner(text);
@@ -122,70 +125,64 @@ public class MovesUtils implements IMoveConstants
         }
         if (efficiency == -2)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 String message = "pokemob.move.failed";
                 text = new TextComponentTranslation(message + ".theirs", ((IPokemob) attacker).getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
                 text = new TextComponentTranslation(message + ".ours", ((IPokemob) attacker).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                attackedPokemob.displayMessageToOwner(text);
                 return;
             }
         }
         if (efficiency == 0)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 String message = "pokemob.move.doesnt.affect";
-                text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "green", attackedPokemob.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
                 attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, 1, 1);
                 return;
             }
         }
         else if (efficiency < 1)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 String message = "pokemob.move.not.very.effective";
-                text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "green", attackedPokemob.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
                 attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, 1, 1);
             }
         }
         else if (efficiency > 1)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 String message = "pokemob.move.super.effective";
-                text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "green", attackedPokemob.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
                 attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, 1, 1);
             }
         }
 
         if (criticalRatio > 1)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 text = CommandTools.makeTranslatedMessage("pokemob.move.critical.hit", "green",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                        attackedPokemob.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
                 text = CommandTools.makeTranslatedMessage("pokemob.move.critical.hit", "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                        attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
                 attacked.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
             }
         }
@@ -195,13 +192,14 @@ public class MovesUtils implements IMoveConstants
     {
         ITextComponent text;
 
+        IPokemob attackedPokemob = CapabilityPokemob.getPokemobFor(attacked);
         if (attack.equals("pokemob.status.confusion"))
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 text = CommandTools.makeTranslatedMessage("pokemob.status.confusion", "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                        attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
             }
             return;
         }
@@ -211,11 +209,11 @@ public class MovesUtils implements IMoveConstants
         attacker.displayMessageToOwner(text);
         if (attacker == attacked) return;
 
-        if (attacked instanceof IPokemob)
+        if (attackedPokemob != null)
         {
             text = CommandTools.makeTranslatedMessage("pokemob.move.enemyUsed", "red", attacker.getPokemonDisplayName(),
                     attackName);
-            ((IPokemob) attacked).displayMessageToOwner(text);
+            attackedPokemob.displayMessageToOwner(text);
         }
         else if (attacked instanceof EntityPlayer && !attacked.getEntityWorld().isRemote)
         {
@@ -228,9 +226,10 @@ public class MovesUtils implements IMoveConstants
     public static void displayStatsMessage(IPokemob attacker, Entity attacked, float efficiency, byte stat, byte amount)
     {
         ITextComponent text;
+        IPokemob attackedPokemob = CapabilityPokemob.getPokemobFor(attacked);
         if (efficiency == -2)
         {
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
                 if ((attacker == null || attacker == attacked) && attacked instanceof EntityLiving)
                 {
@@ -240,12 +239,10 @@ public class MovesUtils implements IMoveConstants
                     }
                 }
                 String message = "pokemob.move.stat.fail";
-                text = CommandTools.makeTranslatedMessage(message, "green",
-                        ((IPokemob) attacked).getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "green", attackedPokemob.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
             }
         }
         else
@@ -270,32 +267,32 @@ public class MovesUtils implements IMoveConstants
                     attacker = (IPokemob) ((EntityLiving) attacked).getAttackTarget();
                 }
             }
-            if (attacked instanceof IPokemob && attacker != null)
+            if (attackedPokemob != null && attacker != null)
             {
                 if (attacker == attacked)
                 {
                     String colour = fell ? "red" : "green";
-                    text = CommandTools.makeTranslatedMessage(message, colour,
-                            ((IPokemob) attacked).getPokemonDisplayName(), statName);
-                    ((IPokemob) attacked).displayMessageToOwner(text);
+                    text = CommandTools.makeTranslatedMessage(message, colour, attackedPokemob.getPokemonDisplayName(),
+                            statName);
+                    attackedPokemob.displayMessageToOwner(text);
                 }
                 else
                 {
                     String colour = fell ? "red" : "green";
-                    text = CommandTools.makeTranslatedMessage(message, colour,
-                            ((IPokemob) attacked).getPokemonDisplayName(), statName);
-                    ((IPokemob) attacked).displayMessageToOwner(text);
+                    text = CommandTools.makeTranslatedMessage(message, colour, attackedPokemob.getPokemonDisplayName(),
+                            statName);
+                    attackedPokemob.displayMessageToOwner(text);
                     colour = fell ? "green" : "red";
-                    text = CommandTools.makeTranslatedMessage(message, colour,
-                            ((IPokemob) attacked).getPokemonDisplayName(), statName);
+                    text = CommandTools.makeTranslatedMessage(message, colour, attackedPokemob.getPokemonDisplayName(),
+                            statName);
                     attacker.displayMessageToOwner(text);
                 }
             }
-            else if (attacker == null && (attacked instanceof IPokemob))
+            else if (attacker == null && (attackedPokemob != null))
             {
-                text = CommandTools.makeTranslatedMessage(message, "red", ((IPokemob) attacked).getPokemonDisplayName(),
+                text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName(),
                         statName);
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                attackedPokemob.displayMessageToOwner(text);
             }
             else
             {
@@ -310,6 +307,7 @@ public class MovesUtils implements IMoveConstants
     {
         String message = getStatusMessage(status, onMove);
         ITextComponent text;
+        IPokemob attackedPokemob = CapabilityPokemob.getPokemobFor(attacked);
         if (message != null)
         {
             if (attacker != null)
@@ -317,11 +315,10 @@ public class MovesUtils implements IMoveConstants
                 text = CommandTools.makeTranslatedMessage(message, "green", attacker.getPokemonDisplayName());
                 attacker.displayMessageToOwner(text);
             }
-            if (attacked instanceof IPokemob)
+            if (attackedPokemob != null)
             {
-                text = CommandTools.makeTranslatedMessage(message, "red",
-                        ((IPokemob) attacked).getPokemonDisplayName());
-                ((IPokemob) attacked).displayMessageToOwner(text);
+                text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName());
+                attackedPokemob.displayMessageToOwner(text);
             }
             else if (attacked instanceof EntityPlayer && attacker != null)
             {
@@ -691,9 +688,10 @@ public class MovesUtils implements IMoveConstants
     public static void setStatus(Entity attacked, byte status)
     {
         displayStatusMessages(null, attacked, status, true);
-        if (attacked instanceof IPokemob)
+        IPokemob attackedPokemob = CapabilityPokemob.getPokemobFor(attacked);
+        if (attackedPokemob != null)
         {
-            boolean apply = ((IPokemob) attacked).setStatus(status);
+            boolean apply = attackedPokemob.setStatus(status);
             if (!apply)
             {
                 // TODO message here about no status effect.
@@ -746,6 +744,7 @@ public class MovesUtils implements IMoveConstants
         Vector3 source = Vector3.getNewVector().set(attacker, true);
         source.y += attacker.height / 4;
         final boolean ignoreAllies = false;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(attacker);
         Predicate<Entity> matcher = new Predicate<Entity>()
         {
             @Override
@@ -753,7 +752,7 @@ public class MovesUtils implements IMoveConstants
             {
                 if (attacker == e.getRidingEntity()) return false;
                 if (!PokecubeMod.pokemobsDamagePlayers && e instanceof EntityPlayer) return false;
-                if (!PokecubeMod.pokemobsDamageOwner && e == ((IPokemob) attacker).getPokemonOwner()) return false;
+                if (!PokecubeMod.pokemobsDamageOwner && e == pokemob.getPokemonOwner()) return false;
                 if (PokecubeMod.core.getEntityProvider().getEntity(attacker.getEntityWorld(), e.getEntityId(),
                         true) == attacker)
                     return false;
@@ -792,6 +791,7 @@ public class MovesUtils implements IMoveConstants
         List<Entity> targets = source.allEntityLocationExcluding(16, 0.5, dest.subtract(source), source,
                 attacker.getEntityWorld(), attacker);
         List<EntityLivingBase> ret = new ArrayList<EntityLivingBase>();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(attacker);
 
         Predicate<Entity> matcher = new Predicate<Entity>()
         {
@@ -800,7 +800,7 @@ public class MovesUtils implements IMoveConstants
             {
                 if (attacker == e.getRidingEntity()) return false;
                 if (!PokecubeMod.pokemobsDamagePlayers && e instanceof EntityPlayer) return false;
-                if (!PokecubeMod.pokemobsDamageOwner && e == ((IPokemob) attacker).getPokemonOwner()) return false;
+                if (!PokecubeMod.pokemobsDamageOwner && e == pokemob.getPokemonOwner()) return false;
                 if (PokecubeMod.core.getEntityProvider().getEntity(attacker.getEntityWorld(), e.getEntityId(),
                         true) == attacker)
                     return false;

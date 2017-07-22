@@ -40,6 +40,7 @@ import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
@@ -190,11 +191,10 @@ public final class SpawnHandler
     {
         if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
                 (float) posZ)) { return null; }
-
-        if (entityliving instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityliving);
+        if (pokemob != null)
         {
             long time = System.nanoTime();
-            IPokemob pokemob = (IPokemob) entityliving;
             int maxXP = 10;
             int level = 1;
             if (expFunction)
@@ -480,9 +480,9 @@ public final class SpawnHandler
         AxisAlignedBB box = v.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
                 box.grow(radius, Math.max(height, radius), radius));
-        for (Object o : list)
+        for (EntityLivingBase o : list)
         {
-            if (o instanceof IPokemob) num++;
+            if (CapabilityPokemob.getPokemobFor(o) != null) num++;
         }
         boolean player = Tools.isAnyPlayerInRange(radius, 10, world, v);
         if (num > MAX_DENSITY * MAXNUM || !player) return ret;
@@ -576,7 +576,8 @@ public final class SpawnHandler
                             if ((entityliving = creatureSpecificInit(entityliving, world, x, y, z,
                                     v3.set(entityliving))) != null)
                             {
-                                SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world, (IPokemob) entityliving);
+                                SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world,
+                                        CapabilityPokemob.getPokemobFor(entityliving));
                                 MinecraftForge.EVENT_BUS.post(evt);
                                 world.spawnEntity(entityliving);
                                 totalSpawnCount++;
@@ -704,7 +705,7 @@ public final class SpawnHandler
                                     location, energy).setMeteor(true);
                             String message = "Meteor at " + v + " with Direction of " + direction + " and energy of "
                                     + energy;
-                            System.out.println(message);
+                            PokecubeMod.log(message);
                             boom.doExplosion();
                             PokecubeSerializer.getInstance().addMeteorLocation(v);
 

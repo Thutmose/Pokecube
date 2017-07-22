@@ -24,6 +24,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.lib.CompatWrapper;
@@ -106,7 +107,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
     {
         if (pokemob == null && getPokedexEntry() != null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createPokemob(getPokedexEntry(), null);
+            pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(getPokedexEntry(), null));
             if (pokemob == null)
             {
                 this.actualEntry = null;
@@ -209,13 +210,14 @@ public class RecipeFossilRevive implements IPoweredRecipe
         EntityLiving entity = (EntityLiving) PokecubeMod.core.createPokemob(getPokedexEntry(), world);
         if (entity != null)
         {
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             entity.setHealth(entity.getMaxHealth());
             // to avoid the death on spawn
             int exp = Tools.levelToXp(getPokedexEntry().getEvolutionMode(), level);
             // that will make your pokemob around level 3-5.
             // You can give him more XP if you want
-            entity = (EntityLiving) ((IPokemob) entity).setForSpawn(exp);
-            if (tile.getUser() != null && tame) ((IPokemob) entity).setPokemonOwner(tile.getUser());
+            entity = (pokemob = pokemob.setForSpawn(exp)).getEntity();
+            if (tile.getUser() != null && tame) pokemob.setPokemonOwner(tile.getUser());
             EnumFacing dir = world.getBlockState(pos).getValue(BlockCloner.FACING);
             entity.setLocationAndAngles(pos.getX() + 0.5 + dir.getFrontOffsetX(), pos.getY() + 1,
                     pos.getZ() + 0.5 + dir.getFrontOffsetZ(), world.rand.nextFloat() * 360F, 0.0F);
@@ -223,7 +225,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
             IMobGenetics genes = ClonerHelper.getGenes(dnaSource);
             if (genes != null)
             {
-                GeneticsManager.initFromGenes(genes, (IPokemob) entity);
+                GeneticsManager.initFromGenes(genes, pokemob);
             }
             entity.playLivingSound();
         }

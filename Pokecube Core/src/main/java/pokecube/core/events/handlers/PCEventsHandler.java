@@ -31,6 +31,7 @@ import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.packets.PacketPC;
@@ -47,13 +48,13 @@ public class PCEventsHandler
      * @return */
     public static List<IPokemob> getOutMobs(EntityLivingBase player)
     {
-        List<?> pokemobs = new ArrayList<Object>(player.getEntityWorld().loadedEntityList);
+        List<Entity> pokemobs = new ArrayList<Entity>(player.getEntityWorld().loadedEntityList);
         List<IPokemob> ret = new ArrayList<IPokemob>();
-        for (Object o : pokemobs)
+        for (Entity o : pokemobs)
         {
-            if (o instanceof IPokemob)
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null)
             {
-                IPokemob mob = (IPokemob) o;
                 if (mob.getPokemonOwner() != null && mob.getPokemonOwner() == player)
                 {
                     ret.add(mob);
@@ -61,10 +62,10 @@ public class PCEventsHandler
             }
             else if (o instanceof EntityPokecube)
             {
-                EntityPokecube mob = (EntityPokecube) o;
-                if (mob.getItem() != null)
+                EntityPokecube cube = (EntityPokecube) o;
+                if (cube.getItem() != null)
                 {
-                    IPokemob poke = PokecubeManager.itemToPokemob(mob.getItem(), mob.getEntityWorld());
+                    IPokemob poke = PokecubeManager.itemToPokemob(cube.getItem(), cube.getEntityWorld());
                     if (poke != null && poke.getPokemonOwner() != null && poke.getPokemonOwner() == player)
                     {
                         ret.add(poke);
@@ -82,12 +83,12 @@ public class PCEventsHandler
      * @param player */
     public static void recallAllPokemobs(Entity player)
     {
-        List<Object> pokemobs = new ArrayList<Object>(player.getEntityWorld().loadedEntityList);
-        for (Object o : pokemobs)
+        List<Entity> pokemobs = new ArrayList<Entity>(player.getEntityWorld().loadedEntityList);
+        for (Entity o : pokemobs)
         {
-            if (o instanceof IPokemob)
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null)
             {
-                IPokemob mob = (IPokemob) o;
                 if (mob.getPokemonOwner() != null && mob.getPokemonOwner() == player)
                 {
                     mob.returnToPokecube();
@@ -95,15 +96,15 @@ public class PCEventsHandler
             }
             else if (o instanceof EntityPokecube)
             {
-                EntityPokecube mob = (EntityPokecube) o;
-                if (mob.getItem() != null)
+                EntityPokecube cube = (EntityPokecube) o;
+                if (cube.getItem() != null)
                 {
-                    String name = PokecubeManager.getOwner(mob.getItem());
+                    String name = PokecubeManager.getOwner(cube.getItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getCachedUniqueIdString())))
                     {
-                        InventoryPC.addStackToPC(name, mob.getItem());
-                        mob.setDead();
+                        InventoryPC.addStackToPC(name, cube.getItem());
+                        cube.setDead();
                     }
                 }
             }

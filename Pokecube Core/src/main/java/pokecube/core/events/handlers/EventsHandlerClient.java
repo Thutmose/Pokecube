@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -63,6 +62,7 @@ import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketChangeForme;
 import pokecube.core.network.pokemobs.PacketMountedControl;
@@ -143,17 +143,17 @@ public class EventsHandlerClient
             IPokemob pokemob = renderMobs.get(entry);
             if (pokemob == null)
             {
-                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
+                pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
                 if (pokemob == null) return null;
                 renderMobs.put(entry, pokemob);
             }
             NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
             EventsHandler.setFromNBT(pokemob, pokeTag);
             pokemob.setPokecube(itemStack);
-            ((EntityLivingBase) pokemob).setHealth(
-                    Tools.getHealth((int) ((EntityLivingBase) pokemob).getMaxHealth(), itemStack.getItemDamage()));
+            pokemob.getEntity()
+                    .setHealth(Tools.getHealth((int) pokemob.getEntity().getMaxHealth(), itemStack.getItemDamage()));
             pokemob.setStatus(PokecubeManager.getStatus(itemStack));
-            ((EntityLivingBase) pokemob).extinguish();
+            pokemob.getEntity().extinguish();
             return pokemob;
         }
 
@@ -168,7 +168,7 @@ public class EventsHandlerClient
     public static void renderMob(IPokemob pokemob, float tick, boolean rotates)
     {
         if (pokemob == null) return;
-        EntityLiving entity = (EntityLiving) pokemob;
+        EntityLiving entity = pokemob.getEntity();
         float size = 0;
         float mobScale = pokemob.getSize();
         size = Math.max(pokemob.getPokedexEntry().width * mobScale,
@@ -214,7 +214,7 @@ public class EventsHandlerClient
         IPokemob pokemob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
         if (pokemob != null && PokecubeMod.core.getConfig().autoSelectMoves)
         {
-            Entity target = ((EntityLiving) pokemob).getAttackTarget();
+            Entity target = pokemob.getEntity().getAttackTarget();
             if (target != null && !pokemob.getPokemonAIState(IMoveConstants.MATING))
             {
                 setMostDamagingMove(pokemob, target);
@@ -223,8 +223,8 @@ public class EventsHandlerClient
         if (PokecubeMod.core.getConfig().autoRecallPokemobs)
         {
             IPokemob mob = GuiDisplayPokecubeInfo.instance().getCurrentPokemob();
-            if (mob != null && !(((Entity) mob).isDead) && ((Entity) mob).addedToChunk
-                    && event.player.getDistanceToEntity((Entity) mob) > PokecubeMod.core.getConfig().autoRecallDistance)
+            if (mob != null && !(mob.getEntity().isDead) && mob.getEntity().addedToChunk && event.player
+                    .getDistanceToEntity(mob.getEntity()) > PokecubeMod.core.getConfig().autoRecallDistance)
             {
                 mob.returnToPokecube();
             }
@@ -272,10 +272,10 @@ public class EventsHandlerClient
     @SubscribeEvent
     public void FogRenderTick(EntityViewRenderEvent.FogDensity evt)
     {
+        IPokemob mount;
         if (evt.getEntity() instanceof EntityPlayer && evt.getEntity().getRidingEntity() != null
-                && evt.getEntity().getRidingEntity() instanceof IPokemob)
+                && (mount = CapabilityPokemob.getPokemobFor(evt.getEntity().getRidingEntity())) != null)
         {
-            IPokemob mount = (IPokemob) evt.getEntity().getRidingEntity();
             if (evt.getEntity().isInWater() && mount.canUseDive())
             {
                 evt.setDensity(0.05f);
@@ -415,7 +415,7 @@ public class EventsHandlerClient
                         j = slot.yPos + 10;
                         GL11.glPushMatrix();
                         GL11.glTranslatef(i + x, j + y, 0F);
-                        EntityLiving entity = (EntityLiving) pokemob;
+                        EntityLiving entity = pokemob.getEntity();
                         entity.rotationYaw = -40;
                         entity.rotationPitch = 0;
                         entity.rotationYawHead = 0;
@@ -472,7 +472,7 @@ public class EventsHandlerClient
                     int y = (h - ySize);
                     GL11.glPushMatrix();
                     GL11.glTranslatef(i + x + 20 * l, j + y, 0F);
-                    EntityLiving entity = (EntityLiving) pokemob;
+                    EntityLiving entity = pokemob.getEntity();
                     entity.rotationYaw = -40;
                     entity.rotationPitch = 0;
                     entity.rotationYawHead = 0;

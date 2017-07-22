@@ -15,37 +15,38 @@ import pokecube.core.interfaces.IMoveAnimation.MovePacketInfo;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
 public class EntityMoveUse extends Entity
 {
-    static final DataParameter<String>  MOVENAME      = EntityDataManager.<String> createKey(EntityMoveUse.class,
+    static final DataParameter<String>  MOVENAME  = EntityDataManager.<String> createKey(EntityMoveUse.class,
             DataSerializers.STRING);
-    static final DataParameter<Float>   ENDX          = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   ENDX      = EntityDataManager.<Float> createKey(EntityMoveUse.class,
             DataSerializers.FLOAT);
-    static final DataParameter<Float>   ENDY          = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   ENDY      = EntityDataManager.<Float> createKey(EntityMoveUse.class,
             DataSerializers.FLOAT);
-    static final DataParameter<Float>   ENDZ          = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   ENDZ      = EntityDataManager.<Float> createKey(EntityMoveUse.class,
             DataSerializers.FLOAT);
-    static final DataParameter<Float>   STARTX        = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   STARTX    = EntityDataManager.<Float> createKey(EntityMoveUse.class,
             DataSerializers.FLOAT);
-    static final DataParameter<Float>   STARTY        = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   STARTY    = EntityDataManager.<Float> createKey(EntityMoveUse.class,
             DataSerializers.FLOAT);
-    static final DataParameter<Float>   STARTZ        = EntityDataManager.<Float> createKey(EntityMoveUse.class,
+    static final DataParameter<Float>   STARTZ    = EntityDataManager.<Float> createKey(EntityMoveUse.class,
             DataSerializers.FLOAT);
-    static final DataParameter<Integer> USER          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> USER      = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
-    static final DataParameter<Integer> TARGET        = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> TARGET    = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
-    static final DataParameter<Integer> TICK          = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> TICK      = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
-    static final DataParameter<Integer> APPLYTICK     = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
+    static final DataParameter<Integer> APPLYTICK = EntityDataManager.<Integer> createKey(EntityMoveUse.class,
             DataSerializers.VARINT);
 
-    Vector3                             end           = Vector3.getNewVector();
-    Vector3                             start         = Vector3.getNewVector();
-    boolean                             applied       = false;
+    Vector3                             end       = Vector3.getNewVector();
+    Vector3                             start     = Vector3.getNewVector();
+    boolean                             applied   = false;
 
     public EntityMoveUse(World worldIn)
     {
@@ -62,10 +63,11 @@ public class EntityMoveUse extends Entity
             name = move.name;
         }
         this.getDataManager().set(MOVENAME, name);
-        if (move.getAnimation((IPokemob) getUser()) != null)
+        IPokemob user = CapabilityPokemob.getPokemobFor(getUser());
+        if (move.getAnimation(user) != null)
         {
-            getDataManager().set(TICK, move.getAnimation((IPokemob) getUser()).getDuration() + 1);
-            setApplicationTick(getAge() - move.getAnimation((IPokemob) getUser()).getApplicationTick());
+            getDataManager().set(TICK, move.getAnimation(user).getDuration() + 1);
+            setApplicationTick(getAge() - move.getAnimation(user).getApplicationTick());
         }
         else getDataManager().set(TICK, 1);
         return this;
@@ -119,7 +121,7 @@ public class EntityMoveUse extends Entity
 
     public Entity getUser()
     {
-        return PokecubeMod.core.getEntityProvider().getEntity(world, getDataManager().get(USER), true);
+        return PokecubeMod.core.getEntityProvider().getEntity(getEntityWorld(), getDataManager().get(USER), true);
     }
 
     public EntityMoveUse setTarget(Entity target)
@@ -131,7 +133,7 @@ public class EntityMoveUse extends Entity
 
     public Entity getTarget()
     {
-        return world.getEntityByID(getDataManager().get(TARGET));
+        return getEntityWorld().getEntityByID(getDataManager().get(TARGET));
     }
 
     public int getAge()
@@ -170,13 +172,14 @@ public class EntityMoveUse extends Entity
             this.setDead();
             return;
         }
+        IPokemob userMob = CapabilityPokemob.getPokemobFor(user);
         if (user instanceof EntityLivingBase && ((EntityLivingBase) user).getHealth() <= 1)
         {
             this.setDead();
             return;
         }
-        if (world.isRemote && attack.getAnimation((IPokemob) user) != null)
-            attack.getAnimation((IPokemob) user).spawnClientEntities(getMoveInfo());
+        if (getEntityWorld().isRemote && attack.getAnimation(userMob) != null)
+            attack.getAnimation(userMob).spawnClientEntities(getMoveInfo());
 
         if (!applied && age <= getApplicationTick())
         {
@@ -194,7 +197,8 @@ public class EntityMoveUse extends Entity
     public MovePacketInfo getMoveInfo()
     {
         MovePacketInfo info = new MovePacketInfo(getMove(), getUser(), getTarget(), getStart(), getEnd());
-        info.currentTick = info.move.getAnimation((IPokemob) info.attacker).getDuration() - (getAge() - 1);
+        IPokemob userMob = CapabilityPokemob.getPokemobFor(info.attacker);
+        info.currentTick = info.move.getAnimation(userMob).getDuration() - (getAge() - 1);
         return info;
     }
 
@@ -203,15 +207,16 @@ public class EntityMoveUse extends Entity
         Move_Base attack = getMove();
         Entity user;
         if ((user = getUser()) == null || this.isDead || user.isDead) return;
-        if (!world.isRemote)
+        if (!getEntityWorld().isRemote)
         {
+            IPokemob userMob = CapabilityPokemob.getPokemobFor(user);
             if (attack.move.isNotIntercepable())
             {
-                MovesUtils.doAttack(attack.name, (IPokemob) user, getTarget());
+                MovesUtils.doAttack(attack.name, userMob, getTarget());
             }
             else
             {
-                MovesUtils.doAttack(attack.name, (IPokemob) user, getEnd());
+                MovesUtils.doAttack(attack.name, userMob, getEnd());
             }
         }
     }

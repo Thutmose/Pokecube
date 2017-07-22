@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** This event is called before the pokemob receives orders to execute an
  * attack. Cancelling this event will prevent the pokemob from actually
@@ -40,6 +41,6 @@ public class CommandAttackEvent extends EntityEvent
 
     public IPokemob getPokemob()
     {
-        return (IPokemob) this.getEntity();
+        return CapabilityPokemob.getPokemobFor(getEntity());
     }
 }

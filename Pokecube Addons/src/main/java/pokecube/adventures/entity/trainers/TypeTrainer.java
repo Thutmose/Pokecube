@@ -37,6 +37,7 @@ import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
@@ -199,35 +200,35 @@ public class TypeTrainer
         int num = entry.getPokedexNb();
         if (Pokedex.getInstance().getEntry(num) == null) return CompatWrapper.nullStack;
 
-        IPokemob entity = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
-        if (entity != null)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
+        if (pokemob != null)
         {
             for (int i = 1; i < level; i++)
             {
-                if (entity.getPokedexEntry().canEvolve(i))
+                if (pokemob.getPokedexEntry().canEvolve(i))
                 {
-                    for (EvolutionData d : entity.getPokedexEntry().getEvolutions())
+                    for (EvolutionData d : pokemob.getPokedexEntry().getEvolutions())
                     {
-                        if (d.shouldEvolve(entity))
+                        if (d.shouldEvolve(pokemob))
                         {
                             Entity temp = d.getEvolution(world);
                             if (temp != null)
                             {
-                                entity = (IPokemob) temp;
+                                pokemob = (IPokemob) temp;
                                 break;
                             }
                         }
                     }
                 }
             }
-            ((EntityLivingBase) entity).setHealth(((EntityLivingBase) entity).getMaxHealth());
-            entity = entity.setPokedexEntry(entry);
-            entity.setPokemonOwner(trainer);
-            entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
-            int exp = Tools.levelToXp(entity.getExperienceMode(), level);
-            entity = entity.setForSpawn(exp);
-            ItemStack item = PokecubeManager.pokemobToItem(entity);
-            ((Entity) entity).isDead = true;
+            pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
+            pokemob = pokemob.setPokedexEntry(entry);
+            pokemob.setPokemonOwner(trainer);
+            pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+            int exp = Tools.levelToXp(pokemob.getExperienceMode(), level);
+            pokemob = pokemob.setForSpawn(exp);
+            ItemStack item = PokecubeManager.pokemobToItem(pokemob);
+            ((Entity) pokemob).isDead = true;
             return item;
         }
 

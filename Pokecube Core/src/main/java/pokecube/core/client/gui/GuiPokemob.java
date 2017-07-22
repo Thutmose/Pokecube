@@ -34,6 +34,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import thut.api.entity.IHungrymob;
 
@@ -59,8 +60,8 @@ public class GuiPokemob extends GuiContainer
                 IPokemob renderMob = EventsHandlerClient.renderMobs.get(entry);
                 if (renderMob == null && entry != null)
                 {
-                    EventsHandlerClient.renderMobs.put(entry,
-                            renderMob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.world));
+                    Entity mob = PokecubeMod.core.createPokemob(entry, mc.world);
+                    EventsHandlerClient.renderMobs.put(entry, renderMob = CapabilityPokemob.getPokemobFor(mob));
                 }
                 if (renderMob == null)
                 {

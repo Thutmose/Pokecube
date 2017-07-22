@@ -97,7 +97,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         setEvolutionTicks(-1);
         this.setPokemonAIState(EVOLVING, false);
         this.displayMessageToOwner(new TextComponentTranslation("pokemob.evolution.cancel",
-                CapabilityPokemob.getPokemobs(entity).getPokemonDisplayName()));
+                CapabilityPokemob.getPokemobFor(entity).getPokemonDisplayName()));
     }
 
     /** Called when give item. to override when the pokemob evolve with a stone.
@@ -113,7 +113,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
         {
             for (EvolutionData d : getPokedexEntry().getEvolutions())
             {
-                if (d.shouldEvolve(CapabilityPokemob.getPokemobs(getEntity()), stack)) { return true; }
+                if (d.shouldEvolve(CapabilityPokemob.getPokemobFor(getEntity()), stack)) { return true; }
             }
         }
         return false;
@@ -132,7 +132,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
     default IPokemob levelUp(int level)
     {
         EntityLivingBase theEntity = getEntity();
-        IPokemob theMob = CapabilityPokemob.getPokemobs(theEntity);
+        IPokemob theMob = CapabilityPokemob.getPokemobFor(theEntity);
         List<String> moves = Database.getLevelUpMoves(theMob.getPokedexEntry(), level, theMob.getMoveStats().oldLevel);
         Collections.shuffle(moves);
         if (!theEntity.getEntityWorld().isRemote)
@@ -179,7 +179,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
     default IPokemob megaEvolve(PokedexEntry newEntry)
     {
         EntityLivingBase thisEntity = getEntity();
-        IPokemob thisMob = CapabilityPokemob.getPokemobs(thisEntity);
+        IPokemob thisMob = CapabilityPokemob.getPokemobFor(thisEntity);
         Entity evolution = thisEntity;
         IPokemob evoMob = thisMob;
         if (newEntry != null && newEntry != getPokedexEntry())
@@ -193,7 +193,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     System.err.println("No Entry for " + newEntry);
                     return thisMob;
                 }
-                evoMob = CapabilityPokemob.getPokemobs(evolution);
+                evoMob = CapabilityPokemob.getPokemobFor(evolution);
                 ((EntityLivingBase) evolution).setHealth(thisEntity.getHealth());
                 if (this.getPokemonNickname().equals(this.getPokedexEntry().getName())) this.setPokemonNickname("");
                 NBTTagCompound tag = thisMob.writePokemobData();
@@ -242,7 +242,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
     default IPokemob evolve(boolean delayed, boolean init, ItemStack stack)
     {
         EntityLivingBase thisEntity = getEntity();
-        IPokemob thisMob = CapabilityPokemob.getPokemobs(thisEntity);
+        IPokemob thisMob = CapabilityPokemob.getPokemobFor(thisEntity);
         // If Init, then don't bother about getting ready for animations and
         // such, just evolve directly.
         if (init)

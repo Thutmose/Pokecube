@@ -25,6 +25,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
 import pokecube.modelloader.client.render.TextureHelper;
@@ -198,8 +199,8 @@ public class GuiAnimate extends GuiScreen
             IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
             if (pokemob == null)
             {
-                EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.world));
+                Entity mob = PokecubeMod.core.createPokemob(entry, mc.world);
+                EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob.getPokemobFor(mob));
                 if (pokemob == null)
                 {
                     System.out.println("Error with " + entry);
@@ -256,8 +257,8 @@ public class GuiAnimate extends GuiScreen
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
         if (pokemob == null)
         {
-            EventsHandlerClient.renderMobs.put(entry,
-                    pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.world));
+            Entity mob = PokecubeMod.core.createPokemob(entry, mc.world);
+            EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob.getPokemobFor(mob));
         }
         if (pokemob != null)
         {
@@ -472,7 +473,8 @@ public class GuiAnimate extends GuiScreen
             if (pokemob == null)
             {
                 EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.world));
+                        pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.world)));
+                if (pokemob == null) return;
                 pokemob.specificSpawnInit();
             }
             forme.setText(pokemob.getPokedexEntry().getName());

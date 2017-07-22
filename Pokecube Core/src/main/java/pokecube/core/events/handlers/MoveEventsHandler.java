@@ -12,7 +12,6 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,7 +44,6 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -57,7 +55,7 @@ public class MoveEventsHandler
 
     public static boolean attemptSmelt(IPokemob attacker, Vector3 location)
     {
-        World world = ((Entity) attacker).getEntityWorld();
+        World world = attacker.getEntity().getEntityWorld();
         List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().grow(1));
         if (!items.isEmpty())
         {
@@ -98,7 +96,7 @@ public class MoveEventsHandler
                     int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                     hunger = (int) Math.max(1, hunger / (float) attacker.getLevel());
                     if (f > 0) hunger *= f;
-                    ((IHungrymob) attacker).setHungerTime(((IHungrymob) attacker).getHungerTime() + hunger);
+                    attacker.setHungerTime(attacker.getHungerTime() + hunger);
                     item.setItem(newstack);
                     item.lifespan += 6000;
                     smelt = true;
@@ -112,12 +110,13 @@ public class MoveEventsHandler
     public static boolean doDefaultFire(IPokemob attacker, Move_Base move, Vector3 location)
     {
         if (move.getPWR() <= 0) return false;
-        World world = ((Entity) attacker).getEntityWorld();
-        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+        World world = attacker.getEntity().getEntityWorld();
+        Vector3 nextBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).reverse().norm()
                 .addTo(location);
         IBlockState nextState = nextBlock.getBlockState(world);
         IBlockState state = location.getBlockState(world);
-        Vector3 prevBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).norm().addTo(location);
+        Vector3 prevBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).norm()
+                .addTo(location);
         IBlockState prevState = prevBlock.getBlockState(world);
         int flamNext = nextState.getBlock().getFlammability(world, nextBlock.getPos(), EnumFacing.UP);// TODO
         if (state.getMaterial().isReplaceable() && flamNext != 0)
@@ -148,10 +147,10 @@ public class MoveEventsHandler
     {
         if (move.getPWR() < ELECTRICSTRONG) { return false; }
 
-        World world = ((Entity) attacker).getEntityWorld();
+        World world = attacker.getEntity().getEntityWorld();
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();
-        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+        Vector3 nextBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).reverse().norm()
                 .addTo(location);
         IBlockState nextState = nextBlock.getBlockState(world);
         if (block == Blocks.SAND)
@@ -169,7 +168,7 @@ public class MoveEventsHandler
 
     public static boolean doDefaultIce(IPokemob attacker, Move_Base move, Vector3 location)
     {
-        World world = ((Entity) attacker).getEntityWorld();
+        World world = attacker.getEntity().getEntityWorld();
         BlockPos pos = location.getPos();
         IBlockState state = location.getBlockState(world);
         Block block = state.getBlock();
@@ -208,9 +207,10 @@ public class MoveEventsHandler
 
     public static boolean doDefaultWater(IPokemob attacker, Move_Base move, Vector3 location)
     {
-        World world = ((Entity) attacker).getEntityWorld();
+        World world = attacker.getEntity().getEntityWorld();
         IBlockState state = location.getBlockState(world);
-        Vector3 prevBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).norm().addTo(location);
+        Vector3 prevBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).norm()
+                .addTo(location);
         IBlockState prevState = prevBlock.getBlockState(world);
         if (state.getBlock() == Blocks.FIRE)
         {
@@ -222,7 +222,7 @@ public class MoveEventsHandler
         }
         if (move.getPWR() < WATERSTRONG) { return false; }
         Block block = state.getBlock();
-        Vector3 nextBlock = Vector3.getNewVector().set(attacker).subtractFrom(location).reverse().norm()
+        Vector3 nextBlock = Vector3.getNewVector().set(attacker.getEntity()).subtractFrom(location).reverse().norm()
                 .addTo(location);
         IBlockState nextState = nextBlock.getBlockState(world);
         if (move.getPWR() >= WATERSTRONG)
@@ -390,7 +390,7 @@ public class MoveEventsHandler
         if (applied == null) return;
         if (!user)
         {
-            ((Entity) applied).getEntityData().setString("lastMoveHitBy", move.attack);
+            applied.getEntity().getEntityData().setString("lastMoveHitBy", move.attack);
             applied.setPokemonAIState(IMoveConstants.NOITEMUSE, false);
         }
         if (MoveEntry.oneHitKos.contains(attack.name) && target != null && target.getLevel() < attacker.getLevel())
@@ -421,12 +421,12 @@ public class MoveEventsHandler
 
         if (user && attack.getName().equals(IMoveNames.MOVE_SUBSTITUTE))
         {
-            applied.getMoveStats().substituteHP = ((EntityLivingBase) applied).getMaxHealth() / 4;
+            applied.getMoveStats().substituteHP = applied.getEntity().getMaxHealth() / 4;
         }
 
-        if (((EntityLivingBase) applied).getHeldItemMainhand() != null)
+        if (applied.getEntity().getHeldItemMainhand() != null)
         {
-            HeldItemHandler.processHeldItemUse(move, applied, ((EntityLivingBase) applied).getHeldItemMainhand());
+            HeldItemHandler.processHeldItemUse(move, applied, applied.getEntity().getHeldItemMainhand());
         }
 
         if (applied.getAbility() != null)

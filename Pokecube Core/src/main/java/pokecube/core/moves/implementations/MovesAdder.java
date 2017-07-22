@@ -16,8 +16,11 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.moves.animations.MoveAnimationHelper;
+import pokecube.core.moves.templates.Move_AOE;
 import pokecube.core.moves.templates.Move_Basic;
+import pokecube.core.moves.templates.Move_Doublehit;
 import pokecube.core.moves.templates.Move_Explode;
+import pokecube.core.moves.templates.Move_MultiHit;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.moves.templates.Move_Terrain;
 import thut.lib.CompatParser.ClassFinder;
@@ -31,6 +34,9 @@ public class MovesAdder implements IMoveConstants
         presetMap.put("ongoing", Move_Ongoing.class);
         presetMap.put("explode", Move_Explode.class);
         presetMap.put("terrain", Move_Terrain.class);
+        presetMap.put("aoe", Move_AOE.class);
+        presetMap.put("multihit", Move_MultiHit.class);
+        presetMap.put("doublehit", Move_Doublehit.class);
     }
 
     public static void postInitMoves()

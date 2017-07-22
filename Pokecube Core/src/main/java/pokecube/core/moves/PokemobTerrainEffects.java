@@ -19,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.TerrainDamageSource.TerrainType;
 import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.PokeType;
@@ -72,16 +73,17 @@ public class PokemobTerrainEffects implements ITerrainEffect
 
     public void doEffect(EntityLivingBase entity)
     {
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entity;
             if (effects[EFFECT_WEATHER_HAIL] > 0 && !mob.isType(PokeType.getType("ice")))
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
                 entity.attackEntityFrom(HAILDAMAGE, damage);
             }
-            if (effects[EFFECT_WEATHER_SAND] > 0 && !(mob.isType(PokeType.getType("rock")) || mob.isType(PokeType.getType("steel")) || mob.isType(PokeType.getType("ground"))))
+            if (effects[EFFECT_WEATHER_SAND] > 0 && !(mob.isType(PokeType.getType("rock"))
+                    || mob.isType(PokeType.getType("steel")) || mob.isType(PokeType.getType("ground"))))
             {
                 float thisMaxHP = entity.getMaxHealth();
                 int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
@@ -143,14 +145,16 @@ public class PokemobTerrainEffects implements ITerrainEffect
 
     public void doEntryEffect(EntityLivingBase entity)
     {
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entity;
-            if (effects[EFFECT_POISON] > 0 && !mob.isType(PokeType.getType("poison")) && !mob.isType(PokeType.getType("steel")))
+            if (effects[EFFECT_POISON] > 0 && !mob.isType(PokeType.getType("poison"))
+                    && !mob.isType(PokeType.getType("steel")))
             {
                 mob.setStatus(IMoveConstants.STATUS_PSN);
             }
-            if (effects[EFFECT_POISON2] > 0 && !mob.isType(PokeType.getType("poison")) && !mob.isType(PokeType.getType("steel")))
+            if (effects[EFFECT_POISON2] > 0 && !mob.isType(PokeType.getType("poison"))
+                    && !mob.isType(PokeType.getType("steel")))
             {
                 mob.setStatus(IMoveConstants.STATUS_PSN2);
             }

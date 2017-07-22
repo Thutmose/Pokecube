@@ -29,7 +29,7 @@ public class StatsHandler
         if (evt.caught.getPokemonAIState(IMoveConstants.TAMED)) evt.setResult(Result.DENY);
         if (evt.caught.getPokemonAIState(IMoveConstants.DENYCAPTURE)) evt.setResult(Result.DENY);
 
-        long lastAttempt = ((Entity) evt.caught).getEntityData().getLong("lastCubeTime");
+        long lastAttempt = evt.caught.getEntity().getEntityData().getLong("lastCubeTime");
         if (lastAttempt > evt.pokecube.getEntityWorld().getTotalWorldTime())
         {
             Entity catcher = ((EntityPokecube) evt.pokecube).shootingEntity;

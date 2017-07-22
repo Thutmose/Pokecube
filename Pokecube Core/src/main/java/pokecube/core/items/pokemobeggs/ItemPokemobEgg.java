@@ -47,6 +47,7 @@ import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
@@ -97,7 +98,7 @@ public class ItemPokemobEgg extends Item
         IPokemob pokemob = fakeMobs.get(entry);
         if (pokemob == null)
         {
-            pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
+            pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
             if (pokemob == null) return null;
             fakeMobs.put(entry, pokemob);
         }
@@ -150,7 +151,7 @@ public class ItemPokemobEgg extends Item
     {
         PokedexEntry entry = getEntry(stack);
         if (entry == null) return null;
-        IPokemob ret = (IPokemob) PokecubeMod.core.createPokemob(entry, world);
+        IPokemob ret = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
         return ret;
     }
 
@@ -256,7 +257,7 @@ public class ItemPokemobEgg extends Item
 
         if (entity != null)
         {
-            IPokemob mob = ((IPokemob) entity);
+            IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
             mob.setPokemonAIState(IMoveConstants.EXITINGCUBE, true);
             entity.setHealth(entity.getMaxHealth());
             int exp = Tools.levelToXp(mob.getExperienceMode(), 1);

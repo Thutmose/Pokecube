@@ -71,10 +71,16 @@ public class RecallCommand extends CommandBase
             }
 
         }
-        ArrayList<?> list = new ArrayList<Object>(world.loadedEntityList);
+        ArrayList<Entity> list = new ArrayList<Entity>(world.loadedEntityList);
         int num = 0;
-        for (Object o : list)
+        for (Entity o : list)
         {
+            // Check to see if the mob has recenlty unloaded, or isn't added to
+            // chunk for some reason. This is to hopefully prevent dupes when
+            // the player has died far from the loaded area.
+            if (world.unloadedEntityList.contains(o)) continue;
+            if (!o.addedToChunk) continue;
+
             if (!cubes && o instanceof IPokemob)
             {
                 IPokemob mob = (IPokemob) o;

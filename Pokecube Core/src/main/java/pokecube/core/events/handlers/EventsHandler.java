@@ -252,9 +252,15 @@ public class EventsHandler
 
     public static void recallAllPokemobsExcluding(EntityPlayer player, IPokemob excluded)
     {
-        List<?> pokemobs = new ArrayList<Object>(player.getEntityWorld().loadedEntityList);
-        for (Object o : pokemobs)
+        List<Entity> pokemobs = new ArrayList<Entity>(player.getEntityWorld().loadedEntityList);
+        for (Entity o : pokemobs)
         {
+            // Check to see if the mob has recenlty unloaded, or isn't added to
+            // chunk for some reason. This is to hopefully prevent dupes when
+            // the player has died far from the loaded area.
+            if (player.getEntityWorld().unloadedEntityList.contains(o)) continue;
+            if (!o.addedToChunk) continue;
+
             if (o instanceof IPokemob)
             {
                 IPokemob mob = (IPokemob) o;
@@ -645,9 +651,15 @@ public class EventsHandler
         Entity entity = evt.getEntity();
         if (entity.getEntityWorld().isRemote) return;
 
-        ArrayList<?> list = new ArrayList<Object>(entity.getEntityWorld().loadedEntityList);
-        for (Object o : list)
+        ArrayList<Entity> list = new ArrayList<Entity>(entity.getEntityWorld().loadedEntityList);
+        for (Entity o : list)
         {
+            // Check to see if the mob has recenlty unloaded, or isn't added to
+            // chunk for some reason. This is to hopefully prevent dupes when
+            // the player has died far from the loaded area.
+            if (entity.getEntityWorld().unloadedEntityList.contains(o)) continue;
+            if (!o.addedToChunk) continue;
+
             if (o instanceof IPokemob)
             {
                 IPokemob mob = (IPokemob) o;

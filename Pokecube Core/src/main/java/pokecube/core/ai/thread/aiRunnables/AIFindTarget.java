@@ -19,8 +19,8 @@ import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.TickHandler;
-import thut.api.entity.IHungrymob;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAICombat;
 import thut.api.maths.Vector3;
@@ -47,7 +47,6 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                            };
 
     final IPokemob                        pokemob;
-    final IHungrymob                      hungryMob;
     final EntityLiving                    entity;
     Vector3                               v                = Vector3.getNewVector();
     Vector3                               v1               = Vector3.getNewVector();
@@ -57,7 +56,9 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                                @Override
                                                                public boolean apply(Entity input)
                                                                {
-                                                                   if (input instanceof IPokemob && input != pokemob)
+                                                                   IPokemob testMob = CapabilityPokemob
+                                                                           .getPokemobFor(input);
+                                                                   if (testMob != null && input != pokemob)
                                                                    {
                                                                        if (!TeamManager.sameTeam(entity,
                                                                                input)) { return true; }
@@ -75,9 +76,8 @@ public class AIFindTarget extends AIBase implements IAICombat
 
     public AIFindTarget(EntityLivingBase mob)
     {
-        this.pokemob = (IPokemob) mob;
+        this.pokemob = CapabilityPokemob.getPokemobFor(mob);
         this.entity = (EntityLiving) mob;
-        this.hungryMob = (IHungrymob) pokemob;
     }
 
     /** Returns the closest vulnerable player within the given radius, or null
@@ -174,7 +174,7 @@ public class AIFindTarget extends AIBase implements IAICombat
 
         // If hunting, look for valid prey, and if found, agress it.
         if (entity.getAttackTarget() == null && !pokemob.getPokemonAIState(IMoveConstants.SITTING)
-                && hungryMob.isCarnivore() && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+                && pokemob.isCarnivore() && pokemob.getPokemonAIState(IMoveConstants.HUNTING))
         {
             List<Object> list = getEntitiesWithinDistance(entity, 16, EntityLivingBase.class);
             if (!list.isEmpty())
@@ -215,7 +215,7 @@ public class AIFindTarget extends AIBase implements IAICombat
             }
             EntityLivingBase newtarget = null;
             double closest = Integer.MAX_VALUE;
-            Vector3 here = v1.set((Entity) pokemob, true);
+            Vector3 here = v1.set(entity, true);
             for (EntityLivingBase e : ret)
             {
                 double dist = e.getDistanceSqToEntity(entity);

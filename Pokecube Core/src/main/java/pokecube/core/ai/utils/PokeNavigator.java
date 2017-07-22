@@ -18,8 +18,8 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
-import thut.api.pathing.IPathingMob;
 import thut.api.pathing.Paths;
 
 /** This is overridden from the vanilla one to allow using a custom,
@@ -58,9 +58,9 @@ public class PokeNavigator extends PathNavigate
         this.theEntity = entity;
         this.worldObj = world;
         this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-        pokemob = (IPokemob) entity;
+        pokemob = CapabilityPokemob.getPokemobFor(entity);
         canSwim = true;
-        canDive = ((IPathingMob) entity).swims();
+        canDive = pokemob.swims();
         pathfinder = new Paths(world);
     }
 
@@ -150,9 +150,10 @@ public class PokeNavigator extends PathNavigate
     public Path getPathToEntityLiving(Entity entity)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
-        if (pokemob.getTransformedTo() instanceof IPokemob)
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null)
         {
-            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+            entry = transformed.getPokedexEntry();
         }
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();
@@ -170,9 +171,10 @@ public class PokeNavigator extends PathNavigate
     public Path getPathToPos(BlockPos pos)
     {
         PokedexEntry entry = pokemob.getPokedexEntry();
-        if (pokemob.getTransformedTo() instanceof IPokemob)
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null)
         {
-            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+            entry = transformed.getPokedexEntry();
         }
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();

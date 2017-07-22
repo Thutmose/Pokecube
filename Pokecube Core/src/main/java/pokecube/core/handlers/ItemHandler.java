@@ -21,6 +21,8 @@ import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBerries;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubeBlocks;
 import static pokecube.core.interfaces.PokecubeMod.creativeTabPokecubes;
 
+import java.util.Locale;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -34,6 +36,7 @@ import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
 import pokecube.core.Mod_Pokecube_Helper;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.BlockBerryCrop;
 import pokecube.core.blocks.berries.BlockBerryFruit;
@@ -121,6 +124,11 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addFossilItems(Object registry)
     {
+        for (String s : PokecubeCore.core.getConfig().customFossils)
+        {
+            if (!HeldItemHandler.fossilVariants.contains(s.toLowerCase(Locale.ENGLISH)))
+                HeldItemHandler.fossilVariants.add(s.toLowerCase(Locale.ENGLISH));
+        }
         PokecubeItems.register(PokecubeItems.fossil, registry);
     }
 
@@ -250,6 +258,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
             PokecubeItems.addSpecificItemStack(s, stack);
         }
 
+        for (String s : PokecubeCore.core.getConfig().customMegaStones)
+        {
+            if (!HeldItemHandler.megaVariants.contains(s.toLowerCase(Locale.ENGLISH)))
+                HeldItemHandler.megaVariants.add(s.toLowerCase(Locale.ENGLISH));
+        }
+
         megastone.setCreativeTab(creativeTabPokecube);
         register(megastone.setRegistryName(PokecubeMod.ID, "megastone"), registry);
         for (int n = 0; n < HeldItemHandler.megaVariants.size(); n++)
@@ -332,6 +346,12 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addStones(Object registry)
     {
+        for (String s : PokecubeCore.core.getConfig().customHeldItems)
+        {
+            if (!ItemHeldItems.variants.contains(s.toLowerCase(Locale.ENGLISH)))
+                ItemHeldItems.variants.add(s.toLowerCase(Locale.ENGLISH));
+        }
+
         PokecubeItems.held = new ItemHeldItems().setRegistryName(PokecubeMod.ID, "held");
         PokecubeItems.register(PokecubeItems.held, registry);
         for (String s : ItemHeldItems.variants)

@@ -114,9 +114,6 @@ public class ItemModelReloader extends Item
                             if (!pEntry.evolutions.isEmpty())
                             {
                                 if (entry.stats == null) entry.stats = new StatsNode();
-                                entry.stats.evolAnims = null;
-                                entry.stats.evoModes = null;
-                                entry.stats.evoTo = null;
                                 if (entry.stats.evolutions == null || entry.stats.evolutions.isEmpty())
                                 {
                                     entry.stats.evolutions = Lists.newArrayList();

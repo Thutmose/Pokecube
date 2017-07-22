@@ -54,6 +54,7 @@ public class Config extends ConfigBase
     public static final String           advanced                     = "advanced";
     public static final String           healthbars                   = "healthbars";
     public static final String           genetics                     = "genetics";
+    public static final String           items                        = "items";
 
     public static int                    GUICHOOSEFIRSTPOKEMOB_ID;
     public static int                    GUIDISPLAYPOKECUBEINFO_ID;
@@ -454,6 +455,13 @@ public class Config extends ConfigBase
     public boolean                       showOnlyFocused              = false;
     @Configure(category = healthbars)
     public boolean                       enableDebugInfo              = true;
+
+    @Configure(category = items, needsMcRestart = true)
+    public String[]                      customHeldItems              = {};
+    @Configure(category = items, needsMcRestart = true)
+    public String[]                      customMegaStones             = {};
+    @Configure(category = items, needsMcRestart = true)
+    public String[]                      customFossils                = {};
 
     /** List of blocks to be considered for the floor of a cave. */
     private List<Predicate<IBlockState>> caveBlocks                   = Lists.newArrayList();

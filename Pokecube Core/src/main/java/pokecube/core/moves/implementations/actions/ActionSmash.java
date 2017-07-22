@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +23,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -38,13 +36,12 @@ public class ActionSmash implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
-        IHungrymob mob = (IHungrymob) user;
         boolean used = false;
         int count = 10;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
         EntityLivingBase owner = user.getPokemonOwner();
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(),
+        boolean repel = SpawnHandler.checkNoSpawnerInArea(user.getEntity().getEntityWorld(), location.intX(),
                 location.intY(), location.intZ());
         if (owner != null && owner instanceof EntityPlayer)
         {
@@ -65,12 +62,11 @@ public class ActionSmash implements IMoveAction
         {
             smashRock(user, location, false);
             used = true;
-            mob.setHungerTime(mob.getHungerTime() + count);
+            user.setHungerTime(user.getHungerTime() + count);
         }
-        System.out.println("test ");
         if (!used)
         {
-            World world = ((Entity) user).getEntityWorld();
+            World world = user.getEntity().getEntityWorld();
             List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
             if (!items.isEmpty())
             {
@@ -100,7 +96,7 @@ public class ActionSmash implements IMoveAction
                         CompatWrapper.setStackSize(newstack, num);
                         int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                         hunger = (int) Math.max(1, hunger / (float) user.getLevel());
-                        ((IHungrymob) user).setHungerTime(((IHungrymob) user).getHungerTime() + hunger);
+                        user.setHungerTime(user.getHungerTime() + hunger);
                         item.setEntityItemStack(newstack);
                         smelt = true;
                     }
@@ -133,6 +129,7 @@ public class ActionSmash implements IMoveAction
         }
         int fortune = digger.getLevel() / 30;
         boolean silky = Move_Basic.shouldSilk(digger) && player != null;
+        World world = digger.getEntity().getEntityWorld();
         Vector3 temp = Vector3.getNewVector();
         temp.set(v);
         int range = 0;
@@ -141,23 +138,23 @@ public class ActionSmash implements IMoveAction
                 for (int k = -range; k <= range; k++)
                 {
                     temp.set(v);
-                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).getEntityWorld());
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(world);
                     if (PokecubeTerrainChecker.isRock(state))
                     {
                         if (!count)
                         {
-                            if (!silky) doFortuneDrop(temp, ((Entity) digger).getEntityWorld(), fortune);
+                            if (!silky) doFortuneDrop(temp, world, fortune);
                             else
                             {
                                 Block block = state.getBlock();
-                                if (block.canSilkHarvest(player.getEntityWorld(), temp.getPos(), state, player))
+                                if (block.canSilkHarvest(world, temp.getPos(), state, player))
                                 {
-                                    Move_Basic.silkHarvest(state, temp.getPos(), player.getEntityWorld(), player);
-                                    temp.breakBlock(((Entity) digger).getEntityWorld(), false);
+                                    Move_Basic.silkHarvest(state, temp.getPos(), world, player);
+                                    temp.breakBlock(world, false);
                                 }
                                 else
                                 {
-                                    doFortuneDrop(temp, ((Entity) digger).getEntityWorld(), fortune);
+                                    doFortuneDrop(temp, world, fortune);
                                 }
                             }
                         }

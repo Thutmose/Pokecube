@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -318,7 +319,7 @@ public class ModPokecubeML implements IMobProvider
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.WARNING, "Error with " + pack, e);
                 }
             }
             else

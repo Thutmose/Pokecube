@@ -233,7 +233,7 @@ public interface IHasMoves extends IHasStats
         if (!MovesUtils.isMoveImplemented(moveName)) { return; }
         String[] moves = getMoves();
         EntityLivingBase thisEntity = getEntity();
-        IPokemob thisMob = CapabilityPokemob.getPokemobs(thisEntity);
+        IPokemob thisMob = CapabilityPokemob.getPokemobFor(thisEntity);
         // check it's not already known or forgotten
         for (String move : moves)
         {

@@ -788,4 +788,95 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
         // TODO Auto-generated method stub
         
     }
+
+    @Override
+    public boolean eatsBerries()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean filterFeeder()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getHungerCooldown()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getHungerTime()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean isCarnivore()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isElectrotroph()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isHerbivore()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isLithotroph()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean isPhototroph()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean neverHungry()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void noEat(Entity e)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setHungerCooldown(int hungerCooldown)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setHungerTime(int hungerTime)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 }

@@ -3,13 +3,15 @@ package pokecube.adventures.client.render.blocks;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
 import pokecube.adventures.blocks.cloner.crafting.CraftMatrix;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
-import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.entity.IMobColourable;
 
 public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
@@ -34,7 +36,8 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
         IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
         if (pokemob == null)
         {
-            pokemob = (IPokemob) PokecubeCore.instance.createPokemob(entry, getWorld());
+            Entity mob = PokecubeMod.core.createPokemob(entry, getWorld());
+            EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob.getPokemobFor(mob));
             if (pokemob == null) return;
             EventsHandlerClient.renderMobs.put(entry, pokemob);
         }

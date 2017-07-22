@@ -36,7 +36,7 @@ public class SpawnEvent extends Event
         {
             super(entry, location, worldObj);
             this.pokemob = pokemob;
-            entity = (EntityLiving) pokemob;
+            entity = pokemob.getEntity();
         }
     }
 
@@ -165,7 +165,7 @@ public class SpawnEvent extends Event
         {
             super(entry, location, worldObj);
             this.pokemob = pokemob;
-            entity = (EntityLiving) pokemob;
+            entity = pokemob.getEntity();
         }
 
         /** Called before sending out, cancelling this will result in the cube

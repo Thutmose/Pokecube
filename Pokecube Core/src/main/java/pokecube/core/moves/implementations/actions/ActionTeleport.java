@@ -72,7 +72,7 @@ public class ActionTeleport implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         boolean angry = user.getPokemonAIState(IMoveConstants.ANGRY);
-        if (!angry && user.getPokemonOwner() instanceof EntityPlayer && ((EntityLivingBase) user).isServerWorld())
+        if (!angry && user.getPokemonOwner() instanceof EntityPlayer && user.getEntity().isServerWorld())
         {
             EntityPlayer target = (EntityPlayer) user.getPokemonOwner();
             EventsHandler.recallAllPokemobsExcluding(target, (IPokemob) null);
@@ -83,7 +83,7 @@ public class ActionTeleport implements IMoveAction
         {
             user.setPokemonAIState(IMoveConstants.ANGRY, false);
             if (user.getPokemonAIState(IMoveConstants.TAMED)) user.returnToPokecube();
-            else teleportRandomly((EntityLivingBase) user);
+            else teleportRandomly(user.getEntity());
         }
         return true;
     }

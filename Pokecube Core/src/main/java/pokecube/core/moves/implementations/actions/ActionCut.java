@@ -2,7 +2,6 @@ package pokecube.core.moves.implementations.actions;
 
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -15,7 +14,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.TreeRemover;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class ActionCut implements IMoveAction
@@ -28,13 +26,12 @@ public class ActionCut implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
-        IHungrymob mob = (IHungrymob) user;
         boolean used = false;
         int count = 10;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
         EntityLivingBase owner = user.getPokemonOwner();
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(),
+        boolean repel = SpawnHandler.checkNoSpawnerInArea(user.getEntity().getEntityWorld(), location.intX(),
                 location.intY(), location.intZ());
         if (owner != null && owner instanceof EntityPlayer)
         {
@@ -49,7 +46,7 @@ public class ActionCut implements IMoveAction
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return false;
         }
-        TreeRemover remover = new TreeRemover(((Entity) user).getEntityWorld(), location);
+        TreeRemover remover = new TreeRemover(user.getEntity().getEntityWorld(), location);
         int cut = remover.cut(true);
         if (cut == 0)
         {
@@ -57,7 +54,7 @@ public class ActionCut implements IMoveAction
             for (int i = 0; i < 6; i++)
             {
                 EnumFacing dir = EnumFacing.VALUES[(i + index) % 6];
-                remover = new TreeRemover(((Entity) user).getEntityWorld(), location.offset(dir));
+                remover = new TreeRemover(user.getEntity().getEntityWorld(), location.offset(dir));
                 cut = remover.cut(true);
                 if (cut != 0) break;
             }
@@ -67,7 +64,7 @@ public class ActionCut implements IMoveAction
         {
             remover.cut(false);
             used = true;
-            mob.setHungerTime(mob.getHungerTime() + count);
+            user.setHungerTime(user.getHungerTime() + count);
         }
         remover.clear();
         return used;

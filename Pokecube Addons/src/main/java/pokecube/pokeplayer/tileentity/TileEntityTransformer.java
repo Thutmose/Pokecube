@@ -15,6 +15,7 @@ import pokecube.core.database.Database;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
 import pokecube.pokeplayer.PokeInfo;
@@ -122,11 +123,12 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
                 num = numbers.get(worldObj.rand.nextInt(numbers.size()));
             }
             Entity entity = PokecubeMod.core.createPokemob(Database.getEntry(num), worldObj);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (entity != null)
             {
-                ((IPokemob) entity).specificSpawnInit();
+                pokemob.specificSpawnInit();
             }
-            return (IPokemob) entity;
+            return pokemob;
         }
         IPokemob pokemob = PokecubeManager.itemToPokemob(stack, worldObj);
         return pokemob;

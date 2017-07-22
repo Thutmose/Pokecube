@@ -85,68 +85,66 @@ public class Move_Explode extends Move_Basic
     @Override
     public void attack(IPokemob attacker, Entity attacked)
     {
-        if (((Entity) attacker).isDead) return;
-        if (attacker instanceof EntityLiving)
+        if (attacker.getEntity().isDead) return;
+        EntityLiving mob = (EntityLiving) attacker.getEntity();
+        IPokemob pokemob = attacker;
+        if (pokemob.getMoveStats().timeSinceIgnited-- <= 0)
         {
-            EntityLiving mob = (EntityLiving) attacker;
-            IPokemob pokemob = attacker;
-            if (pokemob.getMoveStats().timeSinceIgnited-- <= 0)
-            {
-                mob.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
-                pokemob.getMoveStats().timeSinceIgnited = 10;
-            }
-            if (attacker.getStatus() == STATUS_SLP)
-            {
-                MovesUtils.displayStatusMessages(attacker, attacked, STATUS_SLP, false);
-                return;
-            }
-            if (attacker.getStatus() == STATUS_FRZ)
-            {
-                MovesUtils.displayStatusMessages(attacker, attacked, STATUS_FRZ, false);
-                return;
-            }
-            if (attacker.getStatus() == STATUS_PAR && Math.random() > 0.75)
-            {
-                MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
-                return;
-            }
-            playSounds((Entity) attacker, attacked, null);
-            float f1 = (float) (getPWR(pokemob, attacked) * PokecubeMod.core.getConfig().blastStrength
-                    * pokemob.getStat(Stats.ATTACK, true) / 500000f);
+            mob.playSound(SoundEvents.ENTITY_CREEPER_PRIMED, 1.0F, 0.5F);
+            pokemob.getMoveStats().timeSinceIgnited = 10;
+        }
+        if (attacker.getStatus() == STATUS_SLP)
+        {
+            MovesUtils.displayStatusMessages(attacker, attacked, STATUS_SLP, false);
+            return;
+        }
+        if (attacker.getStatus() == STATUS_FRZ)
+        {
+            MovesUtils.displayStatusMessages(attacker, attacked, STATUS_FRZ, false);
+            return;
+        }
+        if (attacker.getStatus() == STATUS_PAR && Math.random() > 0.75)
+        {
+            MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
+            return;
+        }
+        playSounds(mob, attacked, null);
+        float f1 = (float) (getPWR(pokemob, attacked) * PokecubeMod.core.getConfig().blastStrength
+                * pokemob.getStat(Stats.ATTACK, true) / 500000f);
 
-            ExplosionCustom boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
-            boom.hitter = new Hitter(pokemob, this);
-            ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.getEntityWorld(), boom);
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (!evt.isCanceled())
+        ExplosionCustom boom = MovesUtils.newExplosion(mob, mob.posX, mob.posY, mob.posZ, f1, false, true);
+        boom.hitter = new Hitter(pokemob, this);
+        ExplosionEvent.Start evt = new ExplosionEvent.Start(mob.getEntityWorld(), boom);
+        MinecraftForge.EVENT_BUS.post(evt);
+        if (!evt.isCanceled())
+        {
+            mob.setHealth(0);// kill the mob.
+            if (PokecubeMod.core.getConfig().explosions)
             {
-                mob.setHealth(0);// kill the mob.
-                if (PokecubeMod.core.getConfig().explosions)
+                ((ExplosionCustom) boom).doExplosion();
+            }
+            else
+            {
+                mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
+                        SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
+                        (1.0F + (mob.worldObj.rand.nextFloat() - mob.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
+
+                if (getPWR() > 200)
                 {
-                    ((ExplosionCustom) boom).doExplosion();
+                    mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
+                            0.0D, 0.0D, new int[0]);
                 }
                 else
                 {
-                    mob.worldObj.playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
-                            SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
-                            (1.0F + (mob.worldObj.rand.nextFloat() - mob.worldObj.rand.nextFloat()) * 0.2F) * 0.7F);
-
-                    if (getPWR() > 200)
-                    {
-                        mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
-                                0.0D, 0.0D, new int[0]);
-                    }
-                    else
-                    {
-                        mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ,
-                                1.0D, 0.0D, 0.0D, new int[0]);
-                    }
-                    actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
-                            pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
+                    mob.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ, 1.0D,
+                            0.0D, 0.0D, new int[0]);
                 }
+                actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
+                        pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
             }
-            attacker.returnToPokecube();
         }
+        attacker.returnToPokecube();
+
     }
 
     @Override

@@ -16,6 +16,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** This class extends {@link EntityDamageSource} and only modifies the death
  * message.
@@ -35,8 +36,7 @@ public class PokemobDamageSource extends DamageSource
     {
         super(par1Str);
         damageSourceEntity = par2Entity;
-        if (par2Entity instanceof IPokemob) user = (IPokemob) par2Entity;
-        else user = null;
+        user = CapabilityPokemob.getPokemobFor(par2Entity);
         move = type;
     }
 
@@ -49,18 +49,16 @@ public class PokemobDamageSource extends DamageSource
             return new TextComponentTranslation("death.attack." + this.damageType,
                     new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName(),
                             localObject.getTextComponent() });
-        if (this.damageSourceEntity instanceof IPokemob
-                && ((IPokemob) this.damageSourceEntity).getPokemonOwner() != null)
+        IPokemob sourceMob = CapabilityPokemob.getPokemobFor(this.damageSourceEntity);
+        if (sourceMob != null && sourceMob.getPokemonOwner() != null)
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.killed.tame",
-                    par1EntityPlayer.getDisplayName(),
-                    ((IPokemob) this.damageSourceEntity).getPokemonOwner().getDisplayName(),
+                    par1EntityPlayer.getDisplayName(), sourceMob.getPokemonOwner().getDisplayName(),
                     this.damageSourceEntity.getDisplayName());
             return message;
         }
-        else if (this.damageSourceEntity instanceof IPokemob
-                && ((IPokemob) this.damageSourceEntity).getPokemonOwner() == null
-                && !((IPokemob) this.damageSourceEntity).getPokemonAIState(IMoveConstants.TAMED))
+        else if (sourceMob != null && sourceMob.getPokemonOwner() == null
+                && !sourceMob.getPokemonAIState(IMoveConstants.TAMED))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.killed.wild",
                     par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName());
@@ -73,6 +71,8 @@ public class PokemobDamageSource extends DamageSource
     @Override
     public Entity getEntity()
     {
+        IPokemob sourceMob = CapabilityPokemob.getPokemobFor(this.damageSourceEntity);
+        if (sourceMob != null && sourceMob.getOwner() != null) return sourceMob.getOwner();
         if (this.damageSourceEntity instanceof IEntityOwnable)
         {
             Entity owner = ((IEntityOwnable) this.damageSourceEntity).getOwner();

@@ -1,5 +1,6 @@
 package pokecube.core.interfaces.pokemob;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
@@ -7,9 +8,9 @@ import pokecube.core.interfaces.IPokemob;
 public interface IHasEntry extends IHasMobAIStates
 {
     // Returns the mob associated with this object.
-    default EntityLivingBase getEntity()
+    default EntityLiving getEntity()
     {
-        return (EntityLivingBase) this;
+        return (EntityLiving) this;
     }
 
     /** @return the {@link PokedexEntry} of the species of this Pokemob */

@@ -16,25 +16,6 @@ public class HeldItemHandler
     public static ArrayList<String> megaVariants   = new ArrayList<>();
     public static ArrayList<String> fossilVariants = new ArrayList<>();
 
-    static
-    {
-        megaVariants.add("megastone");
-        megaVariants.add("shiny_charm");
-        megaVariants.add("omegaorb");
-        megaVariants.add("alphaorb");
-        // TODO rest of the mega stoneS here.
-
-        fossilVariants.add("omanyte");
-        fossilVariants.add("kabuto");
-        fossilVariants.add("aerodactyl");
-        fossilVariants.add("lileep");
-        fossilVariants.add("anorith");
-        fossilVariants.add("cranidos");
-        fossilVariants.add("shieldon");
-        fossilVariants.add("tyrunt");
-        fossilVariants.add("amaura");
-    }
-
     public static void sortMegaVariants()
     {
         List<String> start = Lists.newArrayList();

@@ -136,6 +136,7 @@ public class PokedexEntry
             if (data.location != null) this.matcher = new SpawnBiomeMatcher(data.location);
             if (data.animation != null) this.FX = data.animation;
             if (data.item != null) this.item = Tools.getStack(data.item.values);
+            if (data.item_preset != null) this.item = PokecubeItems.getStack(data.item_preset);
             if (data.time != null)
             {
                 if (data.time.equalsIgnoreCase("day")) dayOnly = true;
@@ -152,106 +153,13 @@ public class PokedexEntry
             if (data.move != null) this.move = data.move;
             if (data.chance != null) this.randomFactor = data.chance;
             if (level == -1) level = 0;
-        }
-
-        private void parse(String data)
-        {
-            // PokecubeMod.log("Parsing for OLD " + preEvolution + " -> " +
-            // evolution);
-            String[] parts = data.split(":");
-            String itemName = "";
-
-            for (String s : parts)
-            {
-                String arg1 = s.substring(0, 1);
-                String arg2 = "";
-                if (s.length() > 1)
-                {
-                    arg2 = s.substring(1);
-                }
-                if (arg1.equals("L"))
-                {
-                    try
-                    {
-                        level = Integer.parseInt(arg2);
-                    }
-                    catch (NumberFormatException e)
-                    {
-                        if (level == -1) this.level = 0;
-                        itemName = arg2;
-                    }
-                }
-                else if (arg1.equals("I"))
-                {
-                    itemName = arg2;
-                    if (level == -1) this.level = 0;
-                }
-                else if (arg1.equals("T"))
-                {
-                    if (arg2.equalsIgnoreCase("day")) dayOnly = true;
-                    if (arg2.equalsIgnoreCase("night")) nightOnly = true;
-                }
-                else if (arg1.equals("H"))
-                {
-                    happy = true;
-                    if (level == -1) this.level = 0;
-                }
-                else if (arg1.equals("X"))
-                {
-                    traded = true;
-                    if (level == -1) this.level = 0;
-                }
-                else if (arg1.equals("G"))
-                {
-                    if (arg2.equalsIgnoreCase("male")) gender = 1;
-                    if (arg2.equalsIgnoreCase("female")) gender = 2;
-                }
-                else if (arg1.equals("R"))
-                {
-                    itemLevel = true;
-                    if (level == -1) this.level = 0;
-                }
-                else if (arg1.equals("M"))
-                {
-                    move = arg2;
-                    if (level == -1) this.level = 0;
-                }
-                else if (arg1.equals("B"))
-                {
-                    biome = arg2;
-                    if (level == -1) this.level = 0;
-                }
-                else if ((arg1 + arg2).equals("rain"))
-                {
-                    rainOnly = true;
-                    if (level == -1) this.level = 0;
-                }
-                else if (arg1.equals("P"))
-                {
-                    this.randomFactor = Float.parseFloat(arg2);
-                }
-                else
-                {
-                    System.out.println(data);
-                    Thread.dumpStack();
-                }
-            }
-            if (!itemName.isEmpty())
-            {
-                item = PokecubeItems.getStack(itemName);
-            }
-            if (item != CompatWrapper.nullStack)
-            {
-                PokecubeItems.addToHoldables(itemName);
-                PokecubeItems.addToEvos(itemName);
-            }
+            if(CompatWrapper.isValid(item)) PokecubeItems.addToEvos(item);
         }
 
         protected void postInit()
         {
             try
             {
-                if (data_old != null) parse(data_old);
                 if (data != null) parse(data);
             }
             catch (Exception e)
@@ -259,7 +167,6 @@ public class PokedexEntry
                 System.out.println(this);
                 e.printStackTrace();
             }
-            data_old = null;
             data = null;
         }
 

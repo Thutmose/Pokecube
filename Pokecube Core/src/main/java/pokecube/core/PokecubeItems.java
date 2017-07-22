@@ -249,11 +249,16 @@ public class PokecubeItems extends Items
         itemstacks.put(name.toLowerCase(java.util.Locale.ENGLISH).trim(), item);
     }
 
+    public static void addToEvos(ItemStack stack)
+    {
+        if (!isValidHeldItem(stack)) addToHoldables(stack);
+        if (CompatWrapper.isValid(stack) && !isValidEvoItem(stack)) evoItems.add(stack);
+    }
+
     public static void addToEvos(String item)
     {
         ItemStack stack = getStack(item);
-        addToHoldables(item);
-        if (CompatWrapper.isValid(stack)) evoItems.add(stack);
+        addToEvos(stack);
     }
 
     public static void addToHoldables(ItemStack stack)
@@ -266,9 +271,7 @@ public class PokecubeItems extends Items
     public static void addToHoldables(String item)
     {
         ItemStack stack = getStack(item);
-        if (!CompatWrapper.isValid(stack))
-            System.out.println(new NullPointerException("Cannot add null stack to holdables " + item));
-        else heldItems.add(stack);
+        addToHoldables(stack);
     }
 
     public static boolean contains(String name)

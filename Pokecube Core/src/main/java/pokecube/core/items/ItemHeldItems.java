@@ -26,30 +26,6 @@ public class ItemHeldItems extends Item
 {
     public static ArrayList<String> variants = Lists.newArrayList();
 
-    static
-    {
-        variants.add("waterstone");
-        variants.add("firestone");
-        variants.add("leafstone");
-        variants.add("thunderstone");
-        variants.add("moonstone");
-        variants.add("sunstone");
-        variants.add("shinystone");
-        variants.add("ovalstone");
-        variants.add("everstone");
-        variants.add("duskstone");
-        variants.add("dawnstone");
-        variants.add("kingsrock");
-        variants.add("dubiousdisc");
-        variants.add("electirizer");
-        variants.add("magmarizer");
-        variants.add("reapercloth");
-        variants.add("prismscale");
-        variants.add("protector");
-        variants.add("upgrade");
-        variants.add("metalcoat");
-    }
-
     public ItemHeldItems()
     {
         super();

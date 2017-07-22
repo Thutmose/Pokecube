@@ -7,6 +7,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import thut.core.client.render.tabula.components.ModelJson;
 import thut.core.client.render.tabula.model.IModelParser;
@@ -33,6 +34,24 @@ public class TabulaWrapper extends ModelBase
         IModelParser<TabulaModel> parser = set.parser;
         if (model == null || parser == null) { return; }
         GlStateManager.pushMatrix();
+        set.parser.modelMap.get(set.model).render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw,
+                headPitch, scale);
+        GlStateManager.enableCull();
+        GlStateManager.popMatrix();
+
+    }
+
+    /** Sets the model's various rotation angles. For bipeds, par1 and par2 are
+     * used for animating the movement of arms and legs, where par1 represents
+     * the time(so that arms and legs swing back and forth) and par2 represents
+     * how "far" arms and legs can swing at most. */
+    @Override
+    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
+            float headPitch, float scaleFactor, Entity entityIn)
+    {
+        TabulaModel model = set.model;
+        IModelParser<TabulaModel> parser = set.parser;
+        if (model == null || parser == null) { return; }
         GlStateManager.disableCull();
         TabulaModelParser pars = ((TabulaModelParser) parser);
         ModelJson modelj = pars.modelMap.get(model);
@@ -61,9 +80,9 @@ public class TabulaWrapper extends ModelBase
         float dx = (float) set.shift.x;
         float dy = (float) set.shift.y;
         float dz = (float) set.shift.z;
-        if (entityIn instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entityIn);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entityIn;
             s = (mob.getSize());
             if (partialTick <= 1)
             {
@@ -82,24 +101,6 @@ public class TabulaWrapper extends ModelBase
         set.rotation.rotations.glRotate();
         GlStateManager.translate(dx, dy, dz);
         GlStateManager.scale(sx, sy, sz);
-        set.parser.modelMap.get(set.model).render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw,
-                headPitch, scale);
-        GlStateManager.enableCull();
-        GlStateManager.popMatrix();
-
-    }
-
-    /** Sets the model's various rotation angles. For bipeds, par1 and par2 are
-     * used for animating the movement of arms and legs, where par1 represents
-     * the time(so that arms and legs swing back and forth) and par2 represents
-     * how "far" arms and legs can swing at most. */
-    @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-            float headPitch, float scaleFactor, Entity entityIn)
-    {
-        // set.parser.modelMap.get(set.model).setRotationAngles(limbSwing,
-        // limbSwingAmount, ageInTicks, netHeadYaw,
-        // headPitch, scaleFactor, entityIn);
     }
 
     /** Used for easily adding entity-dependent animations. The second and third

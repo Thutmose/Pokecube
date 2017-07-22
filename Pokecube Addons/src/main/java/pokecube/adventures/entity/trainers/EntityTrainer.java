@@ -45,6 +45,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
@@ -187,9 +188,9 @@ public class EntityTrainer extends EntityTrainerBase
     @Override
     public void setAttackTarget(@Nullable EntityLivingBase entity)
     {
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entity;
             if (mob.getPokemonOwner() != null && pokemobsCap.getTarget() == null)
             {
                 if (pokemobsCap.getAttackCooldown() <= 0) pokemobsCap.setTarget(mob.getPokemonOwner());

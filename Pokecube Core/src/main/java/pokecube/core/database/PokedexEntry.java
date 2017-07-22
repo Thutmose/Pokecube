@@ -121,7 +121,8 @@ public class PokedexEntry
         {
             if (matcher != null)
             {
-                SpawnCheck check = new SpawnCheck(Vector3.getNewVector().set(mob), ((Entity) mob).getEntityWorld());
+                SpawnCheck check = new SpawnCheck(Vector3.getNewVector().set(mob.getEntity()),
+                        mob.getEntity().getEntityWorld());
                 return matcher.matches(check);
             }
             return true;
@@ -152,7 +153,7 @@ public class PokedexEntry
             if (data.move != null) this.move = data.move;
             if (data.chance != null) this.randomFactor = data.chance;
             if (level == -1) level = 0;
-            if(CompatWrapper.isValid(item)) PokecubeItems.addToEvos(item);
+            if (CompatWrapper.isValid(item)) PokecubeItems.addToEvos(item);
         }
 
         protected void postInit()
@@ -171,7 +172,7 @@ public class PokedexEntry
 
         public boolean shouldEvolve(IPokemob mob)
         {
-            return shouldEvolve(mob, ((EntityLiving) mob).getHeldItemMainhand());
+            return shouldEvolve(mob, mob.getEntity().getHeldItemMainhand());
         }
 
         public boolean shouldEvolve(IPokemob mob, ItemStack mobs)
@@ -182,11 +183,11 @@ public class PokedexEntry
             if (rand.nextFloat() > randomFactor) return false;
             if (rainOnly)
             {
-                World world = ((EntityLiving) mob).getEntityWorld();
+                World world = mob.getEntity().getEntityWorld();
                 boolean rain = world.isRaining();
                 if (!rain)
                 {
-                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity((Entity) mob);
+                    TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(mob.getEntity());
                     PokemobTerrainEffects teffect = (PokemobTerrainEffects) t.geTerrainEffect("pokemobEffects");
                     if (teffect != null)
                     {
@@ -196,14 +197,14 @@ public class PokedexEntry
                 if (!rain) return false;
             }
             boolean correctItem = !CompatWrapper.isValid(item);
-            if (CompatWrapper.isValid(item) && mob instanceof EntityLiving)
+            if (CompatWrapper.isValid(item))
             {
                 if (CompatWrapper.isValid(mobs))
                 {
                     correctItem = Tools.isSameStack(mobs, item);
                 }
             }
-            if (mob instanceof EntityLiving && Tools.isSameStack(((EntityLiving) mob).getHeldItemMainhand(),
+            if (Tools.isSameStack(mob.getEntity().getHeldItemMainhand(),
                     PokecubeItems.getStack("everstone"))) { return false; }
             if (Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
@@ -230,9 +231,9 @@ public class PokedexEntry
             }
             ret = ret && rightMove;
             boolean rightTime = dayOnly == nightOnly;
-            if (!rightTime && mob instanceof Entity)
+            if (!rightTime)
             {
-                Entity poke = (Entity) mob;
+                Entity poke = mob.getEntity();
                 rightTime = dayOnly ? poke.getEntityWorld().isDaytime() : !poke.getEntityWorld().isDaytime();
             }
             ret = ret && rightTime;
@@ -368,7 +369,7 @@ public class PokedexEntry
 
         boolean interact(EntityPlayer player, IPokemob pokemob, boolean doInteract)
         {
-            EntityLiving entity = (EntityLiving) pokemob;
+            EntityLiving entity = pokemob.getEntity();
             NBTTagCompound data = entity.getEntityData();
             ItemStack held = player.getHeldItemMainhand();
             if (data.hasKey("lastInteract"))

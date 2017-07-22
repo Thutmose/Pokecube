@@ -3,7 +3,6 @@ package pokecube.adventures.ai.trainers;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
@@ -11,15 +10,16 @@ import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
@@ -57,15 +57,16 @@ public class AITrainerBattle extends EntityAIBase
 
     private boolean checkPokemobTarget()
     {
-        Entity mobTarget = ((EntityLiving) trainer.getOutMob()).getAttackTarget();
+        Entity mobTarget = trainer.getOutMob().getEntity().getAttackTarget();
+        IPokemob target = CapabilityPokemob.getPokemobFor(mobTarget);
         // check if pokemob's target is same as trainers.
-        if (mobTarget != trainer.getTarget() && !(mobTarget instanceof IPokemob))
+        if (mobTarget != trainer.getTarget() && target == null)
         {
             // If not, set it as such.
-            ((EntityLiving) trainer.getOutMob()).setAttackTarget(trainer.getTarget());
+            trainer.getOutMob().getEntity().setAttackTarget(trainer.getTarget());
         }
         // Return if trainer's pokemob's target is also a pokemob.
-        return ((EntityLiving) trainer.getOutMob()).getAttackTarget() instanceof IPokemob;
+        return CapabilityPokemob.getPokemobFor(trainer.getOutMob().getEntity().getAttackTarget()) != null;
     }
 
     private void considerSwapMove()
@@ -98,7 +99,7 @@ public class AITrainerBattle extends EntityAIBase
             {
                 // Ones not added to chunk are in pokecubes, so wait for them to
                 // exit.
-                if (((Entity) pokemob).addedToChunk)
+                if (pokemob.getEntity().addedToChunk)
                 {
                     trainer.setOutMob(pokemob);
                     return;
@@ -155,9 +156,9 @@ public class AITrainerBattle extends EntityAIBase
     {
         Move_Base attack = MovesUtils.getMoveFromName(move);
         int pwr = attack.getPWR(user, target);
-        if (target instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(target);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) target;
             pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
         }
         return pwr;
@@ -177,7 +178,7 @@ public class AITrainerBattle extends EntityAIBase
         IPokemob outMob = trainer.getOutMob();
         int index = outMob.getMoveIndex();
         int max = 0;
-        Entity target = ((EntityLiving) outMob).getAttackTarget();
+        Entity target = outMob.getEntity().getAttackTarget();
         String[] moves = outMob.getMoves();
         for (int i = 0; i < 4; i++)
         {
@@ -214,7 +215,7 @@ public class AITrainerBattle extends EntityAIBase
             trainer.setTarget(null);
             trainer.resetPokemob();
         }
-        else if (trainer.getOutMob() != null && !((Entity) trainer.getOutMob()).isDead
+        else if (trainer.getOutMob() != null && !trainer.getOutMob().getEntity().isDead
                 && ((Entity) trainer.getOutMob()).addedToChunk)
         {
             // If trainer has a living, real mob out, tell it to do stuff.

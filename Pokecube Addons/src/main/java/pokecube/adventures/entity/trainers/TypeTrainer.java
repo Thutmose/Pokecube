@@ -211,10 +211,10 @@ public class TypeTrainer
                     {
                         if (d.shouldEvolve(pokemob))
                         {
-                            Entity temp = d.getEvolution(world);
+                            IPokemob temp = CapabilityPokemob.getPokemobFor(d.getEvolution(world));
                             if (temp != null)
                             {
-                                pokemob = (IPokemob) temp;
+                                pokemob = temp;
                                 break;
                             }
                         }

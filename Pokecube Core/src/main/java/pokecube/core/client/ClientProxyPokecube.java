@@ -104,6 +104,7 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
@@ -166,12 +167,14 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         if (guiID == Config.GUIPOKEDEX_ID)
         {
             Entity entityHit = Tools.getPointedEntity(player, 16);
-            if (entityHit instanceof IPokemob) return new GuiPokedex((IPokemob) entityHit, player);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityHit);
+            if (pokemob != null) return new GuiPokedex(pokemob, player);
             return new GuiPokedex(null, player);
         }
         if (guiID == Config.GUIPOKEMOB_ID)
         {
-            IPokemob e = (IPokemob) PokecubeMod.core.getEntityProvider().getEntity(world, x, true);
+            IPokemob e = CapabilityPokemob
+                    .getPokemobFor(PokecubeMod.core.getEntityProvider().getEntity(world, x, true));
             return new GuiPokemob(player.inventory, e);
         }
         if (guiID == Config.GUITRADINGTABLE_ID)

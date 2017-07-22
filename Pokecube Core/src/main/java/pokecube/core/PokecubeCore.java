@@ -79,6 +79,7 @@ import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MoveQueue.MoveQueuer;
@@ -233,6 +234,7 @@ public class PokecubeCore extends PokecubeMod
         config = new Config(new Configuration(file).getConfigFile());
         helper = new Mod_Pokecube_Helper();
         CombatTypeLoader.loadTypes();
+        BerryManager.addBerry("null", 0, 0, 0, 0, 0, 0);
     }
 
     @Override

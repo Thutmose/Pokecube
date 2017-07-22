@@ -11,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.common.IEntityAnimator;
 import thut.core.client.render.model.IModelRenderer;
@@ -46,11 +47,13 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
     {
         if (!RenderPokemobs.shouldRender(entity, x, y, z, yaw, partialTick)) return;
-        IPokemob mob = (IPokemob) entity;
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
         T toRender = entity;
-        if (mob.getTransformedTo() instanceof IPokemob)
+        IPokemob temp;
+        if ((temp = CapabilityPokemob.getPokemobFor(toRender)) != null)
         {
             toRender = (T) mob.getTransformedTo();
+            mob = temp;
         }
         model = (IModelRenderer<T>) getRenderer(mob.getPokedexEntry().getName(), entity);
         if (model == null && mob.getPokedexEntry().getBaseForme() != null)
@@ -70,8 +73,8 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         GL11.glTranslated(x, y, z);
         if ((partialTick <= 1))
         {
-            RenderPokemob.renderEvolution((IPokemob) entity, yaw);
-            RenderPokemob.renderExitCube((IPokemob) entity, yaw);
+            RenderPokemob.renderEvolution(mob, yaw);
+            RenderPokemob.renderExitCube(mob, yaw);
         }
         float s = (mob.getSize());
         this.shadowSize = (float) (entity.addedToChunk ? Math.sqrt(s * mob.getPokedexEntry().width) : 0);
@@ -87,7 +90,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         }
         else
         {
-            phase = getPhase(entity, partialTick);
+            phase = getPhase(entity, mob, partialTick);
         }
         if (!model.hasPhase(phase)) phase = "idle";
         model.setPhase(phase);
@@ -105,11 +108,9 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
 
-    private String getPhase(EntityLiving entity, float partialTick)
+    private String getPhase(EntityLiving entity, IPokemob pokemob, float partialTick)
     {
         String phase = "idle";
-
-        IPokemob pokemob = (IPokemob) entity;
         float walkspeed = entity.prevLimbSwingAmount
                 + (entity.limbSwingAmount - entity.prevLimbSwingAmount) * partialTick;
 

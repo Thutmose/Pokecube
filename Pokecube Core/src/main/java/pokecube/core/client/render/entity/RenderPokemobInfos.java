@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 @SideOnly(Side.CLIENT)
 public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderLiving<T>
@@ -25,15 +26,12 @@ public abstract class RenderPokemobInfos<T extends EntityLiving> extends RenderL
         EntityLivingBase player = Minecraft.getMinecraft().thePlayer;
         if (!entity.addedToChunk || entity.getRidingEntity() == player) return false;
         float d = entity.getDistanceToEntity(player);
-        IPokemob pokemob = ((IPokemob) entity);
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         boolean tameFactor = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !pokemob.getPokemonAIState(IMoveConstants.STAYING);
-        if ((tameFactor && d < 35) || d < 8)
-        {
-            return true;
-        }
+        if ((tameFactor && d < 35) || d < 8) { return true; }
         Entity target = ((EntityCreature) entity).getAttackTarget();
-        return (player.equals(target) || ((IPokemob) entity).getPokemonAIState(IMoveConstants.TAMED));
+        return (player.equals(target) || pokemob.getPokemonAIState(IMoveConstants.TAMED));
     }
 
     public RenderPokemobInfos(RenderManager m, ModelBase modelbase, float shadowSize)

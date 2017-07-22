@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -494,15 +495,16 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRendererObj, count + "/" + count2,
                 xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
         World world = entityPlayer.getEntityWorld();
-        List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
+        List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
         count = 0;
         count2 = 0;
-        for (Object o : entities)
+        for (Entity o : entities)
         {
-            if (o instanceof IPokemob)
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(o);
+            if (pokemob != null)
             {
                 if (!mode) count++;
-                else if (((IPokemob) o).getPokedexEntry().getPokedexNb() == pokedexEntry.getPokedexNb()) count++;
+                else if (pokemob.getPokedexEntry().getPokedexNb() == pokedexEntry.getPokedexNb()) count++;
             }
         }
         drawString(fontRendererObj, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
@@ -1350,33 +1352,20 @@ public class GuiPokedex extends GuiScreen
             int j = 0;
             int k = 0;
 
-            IPokemob pokemob = null;
-            if (entity instanceof IPokemob)
-            {
-                pokemob = (IPokemob) entity;
-            }
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
                     || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
                     || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0)
                     && !mc.thePlayer.capabilities.isCreativeMode)
             {
-
-                if (entity instanceof IPokemob)
-                {
-                    IPokemob mob = (IPokemob) entity;
-                    mob.setSize(1);
-                    mob.setShiny(false);
-                }
+                pokemob.setSize(1);
+                pokemob.setShiny(false);
                 if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
             }
             else
             {
-                if (entity instanceof IPokemob)
-                {
-                    IPokemob mob = (IPokemob) entity;
-                    mob.setSize(1);
-                    mob.setShiny(false);
-                }
+                pokemob.setSize(1);
+                pokemob.setShiny(false);
                 if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
             }
 
@@ -1412,7 +1401,7 @@ public class GuiPokedex extends GuiScreen
             entity.limbSwingAmount = 0;
             entity.prevLimbSwingAmount = 0;
             PokeType flying = PokeType.getType("flying");
-            entity.onGround = !((IPokemob) entity).isType(flying);
+            entity.onGround = !pokemob.isType(flying);
 
             if (isAltKeyDown())
             {

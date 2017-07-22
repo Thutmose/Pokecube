@@ -60,6 +60,9 @@ public class AICombatMovement extends AIBase
     @Override
     public void run()
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING)
+                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
+            return;
         if (centre == null)
         {
             Vector3 targetLoc = Vector3.getNewVector().set(target);
@@ -131,6 +134,9 @@ public class AICombatMovement extends AIBase
             perp.clear();
         }
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
+        if (perp.magSq() > 0.3) perp.norm().scalarMultBy(0.3);
+        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !!attacker.onGround)
+            perp.scalarMultBy(0.2);
         perp.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getDodgeSound(),
                 SoundCategory.HOSTILE, 1, 1));
@@ -201,14 +207,18 @@ public class AICombatMovement extends AIBase
         Vector3 dir = targetLoc.subtract(leaperLoc);
         double d = dir.mag();
         dir.norm();
-        dir.scalarMultBy(d * 0.1f);
+        dir.scalarMultBy(d * 0.2f);
         if (dir.magSq() < 1) dir.norm();
         if (dir.isNaN())
         {
             new Exception().printStackTrace();
             dir.clear();
         }
-        if (!attacker.onGround) dir.y *= 2;
+        if (dir.magSq() > 3)
+        {
+            System.out.println(dir);
+        }
+        if (!attacker.onGround && dir.y > 1 && dir.y < 3) dir.y *= 2;
         dir.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getLeapSound(),
                 SoundCategory.HOSTILE, 1, 1));
@@ -217,6 +227,9 @@ public class AICombatMovement extends AIBase
     @Override
     public boolean shouldRun()
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING)
+                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0)
+            return false;
         return (target = attacker.getAttackTarget()) != null && pokemob.getPokemonAIState(IMoveConstants.ANGRY);
     }
 }

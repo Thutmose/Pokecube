@@ -331,7 +331,7 @@ public class RenderHealth
                 GlStateManager.scale(s1, s1, s1);
                 GlStateManager.translate(size / (s * s1) * 2 - 16, 0F, 0F);
                 mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                if (CompatWrapper.isValid(stack) && PokecubeMod.core.getConfig().showAttributes)
+                if (CompatWrapper.isValid(stack) && PokecubeMod.core.getConfig().showHeldItem)
                 {
                     renderIcon(off, 0, stack, 16, 16);
                     off -= 16;

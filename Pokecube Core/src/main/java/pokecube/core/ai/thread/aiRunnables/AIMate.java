@@ -163,7 +163,7 @@ public class AIMate extends AIBase
         {
             float searchingLoveDist = 5F;
             AxisAlignedBB bb = entity.getEntityBoundingBox().expand(searchingLoveDist, searchingLoveDist,
-                    searchingLoveDist);
+                    searchingLoveDist);// grow in 1.12
             List<Entity> list = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
             {
                 @Override
@@ -173,7 +173,7 @@ public class AIMate extends AIBase
                 }
             });
             bb = entity.getEntityBoundingBox().expand(PokecubeMod.core.getConfig().maxSpawnRadius,
-                    2 * searchingLoveDist, PokecubeMod.core.getConfig().maxSpawnRadius);
+                    2 * searchingLoveDist, PokecubeMod.core.getConfig().maxSpawnRadius);// grow in 1.12
             List<Entity> list2 = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
             {
                 @Override

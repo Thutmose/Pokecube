@@ -2,23 +2,23 @@ package pokecube.core.ai.thread.aiRunnables;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IMerchant;
-import net.minecraft.entity.INpc;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.entity.ai.AIThreadManager;
@@ -28,35 +28,50 @@ import thut.api.maths.Vector3;
 /** This IAIRunnable is to find targets for the pokemob to try to kill. */
 public class AIFindTarget extends AIBase implements IAICombat
 {
-    final IPokemob          pokemob;
-    final IHungrymob        hungryMob;
-    final EntityLiving      entity;
-    Vector3                 v                = Vector3.getNewVector();
-    Vector3                 v1               = Vector3.getNewVector();
+    public static Set<Class<?>>           invalidClasses   = Sets.newHashSet();
+    public static Set<String>             invalidIDs       = Sets.newHashSet();
 
-    final Predicate<Entity> validGuardTarget = new Predicate<Entity>()
-                                             {
-                                                 @Override
-                                                 public boolean apply(Entity input)
-                                                 {
-                                                     if (input instanceof IPokemob && input != pokemob)
-                                                     {
-                                                         if (!TeamManager.sameTeam(entity, input)) { return true; }
-                                                     }
-                                                     else if (PokecubeMod.pokemobsDamagePlayers
-                                                             && input instanceof EntityLivingBase)
-                                                     {
-                                                         EntityLivingBase mob = (EntityLivingBase) input;
+    public static final Predicate<Entity> validTargets     = new Predicate<Entity>()
+                                                           {
+                                                               @Override
+                                                               public boolean apply(Entity input)
+                                                               {
+                                                                   String id = EntityList.getEntityString(input);
+                                                                   if (invalidIDs.contains(id)) return false;
+                                                                   for (Class<?> clas : invalidClasses)
+                                                                   {
+                                                                       if (clas.isInstance(input)) return false;
+                                                                   }
+                                                                   return true;
+                                                               }
+                                                           };
 
-                                                         if (mob instanceof INpc || mob instanceof IMerchant)
-                                                             return false;
-                                                         if (mob instanceof EntityPokemobEgg) return false;
+    final IPokemob                        pokemob;
+    final IHungrymob                      hungryMob;
+    final EntityLiving                    entity;
+    Vector3                               v                = Vector3.getNewVector();
+    Vector3                               v1               = Vector3.getNewVector();
 
-                                                         if (!TeamManager.sameTeam(entity, input)) { return true; }
-                                                     }
-                                                     return false;
-                                                 }
-                                             };
+    final Predicate<Entity>               validGuardTarget = new Predicate<Entity>()
+                                                           {
+                                                               @Override
+                                                               public boolean apply(Entity input)
+                                                               {
+                                                                   if (input instanceof IPokemob && input != pokemob)
+                                                                   {
+                                                                       if (!TeamManager.sameTeam(entity,
+                                                                               input)) { return true; }
+                                                                   }
+                                                                   else if (PokecubeMod.pokemobsDamagePlayers
+                                                                           && input instanceof EntityLivingBase)
+                                                                   {
+                                                                       if (!validTargets.apply(input)) return false;
+                                                                       if (!TeamManager.sameTeam(entity,
+                                                                               input)) { return true; }
+                                                                   }
+                                                                   return false;
+                                                               }
+                                                           };
 
     public AIFindTarget(EntityLivingBase mob)
     {
@@ -229,7 +244,7 @@ public class AIFindTarget extends AIBase implements IAICombat
         if (world == null) return false;
 
         // Don't look for targets if you are sitting.
-        boolean ret = entity.getAITarget() == null && entity.getAttackTarget() == null
+        boolean ret = entity.getAttackTarget() == null && entity.getAttackTarget() == null
                 && !pokemob.getPokemonAIState(IMoveConstants.SITTING);
         // If target is dead, return false.
         if (entity.getAttackTarget() != null && entity.getAttackTarget().isDead)

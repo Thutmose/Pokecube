@@ -4,12 +4,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
+import pokecube.core.interfaces.IPokemob;
 
 public class PokemobAILook extends EntityAIBase
 {
     protected EntityLiving            theWatcher;
     /** The closest entity which is being watched by this one. */
     protected Entity                  closestEntity;
+    /** the watcher casted to a pokemob. */
+    protected IPokemob                pokemob;
     /** This is the Maximum distance that the AI will look for the Entity */
     protected float                   maxDistanceForPlayer;
     boolean                           idle = false;
@@ -35,14 +38,17 @@ public class PokemobAILook extends EntityAIBase
         this.theWatcher = entitylivingIn;
         this.watchedClass = watchTargetClass;
         this.maxDistanceForPlayer = maxDistance;
+        this.pokemob = (IPokemob) theWatcher;
         this.chance = chanceIn;
         this.setMutexBits(2);
     }
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
-    public boolean continueExecuting()
+    public boolean continueExecuting()// shouldContinueExecuting in 1.12
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
+            return false;
         if (idle) return this.idleTime >= 0;
         return !this.closestEntity.isEntityAlive() ? false
                 : (this.theWatcher.getDistanceSqToEntity(this.closestEntity) > this.maxDistanceForPlayer
@@ -69,6 +75,8 @@ public class PokemobAILook extends EntityAIBase
     @Override
     public boolean shouldExecute()
     {
+        if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
+            return false;
         if (this.theWatcher.getRNG().nextFloat() >= this.chance)
         {
             return false;
@@ -95,7 +103,7 @@ public class PokemobAILook extends EntityAIBase
             {
                 this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(this.watchedClass,
                         this.theWatcher.getEntityBoundingBox().expand(this.maxDistanceForPlayer, 3.0D,
-                                this.maxDistanceForPlayer),
+                                this.maxDistanceForPlayer), // grow in 1.12
                         this.theWatcher);
             }
 

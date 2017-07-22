@@ -75,9 +75,9 @@ public class LogicCollision extends LogicBase
         {
             box = box.setMaxY(box.minY + 3);
         }
-        AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
+        AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);// grow in 1.12
 
-        box1 = box1.addCoord(collider.motionX, collider.motionY, collider.motionZ);
+        box1 = box1.expand(collider.motionX, collider.motionY, collider.motionZ);
         aabbs = mainBox.getCollidingBoxes(box1, world, world);
         // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
         Matrix3.expandAABBs(aabbs, box);

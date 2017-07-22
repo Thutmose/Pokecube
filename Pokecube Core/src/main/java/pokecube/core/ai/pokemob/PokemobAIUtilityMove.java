@@ -37,7 +37,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
-    public boolean continueExecuting()
+    public boolean continueExecuting()// shouldContinueExecuting in 1.12
     {
         return destination != null && !pokemon.getPokemonAIState(IMoveConstants.NEWEXECUTEMOVE)
                 && pokemon.getPokemonAIState(IMoveConstants.EXECUTINGMOVE);

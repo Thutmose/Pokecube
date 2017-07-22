@@ -44,7 +44,7 @@ public class LogicInMaterials extends LogicBase
 
                     value = Float.parseFloat(pokemob.getPokedexEntry().hatedMaterial[1]);
                     String action = pokemob.getPokedexEntry().hatedMaterial[2];
-                    float f = entity.getBrightness(1.0F);
+                    float f = entity.getBrightness(0);//no arg in 1.12
                     if (f > value && entity.getEntityWorld().canSeeSky(entity.getPosition()))
                     {
                         if (action.equalsIgnoreCase("despawn"))

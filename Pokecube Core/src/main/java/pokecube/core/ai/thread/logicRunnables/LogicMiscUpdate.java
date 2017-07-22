@@ -82,7 +82,7 @@ public class LogicMiscUpdate extends LogicBase
                 pokemob.setFlavourAmount(i, flavourAmounts[i] - 1);
             }
         }
-        if (!entity.worldObj.isRemote) return;
+        if (!entity.getEntityWorld().isRemote) return;
 
         // Particle stuff below here, WARNING, RESETTING RNG HERE
         rand = new Random();
@@ -165,7 +165,7 @@ public class LogicMiscUpdate extends LogicBase
                 heart.set(entity.posX + rand.nextFloat() * entity.width * 2.0F - entity.width,
                         entity.posY + 0.5D + rand.nextFloat() * entity.height,
                         entity.posZ + rand.nextFloat() * entity.width * 2.0F - entity.width);
-                PokecubeMod.core.spawnParticle(entity.worldObj, "heart", heart, null);
+                PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "heart", heart, null);
             }
         }
         int[] args = {};
@@ -210,7 +210,7 @@ public class LogicMiscUpdate extends LogicBase
                         rand.nextDouble() - 0.5);
                 particleVelo.scalarMultBy(0.25);
             }
-            PokecubeMod.core.spawnParticle(entity.worldObj, particle, particleLoc, particleVelo, args);
+            PokecubeMod.core.spawnParticle(entity.getEntityWorld(), particle, particleLoc, particleVelo, args);
 
         }
         particleCounter = 0;

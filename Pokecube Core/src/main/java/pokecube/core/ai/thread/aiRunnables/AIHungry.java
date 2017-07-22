@@ -255,7 +255,7 @@ public class AIHungry extends AIBase
                         location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
                 if (location.getBlockState(world).getMaterial() != Material.GRASS)
                 {
-                    List<ItemStack> list;
+                    List<ItemStack> list;//non null list in 1.12, and using new method.
                     list = b.getBlock().getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0);
                     for (ItemStack stack : list)
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));

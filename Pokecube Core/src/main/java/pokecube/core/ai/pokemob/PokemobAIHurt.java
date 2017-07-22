@@ -65,16 +65,10 @@ public class PokemobAIHurt extends EntityAIBase
         this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
         Path path = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
 
-        if (path == null)
-        {
-            return false;
-        }
+        if (path == null) { return false; }
         PathPoint pathpoint = path.getFinalPathPoint();
 
-        if (pathpoint == null)
-        {
-            return false;
-        }
+        if (pathpoint == null) { return false; }
         int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
         int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
         return i * i + j * j <= 2.25D;
@@ -82,7 +76,7 @@ public class PokemobAIHurt extends EntityAIBase
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
-    public boolean continueExecuting()
+    public boolean continueExecuting()// shouldContinueExecuting in 1.12
     {
         EntityLivingBase entitylivingbase = this.taskOwner.getAttackTarget();
 
@@ -98,10 +92,7 @@ public class PokemobAIHurt extends EntityAIBase
         {
             double d0 = this.getTargetDistance();
 
-            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0)
-            {
-                return false;
-            }
+            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0) { return false; }
             if (this.shouldCheckSight)
             {
                 if (this.taskOwner.getEntitySenses().canSee(entitylivingbase))
@@ -197,7 +188,7 @@ public class PokemobAIHurt extends EntityAIBase
     public boolean shouldExecute()
     {
         int i = this.taskOwner.getRevengeTimer();
-        return i != this.revengeTimer && this.isSuitableTarget(this.taskOwner.getAITarget(), false);
+        return i != this.revengeTimer && this.isSuitableTarget(this.taskOwner.getAttackTarget(), false);
     }
 
     /** Execute a one shot task or start executing a continuous task */
@@ -208,7 +199,7 @@ public class PokemobAIHurt extends EntityAIBase
         this.targetSearchStatus = 0;
         this.targetSearchDelay = 0;
         this.lastSeenTime = 0;
-        // this.taskOwner.setAttackTarget(this.taskOwner.getAITarget());
+        // this.taskOwner.setAttackTarget(this.taskOwner.getAttackTarget());
         this.revengeTimer = this.taskOwner.getRevengeTimer();
 
         if (this.entityCallsForHelp && Math.random() > 0.95)
@@ -218,7 +209,7 @@ public class PokemobAIHurt extends EntityAIBase
                     this.taskOwner.getClass(),
                     new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ,
                             this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)
-                                    .expand(d0, 10.0D, d0));
+                                    .expand(d0, 10.0D, d0));// grow in 1.12
             Iterator<? extends EntityCreature> iterator = list.iterator();
 
             while (iterator.hasNext())

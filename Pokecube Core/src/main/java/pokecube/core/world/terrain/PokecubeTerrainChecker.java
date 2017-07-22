@@ -4,7 +4,10 @@ import static thut.api.terrain.BiomeType.LAKE;
 import static thut.api.terrain.BiomeType.VILLAGE;
 import static thut.api.terrain.TerrainSegment.GRIDSIZE;
 
+import java.util.Map;
+
 import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -97,6 +100,16 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         return false;
     }
 
+    public static boolean isFruit(IBlockState state)
+    {
+        if (state.getMaterial() == Material.AIR) return false;
+        for (Predicate<IBlockState> predicate : PokecubeMod.core.getConfig().getFruitTypes())
+        {
+            if (predicate.apply(state)) return true;
+        }
+        return false;
+    }
+
     public static boolean isIndustrial(IBlockState state)
     {
         if (state.getMaterial() == Material.AIR) return false;
@@ -113,11 +126,26 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         TerrainSegment.defaultChecker = checker;
     }
 
+    public static Map<String, String> structureSubbiomeMap = Maps.newHashMap();
+
     @Override
     public int getSubBiome(World world, Vector3 v, TerrainSegment segment, Chunk chunk, boolean caveAdjusted)
     {
         if (caveAdjusted)
         {
+//            if (world instanceof WorldServer)// only on 1.12
+//            {
+//                WorldServer worldS = (WorldServer) world;
+//                for (String key : structureSubbiomeMap.keySet())
+//                {
+//                    if (worldS.getChunkProvider().chunkGenerator.isInsideStructure(worldS, key, v.getPos()))
+//                    {
+//                        String mapping = structureSubbiomeMap.get(key);
+//                        BiomeType biome = BiomeType.getBiome(mapping, true);
+//                        return biome.getType();
+//                    }
+//                }
+//            }
             if (world.provider.doesWaterVaporize() || chunk.canSeeSky(v.getPos())
                     || !PokecubeCore.core.getConfig().autoDetectSubbiomes)
                 return -1;
@@ -196,8 +224,8 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
         }
         if (world.villageCollectionObj != null)
         {
-            Village village = world.villageCollectionObj.getNearestVillage(new BlockPos(MathHelper.floor_double(v.x),
-                    MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
+            Village village = world.villageCollectionObj.getNearestVillage(
+                    new BlockPos(MathHelper.floor_double(v.x), MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
             if (village != null)
             {
                 biome = VILLAGE.getType();

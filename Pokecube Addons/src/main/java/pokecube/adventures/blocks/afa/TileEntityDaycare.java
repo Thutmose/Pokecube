@@ -23,6 +23,7 @@ import pokecube.adventures.comands.Config;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
 
@@ -64,10 +65,10 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
         }
         int tickrate = Config.instance.daycareTicks;
         tickrate = Math.max(tickrate, 1);
-        if (event.getEntity().ticksExisted % tickrate == 0 && event.getEntity() instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getEntity());
+        if (event.getEntity().ticksExisted % tickrate == 0 && pokemob != null)
         {
             double dist = event.getEntity().getDistanceSq(getPos());
-            IPokemob pokemob = (IPokemob) event.getEntity();
             if (dist > range * range || pokemob.getLevel() == 100) return;
             if (!consumeShards(Config.instance.daycareCost, true))
             {
@@ -293,13 +294,13 @@ public class TileEntityDaycare extends TileEntityOwnable implements IInventory
         for (int i = 0; i < inventory.size(); i++)
             inventory.set(i, CompatWrapper.nullStack);
     }
-    
+
     @Override
     public int getSizeInventory()
     {
         return inventory.size();
     }
-    
+
     @Override
     public ItemStack getStackInSlot(int index)
     {

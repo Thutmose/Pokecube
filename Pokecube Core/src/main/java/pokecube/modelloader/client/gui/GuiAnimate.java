@@ -288,7 +288,7 @@ public class GuiAnimate extends GuiScreen
             if (pokemob == null)
             {
                 EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.theWorld));
+                        pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.theWorld)));
                 pokemob.specificSpawnInit();
             }
         }
@@ -493,8 +493,8 @@ public class GuiAnimate extends GuiScreen
                 {
                     if (pokemob == null || pokemob.getPokedexEntry() != entry)
                     {
-                        EventsHandlerClient.renderMobs.put(entry,
-                                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.theWorld));
+                        EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob
+                                .getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.theWorld)));
                         pokemob.setPokedexEntry(entry);
                         pokemob.specificSpawnInit();
                     }
@@ -506,8 +506,8 @@ public class GuiAnimate extends GuiScreen
 
                     if (pokemob == null || pokemob.getPokedexEntry() != entry)
                     {
-                        EventsHandlerClient.renderMobs.put(entry,
-                                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, mc.theWorld));
+                        EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob
+                                .getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.theWorld)));
                         pokemob.setPokedexEntry(entry);
                         pokemob.specificSpawnInit();
                     }

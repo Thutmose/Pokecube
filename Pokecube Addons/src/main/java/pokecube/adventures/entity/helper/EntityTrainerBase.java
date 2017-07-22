@@ -4,20 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import pokecube.adventures.comands.Config;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasRewards.IHasRewards;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
+import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.lib.CompatWrapper;
 
 public abstract class EntityTrainerBase extends EntityHasTrades
@@ -26,7 +28,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades
     public DefaultPokemobs pokemobsCap;
     protected IHasMessages messages;
     protected IHasRewards  rewardsCap;
-    public IHasNPCAIStates    aiStates;
+    public IHasNPCAIStates aiStates;
     int                    despawncounter  = 0;
 
     public EntityTrainerBase(World worldIn)
@@ -45,8 +47,9 @@ public abstract class EntityTrainerBase extends EntityHasTrades
         if (!isServerWorld()) return;
         if (pokemobsCap.getOutID() != null && pokemobsCap.getOutMob() == null)
         {
-            pokemobsCap.setOutMob((IPokemob) getServer().worldServerForDimension(dimension)
-                    .getEntityFromUuid(pokemobsCap.getOutID()));
+            Entity mob = getServer().worldServerForDimension(dimension).getEntityFromUuid(pokemobsCap.getOutID());
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+            pokemobsCap.setOutMob(pokemob);
             if (pokemobsCap.getOutMob() == null) pokemobsCap.setOutID(null);
         }
         if (pokemobsCap.countPokemon() == 0 && !aiStates.getAIState(IHasNPCAIStates.STATIONARY)

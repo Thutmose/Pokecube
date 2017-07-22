@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.AnimationLoader.Model;
 import pokecube.modelloader.client.render.DefaultIModelRenderer;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
@@ -43,14 +44,8 @@ public class ModelWrapper extends ModelBase implements IModel
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
             float headPitch, float scale)
     {
-        float partialTick = ageInTicks - entityIn.ticksExisted;
         GlStateManager.pushMatrix();
-        if (renderer.animator != null) renderer.currentPhase = renderer.animator
-                .modifyAnimation((EntityLiving) entityIn, partialTick, renderer.currentPhase);
         GlStateManager.disableCull();
-        transformGlobal(renderer.currentPhase, entityIn, Minecraft.getMinecraft().getRenderPartialTicks(), netHeadYaw,
-                headPitch);
-        updateAnimation(entityIn, renderer.currentPhase, partialTick, netHeadYaw, headPitch, limbSwing);
         for (String partName : renderer.parts.keySet())
         {
             IExtendedModelPart part = imodel.getParts().get(partName);
@@ -88,6 +83,12 @@ public class ModelWrapper extends ModelBase implements IModel
     public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
             float headPitch, float scaleFactor, Entity entityIn)
     {
+        float partialTick = ageInTicks - entityIn.ticksExisted;
+        if (renderer.animator != null) renderer.currentPhase = renderer.animator
+                .modifyAnimation((EntityLiving) entityIn, partialTick, renderer.currentPhase);
+        transformGlobal(renderer.currentPhase, entityIn, Minecraft.getMinecraft().getRenderPartialTicks(), netHeadYaw,
+                headPitch);
+        updateAnimation(entityIn, renderer.currentPhase, partialTick, netHeadYaw, headPitch, limbSwing);
     }
 
     /** Used for easily adding entity-dependent animations. The second and third
@@ -125,9 +126,9 @@ public class ModelWrapper extends ModelBase implements IModel
         float sy = (float) renderer.scale.y;
         float sz = (float) renderer.scale.z;
         float dy = rotationPointY - 1.5f;
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entity;
             s = (mob.getSize());
             if (partialTick <= 1)
             {

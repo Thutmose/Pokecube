@@ -34,9 +34,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.warppad.BlockWarpPad;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
-import pokecube.core.database.Database;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.BiomeType;
@@ -61,9 +60,9 @@ public class ItemTarget extends CompatItem
         if (!CompatWrapper.isValid(stack) || stack.getItem() != this) return;
         EntityPlayer playerIn = event.getEntityPlayer();
         Entity target = event.getTarget();
-        if (stack.getItemDamage() == 1 && target instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(target);
+        if (stack.getItemDamage() == 1 && pokemob != null)
         {
-            IPokemob pokemob = (IPokemob) target;
             if (stack.hasTagCompound() && playerIn == pokemob.getPokemonOwner())
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
@@ -186,40 +185,6 @@ public class ItemTarget extends CompatItem
             EnumHand hand)
     {
         int meta = itemstack.getItemDamage();
-
-        Vector3 p = Vector3.getNewVector().set(player, false);
-        Vector3 d = Vector3.getNewVector().set(player.getLookVec());
-
-        List<Entity> e = p.allEntityLocationExcluding(2, 1, d, p, world, player);
-
-        for (Object o : e)
-        {
-            if (o instanceof IPokemob)
-            {
-                IPokemob poke = (IPokemob) o;
-                PokedexEntry entry = poke.getPokedexEntry();
-                if (poke.getPokemonOwner() != player) continue;
-
-                if (entry.getName().equalsIgnoreCase("deoxys"))
-                {
-                    poke.setPokedexEntry(Database.getEntry("deoxys speed"));
-                }
-                if (entry.getName().equalsIgnoreCase("deoxys speed"))
-                {
-                    poke.setPokedexEntry(Database.getEntry("deoxys attack"));
-                }
-                if (entry.getName().equalsIgnoreCase("deoxys attack"))
-                {
-                    poke.setPokedexEntry(Database.getEntry("deoxys defense"));
-                }
-                if (entry.getName().equalsIgnoreCase("deoxys defense"))
-                {
-                    poke.setPokedexEntry(Database.getEntry("deoxys"));
-                }
-            }
-        }
-        if (!e.isEmpty()) return new ActionResult<>(EnumActionResult.PASS, itemstack);
-
         if (meta == 3)
         {
 

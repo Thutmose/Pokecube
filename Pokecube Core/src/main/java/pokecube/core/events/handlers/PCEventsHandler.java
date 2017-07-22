@@ -50,6 +50,12 @@ public class PCEventsHandler
         List<IPokemob> ret = new ArrayList<IPokemob>();
         for (Entity o : pokemobs)
         {
+            // Check to see if the mob has recenlty unloaded, or isn't added to
+            // chunk for some reason. This is to hopefully prevent dupes when
+            // the player has died far from the loaded area.
+            if (player.getEntityWorld().unloadedEntityList.contains(o)) continue;
+            if (!o.addedToChunk) continue;
+
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
             if (mob != null)
             {
@@ -84,6 +90,12 @@ public class PCEventsHandler
         List<Entity> pokemobs = new ArrayList<Entity>(player.getEntityWorld().loadedEntityList);
         for (Entity o : pokemobs)
         {
+            // Check to see if the mob has recenlty unloaded, or isn't added to
+            // chunk for some reason. This is to hopefully prevent dupes when
+            // the player has died far from the loaded area.
+            if (player.getEntityWorld().unloadedEntityList.contains(o)) continue;
+            if (!o.addedToChunk) continue;
+
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
             if (mob != null)
             {

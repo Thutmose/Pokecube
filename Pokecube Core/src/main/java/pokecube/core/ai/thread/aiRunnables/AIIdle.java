@@ -11,9 +11,9 @@ import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
-import thut.api.pathing.IPathingMob;
 
 /** This IAIRunnable makes the mobs randomly wander around if they have nothing
  * better to do. */
@@ -35,7 +35,7 @@ public class AIIdle extends AIBase
     {
         this.entity = entity;
         this.setMutex(2);
-        mob = (IPokemob) entity;
+        mob = CapabilityPokemob.getPokemobFor(entity);
         entry = mob.getPokedexEntry();
         this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
     }
@@ -227,8 +227,7 @@ public class AIIdle extends AIBase
             int z = (j / (distance * distance)) % (distance) - distance / 2;
             y = Math.min(Math.max(1, y), 2);
             temp.set(ret).addTo(x, y, z);
-            if (temp.isClearOfBlocks(world)
-                    && ((IPathingMob) mob).getBlockPathWeight(world, temp) <= 40) { return temp; }
+            if (temp.isClearOfBlocks(world) && mob.getBlockPathWeight(world, temp) <= 40) { return temp; }
         }
         return null;
     }

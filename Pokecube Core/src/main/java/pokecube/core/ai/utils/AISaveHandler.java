@@ -68,7 +68,7 @@ public class AISaveHandler
 	public PokemobAI getAI(IPokemob entityAiPokemob)
 	{
 		if (!entityAiPokemob.getPokemonAIState(IMoveConstants.TAMED)) { return new PokemobAI(); }
-		EntityLiving entity = (EntityLiving) entityAiPokemob;
+		EntityLiving entity = entityAiPokemob.getEntity();
 		if (aiMap.containsKey(entity.getUniqueID()))
 		{
 			return aiMap.get(entity.getUniqueID());

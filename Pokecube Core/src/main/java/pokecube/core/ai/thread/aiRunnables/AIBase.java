@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -21,7 +22,9 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.IPokemob.Stats;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.IAIRunnable;
@@ -89,9 +92,10 @@ public abstract class AIBase implements IAIRunnable
         {
             if (dim != world.provider.getDimension()) return false;
             Entity e = world.getEntityByID(entity);
-            if (e == null || !(e instanceof IPokemob)) return false;
-            if (slot > 0) ((IPokemob) e).getPokemobInventory().setInventorySlotContents(slot, stack);
-            else if (!ItemStackTools.addItemStackToInventory(stack, ((IPokemob) e).getPokemobInventory(), minSlot))
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(e);
+            if (e == null || pokemob == null) return false;
+            if (slot > 0) pokemob.getPokemobInventory().setInventorySlotContents(slot, stack);
+            else if (!ItemStackTools.addItemStackToInventory(stack, pokemob.getPokemobInventory(), minSlot))
             {
                 e.entityDropItem(stack, 0);
             }
@@ -124,12 +128,13 @@ public abstract class AIBase implements IAIRunnable
                                                                      WorldServer world = FMLCommonHandler.instance()
                                                                              .getMinecraftServerInstance()
                                                                              .getWorld(o1.dim);
-                                                                     Entity e1 = world.getEntityByID(o1.attacker);
-                                                                     Entity e2 = world.getEntityByID(o2.attacker);
-                                                                     if (e1 instanceof IPokemob
-                                                                             && e2 instanceof IPokemob) { return pokemobComparator
-                                                                                     .compare((IPokemob) e1,
-                                                                                             (IPokemob) e2); }
+                                                                     IPokemob e1 = CapabilityPokemob.getPokemobFor(
+                                                                             world.getEntityByID(o1.attacker));
+                                                                     IPokemob e2 = CapabilityPokemob.getPokemobFor(
+                                                                             world.getEntityByID(o2.attacker));
+                                                                     if (e2 != null
+                                                                             && e1 != null) { return pokemobComparator
+                                                                                     .compare(e1, e2); }
                                                                  }
                                                                  return 0;
                                                              }
@@ -160,9 +165,10 @@ public abstract class AIBase implements IAIRunnable
             EntityLiving mob = (EntityLiving) e;
             List<?> unloadedMobs = world.unloadedEntityList;
             if (!mob.getEntityWorld().loadedEntityList.contains(mob) || unloadedMobs.contains(mob)) return false;
-            if (!(mob.isDead || mob.getHealth() <= 0))
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+            if (!(mob.isDead || mob.getHealth() <= 0 || pokemob == null))
             {
-                ((IPokemob) mob).executeMove(world.getEntityByID(targetEnt), target, distance);
+                pokemob.executeMove(world.getEntityByID(targetEnt), target, distance);
             }
             return true;
         }
@@ -311,7 +317,7 @@ public abstract class AIBase implements IAIRunnable
     /** Thread safe attack setting */
     protected void addMoveInfo(int attacker, int targetEnt, int dim, Vector3 target, float distance)
     {
-        if (!moves.isEmpty()) System.err.println("adding duplicate move");
+        if (!moves.isEmpty()) PokecubeMod.log(Level.WARNING, "adding duplicate move", new IllegalArgumentException());
         else moves.add(new MoveInfo(attacker, targetEnt, dim, target, distance));
     }
 

@@ -14,7 +14,6 @@ import com.google.common.base.Optional;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.monster.IMob;
@@ -68,18 +67,14 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.TagNames;
-import thut.api.entity.IBreedingMob;
-import thut.api.entity.IHungrymob;
 import thut.api.entity.IMobColourable;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
-import thut.api.pathing.IPathingMob;
 import thut.lib.CompatWrapper;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityAnimal
-        implements IPokemob, IMob, IInventoryChangedListener, IHungrymob, IPathingMob, IShearable, IBreedingMob,
-        IMobColourable, IRangedAttackMob, IEntityOwnable, IAIMob, IEntityAdditionalSpawnData, IJumpingMount
+public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IMob, IInventoryChangedListener,
+        IShearable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IJumpingMount
 {
     public static int                          EXITCUBEDURATION = 40;
 
@@ -231,7 +226,8 @@ public abstract class EntityTameablePokemob extends EntityAnimal
         dataManager.register(AIACTIONSTATESDW, Integer.valueOf(0));
 
         // from EntityEvolvablePokemob
-//        dataManager.register(EVOLNBDW, new Integer(0));// current evolution nb
+        // dataManager.register(EVOLNBDW, new Integer(0));// current evolution
+        // nb
         dataManager.register(EVOLTICKDW, new Integer(0));// evolution tick
 
         // From EntityMovesPokemb

@@ -1,6 +1,7 @@
 package pokecube.core.entity.pokemobs;
 
 import java.util.UUID;
+import java.util.Vector;
 
 import javax.vecmath.Vector3f;
 
@@ -9,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -16,12 +18,14 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.Nature;
+import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
 public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
@@ -878,5 +882,131 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public Object getChild(IBreedingMob male)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Entity getLover()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getLoveTimer()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public Vector<IBreedingMob> getMalesForBreeding()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void mateWith(IBreedingMob male)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void resetLoveStatus()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setLover(Entity lover)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setLoveTimer(int value)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean tryToBreed()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean floats()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean flys()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public float getBlockPathWeight(IBlockAccess world, Vector3 location)
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public double getFloatHeight()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public Vector3 getMobSizes()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean fits(IBlockAccess world, Vector3 location, Vector3 directionFrom)
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public int getPathTime()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public boolean swims()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean canMate(EntityAnimal entityAnimal)
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

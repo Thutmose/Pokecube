@@ -27,9 +27,9 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.TickHandler;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 import thut.lib.ItemStackTools;
@@ -72,11 +72,13 @@ public class AIGatherStuff extends AIBase
             {
                 EntityPlayer player = PokecubeCore.getFakePlayer(world);
                 player.setHeldItem(EnumHand.MAIN_HAND, seeds);
-                seeds.getItem().onItemUse(player, world, pos.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 1, 0.5f);
-                if (CompatWrapper.isValid(seeds))
+                seeds.getItem().onItemUse(player, world, pos.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 1,
+                        0.5f);
+                Entity mob = world.getEntityByID(entityID);
+                IPokemob pokemob;
+                if (CompatWrapper.isValid(seeds) && ((pokemob = CapabilityPokemob.getPokemobFor(mob)) != null))
                 {
-                    Entity mob = world.getEntityByID(entityID);
-                    if (!ItemStackTools.addItemStackToInventory(seeds, ((IPokemob) mob).getPokemobInventory(), 2))
+                    if (!ItemStackTools.addItemStackToInventory(seeds, pokemob.getPokemobInventory(), 2))
                     {
                         mob.entityDropItem(seeds, 0);
                     }
@@ -89,7 +91,6 @@ public class AIGatherStuff extends AIBase
 
     final EntityLiving entity;
     final double       distance;
-    IHungrymob         hungrymob;
     IPokemob           pokemob;
     boolean            block     = false;
     EntityItem         stuff     = null;
@@ -104,8 +105,7 @@ public class AIGatherStuff extends AIBase
     public AIGatherStuff(EntityLiving entity, double distance, AIStoreStuff storage)
     {
         this.entity = entity;
-        this.hungrymob = (IHungrymob) entity;
-        this.pokemob = (IPokemob) entity;
+        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
         this.distance = distance;
         this.storage = storage;
         this.setMutex(1);
@@ -170,7 +170,7 @@ public class AIGatherStuff extends AIBase
             return;
         }
         v.set(entity).addTo(0, entity.getEyeHeight(), 0);
-        if (!block && hungrymob.eatsBerries())
+        if (!block && pokemob.eatsBerries())
         {
             Vector3 temp = v.findClosestVisibleObject(world, true, distance, berryMatcher);
             if (temp != null)
@@ -179,7 +179,7 @@ public class AIGatherStuff extends AIBase
                 stuffLoc.set(temp);
             }
         }
-        if (hungrymob.isElectrotroph())
+        if (pokemob.isElectrotroph())
         {
 
         }

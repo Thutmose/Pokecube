@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.TerrainDamageSource;
 import thut.api.maths.Vector3;
 
@@ -28,9 +29,10 @@ public class AIEventHandler
      * @param evt */
     public void pokemobMaterialHurt(LivingHurtEvent evt)
     {
-        if (evt.getSource() instanceof TerrainDamageSource && evt.getEntityLiving() instanceof IPokemob)
+        IPokemob pokemob;
+        if (evt.getSource() instanceof TerrainDamageSource
+                && (pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving())) != null)
         {
-            IPokemob pokemob = (IPokemob) evt.getEntityLiving();
             if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY)
                     && ((EntityLiving) evt.getEntityLiving()).getNavigator().noPath())
             {

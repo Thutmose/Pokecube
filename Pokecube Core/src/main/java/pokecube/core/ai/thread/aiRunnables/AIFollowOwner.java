@@ -2,11 +2,11 @@ package pokecube.core.ai.thread.aiRunnables;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
 /** This attempts to make the mob follow the owner around in the world. It
@@ -14,27 +14,25 @@ import thut.api.maths.Vector3;
  * follow. */
 public class AIFollowOwner extends AIBase
 {
-    final IPokemob               pokemob;
-    final private EntityLiving   thePet;
-    final private IEntityOwnable pet;
-    private EntityLivingBase     theOwner;
+    final IPokemob             pokemob;
+    final private EntityLiving thePet;
+    private EntityLivingBase   theOwner;
 
-    private double               speed;
-    private PathNavigate         petPathfinder;
-    private int                  cooldown;
-    float                        maxDist;
-    float                        minDist;
-    Vector3                      ownerPos = Vector3.getNewVector();
-    Vector3                      v        = Vector3.getNewVector();
-    Vector3                      v1       = Vector3.getNewVector();
+    private double             speed;
+    private PathNavigate       petPathfinder;
+    private int                cooldown;
+    float                      maxDist;
+    float                      minDist;
+    Vector3                    ownerPos = Vector3.getNewVector();
+    Vector3                    v        = Vector3.getNewVector();
+    Vector3                    v1       = Vector3.getNewVector();
 
     public AIFollowOwner(EntityLiving entity, float min, float max)
     {
         this.thePet = entity;
         this.minDist = min;
         this.maxDist = max;
-        pokemob = (IPokemob) entity;
-        pet = (IEntityOwnable) entity;
+        pokemob = CapabilityPokemob.getPokemobFor(entity);
         this.speed = 0.6;
         if (pokemob.getPokemonOwner() != null) ownerPos.set(pokemob.getPokemonOwner());
     }
@@ -52,7 +50,7 @@ public class AIFollowOwner extends AIBase
     {
         if (theOwner == null)
         {
-            theOwner = (EntityLivingBase) pet.getOwner();
+            theOwner = (EntityLivingBase) pokemob.getOwner();
             this.cooldown = 0;
             ownerPos.set(theOwner);
             pokemob.setPokemonAIState(IMoveConstants.PATHING, true);
@@ -94,7 +92,7 @@ public class AIFollowOwner extends AIBase
     @Override
     public boolean shouldRun()
     {
-        EntityLivingBase entitylivingbase = (EntityLivingBase) pet.getOwner();
+        EntityLivingBase entitylivingbase = (EntityLivingBase) pokemob.getOwner();
         this.petPathfinder = thePet.getNavigator();
         if (entitylivingbase == null)
         {

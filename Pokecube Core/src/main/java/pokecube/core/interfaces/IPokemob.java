@@ -41,10 +41,12 @@ import pokecube.core.interfaces.pokemob.IHasStats;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.utils.PokeType;
+import thut.api.entity.IBreedingMob;
 import thut.api.entity.IHungrymob;
+import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob
+public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob, IBreedingMob, IPathingMob
 {
     public static enum HappinessType
     {

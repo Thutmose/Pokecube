@@ -10,15 +10,19 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** Overriden to properly support mobs that move in 3D, such as flying or
  * swimming ones, as well as the make it so if a mob has transformed, it uses
  * the movement type of who it has transformed to. */
 public class PokemobMoveHelper extends EntityMoveHelper
 {
+    final IPokemob pokemob;
+
     public PokemobMoveHelper(EntityLiving entity)
     {
         super(entity);
+        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
     }
 
     @Override
@@ -80,12 +84,11 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
         else if (this.action == EntityMoveHelper.Action.MOVE_TO)
         {
-
-            IPokemob pokemob = (IPokemob) entity;
             PokedexEntry entry = pokemob.getPokedexEntry();
-            if (pokemob.getTransformedTo() instanceof IPokemob)
+            IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+            if (transformed != null)
             {
-                entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+                entry = transformed.getPokedexEntry();
             }
             pokemob.setDirectionPitch(0);
             entity.setMoveVertical(0);
@@ -136,7 +139,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
             if (shouldGoDown || shouldGoUp)
             {
                 entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
-                ((IPokemob) entity).setDirectionPitch(entity.rotationPitch);
+                pokemob.setDirectionPitch(entity.rotationPitch);
                 float up = -MathHelper.sin(entity.rotationPitch * (float) Math.PI / 180.0F);
                 entity.setMoveVertical(up);
             }

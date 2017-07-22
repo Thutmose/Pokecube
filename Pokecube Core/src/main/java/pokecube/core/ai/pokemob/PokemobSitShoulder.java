@@ -1,31 +1,34 @@
 package pokecube.core.ai.pokemob;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PokemobSitShoulder extends EntityAIBase
 {
-    private final EntityPokemob entity;
-    private EntityPlayer        owner;
-    private int                 cooldownTicks = 100;
-    private boolean             isSittingOnShoulder;
+    private final EntityLiving entity;
+    private final IPokemob     pokemob;
+    private EntityPlayer       owner;
+    private int                cooldownTicks = 100;
+    private boolean            isSittingOnShoulder;
 
-    public PokemobSitShoulder(EntityPokemob p_i47415_1_)
+    public PokemobSitShoulder(EntityLiving entityIn)
     {
-        this.entity = p_i47415_1_;
+        this.entity = entityIn;
+        this.pokemob = CapabilityPokemob.getPokemobFor(entityIn);
     }
 
     /** Returns whether the EntityAIBase should begin execution. */
     public boolean shouldExecute()
     {
-        EntityLivingBase entitylivingbase = (EntityLivingBase) this.entity.getOwner();
-        if (!(entitylivingbase instanceof EntityPlayer) || entity.getPokemonAIState(IPokemob.STAYING)) return false;
+        EntityLivingBase entitylivingbase = (EntityLivingBase) this.pokemob.getOwner();
+        if (!(entitylivingbase instanceof EntityPlayer) || pokemob.getPokemonAIState(IPokemob.STAYING)) return false;
         boolean flag = entitylivingbase != null && !((EntityPlayer) entitylivingbase).isSpectator()
                 && !((EntityPlayer) entitylivingbase).capabilities.isFlying && !entitylivingbase.isInWater()
-                && !this.entity.getPokemonAIState(IPokemob.SITTING);
+                && !this.pokemob.getPokemonAIState(IPokemob.SITTING);
         if (!flag) cooldownTicks = 100;
         if (cooldownTicks < -100) cooldownTicks = 100;
         return flag && cooldownTicks-- <= 0;
@@ -41,18 +44,18 @@ public class PokemobSitShoulder extends EntityAIBase
     /** Execute a one shot task or start executing a continuous task */
     public void startExecuting()
     {
-        this.owner = (EntityPlayer) this.entity.getOwner();
+        this.owner = (EntityPlayer) this.pokemob.getOwner();
         this.isSittingOnShoulder = false;
     }
 
     /** Keep ticking a continuous task that has already been started */
     public void updateTask()
     {
-        if (!this.isSittingOnShoulder && !this.entity.getPokemonAIState(IPokemob.SITTING) && !this.entity.getLeashed())
+        if (!this.isSittingOnShoulder && !this.pokemob.getPokemonAIState(IPokemob.SITTING) && !this.entity.getLeashed())
         {
             if (this.entity.getEntityBoundingBox().intersects(this.owner.getEntityBoundingBox()))
             {
-                this.isSittingOnShoulder = this.entity.moveToShoulder(this.owner);
+                this.isSittingOnShoulder = this.pokemob.moveToShoulder(this.owner);
             }
         }
     }

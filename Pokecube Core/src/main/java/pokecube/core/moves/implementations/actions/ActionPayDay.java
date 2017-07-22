@@ -1,6 +1,5 @@
 package pokecube.core.moves.implementations.actions;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Items;
 import pokecube.core.interfaces.IMoveAction;
@@ -17,9 +16,9 @@ public class ActionPayDay implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         int amountNugget = (int) (Math.random() * 2);
-        if (amountNugget > 0 && ((EntityLiving) user).getAttackTarget() != null)
+        if (amountNugget > 0 && user.getEntity().getAttackTarget() != null)
         {
-            EntityItem item = ((EntityLiving) user).getAttackTarget().dropItem(Items.GOLD_NUGGET, amountNugget);
+            EntityItem item = user.getEntity().getAttackTarget().dropItem(Items.GOLD_NUGGET, amountNugget);
             location.moveEntity(item);
             item.setPickupDelay(0);
             return true;

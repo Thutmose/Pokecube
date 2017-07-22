@@ -2,7 +2,6 @@ package pokecube.core.moves.templates;
 
 import java.util.Random;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -43,7 +42,7 @@ public class Move_Terrain extends Move_Basic
         attacker.getMoveStats().SPECIALCOUNTER = 20;
 
         duration = 300 + new Random().nextInt(600);
-        World world = ((Entity) attacker).getEntityWorld();
+        World world = attacker.getEntity().getEntityWorld();
         TerrainSegment segment = TerrainManager.getInstance().getTerrian(world, location);
 
         PokemobTerrainEffects teffect = (PokemobTerrainEffects) segment.geTerrainEffect("pokemobEffects");
@@ -54,7 +53,7 @@ public class Move_Terrain extends Move_Basic
 
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
         {
-            PacketSyncTerrain.sendTerrainEffects((Entity) attacker, segment.chunkX, segment.chunkY, segment.chunkZ,
+            PacketSyncTerrain.sendTerrainEffects(attacker.getEntity(), segment.chunkX, segment.chunkY, segment.chunkZ,
                     teffect);
         }
 

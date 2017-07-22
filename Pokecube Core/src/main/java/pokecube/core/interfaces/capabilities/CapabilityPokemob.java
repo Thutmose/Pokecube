@@ -14,7 +14,7 @@ public class CapabilityPokemob
     @CapabilityInject(IPokemob.class)
     public static final Capability<IPokemob> POKEMOB_CAP = null;
 
-    public static IPokemob getPokemobs(ICapabilityProvider entityIn)
+    public static IPokemob getPokemobFor(ICapabilityProvider entityIn)
     {
         IPokemob pokemobHolder = null;
         if (entityIn.hasCapability(POKEMOB_CAP, null)) pokemobHolder = entityIn.getCapability(POKEMOB_CAP, null);

@@ -2,9 +2,9 @@ package pokecube.core.moves.implementations.actions;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.commands.CommandTools;
@@ -16,7 +16,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class ActionDig implements IMoveAction
@@ -29,14 +28,13 @@ public class ActionDig implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
-        IHungrymob mob = (IHungrymob) user;
         boolean used = false;
         int count = 10;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
 
         EntityLivingBase owner = user.getPokemonOwner();
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(((Entity) user).getEntityWorld(), location.intX(),
+        boolean repel = SpawnHandler.checkNoSpawnerInArea(user.getEntity().getEntityWorld(), location.intX(),
                 location.intY(), location.intZ());
         if (owner != null && owner instanceof EntityPlayer)
         {
@@ -58,7 +56,7 @@ public class ActionDig implements IMoveAction
         {
             digHole(user, location, false);
             used = true;
-            mob.setHungerTime(mob.getHungerTime() + count);
+            user.setHungerTime(user.getHungerTime() + count);
         }
         return used;
     }
@@ -90,6 +88,7 @@ public class ActionDig implements IMoveAction
         boolean dropAll = shouldDropAll(digger);
         double uselessDrop = Math.pow((100 - digger.getLevel()) / 100d, 3);
         Vector3 temp = Vector3.getNewVector();
+        World world = digger.getEntity().getEntityWorld();
         temp.set(v);
         int range = 1;
         for (int i = -range; i <= range; i++)
@@ -97,7 +96,7 @@ public class ActionDig implements IMoveAction
                 for (int k = -range; k <= range; k++)
                 {
                     temp.set(v);
-                    IBlockState state = temp.addTo(i, j, k).getBlockState(((Entity) digger).getEntityWorld());
+                    IBlockState state = temp.addTo(i, j, k).getBlockState(world);
                     Block block = state.getBlock();
                     if (PokecubeTerrainChecker.isTerrain(state))
                     {
@@ -105,17 +104,17 @@ public class ActionDig implements IMoveAction
                         if (!dropAll && !silky && uselessDrop < Math.random()) drop = false;
                         if (!count)
                         {
-                            if (!silky) temp.breakBlock(((Entity) digger).getEntityWorld(), drop);
+                            if (!silky) temp.breakBlock(world, drop);
                             else
                             {
-                                if (block.canSilkHarvest(player.getEntityWorld(), temp.getPos(), state, player))
+                                if (block.canSilkHarvest(world, temp.getPos(), state, player))
                                 {
-                                    Move_Basic.silkHarvest(state, temp.getPos(), player.getEntityWorld(), player);
-                                    temp.breakBlock(((Entity) digger).getEntityWorld(), drop);
+                                    Move_Basic.silkHarvest(state, temp.getPos(), world, player);
+                                    temp.breakBlock(world, drop);
                                 }
                                 else
                                 {
-                                    temp.breakBlock(((Entity) digger).getEntityWorld(), drop);
+                                    temp.breakBlock(world, drop);
                                 }
                             }
                         }

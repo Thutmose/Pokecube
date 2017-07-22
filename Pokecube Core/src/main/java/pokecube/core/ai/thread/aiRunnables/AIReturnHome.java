@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -26,7 +27,7 @@ public class AIReturnHome extends AIBase
     {
         this.entity = entity;
         this.setMutex(2);
-        mob = (IPokemob) entity;
+        mob = CapabilityPokemob.getPokemobFor(entity);
         entry = mob.getPokedexEntry();
         this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.4;
     }
@@ -49,7 +50,8 @@ public class AIReturnHome extends AIBase
         BlockPos home = mob.getHome();
         if (entity.getAttackTarget() != null
                 || mob.getHomeDistance() * mob.getHomeDistance() < home.distanceSq(entity.getPosition())
-                || mob.getPokemonAIState(IMoveConstants.SITTING)) { return false; }
+                || mob.getPokemonAIState(IMoveConstants.SITTING) || (mob.getPokemonAIState(IPokemob.TAMED)
+                        && !mob.getPokemonAIState(IPokemob.STAYING))) { return false; }
 
         PokedexEntry entry = mob.getPokedexEntry();
         boolean activeTime = false;

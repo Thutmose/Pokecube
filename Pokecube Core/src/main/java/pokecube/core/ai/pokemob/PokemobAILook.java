@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PokemobAILook extends EntityAIBase
 {
@@ -38,7 +39,7 @@ public class PokemobAILook extends EntityAIBase
         this.theWatcher = entitylivingIn;
         this.watchedClass = watchTargetClass;
         this.maxDistanceForPlayer = maxDistance;
-        this.pokemob = (IPokemob) theWatcher;
+        this.pokemob = CapabilityPokemob.getPokemobFor(theWatcher);
         this.chance = chanceIn;
         this.setMutexBits(2);
     }

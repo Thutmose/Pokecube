@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** Overriden to properly support mobs that move in 3D, such as flying or
  * swimming ones, as well as the make it so if a mob has transformed, it uses
@@ -32,11 +33,12 @@ public class PokemobMoveHelper extends EntityMoveHelper
     @Override
     public void onUpdateMoveHelper()
     {
-        IPokemob pokemob = (IPokemob) entity;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         PokedexEntry entry = pokemob.getPokedexEntry();
-        if (pokemob.getTransformedTo() instanceof IPokemob)
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null)
         {
-            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+            entry = transformed.getPokedexEntry();
         }
         boolean water = entry.swims() && entity.isInWater();
         boolean air = entry.flys() || entry.floats();
@@ -70,7 +72,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
             if (air || water)
             {
                 entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
-                ((IPokemob) entity).setDirectionPitch(entity.rotationPitch);
+                pokemob.setDirectionPitch(entity.rotationPitch);
             }
         }
         else

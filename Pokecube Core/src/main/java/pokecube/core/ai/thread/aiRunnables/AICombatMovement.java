@@ -12,6 +12,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.StatModifiers.DefaultModifiers;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -32,7 +33,7 @@ public class AICombatMovement extends AIBase
     public AICombatMovement(EntityLiving par1EntityLiving)
     {
         this.attacker = par1EntityLiving;
-        this.pokemob = (IPokemob) attacker;
+        this.pokemob = CapabilityPokemob.getPokemobFor(attacker);
         this.movementSpeed = attacker.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()
                 * 0.8;
         centre = null;
@@ -152,9 +153,9 @@ public class AICombatMovement extends AIBase
         boolean dodge = false;
         if (!attacker.onGround && !(pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys()))
             return dodge;
-        if (attacker.getAttackTarget() instanceof IPokemob)
+        IPokemob target = CapabilityPokemob.getPokemobFor(attacker.getAttackTarget());
+        if (target != null)
         {
-            IPokemob target = (IPokemob) attacker.getAttackTarget();
             boolean shouldDodgeMove = target.getPokemonAIState(IMoveConstants.EXECUTINGMOVE);
             if (shouldDodgeMove)
             {
@@ -178,12 +179,12 @@ public class AICombatMovement extends AIBase
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.LEAPING)) return;
 
-        if (target instanceof IPokemob)
+        IPokemob targ = CapabilityPokemob.getPokemobFor(target);
+        if (targ != null)
         {
-            IPokemob targ = (IPokemob) target;
             if (!targ.getPokemonAIState(IMoveConstants.ANGRY))
             {
-                ((EntityLiving) targ).setAttackTarget(attacker);
+                targ.getEntity().setAttackTarget(attacker);
                 targ.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }

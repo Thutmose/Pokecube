@@ -5,6 +5,7 @@ import net.minecraft.entity.ai.EntityJumpHelper;
 import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** Overriden to allow setting the pokemob's specific jumping state, and calling
  * the custom jump implementation. */
@@ -17,7 +18,7 @@ public class PokemobJumpHelper extends EntityJumpHelper
     public PokemobJumpHelper(EntityLiving entityIn)
     {
         super(entityIn);
-        pokemob = (IPokemob) entityIn;
+        pokemob = CapabilityPokemob.getPokemobFor(entityIn);
         living = (EntityAiPokemob) entityIn;
     }
 

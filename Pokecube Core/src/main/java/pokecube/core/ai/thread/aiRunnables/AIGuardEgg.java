@@ -10,8 +10,8 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
-import thut.api.entity.IBreedingMob;
 
 /** This IAIRunnable results in the mother of an egg always staying within 4
  * blocks of it. It also prevents the mother from breeding, as well as prevents
@@ -19,7 +19,6 @@ import thut.api.entity.IBreedingMob;
  * guarded. */
 public class AIGuardEgg extends AIBase
 {
-    IBreedingMob     breedingMob;
     IPokemob         pokemob;
     EntityAnimal     entity;
     EntityPokemobEgg egg            = null;
@@ -28,9 +27,8 @@ public class AIGuardEgg extends AIBase
 
     public AIGuardEgg(EntityAnimal par1EntityAnimal)
     {
-        breedingMob = (IBreedingMob) par1EntityAnimal;
-        pokemob = (IPokemob) breedingMob;
-        entity = (EntityAnimal) pokemob;
+        entity = par1EntityAnimal;
+        pokemob = CapabilityPokemob.getPokemobFor(entity);
     }
 
     @Override
@@ -65,7 +63,7 @@ public class AIGuardEgg extends AIBase
     @Override
     public void run()
     {
-        breedingMob.resetLoveStatus();
+        pokemob.resetLoveStatus();
         if (entity.getDistanceSqToEntity(egg) < 4) return;
         Path path = entity.getNavigator().getPathToEntityLiving(egg);
         this.addEntityPath(entity, path, pokemob.getMovementSpeed());

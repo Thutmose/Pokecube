@@ -14,6 +14,7 @@ import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -48,6 +49,7 @@ public class AIStoreStuff extends AIBase
                                                     };
 
     final EntityLiving      entity;
+    final IPokemob          pokemob;
     Vector3                 inventoryLocation       = null;
     int                     searchInventoryCooldown = 0;
     int                     doStorageCooldown       = 0;
@@ -55,6 +57,7 @@ public class AIStoreStuff extends AIBase
     public AIStoreStuff(EntityLiving entity)
     {
         this.entity = entity;
+        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
     }
 
     private Vector3 checkDir(World world, EnumFacing dir, BlockPos centre)
@@ -77,7 +80,6 @@ public class AIStoreStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        IPokemob pokemob = (IPokemob) entity;
         if (tameCheck()) return;
         IInventory inventory = pokemob.getPokemobInventory();
         if (searchInventoryCooldown-- < 0)
@@ -290,7 +292,6 @@ public class AIStoreStuff extends AIBase
      * @return */
     private boolean tameCheck()
     {
-        IPokemob pokemob = (IPokemob) entity;
         return pokemob.getHome() == null || (pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !pokemob.getPokemonAIState(IMoveConstants.STAYING));
     }

@@ -224,13 +224,13 @@ public class AIGatherStuff extends AIBase
             if (dist < diff)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                IBlockState state = stuffLoc.getBlockState(entity.world);
-                Block plant = stuffLoc.getBlock(entity.world);
+                IBlockState state = stuffLoc.getBlockState(entity.getEntityWorld());
+                Block plant = stuffLoc.getBlock(entity.getEntityWorld());
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
                 if (state.getMaterial() != Material.GRASS)
                 {
                     NonNullList<ItemStack> list = NonNullList.create();
-                    plant.getDrops(list, entity.world, stuffLoc.getPos(), state, 0);
+                    plant.getDrops(list, entity.getEntityWorld(), stuffLoc.getPos(), state, 0);
                     boolean replanted = false;
                     for (ItemStack stack : list)
                     {

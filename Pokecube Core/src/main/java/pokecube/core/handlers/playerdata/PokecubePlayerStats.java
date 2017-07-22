@@ -274,7 +274,7 @@ public class PokecubePlayerStats extends PlayerData
         int x = -2 + (e.getPokedexNb() / 16) * 2;
         int y = -4 + (e.getPokedexNb() % 16) * 2 - 1;
         Achievement parent = null;
-        if (PokecubeCore.core.getConfig().catchOrderRequired && e.evolvesFrom != null && e.getSpawnData() == null)
+        if (e.evolvesFrom != null && e.getSpawnData() == null)
         {
             boolean baseCanSpawn = false;
             PokedexEntry from = e.evolvesFrom;

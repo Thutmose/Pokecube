@@ -29,6 +29,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
+import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
 import pokecube.core.database.Database;
 import pokecube.core.database.Database.EnumDatabase;
 import pokecube.core.database.recipes.XMLRecipeHandler;
@@ -40,6 +41,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
@@ -69,7 +71,7 @@ public class Config extends ConfigBase
 
     public static Config                 instance;
 
-    private static Config                defaults                     = null;
+    private static Config                defaults                     = new Config();
     // Misc Settings
     @Configure(category = misc, needsMcRestart = true)
     public String[]                      defaultStarters              = {};
@@ -94,26 +96,27 @@ public class Config extends ConfigBase
     public boolean                       mysterygift                  = true;
     @Configure(category = misc, needsMcRestart = true)
     public String                        defaultMobs                  = "";
-    @Configure(category = misc, needsMcRestart = true)
-    protected boolean                    tableRecipe                  = true;
-    @Configure(category = misc) // TODO sync this to clients on servers.
+    @Configure(category = misc)
+    @SyncConfig
     public double                        scalefactor                  = 1;
-    @Configure(category = misc)
-    public double                        contactAttackDistance        = 0;
-    @Configure(category = misc)
-    public double                        rangedAttackDistance         = 16;
     @Configure(category = misc)
     public boolean                       pcOnDrop                     = true;
     @Configure(category = misc)
     public int                           captureDelayTicks            = 50;
     @Configure(category = misc)
-    public boolean                       catchOrderRequired           = true;
-    @Configure(category = misc)
     public float                         expScaleFactor               = 1;
-
     @Configure(category = misc)
+    @SyncConfig
     public boolean                       pcHoldsOnlyPokecubes         = true;
+    @Configure(category = misc)
+    public String[]                      snagblacklist                = { "net.minecraft.entity.boss.EntityDragon",
+            "net.minecraft.entity.boss.EntityWither" };
+
     // AI Related settings
+    @Configure(category = mobAI)
+    public double                        contactAttackDistance        = 0;
+    @Configure(category = mobAI)
+    public double                        rangedAttackDistance         = 16;
     @Configure(category = mobAI)
     public int                           mateMultiplier               = 1;
     @Configure(category = mobAI)
@@ -125,50 +128,56 @@ public class Config extends ConfigBase
     public int                           eggHatchTime                 = 10000;
     @Configure(category = mobAI)
     /** do wild pokemobs which leave cullDistance despawn immediately */
+    @SyncConfig
     public boolean                       cull                         = false;
-    @Configure(category = mobAI)
     /** distance for culling */
+    @Configure(category = mobAI)
+    @SyncConfig
     public int                           cullDistance                 = 96;
     @Configure(category = mobAI)
     /** Will lithovores eat gravel */
     public boolean                       pokemobsEatGravel            = false;
     @Configure(category = mobAI)
-    /** Is there a warning before a wild pokémob attacks the player. */
+    /** Will lithovores eat rocks */
+    public boolean                       pokemobsEatRocks             = true;
+    @Configure(category = mobAI)
+    /** Will herbivores eat plants */
+    public boolean                       pokemobsEatPlants            = true;
+    @Configure(category = mobAI)
+    /** Is there a warning before a wild pokï¿½mob attacks the player. */
     public boolean                       pokemobagresswarning         = true;
     @Configure(category = mobAI)
+    @SyncConfig
     /** Distance to player needed to agress the player */
     public int                           mobAggroRadius               = 3;
     @Configure(category = mobAI)
-    /** Approximate number of ticks before pokémob starts taking hunger
+    /** Approximate number of ticks before pokï¿½mob starts taking hunger
      * damage */
     public int                           pokemobLifeSpan              = 8000;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public int                           maxWildPlayerDamage          = 10;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public int                           maxOwnedPlayerDamage         = 10;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        wildPlayerDamageRatio        = 1;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        wildPlayerDamageMagic        = 0.1;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        ownedPlayerDamageRatio       = 1;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        ownedPlayerDamageMagic       = 0.1;
     @Configure(category = mobAI)
     /** Scaling factor for damage against not pokemobs */
     public double                        pokemobToOtherMobDamageRatio = 1;
     @Configure(category = mobAI)
-    /** Warning time before a wild pokémob attacks a player */
+    /** Warning time before a wild pokï¿½mob attacks a player */
     public int                           pokemobagressticks           = 100;
-    @Configure(category = mobAI, needsMcRestart = true)
-    /** Number of threads allowed for AI. */
-    public int                           maxAIThreads                 = 1;
     @Configure(category = mobAI)
     public boolean                       pokemobsDamageOwner          = false;
     @Configure(category = mobAI)
@@ -213,9 +222,21 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     public boolean                       diveEnabled                  = true;
     @Configure(category = mobAI)
-    public String[]                      dodgeSounds                  = { "entity.generic.small_fall" };
+    public String[]                      dodgeSounds                  = { "entity.witch.throw" };
     @Configure(category = mobAI)
-    public String[]                      leapSounds                   = { "entity.generic.small_fall" };
+    public String[]                      leapSounds                   = { "entity.witch.throw" };
+    @Configure(category = mobAI)
+    public String[]                      guardBlacklistClass          = { "net.minecraft.entity.IMerchant",
+            "net.minecraft.entity.INpc", "pokecube.core.items.pokemobeggs.EntityPokemobEgg",
+            "net.minecraft.entity.IProjectile" };
+    @Configure(category = mobAI)
+    public String[]                      guardBlacklistId             = {};
+    @Configure(category = mobAI)
+    public float                         interactHungerScale          = 1;
+    @Configure(category = mobAI)
+    public float                         interactDelayScale           = 1;
+    @Configure(category = mobAI)
+    public boolean                       pokemobsOnShoulder           = true;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};
@@ -235,19 +256,33 @@ public class Config extends ConfigBase
     @Configure(category = world)
     public boolean                       refreshSubbiomes             = false;
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListCaveFloor           = {};
+    public String[]                      blocksStones                 = { "minecraft:stone variant=stone",
+            "minecraft:stone variant=granite", "minecraft:stone variant=diorite", "minecraft:stone variant=andesite",
+            "minecraft:netherrack", "minecraft:sandstone type=sandstone",
+            "minecraft:red_sandstone type=red_sandstone" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListSurface             = {};
+    public String[]                      blocksOre                    = { ".*:.*_ore", ".*:ore*" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListRocks               = {};
+    public String[]                      blocksGround                 = { "minecraft:sand", "minecraft:gravel",
+            "minecraft:stained_hardened_clay", "minecraft:hardened_clay", "minecraft:dirt", "minecraft:grass" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListTreeBlocks          = {};
+    public String[]                      blocksWood                   = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListHarvestablePlants   = {};
+    public String[]                      blocksLeaves                 = {};
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListMiscTerrain         = {};
+    public String[]                      blocksPlants                 = { "minecraft:double_plant",
+            "minecraft:red_flower", "minecraft:yellow_flower", "minecraft:tallgrass", "minecraft:deadbush",
+            "minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "pokecube:berryfruit" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blockListIndustrialBlocks    = {};
+    public String[]                      blocksFruits                 = { "minecraft:wheat age=7",
+            "minecraft:nether_wart age=3", "minecraft:carrots age=7", "minecraft:potatoes age=7",
+            "minecraft:melon_block", "minecraft:pumpkin", "pokecube:berryfruit" };
+    @Configure(category = world, needsMcRestart = true)
+    public String[]                      blocksTerrain                = {};
+    @Configure(category = world, needsMcRestart = true)
+    public String[]                      blocksIndustrial             = { "minecraft:redstone_block",
+            "minecraft:furnace", "minecraft:lit_furnace", "minecraft:piston", "minecraft:sticky_piston",
+            "minecraft:dispenser", "minecraft:dropper", "minecraft:hopper", "minecraft:anvil" };
     @Configure(category = world)
     public boolean                       useConfigForBerryLocations   = false;
     @Configure(category = world)
@@ -275,6 +310,9 @@ public class Config extends ConfigBase
     public String                        baseSizeFunction             = "8 + c/10 + h/10 + k/20";
     @Configure(category = world)
     public int                           baseMaxSize                  = 1;
+    @Configure(category = world, needsMcRestart = true)
+    public String[]                      structureSubiomes            = { "Stronghold:ruin", "Mineshaft:ruin",
+            "Temple:ruin", "EndCity:ruin", "Fortress:ruin", "Mansion:ruin", "Monument:monument", "Village:village" };
     @Configure(category = world)
     public int                           spawnDimension               = 0;
     // Mob Spawning settings
@@ -293,10 +331,12 @@ public class Config extends ConfigBase
     /** do Pokemobs spawn */
     public boolean                       pokemonSpawn                 = true;
     @Configure(category = spawning)
+    @SyncConfig
     /** This is also the radius which mobs spawn in. Is only despawn radius if
      * cull is true */
     public int                           maxSpawnRadius               = 32;
     @Configure(category = spawning)
+    @SyncConfig
     /** closest distance to a player the pokemob can spawn. */
     public int                           minSpawnRadius               = 16;
     @Configure(category = spawning)
@@ -316,20 +356,25 @@ public class Config extends ConfigBase
     @Configure(category = spawning)
     public double                        mobDensityMultiplier         = 1;
     @Configure(category = spawning)
+    @SyncConfig
     public int                           levelCap                     = 50;
     @Configure(category = spawning)
     public boolean                       shouldCap                    = true;
     @Configure(category = spawning)
+    @SyncConfig
     String[]                             spawnLevelFunctions          = { //@formatter:off
             "-1:abs((25)*(sin(x*8*10^-3)^3 + sin(y*8*10^-3)^3))",
             "0:abs((25)*(sin(x*10^-3)^3 + sin(y*10^-3)^3))",
             "1:1+r/1300;r"
             };//@formatter:on
     @Configure(category = spawning)
+    @SyncConfig
     public boolean                       expFunction                  = false;
     @Configure(category = spawning)
+    @SyncConfig
     public boolean                       spawnCentered                = true;
     @Configure(category = spawning)
+    @SyncConfig
     public int                           levelVariance                = 5;
     @Configure(category = spawning)
     public int[]                         dimensionBlacklist           = {};
@@ -342,7 +387,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public String                        guiRef                       = "top_left";
     @Configure(category = client)
-    public String                        messageRef                   = "bottom_middle";
+    public String                        messageRef                   = "right_middle";
     @Configure(category = client)
     public String                        targetRef                    = "top_right";
     @Configure(category = client)
@@ -360,7 +405,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public float                         targetSize                   = 1;
     @Configure(category = client)
-    public int[]                         messagePos                   = { -75, -31 };
+    public int[]                         messagePos                   = { -150, -100 };
     @Configure(category = client)
     public int                           messageWidth                 = 150;;
     @Configure(category = client)
@@ -391,12 +436,13 @@ public class Config extends ConfigBase
     public boolean                       debug                        = false;
     @Configure(category = advanced)
     public String[]                      damageBlocksWhitelist        = { "flash", "teleport", "dig", "cut",
-            "rocksmash" };
+            "rocksmash", "secretpower" };
     @Configure(category = advanced)
     public String[]                      damageBlocksBlacklist        = {};
     @Configure(category = advanced)
     public int                           evolutionTicks               = 50;
     @Configure(category = advanced)
+    @SyncConfig
     public int                           baseRadarRange               = 64;
     @Configure(category = advanced)
     public String                        nonPokemobExpFunction        = "h*(a+1)";
@@ -442,9 +488,7 @@ public class Config extends ConfigBase
     @Configure(category = healthbars)
     public int                           plateSize                    = 25;
     @Configure(category = healthbars)
-    public int                           plateSizeBoss                = 50;
-    @Configure(category = healthbars)
-    public boolean                       showAttributes               = true;
+    public boolean                       showHeldItem                 = true;
     @Configure(category = healthbars)
     public boolean                       showArmor                    = true;
     @Configure(category = healthbars)
@@ -475,6 +519,7 @@ public class Config extends ConfigBase
     private List<Predicate<IBlockState>> terrain                      = Lists.newArrayList();
     private List<Predicate<IBlockState>> woodTypes                    = Lists.newArrayList();
     private List<Predicate<IBlockState>> plantTypes                   = Lists.newArrayList();
+    private List<Predicate<IBlockState>> fruitTypes                   = Lists.newArrayList();
     private List<Predicate<IBlockState>> dirtTypes                    = Lists.newArrayList();
     private List<Predicate<IBlockState>> industrial                   = Lists.newArrayList();
 
@@ -485,12 +530,13 @@ public class Config extends ConfigBase
 
     public Config(File path)
     {
-        super(path, defaults = new Config());
-        instance = this;
-        MinecraftForge.EVENT_BUS.register(this);
+        super(path, defaults);
         populateSettings();
         applySettings();
         save();
+        if (path.getName().endsWith(".dummy")) return;
+        if (instance != null) MinecraftForge.EVENT_BUS.unregister(instance);
+        MinecraftForge.EVENT_BUS.register(instance = this);
     }
 
     @Override
@@ -498,6 +544,11 @@ public class Config extends ConfigBase
     {
         WorldProviderSecretBase.init(baseSizeFunction);
         if (!useConfigForBerryLocations) berryLocations = defaults.berryLocations;
+        for (String s : structureSubiomes)
+        {
+            String[] args = s.split(":");
+            PokecubeTerrainChecker.structureSubbiomeMap.put(args[0], args[1]);
+        }
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;
@@ -514,6 +565,23 @@ public class Config extends ConfigBase
         for (String loc : mystLocs)
         {
             PokecubeMod.giftLocations.add(loc);
+        }
+
+        for (String s : guardBlacklistClass)
+        {
+            try
+            {
+                Class<?> c = Class.forName(s, false, getClass().getClassLoader());
+                AIFindTarget.invalidClasses.add(c);
+            }
+            catch (ClassNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        for (String s : guardBlacklistId)
+        {
+            AIFindTarget.invalidIDs.add(s);
         }
 
         for (String s : recipeDatabases)
@@ -733,6 +801,11 @@ public class Config extends ConfigBase
     public List<Predicate<IBlockState>> getPlantTypes()
     {
         return plantTypes;
+    }
+
+    public List<Predicate<IBlockState>> getFruitTypes()
+    {
+        return fruitTypes;
     }
 
     public List<Predicate<IBlockState>> getDirtTypes()

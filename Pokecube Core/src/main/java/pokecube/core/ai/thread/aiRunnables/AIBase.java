@@ -67,11 +67,6 @@ public abstract class AIBase implements IAIRunnable
         public final int       minSlot;
         public final ItemStack stack;
 
-        public InventoryChange(Entity entity, int slot, ItemStack stack)
-        {
-            this(entity, slot, stack, false);
-        }
-
         public InventoryChange(Entity entity, int slot, ItemStack stack, boolean min)
         {
             this.entity = entity.getEntityId();
@@ -96,7 +91,10 @@ public abstract class AIBase implements IAIRunnable
             Entity e = world.getEntityByID(entity);
             if (e == null || !(e instanceof IPokemob)) return false;
             if (slot > 0) ((IPokemob) e).getPokemobInventory().setInventorySlotContents(slot, stack);
-            else ItemStackTools.addItemStackToInventory(stack, ((IPokemob) e).getPokemobInventory(), minSlot);
+            else if (!ItemStackTools.addItemStackToInventory(stack, ((IPokemob) e).getPokemobInventory(), minSlot))
+            {
+                e.entityDropItem(stack, 0);
+            }
             return true;
         }
 
@@ -284,7 +282,7 @@ public abstract class AIBase implements IAIRunnable
                                                                    }
                                                                };
 
-    IBlockAccess                             world;
+    protected IBlockAccess                   world;
 
     int                                      priority          = 0;
 
@@ -368,7 +366,7 @@ public abstract class AIBase implements IAIRunnable
         }
     }
 
-    List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
+    protected List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)
     {
         Vector<?> entities = AIThreadManager.worldEntities.get(source.dimension);
         List<Object> list = new ArrayList<Object>();

@@ -436,7 +436,6 @@ public class PokecubeCore extends PokecubeMod
         PokecubeItems.init();
         Database.postInit();
         StarterInfo.processStarterInfo(config.defaultStarts);
-        helper.addVillagerTrades();
         AbilityManager.init();
         MinecraftForge.EVENT_BUS.post(new PostPostInit());
         MovesAdder.postInitMoves();

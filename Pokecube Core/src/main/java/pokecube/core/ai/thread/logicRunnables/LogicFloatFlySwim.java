@@ -103,16 +103,16 @@ public class LogicFloatFlySwim extends LogicBase
         if (canFloat && !pokemob.getPokemonAIState(IMoveConstants.INWATER))
         {
             float floatHeight = (float) entry.preferedHeight;
-            Vector3 down = Vector3.getNextSurfacePoint(entity.worldObj, here.set(pokemob), Vector3.secondAxisNeg,
-                    floatHeight);
+            Vector3 down = Vector3.getNextSurfacePoint(entity.getEntityWorld(), here.set(pokemob),
+                    Vector3.secondAxisNeg, floatHeight);
             if (down != null) here.set(down);
-            if (!(here.getBlock(entity.worldObj)).isReplaceable(entity.worldObj, here.getPos())
+            if (!(here.getBlock(entity.getEntityWorld())).isReplaceable(entity.getEntityWorld(), here.getPos())
                     && !pokemob.getPokemonAIState(IMoveConstants.SLEEPING)
-                    || here.getBlockState(entity.worldObj).getMaterial().isLiquid())
+                    || here.getBlockState(entity.getEntityWorld()).getMaterial().isLiquid())
             {
-                entity.motionY += 0.01;
+                entity.motionY += 0.005;
             }
-            else entity.motionY -= 0.01;
+            else entity.motionY -= 0.005;
             if (down == null || pokemob.getPokemonAIState(IMoveConstants.SITTING))
             {
                 entity.motionY -= 0.02;

@@ -3,21 +3,30 @@ package pokecube.core.ai.thread.aiRunnables;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.base.Predicate;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import pokecube.core.interfaces.IBerryFruitBlock;
+import net.minecraftforge.common.IPlantable;
+import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.TickHandler;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -29,7 +38,54 @@ import thut.lib.ItemStackTools;
  * before it will run. */
 public class AIGatherStuff extends AIBase
 {
-    public static int  COOLDOWN  = 200;
+    public static int                           COOLDOWN     = 200;
+
+    // Matcher used to determine if a block is a fruit or crop to be picked.
+    private static final Predicate<IBlockState> berryMatcher = new Predicate<IBlockState>()
+                                                             {
+                                                                 @Override
+                                                                 public boolean apply(IBlockState input)
+                                                                 {
+                                                                     return PokecubeTerrainChecker.isFruit(input);
+                                                                 }
+                                                             };
+
+    private static class ReplantTask implements IRunnable
+    {
+        final int       entityID;
+        final ItemStack seeds;
+        final BlockPos  pos;
+
+        public ReplantTask(Entity entity, ItemStack seeds, BlockPos pos)
+        {
+            this.seeds = seeds.copy();
+            this.pos = new BlockPos(pos);
+            this.entityID = entity.getEntityId();
+        }
+
+        @Override
+        public boolean run(World world)
+        {
+            if (!CompatWrapper.isValid(seeds)) return true;
+            if (seeds.getItem() instanceof IPlantable)
+            {
+                EntityPlayer player = PokecubeCore.getFakePlayer(world);
+                player.setHeldItem(EnumHand.MAIN_HAND, seeds);
+                seeds.getItem().onItemUse(seeds, player, world, pos.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 1, 0.5f);
+                if (CompatWrapper.isValid(seeds))
+                {
+                    Entity mob = world.getEntityByID(entityID);
+                    if (!ItemStackTools.addItemStackToInventory(seeds, ((IPokemob) mob).getPokemobInventory(), 2))
+                    {
+                        mob.entityDropItem(seeds, 0);
+                    }
+                }
+            }
+            return true;
+        }
+
+    }
+
     final EntityLiving entity;
     final double       distance;
     IHungrymob         hungrymob;
@@ -115,7 +171,7 @@ public class AIGatherStuff extends AIBase
         v.set(entity).addTo(0, entity.getEyeHeight(), 0);
         if (!block && hungrymob.eatsBerries())
         {
-            Vector3 temp = v.findClosestVisibleObject(world, true, distance, IBerryFruitBlock.class);
+            Vector3 temp = v.findClosestVisibleObject(world, true, distance, berryMatcher);
             if (temp != null)
             {
                 block = true;
@@ -167,13 +223,42 @@ public class AIGatherStuff extends AIBase
             if (dist < diff)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                IBlockState state = stuffLoc.getBlockState(world);
-                Block plant = stuffLoc.getBlock(world);
+                IBlockState state = stuffLoc.getBlockState(entity.getEntityWorld());
+                Block plant = stuffLoc.getBlock(entity.getEntityWorld());
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
                 if (state.getMaterial() != Material.GRASS)
                 {
-                    for (ItemStack stack : plant.getDrops(world, stuffLoc.getPos(), stuffLoc.getBlockState(world), 0))
-                        toRun.addElement(new InventoryChange(entity, 2, stack, true));
+                    List<ItemStack> list;
+                    list = plant.getDrops(entity.getEntityWorld(), stuffLoc.getPos(), state, 0);
+                    boolean replanted = false;
+                    for (ItemStack stack : list)
+                    {
+                        if (stack.getItem() instanceof IPlantable && !replanted)
+                        {
+                            toRun.addElement(new ReplantTask(entity, stack.copy(), stuffLoc.getPos()));
+                            replanted = true;
+                        }
+                        else toRun.addElement(new InventoryChange(entity, 2, stack.copy(), true));
+                    }
+                    if (!replanted)
+                    {
+                        // Try to find a seed in our inventory for this plant.
+                        for (int i = 2; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
+                        {
+                            ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(i);
+                            if (CompatWrapper.isValid(stack) && stack.getItem() instanceof IPlantable)
+                            {
+                                IPlantable plantable = (IPlantable) stack.getItem();
+                                IBlockState plantState = plantable.getPlant(world, stuffLoc.getPos().up());
+                                if (plantState.getBlock() == state.getBlock())
+                                {
+                                    toRun.addElement(new ReplantTask(entity, stack.copy(), stuffLoc.getPos()));
+                                    replanted = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
                 stuffLoc.clear();
                 addEntityPath(entity.getEntityId(), entity.dimension, null, 0);

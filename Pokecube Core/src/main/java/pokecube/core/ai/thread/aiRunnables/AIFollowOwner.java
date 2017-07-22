@@ -80,6 +80,9 @@ public class AIFollowOwner extends AIBase
             if (--this.cooldown <= 0)
             {
                 this.cooldown = 2;
+                double dl = v.set(theOwner).distToSq(ownerPos);
+                if (dl < 1) return;
+                ownerPos.set(theOwner);
                 this.speed = Math.sqrt(theOwner.motionX * theOwner.motionX + theOwner.motionZ * theOwner.motionZ);
                 this.speed = Math.max(0.6, speed);
                 Path path = this.petPathfinder.getPathToEntityLiving(theOwner);

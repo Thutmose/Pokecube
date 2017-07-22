@@ -46,6 +46,7 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
@@ -246,7 +247,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
-            EntityLiving entity = (EntityLiving) pokemob;
+            EntityLiving entity = pokemob.getEntity();
             int currentMoveIndex = pokemob.getMoveIndex();
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             // Render HP
@@ -435,7 +436,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         render:
         if (pokemob != null)
         {
-            EntityLivingBase entity = ((EntityLiving) pokemob).getAttackTarget();
+            EntityLivingBase entity = pokemob.getEntity().getAttackTarget();
             if (entity == null) break render;
 
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
@@ -462,9 +463,9 @@ public class GuiDisplayPokecubeInfo extends Gui
             tessellator.draw();
 
             // Render Status
-            if (entity instanceof IPokemob)
+            pokemob = CapabilityPokemob.getPokemobFor(entity);
+            if (pokemob != null)
             {
-                pokemob = (IPokemob) entity;
                 byte status = pokemob.getStatus();
                 if (status != IMoveConstants.STATUS_NON)
                 {
@@ -572,14 +573,14 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         if (player == null || player.getEntityWorld() == null) return new IPokemob[0];
 
-        List<?> pokemobs = Lists.newArrayList(player.getEntityWorld().getLoadedEntityList());
+        List<Entity> pokemobs = Lists.newArrayList(player.getEntityWorld().getLoadedEntityList());
 
         List<IPokemob> ret = new ArrayList<IPokemob>();
         Set<Integer> added = new HashSet<>();
-        for (Object object : pokemobs)
+        for (Entity object : pokemobs)
         {
-            if (!(object instanceof IPokemob)) continue;
-            IPokemob pokemob = (IPokemob) object;
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(object);
+            if (object == null) continue;
 
             boolean owner = pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonOwner() != null;
 
@@ -604,8 +605,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             @Override
             public int compare(IPokemob o1, IPokemob o2)
             {
-                Entity e1 = (Entity) o1;
-                Entity e2 = (Entity) o2;
+                Entity e1 = o1.getEntity();
+                Entity e2 = o2.getOwner();
 
                 if (e1.ticksExisted == e2.ticksExisted)
                 {
@@ -683,15 +684,16 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (getCurrentPokemob() == null) return;
 
         EntityPlayer player = minecraft.player;
-        Entity attacker = ((Entity) getCurrentPokemob());
+        Entity attacker = getCurrentPokemob().getEntity();
         Entity target = Tools.getPointedEntity(player, 32);
         boolean teleport = false;
         Vector3 targetLocation = Tools.getPointedLocation(player, 32);
 
         boolean sameOwner = false;
-        if (target instanceof IPokemob)
+        IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
+        if (targetMob != null)
         {
-            sameOwner = ((IPokemob) target).getPokemonOwner() == player;
+            sameOwner = targetMob.getPokemonOwner() == player;
         }
 
         IPokemob pokemob = getCurrentPokemob();
@@ -759,9 +761,10 @@ public class GuiDisplayPokecubeInfo extends Gui
             Vector3 look = Vector3.getNewVector().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
             target = temp.firstEntityExcluding(32, look, player.getEntityWorld(), player.isSneaking(), player);
-            if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
+            IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
+            if (targetMob != null && targetMob.getPokemonOwner() == player)
             {
-                ((IPokemob) target).returnToPokecube();
+                targetMob.returnToPokecube();
             }
         }
 
@@ -789,7 +792,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             Vector3 look = Vector3.getNewVector().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
             target = temp.firstEntityExcluding(32, look, player.getEntityWorld(), player.isSneaking(), player);
-            if (target != null && target instanceof IPokemob && ((IPokemob) target).getPokemonOwner() == player)
+            IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
+            if (targetMob != null && targetMob.getPokemonOwner() == player)
             {
                 PacketPokemobGui packet = new PacketPokemobGui(PacketPokemobGui.BUTTONTOGGLESIT, target.getEntityId());
                 PokecubeMod.packetPipeline.sendToServer(packet);

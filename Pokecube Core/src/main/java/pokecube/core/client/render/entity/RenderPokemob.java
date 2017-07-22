@@ -27,6 +27,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
@@ -121,7 +122,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     public static void renderExitCube(IPokemob pokemob, float partialTick)
     {
         if (!pokemob.getPokemonAIState(IMoveConstants.EXITINGCUBE)) return;
-        Entity entity = (Entity) pokemob;
+        Entity entity = pokemob.getEntity();
         int ticks = entity.ticksExisted;
         if (ticks > 20) return;
         NBTTagCompound sealTag = PokecubeManager.getSealTag(entity);
@@ -239,7 +240,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     public static <V extends EntityLiving> void renderStatus(IModelRenderer<V> renderer, V entity, double d, double d1,
             double d2, float f, float partialTick)
     {
-        IPokemob pokemob = (IPokemob) entity;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         byte status;
         if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
         ResourceLocation texture = null;
@@ -255,7 +256,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
 
         FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
 
-        float time = (((Entity) pokemob).ticksExisted + partialTick);
+        float time = (entity.ticksExisted + partialTick);
         GL11.glPushMatrix();
         float speed = status == IMoveConstants.STATUS_FRZ ? 0.001f : 0.005f;
         GL11.glMatrixMode(GL11.GL_TEXTURE);
@@ -319,7 +320,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     @Override
     protected ResourceLocation getEntityTexture(T entity)
     {
-        return getPokemobTexture((IPokemob) entity);
+        return getPokemobTexture(CapabilityPokemob.getPokemobFor(entity));
     }
 
     @SuppressWarnings("unchecked")
@@ -360,31 +361,28 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     protected void renderModel(T entity, float walktime, float walkspeed, float time, float rotationYaw,
             float rotationPitch, float partialTicks)
     {
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob == null) return;
         GL11.glPushMatrix();
         preRenderCallback(entity, partialTicks);
-        if (entity instanceof IPokemob)
+        int ticks = entity.ticksExisted;
+        if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTicks <= 1))
         {
-            IPokemob mob = (IPokemob) entity;
-            int ticks = ((Entity) mob).ticksExisted;
-            if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTicks <= 1))
-            {
-                float max = 5;// ;
-                float s = (ticks) / max;
-                GL11.glScalef(s, s, s);
-            }
+            float max = 5;// ;
+            float s = (ticks) / max;
+            GL11.glScalef(s, s, s);
         }
         if ((time <= 1))
         {
-            renderEvolution((IPokemob) entity, partialTicks);
-            renderExitCube((IPokemob) entity, partialTicks);
+            renderEvolution(mob, partialTicks);
+            renderExitCube(mob, partialTicks);
         }
         if (time > 1)
         {
             long t = Minecraft.getMinecraft().world.getWorldTime() % 1000;
             super.renderModel(entity, t / 3f, 0.6f, t, rotationYaw, rotationPitch, partialTicks);
         }
-        else if (((IPokemob) entity).getStatus() == IMoveConstants.STATUS_SLP
-                || ((IPokemob) entity).getPokemonAIState(IMoveConstants.SLEEPING))
+        else if (mob.getStatus() == IMoveConstants.STATUS_SLP || mob.getPokemonAIState(IMoveConstants.SLEEPING))
         {
             super.renderModel(entity, 0, 0, 0, -40, 19, partialTicks);
         }

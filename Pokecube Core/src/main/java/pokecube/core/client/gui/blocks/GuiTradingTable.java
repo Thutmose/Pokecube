@@ -20,6 +20,7 @@ import pokecube.core.blocks.tradingTable.TileEntityTradingTable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
@@ -136,8 +137,7 @@ public class GuiTradingTable extends GuiContainer
 
     private EntityLiving getEntityToDisplay(int index)
     {
-        EntityLiving pokemob = (EntityLiving) PokecubeManager.itemToPokemob(table.getStackInSlot(index),
-                table.getWorld());
+        EntityLiving pokemob = PokecubeManager.itemToPokemob(table.getStackInSlot(index), table.getWorld()).getEntity();
         return pokemob;
     }
 
@@ -172,11 +172,7 @@ public class GuiTradingTable extends GuiContainer
         int j = index == 0 ? 45 : 130;
         int k = -40;
 
-        IPokemob pokemob = null;
-        if (entity instanceof IPokemob)
-        {
-            pokemob = (IPokemob) entity;
-        }
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
 
         size = Math.max(entity.width, entity.height);
         size = Math.max(pokemob.getPokedexEntry().length * pokemob.getSize(), size);
@@ -211,7 +207,7 @@ public class GuiTradingTable extends GuiContainer
         entity.limbSwing = 0;
         entity.limbSwingAmount = 0;
         PokeType flying = PokeType.getType("flying");
-        entity.onGround = !((IPokemob)entity).isType(flying);
+        entity.onGround = !pokemob.isType(flying);
 
         Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
 

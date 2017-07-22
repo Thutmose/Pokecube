@@ -45,6 +45,7 @@ import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.lib.CompatWrapper;
 
@@ -136,8 +137,8 @@ public class RenderHealth
 
         EntityLivingBase entity = passedEntity;
 
-        if (!(entity instanceof IPokemob)) return;
-        IPokemob pokemob = (IPokemob) entity;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (pokemob == null) return;
 
         ridingStack.push(entity);
 

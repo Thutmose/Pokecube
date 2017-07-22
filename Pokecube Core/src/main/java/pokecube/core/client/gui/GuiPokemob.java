@@ -21,7 +21,6 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.client.Resources;
@@ -103,7 +102,7 @@ public class GuiPokemob extends GuiContainer
                     tessellator.draw();
                     return;
                 }
-                ((Entity) renderMob).onGround = true;
+                renderMob.getEntity().onGround = true;
 
                 int x = this.x + width / 2 - 2;
                 int y = this.y + height / 2 + 7;
@@ -112,14 +111,14 @@ public class GuiPokemob extends GuiContainer
                 GL11.glTranslatef(x, y, 0F);
                 GL11.glRotated(90, 0, 1, 0);
                 GL11.glScaled(scale, scale, scale);
-                ((Entity) renderMob).ticksExisted = mc.player.ticksExisted;
-                ((EntityLiving) renderMob).rotationYawHead = 0;
-                ((EntityLiving) renderMob).prevRotationYawHead = 0;
-                ((Entity) renderMob).rotationYaw = 0;
-                ((Entity) renderMob).prevRotationYaw = 0;
-                ((EntityLivingBase) renderMob).limbSwing += 0.05;
-                ((EntityLivingBase) renderMob).limbSwingAmount = 0.05f;
-                Object o = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject((Entity) renderMob);
+                renderMob.getEntity().ticksExisted = mc.player.ticksExisted;
+                renderMob.getEntity().rotationYawHead = 0;
+                renderMob.getEntity().prevRotationYawHead = 0;
+                renderMob.getEntity().rotationYaw = 0;
+                renderMob.getEntity().prevRotationYaw = 0;
+                renderMob.getEntity().limbSwing += 0.05;
+                renderMob.getEntity().limbSwingAmount = 0.05f;
+                Object o = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(renderMob.getEntity());
                 if (o instanceof RenderAdvancedPokemobModel
                         || (o = RenderPokemobs.getInstance().getRenderer(entry)) instanceof RenderAdvancedPokemobModel)
                 {
@@ -205,7 +204,7 @@ public class GuiPokemob extends GuiContainer
     {
         try
         {
-            EntityLiving entity = (EntityLiving) pokemob;
+            EntityLiving entity = pokemob.getEntity();
             float size = 0;
             int j = width;
             int k = height;
@@ -259,7 +258,7 @@ public class GuiPokemob extends GuiContainer
         this.playerInventory = playerInv;
         this.pokeInventory = pokemob.getPokemobInventory();
         this.pokemob = pokemob;
-        this.entity = (EntityLiving) pokemob;
+        this.entity = pokemob.getEntity();
         this.allowUserInput = false;
     }
 

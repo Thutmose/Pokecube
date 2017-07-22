@@ -43,33 +43,33 @@ import thut.api.entity.IMobColourable;
 public class GuiChooseFirstPokemob extends GuiScreen
 {
 
-    public final static float                     POKEDEX_RENDER     = 1.5f;
-    public static boolean                         options            = true;
-    public static boolean                         fixed              = false;
+    public final static float POKEDEX_RENDER   = 1.5f;
+    public static boolean     options          = true;
+    public static boolean     fixed            = false;
 
-    public static Integer[]                       starters;
+    public static Integer[]   starters;
 
-    int                                           xSize              = 150;
-    int                                           ySize              = 150;
+    int                       xSize            = 150;
+    int                       ySize            = 150;
 
-    private float                                 yRenderAngle       = 10;
+    private float             yRenderAngle     = 10;
 
-    private float                                 xRenderAngle       = 0;
+    private float             xRenderAngle     = 0;
 
-    private float                                 yHeadRenderAngle   = 10;
+    private float             yHeadRenderAngle = 10;
 
-    private float                                 xHeadRenderAngle   = 0;
-    protected EntityPlayer                        entityPlayer       = null;
-    protected PokedexEntry                        pokedexEntry       = null;
-    int                                           index              = 0;
+    private float             xHeadRenderAngle = 0;
+    protected EntityPlayer    entityPlayer     = null;
+    protected PokedexEntry    pokedexEntry     = null;
+    int                       index            = 0;
 
-    GuiButton                                     next;
+    GuiButton                 next;
 
-    GuiButton                                     prev;
-    GuiButton                                     choose;
-    GuiButton                                     accept;
+    GuiButton                 prev;
+    GuiButton                 choose;
+    GuiButton                 accept;
 
-    GuiButton                                     deny;
+    GuiButton                 deny;
 
     public GuiChooseFirstPokemob(Integer[] _starters)
     {
@@ -360,19 +360,11 @@ public class GuiChooseFirstPokemob extends GuiScreen
             int j = 0;
             int k = 0;
 
-            IPokemob pokemob = null;
-            if (entity instanceof IPokemob)
-            {
-                pokemob = (IPokemob) entity;
-            }
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+            pokemob.setShiny(false);
+            pokemob.setSize(4);
 
-            if (entity instanceof IPokemob)
-            {
-                pokemob.setShiny(false);
-                pokemob.setSize(4);
-            }
-
-            if (entity instanceof IMobColourable) ((IMobColourable) pokemob).setRGBA(255, 255, 255, 255);
+            if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
             size = Math.max(entity.width, entity.height);
             j = (width - xSize) / 2;
             k = (height - ySize) / 2;
@@ -404,7 +396,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             entity.limbSwing = 0;
             entity.limbSwingAmount = 0;
             PokeType flying = PokeType.getType("flying");
-            entity.onGround = !((IPokemob)entity).isType(flying);
+            entity.onGround = !pokemob.isType(flying);
             Minecraft.getMinecraft().getRenderManager().doRenderEntity(entity, 0, 0, 0, 0, POKEDEX_RENDER, false);
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL11.GL_COLOR_MATERIAL);

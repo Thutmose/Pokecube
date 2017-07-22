@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.EntityTools;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
@@ -93,41 +94,39 @@ public class RenderPokemobs extends RenderPokemob
 
     public static boolean shouldRender(EntityLiving entity, double x, double y, double z, float par8, float par9)
     {
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob == null) return false;
+        int nb = mob.getPokedexNb();
+        if (!PokecubeMod.registered.get(nb))
         {
-            IPokemob mob = (IPokemob) entity;
-            int nb = mob.getPokedexNb();
-            if (!PokecubeMod.registered.get(nb))
+            System.err.println("attempting to render an un-registed pokemon " + entity);
+            return false;
+        }
+        if (mob.getTransformedTo() != null && mob.getTransformedTo() instanceof EntityLivingBase)
+        {
+            EntityLivingBase from = (EntityLivingBase) mob.getTransformedTo();
+            try
             {
-                System.err.println("attempting to render an un-registed pokemon " + entity);
-                return false;
+                Class<? extends EntityLivingBase> claz = from.getClass();
+                EntityLivingBase to;
+                if (claz == EntityPlayerSP.class)
+                {
+                    claz = EntityOtherPlayerMP.class;
+                    to = new EntityOtherPlayerMP(entity.getEntityWorld(), (((EntityPlayerSP) from).getGameProfile()));
+                }
+                else
+                {
+                    to = claz.getConstructor(World.class).newInstance(from.getEntityWorld());
+                }
+                EntityTools.copyEntityData(to, from);
+                EntityTools.copyEntityTransforms(to, entity);
+                Minecraft.getMinecraft().getRenderManager().doRenderEntity(to, x, y, z, par8, par9, false);
             }
-            if (mob.getTransformedTo() != null && mob.getTransformedTo() instanceof EntityLivingBase)
+            catch (Exception e1)
             {
-                EntityLivingBase from = (EntityLivingBase) mob.getTransformedTo();
-                try
-                {
-                    Class<? extends EntityLivingBase> claz = from.getClass();
-                    EntityLivingBase to;
-                    if (claz == EntityPlayerSP.class)
-                    {
-                        claz = EntityOtherPlayerMP.class;
-                        to = new EntityOtherPlayerMP(entity.world, (((EntityPlayerSP) from).getGameProfile()));
-                    }
-                    else
-                    {
-                        to = claz.getConstructor(World.class).newInstance(from.world);
-                    }
-                    EntityTools.copyEntityData(to, from);
-                    EntityTools.copyEntityTransforms(to, entity);
-                    Minecraft.getMinecraft().getRenderManager().doRenderEntity(to, x, y, z, par8, par9, false);
-                }
-                catch (Exception e1)
-                {
-                    e1.printStackTrace();
-                }
-                return false;
+                e1.printStackTrace();
             }
+            return false;
         }
         return true;
     }
@@ -148,9 +147,9 @@ public class RenderPokemobs extends RenderPokemob
     public void doRender(EntityLiving entity, double x, double y, double z, float yaw, float partialTick)
     {
         if (!RenderPokemobs.shouldRender(entity, x, y, z, yaw, partialTick)) return;
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entity;
             GlStateManager.pushMatrix();
             // // Handle held/shoulder, whenever entities can mount players...
 
@@ -193,8 +192,8 @@ public class RenderPokemobs extends RenderPokemob
     protected ResourceLocation getPokemobTexture(IPokemob entity)
     {
         IPokemob mob = entity;
-
-        if (mob.getTransformedTo() instanceof IPokemob)
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(mob.getTransformedTo());
+        if (transformed != null)
         {
             int num = mob.getPokedexNb();
 
@@ -203,7 +202,7 @@ public class RenderPokemobs extends RenderPokemob
                 int rngval = entity.getRNGValue();
                 if (rngval % 20 == 0) { return super.getPokemobTexture(mob); }
             }
-            mob = (IPokemob) mob.getTransformedTo();
+            mob = transformed;
         }
         return super.getPokemobTexture(mob);
     }

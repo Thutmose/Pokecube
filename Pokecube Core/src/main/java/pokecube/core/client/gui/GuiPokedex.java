@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -496,15 +497,16 @@ public class GuiPokedex extends GuiScreen
         drawString(fontRenderer, count + "/" + count2,
                 xOffset + 120 - fontRenderer.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
         World world = entityPlayer.getEntityWorld();
-        List<Object> entities = new ArrayList<Object>(world.loadedEntityList);
+        List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
         count = 0;
         count2 = 0;
-        for (Object o : entities)
+        for (Entity o : entities)
         {
-            if (o instanceof IPokemob)
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(o);
+            if (pokemob != null)
             {
                 if (!mode) count++;
-                else if (((IPokemob) o).getPokedexEntry().getPokedexNb() == pokedexEntry.getPokedexNb()) count++;
+                else if (pokemob.getPokedexEntry().getPokedexNb() == pokedexEntry.getPokedexNb()) count++;
             }
         }
         drawString(fontRenderer, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
@@ -1350,13 +1352,9 @@ public class GuiPokedex extends GuiScreen
             int j = 0;
             int k = 0;
 
-            IPokemob pokemob = null;
-            if (entity instanceof IPokemob)
-            {
-                pokemob = (IPokemob) entity;
-                pokemob.setSize(1);
-                pokemob.setShiny(false);
-            }
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+            pokemob.setSize(1);
+            pokemob.setShiny(false);
             PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
                     .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
             if ((StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
@@ -1406,7 +1404,7 @@ public class GuiPokedex extends GuiScreen
             entity.limbSwingAmount = 0;
             entity.prevLimbSwingAmount = 0;
             PokeType flying = PokeType.getType("flying");
-            entity.onGround = !((IPokemob) entity).isType(flying);
+            entity.onGround = !pokemob.isType(flying);
 
             if (isAltKeyDown())
             {

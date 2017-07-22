@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveAnimation.MovePacketInfo;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.animations.EntityMoveUse;
 
 public class RenderMoves<T extends EntityMoveUse> extends Render<T>
@@ -25,7 +25,7 @@ public class RenderMoves<T extends EntityMoveUse> extends Render<T>
         GlStateManager.pushMatrix();
         GlStateManager.translate((float) x, (float) y, (float) z);
         IMoveAnimation animation;
-        if (move != null && (animation = move.getAnimation((IPokemob) entity.getUser())) != null
+        if (move != null && (animation = move.getAnimation(CapabilityPokemob.getPokemobFor(entity.getUser()))) != null
                 && entity.getUser() != null)
         {
             MovePacketInfo info = entity.getMoveInfo();

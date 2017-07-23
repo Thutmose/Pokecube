@@ -133,7 +133,7 @@ public class ItemTM extends ItemPokemobUseable
     public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
     {
         if (mob.getEntityWorld().isRemote) return true;
-
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         if (stack.hasTagCompound())
         {
             int num = stack.getItemDamage();
@@ -142,8 +142,8 @@ public class ItemTM extends ItemPokemobUseable
             // If invalid candy, drop level since it is bad candy
             if (num == 20)
             {
-                int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
-                ((IPokemob) mob).setExp(xp, true);
+                int xp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() - 1);
+                pokemob.setExp(xp, true);
                 stack.setTagCompound(null);
                 stack.splitStack(1);
                 return true;
@@ -155,8 +155,8 @@ public class ItemTM extends ItemPokemobUseable
             // If invalid candy, drop level since it is bad candy
             if (num == 20)
             {
-                int xp = Tools.levelToXp(((IPokemob) mob).getExperienceMode(), ((IPokemob) mob).getLevel() - 1);
-                ((IPokemob) mob).setExp(xp, true);
+                int xp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() - 1);
+                pokemob.setExp(xp, true);
                 stack.setTagCompound(null);
                 stack.splitStack(1);
                 return true;

@@ -72,6 +72,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
@@ -134,8 +135,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean canBreatheUnderwater()
     {
-        return (getType1() == PokeType.getType("water") || getType2() == PokeType.getType("water") || getPokedexEntry().shouldDive
-                || getPokedexEntry().swims());
+        return (getType1() == PokeType.getType("water") || getType2() == PokeType.getType("water")
+                || getPokedexEntry().shouldDive || getPokedexEntry().swims());
     }
 
     @Override
@@ -458,9 +459,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (isServerWorld())
         {
             PokedexEntry entry = getPokedexEntry();
-            if (getTransformedTo() instanceof IPokemob)
+            IPokemob transformed = CapabilityPokemob.getPokemobFor(getTransformedTo());
+            if (transformed != null)
             {
-                entry = ((IPokemob) getTransformedTo()).getPokedexEntry();
+                entry = transformed.getPokedexEntry();
             }
             int aiState = dataManager.get(AIACTIONSTATESDW);
             boolean isAbleToFly = entry.floats() || entry.flys();
@@ -772,8 +774,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
-                    getPokemonDisplayName());
+            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own", getPokemonDisplayName());
             displayMessageToOwner(mess);
             returnToPokecube();
         }

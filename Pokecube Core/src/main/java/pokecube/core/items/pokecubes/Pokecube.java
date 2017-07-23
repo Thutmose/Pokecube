@@ -32,6 +32,7 @@ import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -183,7 +184,8 @@ public class Pokecube extends Item implements IPokecube
     public double getCaptureModifier(EntityLivingBase mob, int pokecubeId)
     {
         if (pokecubeId == 99) return 1;
-        return (mob instanceof IPokemob) ? getCaptureModifier((IPokemob) mob, pokecubeId) : 0;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        return (pokemob != null) ? getCaptureModifier(pokemob, pokecubeId) : 0;
     }
 
     @Override
@@ -238,9 +240,10 @@ public class Pokecube extends Item implements IPokecube
             Vector3 targetLocation = Tools.getPointedLocation(player, 32);
 
             if (target instanceof EntityPokecube) target = null;
-            if (target instanceof IPokemob)
+            IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
+            if (targetMob != null)
             {
-                if (((IPokemob) target).getPokemonOwner() == entityLiving) target = null;
+                if (targetMob.getPokemonOwner() == entityLiving) target = null;
             }
 
             boolean filled = PokecubeManager.isFilled(stack);

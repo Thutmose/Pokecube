@@ -24,7 +24,7 @@ public class LogicCollision extends LogicBase
     public LogicCollision(IPokemob pokemob_)
     {
         super(pokemob_);
-        collider = (EntityPokemobBase) pokemob;
+        collider = (EntityPokemobBase) entity;
     }
 
     @Override

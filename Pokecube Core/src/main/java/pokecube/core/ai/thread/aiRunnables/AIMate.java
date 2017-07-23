@@ -16,8 +16,10 @@ import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.IHasMobAIStates;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
+import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 
 /** This IAIRunnable is responsible for most of the breeding AI for the
@@ -103,26 +105,25 @@ public class AIMate extends AIBase
                 int n = 0;
                 for (int i = 0; i < males.length; i++)
                 {
-                    if (males[i].getLevel() < level
-                            || ((EntityAnimal) males[i]).getHealth() < ((EntityAnimal) males[i]).getMaxHealth() / 1.5f)
+                    IPokemob mob = males[i];
+                    if (mob.getLevel() < level || mob.getEntity().getHealth() < mob.getEntity().getMaxHealth() / 1.5f)
                     {
-                        loverMob.getMalesForBreeding().remove(males[i]);
-                        males[i].resetLoveStatus();
+                        loverMob.getMalesForBreeding().remove(mob);
+                        mob.resetLoveStatus();
                         n++;
                     }
                 }
                 if (n == 0 && loverMob.getMalesForBreeding().size() > 1)
                 {
-                    loverMob.getMalesForBreeding().get(0).resetLoveStatus();
-                    loverMob.getMalesForBreeding().get(1).resetLoveStatus();
-                    ((IPokemob) loverMob.getMalesForBreeding().get(0)).setPokemonAIState(IMoveConstants.MATEFIGHT,
-                            true);
-                    ((IPokemob) loverMob.getMalesForBreeding().get(1)).setPokemonAIState(IMoveConstants.MATEFIGHT,
-                            true);
-                    ((EntityAnimal) loverMob.getMalesForBreeding().get(0))
-                            .setAttackTarget(((EntityAnimal) loverMob.getMalesForBreeding().get(1)));
-                }
 
+                    IPokemob mob0 = (IPokemob) loverMob.getMalesForBreeding().get(0);
+                    IPokemob mob1 = (IPokemob) loverMob.getMalesForBreeding().get(1);
+                    mob0.resetLoveStatus();
+                    mob1.resetLoveStatus();
+                    mob0.setPokemonAIState(IMoveConstants.MATEFIGHT, true);
+                    mob1.setPokemonAIState(IMoveConstants.MATEFIGHT, true);
+                    mob0.getEntity().setAttackTarget(mob1.getEntity());
+                }
             }
 
             if (loverMob.getMalesForBreeding().size() > 1) return;
@@ -134,8 +135,7 @@ public class AIMate extends AIBase
         }
         else if (pokemob.getMalesForBreeding().size() == 1)
         {
-            IPokemob loverMob = CapabilityPokemob
-                    .getPokemobFor(((IPokemob) pokemob.getMalesForBreeding().get(0)).getEntity());
+            IBreedingMob loverMob = pokemob.getMalesForBreeding().get(0);
             pokemob.setLover(loverMob.getLover());
             loverMob.setLover(entity);
         }
@@ -271,8 +271,8 @@ public class AIMate extends AIBase
             loverMob.setLover(entity);
             if (this.spawnBabyDelay >= 50)
             {
-                if (pokemob.getLover() instanceof IPokemob)
-                    ((IPokemob) pokemob.getLover()).setPokemonAIState(IMoveConstants.MATING, false);
+                if (pokemob.getLover() instanceof IHasMobAIStates)
+                    ((IHasMobAIStates) pokemob.getLover()).setPokemonAIState(IMoveConstants.MATING, false);
                 pokemob.mateWith(loverMob);
                 pokemob.setPokemonAIState(IMoveConstants.MATING, false);
                 this.spawnBabyDelay = 0;

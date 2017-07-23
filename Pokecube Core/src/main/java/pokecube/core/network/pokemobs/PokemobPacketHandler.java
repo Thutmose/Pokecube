@@ -48,8 +48,7 @@ public class PokemobPacketHandler
                             if (pokemob == null) { return; }
                             if (channel == RETURN)
                             {
-                                Entity mob = (Entity) pokemob;
-                                ((IPokemob) mob).returnToPokecube();
+                                pokemob.returnToPokecube();
                             }
                             else if (channel == MOVEINDEX)
                             {

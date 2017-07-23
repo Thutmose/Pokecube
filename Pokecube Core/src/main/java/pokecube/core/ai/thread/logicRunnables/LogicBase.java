@@ -16,7 +16,7 @@ public abstract class LogicBase implements ILogicRunnable, IMoveConstants
     public LogicBase(IPokemob pokemob_)
     {
         pokemob = pokemob_;
-        entity = (EntityLiving) pokemob;
+        entity = pokemob.getEntity();
     }
 
     @Override

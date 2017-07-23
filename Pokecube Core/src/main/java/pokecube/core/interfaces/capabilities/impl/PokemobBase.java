@@ -222,13 +222,13 @@ public abstract class PokemobBase implements IPokemob
 
     protected ItemStack            stack            = CompatWrapper.nullStack;
 
-    protected GuardAI              guardAI;
-    protected PokemobAIUtilityMove utilMoveAI;
-    protected LogicMountedControl  controller;
-    protected AIStuff              aiStuff;
+    public GuardAI                 guardAI;
+    public PokemobAIUtilityMove    utilMoveAI;
+    public LogicMountedControl     controller;
+    public AIStuff                 aiStuff;
 
-    protected PokeNavigator        navi;
-    protected PokemobMoveHelper    mover;
+    public PokeNavigator           navi;
+    public PokemobMoveHelper       mover;
     protected boolean              initAI           = true;
     protected boolean              popped           = false;
     protected PokemobAI            aiObject;
@@ -239,10 +239,10 @@ public abstract class PokemobBase implements IPokemob
     /** The Entity this IPokemob is attached to. */
     protected EntityLiving         entity;
     /** RNG used, should be entity.getRNG() */
-    protected Random               rand;
+    protected Random               rand             = new Random();
     /** Data manager used for syncing data, this should be identical to
      * entity.getDataManager() */
-    protected EntityDataManager    dataManager;
+    public EntityDataManager       dataManager;
     /** Holds the data parameters used for syncing our stuff. */
     protected DataParameters       params;
 
@@ -270,6 +270,7 @@ public abstract class PokemobBase implements IPokemob
             this.params = getParameters(entity.getClass());
             this.dataManager = params.register(entity.getDataManager(), entity);
         }
+        rand = entity.getRNG();
     }
 
     @Override

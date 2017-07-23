@@ -132,7 +132,7 @@ public class ModelWrapper extends ModelBase implements IModel
             s = (mob.getSize());
             if (partialTick <= 1)
             {
-                int ticks = ((Entity) mob).ticksExisted;
+                int ticks = mob.getEntity().ticksExisted;
                 if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
                 {
                     float max = 5;

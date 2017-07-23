@@ -32,7 +32,7 @@ public class AITeslaInterferance extends EntityAIBase
     public AITeslaInterferance(IPokemob pokemob_)
     {
         pokemob = pokemob_;
-        entity = (EntityLiving) pokemob;
+        entity = pokemob.getEntity();
     }
 
     @Override

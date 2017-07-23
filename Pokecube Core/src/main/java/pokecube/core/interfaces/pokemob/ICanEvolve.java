@@ -23,7 +23,6 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
-import pokecube.core.entity.pokemobs.helper.EntityEvolvablePokemob;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -299,7 +298,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 if (d.shouldEvolve(thisMob, stack))
                 {
                     evol = d.evolution;
-                    if (!d.shouldEvolve(thisMob, CompatWrapper.nullStack) && stack == thisEntity.getHeldItemMainhand())
+                    if (!d.shouldEvolve(thisMob, CompatWrapper.nullStack) && stack == thisMob.getHeldItem())
                         neededItem = true;
                     data = d;
                     break;
@@ -329,7 +328,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 // Clear held item if used for evolving.
                 if (neededItem)
                 {
-                    ((EntityEvolvablePokemob) evo).setHeldItem(CompatWrapper.nullStack);
+                    evo.setHeldItem(CompatWrapper.nullStack);
                 }
                 if (evo != null)
                 {

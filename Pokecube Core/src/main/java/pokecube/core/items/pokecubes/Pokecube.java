@@ -249,7 +249,7 @@ public class Pokecube extends Item implements IPokecube
             }
 
             boolean filled = PokecubeManager.isFilled(stack);
-            if (!filled && !(target instanceof IPokemob)) target = null;
+            if (!filled && targetMob == null) target = null;
             boolean used = false;
             boolean filledOrSneak = filled || player.isSneaking();
             if (target != null && EntityPokecube.SEEKING)
@@ -376,6 +376,6 @@ public class Pokecube extends Item implements IPokecube
     {
         int id = PokecubeItems.getCubeId(cube);
         if (id == 99) { return capturable.test(hit); }
-        return hit instanceof IPokemob;
+        return CapabilityPokemob.getPokemobFor(hit) != null;
     }
 }

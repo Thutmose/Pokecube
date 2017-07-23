@@ -78,12 +78,15 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager.GeneticsProvider;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob.DefaultPokemob;
+import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -98,6 +101,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
+import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
@@ -185,6 +189,8 @@ public class EventsHandler
             }
         }
     }
+
+    final ResourceLocation                             POKEMOBCAP  = new ResourceLocation(PokecubeMod.ID, "pokemob");
 
     @CapabilityInject(IGuardAICapability.class)
     public static final Capability<IGuardAICapability> GUARDAI_CAP = null;
@@ -309,6 +315,7 @@ public class EventsHandler
     {
         CapabilityManager.INSTANCE.register(IGuardAICapability.class, storage = new IGuardAICapability.Storage(),
                 GuardAICapability.class);
+        CapabilityManager.INSTANCE.register(IPokemob.class, new CapabilityPokemob.Storage(), DefaultPokemob.class);
         CapabilityManager.INSTANCE.register(IMegaCapability.class, new Capability.IStorage<IMegaCapability>()
         {
             @Override
@@ -369,8 +376,8 @@ public class EventsHandler
     @SubscribeEvent
     public void EntityJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (PokecubeMod.core.getConfig().disableVanillaMonsters && !(evt.getEntity() instanceof IPokemob)
-                && evt.getEntity() instanceof IMob
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntity());
+        if (PokecubeMod.core.getConfig().disableVanillaMonsters && pokemob == null && evt.getEntity() instanceof IMob
                 && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof MultiPartEntityPart)
                 && evt.getEntity().getClass().getName().contains("net.minecraft"))
         {
@@ -379,9 +386,9 @@ public class EventsHandler
             evt.setCanceled(true);
             return;
         }
-        if (PokecubeMod.core.getConfig().disableVanillaAnimals && !(evt.getEntity() instanceof IPokemob)
-                && evt.getEntity() instanceof IAnimals && !(evt.getEntity() instanceof IMob)
-                && !(evt.getEntity() instanceof INpc) && !(evt.getEntity() instanceof IMerchant)
+        if (PokecubeMod.core.getConfig().disableVanillaAnimals && pokemob == null && evt.getEntity() instanceof IAnimals
+                && !(evt.getEntity() instanceof IMob) && !(evt.getEntity() instanceof INpc)
+                && !(evt.getEntity() instanceof IMerchant)
                 && evt.getEntity().getClass().getName().contains("net.minecraft"))
         {
             evt.getEntity().setDead();
@@ -464,7 +471,7 @@ public class EventsHandler
         {
             EntityLivingBase owner = killer.getPokemonOwner();
 
-            ItemStack stack = ((EntityLivingBase) killer).getHeldItemMainhand();
+            ItemStack stack = killer.getHeldItem();
             if (PokecubeItems.getStack("luckyegg").isItemEqual(stack))
             {
                 int exp = killer.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
@@ -479,13 +486,12 @@ public class EventsHandler
                     if (mob != null)
                     {
                         IPokemob poke = mob;
-                        if (((EntityLiving) poke).getHeldItemMainhand() != null) if (((EntityLiving) poke)
-                                .getHeldItemMainhand().isItemEqual(PokecubeItems.getStack("exp_share")))
-                        {
-                            int exp = poke.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
-                                    killed.getBaseXP(), killed.getLevel());
+                        if (CompatWrapper.isValid(mob.getHeldItem()))
+                            if (mob.getHeldItem().isItemEqual(PokecubeItems.getStack("exp_share")))
+                            {
+                            int exp = poke.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor, killed.getBaseXP(), killed.getLevel());
                             poke.setExp(exp, true);
-                        }
+                            }
                     }
                 }
             }
@@ -497,18 +503,22 @@ public class EventsHandler
     {
         if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.IN_WALL)
         {
-            if (evt.getEntityLiving().getRidingEntity() instanceof IPokemob) evt.setCanceled(true);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getRidingEntity());
+            if (pokemob != null) evt.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void livingDeath(LivingDeathEvent evt)
     {
-        if (evt.getEntity().world.isRemote || evt.getEntityLiving() instanceof IPokemob) return;
-        // if (evt.getEntityLiving().getRevengeTarget() instanceof IPokemob
-        // && evt.getSource().getEntity() !=
+        // IPokemob pokemob =
+        // CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+        // if (evt.getEntity().worldObj.isRemote || pokemob != null) return;
+        // pokemob =
+        // CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getLastAttacker());
+        // if (pokemob != null && evt.getSource().getEntity() !=
         // evt.getEntityLiving().getLastAttacker())
-        // {//TODO see if this is still needed.
+        // {//TODO see if this was needed?
         // evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
         // }
     }
@@ -577,10 +587,55 @@ public class EventsHandler
         event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(event.getObject()));
     }
 
+    private List<EntityLiving> needsAI = Lists.newArrayList();
+
     @SubscribeEvent
+    public void onTick(LivingUpdateEvent event)
+    {
+        if (!needsAI.isEmpty() && !event.getEntity().getEntityWorld().isRemote)
+        {
+            synchronized (needsAI)
+            {
+                List<EntityLiving> stale = Lists.newArrayList();
+                List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
+                for (EntityLiving npc : toProcess)
+                {
+                    if (npc.ticksExisted == 0) continue;
+                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(npc);
+                    if (pokemob == null)
+                    {
+                        stale.add(npc);
+                        continue;
+                    }
+                    pokemob.setEntity(npc);
+                    // TODO add in AI stuff here.
+                }
+                needsAI.removeAll(stale);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @SubscribeEvent
+    /** Priority low, so that the IPokemob capability is added first. */
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof IPokemob || event.getObject() instanceof EntityProfessor)
+        boolean isPokemob = false;
+        if (PokemobGenes.isRegistered((Class<? extends EntityLiving>) event.getObject().getClass())
+                && !event.getCapabilities().containsKey(POKEMOBCAP))
+        {
+            DefaultPokemob pokemob = new DefaultPokemob();
+            GeneticsProvider genes = new GeneticsProvider();
+            pokemob.setEntity((EntityLiving) event.getObject());
+            pokemob.genes = genes.getCapability(IMobGenetics.GENETICS_CAP, null);
+            event.addCapability(GeneticsManager.POKECUBEGENETICS, genes);
+            event.addCapability(POKEMOBCAP, pokemob);
+            if (event.getObject().getEntityWorld() != null && !event.getObject().getEntityWorld().isRemote)
+                needsAI.add((EntityLiving) event.getObject());
+            isPokemob = true;
+        }
+
+        if (isPokemob || event.getObject() instanceof EntityProfessor)
         {
             class Provider extends GuardAICapability implements ICapabilitySerializable<NBTTagCompound>
             {
@@ -590,8 +645,6 @@ public class EventsHandler
                     storage.readNBT(GUARDAI_CAP, this, null, nbt);
                 }
 
-                @SuppressWarnings("unchecked") // There isnt anything sane we
-                                               // can do about this.
                 @Override
                 public <T> T getCapability(Capability<T> capability, EnumFacing facing)
                 {

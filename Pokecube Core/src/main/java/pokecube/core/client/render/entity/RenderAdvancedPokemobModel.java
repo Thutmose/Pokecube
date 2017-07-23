@@ -50,7 +50,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
         T toRender = entity;
         IPokemob temp;
-        if ((temp = CapabilityPokemob.getPokemobFor(toRender)) != null)
+        if ((temp = CapabilityPokemob.getPokemobFor(mob.getTransformedTo())) != null)
         {
             toRender = (T) mob.getTransformedTo();
             mob = temp;

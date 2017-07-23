@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.scoreboard.Team;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class TeamManager
 {
@@ -29,9 +31,15 @@ public class TeamManager
         {
             Team team = entityIn.getTeam();
             String name = team == null ? "" : team.getName();
+            IPokemob pokemob;
             if (entityIn instanceof IEntityOwnable && team == null)
             {
                 UUID id = ((IEntityOwnable) entityIn).getOwnerId();
+                if (id != null) name = id.toString();
+            }
+            else if ((pokemob = CapabilityPokemob.getPokemobFor(entityIn)) != null)
+            {
+                UUID id = pokemob.getOwnerId();
                 if (id != null) name = id.toString();
             }
             return name;

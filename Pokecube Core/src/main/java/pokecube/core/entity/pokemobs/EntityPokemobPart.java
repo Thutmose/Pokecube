@@ -451,13 +451,6 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     }
 
     @Override
-    public float getInterestedAngle(float f)
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
     public double getMovementSpeed()
     {
         // TODO Auto-generated method stub
@@ -487,13 +480,6 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
 
     @Override
     public byte getSexe()
-    {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public float getShakeAngle(float f, float f1)
     {
         // TODO Auto-generated method stub
         return 0;

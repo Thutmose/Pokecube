@@ -242,6 +242,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         byte status;
+        if (pokemob == null) return;
         if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
         ResourceLocation texture = null;
         if (status == IMoveConstants.STATUS_FRZ)

@@ -173,7 +173,7 @@ public class PokedexEntry
 
         public boolean shouldEvolve(IPokemob mob)
         {
-            return shouldEvolve(mob, mob.getEntity().getHeldItemMainhand());
+            return shouldEvolve(mob, mob.getHeldItem());
         }
 
         public boolean shouldEvolve(IPokemob mob, ItemStack mobs)
@@ -205,7 +205,7 @@ public class PokedexEntry
                     correctItem = Tools.isSameStack(mobs, item);
                 }
             }
-            if (Tools.isSameStack(mob.getEntity().getHeldItemMainhand(),
+            if (Tools.isSameStack(mob.getHeldItem(),
                     PokecubeItems.getStack("everstone"))) { return false; }
             if (Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;

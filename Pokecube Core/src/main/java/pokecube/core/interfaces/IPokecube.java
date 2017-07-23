@@ -121,7 +121,7 @@ public interface IPokecube
 
     default boolean canCapture(EntityLiving hit, ItemStack cube)
     {
-        return hit instanceof IPokemob;
+        return CapabilityPokemob.getPokemobFor(hit) != null;
     }
 
 }

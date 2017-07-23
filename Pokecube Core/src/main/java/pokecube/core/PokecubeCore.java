@@ -81,6 +81,7 @@ import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
@@ -663,6 +664,7 @@ public class PokecubeCore extends PokecubeMod
                                 CompatWrapper.getEggInfo(entry.getName(), 0xE8E0A0, 0x78C848));
                     }
                     pokedexmap.put(entry, clazz);
+                    PokemobGenes.registerClass(clazz, entry.getPokedexNb());
                     for (PokedexEntry e : entry.forms.values())
                         pokedexmap.put(e, clazz);
                     registered.set(entry.getPokedexNb());

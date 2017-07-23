@@ -318,7 +318,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     }
 
     @SideOnly(Side.CLIENT)
-    @Override
     public float getInterestedAngle(float f)
     {
         return (headRotationOld + (headRotation - headRotationOld) * f) * 0.15F * (float) Math.PI;
@@ -371,13 +370,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         return this.dataManager.get(OWNER_ID).orNull();
     }
 
-    public boolean getPokemonShaking()
-    {
-        return isPokemonShaking;
-    }
-
     @SideOnly(Side.CLIENT)
-    @Override
     public float getShakeAngle(float f, float f1)
     {
         float f2 = (prevTimePokemonIsShaking + (timePokemonIsShaking - prevTimePokemonIsShaking) * f + f1) / 1.8F;

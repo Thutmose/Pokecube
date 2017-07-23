@@ -558,8 +558,8 @@ public class MovesUtils implements IMoveConstants
     public static boolean handleStats(IPokemob mob, Entity target, MovePacket atk, boolean attacked)
     {
         int[] stats = attacked ? atk.attackedStatModification : atk.attackerStatModification;
-        if (attacked && !(target instanceof IPokemob)) return false;
         IPokemob affected = attacked ? CapabilityPokemob.getPokemobFor(target) : mob;
+        if (affected == null) return false;
         DefaultModifiers modifiers = affected.getModifiers().getDefaultMods();
         float[] mods = modifiers.values;
         float[] old = mods.clone();
@@ -589,7 +589,7 @@ public class MovesUtils implements IMoveConstants
         }
         if (ret)
         {
-            IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
+            IPokemob targetMob = affected;
             for (byte i = 0; i < diff.length; i++)
             {
                 if (diff[i] != 0)

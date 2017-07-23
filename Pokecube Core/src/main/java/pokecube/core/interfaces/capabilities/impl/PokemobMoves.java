@@ -1,7 +1,4 @@
-/**
- *
- */
-package pokecube.core.entity.pokemobs.helper;
+package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,12 +7,8 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.CombatRules;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
@@ -24,83 +17,34 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 
-/** @author Manchou */
-public abstract class EntityMovesPokemob extends EntitySexedPokemob
+public abstract class PokemobMoves extends PokemobSexed
 {
-    private PokemobMoveStats moveInfo         = new PokemobMoveStats();
-
-    private int              moveIndexCounter = 0;
-
-    /** @param par1World */
-    public EntityMovesPokemob(World world)
-    {
-        super(world);
-    }
-
-    @Override
-    /** Reduces damage, depending on armor */
-    protected float applyArmorCalculations(DamageSource source, float damage)
-    {
-        if (!(source instanceof PokemobDamageSource))
-        {
-            int armour = 0;
-            if (source.isMagicDamage())
-            {
-                armour = (int) ((getStat(Stats.SPDEFENSE, true)) / 12.5);
-            }
-            else
-            {
-                armour = this.getTotalArmorValue();
-            }
-            damage = CombatRules.getDamageAfterAbsorb(damage, armour,
-                    (float) this.getEntityAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS).getAttributeValue());
-        }
-        return damage;
-    }
-
-    @Override
-    public boolean attackEntityAsMob(Entity par1Entity)
-    {
-        if (this.getAttackTarget() != null)
-        {
-            float distanceToEntity = this.getAttackTarget().getDistanceToEntity(this);
-            attackEntityAsPokemob(par1Entity, distanceToEntity);
-        }
-        return super.attackEntityAsMob(par1Entity);
-    }
-
-    protected void attackEntityAsPokemob(Entity entity, float f)
-    {
-        if (getLover() == entity) return;
-        Vector3 v = Vector3.getNewVector().set(entity);
-        executeMove(entity, v, f);
-    }
 
     @Override
     public void executeMove(Entity target, Vector3 targetLocation, float f)
     {
         String currentMove = getMove(getMoveIndex());
         if (currentMove == MOVE_NONE || currentMove == null) { return; }
-        getDataManager().set(LASTMOVE, currentMove);
+        getDataManager().set(params.LASTMOVE, currentMove);
         if (target instanceof EntityLiving)
         {
             EntityLiving t = (EntityLiving) target;
             if (t.getAttackTarget() == null)
             {
-                t.setAttackTarget(this);
+                t.setAttackTarget(getEntity());
             }
         }
         if (target instanceof EntityLivingBase)
         {
-            ((EntityLivingBase) target).setRevengeTarget(this);
-            this.setRevengeTarget((EntityLivingBase) target);
+            ((EntityLivingBase) target).setRevengeTarget(getEntity());
+            getEntity().setRevengeTarget((EntityLivingBase) target);
         }
         int statusChange = getChanges();
         if ((statusChange & CHANGE_FLINCH) != 0)
@@ -123,7 +67,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             }
             else if (Math.random() > 0.5)
             {
-                MovesUtils.doAttack("pokemob.status.confusion", this, this);
+                MovesUtils.doAttack("pokemob.status.confusion", this, getEntity());
                 return;
             }
         }
@@ -192,33 +136,34 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             return;
         }
         if (here == null) here = Vector3.getNewVector();
-        here.set(posX, posY + getEyeHeight(), posZ);
-        MovesUtils.useMove(move, this, target, here, targetLocation);
+        here.set(getEntity()).addTo(0, getEntity().getEyeHeight(), 0);
+        MovesUtils.useMove(move, getEntity(), target, here, targetLocation);
         this.setAttackCooldown(MovesUtils.getAttackDelay(this, currentMove,
                 (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0, false));
-        here.set(this);
+        here.set(getEntity());
     }
 
     @Override
     public int getExplosionState()
     {
-        return (int) dataManager.get(BOOMSTATEDW);
+        return (int) dataManager.get(params.BOOMSTATEDW);
     }
 
     @Override
     public int getMoveIndex()
     {
-        int ret = (int) dataManager.get(MOVEINDEXDW);
+        int ret = (int) dataManager.get(params.MOVEINDEXDW);
         return Math.max(0, ret);
     }
 
     @Override
     public String[] getMoves()
     {
-        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(getTransformedTo());
+        if (transformed != null && getTransformedTo() != getEntity())
         {
-            IPokemob to = (IPokemob) getTransformedTo();
-            if (to.getTransformedTo() != this) return to.getMoves();
+            IPokemob to = transformed;
+            if (to != this) return to.getMoves();
         }
         return super.getMoves();
     }
@@ -232,40 +177,32 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public byte getStatus()
     {
-        return (byte) Math.max(0, (int) dataManager.get(STATUSDW));
+        return (byte) Math.max(0, (int) dataManager.get(params.STATUSDW));
     }
 
     @Override
     public short getStatusTimer()
     {
-        return dataManager.get(STATUSTIMERDW).shortValue();
-    }
-
-    @Override
-    /** Returns the current armor value as determined by a call to
-     * InventoryPlayer.getTotalArmorValue */
-    public int getTotalArmorValue()
-    {
-        return (int) ((getStat(Stats.DEFENSE, true)) / 12.5);
+        return dataManager.get(params.STATUSTIMERDW).shortValue();
     }
 
     @Override
     public Entity getTransformedTo()
     {
-        return world.getEntityByID(getDataManager().get(TRANSFORMEDTODW));
+        return getEntity().getEntityWorld().getEntityByID(getDataManager().get(params.TRANSFORMEDTODW));
     }
 
     @Override
     public void healStatus()
     {
-        dataManager.set(STATUSDW, (byte) 0);
+        dataManager.set(params.STATUSDW, (byte) 0);
     }
 
     @Override
     public void setExplosionState(int i)
     {
         if (i >= 0) moveInfo.Exploding = true;
-        dataManager.set(BOOMSTATEDW, Byte.valueOf((byte) i));
+        dataManager.set(params.BOOMSTATEDW, Byte.valueOf((byte) i));
     }
 
     @Override
@@ -288,7 +225,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             {
                 PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
                 buffer.writeByte(MessageServer.MOVEINDEX);
-                buffer.writeInt(getEntityId());
+                buffer.writeInt(getEntity().getEntityId());
                 buffer.writeByte((byte) moveIndex);
                 MessageServer packet = new MessageServer(buffer);
                 PokecubePacketHandler.sendToServer(packet);
@@ -300,7 +237,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         }
         else
         {
-            dataManager.set(MOVEINDEXDW, (byte) moveIndex);
+            dataManager.set(params.MOVEINDEXDW, (byte) moveIndex);
         }
     }
 
@@ -312,7 +249,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         if (status == STATUS_PAR && isType(PokeType.getType("electric"))) return false;
         if (status == STATUS_FRZ && isType(PokeType.getType("ice"))) return false;
         if ((status == STATUS_PSN || status == STATUS_PSN2) && (isType(poison) || isType(steel))) return false;
-        dataManager.set(STATUSDW, status);
+        dataManager.set(params.STATUSDW, status);
         setStatusTimer((short) (PokecubeMod.core.getConfig().attackCooldown * 5));
         return true;
     }
@@ -320,14 +257,14 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public void setStatusTimer(short timer)
     {
-        dataManager.set(STATUSTIMERDW, (int) timer);
+        dataManager.set(params.STATUSTIMERDW, (int) timer);
     }
 
     @Override
     public void setTransformedTo(Entity to)
     {
-        if (to != null) getDataManager().set(TRANSFORMEDTODW, to.getEntityId());
-        else getDataManager().set(TRANSFORMEDTODW, -1);
+        if (to != null) getDataManager().set(params.TRANSFORMEDTODW, to.getEntityId());
+        else getDataManager().set(params.TRANSFORMEDTODW, -1);
         if (to instanceof IPokemob)
         {
             PokedexEntry newEntry = ((IPokemob) to).getPokedexEntry();
@@ -339,18 +276,24 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
     @Override
     public int getAttackCooldown()
     {
-        return this.getDataManager().get(ATTACKCOOLDOWN);
+        return this.getDataManager().get(params.ATTACKCOOLDOWN);
     }
 
     @Override
     public void setAttackCooldown(int timer)
     {
-        this.getDataManager().set(ATTACKCOOLDOWN, timer);
+        this.getDataManager().set(params.ATTACKCOOLDOWN, timer);
     }
 
     @Override
     public String getLastMoveUsed()
     {
-        return this.getDataManager().get(LASTMOVE);
+        return this.getDataManager().get(params.LASTMOVE);
+    }
+
+    @Override
+    public boolean getOnGround()
+    {
+        return getEntity().onGround;
     }
 }

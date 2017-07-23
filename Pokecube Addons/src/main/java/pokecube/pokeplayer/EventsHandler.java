@@ -123,8 +123,8 @@ public class EventsHandler
         if (evt.getEntityLiving().world.isRemote) return;
         if (!(evt.getEntityLiving() instanceof EntityPlayer))
         {
-            if (evt.getEntityLiving() instanceof IPokemob
-                    && evt.getEntityLiving().getEntityData().getBoolean("isPlayer"))
+            if (evt.getEntityLiving().getEntityData().getBoolean("isPlayer")
+                    && CapabilityPokemob.getPokemobFor(evt.getEntityLiving()) != null)
             {
                 evt.setCanceled(true);
             }

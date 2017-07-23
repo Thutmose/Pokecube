@@ -140,15 +140,11 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
             {
                 if (target == user) target = null;
                 Entity closest = target;
-
-                if (target != null && target instanceof IPokemob)
-                {
-                    ((EntityLiving) target).setAttackTarget((EntityLivingBase) user);
-                    ((EntityLiving) user).setAttackTarget((EntityLivingBase) target);
-                }
                 IPokemob tempMob = CapabilityPokemob.getPokemobFor(closest);
                 if (tempMob != null)
                 {
+                    ((EntityLiving) target).setAttackTarget((EntityLivingBase) user);
+                    ((EntityLiving) user).setAttackTarget((EntityLivingBase) target);
                     if (pokemob.getPokemonOwnerID().equals(tempMob.getPokemonOwnerID()))
                     {
                         if (tempMob == closest)

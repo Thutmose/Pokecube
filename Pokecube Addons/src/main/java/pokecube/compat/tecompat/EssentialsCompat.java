@@ -9,6 +9,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.handlers.TeamManager.ITeamProvider;
 import pokecube.core.interfaces.IPokecube;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.essentials.events.DenyItemUseEvent;
 import thut.essentials.events.DenyItemUseEvent.UseType;
 import thut.essentials.land.LandManager;
@@ -44,9 +46,15 @@ public class EssentialsCompat
                 LandTeam team = LandManager.getTeam(entityIn);
                 return team.teamName;
             }
+            IPokemob pokemob;
             if (entityIn instanceof IEntityOwnable)
             {
-                IEntityOwnable pokemob = (IEntityOwnable) entityIn;
+                IEntityOwnable mob = (IEntityOwnable) entityIn;
+                Entity owner = mob.getOwner();
+                if (owner != null && !(owner instanceof IEntityOwnable)) return getTeam(mob.getOwner());
+            }
+            else if ((pokemob = CapabilityPokemob.getPokemobFor(entityIn)) != null)
+            {
                 Entity owner = pokemob.getOwner();
                 if (owner != null && !(owner instanceof IEntityOwnable)) return getTeam(pokemob.getOwner());
             }

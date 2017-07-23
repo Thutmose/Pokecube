@@ -106,12 +106,12 @@ public class Commands extends CommandBase
                     {
                         if (id == -1 && !e.getPokemonAIState(IMoveConstants.TAMED) || all)
                         {
-                            ((Entity) e).setDead();
+                            e.getEntity().setDead();
                             count++;
                         }
-                        if (id != -1 && ((Entity) e).getEntityId() == id)
+                        if (id != -1 && e.getEntity().getEntityId() == id)
                         {
-                            ((Entity) e).setDead();
+                            e.getEntity().setDead();
                             count++;
                         }
                     }

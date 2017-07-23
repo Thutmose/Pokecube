@@ -167,8 +167,8 @@ public abstract class PokemobAI extends PokemobEvolves
         if (getEntity() == null) return;
         if (getEntity().getEntityWorld() != null && !getEntity().getEntityWorld().isRemote)
         {
-            setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != CompatWrapper.nullStack);
-            dataManager.set(params.HELDITEM, this.pokeChest.getStackInSlot(1));
+            setPokemonAIState(SADDLED, CompatWrapper.isValid(getPokemobInventory().getStackInSlot(1)));
+            dataManager.set(params.HELDITEM, this.getPokemobInventory().getStackInSlot(1));
         }
     }
 

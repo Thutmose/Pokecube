@@ -103,6 +103,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public AnimalChest getPokemobInventory()
     {
+        if (pokeChest == null) initInventory();
         return pokeChest;
     }
 
@@ -337,7 +338,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         try
         {
             ItemStack oldStack = getHeldItem();
-            pokeChest.setInventorySlotContents(1, itemStack);
+            this.getPokemobInventory().setInventorySlotContents(1, itemStack);
             getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
             dataManager.set(params.HELDITEM, itemStack);
         }

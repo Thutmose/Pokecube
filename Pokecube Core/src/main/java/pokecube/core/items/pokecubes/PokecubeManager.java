@@ -61,6 +61,7 @@ public class PokecubeManager
     {
         if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return 0;
         NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
+        if (poketag == null || poketag.hasNoTags()) return 0;
         int number = poketag.getCompoundTag(TagNames.OWNERSHIPTAG).getInteger(TagNames.POKEDEXNB);
         // TODO remove this legacy support as well
         if (poketag.hasNoTags() || number == 0) return itemStack.getTagCompound().hasKey("PokedexNb")

@@ -93,17 +93,17 @@ import thut.lib.CompatWrapper;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    private GuardAI              guardAI;
-    public LogicMountedControl   controller;
-    private AIStuff              aiStuff;
+    private GuardAI            guardAI;
+    public LogicMountedControl controller;
+    private AIStuff            aiStuff;
 
-    private PokeNavigator        navi;
-    private PokemobMoveHelper    mover;
-    private boolean              popped         = false;
-    private PokemobAI            aiObject;
-    private boolean              isAFish        = false;
+    private PokeNavigator      navi;
+    private PokemobMoveHelper  mover;
+    private boolean            popped         = false;
+    private PokemobAI          aiObject;
+    private boolean            isAFish        = false;
 
-    private TerrainSegment       currentTerrain = null;
+    private TerrainSegment     currentTerrain = null;
 
     public EntityAiPokemob(World world)
     {
@@ -1064,13 +1064,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             // Check saddle for riding.
             if (getPokemonAIState(SADDLED) && !player.isSneaking() && isOwner
-                    && (held == CompatWrapper.nullStack || held.getItem() != PokecubeItems.pokedex))
+                    && (held == CompatWrapper.nullStack || held.getItem() != PokecubeItems.pokedex)
+                    && handleHmAndSaddle(player, new ItemStack(Items.SADDLE)))
             {
-                if (!handleHmAndSaddle(player, new ItemStack(Items.SADDLE)))
-                {
-                    this.setJumping(false);
-                    return false;
-                }
+                this.setJumping(false);
                 return true;
             }
 

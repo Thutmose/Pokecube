@@ -651,7 +651,7 @@ public class CapabilityHasPokemobs
         {
             this.outMob = mob;
             if (mob == null) this.outID = null;
-            else this.outID = ((Entity) mob).getUniqueID();
+            else this.outID = mob.getEntity().getUniqueID();
         }
 
         @Override

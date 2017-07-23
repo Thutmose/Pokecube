@@ -60,11 +60,11 @@ public class RenderCloner extends TileEntitySpecialRenderer<TileEntityCloner>
         GL11.glRotatef(180, 0, 0, 1);
         GL11.glColor4f(1, 1, 1, 0.5f);
         GL11.glScaled(0.0625 * scale, 0.0625 * scale, 0.0625 * scale);
-        if (pokemob instanceof IMobColourable)
+        if (pokemob.getEntity() instanceof IMobColourable)
         {
-            int[] col = ((IMobColourable) pokemob).getRGBA();
+            int[] col = ((IMobColourable) pokemob.getEntity()).getRGBA();
             col[3] = 128;
-            ((IMobColourable) pokemob).setRGBA(col);
+            ((IMobColourable) pokemob.getEntity()).setRGBA(col);
         }
         EventsHandlerClient.renderMob(pokemob, partialTicks, true);
         GL11.glPopMatrix();

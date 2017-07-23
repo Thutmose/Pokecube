@@ -14,7 +14,6 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
@@ -228,7 +227,7 @@ public class TypeTrainer
             int exp = Tools.levelToXp(pokemob.getExperienceMode(), level);
             pokemob = pokemob.setForSpawn(exp);
             ItemStack item = PokecubeManager.pokemobToItem(pokemob);
-            ((Entity) pokemob).isDead = true;
+            pokemob.getEntity().isDead = true;
             return item;
         }
 

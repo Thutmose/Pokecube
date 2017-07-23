@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import pokecube.modelloader.client.render.wrappers.TabulaWrapper;
 import thut.core.client.render.model.IPartTexturer;
@@ -32,7 +33,8 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
         PokedexEntry entry = null;
-        if (entity instanceof IPokemob) entry = ((IPokemob) entity).getPokedexEntry();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (pokemob != null) entry = pokemob.getPokedexEntry();
         else return;
         if (set == null)
         {

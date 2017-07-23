@@ -11,12 +11,13 @@ import org.w3c.dom.NodeList;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.core.client.render.model.IPartTexturer;
 
 public class TextureHelper implements IPartTexturer
@@ -110,7 +111,7 @@ public class TextureHelper implements IPartTexturer
             toFill[0] = dx;
             toFill[1] = dy;
             int info = pokemob.getSpecialInfo();
-            Random random = new Random(((Entity)pokemob).ticksExisted);
+            Random random = new Random(pokemob.getEntity().ticksExisted);
             if (infoStates.containsKey(info))
             {
                 double[] arr = infoStates.get(info);
@@ -133,18 +134,18 @@ public class TextureHelper implements IPartTexturer
                     return true;
                 }
             }
-            if (running.containsKey(((Entity) pokemob).getEntityId()))
+            if (running.containsKey(pokemob.getEntity().getEntityId()))
             {
-                RandomState run = running.get(((Entity) pokemob).getEntityId());
+                RandomState run = running.get(pokemob.getEntity().getEntityId());
                 double[] arr = run.arr;
                 dx = arr[0];
                 dy = arr[1];
                 toFill[0] = dx;
                 toFill[1] = dy;
-                if (((Entity) pokemob).ticksExisted > setTimes.get(((Entity) pokemob).getEntityId()) + run.duration)
+                if (pokemob.getEntity().ticksExisted > setTimes.get(pokemob.getEntity().getEntityId()) + run.duration)
                 {
-                    running.remove(((Entity) pokemob).getEntityId());
-                    setTimes.remove(((Entity) pokemob).getEntityId());
+                    running.remove(pokemob.getEntity().getEntityId());
+                    setTimes.remove(pokemob.getEntity().getEntityId());
                 }
                 return true;
             }
@@ -157,14 +158,14 @@ public class TextureHelper implements IPartTexturer
                     dy = arr[1];
                     toFill[0] = dx;
                     toFill[1] = dy;
-                    running.put(((Entity) pokemob).getEntityId(), state);
-                    setTimes.put(((Entity) pokemob).getEntityId(), ((Entity) pokemob).ticksExisted);
+                    running.put(pokemob.getEntity().getEntityId(), state);
+                    setTimes.put(pokemob.getEntity().getEntityId(), pokemob.getEntity().ticksExisted);
                     return true;
                 }
             }
             if (sequence != null && sequence.shift)
             {
-                int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length / 2);
+                int tick = pokemob.getEntity().ticksExisted % (sequence.arr.length / 2);
                 dx = sequence.arr[tick * 2];
                 dy = sequence.arr[tick * 2 + 1];
                 toFill[0] = dx;
@@ -178,7 +179,7 @@ public class TextureHelper implements IPartTexturer
         {
             if (sequence != null && !sequence.shift)
             {
-                int tick = ((Entity) pokemob).ticksExisted % (sequence.arr.length / 2);
+                int tick = pokemob.getEntity().ticksExisted % (sequence.arr.length / 2);
                 int dx = (int) sequence.arr[tick * 2];
                 return "" + dx;
             }
@@ -324,7 +325,7 @@ public class TextureHelper implements IPartTexturer
     @Override
     public void bindObject(Object thing)
     {
-        pokemob = (IPokemob) thing;
+        pokemob = CapabilityPokemob.getPokemobFor((ICapabilityProvider) thing);
         entry = pokemob.getPokedexEntry();
         default_tex = getResource(default_path);
     }

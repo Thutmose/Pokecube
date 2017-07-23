@@ -2,8 +2,6 @@ package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.UUID;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -75,14 +73,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                 {
                     this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-                if (this.pokeChest.getStackInSlot(1) != CompatWrapper.nullStack)
-                {
-                    dataManager.set(params.HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
-                }
-                else
-                {
-                    dataManager.set(params.HELDITEM, Optional.<ItemStack> absent());
-                }
+                dataManager.set(params.HELDITEM, this.pokeChest.getStackInSlot(1));
             }
             handleArmourAndSaddle();
         }

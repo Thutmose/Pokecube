@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -340,14 +338,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             ItemStack oldStack = getHeldItem();
             pokeChest.setInventorySlotContents(1, itemStack);
             getPokedexEntry().onHeldItemChange(oldStack, itemStack, this);
-            if (itemStack != CompatWrapper.nullStack)
-            {
-                dataManager.set(params.HELDITEM, Optional.of(itemStack));
-            }
-            else
-            {
-                dataManager.set(params.HELDITEM, Optional.<ItemStack> absent());
-            }
+            dataManager.set(params.HELDITEM, itemStack);
         }
         catch (Exception e)
         {

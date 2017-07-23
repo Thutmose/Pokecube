@@ -16,7 +16,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
@@ -339,7 +338,7 @@ public class GuiAnimate extends GuiScreen
                 pokemob.setPokemonAIState(1 << i, 1 << i == IMoveConstants.SITTING ? true : false);
         }
 
-        EntityLiving entity = (EntityLiving) pokemob;
+        EntityLiving entity = pokemob.getEntity();
         entity.renderYawOffset = 0F;
         entity.rotationYaw = 0;
         entity.prevRotationPitch = xHeadRenderAngle;
@@ -350,9 +349,9 @@ public class GuiAnimate extends GuiScreen
         if (isAltKeyDown()) GL11.glRotated(yRenderAngle, 1, 0, 0);
         entity.onGround = ground;
 
-        ((Entity) pokemob).ticksExisted = mc.player.ticksExisted;
-        ((EntityLivingBase) pokemob).limbSwing += 0.5;
-        ((EntityLivingBase) pokemob).limbSwingAmount = 0.5f;
+        entity.ticksExisted = mc.player.ticksExisted;
+        entity.limbSwing += 0.5;
+        entity.limbSwingAmount = 0.5f;
 
         String arg = info.getText();
         try

@@ -22,6 +22,7 @@ import pokecube.core.events.RecallEvent;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.pokeplayer.network.PacketTransform;
@@ -113,7 +114,7 @@ public class EventsHandler
     @SubscribeEvent
     public void recall(RecallEvent.Pre evt)
     {
-        if (((Entity) evt.recalled).getEntityData().getBoolean("isPlayer")) evt.setCanceled(true);
+        if (evt.recalled.getEntity().getEntityData().getBoolean("isPlayer")) evt.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -147,7 +148,7 @@ public class EventsHandler
     @SubscribeEvent
     public void evolve(EvolveEvent.Post evt)
     {
-        Entity entity = (Entity) evt.mob;
+        Entity entity = evt.mob.getEntity();
         if (entity.getEntityData().getBoolean("isPlayer"))
         {
             UUID uuid = UUID.fromString(entity.getEntityData().getString("playerID"));
@@ -166,13 +167,13 @@ public class EventsHandler
     @SubscribeEvent
     public void PlayerJoinWorld(EntityJoinWorldEvent evt)
     {
-        if (evt.getEntity() instanceof IPokemob)
+        if (evt.getEntity().getEntityData().getBoolean("isPlayer"))
         {
-            if (evt.getEntity().getEntityData().getBoolean("isPlayer"))
+            IPokemob evo = CapabilityPokemob.getPokemobFor(evt.getEntity());
+            if (evo != null)
             {
                 UUID uuid = UUID.fromString(evt.getEntity().getEntityData().getString("playerID"));
                 EntityPlayer player = evt.getWorld().getPlayerEntityByUUID(uuid);
-                IPokemob evo = (IPokemob) evt.getEntity();
                 proxy.setPokemob(player, evo);
                 evt.setCanceled(true);
                 if (!player.world.isRemote)

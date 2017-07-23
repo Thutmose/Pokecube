@@ -18,7 +18,6 @@ import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
 import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
-import thut.api.entity.IHungrymob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 import thut.lib.Accessor;
 import thut.lib.CompatWrapper;
@@ -47,9 +46,9 @@ public class PokeInfo extends PlayerData
         this.originalHeight = player.height;
         this.originalWidth = player.width;
         this.originalHP = player.getMaxHealth();
-        ((Entity) pokemob).getEntityData().setBoolean("isPlayer", true);
-        ((Entity) pokemob).getEntityData().setString("playerID", player.getUniqueID().toString());
-        ((Entity) pokemob).getEntityData().setString("oldName", pokemob.getPokemonNickname());
+        pokemob.getEntity().getEntityData().setBoolean("isPlayer", true);
+        pokemob.getEntity().getEntityData().setString("playerID", player.getUniqueID().toString());
+        pokemob.getEntity().getEntityData().setString("oldName", pokemob.getPokemonNickname());
         pokemob.setPokemonNickname(player.getDisplayNameString());
         pokemob.setPokemonOwner(player);
         save(player);
@@ -85,7 +84,7 @@ public class PokeInfo extends PlayerData
         pokemob.setSize((float) (pokemob.getSize() / PokecubeMod.core.getConfig().scalefactor));
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
-        player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
+        player.eyeHeight = pokemob.getEntity().getEyeHeight();
         if (player.height != height || player.width != width)
         {
             ReflectionHelper.setPrivateValue(Entity.class, player, true, FIELDINDEX);
@@ -103,7 +102,7 @@ public class PokeInfo extends PlayerData
     public void onUpdate(EntityPlayer player)
     {
         if (pokemob == null) return;
-        EntityLivingBase poke = (EntityLivingBase) pokemob;
+        EntityLivingBase poke = pokemob.getEntity();
         if (!pokemob.getPokemonAIState(IPokemob.TAMED)) pokemob.setPokemonAIState(IPokemob.TAMED, true);
         poke.onUpdate();
         player.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(poke.getMaxHealth());
@@ -112,16 +111,16 @@ public class PokeInfo extends PlayerData
             poke.setHealth(poke.getMaxHealth());
         }
         float health = poke.getHealth();
-        EntityTools.copyEntityTransforms((EntityLivingBase) pokemob, player);
+        EntityTools.copyEntityTransforms(poke, player);
         player.setHealth(health);
-        int num = ((IHungrymob) poke).getHungerTime();
+        int num = pokemob.getHungerTime();
         int max = PokecubeMod.core.getConfig().pokemobLifeSpan;
         num = Math.round(((max - num) * 20) / (float) max);
         if (player.capabilities.isCreativeMode) num = 20;
         player.getFoodStats().setFoodLevel(num);
         float height = pokemob.getSize() * pokemob.getPokedexEntry().height;
         float width = pokemob.getSize() * pokemob.getPokedexEntry().width;
-        player.eyeHeight = ((EntityLivingBase) pokemob).getEyeHeight();
+        player.eyeHeight = poke.getEyeHeight();
         if (player.height != height || player.width != width)
         {
             ReflectionHelper.setPrivateValue(Entity.class, player, true, FIELDINDEX);

@@ -10,7 +10,6 @@ import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.SidedComponent;
 import li.cil.oc.api.network.SimpleComponent;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
@@ -354,7 +353,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     {
         if (pokemob != null)
         {
-            ((Entity) pokemob).setDead();
+            pokemob.getEntity().setDead();
             pokemob = null;
             ability = null;
         }
@@ -372,7 +371,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         {
             ability = pokemob.getAbility();
             ability.destroy();
-            ((Entity) pokemob).setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
+            pokemob.getEntity().setPosition(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5);
             ability.init(pokemob, distance);
         }
     }
@@ -489,7 +488,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
             shiny = false;
             // Tick increase incase ability tracks this for update.
             // Renderer can also then render it animated.
-            ((Entity) pokemob).ticksExisted++;
+            pokemob.getEntity().ticksExisted++;
             levelFactor = pokemob.getLevel();
             // Do not call ability update on client.
             if (!world.isRemote) ability.onUpdate(pokemob);

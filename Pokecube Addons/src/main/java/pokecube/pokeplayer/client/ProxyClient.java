@@ -2,7 +2,6 @@ package pokecube.pokeplayer.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
@@ -53,7 +52,7 @@ public class ProxyClient extends Proxy
     public void onPlayerTick(TickEvent.PlayerTickEvent event)
     {
         IPokemob pokemob;
-        if (event.side == Side.SERVER || event.player != PokecubeCore.proxy.getPlayer((String)null)
+        if (event.side == Side.SERVER || event.player != PokecubeCore.proxy.getPlayer((String) null)
                 || (pokemob = getPokemob(event.player)) == null)
             return;
         if (Minecraft.getMinecraft().currentScreen instanceof GuiPokedex)
@@ -71,8 +70,8 @@ public class ProxyClient extends Proxy
         event.setCanceled(true);
         boolean shadow = Minecraft.getMinecraft().getRenderManager().isRenderShadow();
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(false);
-        Minecraft.getMinecraft().getRenderManager().doRenderEntity((EntityLivingBase) pokemob, event.getX(),
-                event.getY(), event.getZ(), event.getEntityPlayer().rotationYaw, event.getPartialRenderTick(), false);
+        Minecraft.getMinecraft().getRenderManager().doRenderEntity(pokemob.getEntity(), event.getX(), event.getY(),
+                event.getZ(), event.getEntityPlayer().rotationYaw, event.getPartialRenderTick(), false);
         Minecraft.getMinecraft().getRenderManager().setRenderShadow(shadow);
     }
 

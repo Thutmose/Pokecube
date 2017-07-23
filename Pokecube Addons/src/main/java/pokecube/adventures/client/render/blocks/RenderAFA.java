@@ -5,8 +5,6 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -41,11 +39,11 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         GL11.glRotatef(180, 0, 0, 1);
         GL11.glColor4f(1, 1, 1, 0.5f);
         GL11.glScaled(0.0625 * scale, 0.0625 * scale, 0.0625 * scale);
-        if (mob instanceof IMobColourable)
+        if (mob.getEntity() instanceof IMobColourable)
         {
-            int[] col = ((IMobColourable) mob).getRGBA();
+            int[] col = ((IMobColourable) mob.getEntity()).getRGBA();
             col[3] = te.transparency;
-            ((IMobColourable) mob).setRGBA(col);
+            ((IMobColourable) mob.getEntity()).setRGBA(col);
         }
         if (!te.rotates)
         {
@@ -55,10 +53,10 @@ public class RenderAFA extends TileEntitySpecialRenderer<TileEntityAFA>
         {
             // partialTicks = te.animationTime % 1;
             partialTicks = 0;
-            ((Entity) mob).ticksExisted = (int) te.animationTime;
-            ((EntityLivingBase) mob).limbSwing = 0;
-            ((EntityLivingBase) mob).limbSwingAmount = 0;
-            ((EntityLivingBase) mob).prevLimbSwingAmount = 0;
+            mob.getEntity().ticksExisted = (int) te.animationTime;
+            mob.getEntity().limbSwing = 0;
+            mob.getEntity().limbSwingAmount = 0;
+            mob.getEntity().prevLimbSwingAmount = 0;
         }
 
         Object o;

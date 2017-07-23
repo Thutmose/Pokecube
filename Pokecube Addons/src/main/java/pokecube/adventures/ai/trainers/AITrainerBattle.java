@@ -216,7 +216,7 @@ public class AITrainerBattle extends EntityAIBase
             trainer.resetPokemob();
         }
         else if (trainer.getOutMob() != null && !trainer.getOutMob().getEntity().isDead
-                && ((Entity) trainer.getOutMob()).addedToChunk)
+                && trainer.getOutMob().getEntity().addedToChunk)
         {
             // If trainer has a living, real mob out, tell it to do stuff.
             // Check if pokemob has a valid Pokemob as a target.

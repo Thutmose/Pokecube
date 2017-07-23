@@ -154,9 +154,8 @@ public class RecipePokeseals implements IDefaultRecipe
     public static ItemStack process(ItemStack cube, ItemStack seal)
     {
         if (!seal.hasTagCompound()) return cube;
-        NBTTagCompound pokecubeTag = cube.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.VISUALSTAG)
-                .getCompoundTag(TagNames.POKECUBE);
+        NBTTagCompound pokecubeTag = TagNames.getPokecubePokemobTag(cube.getTagCompound())
+                .getCompoundTag(TagNames.VISUALSTAG).getCompoundTag(TagNames.POKECUBE);
         if (!pokecubeTag.hasKey("tag")) pokecubeTag.setTag("tag", new NBTTagCompound());
         NBTTagCompound cubeTag = pokecubeTag.getCompoundTag("tag");
         cubeTag.setTag(TagNames.POKESEAL, seal.getTagCompound().getCompoundTag(TagNames.POKESEAL));

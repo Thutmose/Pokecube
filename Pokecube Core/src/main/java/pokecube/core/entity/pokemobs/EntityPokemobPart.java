@@ -26,6 +26,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.Nature;
 import thut.api.entity.IBreedingMob;
+import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.maths.Vector3;
 
 public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
@@ -62,7 +63,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setPokemonAIState(int state, boolean flag)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -83,14 +84,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void exchangeMoves(int moveIndex0, int moveIndex1)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void executeMove(Entity target, Vector3 targetLocation, float f)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -111,7 +112,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setTransformedTo(Entity to)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -153,28 +154,28 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void learn(String moveName)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setAttackCooldown(int timer)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setMove(int i, String moveName)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setMoveIndex(int i)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -188,14 +189,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void addEVs(byte[] evsToAdd)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void addHappiness(int toAdd)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -209,14 +210,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setAbility(Ability ability)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setAbilityIndex(int index)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -265,7 +266,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setNature(Nature nature)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -286,14 +287,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void cancelEvolve()
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void displayMessageToOwner(ITextComponent message)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -349,42 +350,42 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setOriginalOwnerUUID(UUID original)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setPokecube(ItemStack pokecube)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setPokemobTeam(String team)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setPokemonNickname(String nickname)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setPokemonOwner(EntityLivingBase e)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setPokemonOwner(UUID id)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -398,7 +399,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void eat(Entity eaten)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -531,7 +532,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void healStatus()
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -580,35 +581,35 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void popFromPokecube()
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void returnToPokecube()
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setDirectionPitch(float pitch)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setEvolutionTicks(int evolutionTicks)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setEVs(byte[] evs)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -629,63 +630,63 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setExplosionState(int i)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setHeldItem(ItemStack Item)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setHome(int x, int y, int z, int distance)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setHp(float min)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setIVs(byte[] ivs)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setSexe(byte sexe)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setShiny(boolean shiny)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setSize(float size)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setSpecialInfo(int info)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -699,14 +700,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setStatusTimer(short timer)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void specificSpawnInit()
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -720,14 +721,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setRNGValue(int value)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void setSubParts(EntityPokemobPart[] subParts)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -741,14 +742,14 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setFlavourAmount(int index, int amount)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
     public void readPokemobData(NBTTagCompound tag)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -762,7 +763,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setEvolutionStack(ItemStack stack)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -776,7 +777,7 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     public void setMoves(String[] moves)
     {
         // TODO Auto-generated method stub
-
+        
     }
 
     @Override
@@ -868,6 +869,13 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public boolean canMate(EntityAnimal entityAnimal)
+    {
+        // TODO Auto-generated method stub
+        return false;
     }
 
     @Override
@@ -990,7 +998,49 @@ public class EntityPokemobPart extends MultiPartEntityPart implements IPokemob
     }
 
     @Override
-    public boolean canMate(EntityAnimal entityAnimal)
+    public void onSetTarget(EntityLivingBase entity)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getTotalAIState()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setTotalAIState(int state)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getTargetID()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setTargetID(int id)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public AIStuff getAI()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean selfManaged()
     {
         // TODO Auto-generated method stub
         return false;

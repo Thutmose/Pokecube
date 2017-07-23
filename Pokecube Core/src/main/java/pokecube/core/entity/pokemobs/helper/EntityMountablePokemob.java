@@ -22,14 +22,10 @@ import thut.api.entity.IMultiplePassengerEntity;
  * @author Manchou */
 public abstract class EntityMountablePokemob extends EntityEvolvablePokemob implements IMultiplePassengerEntity
 {
-    private int       mountCounter       = 0;
-    public float      landSpeedFactor    = 1;
-    public float      waterSpeedFactor   = 0.25f;
-    public float      airbornSpeedFactor = 0.02f;
-    public float      speedFactor        = 1;
+    private int       mountCounter = 0;
     protected double  yOffset;
 
-    public int        counterMount       = 0;
+    public int        counterMount = 0;
 
     protected boolean pokemobJumping;
 
@@ -74,7 +70,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     @Override
     public boolean getOnGround()
     {
-        return onGround;
+        return pokemobCap.getOnGround();
     }
 
     @Override
@@ -215,7 +211,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     @Override
     public float getPitch()
     {
-        return this.getDirectionPitch();
+        return this.pokemobCap.getDirectionPitch();
     }
 
     // We do our own rendering, so don't need this.

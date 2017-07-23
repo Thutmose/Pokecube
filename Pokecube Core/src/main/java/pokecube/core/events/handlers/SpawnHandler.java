@@ -221,7 +221,7 @@ public final class SpawnHandler
                 String toLog = "location: %1$s took: %2$s\u00B5s to spawn Init for %3$s";
                 PokecubeMod.log(String.format(toLog, temp, dt, pokemob.getPokemonDisplayName().getFormattedText()));
             }
-            return (EntityLiving) pokemob;
+            return pokemob.getEntity();
         }
         return null;
     }

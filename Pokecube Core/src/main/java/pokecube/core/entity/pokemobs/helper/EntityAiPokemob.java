@@ -97,19 +97,17 @@ import thut.lib.CompatWrapper;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    public GuardAI              guardAI;
-    public PokemobAIUtilityMove utilMoveAI;
-    public LogicMountedControl  controller;
-    protected AIStuff           aiStuff;
+    private GuardAI              guardAI;
+    public LogicMountedControl   controller;
+    private AIStuff              aiStuff;
 
-    protected PokeNavigator     navi;
-    protected PokemobMoveHelper mover;
-    boolean                     initAI         = true;
-    boolean                     popped         = false;
-    protected PokemobAI         aiObject;
-    boolean                     isAFish        = false;
+    private PokeNavigator        navi;
+    private PokemobMoveHelper    mover;
+    private boolean              popped         = false;
+    private PokemobAI            aiObject;
+    private boolean              isAFish        = false;
 
-    public TerrainSegment       currentTerrain = null;
+    private TerrainSegment       currentTerrain = null;
 
     public EntityAiPokemob(World world)
     {
@@ -137,8 +135,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean canBreatheUnderwater()
     {
-        return (getType1() == PokeType.getType("water") || getType2() == PokeType.getType("water") || getPokedexEntry().shouldDive
-                || getPokedexEntry().swims());
+        return (getType1() == PokeType.getType("water") || getType2() == PokeType.getType("water")
+                || getPokedexEntry().shouldDive || getPokedexEntry().swims());
     }
 
     @Override
@@ -174,7 +172,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public float getDirectionPitch()
     {
-        return dataManager.get(DIRECTIONPITCHDW);
+        return pokemobCap.getDirectionPitch();
     }
 
     @Override
@@ -217,13 +215,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean getPokemonAIState(int state)
     {
-
-        if (state == SADDLED)
-        {
-            handleArmourAndSaddle();
-        }
-
-        return (dataManager.get(AIACTIONSTATESDW) & state) != 0;
+        return pokemobCap.getPokemonAIState(state);
     }
 
     /////////////////// Movement related things///////////////////////////
@@ -300,15 +292,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void init(int nb)
     {
         super.init(nb);
+        if (getEntityWorld() != null) initAI(getPokedexEntry());
     }
 
     protected void initAI(PokedexEntry entry)
     {
-        initAI = false;
-        navi = new PokeNavigator(this, world);
-        mover = new PokemobMoveHelper(this);
+        pokemobCap.navi = navi = new PokeNavigator(this, world);
+        pokemobCap.mover = mover = new PokemobMoveHelper(this);
         jumpHelper = new PokemobJumpHelper(this);
-        aiStuff = new AIStuff(this);
+        pokemobCap.aiStuff = aiStuff = new AIStuff(this);
 
         float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
@@ -320,8 +312,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         // Add in the vanilla like AI methods.
         this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
-        this.tasks.addTask(5, guardAI);
-        this.tasks.addTask(5, utilMoveAI = new PokemobAIUtilityMove(this));
+        this.tasks.addTask(5, pokemobCap.guardAI = guardAI);
+        this.tasks.addTask(5, pokemobCap.utilMoveAI = new PokemobAIUtilityMove(this));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
         if (PokecubeCore.core.getConfig().pokemobsOnShoulder)
             this.tasks.addTask(8, new PokemobSitShoulder((EntityPokemob) this));
@@ -462,7 +454,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             entry = ((IPokemob) getTransformedTo()).getPokedexEntry();
         }
-        int aiState = dataManager.get(AIACTIONSTATESDW);
+        int aiState = getTotalAIState();
         boolean isAbleToFly = entry.floats() || entry.flys();
         boolean isWaterMob = entry.swims();
 
@@ -736,8 +728,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
         {
             HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
-                    getPokemonDisplayName());
+            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own", getPokemonDisplayName());
             displayMessageToOwner(mess);
             returnToPokecube();
         }
@@ -772,10 +763,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void onUpdate()
     {
-        if (initAI)
-        {
-            initAI(getPokedexEntry());
-        }
         if (popped && getPokemonAIState(TRADED))
         {
             evolve(true, false);
@@ -784,38 +771,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
         dimension = world.provider.getDimension();
         super.onUpdate();
-        if (world.isRemote)
-        {
-            int id = dataManager.get(ATTACKTARGETIDDW);
-            if (id >= 0 && getAttackTarget() == null)
-            {
-                setAttackTarget((EntityLivingBase) PokecubeMod.core.getEntityProvider().getEntity(world, id, false));
-            }
-            if (id < 0 && getAttackTarget() != null)
-            {
-                setAttackTarget(null);
-            }
-        }
         for (ILogicRunnable logic : aiStuff.aiLogic)
         {
             logic.doServerTick(world);
-        }
-        int state = dataManager.get(AIACTIONSTATESDW);
-        if (getAIState(IMoveConstants.TAMED, state) && (getPokemonOwnerID() == null))
-        {
-            setPokemonAIState(IMoveConstants.TAMED, false);
-        }
-        if (loveTimer > 600)
-        {
-            resetLoveStatus();
-        }
-        if (ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
-        {
-            setPokemonAIState(EXITINGCUBE, false);
-        }
-        if (this.getPokemonAIState(IMoveConstants.SITTING) && !this.getNavigator().noPath())
-        {
-            this.getNavigator().clearPathEntity();
         }
         // TODO move this over to a capability or something.
         TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(this);
@@ -1099,27 +1057,16 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
+    public void onSetTarget(EntityLivingBase entity)
+    {
+        pokemobCap.onSetTarget(entity);
+    }
+
+    @Override
     public void setAttackTarget(EntityLivingBase entity)
     {
         if (entity != null && entity.equals(this.getPokemonOwner())) { return; }
         if (entity != null && entity.equals(this)) { return; }
-        if (entity != null) setPokemonAIState(SITTING, false);
-        if (entity != null && !world.isRemote)
-        {
-            dataManager.set(ATTACKTARGETIDDW, Integer.valueOf(entity.getEntityId()));
-        }
-        if (entity == null && !world.isRemote)
-        {
-            dataManager.set(ATTACKTARGETIDDW, Integer.valueOf(-1));
-        }
-        if (entity == null)
-        {
-            this.getEntityData().setString("lastMoveHitBy", "");
-        }
-        if (entity != getAttackTarget() && getAbility() != null && !world.isRemote)
-        {
-            getAbility().onAgress(this, entity);
-        }
         super.setAttackTarget(entity);
     }
 
@@ -1150,7 +1097,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setDirectionPitch(float pitch)
     {
-        dataManager.set(DIRECTIONPITCHDW, pitch);
+        pokemobCap.setDirectionPitch(pitch);
     }
 
     @Override
@@ -1175,20 +1122,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setPokemonAIState(int state, boolean flag)
     {
-        int byte0 = dataManager.get(AIACTIONSTATESDW);
-        if (state == STAYING)
-        {
-            here.set(this);
-            setHome(here.intX(), here.intY(), here.intZ(), 16);
-        }
-        if (flag)
-        {
-            dataManager.set(AIACTIONSTATESDW, Integer.valueOf((byte0 | state)));
-        }
-        else
-        {
-            dataManager.set(AIACTIONSTATESDW, Integer.valueOf((byte0 & -state - 1)));
-        }
+        pokemobCap.setPokemonAIState(state, flag);
     }
 
     @Override
@@ -1247,13 +1181,37 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public AIStuff getAI()
     {
-        return aiStuff;
+        return pokemobCap.getAI();
     }
 
     @Override
     public boolean selfManaged()
     {
-        return true;
+        return pokemobCap.selfManaged();
+    }
+
+    @Override
+    public int getTotalAIState()
+    {
+        return pokemobCap.getTotalAIState();
+    }
+
+    @Override
+    public void setTotalAIState(int state)
+    {
+        pokemobCap.setTotalAIState(state);
+    }
+
+    @Override
+    public int getTargetID()
+    {
+        return pokemobCap.getTargetID();
+    }
+
+    @Override
+    public void setTargetID(int id)
+    {
+        pokemobCap.setTargetID(id);
     }
 
     @Override

@@ -15,7 +15,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -319,11 +318,12 @@ public class MakeCommand extends CommandBase
                 }
             }
         }
-        mob.setHp(((EntityLiving) mob).getMaxHealth());
+        mob.setHp(mob.getEntity().getMaxHealth());
         mob.setNature(nature);
         mob.setShiny(shiny);
         if (gender != -3) mob.setSexe(gender);
-        if (mob instanceof IMobColourable) ((IMobColourable) mob).setRGBA(red, green, blue, 255);
+        if (mob.getEntity() instanceof IMobColourable)
+            ((IMobColourable) mob.getEntity()).setRGBA(red, green, blue, 255);
         if (asWild)
         {
             mob = mob.setForSpawn(exp);

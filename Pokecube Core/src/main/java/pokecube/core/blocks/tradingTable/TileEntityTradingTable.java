@@ -468,10 +468,10 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         {
             mon2.setPokemonOwner(trader1);
             mon1.setPokemonOwner(trader2);
-            boolean mon1everstone = PokecubeManager.getHeldItemMainhand(poke1) != CompatWrapper.nullStack && Tools
-                    .isSameStack(PokecubeManager.getHeldItemMainhand(poke1), PokecubeItems.getStack("everstone"));
-            boolean mon2everstone = PokecubeManager.getHeldItemMainhand(poke2) != CompatWrapper.nullStack && Tools
-                    .isSameStack(PokecubeManager.getHeldItemMainhand(poke2), PokecubeItems.getStack("everstone"));
+            boolean mon1everstone = PokecubeManager.getHeldItem(poke1) != CompatWrapper.nullStack
+                    && Tools.isSameStack(PokecubeManager.getHeldItem(poke1), PokecubeItems.getStack("everstone"));
+            boolean mon2everstone = PokecubeManager.getHeldItem(poke2) != CompatWrapper.nullStack
+                    && Tools.isSameStack(PokecubeManager.getHeldItem(poke2), PokecubeItems.getStack("everstone"));
             if (!mon1everstone) mon1.setTraded(true);
             if (!mon2everstone) mon2.setTraded(true);
             poke1 = PokecubeManager.pokemobToItem(mon1);
@@ -513,8 +513,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             else
             {
                 PokecubeManager.setOwner(first, player1.getUniqueID());
-                NBTTagCompound visualsTag = first.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                        .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.VISUALSTAG);
+                NBTTagCompound visualsTag = TagNames.getPokecubePokemobTag(first.getTagCompound())
+                        .getCompoundTag(TagNames.VISUALSTAG);
                 NBTTagCompound cube = new NBTTagCompound();
                 stack = second.copy();
                 second.writeToNBT(cube);

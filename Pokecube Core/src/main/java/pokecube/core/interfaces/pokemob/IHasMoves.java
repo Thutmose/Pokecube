@@ -136,6 +136,12 @@ public interface IHasMoves extends IHasStats
 
     int getAttackCooldown();
 
+    void onSetTarget(EntityLivingBase entity);
+
+    int getTargetID();
+
+    void setTargetID(int id);
+
     /** Changes: {@link IMoveConstants#CHANGE_CONFUSED} for example.
      *
      * @return the change state */
@@ -226,7 +232,7 @@ public interface IHasMoves extends IHasStats
      *            an existing move (registered in {@link MovesUtils}) */
     default void learn(String moveName)
     {
-        if (moveName == null) return;
+        if (moveName == null || getEntity().getEntityWorld() == null || getEntity().getEntityWorld().isRemote) return;
         if (!MovesUtils.isMoveImplemented(moveName)) { return; }
         String[] moves = getMoves();
         EntityLivingBase thisEntity = getEntity();
@@ -269,6 +275,7 @@ public interface IHasMoves extends IHasStats
                 {
                     for (String s : current)
                     {
+                        if (s == null) continue;
                         for (String s1 : moves)
                         {
                             if (s.equals(s1)) return;
@@ -276,6 +283,7 @@ public interface IHasMoves extends IHasStats
                     }
                     for (String s : moves)
                     {
+                        if (s == null) continue;
                         ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
                                 thisMob.getPokemonDisplayName().getFormattedText(), s);
                         thisMob.displayMessageToOwner(mess);

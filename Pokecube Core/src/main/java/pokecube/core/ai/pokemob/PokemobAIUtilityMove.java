@@ -1,6 +1,5 @@
 package pokecube.core.ai.pokemob;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.world.World;
@@ -61,7 +60,7 @@ public class PokemobAIUtilityMove extends EntityAIBase
         if (move == null) { return; }
         if (move.name.equalsIgnoreCase(IMoveNames.MOVE_FLASH) || move.name.equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
         {
-            move.attack(pokemon, (Entity) pokemon);
+            move.attack(pokemon, pokemon.getEntity());
             return;
         }
         if (destination == null)

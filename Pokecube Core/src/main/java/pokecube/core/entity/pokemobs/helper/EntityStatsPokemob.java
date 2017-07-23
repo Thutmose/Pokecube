@@ -16,9 +16,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
@@ -31,39 +29,24 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Pokedex;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.KillEvent;
-import pokecube.core.events.LevelUpEvent;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.PokemobDamageSource;
-import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
-import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 {
     double                moveSpeed;
-
-    public PokedexEntry   entry;
-
-    /** The happiness value of the pokemob */
-    protected int         bonusHappiness   = 0;
-
-    boolean               wasShadow        = false;
-
-    boolean               isAncient        = false;
-    private int           personalityValue = 0;
     private int           killCounter      = 0;
     private int           resetTick        = 0;
-    private StatModifiers modifiers        = new StatModifiers();
 
     public EntityStatsPokemob(World world)
     {
@@ -73,8 +56,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public void addHappiness(int toAdd)
     {
-        this.bonusHappiness += toAdd;
-        this.dataManager.set(HAPPYDW, Integer.valueOf(bonusHappiness));
+        pokemobCap.addHappiness(toAdd);
     }
 
     @Override
@@ -102,21 +84,21 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             return false;
         }
-        else if (this.world.isRemote)
+        else if (this.worldObj.isRemote)
         {
             return false;
         }
         else
         {
-            this.idleTime = 0;
+            this.entityAge = 0;
 
-            if (source.isExplosion() && source.getTrueSource() instanceof IPokemob && isType(ghost)) { return false; }
+            if (source.isExplosion() && source.getEntity() instanceof IPokemob && isType(ghost)) { return false; }
 
-            if (!(source.getTrueSource() instanceof IPokemob || source instanceof PokemobDamageSource)
+            if (!(source.getEntity() instanceof IPokemob || source instanceof PokemobDamageSource)
                     && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
                 return false;
 
-            if (source.getTrueSource() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
+            if (source.getEntity() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
                 amount *= PokecubeMod.core.getConfig().playerToPokemobDamageScale;
 
             if (this.getHealth() <= 0.0F)
@@ -150,7 +132,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 }
 
                 this.attackedAtYaw = 0.0F;
-                Entity entity = source.getTrueSource();
+                Entity entity = source.getEntity();
 
                 if (entity != null)
                 {
@@ -178,9 +160,9 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
                 if (flag)
                 {
-                    this.world.setEntityState(this, (byte) 2);
+                    this.worldObj.setEntityState(this, (byte) 2);
 
-                    if (source != DamageSource.DROWN)
+                    if (source != DamageSource.drown)
                     {
                         this.setBeenAttacked();
                     }
@@ -229,7 +211,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 }
                 else
                 {
-                    SoundEvent s1 = this.getHurtSound(source);
+                    SoundEvent s1 = this.getHurtSound();
 
                     if (flag && s1 != null)
                     {
@@ -245,28 +227,25 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public int getExp()
     {
-        return dataManager.get(EXPDW);
+        return pokemobCap.getExp();
     }
 
     @Override
     public int getHappiness()
     {
-        bonusHappiness = dataManager.get(HAPPYDW);
-        bonusHappiness = Math.max(bonusHappiness, -getPokedexEntry().getHappiness());
-        bonusHappiness = Math.min(bonusHappiness, 255 - getPokedexEntry().getHappiness());
-        return bonusHappiness + getPokedexEntry().getHappiness();
+        return pokemobCap.getHappiness();
     }
 
     @Override
     public StatModifiers getModifiers()
     {
-        return modifiers;
+        return pokemobCap.getModifiers();
     }
 
     @Override
     public String getPokemonNickname()
     {
-        return dataManager.get(NICKNAMEDW);
+        return pokemobCap.getPokemonNickname();
     }
 
     @Override
@@ -295,19 +274,14 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public boolean isShadow()
     {
-        boolean isShadow = getPokedexEntry().isShadowForme;
-        if (isShadow && !wasShadow)
-        {
-            wasShadow = true;
-        }
-        return isShadow;
+        return pokemobCap.isShadow();
     }
 
     /** This method gets called when the entity kills another one. */
     @Override
     public void onKillEntity(EntityLivingBase attacked)
     {
-        if (world.isRemote) return;
+        if (worldObj.isRemote) return;
         IPokemob attacker = this;
         if (PokecubeCore.core.getConfig().nonPokemobExp && !(attacked instanceof IPokemob))
         {
@@ -412,7 +386,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         PacketBuffer buffer = new PacketBuffer(data);
         try
         {
-            this.readPokemobData(buffer.readCompoundTag());
+            this.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
         }
         catch (IOException e)
         {
@@ -423,96 +397,13 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public IPokemob setExp(int exp, boolean notifyLevelUp)
     {
-        if (this.isDead) return this;
-
-        int old = dataManager.get(EXPDW);
-        getMoveStats().oldLevel = this.getLevel();
-        int lvl100xp = Tools.maxXPs[getExperienceMode()];
-        exp = Math.min(lvl100xp, exp);
-
-        dataManager.set(EXPDW, exp);
-        int newLvl = Tools.xpToLevel(getExperienceMode(), exp);
-        int oldLvl = Tools.xpToLevel(getExperienceMode(), old);
-        IPokemob ret = this;
-        if (oldLvl != newLvl)
-        {
-            // Fire event to allow others to interfere
-            LevelUpEvent lvlup = new LevelUpEvent(this, newLvl, getMoveStats().oldLevel);
-            MinecraftForge.EVENT_BUS.post(lvlup);
-            if (!lvlup.isCanceled())
-            {
-                updateHealth(newLvl);
-                if (notifyLevelUp)
-                {
-                    ItemStack held = getHeldItemMainhand();
-                    if (!this.isDead && (canEvolve(CompatWrapper.nullStack) || canEvolve(held)))
-                    {
-                        levelUp(newLvl);
-                        IPokemob evo = this.evolve(true, false, held);
-                        ret = evo;
-                    }
-                    ret.levelUp(newLvl);
-                    if (this.addedToChunk && ret.getPokemonOwner() instanceof EntityPlayer
-                            && world.getGameRules().getBoolean("doMobLoot") && !world.isRemote)
-                    {
-                        world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, 1));
-                    }
-                }
-            }
-        }
-        return ret;
-    }
-
-    private void setMaxHealth(float maxHealth)
-    {
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
+        return pokemobCap.setExp(exp, notifyLevelUp);
     }
 
     @Override
     public void setPokemonNickname(String nickname)
     {
-        if (PokecubeCore.isOnClientSide())
-        {
-            if (!nickname.equals(getPokemonNickname()) && addedToChunk)
-            {
-                PacketNickname.sendPacket(this, nickname);
-            }
-        }
-        else
-        {
-            if (getPokedexEntry().getName().equals(nickname))
-            {
-                dataManager.set(NICKNAMEDW, "");
-            }
-            else
-            {
-                dataManager.set(NICKNAMEDW, nickname);
-            }
-        }
-    }
-
-    /** Handles health update.
-     * 
-     * @param level */
-    private void updateHealth(int level)
-    {
-        float old = getMaxHealth();
-        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
-        float health = getHealth();
-
-        if (maxHealth > old)
-        {
-            float damage = old - health;
-            health = maxHealth - damage;
-
-            if (health > maxHealth)
-            {
-                health = maxHealth;
-            }
-        }
-
-        setMaxHealth(maxHealth);
-        setHealth(health);
+        pokemobCap.setPokemonNickname(nickname);
     }
 
     /** Use this for anything that does not change or need to be updated. */
@@ -522,38 +413,25 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         super.writeSpawnData(data);
         PacketBuffer buffer = new PacketBuffer(data);
         NBTTagCompound tag = writePokemobData();
-        buffer.writeCompoundTag(tag);
+        buffer.writeNBTTagCompoundToBuffer(tag);
     }
 
     @Override
     public int getRNGValue()
     {
-        return personalityValue;
+        return pokemobCap.getRNGValue();
     }
 
     @Override
     public void setRNGValue(int value)
     {
-        personalityValue = value;
+        pokemobCap.setRNGValue(value);
     }
 
     @Override
     public IPokemob setForSpawn(int exp, boolean evolve)
     {
-        int level = Tools.xpToLevel(getExperienceMode(), exp);
-        getMoveStats().oldLevel = 0;
-        dataManager.set(EXPDW, exp);
-        EntityPokemobBase ret = (EntityPokemobBase) this.levelUp(level);
-        ItemStack held = getHeldItemMainhand();
-        if (evolve) while (ret.canEvolve(held))
-        {
-            IPokemob temp = ret.evolve(false, true, held);
-            if (temp == null) break;
-            ret = (EntityPokemobBase) temp;
-            ret.dataManager.set(EXPDW, exp);
-            ret.levelUp(level);
-        }
-        return ret;
+        return pokemobCap.setForSpawn(exp, evolve);
     }
 
     @Override

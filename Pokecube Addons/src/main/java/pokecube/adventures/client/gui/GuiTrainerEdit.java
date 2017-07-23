@@ -425,8 +425,8 @@ public class GuiTrainerEdit extends GuiScreen
                     int level = Integer.parseInt(textFieldLevels[i].getText());
                     int exp = Tools.levelToXp(entry.getEvolutionMode(), level);
                     ItemStack stack = pokemobCap.getPokemob(i);
-                    NBTTagCompound pokemob = stack.getTagCompound().getCompoundTag("Pokemob")
-                            .getCompoundTag(TagNames.POKEMOBTAG).getCompoundTag(TagNames.STATSTAG);
+                    NBTTagCompound pokemob = TagNames.getPokecubePokemobTag(stack.getTagCompound())
+                            .getCompoundTag(TagNames.STATSTAG);
                     pokemob.setInteger(TagNames.EXP, exp);
                 }
             }

@@ -193,6 +193,7 @@ public abstract class PokemobAI extends PokemobEvolves
                         EnumParticleTypes.VILLAGER_HAPPY.getParticleName(), particleLoc, null);
             }
         }
+        onGenesChanged();
     }
 
     @Override

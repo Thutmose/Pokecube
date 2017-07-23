@@ -163,7 +163,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                         pokemob.getEntity().setAttackTarget((EntityLivingBase) closest);
                         if (closest instanceof EntityLiving)
                         {
-                            ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);
+                            ((EntityLiving) closest).setAttackTarget(pokemob.getEntity());
                         }
                     }
                     else if (closest == null)
@@ -175,7 +175,8 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                     }
                     else
                     {
-                        pokemob.executeMove(closest, temp.set(closest), closest.getDistanceToEntity((Entity) pokemob));
+                        pokemob.executeMove(closest, temp.set(closest),
+                                closest.getDistanceToEntity(pokemob.getEntity()));
                     }
                 }
                 else if (message.targetLocation != null)

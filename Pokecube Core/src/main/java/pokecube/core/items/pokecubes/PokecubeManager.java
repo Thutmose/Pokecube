@@ -3,7 +3,6 @@ package pokecube.core.items.pokecubes;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,12 +20,12 @@ import thut.lib.CompatWrapper;
 
 public class PokecubeManager
 {
-    public static ItemStack getHeldItemMainhand(ItemStack stack)
+    public static ItemStack getHeldItem(ItemStack stack)
     {
         if (!isFilled(stack)) return CompatWrapper.nullStack;
         try
         {
-            NBTTagList equipmentTags = (NBTTagList) stack.getTagCompound().getCompoundTag(TagNames.POKEMOBTAG)
+            NBTTagList equipmentTags = (NBTTagList) TagNames.getPokecubePokemobTag(stack.getTagCompound())
                     .getCompoundTag(TagNames.INVENTORYTAG).getTag(TagNames.ITEMS);
             for (int i = 0; i < equipmentTags.tagCount(); i++)
             {
@@ -45,8 +44,7 @@ public class PokecubeManager
     public static String getOwner(ItemStack itemStack)
     {
         if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return "";
-        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG);
+        NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
         // TODO remove this legacy support.
         if (poketag.hasNoTags())
         {
@@ -62,8 +60,7 @@ public class PokecubeManager
     public static int getPokedexNb(ItemStack itemStack)
     {
         if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return 0;
-        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG);
+        NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
         int number = poketag.getCompoundTag(TagNames.OWNERSHIPTAG).getInteger(TagNames.POKEDEXNB);
         // TODO remove this legacy support as well
         if (poketag.hasNoTags() || number == 0) return itemStack.getTagCompound().hasKey("PokedexNb")
@@ -74,8 +71,7 @@ public class PokecubeManager
     public static PokedexEntry getPokedexEntry(ItemStack itemStack)
     {
         if (!CompatWrapper.isValid(itemStack) || !itemStack.hasTagCompound()) return null;
-        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG);
+        NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
         int number = poketag.getCompoundTag(TagNames.OWNERSHIPTAG).getInteger(TagNames.POKEDEXNB);
         if (poketag.hasNoTags() || number == 0) return Database.getEntry(getPokedexNb(itemStack));
         String forme = poketag.getCompoundTag(TagNames.VISUALSTAG).getString(TagNames.FORME);
@@ -104,8 +100,7 @@ public class PokecubeManager
     public static byte getStatus(ItemStack itemStack)
     {
         if (!itemStack.hasTagCompound()) return 0;
-        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG);
+        NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
         return poketag.getCompoundTag(TagNames.STATSTAG).getByte(TagNames.STATUS);
     }
 
@@ -138,7 +133,7 @@ public class PokecubeManager
                 cubeStack.getTagCompound().removeTag(TagNames.POKEMOB);
                 pokemob.setPokecube(cubeStack);
             }
-            ((EntityLivingBase) pokemob).extinguish();
+            pokemob.getEntity().extinguish();
             return pokemob;
         }
         return null;
@@ -177,22 +172,23 @@ public class PokecubeManager
         }
         itemStack = itemStack.copy();
         itemStack.setItemDamage(damage);
+        if (!itemStack.hasTagCompound()) itemStack.setTagCompound(new NBTTagCompound());
+        String itemName = pokemob.getPokemonDisplayName().getFormattedText();
+        Entity poke = pokemob.getEntity();
+        NBTTagCompound mobTag = new NBTTagCompound();
+        poke.writeToNBT(mobTag);
+        itemStack.getTagCompound().setTag(TagNames.POKEMOB, mobTag);
+        itemStack.getTagCompound().removeTag(TagNames.POKESEAL);
         setOwner(itemStack, pokemob.getPokemonOwnerID());
         setColor(itemStack);
         int status = pokemob.getStatus();
         setStatus(itemStack, pokemob.getStatus());
-        String itemName = pokemob.getPokemonDisplayName().getFormattedText();
         if (status == IMoveConstants.STATUS_BRN) itemName += " (BRN)";
         else if (status == IMoveConstants.STATUS_FRZ) itemName += " (FRZ)";
         else if (status == IMoveConstants.STATUS_PAR) itemName += " (PAR)";
         else if (status == IMoveConstants.STATUS_PSN || status == IMoveConstants.STATUS_PSN2) itemName += " (PSN)";
         else if (status == IMoveConstants.STATUS_SLP) itemName += " (SLP)";
         itemStack.setStackDisplayName(itemName);
-        Entity poke = pokemob.getEntity();
-        NBTTagCompound mobTag = new NBTTagCompound();
-        poke.writeToNBT(mobTag);
-        itemStack.getTagCompound().setTag(TagNames.POKEMOB, mobTag);
-        itemStack.getTagCompound().removeTag(TagNames.POKESEAL);
         return itemStack;
     }
 
@@ -244,8 +240,7 @@ public class PokecubeManager
     public static void setOwner(ItemStack itemStack, UUID owner)
     {
         if (!itemStack.hasTagCompound()) return;
-        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG);
+        NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
         if (owner == null) poketag.getCompoundTag(TagNames.OWNERSHIPTAG).removeTag(TagNames.OWNER);
         else poketag.getCompoundTag(TagNames.OWNERSHIPTAG).setString(TagNames.OWNER, owner.toString());
     }
@@ -253,8 +248,7 @@ public class PokecubeManager
     public static void setStatus(ItemStack itemStack, byte status)
     {
         if (!itemStack.hasTagCompound()) return;
-        NBTTagCompound poketag = itemStack.getTagCompound().getCompoundTag(TagNames.POKEMOB)
-                .getCompoundTag(TagNames.POKEMOBTAG);
+        NBTTagCompound poketag = TagNames.getPokecubePokemobTag(itemStack.getTagCompound());
         poketag.getCompoundTag(TagNames.STATSTAG).setByte(TagNames.STATUS, status);
     }
 
@@ -273,7 +267,7 @@ public class PokecubeManager
         {
             int serialization = Tools.getHealedPokemobSerialization();
             NBTTagCompound entityTag = stack.getTagCompound().getCompoundTag(TagNames.POKEMOB);
-            NBTTagCompound poketag = entityTag.getCompoundTag(TagNames.POKEMOBTAG);
+            NBTTagCompound poketag = TagNames.getPokecubePokemobTag(stack.getTagCompound());
             stack.setItemDamage(serialization);
             try
             {

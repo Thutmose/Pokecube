@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
@@ -170,14 +168,7 @@ public abstract class PokemobAI extends PokemobEvolves
         if (getEntity().getEntityWorld() != null && !getEntity().getEntityWorld().isRemote)
         {
             setPokemonAIState(SADDLED, this.pokeChest.getStackInSlot(0) != CompatWrapper.nullStack);
-            if (this.pokeChest.getStackInSlot(1) != null)
-            {
-                dataManager.set(params.HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
-            }
-            else
-            {
-                dataManager.set(params.HELDITEM, Optional.<ItemStack> absent());
-            }
+            dataManager.set(params.HELDITEM, this.pokeChest.getStackInSlot(1));
         }
     }
 

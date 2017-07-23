@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.Vector;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
@@ -79,34 +78,34 @@ public abstract class PokemobBase implements IPokemob
         params.ZMOVECD = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.DIRECTIONPITCHDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
         params.TRANSFORMEDTODW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
-        params.HELDITEM = EntityDataManager.<Optional<ItemStack>> createKey(clazz, DataSerializers.OPTIONAL_ITEM_STACK);
+        params.HELDITEM = EntityDataManager.<ItemStack> createKey(clazz, DataSerializers.OPTIONAL_ITEM_STACK);
         return params;
     }
 
     @SuppressWarnings("unchecked")
     public static class DataParameters
     {
-        public final DataParameter<Byte>[]        EVS      = new DataParameter[6];
-        public final DataParameter<Integer>[]     FLAVOURS = new DataParameter[5];
-        public DataParameter<Optional<ItemStack>> HELDITEM;
-        public DataParameter<Integer>             EVOLTICKDW;
-        public DataParameter<Integer>             HAPPYDW;
-        public DataParameter<Integer>             ATTACKCOOLDOWN;
-        public DataParameter<String>              MOVESDW;
-        public DataParameter<String>              NICKNAMEDW;
-        public DataParameter<String>              LASTMOVE;
-        public DataParameter<Byte>                BOOMSTATEDW;
-        public DataParameter<Integer>             ZMOVECD;
-        public DataParameter<Float>               DIRECTIONPITCHDW;
-        public DataParameter<Integer>             TRANSFORMEDTODW;
-        public DataParameter<Integer>             AIACTIONSTATESDW;
-        public DataParameter<Integer>             ATTACKTARGETIDDW;
-        public DataParameter<Integer>             EXPDW;
-        public DataParameter<Integer>             HUNGERDW;
-        public DataParameter<Byte>                STATUSDW;
-        public DataParameter<Integer>             STATUSTIMERDW;
-        public DataParameter<Byte>                MOVEINDEXDW;
-        public DataParameter<Integer>             SPECIALINFO;
+        public final DataParameter<Byte>[]    EVS      = new DataParameter[6];
+        public final DataParameter<Integer>[] FLAVOURS = new DataParameter[5];
+        public DataParameter<ItemStack>       HELDITEM;
+        public DataParameter<Integer>         EVOLTICKDW;
+        public DataParameter<Integer>         HAPPYDW;
+        public DataParameter<Integer>         ATTACKCOOLDOWN;
+        public DataParameter<String>          MOVESDW;
+        public DataParameter<String>          NICKNAMEDW;
+        public DataParameter<String>          LASTMOVE;
+        public DataParameter<Byte>            BOOMSTATEDW;
+        public DataParameter<Integer>         ZMOVECD;
+        public DataParameter<Float>           DIRECTIONPITCHDW;
+        public DataParameter<Integer>         TRANSFORMEDTODW;
+        public DataParameter<Integer>         AIACTIONSTATESDW;
+        public DataParameter<Integer>         ATTACKTARGETIDDW;
+        public DataParameter<Integer>         EXPDW;
+        public DataParameter<Integer>         HUNGERDW;
+        public DataParameter<Byte>            STATUSDW;
+        public DataParameter<Integer>         STATUSTIMERDW;
+        public DataParameter<Byte>            MOVEINDEXDW;
+        public DataParameter<Integer>         SPECIALINFO;
 
         public EntityDataManager register(EntityDataManager dataManager, EntityLiving entity)
         {
@@ -142,7 +141,7 @@ public abstract class PokemobBase implements IPokemob
             dataManager.register(ZMOVECD, Integer.valueOf(-1));
 
             // Held item sync
-            dataManager.register(HELDITEM, Optional.<ItemStack> absent());
+            dataManager.register(HELDITEM, CompatWrapper.nullStack);
 
             // Flavours for various berries eaten.
             for (int i = 0; i < 5; i++)

@@ -1,5 +1,9 @@
 package pokecube.core.interfaces.capabilities.impl;
 
+import java.lang.reflect.Method;
+
+import javax.swing.text.html.parser.Entity;
+
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.LevelUpEvent;
@@ -18,6 +23,14 @@ import thut.lib.CompatWrapper;
 
 public abstract class PokemobStats extends PokemobGenes
 {
+    private static final Method SETSIZE = ReflectionHelper.findMethod(Entity.class, "setSize", "func_70105_a",
+            float.class, float.class);
+
+    static
+    {
+        SETSIZE.setAccessible(true);
+    }
+
     @Override
     public void addHappiness(int toAdd)
     {
@@ -212,7 +225,14 @@ public abstract class PokemobStats extends PokemobGenes
         {
             getEntity().ignoreFrustumCheck = true;
         }
-        getEntity().setSize(getEntity().width, getEntity().height);
+        try
+        {
+            SETSIZE.invoke(getEntity(), getEntity().width, getEntity().height);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
         getEntity().setEntityBoundingBox(new AxisAlignedBB(getEntity().getEntityBoundingBox().minX,
                 getEntity().getEntityBoundingBox().minY, getEntity().getEntityBoundingBox().minZ,
                 getEntity().getEntityBoundingBox().minX + getEntity().width,

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.PokecubePacketHandler;
 
 public class PacketPokemobMessage implements IMessage, IMessageHandler<PacketPokemobMessage, IMessage>
@@ -79,9 +80,10 @@ public class PacketPokemobMessage implements IMessage, IMessageHandler<PacketPok
         int id = message.senderId;
         ITextComponent component = message.message;
         Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, false);
-        if (e != null && e instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(e);
+        if (pokemob != null)
         {
-            ((IPokemob) e).displayMessageToOwner(component);
+            pokemob.displayMessageToOwner(component);
         }
         else if (e == player)
         {

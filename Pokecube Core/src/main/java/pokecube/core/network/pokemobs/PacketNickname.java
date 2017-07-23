@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PacketNickname implements IMessage, IMessageHandler<PacketNickname, IMessage>
 {
@@ -65,8 +66,8 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
         EntityPlayer player;
         player = ctx.getServerHandler().playerEntity;
         Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, message.entityId, true);
-        if (mob == null || !(mob instanceof IPokemob)) return;
-        IPokemob pokemob = (IPokemob) mob;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        if (pokemob == null) return;
         String name = ChatAllowedCharacters.filterAllowedCharacters(new String(message.name));
         if (pokemob.getPokemonDisplayName().getFormattedText().equals(name)) return;
         boolean OT = pokemob.getPokemonOwnerID() == null || pokemob.getOriginalOwnerUUID() == null

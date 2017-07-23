@@ -153,7 +153,7 @@ public class EventsHandler
         {
             UUID uuid = UUID.fromString(entity.getEntityData().getString("playerID"));
             EntityPlayer player = entity.getEntityWorld().getPlayerEntityByUUID(uuid);
-            IPokemob evo = (IPokemob) entity;
+            IPokemob evo = evt.mob;
             proxy.setPokemob(player, evo);
             evt.setCanceled(true);
             if (!player.world.isRemote)

@@ -128,9 +128,9 @@ public class MovesUtils implements IMoveConstants
             if (attackedPokemob != null)
             {
                 String message = "pokemob.move.failed";
-                text = new TextComponentTranslation(message + ".theirs", ((IPokemob) attacker).getPokemonDisplayName());
+                text = new TextComponentTranslation(message + ".theirs", attacker.getPokemonDisplayName());
                 if (attacked != attacker) attacker.displayMessageToOwner(text);
-                text = new TextComponentTranslation(message + ".ours", ((IPokemob) attacker).getPokemonDisplayName());
+                text = new TextComponentTranslation(message + ".ours", attacker.getPokemonDisplayName());
                 attackedPokemob.displayMessageToOwner(text);
                 return;
             }
@@ -233,9 +233,10 @@ public class MovesUtils implements IMoveConstants
             {
                 if ((attacker == null || attacker == attacked) && attacked instanceof EntityLiving)
                 {
-                    if (((EntityLiving) attacked).getAttackTarget() instanceof IPokemob)
+                    IPokemob mob = CapabilityPokemob.getPokemobFor(((EntityLiving) attacked).getAttackTarget());
+                    if (mob != null)
                     {
-                        attacker = (IPokemob) ((EntityLiving) attacked).getAttackTarget();
+                        attacker = mob;
                     }
                 }
                 String message = "pokemob.move.stat.fail";
@@ -262,9 +263,10 @@ public class MovesUtils implements IMoveConstants
 
             if ((attacker == null || attacker == attacked) && attacked instanceof EntityLiving)
             {
-                if (((EntityLiving) attacked).getAttackTarget() instanceof IPokemob)
+                IPokemob mob = CapabilityPokemob.getPokemobFor(((EntityLiving) attacked).getAttackTarget());
+                if (mob != null)
                 {
-                    attacker = (IPokemob) ((EntityLiving) attacked).getAttackTarget();
+                    attacker = mob;
                 }
             }
             if (attackedPokemob != null && attacker != null)
@@ -557,7 +559,7 @@ public class MovesUtils implements IMoveConstants
     {
         int[] stats = attacked ? atk.attackedStatModification : atk.attackerStatModification;
         if (attacked && !(target instanceof IPokemob)) return false;
-        IPokemob affected = (IPokemob) (attacked ? target : mob);
+        IPokemob affected = attacked ? CapabilityPokemob.getPokemobFor(target) : mob;
         DefaultModifiers modifiers = affected.getModifiers().getDefaultMods();
         float[] mods = modifiers.values;
         float[] old = mods.clone();
@@ -587,13 +589,13 @@ public class MovesUtils implements IMoveConstants
         }
         if (ret)
         {
+            IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
             for (byte i = 0; i < diff.length; i++)
             {
                 if (diff[i] != 0)
                 {
                     if (!attacked) displayStatsMessage(mob, target, 0, i, diff[i]);
-                    else if (target instanceof IPokemob)
-                        displayStatsMessage((IPokemob) target, (Entity) mob, 0, i, diff[i]);
+                    else if (targetMob != null) displayStatsMessage(targetMob, mob.getEntity(), 0, i, diff[i]);
                 }
             }
             PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, affected);
@@ -625,11 +627,12 @@ public class MovesUtils implements IMoveConstants
         }
         if (ret)
         {
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(attacker);
             for (byte i = 0; i < diff.length; i++)
             {
-                if (diff[i] != 0 && attacker instanceof IPokemob)
+                if (diff[i] != 0 && pokemob != null)
                 {
-                    displayStatsMessage((IPokemob) attacker, (Entity) mob, 0, i, diff[i]);
+                    displayStatsMessage(pokemob, mob.getEntity(), 0, i, diff[i]);
                 }
             }
             PacketSyncModifier.sendUpdate(StatModifiers.DEFAULTMODIFIERS, mob);
@@ -662,10 +665,9 @@ public class MovesUtils implements IMoveConstants
             boolean par9, boolean par10)
     {
         ExplosionCustom var11 = new ExplosionCustom(entity.getEntityWorld(), entity, par2, par4, par6, par8);
-
-        if (entity instanceof IPokemob)
+        IPokemob poke = CapabilityPokemob.getPokemobFor(entity);
+        if (poke != null)
         {
-            IPokemob poke = (IPokemob) entity;
             if (poke.getPokemonOwner() instanceof EntityPlayer)
             {
                 var11.owner = (EntityPlayer) poke.getPokemonOwner();
@@ -840,7 +842,9 @@ public class MovesUtils implements IMoveConstants
     public static void useMove(@Nonnull Move_Base move, @Nonnull Entity user, @Nullable Entity target,
             @Nonnull Vector3 start, @Nonnull Vector3 end)
     {
-        if (MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Init((IPokemob) user, move, target)))
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(user);
+        if (pokemob == null) return;
+        if (MinecraftForge.EVENT_BUS.post(new MoveUse.ActualMoveUse.Init(pokemob, move, target)))
         {
             // Move Failed message here?
             return;

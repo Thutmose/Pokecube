@@ -29,6 +29,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
@@ -127,17 +128,18 @@ public class Move_Explode extends Move_Basic
             {
                 mob.getEntityWorld().playSound((EntityPlayer) null, mob.posX, mob.posY, mob.posZ,
                         SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.BLOCKS, 4.0F,
-                        (1.0F + (mob.getEntityWorld().rand.nextFloat() - mob.getEntityWorld().rand.nextFloat()) * 0.2F) * 0.7F);
+                        (1.0F + (mob.getEntityWorld().rand.nextFloat() - mob.getEntityWorld().rand.nextFloat()) * 0.2F)
+                                * 0.7F);
 
                 if (getPWR() > 200)
                 {
-                    mob.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ, 1.0D,
-                            0.0D, 0.0D, new int[0]);
+                    mob.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, mob.posX, mob.posY, mob.posZ,
+                            1.0D, 0.0D, 0.0D, new int[0]);
                 }
                 else
                 {
-                    mob.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ, 1.0D,
-                            0.0D, 0.0D, new int[0]);
+                    mob.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ,
+                            1.0D, 0.0D, 0.0D, new int[0]);
                 }
                 actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
                         pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
@@ -197,28 +199,30 @@ public class Move_Explode extends Move_Basic
     {
         Entity attacked = packet.attacked;
         IPokemob pokemob = packet.attacker;
-        if (!PokecubeMod.core.getConfig().explosions)
-            if ((((EntityLiving) pokemob).getHealth() <= 0) && attacked instanceof IPokemob
-                    && (((EntityLivingBase) attacked).getHealth() >= 0 && attacked != pokemob))
-            {
+        IPokemob target = CapabilityPokemob.getPokemobFor(attacked);
+        if (!PokecubeMod.core.getConfig().explosions) if ((pokemob.getEntity().getHealth() <= 0) && target != null
+                && (pokemob.getEntity().getHealth() >= 0 && attacked != pokemob))
+        {
             boolean giveExp = true;
-            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp) && (((IPokemob) attacked).getPokemonOwner() instanceof EntityPlayer))
+            if ((target.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().pvpExp)
+                    && (target.getPokemonOwner() instanceof EntityPlayer))
             {
-            giveExp = false;
+                giveExp = false;
             }
-            if ((((IPokemob) attacked).getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
+            if ((target.getPokemonAIState(IMoveConstants.TAMED) && !PokecubeMod.core.getConfig().trainerExp))
             {
-            giveExp = false;
+                giveExp = false;
             }
             if (giveExp)
             {
-            // voltorb's enemy wins XP and EVs even if it didn't
-            // attack
-            ((IPokemob) attacked).setExp(((IPokemob) attacked).getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor, pokemob.getBaseXP(), pokemob.getLevel()), true);
-            byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
-            ((IPokemob) attacked).addEVs(evsToAdd);
+                // voltorb's enemy wins XP and EVs even if it didn't
+                // attack
+                target.setExp(target.getExp() + Tools.getExp(PokecubeCore.core.getConfig().expScaleFactor,
+                        pokemob.getBaseXP(), pokemob.getLevel()), true);
+                byte[] evsToAdd = Pokedex.getInstance().getEntry(pokemob.getPokedexNb()).getEVs();
+                target.addEVs(evsToAdd);
             }
-            }
+        }
         super.postAttack(packet);
     }
 

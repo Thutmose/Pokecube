@@ -75,10 +75,11 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
             }
             if (evt.world.getTotalWorldTime() > evoTime && !exists)
             {
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(evo);
                 evt.world.spawnEntity(evo);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.evolve.success", "green",
-                        pre.getFormattedText(), ((IPokemob) evo).getPokedexEntry().getName());
-                ((IPokemob) evo).displayMessageToOwner(mess);
+                        pre.getFormattedText(), pokemob.getPokedexEntry().getName());
+                pokemob.displayMessageToOwner(mess);
                 MinecraftForge.EVENT_BUS.unregister(this);
             }
         }

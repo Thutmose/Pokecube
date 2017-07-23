@@ -5,7 +5,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.TerrainDamageSource;
 import pokecube.core.moves.TerrainDamageSource.TerrainType;
 import thut.api.maths.Vector3;
@@ -15,16 +15,12 @@ import thut.api.maths.Vector3;
  * materials. */
 public class LogicInMaterials extends LogicBase
 {
-    final private EntityAnimal entity;
-    final IPokemob             pokemob;
-    final PokedexEntry         entry;
-    Vector3                    v = Vector3.getNewVector();
+    final PokedexEntry entry;
+    Vector3            v = Vector3.getNewVector();
 
     public LogicInMaterials(EntityAnimal entity)
     {
-        super((IPokemob) entity);
-        this.entity = entity;
-        pokemob = (IPokemob) entity;
+        super(CapabilityPokemob.getPokemobFor(entity));
         entry = pokemob.getPokedexEntry();
     }
 

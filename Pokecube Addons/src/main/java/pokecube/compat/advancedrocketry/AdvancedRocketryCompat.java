@@ -38,6 +38,7 @@ import pokecube.core.events.SpawnEvent;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -312,28 +313,31 @@ public class AdvancedRocketryCompat
     @SubscribeEvent
     public void breathe(AtmosphereTickEvent event)
     {
-        if (event.getEntity() instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getEntity());
+        if (pokemob != null)
         {
-            if (vacuumBreathers.contains((((IPokemob) event.getEntity()).getPokedexEntry()))) event.setCanceled(true);
+            if (vacuumBreathers.contains((pokemob.getPokedexEntry()))) event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void breathe(LivingAttackEvent event)
     {
-        if (event.getEntity() instanceof IPokemob && event.getSource() == vacuumDamage)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getEntity());
+        if (pokemob != null && event.getSource() == vacuumDamage)
         {
-            if (vacuumBreathers.contains((((IPokemob) event.getEntity()).getPokedexEntry()))) event.setCanceled(true);
+            if (vacuumBreathers.contains((pokemob.getPokedexEntry()))) event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public void toOrbit(LivingUpdateEvent event)
     {
-        if (event.getEntity().world.isRemote) return;
-        if (event.getEntity() instanceof IPokemob)
+        if (event.getEntity().getEntityWorld().isRemote) return;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getEntity());
+        if (pokemob != null)
         {
-            PokedexEntry entry = (((IPokemob) event.getEntity()).getPokedexEntry());
+            PokedexEntry entry = pokemob.getPokedexEntry();
             if (entry == megaray && event.getEntityLiving().isBeingRidden())
             {
                 boolean goUp = event.getEntity().posY > Configuration.orbit;

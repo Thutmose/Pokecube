@@ -36,6 +36,7 @@ import pokecube.core.events.CaptureEvent.Pre;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.packets.PacketPokecube;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
@@ -141,29 +142,28 @@ public class EntityPokecube extends EntityPokecubeBase
             super.applyEntityCollision(e);
             return;
         }
-
-        if (shootingEntity != null && e instanceof IPokemob
-                && ((IPokemob) e).getPokemonOwner() == shootingEntity) { return; }
-        if (e instanceof EntityLiving && e instanceof IPokemob && ((EntityLiving) e).getHealth() > 0 && tilt == -1)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(e);
+        if (shootingEntity != null && pokemob != null && pokemob.getPokemonOwner() == shootingEntity) { return; }
+        if (e instanceof EntityLiving && pokemob != null && ((EntityLiving) e).getHealth() > 0 && tilt == -1)
         {
             captureAttempt(e);
         }
         else if (PokecubeManager.isFilled(getItem()))
         {
-            IPokemob entity1 = (IPokemob) sendOut();
+            IPokemob entity1 = CapabilityPokemob.getPokemobFor(sendOut());
             if (entity1 != null && shootingEntity != null)
             {
                 if (e instanceof EntityLivingBase)
                 {
                     EntityLivingBase entityHit = (EntityLivingBase) e;
                     if (entityHit instanceof IPokemob && entity1.getPokemonOwnerID() != null
-                            && entity1.getPokemonOwnerID().equals(((IPokemob) entityHit).getPokemonOwnerID()))
+                            && entity1.getPokemonOwnerID().equals(pokemob.getPokemonOwnerID()))
                     {
                         // do not attack a mob of the same team.
                     }
                     else
                     {
-                        ((EntityCreature) entity1).setAttackTarget(entityHit);
+                        entity1.getEntity().setAttackTarget(entityHit);
                         entity1.setPokemonAIState(IMoveConstants.SITTING, false);
                         if (entityHit instanceof EntityCreature)
                         {
@@ -171,7 +171,7 @@ public class EntityPokecube extends EntityPokecubeBase
                         }
                         if (entityHit instanceof IPokemob)
                         {
-                            ((IPokemob) entityHit).setPokemonAIState(IMoveConstants.ANGRY, true);
+                            pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
                         }
                     }
                 }
@@ -514,9 +514,9 @@ public class EntityPokecube extends EntityPokecubeBase
 
     protected void captureAttempt(Entity e)
     {
-        if (e instanceof IPokemob)
+        IPokemob hitten = CapabilityPokemob.getPokemobFor(e);
+        if (hitten != null)
         {
-            IPokemob hitten = (IPokemob) e;
             if (hitten.getPokemonOwner() == shootingEntity) { return; }
             int tiltBak = tilt;
             CaptureEvent.Pre capturePre = new Pre(hitten, this);

@@ -83,6 +83,7 @@ import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -211,11 +212,11 @@ public class EventsHandler
                 .grow(distance, distance, distance);
 
         List<EntityLivingBase> pokemobs = owner.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, box);
-        for (Object o : pokemobs)
+        for (EntityLivingBase o : pokemobs)
         {
-            if (o instanceof IPokemob)
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null)
             {
-                IPokemob mob = (IPokemob) o;
                 if (mob.getPokemonOwner() == owner)
                 {
                     ret.add(mob);
@@ -261,13 +262,13 @@ public class EventsHandler
             if (player.getEntityWorld().unloadedEntityList.contains(o)) continue;
             if (!o.addedToChunk) continue;
 
-            if (o instanceof IPokemob)
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(o);
+            if (pokemob != null)
             {
-                IPokemob mob = (IPokemob) o;
-                if (mob != excluded && mob.getPokemonOwner() == player
-                        && !mob.getPokemonAIState(IMoveConstants.STAYING))
+                if (pokemob != excluded && pokemob.getPokemonOwner() == player
+                        && !pokemob.getPokemonAIState(IMoveConstants.STAYING))
                 {
-                    mob.returnToPokecube();
+                    pokemob.returnToPokecube();
                 }
             }
             else if (o instanceof EntityPokecube)
@@ -534,10 +535,11 @@ public class EventsHandler
             if (newtarget != null)
             {
                 ((EntityLiving) evt.getEntityLiving()).setAttackTarget((EntityLivingBase) newtarget);
-                if (evt.getEntityLiving() instanceof IPokemob)
+                IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+                if (mob != null)
                 {
-                    ((IPokemob) evt.getEntityLiving()).setPokemonAIState(IMoveConstants.ANGRY, true);
-                    ((IPokemob) evt.getEntityLiving()).setPokemonAIState(IMoveConstants.SITTING, false);
+                    mob.setPokemonAIState(IMoveConstants.ANGRY, true);
+                    mob.setPokemonAIState(IMoveConstants.SITTING, false);
                 }
                 ((EntityLiving) newtarget).setAttackTarget(evt.getEntityLiving());
                 newtarget.setPokemonAIState(IMoveConstants.ANGRY, true);
@@ -659,10 +661,9 @@ public class EventsHandler
             // the player has died far from the loaded area.
             if (entity.getEntityWorld().unloadedEntityList.contains(o)) continue;
             if (!o.addedToChunk) continue;
-
-            if (o instanceof IPokemob)
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null)
             {
-                IPokemob mob = (IPokemob) o;
                 boolean stay = mob.getPokemonAIState(IMoveConstants.STAYING);
                 if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == entity) && !stay)
                     mob.returnToPokecube();

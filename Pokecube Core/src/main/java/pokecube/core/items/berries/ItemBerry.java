@@ -109,11 +109,11 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
     @Override
     public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
     {
-        boolean applied = BerryManager.berryEffect((IPokemob) mob, stack);
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        boolean applied = BerryManager.berryEffect(pokemob, stack);
         int[] flavours = BerryManager.berryFlavours.get(stack.getItemDamage());
         if (applied && flavours != null)
         {
-            IPokemob pokemob = (IPokemob) mob;
             for (int i = 0; i < 5; i++)
             {
                 pokemob.setFlavourAmount(i, pokemob.getFlavourAmount(i) + flavours[i]);

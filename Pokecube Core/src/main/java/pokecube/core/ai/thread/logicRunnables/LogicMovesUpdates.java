@@ -18,15 +18,14 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.ItemPokemobUseable;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.moves.templates.Move_Ongoing;
-import thut.api.entity.IBreedingMob;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -36,16 +35,12 @@ import thut.lib.CompatWrapper;
  * activating the held item (like berries) if it should be used. */
 public class LogicMovesUpdates extends LogicBase
 {
-    final private EntityAnimal entity;
-    final IPokemob             pokemob;
-    final PokedexEntry         entry;
-    Vector3                    v = Vector3.getNewVector();
+    final PokedexEntry entry;
+    Vector3            v = Vector3.getNewVector();
 
     public LogicMovesUpdates(EntityAnimal entity)
     {
-        super((IPokemob) entity);
-        this.entity = entity;
-        pokemob = (IPokemob) entity;
+        super(CapabilityPokemob.getPokemobFor(entity));
         entry = pokemob.getPokedexEntry();
     }
 
@@ -92,16 +87,14 @@ public class LogicMovesUpdates extends LogicBase
         }
 
         if (pokemob.getTransformedTo() != null && entity.getAttackTarget() == null
-                && !(pokemob.getPokemonAIState(IMoveConstants.MATING) || entity.isInLove()
-                        || ((IBreedingMob) entity).getLover() != null))
+                && !(pokemob.getPokemonAIState(IMoveConstants.MATING) || pokemob.getLover() != null))
         {
             pokemob.setTransformedTo(null);
         }
 
-        if (pokemob.getTransformedTo() == null && ((IBreedingMob) entity).getLover() != null
-                && hasMove(IMoveNames.MOVE_TRANSFORM))
+        if (pokemob.getTransformedTo() == null && pokemob.getLover() != null && hasMove(IMoveNames.MOVE_TRANSFORM))
         {
-            pokemob.setTransformedTo(((IBreedingMob) entity).getLover());
+            pokemob.setTransformedTo(pokemob.getLover());
         }
         if (pokemob.getAbility() != null)
         {

@@ -13,6 +13,7 @@ import pokecube.core.client.render.entity.RenderPokemob;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.core.client.render.model.IModelRenderer;
 
 public abstract class AbstractModelRenderer<T extends EntityLiving> extends RenderLivingBase<T>
@@ -59,10 +60,11 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         }
         if (!hasSleepAnimation)
         {
-            boolean status = ((IPokemob) par1EntityLiving).getStatus() == IMoveConstants.STATUS_SLP;
-            if (status || ((IPokemob) par1EntityLiving).getPokemonAIState(IMoveConstants.SLEEPING))
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(par1EntityLiving);
+            boolean status = pokemob.getStatus() == IMoveConstants.STATUS_SLP;
+            if (status || pokemob.getPokemonAIState(IMoveConstants.SLEEPING))
             {
-                float timer = ((IPokemob) par1EntityLiving).getStatusTimer() + par4;
+                float timer = pokemob.getStatusTimer() + par4;
                 float ratio = 1F;
                 if (status)
                 {

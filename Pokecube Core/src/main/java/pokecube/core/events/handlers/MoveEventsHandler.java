@@ -42,6 +42,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -383,8 +384,7 @@ public class MoveEventsHandler
         boolean user = evt.isFromUser();
         IPokemob attacker = move.attacker;
         Entity attacked = move.attacked;
-        IPokemob target = null;
-        if (attacked instanceof IPokemob) target = (IPokemob) attacked;
+        IPokemob target = CapabilityPokemob.getPokemobFor(attacked);
         IPokemob applied = user ? attacker : target;
         IPokemob other = user ? target : attacker;
         if (applied == null) return;
@@ -399,8 +399,8 @@ public class MoveEventsHandler
         }
         if (target != null && target.getMoveStats().substituteHP > 0 && !user)
         {
-            float damage = MovesUtils.getAttackStrength(attacker, (IPokemob) attacked,
-                    move.getMove().getCategory(attacker), move.PWR, move);
+            float damage = MovesUtils.getAttackStrength(attacker, target, move.getMove().getCategory(attacker),
+                    move.PWR, move);
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "green");
             target.displayMessageToOwner(mess);
             mess = CommandTools.makeTranslatedMessage("pokemob.substitute.absorb", "red");

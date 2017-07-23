@@ -24,6 +24,7 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokeType;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
@@ -139,7 +140,8 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
     public void addProbeEntityInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world,
             Entity entity, IProbeHitEntityData data)
     {
-        if (entity instanceof IPokemob) probeInfo.element(new Element((IPokemob) entity, player));
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null) probeInfo.element(new Element(mob, player));
     }
 
     @Override

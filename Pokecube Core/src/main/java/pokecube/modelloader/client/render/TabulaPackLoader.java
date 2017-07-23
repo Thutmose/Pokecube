@@ -31,6 +31,7 @@ import net.minecraftforge.common.IShearable;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import thut.api.maths.Vector3;
@@ -173,7 +174,8 @@ public class TabulaPackLoader extends AnimationLoader
             if (dyeableIdents.contains(partIdentifier))
             {
                 int rgba = 0xFF000000;
-                rgba += EnumDyeColor.byDyeDamage(((IPokemob) entity).getSpecialInfo()).getColorValue();
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+                rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getColorValue();
                 return rgba;
             }
             return default_;

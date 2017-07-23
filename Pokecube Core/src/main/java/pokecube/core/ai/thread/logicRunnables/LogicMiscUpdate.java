@@ -11,6 +11,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
 /** Mostly does visuals updates, such as particle effects, checking that
@@ -18,22 +19,18 @@ import thut.api.maths.Vector3;
  * is out of combat. */
 public class LogicMiscUpdate extends LogicBase
 {
-    private int                lastHadTargetTime = 0;
-    private int[]              flavourAmounts    = new int[5];
-    final private EntityAnimal entity;
-    final IPokemob             pokemob;
-    PokedexEntry               entry;
-    String                     particle          = null;
-    int                        particleIntensity = 80;
-    int                        particleCounter   = 0;
-    boolean                    reset             = false;
-    Vector3                    v                 = Vector3.getNewVector();
+    private int   lastHadTargetTime = 0;
+    private int[] flavourAmounts    = new int[5];
+    PokedexEntry  entry;
+    String        particle          = null;
+    int           particleIntensity = 80;
+    int           particleCounter   = 0;
+    boolean       reset             = false;
+    Vector3       v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(EntityAnimal entity)
     {
-        super((IPokemob) entity);
-        this.entity = entity;
-        pokemob = (IPokemob) entity;
+        super(CapabilityPokemob.getPokemobFor(entity));
         entry = pokemob.getPokedexEntry();
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Post;
 import pokecube.core.events.CaptureEvent.Pre;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
 public interface IPokecube
@@ -93,7 +94,8 @@ public interface IPokecube
 
     default double getCaptureModifier(EntityLivingBase mob, int pokecubeId)
     {
-        return (mob instanceof IPokemob) ? getCaptureModifier((IPokemob) mob, pokecubeId) : 0;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        return (pokemob != null) ? getCaptureModifier(pokemob, pokecubeId) : 0;
     }
 
     /** Used for throwing cubes out into the air without a specific target.

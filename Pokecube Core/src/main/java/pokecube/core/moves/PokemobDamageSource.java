@@ -43,8 +43,7 @@ public class PokemobDamageSource extends DamageSource
     @Override
     public ITextComponent getDeathMessage(EntityLivingBase par1EntityPlayer)
     {
-        ItemStack localObject = (this.damageSourceEntity != null) ? this.damageSourceEntity.getHeldItemMainhand()
-                : null;
+        ItemStack localObject = (this.damageSourceEntity != null) ? user.getHeldItem() : null;
         if ((localObject != null) && (localObject.hasDisplayName()))
             return new TextComponentTranslation("death.attack." + this.damageType,
                     new Object[] { par1EntityPlayer.getDisplayName(), this.damageSourceEntity.getDisplayName(),

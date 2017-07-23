@@ -116,7 +116,7 @@ public class PokedexEntryLoader
             boolean rule = false;
             if (CompatWrapper.isValid(stack))
             {
-                rightStack = Tools.isSameStack(stack, mobIn.getEntity().getHeldItemMainhand());
+                rightStack = Tools.isSameStack(stack, mobIn.getHeldItem());
                 rule = true;
             }
             if (moveName != null && !moveName.isEmpty())

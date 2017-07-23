@@ -425,9 +425,9 @@ public class MoveEventsHandler
             applied.getMoveStats().substituteHP = applied.getEntity().getMaxHealth() / 4;
         }
 
-        if (applied.getEntity().getHeldItemMainhand() != null)
+        if (applied.getHeldItem() != null)
         {
-            HeldItemHandler.processHeldItemUse(move, applied, applied.getEntity().getHeldItemMainhand());
+            HeldItemHandler.processHeldItemUse(move, applied, applied.getHeldItem());
         }
 
         if (applied.getAbility() != null)

@@ -572,7 +572,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         for (Entity object : pokemobs)
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(object);
-            if (object == null) continue;
+            if (pokemob == null) continue;
 
             boolean owner = pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getPokemonOwner() != null;
 

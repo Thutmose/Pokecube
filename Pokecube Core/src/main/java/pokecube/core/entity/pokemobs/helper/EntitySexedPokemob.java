@@ -78,7 +78,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
         return this.spawnBabyAnimal((EntityAnimal) var1);
     }
 
-    public int getBreedingDelay(IPokemob mate)
+    private int getBreedingDelay(IPokemob mate)
     {
         return PokecubeMod.core.getConfig().breedingDelay;
     }

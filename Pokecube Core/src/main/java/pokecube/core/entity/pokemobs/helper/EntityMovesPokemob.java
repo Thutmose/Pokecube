@@ -16,8 +16,6 @@ import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
@@ -199,15 +197,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
         this.setAttackCooldown(MovesUtils.getAttackDelay(this, currentMove,
                 (move.getAttackCategory() & IMoveConstants.CATEGORY_DISTANCE) > 0, false));
         here.set(this);
-    }
-
-    @SideOnly(Side.CLIENT)
-    /** Params: (Float)Render tick. Returns the intensity of the creeper's flash
-     * when it is ignited. */
-    public float getCreeperFlashIntensity(float par1)
-    {
-        return (this.moveInfo.lastActiveTime + (this.moveInfo.timeSinceIgnited - this.moveInfo.lastActiveTime) * par1)
-                / (this.moveInfo.fuseTime - 2);
     }
 
     @Override

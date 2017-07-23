@@ -156,16 +156,6 @@ public class GeneticsManager
         }
     }
 
-    @SubscribeEvent
-    public void attachCapability(AttachCapabilitiesEvent<Entity> event)
-    {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());
-        if (pokemob != null && !event.getCapabilities().containsKey(POKECUBEGENETICS))
-        {
-            event.addCapability(POKECUBEGENETICS, new GeneticsProvider());
-        }
-    }
-
     public static class GeneticsProvider implements ICapabilityProvider, INBTSerializable<NBTTagCompound>
     {
         IMobGenetics genetics = IMobGenetics.GENETICS_CAP.getDefaultInstance();

@@ -9,7 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
@@ -61,8 +60,6 @@ public interface IHasMoves extends IHasStats
         }
         return false;
     }
-
-    boolean attackEntityFrom(DamageSource generic, float damage);
 
     /** Used by Gui Pokedex. Exchange the two moves.
      *

@@ -191,7 +191,7 @@ public class EventsHandler
         }
     }
 
-    final ResourceLocation                             POKEMOBCAP  = new ResourceLocation(PokecubeMod.ID, "pokemob");
+    public static final ResourceLocation               POKEMOBCAP  = new ResourceLocation(PokecubeMod.ID, "pokemob");
 
     @CapabilityInject(IGuardAICapability.class)
     public static final Capability<IGuardAICapability> GUARDAI_CAP = null;
@@ -299,9 +299,9 @@ public class EventsHandler
 
     public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
     {
-        if (tag.hasKey(TagNames.POKEMOBTAG))
+        NBTTagCompound pokemobTag = TagNames.getPokecubePokemobTag(tag);
+        if (pokemobTag != null)
         {
-            NBTTagCompound pokemobTag = tag.getCompoundTag(TagNames.POKEMOBTAG);
             pokemobTag.removeTag(TagNames.INVENTORYTAG);
             pokemobTag.removeTag(TagNames.AITAG);
             pokemobTag.removeTag(TagNames.MOVESTAG);
@@ -508,7 +508,8 @@ public class EventsHandler
     public void livingDeath(LivingDeathEvent evt)
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-        if (evt.getEntity().worldObj.isRemote || pokemob != null) return;
+//        if (pokemob != null && !evt.getEntity().getEntityWorld().isRemote) pokemob.returnToPokecube();
+        if (evt.getEntity().getEntityWorld().isRemote || pokemob != null) return;
         pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getLastAttacker());
         if (pokemob != null && evt.getSource().getEntity() != evt.getEntityLiving().getLastAttacker())
         {
@@ -519,6 +520,12 @@ public class EventsHandler
     @SubscribeEvent
     public void livingSetTargetEvent(LivingSetAttackTargetEvent evt)
     {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+        if (pokemob != null)
+        {
+            pokemob.onSetTarget(evt.getTarget());
+        }
+
         if (evt.getTarget() != null && evt.getEntityLiving() instanceof EntityLiving)
         {
             List<IPokemob> pokemon = getPokemobs(evt.getTarget(), 32);
@@ -527,7 +534,7 @@ public class EventsHandler
             IPokemob newtarget = null;
             for (IPokemob e : pokemon)
             {
-                double dist = ((Entity) e).getDistanceSqToEntity(evt.getEntityLiving());
+                double dist = e.getEntity().getDistanceSqToEntity(evt.getEntityLiving());
                 if (dist < closest && !(e.getPokemonAIState(IMoveConstants.STAYING)
                         && e.getPokemonAIState(IMoveConstants.SITTING)))
                 {
@@ -537,14 +544,14 @@ public class EventsHandler
             }
             if (newtarget != null)
             {
-                ((EntityLiving) evt.getEntityLiving()).setAttackTarget((EntityLivingBase) newtarget);
+                ((EntityLiving) evt.getEntityLiving()).setAttackTarget(newtarget.getEntity());
                 IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
                 if (mob != null)
                 {
                     mob.setPokemonAIState(IMoveConstants.ANGRY, true);
                     mob.setPokemonAIState(IMoveConstants.SITTING, false);
                 }
-                ((EntityLiving) newtarget).setAttackTarget(evt.getEntityLiving());
+                newtarget.getEntity().setAttackTarget(evt.getEntityLiving());
                 newtarget.setPokemonAIState(IMoveConstants.ANGRY, true);
             }
         }

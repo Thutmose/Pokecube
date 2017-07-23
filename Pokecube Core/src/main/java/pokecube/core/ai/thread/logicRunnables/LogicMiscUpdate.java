@@ -3,9 +3,13 @@ package pokecube.core.ai.thread.logicRunnables;
 import java.util.Calendar;
 import java.util.Random;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
+import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -13,20 +17,24 @@ import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
+import thut.lib.CompatWrapper;
 
 /** Mostly does visuals updates, such as particle effects, checking that
  * shearing status is reset properly. It also resets stat modifiers when the mob
  * is out of combat. */
 public class LogicMiscUpdate extends LogicBase
 {
-    private int   lastHadTargetTime = 0;
-    private int[] flavourAmounts    = new int[5];
-    PokedexEntry  entry;
-    String        particle          = null;
-    int           particleIntensity = 80;
-    int           particleCounter   = 0;
-    boolean       reset             = false;
-    Vector3       v                 = Vector3.getNewVector();
+    public static int EXITCUBEDURATION  = 40;
+    private int       lastHadTargetTime = 0;
+    private int[]     flavourAmounts    = new int[5];
+    PokedexEntry      entry;
+    String            particle          = null;
+    int               particleIntensity = 80;
+    int               particleCounter   = 0;
+    boolean           reset             = false;
+    boolean           initHome          = false;
+    boolean           named             = false;
+    Vector3           v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(EntityAnimal entity)
     {
@@ -41,9 +49,9 @@ public class LogicMiscUpdate extends LogicBase
         entry = pokemob.getPokedexEntry();
         Random rand = new Random(pokemob.getRNGValue());
         // check shearable state, this is to refresh to clients if needed.
-        if (entity.ticksExisted % 20 == rand.nextInt(20))
+        if (entity.ticksExisted % 20 == rand.nextInt(20) && entity instanceof IShearable)
         {
-            ((IShearable) pokemob).isShearable(null, entity.getEntityWorld(), entity.getPosition());
+            ((IShearable) entity).isShearable(null, entity.getEntityWorld(), entity.getPosition());
         }
         // If angry and has no target, make it not angry.
         if (pokemob.getPokemonAIState(IMoveConstants.ANGRY) && entity.getAttackTarget() == null)
@@ -79,7 +87,62 @@ public class LogicMiscUpdate extends LogicBase
                 pokemob.setFlavourAmount(i, flavourAmounts[i] - 1);
             }
         }
+
+        if (initHome)
+        {
+            initHome = false;
+            if (pokemob.getHome() != null)
+            {
+                TileEntity te = world.getTileEntity(pokemob.getHome());
+                if (te != null && te instanceof TileEntityNest)
+                {
+                    TileEntityNest nest = (TileEntityNest) te;
+                    nest.addResident(pokemob);
+                }
+            }
+        }
+        if (!named && pokemob.getPokedexEntry() != null)
+        {
+            pokemob.getPokemobInventory().setCustomName(entity.getName());
+            named = true;
+        }
+        for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
+        {
+            ItemStack stack;
+            if ((stack = pokemob.getPokemobInventory().getStackInSlot(i)) != CompatWrapper.nullStack)
+            {
+                stack.getItem().onUpdate(stack, world, entity, i, false);
+            }
+        }
+
+        int state = pokemob.getTotalAIState();
+        if (getAIState(IMoveConstants.TAMED, state) && (pokemob.getPokemonOwnerID() == null))
+        {
+            pokemob.setPokemonAIState(IMoveConstants.TAMED, false);
+        }
+        if (pokemob.getLoveTimer() > 600)
+        {
+            pokemob.resetLoveStatus();
+        }
+        if (entity.ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
+        {
+            pokemob.setPokemonAIState(EXITINGCUBE, false);
+        }
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && !entity.getNavigator().noPath())
+        {
+            entity.getNavigator().clearPathEntity();
+        }
         if (!entity.getEntityWorld().isRemote) return;
+
+        int id = pokemob.getTargetID();
+        if (id >= 0 && entity.getAttackTarget() == null)
+        {
+            entity.setAttackTarget((EntityLivingBase) PokecubeMod.core.getEntityProvider().getEntity(world, id, false));
+        }
+        if (id < 0 && entity.getAttackTarget() != null)
+        {
+            entity.setAttackTarget(null);
+        }
 
         // Particle stuff below here, WARNING, RESETTING RNG HERE
         rand = new Random();
@@ -217,5 +280,10 @@ public class LogicMiscUpdate extends LogicBase
     @Override
     public void doLogic()
     {
+    }
+
+    protected boolean getAIState(int state, int array)
+    {
+        return (array & state) != 0;
     }
 }

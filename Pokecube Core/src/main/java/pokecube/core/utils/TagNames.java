@@ -1,7 +1,51 @@
 package pokecube.core.utils;
 
+import net.minecraft.nbt.NBTTagCompound;
+import pokecube.core.events.handlers.EventsHandler;
+import pokecube.core.interfaces.PokecubeMod;
+
 public interface TagNames
 {
+    public static NBTTagCompound getEntityPokemobTag(NBTTagCompound entityRootTag)
+    {
+        NBTTagCompound ret = new NBTTagCompound();
+        if (entityRootTag.hasKey(POKEMOBTAG))
+        {
+            return entityRootTag.getCompoundTag(POKEMOBTAG);
+        }
+        else if (entityRootTag.hasKey(FORGECAPS))
+        {
+            NBTTagCompound caps = entityRootTag.getCompoundTag(FORGECAPS);
+            if (caps.hasKey(POKEMOBCAP)) { return caps.getCompoundTag(POKEMOBCAP); }
+        }
+        PokecubeMod.log(entityRootTag + "");
+        return ret;
+    }
+
+    public static NBTTagCompound getPokecubePokemobTag(NBTTagCompound itemRootTag)
+    {
+        NBTTagCompound ret = new NBTTagCompound();
+        if (itemRootTag.hasKey(POKEMOB))
+        {
+            NBTTagCompound entityRootTag = itemRootTag.getCompoundTag(POKEMOB);
+            if (entityRootTag.hasKey(POKEMOBTAG))
+            {
+                return entityRootTag.getCompoundTag(POKEMOBTAG);
+            }
+            else if (entityRootTag.hasKey(FORGECAPS))
+            {
+                NBTTagCompound caps = entityRootTag.getCompoundTag(FORGECAPS);
+                if (caps.hasKey(POKEMOBCAP)) { return caps.getCompoundTag(POKEMOBCAP); }
+            }
+        }
+        PokecubeMod.log(itemRootTag + "");
+        Thread.dumpStack();
+        return ret;
+    }
+
+    public static final String FORGECAPS    = "ForgeCaps";
+    public static final String POKEMOBCAP   = EventsHandler.POKEMOBCAP.toString();
+
     /** The NBTTag name for the root of info */
     public static final String POKEMOBTAG   = "pokemob_tag";
     public static final String VERSION      = "version";

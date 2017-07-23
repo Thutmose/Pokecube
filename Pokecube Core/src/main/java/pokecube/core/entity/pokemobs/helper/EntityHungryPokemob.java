@@ -1,41 +1,21 @@
 package pokecube.core.entity.pokemobs.helper;
 
-import java.util.Random;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeItems;
 import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemobUseable;
-import pokecube.core.interfaces.Nature;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.ChunkCoordinate;
-import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
 public abstract class EntityHungryPokemob extends EntityAiPokemob
 {
-
-    Vector3       sizes          = Vector3.getNewVector();
-
-    protected int hungerCooldown = 0;
-
     int           fleeingTick;
 
     public EntityHungryPokemob(World world)
@@ -125,184 +105,111 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public void eat(Entity e)
     {
-        vBak.set(vec);
-        int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
-        if (e instanceof EntityItem)
-        {
-            ItemStack item = ((EntityItem) e).getEntityItem();
-            if (item.getItem() instanceof IPokemobUseable)
-            {
-                ((IPokemobUseable) item.getItem()).applyEffect(this, item);
-            }
-            if (Tools.isSameStack(item, PokecubeItems.getStack("leppaberry")))
-            {
-                hungerValue *= 2;
-            }
-            if (item.getItem() instanceof ItemBerry)
-            {
-                int weight = Nature.getBerryWeight(item.getItemDamage(), getNature());
-                int current = getHappiness();
-                HappinessType type = HappinessType.BERRY;
-                if (current < 100)
-                {
-                    weight *= type.low / 10f;
-                }
-                else if (current < 200)
-                {
-                    weight *= type.mid / 10f;
-                }
-                else
-                {
-                    weight *= type.high / 10f;
-                }
-                addHappiness(weight);
-            }
-        }
-        vec.set(vBak);
-        setHungerTime(getHungerTime() - hungerValue);
-        hungerCooldown = 0;
-        setPokemonAIState(HUNTING, false);
-        if (this.isDead) return;
-        float missingHp = this.getMaxHealth() - this.getHealth();
-        float toHeal = this.getHealth() + Math.max(1, missingHp * 0.25f);
-        this.setHealth(Math.min(toHeal, getMaxHealth()));
-        // Make wild pokemon level up naturally to their cap, to allow wild
-        // hatches
-        if (!getPokemonAIState(IMoveConstants.TAMED))
-        {
-            int exp = SpawnHandler.getSpawnXp(worldObj, v1.set(this), getPokedexEntry());
-            if (getExp() < exp)
-            {
-                int n = new Random().nextInt(exp - getExp()) / 3 + 1;
-                setExp(getExp() + n, true);
-            }
-        }
+        pokemobCap.eat(e);
     }
 
     @Override
     public boolean eatsBerries()
     {
-        return getPokedexEntry().foods[5];
+        return pokemobCap.eatsBerries();
     }
 
     @Override
     public boolean filterFeeder()
     {
-        return getPokedexEntry().foods[6];
+        return pokemobCap.filterFeeder();
     }
 
     @Override
     public boolean floats()
     {
-        return getPokedexEntry().floats();
+        return pokemobCap.floats();
     }
 
     @Override
     public boolean flys()
     {
-        return getPokedexEntry().flys();
+        return pokemobCap.flys();
     }
 
     @Override
     public float getBlockPathWeight(IBlockAccess world, Vector3 location)
     {
-        IBlockState state = location.getBlockState(world);
-        if (state == null) state = Blocks.AIR.getDefaultState();
-        Block block = state.getBlock();
-        boolean water = getPokedexEntry().swims();
-        boolean air = getPokedexEntry().flys() || getPokedexEntry().floats();
-        if (getPokedexEntry().hatedMaterial != null)
-        {
-            String material = getPokedexEntry().hatedMaterial[0];
-            if (material.equalsIgnoreCase("water") && state.getMaterial() == Material.WATER) { return 100; }
-        }
-        if (state.getMaterial() == Material.WATER) return water ? 1 : air ? 100 : 40;
-        if (block == Blocks.GRAVEL) return water ? 40 : 5;
-        if (!this.isImmuneToFire() && (state.getMaterial() == Material.LAVA || state.getMaterial() == Material.FIRE))
-            return 200;
-        return water ? 40 : 20;
+        return pokemobCap.getBlockPathWeight(world, location);
     }
 
     @Override
     public double getFloatHeight()
     {
-        return getPokedexEntry().preferedHeight;
+        return pokemobCap.getFloatHeight();
     }
 
     @Override
     public int getHungerCooldown()
     {
-        return hungerCooldown;
+        return pokemobCap.getHungerCooldown();
     }
 
     @Override
     public int getHungerTime()
     {
-        return getDataManager().get(HUNGERDW);
+        return pokemobCap.getHungerTime();
     }
 
     @Override
     public Vector3 getMobSizes()
     {
-        return sizes.set(getPokedexEntry().width, getPokedexEntry().height, getPokedexEntry().length)
-                .scalarMult(getSize());
+        return pokemobCap.getMobSizes();
     }
 
     @Override
     public int getPathTime()
     {
-        int time = 2500000;
-        if (getPokemonAIState(IMoveConstants.TAMED)) time *= 3;
-        return time;
+        return pokemobCap.getPathTime();
     }
 
     /** @return does this pokemon hunt for food */
     @Override
     public boolean isCarnivore()
     {
-        return this.getPokedexEntry().hasPrey();
+        return pokemobCap.isCarnivore();
     }
 
     @Override
     public boolean isElectrotroph()
     {
-        return getPokedexEntry().foods[2];
+        return pokemobCap.isElectrotroph();
     }
 
     /** @return Does this pokemon eat grass */
     @Override
     public boolean isHerbivore()
     {
-        return getPokedexEntry().foods[3];
+        return pokemobCap.isHerbivore();
     }
 
     @Override
     public boolean isLithotroph()
     {
-        return getPokedexEntry().foods[1];
+        return pokemobCap.isLithotroph();
     }
 
     @Override
     public boolean isPhototroph()
     {
-        return getPokedexEntry().foods[0];
+        return pokemobCap.isPhototroph();
     }
 
     @Override
     public boolean neverHungry()
     {
-        return getPokedexEntry().foods[4];
+        return pokemobCap.neverHungry();
     }
 
     @Override
     public void noEat(Entity e)
     {
-        vBak.set(vec);
-        if (e != null)
-        {
-            addHappiness(-10);
-        }
-        vec.set(vBak);
+        pokemobCap.noEat(e);
     }
 
     @Override
@@ -320,30 +227,30 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     @Override
     public void setHungerCooldown(int hungerCooldown)
     {
-        this.hungerCooldown = hungerCooldown;
+        pokemobCap.setHungerCooldown(hungerCooldown);
     }
 
     @Override
     public void setHungerTime(int hungerTime)
     {
-        getDataManager().set(HUNGERDW, hungerTime);
+        pokemobCap.setHungerTime(hungerTime);
     }
 
     @Override
     public boolean swims()
     {
-        return getPokedexEntry().swims();
+        return pokemobCap.swims();
     }
 
     @Override
     public int getFlavourAmount(int index)
     {
-        return dataManager.get(FLAVOURS[index]);
+        return pokemobCap.getFlavourAmount(index);
     }
 
     @Override
     public void setFlavourAmount(int index, int amount)
     {
-        dataManager.set(FLAVOURS[index], amount);
+        pokemobCap.setFlavourAmount(index, amount);
     }
 }

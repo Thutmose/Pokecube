@@ -116,7 +116,7 @@ public class Pokecube extends Item implements IPokecube
             }
 
             float health = poketag.getFloat("Health");
-            float maxHealth = ((EntityLiving) pokemob).getMaxHealth();
+            float maxHealth = pokemob.getEntity().getMaxHealth();
             int lvlexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel());
             int exp = pokemob.getExp() - lvlexp;
             int neededexp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() + 1) - lvlexp;

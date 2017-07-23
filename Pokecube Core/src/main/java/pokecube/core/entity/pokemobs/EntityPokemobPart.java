@@ -26,6 +26,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.Nature;
 import thut.api.entity.IBreedingMob;
+import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.maths.Vector3;
 
 public class EntityPokemobPart extends EntityDragonPart implements IPokemob
@@ -991,6 +992,55 @@ public class EntityPokemobPart extends EntityDragonPart implements IPokemob
 
     @Override
     public boolean swims()
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void onSetTarget(EntityLivingBase entity)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getTotalAIState()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setTotalAIState(int state)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public int getTargetID()
+    {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public void setTargetID(int id)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public AIStuff getAI()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean selfManaged()
     {
         // TODO Auto-generated method stub
         return false;

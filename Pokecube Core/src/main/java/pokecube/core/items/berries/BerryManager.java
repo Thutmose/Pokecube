@@ -169,7 +169,7 @@ public class BerryManager implements IMoveConstants
             pokemob.healStatus();
             return true;
         }
-        EntityLivingBase entity = (EntityLivingBase) pokemob;
+        EntityLivingBase entity = pokemob.getEntity();
         float HP = entity.getHealth();
         float HPmax = entity.getMaxHealth();
         if (HP < HPmax / 3f)

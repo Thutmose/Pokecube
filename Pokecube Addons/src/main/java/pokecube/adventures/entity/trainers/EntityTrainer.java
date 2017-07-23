@@ -109,8 +109,8 @@ public class EntityTrainer extends EntityTrainerBase
                 int stat = getBaseStats(mon);
                 if (stat > stat1 || mon.getLevel() > mon1.getLevel()) continue;
                 UUID trader1 = mon1.getPokemonOwnerID();
-                boolean everstone = CompatWrapper.isValid(PokecubeManager.getHeldItemMainhand(stack)) && Tools
-                        .isSameStack(PokecubeManager.getHeldItemMainhand(stack), PokecubeItems.getStack("everstone"));
+                boolean everstone = CompatWrapper.isValid(PokecubeManager.getHeldItem(stack)) && Tools
+                        .isSameStack(PokecubeManager.getHeldItem(stack), PokecubeItems.getStack("everstone"));
                 mon.setOriginalOwnerUUID(getUniqueID());
                 mon.setPokemonOwner(trader1);
                 mon.setTraded(!everstone);

@@ -228,15 +228,15 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
         if (entity1 != null)
         {
-            ((Entity) entity1).setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
-            boolean ret = getEntityWorld().spawnEntityInWorld((Entity) entity1);
+            entity1.getEntity().setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
+            boolean ret = getEntityWorld().spawnEntityInWorld(entity1.getEntity());
 
             if (ret == false)
             {
                 System.err.println(String.format("The pokemob %1$s spawn from pokecube has failed. ",
                         entity1.getPokemonDisplayName().getFormattedText()));
             }
-            ((Entity) entity1).getEntityData().setLong("lastCubeTime",
+            entity1.getEntity().getEntityData().setLong("lastCubeTime",
                     getEntityWorld().getTotalWorldTime() + PokecubeMod.core.getConfig().captureDelayTicks);
             entity1.setPokemonAIState(IMoveConstants.ANGRY, true);
             entity1.setPokemonAIState(IMoveConstants.SITTING, false);
@@ -373,9 +373,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
             IBlockState state = v.getBlockState(getEntityWorld());
             if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
-            EntityLiving entity = (EntityLiving) entity1;
+            EntityLiving entity = entity1.getEntity();
             entity.fallDistance = 0;
-            v.moveEntity(((Entity) entity1));
+            v.moveEntity(entity);
 
             SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, getEntityWorld(), entity1);
             if (MinecraftForge.EVENT_BUS.post(evt))
@@ -388,7 +388,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 return null;
             }
 
-            getEntityWorld().spawnEntityInWorld((Entity) entity1);
+            getEntityWorld().spawnEntityInWorld(entity);
             entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
@@ -401,12 +401,12 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 entity1.displayMessageToOwner(mess);
             }
 
-            if (((EntityLiving) entity1).getHealth() <= 0)
+            if (entity.getHealth() <= 0)
             {
                 // notify the mob is dead
-                this.getEntityWorld().setEntityState((Entity) entity1, (byte) 3);
+                this.getEntityWorld().setEntityState(entity, (byte) 3);
             }
-            setReleased((Entity) entity1);
+            setReleased(entity);
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
@@ -436,7 +436,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                     tag.removeTag(TagNames.MOBID);
                     tag.removeTag(TagNames.OTHERMOB);
                     entityDropItem(getItem(), 0.5f);
-                    setReleased((Entity) newMob);
+                    setReleased(newMob);
                     motionX = motionY = motionZ = 0;
                     time = 10;
                     setReleasing(true);
@@ -448,6 +448,6 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             this.entityDropItem(getItem(), 0.5f);
             this.setDead();
         }
-        return (EntityLivingBase) entity1;
+        return entity1.getEntity();
     }
 }

@@ -23,20 +23,20 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public void setEvolutionStack(ItemStack stack)
     {
-        this.stack = stack;
+        pokemobCap.setEvolutionStack(stack);
     }
 
     @Override
     public ItemStack getEvolutionStack()
     {
-        return stack;
+        return pokemobCap.getEvolutionStack();
     }
 
     /** @return the evolutionTicks */
     @Override
     public int getEvolutionTicks()
     {
-        return dataManager.get(EVOLTICKDW);
+        return pokemobCap.getEvolutionTicks();
     }
 
     /** Returns whether the entity is in a server world */
@@ -86,6 +86,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public void setEvolutionTicks(int evolutionTicks)
     {
-        dataManager.set(EVOLTICKDW, new Integer(evolutionTicks));
+        pokemobCap.setEvolutionTicks(evolutionTicks);
     }
 }

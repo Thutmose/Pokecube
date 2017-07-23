@@ -44,11 +44,11 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     {
         if (!getPokemonAIState(IMoveConstants.TAMED))
         {
-            for (int i = 2; i < pokeChest.getSizeInventory(); i++)
+            for (int i = 2; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
             {
-                ItemStack stack = pokeChest.getStackInSlot(i);
+                ItemStack stack = pokemobCap.getPokemobInventory().getStackInSlot(i);
                 if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
-                pokeChest.setInventorySlotContents(i, CompatWrapper.nullStack);
+                pokemobCap.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
             }
         }
 
@@ -65,9 +65,9 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
             if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
         }
         dropItem();
-        for (int i = 2; i < this.pokeChest.getSizeInventory(); i++)
+        for (int i = 2; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
         {
-            ItemStack stack = this.pokeChest.getStackInSlot(i);
+            ItemStack stack = pokemobCap.getPokemobInventory().getStackInSlot(i);
             if (stack != CompatWrapper.nullStack) entityDropItem(stack, 0.5f);
         }
     }

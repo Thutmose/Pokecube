@@ -141,7 +141,7 @@ public class EventsHandlerClient
                 if (pokemob == null) return null;
                 renderMobs.put(entry, pokemob);
             }
-            NBTTagCompound pokeTag = itemStack.getTagCompound().getCompoundTag("Pokemob");
+            NBTTagCompound pokeTag = itemStack.getTagCompound();
             EventsHandler.setFromNBT(pokemob, pokeTag);
             pokemob.setPokecube(itemStack);
             pokemob.getEntity()

@@ -1,6 +1,7 @@
 package pokecube.core.network.pokemobs;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -17,6 +18,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PacketPokemobMetadata implements IMessage, IMessageHandler<PacketPokemobMetadata, IMessage>
 {
@@ -66,7 +68,8 @@ public class PacketPokemobMetadata implements IMessage, IMessageHandler<PacketPo
         int id = message.wrapped.readInt();
         World world = player.getEntityWorld();
         Entity entity = PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
-        if (entity == null || !(entity instanceof IPokemob)) { return; }
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (pokemob == null) { return; }
         EntityDataManager manager = entity.getDataManager();
         if (manager instanceof PokemobDataManager)
         {
@@ -76,7 +79,7 @@ public class PacketPokemobMetadata implements IMessage, IMessageHandler<PacketPo
             }
             catch (IOException e)
             {
-                e.printStackTrace();
+                PokecubeMod.log(Level.WARNING, "Error with Datamanager updating for " + entity, e);
             }
         }
     }

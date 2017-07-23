@@ -18,6 +18,7 @@ import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.megastuff.MegaCapability;
 
 public class PacketChangeForme implements IMessage, IMessageHandler<PacketChangeForme, IMessage>
@@ -89,7 +90,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
             player = ctx.getServerHandler().playerEntity;
         }
         Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
-        IPokemob pokemob = (IPokemob) mob;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         if (pokemob == null) return;
 
         if (ctx.side == Side.CLIENT)
@@ -114,8 +115,8 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 {
                     pokemob = pokemob.megaEvolve(pokemob.getPokedexEntry());
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
-                    String ability = ((Entity) pokemob).getEntityData().getString("Ability");
-                    ((Entity) pokemob).getEntityData().removeTag("Ability");
+                    String ability = mob.getEntityData().getString("Ability");
+                    mob.getEntityData().removeTag("Ability");
                     if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
@@ -124,7 +125,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 {
 
                     if (pokemob.getAbility() != null)
-                        ((Entity) pokemob).getEntityData().setString("Ability", pokemob.getAbility().toString());
+                        mob.getEntityData().setString("Ability", pokemob.getAbility().toString());
                     pokemob = pokemob.megaEvolve(megaEntry);
                     player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
                             megaEntry.getUnlocalizedName()));
@@ -137,8 +138,8 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                 {
                     String old = pokemob.getPokemonDisplayName().getFormattedText();
                     pokemob = pokemob.megaEvolve(pokemob.getPokedexEntry().getBaseForme());
-                    String ability = ((Entity) pokemob).getEntityData().getString("Ability");
-                    ((Entity) pokemob).getEntityData().removeTag("Ability");
+                    String ability = mob.getEntityData().getString("Ability");
+                    mob.getEntityData().removeTag("Ability");
                     if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();

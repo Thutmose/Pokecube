@@ -86,8 +86,8 @@ public class MoveQueue
             @Override
             public int compare(EntityMoveUse o1, EntityMoveUse o2)
             {
-                IPokemob user1 = (IPokemob) o1.getUser();
-                IPokemob user2 = (IPokemob) o2.getUser();
+                IPokemob user1 = CapabilityPokemob.getPokemobFor(o1.getUser());
+                IPokemob user2 = CapabilityPokemob.getPokemobFor(o2.getUser());
                 int speed1 = user1 == null ? 0 : user1.getStat(Stats.VIT, true);
                 int speed2 = user2 == null ? 0 : user2.getStat(Stats.VIT, true);
                 // TODO also factor in move priority here.

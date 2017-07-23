@@ -15,6 +15,7 @@ import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IPartTexturer;
@@ -134,7 +135,7 @@ public class SMDModelRenderer<T extends EntityLiving> extends RenderLivingBase<T
     @Override
     public void renderStatus(T entity, double d, double d1, double d2, float f, float partialTick)
     {
-        IPokemob pokemob = (IPokemob) entity;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         byte status;
         if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
         ResourceLocation texture = null;

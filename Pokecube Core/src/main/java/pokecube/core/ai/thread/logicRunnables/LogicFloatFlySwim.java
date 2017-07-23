@@ -7,6 +7,7 @@ import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
 /** This is used instead of a Swimming AI task. It manages making mobs "jump" to
@@ -16,16 +17,12 @@ import thut.api.maths.Vector3;
  * destinations. */
 public class LogicFloatFlySwim extends LogicBase
 {
-    final private EntityAnimal entity;
-    final IPokemob             pokemob;
-    PokedexEntry               entry;
-    Vector3                    v = Vector3.getNewVector();
+    PokedexEntry entry;
+    Vector3      v = Vector3.getNewVector();
 
     public LogicFloatFlySwim(EntityAnimal entity)
     {
-        super((IPokemob) entity);
-        this.entity = entity;
-        pokemob = (IPokemob) entity;
+        super(CapabilityPokemob.getPokemobFor(entity));
         entry = pokemob.getPokedexEntry();
     }
 
@@ -35,8 +32,8 @@ public class LogicFloatFlySwim extends LogicBase
         super.doServerTick(world);
         if (!shouldRun()) return;
         entry = pokemob.getPokedexEntry();
-        if (pokemob.getTransformedTo() instanceof IPokemob)
-            entry = ((IPokemob) pokemob.getTransformedTo()).getPokedexEntry();
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null) entry = transformed.getPokedexEntry();
 
         Vector3 here = Vector3.getNewVector();
         here.set(pokemob);
@@ -57,10 +54,8 @@ public class LogicFloatFlySwim extends LogicBase
     private void doSwim(Vector3 here)
     {
         IPokemob pokemob = this.pokemob;
-        if (pokemob.getTransformedTo() instanceof IPokemob)
-        {
-            pokemob = (IPokemob) pokemob.getTransformedTo();
-        }
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null) pokemob = transformed;
         PokedexEntry entry = pokemob.getPokedexEntry();
         boolean isWaterMob = pokemob.getPokedexEntry().swims();
         if (!isWaterMob && (this.entity.isInWater() || this.entity.isInLava()))
@@ -94,10 +89,8 @@ public class LogicFloatFlySwim extends LogicBase
     private void doFloatFly(Vector3 here)
     {
         IPokemob pokemob = this.pokemob;
-        if (pokemob.getTransformedTo() instanceof IPokemob)
-        {
-            pokemob = (IPokemob) pokemob.getTransformedTo();
-        }
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null) pokemob = transformed;
         PokedexEntry entry = pokemob.getPokedexEntry();
         boolean canFloat = entry.floats();
         if (canFloat && !pokemob.getPokemonAIState(IMoveConstants.INWATER))

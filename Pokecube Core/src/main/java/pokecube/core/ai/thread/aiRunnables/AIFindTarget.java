@@ -182,11 +182,9 @@ public class AIFindTarget extends AIBase implements IAICombat
                 for (int j = 0; j < list.size(); j++)
                 {
                     Entity entity = (Entity) list.get(j);
-
-                    if (entity instanceof IPokemob
-                            && pokemob.getPokedexEntry().isFood(((IPokemob) entity).getPokedexEntry())
-                            && pokemob.getLevel() > ((IPokemob) entity).getLevel()
-                            && Vector3.isVisibleEntityFromEntity(entity, entity))
+                    IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+                    if (mob != null && pokemob.getPokedexEntry().isFood(mob.getPokedexEntry())
+                            && pokemob.getLevel() > mob.getLevel() && Vector3.isVisibleEntityFromEntity(entity, entity))
                     {
                         addTargetInfo(entity, entity);
                         setPokemobAIState(pokemob, IMoveConstants.ANGRY, true);

@@ -31,6 +31,7 @@ import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.compat.ai.AITeslaInterferance;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
@@ -59,21 +60,21 @@ public class TeslaHandler
     @SubscribeEvent
     public void addTeslaInterferance(EntityJoinWorldEvent evt)
     {
-        if (evt.getEntity() instanceof IPokemob && evt.getEntity() instanceof EntityLiving)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(evt.getEntity());
+        if (mob != null)
         {
-            EntityLiving living = (EntityLiving) evt.getEntity();
-            living.tasks.addTask(1, new AITeslaInterferance((IPokemob) living));
+            mob.getEntity().tasks.addTask(1, new AITeslaInterferance(mob));
         }
     }
 
     @SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());
+        if (pokemob != null)
         {
-            Entity pokemob = (Entity) event.getObject();
-            if (pokemob.getEntityWorld() != null) event.addCapability(new ResourceLocation("pokecube:tesla"),
-                    new ProviderPokemob((IPokemob) event.getObject()));
+            if (pokemob.getEntity().getEntityWorld() != null)
+                event.addCapability(new ResourceLocation("pokecube:tesla"), new ProviderPokemob(pokemob));
         }
     }
 

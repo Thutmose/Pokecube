@@ -27,6 +27,7 @@ import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.comands.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokeType;
 import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
@@ -107,10 +108,10 @@ public class EnergyHandler
     @SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());
+        if (pokemob != null)
         {
-            event.addCapability(new ResourceLocation("pokecube:energy"),
-                    new ProviderPokemob((IPokemob) event.getObject()));
+            event.addCapability(new ResourceLocation("pokecube:energy"), new ProviderPokemob(pokemob));
         }
     }
 

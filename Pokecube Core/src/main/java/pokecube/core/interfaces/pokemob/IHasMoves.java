@@ -156,9 +156,9 @@ public interface IHasMoves extends IHasStats
      * @return the String name of the move */
     default String getMove(int index)
     {
-        if (getTransformedTo() instanceof IPokemob && getTransformedTo() != this)
+        IPokemob to = CapabilityPokemob.getPokemobFor(getTransformedTo());
+        if (to != null && getTransformedTo() != this)
         {
-            IPokemob to = (IPokemob) getTransformedTo();
             if (to.getTransformedTo() != this) return to.getMove(index);
         }
 

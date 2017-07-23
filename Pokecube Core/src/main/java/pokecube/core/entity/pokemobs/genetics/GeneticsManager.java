@@ -107,7 +107,7 @@ public class GeneticsManager
 
     public static void initMob(Entity mob)
     {
-        IPokemob pokemob = (IPokemob) mob;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         pokemob.onGenesChanged();
     }
 

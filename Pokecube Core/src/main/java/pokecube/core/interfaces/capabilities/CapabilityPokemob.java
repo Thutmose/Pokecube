@@ -19,7 +19,7 @@ public class CapabilityPokemob
         if (entityIn == null) return null;
         IPokemob pokemobHolder = null;
         if (entityIn.hasCapability(POKEMOB_CAP, null)) pokemobHolder = entityIn.getCapability(POKEMOB_CAP, null);
-        else if (entityIn instanceof IPokemob) return (IPokemob) entityIn;
+        else if (entityIn instanceof IPokemob) return IPokemob.class.cast(entityIn);
         return pokemobHolder;
     }
 

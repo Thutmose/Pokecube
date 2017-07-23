@@ -41,6 +41,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -97,7 +98,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         {
             if (PokecubeManager.isFilled(getItem()))
             {
-                IPokemob mob = (IPokemob) this.sendOut();
+                IPokemob mob = CapabilityPokemob.getPokemobFor(this.sendOut());
                 if (mob != null) mob.returnToPokecube();
             }
             this.setDead();

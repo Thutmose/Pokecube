@@ -35,7 +35,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
@@ -221,8 +220,9 @@ public class ItemPokemobEgg extends Item
         }
         if (owner == null)
         {
-            IPokemob pokemob = (IPokemob) ((Entity) mob).getEntityWorld()
-                    .findNearestEntityWithinAABB(EntityPokemob.class, box, (Entity) mob);
+            Entity nearest = mob.getEntity().getEntityWorld().findNearestEntityWithinAABB(EntityLiving.class, box,
+                    (Entity) mob);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(nearest);
             if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
                 player = (EntityPlayer) pokemob.getPokemonOwner();
             owner = player;
@@ -233,15 +233,11 @@ public class ItemPokemobEgg extends Item
     public static void initStack(Entity mother, IPokemob father, ItemStack stack)
     {
         if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
-        if (mother instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(mother);
+        if (mob != null && father != null)
         {
-            IPokemob mob = (IPokemob) mother;
-            if (father != null)
-            {
-                getGenetics(mob, father, stack.getTagCompound());
-            }
+            getGenetics(mob, father, stack.getTagCompound());
         }
-        return;
     }
 
     public static boolean spawn(World world, ItemStack stack, double par2, double par4, double par6)

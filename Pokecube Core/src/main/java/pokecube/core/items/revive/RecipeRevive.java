@@ -1,6 +1,5 @@
 package pokecube.core.items.revive;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -61,7 +60,7 @@ public class RecipeRevive implements IDefaultRecipe
             {
                 IPokemob mob = PokecubeManager.itemToPokemob(other, world);
                 NBTTagCompound tag = seal.getTagCompound().getCompoundTag(TagNames.POKESEAL);
-                NBTTagCompound mobtag = ((Entity) mob).getEntityData();
+                NBTTagCompound mobtag = mob.getEntity().getEntityData();
                 mobtag.setTag("sealtag", tag);
                 other = PokecubeManager.pokemobToItem(mob);
                 healed = other;

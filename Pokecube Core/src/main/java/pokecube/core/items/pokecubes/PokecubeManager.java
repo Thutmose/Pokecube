@@ -84,7 +84,7 @@ public class PokecubeManager
 
     public static NBTTagCompound getSealTag(Entity pokemob)
     {
-        IPokemob poke = (IPokemob) pokemob;
+        IPokemob poke = CapabilityPokemob.getPokemobFor(pokemob);
         ItemStack cube;
         if (!CompatWrapper.isValid((cube = poke.getPokecube()))) return null;
         return CompatWrapper.getTag(cube, TagNames.POKESEAL, false);
@@ -170,8 +170,7 @@ public class PokecubeManager
     public static ItemStack pokemobToItem(IPokemob pokemob)
     {
         ItemStack itemStack = pokemob.getPokecube();
-        int damage = Tools.serialize(((EntityLivingBase) pokemob).getMaxHealth(),
-                ((EntityLivingBase) pokemob).getHealth());
+        int damage = Tools.serialize(pokemob.getEntity().getMaxHealth(), pokemob.getEntity().getHealth());
         if (!CompatWrapper.isValid(itemStack))
         {
             itemStack = new ItemStack(PokecubeItems.getFilledCube(0), 1, damage);
@@ -188,17 +187,12 @@ public class PokecubeManager
         else if (status == IMoveConstants.STATUS_PAR) itemName += " (PAR)";
         else if (status == IMoveConstants.STATUS_PSN || status == IMoveConstants.STATUS_PSN2) itemName += " (PSN)";
         else if (status == IMoveConstants.STATUS_SLP) itemName += " (SLP)";
-
         itemStack.setStackDisplayName(itemName);
-
-        if (pokemob instanceof Entity)
-        {
-            Entity poke = (Entity) pokemob;
-            NBTTagCompound mobTag = new NBTTagCompound();
-            poke.writeToNBT(mobTag);
-            itemStack.getTagCompound().setTag(TagNames.POKEMOB, mobTag);
-            itemStack.getTagCompound().removeTag(TagNames.POKESEAL);
-        }
+        Entity poke = pokemob.getEntity();
+        NBTTagCompound mobTag = new NBTTagCompound();
+        poke.writeToNBT(mobTag);
+        itemStack.getTagCompound().setTag(TagNames.POKEMOB, mobTag);
+        itemStack.getTagCompound().removeTag(TagNames.POKESEAL);
         return itemStack;
     }
 

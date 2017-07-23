@@ -33,6 +33,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** @author Oracion
  * @author Manchou */
@@ -183,6 +184,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
     @Override
     public boolean useByPlayerOnPokemob(EntityLivingBase mob, ItemStack stack)
     {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         if (stack.getItemDamage() == 7)
         {
             float health = mob.getHealth();
@@ -192,7 +194,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
 
             if (health + 10 < maxHealth) mob.setHealth(health + 10);
             else mob.setHealth(maxHealth);
-            HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
+            HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
             return true;
         }
         if (stack.getItemDamage() == 7 || stack.getItemDamage() == 60)
@@ -204,7 +206,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
 
             if (health + maxHealth / 4 < maxHealth) mob.setHealth(health + maxHealth / 4);
             else mob.setHealth(maxHealth);
-            HappinessType.applyHappiness((IPokemob) mob, HappinessType.BERRY);
+            HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
             return true;
         }
         return applyEffect(mob, stack);

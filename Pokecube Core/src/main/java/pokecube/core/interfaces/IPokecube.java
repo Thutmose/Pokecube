@@ -121,4 +121,5 @@ public interface IPokecube
     {
         return hit instanceof IPokemob;
     }
+
 }

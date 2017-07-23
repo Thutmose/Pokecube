@@ -121,10 +121,16 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
     }
 
+    // For compatiblity.
+    public ItemStack getEntityItem()
+    {
+        return getItem();
+    }
+
     public Entity getReleased()
     {
         int id = getDataManager().get(ENTITYID);
-        Entity ret = world.getEntityByID(id);
+        Entity ret = getEntityWorld().getEntityByID(id);
         return ret;
     }
 
@@ -146,6 +152,12 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     {
         this.getDataManager().set(ITEM, stack);
         this.getDataManager().setDirty(ITEM);
+    }
+
+    // For compatiblity
+    public void setEntityItemStack(ItemStack stack)
+    {
+        setItem(stack);
     }
 
     public void setReleased(Entity entity)
@@ -211,12 +223,12 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     protected void captureFailed()
     {
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), world);
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
 
         if (entity1 != null)
         {
             ((Entity) entity1).setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
-            boolean ret = world.spawnEntity((Entity) entity1);
+            boolean ret = getEntityWorld().spawnEntity((Entity) entity1);
 
             if (ret == false)
             {
@@ -246,13 +258,13 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     protected boolean captureSucceed()
     {
         PokecubeManager.setTilt(getItem(), -1);
-        IPokemob mob = PokecubeManager.itemToPokemob(getItem(), world);
+        IPokemob mob = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
         if (mob == null)
         {
             if ((getItem().hasTagCompound() && getItem().getTagCompound().hasKey(TagNames.MOBID)))
             {
                 Entity caught = EntityList.createEntityByIDFromName(
-                        new ResourceLocation(getItem().getTagCompound().getString(TagNames.MOBID)), world);
+                        new ResourceLocation(getItem().getTagCompound().getString(TagNames.MOBID)), getEntityWorld());
                 caught.readFromNBT(getItem().getTagCompound().getCompoundTag(TagNames.OTHERMOB));
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
@@ -262,7 +274,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                         ((EntityTameable) caught).setOwnerId(shootingEntity.getUniqueID());
                     }
                     else if (caught instanceof AbstractHorse)
-                    {
+                    {// .1.12 use AbstractHorse instead
                         ((AbstractHorse) caught).setOwnerUniqueId(shootingEntity.getUniqueID());
                     }
                     NBTTagCompound tag = new NBTTagCompound();
@@ -349,22 +361,22 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     public EntityLivingBase sendOut()
     {
-        if (world.isRemote || isReleasing()) { return null; }
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), world);
+        if (getEntityWorld().isRemote || isReleasing()) { return null; }
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
             Vector3 dv = v1.set(motionX, motionY, motionZ);
-            v = Vector3.getNextSurfacePoint(world, v, dv, Math.max(2, dv.mag()));
+            v = Vector3.getNextSurfacePoint(getEntityWorld(), v, dv, Math.max(2, dv.mag()));
             if (v == null) v = v0.set(this);
             v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
-            IBlockState state = v.getBlockState(world);
+            IBlockState state = v.getBlockState(getEntityWorld());
             if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
             EntityLiving entity = (EntityLiving) entity1;
             entity.fallDistance = 0;
             v.moveEntity(((Entity) entity1));
 
-            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, world, entity1);
+            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, getEntityWorld(), entity1);
             if (MinecraftForge.EVENT_BUS.post(evt))
             {
                 if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
@@ -375,7 +387,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 return null;
             }
 
-            world.spawnEntity((Entity) entity1);
+            getEntityWorld().spawnEntity((Entity) entity1);
             entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
@@ -391,13 +403,13 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             if (((EntityLiving) entity1).getHealth() <= 0)
             {
                 // notify the mob is dead
-                this.world.setEntityState((Entity) entity1, (byte) 3);
+                this.getEntityWorld().setEntityState((Entity) entity1, (byte) 3);
             }
             setReleased((Entity) entity1);
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
-            evt = new SendOut.Post(entity1.getPokedexEntry(), v, world, entity1);
+            evt = new SendOut.Post(entity1.getPokedexEntry(), v, getEntityWorld(), entity1);
             MinecraftForge.EVENT_BUS.post(evt);
         }
         else
@@ -407,19 +419,19 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             {
                 NBTTagCompound mobTag = tag.getCompoundTag(TagNames.OTHERMOB);
                 ResourceLocation id = new ResourceLocation(tag.getString(TagNames.MOBID));
-                Entity newMob = EntityList.createEntityByIDFromName(id, world);
+                Entity newMob = EntityList.createEntityByIDFromName(id, getEntityWorld());
                 if (newMob != null && newMob instanceof EntityLivingBase)
                 {
                     newMob.readFromNBT(mobTag);
                     Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
                     Vector3 dv = v1.set(motionX, motionY, motionZ);
-                    v = Vector3.getNextSurfacePoint(world, v, dv, Math.max(2, dv.mag()));
+                    v = Vector3.getNextSurfacePoint(getEntityWorld(), v, dv, Math.max(2, dv.mag()));
                     if (v == null) v = v0.set(this);
                     v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
-                    IBlockState state = v.getBlockState(world);
+                    IBlockState state = v.getBlockState(getEntityWorld());
                     if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
                     v.moveEntity(newMob);
-                    world.spawnEntity(newMob);
+                    getEntityWorld().spawnEntity(newMob);
                     tag.removeTag(TagNames.MOBID);
                     tag.removeTag(TagNames.OTHERMOB);
                     entityDropItem(getItem(), 0.5f);

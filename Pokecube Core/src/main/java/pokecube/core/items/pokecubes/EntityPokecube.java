@@ -135,7 +135,8 @@ public class EntityPokecube extends EntityPokecubeBase
     @Override
     public void applyEntityCollision(Entity e)
     {
-        if (e == shootingEntity || isReleasing() || world.isRemote || e instanceof EntityPokecube || e.isDead)
+        if (e == shootingEntity || isReleasing() || getEntityWorld().isRemote || e instanceof EntityPokecube
+                || e.isDead)
         {
             super.applyEntityCollision(e);
             return;
@@ -202,7 +203,7 @@ public class EntityPokecube extends EntityPokecubeBase
             if (!name.isEmpty())
             {
                 UUID id = UUID.fromString(name);
-                EntityPlayer player = world.getPlayerEntityByUUID(id);
+                EntityPlayer player = getEntityWorld().getPlayerEntityByUUID(id);
                 return player;
             }
         }
@@ -211,7 +212,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
     public Entity copy()
     {
-        EntityPokecube copy = new EntityPokecube(world, shootingEntity, getItem());
+        EntityPokecube copy = new EntityPokecube(getEntityWorld(), shootingEntity, getItem());
         copy.posX = this.posX;
         copy.posY = this.posY;
         copy.posZ = this.posZ;
@@ -244,7 +245,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
         if (shooter != null && shootingEntity == null)
         {
-            shootingEntity = world.getPlayerEntityByUUID(shooter);
+            shootingEntity = getEntityWorld().getPlayerEntityByUUID(shooter);
         }
 
         if (releasing)
@@ -306,15 +307,15 @@ public class EntityPokecube extends EntityPokecubeBase
         }
 
         BlockPos pos = tilePos == null ? getPosition() : tilePos;
-        IBlockState state = world.getBlockState(pos);
+        IBlockState state = getEntityWorld().getBlockState(pos);
 
         Block block = state.getBlock();
         if (state.getMaterial() != Material.AIR)
         {
-            AxisAlignedBB axisalignedbb = state.getBoundingBox(world, pos);
+            AxisAlignedBB axisalignedbb = state.getBoundingBox(getEntityWorld(), pos);
 
             if (axisalignedbb != null && axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
-            {
+            {// contains in 1.12
                 this.inGround = true;
                 tilePos = pos;
             }
@@ -424,8 +425,10 @@ public class EntityPokecube extends EntityPokecubeBase
                     if (isLoot)
                     {
                         if (cannotCollect(player) || lootStacks.isEmpty()) return false;
-                        players.add(new CollectEntry(player.getCachedUniqueIdString(), world.getTotalWorldTime()));
-                        PacketPokecube.sendMessage(player, getEntityId(), world.getTotalWorldTime() + resetTime);
+                        players.add(new CollectEntry(player.getCachedUniqueIdString(),
+                                getEntityWorld().getTotalWorldTime()));
+                        PacketPokecube.sendMessage(player, getEntityId(),
+                                getEntityWorld().getTotalWorldTime() + resetTime);
                         ItemStack loot = lootStacks.get(new Random().nextInt(lootStacks.size()));
                         Tools.giveItem(player, loot.copy());
                         return true;
@@ -616,8 +619,8 @@ public class EntityPokecube extends EntityPokecubeBase
             }
             ItemStack mobStack = getItem().copy();
             if (!mobStack.hasTagCompound()) mobStack.setTagCompound(new NBTTagCompound());
-            mobStack.getTagCompound().setString(TagNames.MOBID, EntityList.getKey(mob).toString());
-            NBTTagCompound mobTag = new NBTTagCompound();
+            mobStack.getTagCompound().setString(TagNames.MOBID, EntityList.getEntityString(mob));
+            NBTTagCompound mobTag = new NBTTagCompound();// EntityList.getKey(mob).toString()
             mob.writeToNBT(mobTag);
             mobStack.getTagCompound().setTag(TagNames.OTHERMOB, mobTag);
             setItem(mobStack);
@@ -641,7 +644,7 @@ public class EntityPokecube extends EntityPokecubeBase
             {
                 if (resetTime > 0)
                 {
-                    long diff = world.getTotalWorldTime() - s.time;
+                    long diff = getEntityWorld().getTotalWorldTime() - s.time;
                     if (diff > resetTime)
                     {
                         players.remove(s);

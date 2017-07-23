@@ -1,6 +1,3 @@
-/**
- *
- */
 package pokecube.core.items.pokemobeggs;
 
 import java.util.HashMap;

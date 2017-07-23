@@ -37,7 +37,7 @@ public class EnergyHandler
     {
         if (tile.getWorld() == null || power == 0) return 0;
         Vector3 v = Vector3.getNewVector().set(tile);
-        AxisAlignedBB box = v.getAABB().expand(10, 10, 10);
+        AxisAlignedBB box = v.getAABB().expand(10, 10, 10);// grow in 1.12
         List<EntityLiving> l = tile.getWorld().getEntitiesWithinAABB(EntityLiving.class, box);
         int ret = 0;
         power = Math.min(power, PokecubeAdv.conf.maxOutput);

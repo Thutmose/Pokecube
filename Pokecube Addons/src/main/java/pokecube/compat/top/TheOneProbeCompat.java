@@ -13,6 +13,7 @@ import mcjty.theoneprobe.api.ITheOneProbe;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
@@ -32,6 +33,7 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
 {
     private static class Element implements IElement
     {
+        FontRenderer fontRenderer;
         PokedexEntry entry;
         int          have   = 0;
         int          killed = 0;
@@ -42,6 +44,7 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
             have = buffer.readInt();
             killed = buffer.readInt();
             entry = Database.getEntry(buffer.readStringFromBuffer(20));
+            fontRenderer = Minecraft.getMinecraft().fontRendererObj;
         }
 
         public Element(IPokemob pokemob, EntityPlayer player)
@@ -75,23 +78,20 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
         public void render(int x, int y)
         {
             if (entry == null) return;
-            Minecraft.getMinecraft().fontRendererObj.drawString(PokeType.getTranslatedName(entry.getType1()), x, y,
-                    entry.getType1().colour, true);
+            fontRenderer.drawString(PokeType.getTranslatedName(entry.getType1()), x, y, entry.getType1().colour, true);
             if (PokeType.unknown != entry.getType2() && entry.getType2() != null)
             {
-                int l = Minecraft.getMinecraft().fontRendererObj
-                        .getStringWidth(PokeType.getTranslatedName(entry.getType1()));
-                Minecraft.getMinecraft().fontRendererObj.drawString(PokeType.getTranslatedName(entry.getType2()),
-                        l + 2 + x, y, entry.getType2().colour, true);
+                int l = fontRenderer.getStringWidth(PokeType.getTranslatedName(entry.getType1()));
+                fontRenderer.drawString(PokeType.getTranslatedName(entry.getType2()), l + 2 + x, y,
+                        entry.getType2().colour, true);
             }
 
             int l = 0;
-            Minecraft.getMinecraft().fontRendererObj.drawString(have + "", l + x, y + 10, PokeType.getType("grass").colour, true);
-            l += Minecraft.getMinecraft().fontRendererObj.getStringWidth(have + "");
-            Minecraft.getMinecraft().fontRendererObj.drawString("/", l + x, y + 10, PokeType.getType("normal").colour, true);
-            l += Minecraft.getMinecraft().fontRendererObj.getStringWidth("/");
-            Minecraft.getMinecraft().fontRendererObj.drawString(killed + "", l + x, y + 10, PokeType.getType("fighting").colour,
-                    true);
+            fontRenderer.drawString(have + "", l + x, y + 10, PokeType.getType("grass").colour, true);
+            l += fontRenderer.getStringWidth(have + "");
+            fontRenderer.drawString("/", l + x, y + 10, PokeType.getType("normal").colour, true);
+            l += fontRenderer.getStringWidth("/");
+            fontRenderer.drawString(killed + "", l + x, y + 10, PokeType.getType("fighting").colour, true);
 
         }
 
@@ -113,6 +113,7 @@ public class TheOneProbeCompat implements IProbeInfoProvider, IProbeInfoEntityPr
         System.out.println("TheOneProbe Compat");
         new pokecube.compat.top.TheOneProbeCompat();
     }
+
     private static ITheOneProbe probe;
     private static int          ELEMENT;
 

@@ -15,7 +15,7 @@ public class RuinsCompat
     @CompatClass(phase = Phase.POST)
     public static void AS_RuinsCompat()
     {
-        System.out.println("AS_Ruins Compat");
+        System.out.println("ruins Compat");
         MinecraftForge.EVENT_BUS.register(new pokecube.compat.atomicstryker.RuinsCompat());
     }
 

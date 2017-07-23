@@ -35,7 +35,7 @@ public class LostCityTerrainChecker extends PokecubeTerrainChecker
                 {
                     BlockPos pos = v.getPos();
                     ILostChunkGenerator lostGenerator = (ILostChunkGenerator) generator;
-                    ILostChunkInfo info = lostGenerator.getChunkInfo(chunk.xPosition, chunk.zPosition);
+                    ILostChunkInfo info = lostGenerator.getChunkInfo(chunk.zPosition, chunk.xPosition);
                     String type = info.getBuildingType();
                     if (!info.isCity()) break check;
                     int streetLevel = lostGenerator.getRealHeight(0);

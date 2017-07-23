@@ -1,7 +1,6 @@
 package pokecube.compat.wearables;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -33,9 +32,9 @@ public class WearableCompat
     }
 
     @SubscribeEvent
-    public void onItemCapabilityAttach(AttachCapabilitiesEvent<Item> event)
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event)
     {
-        if (event.getObject() instanceof ItemBag)
+        if (event.getObject().getItem() instanceof ItemBag)
         {
             event.addCapability(new ResourceLocation("pokecube_adv:wearable"), new WearableBag());
         }

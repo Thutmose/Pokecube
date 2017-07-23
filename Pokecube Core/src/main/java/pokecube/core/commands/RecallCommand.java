@@ -113,7 +113,7 @@ public class RecallCommand extends CommandBase
                     {
                         if (PokecubeManager.isFilled(cube.getEntityItem()))
                         {
-                            mob = cube.sendOut();
+                            mob = CapabilityPokemob.getPokemobFor(cube.sendOut());
                             if (mob != null) mob.returnToPokecube();
                             else PokecubeMod.log(cube.getEntityItem().getDisplayName());
                         }

@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.ItemPokemobUseable;
 import pokecube.core.utils.Tools;
 
@@ -36,36 +37,37 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
 
     public static boolean feedToPokemob(ItemStack stack, Entity entity)
     {
-        if (entity instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (pokemob != null)
         {
             if (Tools.isSameStack(stack, PokecubeItems.getStack("hpup")))
             {
-                ((IPokemob) entity).addEVs(new byte[] { 10, 0, 0, 0, 0, 0 });
+                pokemob.addEVs(new byte[] { 10, 0, 0, 0, 0, 0 });
                 return true;
             }
             if (Tools.isSameStack(stack, PokecubeItems.getStack("protein")))
             {
-                ((IPokemob) entity).addEVs(new byte[] { 0, 10, 0, 0, 0, 0 });
+                pokemob.addEVs(new byte[] { 0, 10, 0, 0, 0, 0 });
                 return true;
             }
             if (Tools.isSameStack(stack, PokecubeItems.getStack("iron")))
             {
-                ((IPokemob) entity).addEVs(new byte[] { 0, 0, 10, 0, 0, 0 });
+                pokemob.addEVs(new byte[] { 0, 0, 10, 0, 0, 0 });
                 return true;
             }
             if (Tools.isSameStack(stack, PokecubeItems.getStack("calcium")))
             {
-                ((IPokemob) entity).addEVs(new byte[] { 0, 0, 0, 10, 0, 0 });
+                pokemob.addEVs(new byte[] { 0, 0, 0, 10, 0, 0 });
                 return true;
             }
             if (Tools.isSameStack(stack, PokecubeItems.getStack("zinc")))
             {
-                ((IPokemob) entity).addEVs(new byte[] { 0, 0, 0, 0, 10, 0 });
+                pokemob.addEVs(new byte[] { 0, 0, 0, 0, 10, 0 });
                 return true;
             }
             if (Tools.isSameStack(stack, PokecubeItems.getStack("carbos")))
             {
-                ((IPokemob) entity).addEVs(new byte[] { 0, 0, 0, 0, 0, 10 });
+                pokemob.addEVs(new byte[] { 0, 0, 0, 0, 0, 10 });
                 return true;
             }
         }

@@ -9,6 +9,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
@@ -62,9 +63,9 @@ public class PacketPokemobGui implements IMessage, IMessageHandler<PacketPokemob
     void processMessage(MessageContext ctx, PacketPokemobGui message)
     {
         Entity entity = ctx.getServerHandler().player.getEntityWorld().getEntityByID(message.id);
-        if (entity instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) entity;
             if (message.message == BUTTONTOGGLEGUARD)
             {
                 mob.setPokemonAIState(IMoveConstants.GUARDING, !mob.getPokemonAIState(IMoveConstants.GUARDING));

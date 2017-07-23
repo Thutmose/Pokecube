@@ -36,6 +36,7 @@ import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -153,9 +154,9 @@ public class Tools
 
     public static int computeCatchRate(IPokemob pokemob, double cubeBonus)
     {
-        float HPmax = ((EntityLivingBase) pokemob).getMaxHealth();
+        float HPmax = pokemob.getEntity().getMaxHealth();
         Random rand = new Random();
-        float HP = ((EntityLivingBase) pokemob).getHealth();
+        float HP = pokemob.getEntity().getHealth();
         float statusBonus = 1F;
         byte status = pokemob.getStatus();
         if (status == IMoveConstants.STATUS_FRZ || status == IMoveConstants.STATUS_SLP)
@@ -208,17 +209,17 @@ public class Tools
         return computeCatchRate(pokemob, cubeBonus);
     }
 
-    public static int countPokemon(Vector3 location, World world, double distance, PokedexEntry pokemon)
+    public static int countPokemon(Vector3 location, World world, double distance, PokedexEntry entry)
     {
         int ret = 0;
         List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
                 location.getAABB().grow(distance, distance, distance));
-        for (Object o : list)
+        for (EntityLiving o : list)
         {
-            if (o instanceof IPokemob)
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null)
             {
-                IPokemob mob = (IPokemob) o;
-                if (mob.getPokedexEntry() == pokemon)
+                if (mob.getPokedexEntry() == entry)
                 {
                     ret++;
                 }
@@ -233,11 +234,11 @@ public class Tools
         int ret = 0;
         List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
                 location.getAABB().grow(distance, distance, distance));
-        for (Object o : list)
+        for (EntityLiving o : list)
         {
-            if (o instanceof IPokemob)
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null)
             {
-                IPokemob mob = (IPokemob) o;
                 if (mob.getPokedexEntry().isType(type))
                 {
                     ret++;
@@ -253,9 +254,10 @@ public class Tools
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
                 box.grow(radius, radius, radius));
         int num = 0;
-        for (Object o : list)
+        for (EntityLivingBase o : list)
         {
-            if (o instanceof IPokemob) num++;
+            IPokemob mob = CapabilityPokemob.getPokemobFor(o);
+            if (mob != null) num++;
         }
         return num;
     }
@@ -390,9 +392,9 @@ public class Tools
     {
         Move_Base attack = MovesUtils.getMoveFromName(move);
         int pwr = attack.getPWR(user, target);
-        if (target instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(target);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) target;
             pwr *= PokeType.getAttackEfficiency(attack.getType(user), mob.getType1(), mob.getType2());
         }
         return pwr;

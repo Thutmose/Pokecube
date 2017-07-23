@@ -3,7 +3,6 @@ package pokecube.core.network.pokemobs;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -15,6 +14,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** This class handles the packets sent for the IPokemob Entities.
  * 
@@ -41,12 +41,11 @@ public class PokemobPacketHandler
                         {
                             byte channel = buffer.readByte();
                             int id = buffer.readInt();
-                            IPokemob pokemob;
                             WorldServer world = FMLCommonHandler.instance().getMinecraftServerInstance()
                                     .getWorld(player.dimension);
                             Entity entity = PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
-                            if (entity == null || !(entity instanceof IPokemob)) { return; }
-                            pokemob = (IPokemob) entity;
+                            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+                            if (pokemob == null) { return; }
                             if (channel == RETURN)
                             {
                                 Entity mob = (Entity) pokemob;
@@ -59,8 +58,8 @@ public class PokemobPacketHandler
                             }
                             else if (channel == COME)
                             {
-                                ((EntityLiving) pokemob).getNavigator().tryMoveToEntityLiving(player, 0.6);
-                                ((EntityLiving) pokemob).setAttackTarget(null);
+                                pokemob.getEntity().getNavigator().tryMoveToEntityLiving(player, 0.6);
+                                pokemob.getEntity().setAttackTarget(null);
                                 return;
                             }
                             else if (channel == MOVESWAP)

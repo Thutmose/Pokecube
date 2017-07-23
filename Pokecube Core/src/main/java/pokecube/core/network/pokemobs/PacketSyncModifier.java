@@ -12,6 +12,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.IStatsModifiers;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PacketSyncModifier implements IMessage, IMessageHandler<PacketSyncModifier, IMessage>
 {
@@ -23,9 +24,9 @@ public class PacketSyncModifier implements IMessage, IMessageHandler<PacketSyncM
         int modifier = message.modifier;
         float[] values = message.values;
         Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, false);
-        if (e != null && e instanceof IPokemob)
+        IPokemob mob = CapabilityPokemob.getPokemobFor(e);
+        if (mob != null)
         {
-            IPokemob mob = (IPokemob) e;
             IStatsModifiers stats = mob.getModifiers().sortedModifiers.get(modifier);
             for (Stats stat : Stats.values())
                 stats.setModifier(stat, values[stat.ordinal()]);
@@ -34,17 +35,17 @@ public class PacketSyncModifier implements IMessage, IMessageHandler<PacketSyncM
 
     public static void sendUpdate(String type, IPokemob pokemob)
     {
-        if (!((Entity) pokemob).addedToChunk) return;
+        if (!pokemob.getEntity().addedToChunk) return;
         PacketSyncModifier packet = new PacketSyncModifier();
-        packet.entityId = ((Entity) pokemob).getEntityId();
+        packet.entityId = pokemob.getEntity().getEntityId();
         packet.modifier = pokemob.getModifiers().indecies.get(type);
         for (Stats stat : Stats.values())
         {
             packet.values[stat.ordinal()] = pokemob.getModifiers().sortedModifiers.get(packet.modifier)
                     .getModifierRaw(stat);
         }
-        PokecubeMod.packetPipeline.sendToAllAround(packet, new TargetPoint(((Entity) pokemob).dimension,
-                ((Entity) pokemob).posX, ((Entity) pokemob).posY, ((Entity) pokemob).posZ, 64));
+        PokecubeMod.packetPipeline.sendToAllAround(packet, new TargetPoint(pokemob.getEntity().dimension,
+                pokemob.getEntity().posX, pokemob.getEntity().posY, pokemob.getEntity().posZ, 64));
     }
 
     int   entityId;

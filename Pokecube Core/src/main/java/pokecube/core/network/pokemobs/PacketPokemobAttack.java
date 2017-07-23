@@ -21,6 +21,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Explode;
 import pokecube.core.network.packets.PacketDataSync;
@@ -90,12 +91,11 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
         Entity user = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
         Entity target = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.targetId, true);
 
-        if (user == null || !(user instanceof IPokemob)) return;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(user);
+        if (pokemob == null) return;
         CommandAttackEvent event = new CommandAttackEvent(user, target);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled()) return;
-
-        IPokemob pokemob = (IPokemob) user;
 
         if (player.isSneaking())
         {
@@ -146,10 +146,9 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                     ((EntityLiving) target).setAttackTarget((EntityLivingBase) user);
                     ((EntityLiving) user).setAttackTarget((EntityLivingBase) target);
                 }
-
-                if (closest instanceof IPokemob)
+                IPokemob tempMob = CapabilityPokemob.getPokemobFor(closest);
+                if (tempMob != null)
                 {
-                    IPokemob tempMob = (IPokemob) closest;
                     if (pokemob.getPokemonOwnerID().equals(tempMob.getPokemonOwnerID()))
                     {
                         if (tempMob == closest)
@@ -165,7 +164,7 @@ public class PacketPokemobAttack implements IMessage, IMessageHandler<PacketPoke
                 {
                     if (closest instanceof EntityLivingBase)
                     {
-                        ((EntityLiving) pokemob).setAttackTarget((EntityLivingBase) closest);
+                        pokemob.getEntity().setAttackTarget((EntityLivingBase) closest);
                         if (closest instanceof EntityLiving)
                         {
                             ((EntityLiving) closest).setAttackTarget((EntityLivingBase) pokemob);

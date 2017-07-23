@@ -78,7 +78,7 @@ public abstract class PokemobBase implements IPokemob
         params.ZMOVECD = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.DIRECTIONPITCHDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
         params.TRANSFORMEDTODW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
-        params.HELDITEM = EntityDataManager.<ItemStack> createKey(clazz, DataSerializers.OPTIONAL_ITEM_STACK);
+        params.HELDITEM = EntityDataManager.<ItemStack> createKey(clazz, DataSerializers.ITEM_STACK);
         return params;
     }
 

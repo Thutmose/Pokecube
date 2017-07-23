@@ -71,13 +71,13 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             {
                 NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
                 int j = nbttagcompound1.getByte("Slot") & 255;
-                if (j < this.pokeChest.getSizeInventory())
+                if (j < this.getPokemobInventory().getSizeInventory())
                 {
-                    this.pokeChest.setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
+                    this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-                if (this.pokeChest.getStackInSlot(1) != CompatWrapper.nullStack)
+                if (CompatWrapper.isValid(this.getPokemobInventory().getStackInSlot(1)))
                 {
-                    dataManager.set(params.HELDITEM, Optional.of(this.pokeChest.getStackInSlot(1)));
+                    dataManager.set(params.HELDITEM, Optional.of(this.getPokemobInventory().getStackInSlot(1)));
                 }
                 else
                 {
@@ -158,11 +158,11 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         // Write Inventory tag
         NBTTagCompound inventoryTag = new NBTTagCompound();
         NBTTagList nbttaglist = new NBTTagList();
-        this.pokeChest.setInventorySlotContents(1, this.getHeldItem());
-        for (int i = 0; i < this.pokeChest.getSizeInventory(); ++i)
+        this.getPokemobInventory().setInventorySlotContents(1, this.getHeldItem());
+        for (int i = 0; i < this.getPokemobInventory().getSizeInventory(); ++i)
         {
-            ItemStack itemstack = this.pokeChest.getStackInSlot(i);
-            if (itemstack != CompatWrapper.nullStack)
+            ItemStack itemstack = this.getPokemobInventory().getStackInSlot(i);
+            if (CompatWrapper.isValid(itemstack))
             {
                 NBTTagCompound nbttagcompound1 = new NBTTagCompound();
                 nbttagcompound1.setByte("Slot", (byte) i);
@@ -185,9 +185,9 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         visualsTag.setString(FORME, getPokedexEntry().getName());
         visualsTag.setInteger(SPECIALTAG, getSpecialInfo());
         visualsTag.setIntArray(FLAVOURSTAG, flavourAmounts);
-        if (getPokecube() != CompatWrapper.nullStack)
+        if (CompatWrapper.isValid(getPokecube()))
         {
-            NBTTagCompound pokecubeTag = pokecube.writeToNBT(new NBTTagCompound());
+            NBTTagCompound pokecubeTag = getPokecube().writeToNBT(new NBTTagCompound());
             visualsTag.setTag(POKECUBE, pokecubeTag);
         }
         // Misc AI

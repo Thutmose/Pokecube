@@ -58,14 +58,12 @@ public class CapabilityPokemob
     {
         public DefaultPokemob()
         {
-            initInventory();
         }
 
         @Override
         public void setEntity(EntityLiving entityIn)
         {
             super.setEntity(entityIn);
-            initInventory();
         }
 
         @Override

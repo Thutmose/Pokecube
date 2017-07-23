@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,7 +43,7 @@ import thut.api.maths.Vector3;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IInventoryChangedListener,
-        IShearable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData
+        IShearable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IJumpingMount
 {
 
     protected boolean              looksWithInterest;
@@ -233,7 +234,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         {
             long last = getEntityData().getLong("lastSheared");
 
-            if (last < worldObj.getTotalWorldTime() - 800 && !worldObj.isRemote)
+            if (last < this.world.getTotalWorldTime() - 800 && !this.world.isRemote)
             {
                 setSheared(false);
             }
@@ -271,7 +272,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
 
-            getEntityData().setLong("lastSheared", worldObj.getTotalWorldTime());
+            getEntityData().setLong("lastSheared", this.world.getTotalWorldTime());
 
             int i = 1 + rand.nextInt(3);
             List<ItemStack> list = getPokedexEntry().getInteractResult(key);
@@ -301,10 +302,10 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
 
     public void openGUI(EntityPlayer player)
     {
-        if (!this.worldObj.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
+        if (!this.world.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
         {
             pokemobCap.getPokemobInventory().setCustomName(this.getDisplayName().getFormattedText());
-            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
+            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, world, getEntityId(), 0, 0);
         }
     }
 

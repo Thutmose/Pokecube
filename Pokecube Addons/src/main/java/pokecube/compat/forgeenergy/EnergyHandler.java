@@ -17,6 +17,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
@@ -105,7 +106,8 @@ public class EnergyHandler
         producer.extractEnergy(start - output, false);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
+    /** Priority low, so that the IPokemob capability is added first. */
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());

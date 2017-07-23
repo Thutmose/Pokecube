@@ -100,14 +100,14 @@ public class LogicMovesUpdates extends LogicBase
         {
             pokemob.getAbility().onUpdate(pokemob);
         }
-        if (!entity.isDead && CompatWrapper.isValid(entity.getHeldItemMainhand())
-                && entity.getHeldItemMainhand().getItem() instanceof ItemPokemobUseable)
+        if (!entity.isDead && CompatWrapper.isValid(pokemob.getHeldItem())
+                && pokemob.getHeldItem().getItem() instanceof ItemPokemobUseable)
         {
-            boolean used = ((IPokemobUseable) entity.getHeldItemMainhand().getItem())
-                    .itemUse(entity.getHeldItemMainhand(), entity, null);
+            boolean used = ((IPokemobUseable) pokemob.getHeldItem().getItem())
+                    .itemUse(pokemob.getHeldItem(), entity, null);
             if (used)
             {
-                ItemStack stack = entity.getHeldItemMainhand().splitStack(1);
+                ItemStack stack = pokemob.getHeldItem().splitStack(1);
                 entity.setHeldItem(EnumHand.MAIN_HAND, stack);
             }
         }
@@ -154,7 +154,7 @@ public class LogicMovesUpdates extends LogicBase
         if (timer > 0) pokemob.setStatusTimer((short) (timer - 1));
         byte status = pokemob.getStatus();
 
-        ItemStack held = entity.getHeldItemMainhand();
+        ItemStack held = pokemob.getHeldItem();
         if (held != null && held.getItem() instanceof ItemBerry)
         {
             if (BerryManager.berryEffect(pokemob, held))

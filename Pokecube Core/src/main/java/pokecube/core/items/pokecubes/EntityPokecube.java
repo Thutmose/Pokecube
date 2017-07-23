@@ -156,7 +156,7 @@ public class EntityPokecube extends EntityPokecubeBase
                 if (e instanceof EntityLivingBase)
                 {
                     EntityLivingBase entityHit = (EntityLivingBase) e;
-                    if (entityHit instanceof IPokemob && entity1.getPokemonOwnerID() != null
+                    if (pokemob != null && entity1.getPokemonOwnerID() != null
                             && entity1.getPokemonOwnerID().equals(pokemob.getPokemonOwnerID()))
                     {
                         // do not attack a mob of the same team.
@@ -169,7 +169,7 @@ public class EntityPokecube extends EntityPokecubeBase
                         {
                             ((EntityCreature) entityHit).setAttackTarget((EntityLiving) entity1);
                         }
-                        if (entityHit instanceof IPokemob)
+                        if (pokemob != null)
                         {
                             pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
                         }

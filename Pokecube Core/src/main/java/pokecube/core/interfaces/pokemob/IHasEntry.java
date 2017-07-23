@@ -1,7 +1,6 @@
 package pokecube.core.interfaces.pokemob;
 
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 
@@ -30,7 +29,7 @@ public interface IHasEntry extends IHasMobAIStates
     boolean isShiny();
 
     /** @param entityIn */
-    default void setEntity(EntityLivingBase entityIn)
+    default void setEntity(EntityLiving entityIn)
     {
         // Nope for default impl
     }

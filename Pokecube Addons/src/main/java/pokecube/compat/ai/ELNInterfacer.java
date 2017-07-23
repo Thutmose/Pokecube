@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.events.RecallEvent;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
 public class ELNInterfacer
@@ -63,44 +64,45 @@ public class ELNInterfacer
             connect(cable);
         }
     }
-    static Class<?> coordonate;
-    static Class<?> line;
-    static Class<?> state;
-    static Class<?> resistor;
-    static Class<?> voltageSource;
-    static Class<?> nodeManager;
-    static Class<?> rootSystem;
-    static Method   resistorSetR;
-    static Field    nodeManagerInstance;
-    static Method   nodeManagerGetNodeFromCoordonate;
-    static Class<?> directions;
-    static Method   dirValues;
-    static Class<?> lrdu;
-    static Method   getElectricalLoad;
-    static Class<?> electricalLoad;
-    static Class<?> nbtElectricalLoad;
-    static Method   loadSetRs;
-    static Method   sourceSetU;
-    static Method   getSubSystem;
-    static Class<?> subsystem;
 
-    static Method   getRoot;
-    static Class<?> sixNode;
-    static Class<?> sixNodeElement;
+    static Class<?>                                      coordonate;
+    static Class<?>                                      line;
+    static Class<?>                                      state;
+    static Class<?>                                      resistor;
+    static Class<?>                                      voltageSource;
+    static Class<?>                                      nodeManager;
+    static Class<?>                                      rootSystem;
+    static Method                                        resistorSetR;
+    static Field                                         nodeManagerInstance;
+    static Method                                        nodeManagerGetNodeFromCoordonate;
+    static Class<?>                                      directions;
+    static Method                                        dirValues;
+    static Class<?>                                      lrdu;
+    static Method                                        getElectricalLoad;
+    static Class<?>                                      electricalLoad;
+    static Class<?>                                      nbtElectricalLoad;
+    static Method                                        loadSetRs;
+    static Method                                        sourceSetU;
+    static Method                                        getSubSystem;
+    static Class<?>                                      subsystem;
 
-    static Field    sixNodeSEL;
-    static Class<?> cable;
-    static Field    cableCompList;
-    static Field    cableLoadList;
-    static Field    cableLoad;
-    static Method   reconnect;
-    static Method   disconnect;
+    static Method                                        getRoot;
+    static Class<?>                                      sixNode;
+    static Class<?>                                      sixNodeElement;
 
-    static Method   connect;
-    static Class<?> bipole;
-    static Method   breakConnection;
+    static Field                                         sixNodeSEL;
+    static Class<?>                                      cable;
+    static Field                                         cableCompList;
+    static Field                                         cableLoadList;
+    static Field                                         cableLoad;
+    static Method                                        reconnect;
+    static Method                                        disconnect;
 
-    static Method   connectTo;
+    static Method                                        connect;
+    static Class<?>                                      bipole;
+    static Method                                        breakConnection;
+
+    static Method                                        connectTo;
 
     static HashMap<EntityLiving, ArrayList<CablePacket>> mobEffects = new HashMap<EntityLiving, ArrayList<CablePacket>>();
 
@@ -388,7 +390,8 @@ public class ELNInterfacer
     @SubscribeEvent
     public void EntityLivingDeath(LivingDeathEvent evt)
     {
-        if (evt.getEntityLiving() instanceof IPokemob && evt.getEntityLiving() instanceof EntityLiving)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+        if (pokemob != null && evt.getEntityLiving() instanceof EntityLiving)
         {
             resetCableEffects((EntityLiving) evt.getEntityLiving());
         }
@@ -397,7 +400,8 @@ public class ELNInterfacer
     @SubscribeEvent
     public void EntityLivingUpdate(LivingUpdateEvent evt)
     {
-        if (evt.getEntityLiving() instanceof IPokemob && evt.getEntityLiving() instanceof EntityLiving)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+        if (pokemob != null && evt.getEntityLiving() instanceof EntityLiving)
         {
             refreshCableEffects((EntityLiving) evt.getEntityLiving());
         }

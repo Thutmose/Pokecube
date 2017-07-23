@@ -16,10 +16,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +49,8 @@ import thut.api.entity.IHungrymob;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob, IBreedingMob, IPathingMob
+public interface IPokemob
+        extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob, IBreedingMob, IPathingMob
 {
     public static enum HappinessType
     {
@@ -538,13 +542,10 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
     float getHomeDistance();
 
-    @SideOnly(Side.CLIENT)
-    /** from wolf code
-     *
-     * @return the float interested angle */
-    float getInterestedAngle(float f);
-
-    double getMovementSpeed();
+    default double getMovementSpeed()
+    {
+        return getEntity().getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
+    }
 
     boolean getOnGround();
 
@@ -568,13 +569,10 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
      * @return the byte sexe */
     byte getSexe();
 
-    @SideOnly(Side.CLIENT)
-    /** from wolf code
-     *
-     * @return the float shake angle */
-    float getShakeAngle(float f, float f1);
-
-    SoundEvent getSound();
+    default SoundEvent getSound()
+    {
+        return getPokedexEntry().getSoundEvent();
+    }
 
     /** Currently used for mareep colour, can be used for other things if needed
      * 
@@ -638,7 +636,15 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
 
     void setExplosionState(int i);
 
-    void setHeldItem(ItemStack Item);
+    default void setHeldItem(ItemStack stack)
+    {
+        getEntity().setHeldItem(EnumHand.MAIN_HAND, stack);
+    }
+
+    default ItemStack getHeldItem()
+    {
+        return getEntity().getHeldItemMainhand();
+    }
 
     void setHome(int x, int y, int z, int distance);
 
@@ -677,7 +683,10 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
     /** @param value */
     void setRNGValue(int value);
 
-    void setSubParts(EntityPokemobPart[] subParts);
+    default void setSubParts(EntityPokemobPart[] subParts)
+    {
+
+    }
 
     /** @param index
      * @return the value of the flavour amount for this mob, this will be used
@@ -698,5 +707,10 @@ public interface IPokemob extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOw
     default boolean moveToShoulder(EntityPlayer player)
     {
         return false;
+    }
+
+    default EntityDataManager getDataManager()
+    {
+        return getEntity().getDataManager();
     }
 }

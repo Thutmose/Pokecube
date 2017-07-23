@@ -82,7 +82,7 @@ public class RecallCommand extends CommandBase
             if (world.unloadedEntityList.contains(o)) continue;
             if (!o.addedToChunk) continue;
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
-            if (!cubes && o instanceof IPokemob)
+            if (!cubes && mob != null)
             {
                 boolean isStaying = mob.getPokemonAIState(IMoveConstants.STAYING);
                 if (mob.getPokemonAIState(IMoveConstants.TAMED) && (mob.getPokemonOwner() == player || allall)

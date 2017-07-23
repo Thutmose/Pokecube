@@ -35,8 +35,8 @@ public class Config extends ConfigBase
 {
 
     public static final String         machines              = "machine";
+    public static final String         client                = "client";
     public static final String         trainers              = "trainers";
-    public static final String         teams                 = "teams";
     public static final String         database              = "database";
 
     public static Config               instance;
@@ -153,6 +153,8 @@ public class Config extends ConfigBase
     public String[]                    extraTrainerDatabases = {};
     @Configure(category = database)
     public String[]                    extraTradeDatabases   = {};
+    @Configure(category = client)
+    public boolean                     journeymapRepels      = true;
 
     public Config()
     {

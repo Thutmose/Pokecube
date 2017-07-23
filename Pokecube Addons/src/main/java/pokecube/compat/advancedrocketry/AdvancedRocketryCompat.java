@@ -330,7 +330,7 @@ public class AdvancedRocketryCompat
     @SubscribeEvent
     public void toOrbit(LivingUpdateEvent event)
     {
-        if (event.getEntity().worldObj.isRemote) return;
+        if (event.getEntity().getEntityWorld().isRemote) return;
         if (event.getEntity() instanceof IPokemob)
         {
             PokedexEntry entry = (((IPokemob) event.getEntity()).getPokedexEntry());
@@ -357,7 +357,7 @@ public class AdvancedRocketryCompat
                 else
                 {
                     DimensionProperties props = DimensionManager.getInstance()
-                            .getDimensionProperties(event.getEntity().worldObj.provider.getDimension());
+                            .getDimensionProperties(event.getEntity().getEntityWorld().provider.getDimension());
                     boolean moon = props.isMoon();
                     if (moon && goUp)
                     {
@@ -369,7 +369,7 @@ public class AdvancedRocketryCompat
                         Collections.sort(moons);
                         if (!moons.isEmpty())
                         {
-                            double angle = ((event.getEntity().worldObj.getWorldTime() % props.rotationalPeriod)
+                            double angle = ((event.getEntity().getEntityWorld().getWorldTime() % props.rotationalPeriod)
                                     / (double) props.rotationalPeriod) * 2 * Math.PI;
                             double diff = 2 * Math.PI;
                             int whichMoon = 0;

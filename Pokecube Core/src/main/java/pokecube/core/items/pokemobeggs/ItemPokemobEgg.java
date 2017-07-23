@@ -1,11 +1,10 @@
-/**
- *
- */
 package pokecube.core.items.pokemobeggs;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+
+import javax.annotation.Nullable;
 
 import com.google.common.base.Predicate;
 
@@ -187,7 +186,7 @@ public class ItemPokemobEgg extends Item
                 PLAYERDIST, false);
         EntityLivingBase owner = player;
         AxisAlignedBB box = location.getAABB().expand(MOBDIST, MOBDIST, MOBDIST);
-        if (owner == null)
+        if (owner == null)// grow in 1.12
         {
             List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,
                     box, new Predicate<EntityLivingBase>()
@@ -304,7 +303,7 @@ public class ItemPokemobEgg extends Item
      * description */
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced)
+    public void addInformation(ItemStack stack, @Nullable EntityPlayer playerIn, List<String> tooltip, boolean advanced)
     {
         PokedexEntry entry = getEntry(stack);
         if (entry != null) tooltip.add(1, I18n.format("pokemobEggnamed.name", I18n.format(entry.getUnlocalizedName())));

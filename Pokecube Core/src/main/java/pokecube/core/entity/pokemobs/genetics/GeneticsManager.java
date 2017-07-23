@@ -28,6 +28,7 @@ import pokecube.core.entity.pokemobs.genetics.genes.SizeGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import thut.api.entity.genetics.GeneRegistry;
 import thut.api.entity.genetics.IMobGenetics;
@@ -158,7 +159,8 @@ public class GeneticsManager
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof IPokemob && !event.getCapabilities().containsKey(POKECUBEGENETICS))
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());
+        if (pokemob != null && !event.getCapabilities().containsKey(POKECUBEGENETICS))
         {
             event.addCapability(POKECUBEGENETICS, new GeneticsProvider());
         }

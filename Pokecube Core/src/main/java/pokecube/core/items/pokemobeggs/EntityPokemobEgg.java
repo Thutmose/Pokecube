@@ -1,6 +1,3 @@
-/**
- *
- */
 package pokecube.core.items.pokemobeggs;
 
 import java.util.UUID;
@@ -79,7 +76,7 @@ public class EntityPokemobEgg extends EntityLiving
     /** Called when the entity is attacked. */
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
-        Entity e = source.getEntity();
+        Entity e = source.getSourceOfDamage();// getImmediateSource
         if (!getEntityWorld().isRemote && e != null && e instanceof EntityPlayer)
         {
             if (this.delayBeforeCanPickup > 0) { return false; }
@@ -214,7 +211,7 @@ public class EntityPokemobEgg extends EntityLiving
             TileEntityHopper hopper = (TileEntityHopper) te;
             EntityItem item = new EntityItem(getEntityWorld(), posX, posY, posZ, getHeldItemMainhand());
             boolean added = TileEntityHopper.putDropInInventoryAllSlots(null, hopper, item);
-            if (added)
+            if (added)// needs null as first argument for 1.11+
             {
                 this.setDead();
             }

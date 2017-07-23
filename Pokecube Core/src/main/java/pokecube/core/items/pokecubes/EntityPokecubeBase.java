@@ -7,9 +7,12 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -18,6 +21,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -35,6 +39,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -88,9 +93,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     {
         if (source == DamageSource.outOfWorld)
         {
-            if (PokecubeManager.isFilled(getEntityItem()))
+            if (PokecubeManager.isFilled(getItem()))
             {
-                IPokemob mob = this.sendOut();
+                IPokemob mob = (IPokemob) this.sendOut();
                 if (mob != null) mob.returnToPokecube();
             }
             this.setDead();
@@ -110,16 +115,22 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     /** Returns the ItemStack corresponding to the Entity (Note: if no item
      * exists, will log an error but still return an ItemStack containing
      * Block.stone) */
-    public ItemStack getEntityItem()
+    public ItemStack getItem()
     {
         ItemStack itemstack = this.getDataManager().get(ITEM);
         return itemstack == null ? new ItemStack(Blocks.STONE) : itemstack;
     }
 
+    // For compatiblity.
+    public ItemStack getEntityItem()
+    {
+        return getItem();
+    }
+
     public Entity getReleased()
     {
         int id = getDataManager().get(ENTITYID);
-        Entity ret = worldObj.getEntityByID(id);
+        Entity ret = getEntityWorld().getEntityByID(id);
         return ret;
     }
 
@@ -137,10 +148,16 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     }
 
     /** Sets the ItemStack for this entity */
-    public void setEntityItemStack(ItemStack stack)
+    public void setItem(ItemStack stack)
     {
         this.getDataManager().set(ITEM, stack);
         this.getDataManager().setDirty(ITEM);
+    }
+
+    // For compatiblity
+    public void setEntityItemStack(ItemStack stack)
+    {
+        setItem(stack);
     }
 
     public void setReleased(Entity entity)
@@ -206,12 +223,12 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
     protected void captureFailed()
     {
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
 
         if (entity1 != null)
         {
             ((Entity) entity1).setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
-            boolean ret = worldObj.spawnEntityInWorld((Entity) entity1);
+            boolean ret = getEntityWorld().spawnEntityInWorld((Entity) entity1);
 
             if (ret == false)
             {
@@ -232,14 +249,45 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 ((EntityCreature) entity1).setAttackTarget(shootingEntity);
             }
         }
+        else
+        {
+            sendOut();
+        }
     }
 
     protected boolean captureSucceed()
     {
-        PokecubeManager.setTilt(getEntityItem(), -1);
-        IPokemob mob = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        PokecubeManager.setTilt(getItem(), -1);
+        IPokemob mob = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
         if (mob == null)
         {
+            if ((getItem().hasTagCompound() && getItem().getTagCompound().hasKey(TagNames.MOBID)))
+            {
+                Entity caught = EntityList.createEntityByIDFromName(
+                        new ResourceLocation(getItem().getTagCompound().getString(TagNames.MOBID)), getEntityWorld());
+                caught.readFromNBT(getItem().getTagCompound().getCompoundTag(TagNames.OTHERMOB));
+
+                if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
+                {
+                    if (caught instanceof EntityTameable)
+                    {
+                        ((EntityTameable) caught).setOwnerId(shootingEntity.getUniqueID());
+                    }
+                    else if (caught instanceof EntityHorse)
+                    {// .1.12 use AbstractHorse instead
+                        ((EntityHorse) caught).setOwnerUniqueId(shootingEntity.getUniqueID());
+                    }
+                    NBTTagCompound tag = new NBTTagCompound();
+                    caught.writeToNBT(tag);
+                    getItem().getTagCompound().setTag(TagNames.OTHERMOB, tag);
+                    getItem().setStackDisplayName(caught.getDisplayName().getFormattedText());
+                    ITextComponent mess = new TextComponentTranslation("pokecube.caught", caught.getDisplayName());
+                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
+                    this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
+                    this.playSound(POKECUBESOUND, 1, 1);
+                }
+                return true;
+            }
             new NullPointerException("Mob is null").printStackTrace();
             return false;
         }
@@ -247,7 +295,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         if (shootingEntity != null && !mob.getPokemonAIState(IMoveConstants.TAMED))
             mob.setPokemonOwner((shootingEntity));
         ItemStack mobStack = PokecubeManager.pokemobToItem(mob);
-        this.setEntityItemStack(mobStack);
+        this.setItem(mobStack);
         if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
         {
             ITextComponent mess = new TextComponentTranslation("pokecube.caught", mob.getPokemonDisplayName());
@@ -265,9 +313,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         nbttagcompound.setInteger("tilt", tilt);
         nbttagcompound.setInteger("time", time);
         if (shooter != null) nbttagcompound.setString("shooter", shooter.toString());
-        if (this.getEntityItem() != null)
+        if (this.getItem() != null)
         {
-            nbttagcompound.setTag("Item", this.getEntityItem().writeToNBT(new NBTTagCompound()));
+            nbttagcompound.setTag("Item", this.getItem().writeToNBT(new NBTTagCompound()));
         }
         if (tilePos != null)
         {
@@ -289,9 +337,9 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         tilt = nbttagcompound.getInteger("tilt");
         time = nbttagcompound.getInteger("time");
         NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Item");
-        this.setEntityItemStack(CompatWrapper.fromTag(nbttagcompound1));
+        this.setItem(CompatWrapper.fromTag(nbttagcompound1));
 
-        ItemStack item = getEntityItem();
+        ItemStack item = getItem();
 
         if (nbttagcompound.hasKey("shooter"))
         {
@@ -311,35 +359,35 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         this.inGround = nbttagcompound.getByte("inGround") == 1;
     }
 
-    public IPokemob sendOut()
+    public EntityLivingBase sendOut()
     {
-        if (worldObj.isRemote || isReleasing()) { return null; }
-        IPokemob entity1 = PokecubeManager.itemToPokemob(getEntityItem(), worldObj);
+        if (getEntityWorld().isRemote || isReleasing()) { return null; }
+        IPokemob entity1 = PokecubeManager.itemToPokemob(getItem(), getEntityWorld());
         if (entity1 != null)
         {
             Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
             Vector3 dv = v1.set(motionX, motionY, motionZ);
-            v = Vector3.getNextSurfacePoint(worldObj, v, dv, Math.max(2, dv.mag()));
+            v = Vector3.getNextSurfacePoint(getEntityWorld(), v, dv, Math.max(2, dv.mag()));
             if (v == null) v = v0.set(this);
             v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
-            IBlockState state = v.getBlockState(worldObj);
+            IBlockState state = v.getBlockState(getEntityWorld());
             if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
             EntityLiving entity = (EntityLiving) entity1;
             entity.fallDistance = 0;
             v.moveEntity(((Entity) entity1));
 
-            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, worldObj, entity1);
+            SendOut evt = new SendOut.Pre(entity1.getPokedexEntry(), v, getEntityWorld(), entity1);
             if (MinecraftForge.EVENT_BUS.post(evt))
             {
                 if (shootingEntity != null && shootingEntity instanceof EntityPlayer)
                 {
-                    Tools.giveItem((EntityPlayer) shootingEntity, getEntityItem());
+                    Tools.giveItem((EntityPlayer) shootingEntity, getItem());
                     this.setDead();
                 }
                 return null;
             }
 
-            worldObj.spawnEntityInWorld((Entity) entity1);
+            getEntityWorld().spawnEntityInWorld((Entity) entity1);
             entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
@@ -355,21 +403,50 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             if (((EntityLiving) entity1).getHealth() <= 0)
             {
                 // notify the mob is dead
-                this.worldObj.setEntityState((Entity) entity1, (byte) 3);
+                this.getEntityWorld().setEntityState((Entity) entity1, (byte) 3);
             }
             setReleased((Entity) entity1);
             motionX = motionY = motionZ = 0;
             time = 10;
             setReleasing(true);
-            evt = new SendOut.Post(entity1.getPokedexEntry(), v, worldObj, entity1);
+            evt = new SendOut.Post(entity1.getPokedexEntry(), v, getEntityWorld(), entity1);
             MinecraftForge.EVENT_BUS.post(evt);
         }
         else
         {
+            NBTTagCompound tag;
+            if (getItem().hasTagCompound() && (tag = getItem().getTagCompound()).hasKey(TagNames.MOBID))
+            {
+                NBTTagCompound mobTag = tag.getCompoundTag(TagNames.OTHERMOB);
+                ResourceLocation id = new ResourceLocation(tag.getString(TagNames.MOBID));
+                Entity newMob = EntityList.createEntityByIDFromName(id, getEntityWorld());
+                if (newMob != null && newMob instanceof EntityLivingBase)
+                {
+                    newMob.readFromNBT(mobTag);
+                    Vector3 v = v0.set(this).addTo(-motionX, -motionY, -motionZ);
+                    Vector3 dv = v1.set(motionX, motionY, motionZ);
+                    v = Vector3.getNextSurfacePoint(getEntityWorld(), v, dv, Math.max(2, dv.mag()));
+                    if (v == null) v = v0.set(this);
+                    v.set(v.intX() + 0.5, v.y, v.intZ() + 0.5);
+                    IBlockState state = v.getBlockState(getEntityWorld());
+                    if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
+                    v.moveEntity(newMob);
+                    getEntityWorld().spawnEntityInWorld(newMob);
+                    tag.removeTag(TagNames.MOBID);
+                    tag.removeTag(TagNames.OTHERMOB);
+                    entityDropItem(getItem(), 0.5f);
+                    setReleased((Entity) newMob);
+                    motionX = motionY = motionZ = 0;
+                    time = 10;
+                    setReleasing(true);
+                    return (EntityLivingBase) newMob;
+                }
+            }
             System.err.println("Send out no pokemob?");
-            this.entityDropItem(getEntityItem(), 0.5f);
+            Thread.dumpStack();
+            this.entityDropItem(getItem(), 0.5f);
             this.setDead();
         }
-        return entity1;
+        return (EntityLivingBase) entity1;
     }
 }

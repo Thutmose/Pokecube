@@ -13,6 +13,7 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 
@@ -37,22 +38,23 @@ public class ItemTM extends ItemPokemobUseable
 
     public static boolean feedToPokemob(ItemStack stack, Entity entity)
     {
-        if (entity instanceof IPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (pokemob != null)
         {
             int num = stack.getItemDamage();
             // If candy, raise level by one
             if (num == 20)
             {
-                int level = ((IPokemob) entity).getLevel();
+                int level = pokemob.getLevel();
                 if (level == 100) return false;
 
-                int xp = Tools.levelToXp(((IPokemob) entity).getExperienceMode(), level + 1);
-                ((IPokemob) entity).setExp(xp, true);
+                int xp = Tools.levelToXp(pokemob.getExperienceMode(), level + 1);
+                pokemob.setExp(xp, true);
                 PokecubeItems.deValidate(stack);
                 return true;
             }
             // it is a TM, should try to teach the move
-            return teachToPokemob(stack, (IPokemob) entity);
+            return teachToPokemob(stack, pokemob);
         }
         return false;
     }

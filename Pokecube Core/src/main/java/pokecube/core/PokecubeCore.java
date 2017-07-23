@@ -80,6 +80,7 @@ import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IEntityProvider;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
@@ -269,7 +270,9 @@ public class PokecubeCore extends PokecubeMod
 
         if (entity != null)
         {
-            entity = (Entity) ((IPokemob) entity).setPokedexEntry(entry);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+            pokemob = pokemob.setPokedexEntry(entry);
+            entity = pokemob.getEntity();
         }
         return entity;
     }

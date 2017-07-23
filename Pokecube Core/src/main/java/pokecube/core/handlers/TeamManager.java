@@ -14,6 +14,11 @@ public class TeamManager
     {
         @Nonnull
         String getTeam(Entity entityIn);
+
+        default boolean areAllied(String team, Entity target)
+        {
+            return team.equals(getTeam(target));
+        }
     }
 
     public static class DefaultProvider implements ITeamProvider

@@ -268,7 +268,7 @@ public class GuiChooseFirstPokemob extends GuiScreen
             }
             pokemob.specificSpawnInit();
         }
-        return (EntityLiving) pokemob;
+        return pokemob.getEntity();
     }
 
     @Override

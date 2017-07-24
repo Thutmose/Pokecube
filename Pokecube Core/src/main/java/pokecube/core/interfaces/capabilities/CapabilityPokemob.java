@@ -54,7 +54,7 @@ public class CapabilityPokemob
 
     }
 
-    public static class DefaultPokemob extends PokemobSaves implements ICapabilitySerializable<NBTTagCompound>
+    public static class DefaultPokemob extends PokemobSaves implements ICapabilitySerializable<NBTTagCompound>, IPokemob
     {
         public DefaultPokemob()
         {

@@ -39,7 +39,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
         super();
         this.setCreativeTab(null);
         this.setTickRandomly(true);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(BerryManager.type, "cheri"));
+        this.setDefaultState(this.blockState.getBaseState().withProperty(BerryManager.type, "null"));
     }
 
     /** Can this block stay at this position. Similar to canPlaceBlockAt except
@@ -105,9 +105,9 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         if (!(worldIn.getTileEntity(pos) instanceof TileEntityBerries))
-            return state.withProperty(BerryManager.type, "cheri");
+            return state.withProperty(BerryManager.type, "null");
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
-        if (tile == null) { return state.withProperty(BerryManager.type, "cheri"); }
+        if (tile == null) { return state.withProperty(BerryManager.type, "null"); }
         String name = BerryManager.berryNames.get(tile.getBerryId());
         if (name == null) name = "cheri";
         return state.withProperty(BerryManager.type, name);

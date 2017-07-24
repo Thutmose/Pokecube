@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.berries.BerryManager;
 
 public class BerryTextureHandler
@@ -17,6 +18,8 @@ public class BerryTextureHandler
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
             String variant = BerryManager.berryNames.get(stack.getItemDamage());
+            if (variant == null || variant.isEmpty()) variant = "null";
+            if (variant.equals("null")) PokecubeMod.log(variant + " " + stack);
             return getLocation(variant);
         }
     }
@@ -33,6 +36,7 @@ public class BerryTextureHandler
         for (String s : BerryManager.berryNames.values())
         {
             registerItemVariant("type=" + s);
+            PokecubeMod.log(s + " " + getLocation(s));
         }
     }
 

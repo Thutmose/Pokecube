@@ -1,0 +1,23 @@
+{
+	"forge_marker": 1,
+	"defaults": {
+	    "transform":"forge:default-block",
+        "model": "pokecube:berrycrop"
+	},
+	"variants": {
+	    "type": {
+           "null": { "textures":{ "cross": "pokecube:blocks/nullcrop" } }
+        },
+        "age":
+        {
+            "0": {"model": "pokecube:berrycrop", "textures":{ "cross": "pokecube:blocks/berryseed" }},
+            "1": {"model": "pokecube:berrycrop2"},
+            "2": {"model": "pokecube:berrycrop3"},
+            "3": {"model": "pokecube:berrycrop4"},
+            "4": {"model": "pokecube:berrycrop5"},
+            "5": {"model": "pokecube:berrycrop6"},
+            "6": {"model": "pokecube:berrycrop7"},
+            "7": {"model": "pokecube:berrycrop"}
+        }
+    }
+}

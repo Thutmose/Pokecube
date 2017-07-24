@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Predicate;
@@ -342,9 +343,15 @@ public class PokecubeItems extends Items
 
         if (ret == null)
         {
-            ret = pokecubes.get(0)[0];
-            // System.err.println("Could not find empty cube for id "+id);
-            // new Exception().printStackTrace();
+            try
+            {
+                ret = pokecubes.get(0)[0];
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.SEVERE, "No Cubes Registered!", e);
+                return Items.STONE_HOE;
+            }
         }
 
         return ret;

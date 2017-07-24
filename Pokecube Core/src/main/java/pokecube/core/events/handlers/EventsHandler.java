@@ -700,7 +700,7 @@ public class EventsHandler
     @SubscribeEvent
     public void TickEvent(WorldTickEvent evt)
     {
-        if (evt.phase == Phase.END && evt.side != Side.CLIENT)
+        if (evt.phase == Phase.END && evt.side != Side.CLIENT && !Database.spawnables.isEmpty())
         {
             PokecubeCore.instance.spawner.tick(evt.world);
         }

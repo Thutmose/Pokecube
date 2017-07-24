@@ -1353,6 +1353,7 @@ public class GuiPokedex extends GuiScreen
             int k = 0;
 
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+            if (pokemob == null) { return; }
             pokemob.setSize(1);
             pokemob.setShiny(false);
             PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()

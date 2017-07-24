@@ -98,6 +98,7 @@ public class PokecubeTemplates
         {
             Template t = getManager().getTemplate(FMLCommonHandler.instance().getMinecraftServerInstance(),
                     new ResourceLocation(name));
+            if (t == null) return null;
             ret = new PokecubeTemplate(t, name);
             templates.put(name, ret);
         }
@@ -108,7 +109,7 @@ public class PokecubeTemplates
     {
         Template t = getManager().getTemplate(FMLCommonHandler.instance().getMinecraftServerInstance(),
                 new ResourceLocation(name));
-        templates.put(name, new PokecubeTemplate(t, name));
+        if (t != null) templates.put(name, new PokecubeTemplate(t, name));
     }
 
 }

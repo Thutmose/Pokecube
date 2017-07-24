@@ -72,6 +72,7 @@ public abstract class TemplateStructureBase extends Village
         placeSettings.setRotation(rotation);
         placeSettings.setMirror(mirror);
         Template template = PokecubeTemplates.getTemplate(type);
+        if (template == null) return;
         setup(template, pos, placeSettings, dir);
     }
 
@@ -176,6 +177,7 @@ public abstract class TemplateStructureBase extends Village
      * Mob Spawners, it closes Mineshafts at the end, it adds Fences... */
     public boolean addComponentParts(World worldIn, Random randomIn, StructureBoundingBox boxIn)
     {
+        if (template == null) return false;
         try
         {
             if (this.averageGroundLevel < 0)

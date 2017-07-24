@@ -308,6 +308,9 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabwood", "inventory"));
 
+        ModelBakery.registerItemVariants(PokecubeItems.berries, new ResourceLocation("pokecube:nullberry"));
+        PokecubeItems.registerItemTexture(PokecubeItems.berries, 0,
+                new ModelResourceLocation("pokecube:nullberry", "inventory"));
         MegaStoneTextureHandler.registerItemModels();
         BerryTextureHandler.registerItemModels();
         VitaminTextureHandler.registerItemModels();

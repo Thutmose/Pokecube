@@ -33,7 +33,7 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
         this.setTickRandomly(true);
         disableStats();
         this.setDefaultState(this.blockState.getBaseState().withProperty(AGE, Integer.valueOf(0))
-                .withProperty(BerryManager.type, "cheri"));
+                .withProperty(BerryManager.type, "null"));
     }
 
     /** Gets passed in the blockID of the block below and supposed to return
@@ -64,7 +64,7 @@ public class BlockBerryCrop extends BlockCrops implements ITileEntityProvider
     {
         TileEntityBerries tile = (TileEntityBerries) worldIn.getTileEntity(pos);
         String name = BerryManager.berryNames.get(tile.getBerryId());
-        if (name == null) name = "cheri";
+        if (name == null) name = "null";
         int age = state.getValue(AGE);
         if (worldIn.getBlockState(pos.up()).getBlock() == BerryManager.berryFruit) age = 7;
         return state.withProperty(BerryManager.type, name).withProperty(AGE, age);

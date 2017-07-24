@@ -1353,6 +1353,9 @@ public class GuiPokedex extends GuiScreen
             int k = 0;
 
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+
+            if (pokemob == null) { return; }
+
             if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
                     || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
                     || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0)

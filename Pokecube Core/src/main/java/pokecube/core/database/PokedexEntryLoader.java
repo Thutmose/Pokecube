@@ -1456,8 +1456,15 @@ public class PokedexEntryLoader
 
     public static void postInit()
     {
-        makeEntries(false);
-        PokemobBodies.initBodies();
+        try
+        {
+            makeEntries(false);
+            PokemobBodies.initBodies();
+        }
+        catch (Exception e)
+        {
+            PokecubeMod.log(Level.WARNING, "Error with postinit of loading pokedex entries", e);
+        }
     }
 
     public static void preCheckEvolutions(XMLPokedexEntry xmlEntry)

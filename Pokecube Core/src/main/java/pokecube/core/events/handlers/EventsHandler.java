@@ -508,7 +508,8 @@ public class EventsHandler
     public void livingDeath(LivingDeathEvent evt)
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-//        if (pokemob != null && !evt.getEntity().getEntityWorld().isRemote) pokemob.returnToPokecube();
+        // if (pokemob != null && !evt.getEntity().getEntityWorld().isRemote)
+        // pokemob.returnToPokecube();
         if (evt.getEntity().getEntityWorld().isRemote || pokemob != null) return;
         pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getLastAttacker());
         if (pokemob != null && evt.getSource().getEntity() != evt.getEntityLiving().getLastAttacker())
@@ -696,7 +697,7 @@ public class EventsHandler
     @SubscribeEvent
     public void TickEvent(WorldTickEvent evt)
     {
-        if (evt.phase == Phase.END && evt.side != Side.CLIENT)
+        if (evt.phase == Phase.END && evt.side != Side.CLIENT && !Database.spawnables.isEmpty())
         {
             PokecubeCore.instance.spawner.tick(evt.world);
         }

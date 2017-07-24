@@ -104,6 +104,13 @@
         <Input id="minecraft:glass" key="G"/>
         <Input id="minecraft:dye" d="4" key="I"/>
     </Recipe>
+    <Recipe map="III,CBC,III">//Snagcube
+        <Output n="3" id="pokecube:pokeseal"/>
+        <Input id="minecraft:ghast_tear" d="1" key="G"/>
+        <Input id="minecraft:stone_button" key="B"/>
+        <Input id="minecraft:coal" d="32767" key="C"/>
+        <Input id="minecraft:iron_ingot" key="I"/>
+    </Recipe>
     <Recipe map="SSS,SWS,SSS">//Waterstone
         <Output n="1" id="pokecube:held">
             <tag>{type:"waterstone"}</tag>

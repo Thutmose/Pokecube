@@ -6,7 +6,6 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import mezz.jei.api.ingredients.IIngredientHelper;
-import net.minecraft.item.ItemStack;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.utils.PokeType;
 
@@ -77,13 +76,6 @@ public class PokedexEntryIngredientHelper implements IIngredientHelper<PokedexEn
     public PokedexEntry copyIngredient(PokedexEntry ingredient)
     {
         return ingredient;
-    }
-
-    @Override
-    public ItemStack cheatIngredient(PokedexEntry arg0, boolean arg1)
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

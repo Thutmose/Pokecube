@@ -34,11 +34,11 @@ public class ActionSecretPower implements IMoveAction
         long time = attacker.getEntity().getEntityData().getLong("lastAttackTick");
         if (time + (20 * 3) > attacker.getEntity().getEntityWorld().getTotalWorldTime()) return false;
         EntityPlayerMP owner = (EntityPlayerMP) attacker.getPokemonOwner();
-        IBlockState state = location.getBlockState(owner.worldObj);
+        IBlockState state = location.getBlockState(owner.world);
         if (!(PokecubeTerrainChecker.isTerrain(state) || PokecubeTerrainChecker.isWood(state)))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.wrongloc");
-            owner.addChatMessage(message);
+            owner.sendMessage(message);
             return false;
         }
         BreakEvent evt = new BreakEvent(owner.getEntityWorld(), location.getPos(),
@@ -47,7 +47,7 @@ public class ActionSecretPower implements IMoveAction
         if (evt.isCanceled())
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.noperms");
-            owner.addChatMessage(message);
+            owner.sendMessage(message);
             return false;
         }
         pendingBaseLocations.put(owner.getUniqueID(), new Vector4(location.x, location.y, location.z, owner.dimension));
@@ -55,7 +55,7 @@ public class ActionSecretPower implements IMoveAction
                 location.set(location.getPos()));
         message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 "/pokebase confirm " + owner.posX + " " + owner.posY + " " + owner.posZ));
-        owner.addChatMessage(message);
+        owner.sendMessage(message);
         return true;
     }
 

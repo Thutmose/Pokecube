@@ -48,18 +48,18 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
 
             EntityPokecube cube = (EntityPokecube) entity;
 
-            if (PokecubeManager.getTilt(cube.getEntityItem()) > 0)
+            if (PokecubeManager.getTilt(cube.getItem()) > 0)
             {
                 float rotateY = MathHelper.cos(MathHelper.abs((float) (Math.PI * f2) / 12)) * (180F / (float) Math.PI);// getRotationX(entityItem);
                 GL11.glRotatef(rotateY, 0.0F, 0.0F, 1.0F);
             }
-            ItemStack renderStack = cube.getEntityItem();
+            ItemStack renderStack = cube.getItem();
             if (renderStack == null || !(renderStack.getItem() instanceof IPokecube))
             {
                 renderStack = PokecubeItems.getStack("pokecube");
             }
 
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             Minecraft.getMinecraft().getItemRenderer().renderItem(player, renderStack, TransformType.NONE);
 
             GL11.glDisable(GL11.GL_BLEND);
@@ -91,10 +91,10 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
         EntityPokecube pokecube = (EntityPokecube) entity;
 
         long time = pokecube.reset;
-        long world = pokecube.worldObj.getTotalWorldTime();
+        long world = pokecube.world.getTotalWorldTime();
         if (time > world) return;
 
-        int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
+        int num = PokecubeItems.getCubeId(pokecube.getItem());
         if (pokecubeRenderers.containsKey(num))
         {
             pokecubeRenderers.get(num).doRender(entity, x, y, z, f, f1);

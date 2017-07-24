@@ -17,7 +17,7 @@ public class Move_Ongoing extends Move_Basic
     {
         float thisMaxHP = mob.getMaxHealth();
         int damage = Math.max(1, (int) (0.0625 * thisMaxHP));
-        mob.attackEntityFrom(DamageSource.generic, damage);
+        mob.attackEntityFrom(DamageSource.GENERIC, damage);
     }
 
     /** I have these attacks affecting the target roughly once per 40 ticks,

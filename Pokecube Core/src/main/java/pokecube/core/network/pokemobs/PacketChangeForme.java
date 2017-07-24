@@ -3,6 +3,7 @@ package pokecube.core.network.pokemobs;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
@@ -15,6 +16,7 @@ import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -66,7 +68,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
     {
         PacketBuffer buffer = new PacketBuffer(buf);
         entityId = buf.readInt();
-        forme = Database.getEntry(buffer.readStringFromBuffer(20));
+        forme = Database.getEntry(buffer.readString(20));
     }
 
     @Override
@@ -87,7 +89,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), message.entityId, true);
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
@@ -103,7 +105,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
             boolean hasRing = MegaCapability.canMegaEvolve(player, pokemob);
             if (!hasRing)
             {
-                player.addChatMessage(
+                player.sendMessage(
                         new TextComponentTranslation("pokecube.mega.noring", pokemob.getPokemonDisplayName()));
                 return;
             }
@@ -118,7 +120,7 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     String ability = mob.getEntityData().getString("Ability");
                     mob.getEntityData().removeTag("Ability");
                     if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
-                    player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
+                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }
                 else
@@ -127,9 +129,10 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     if (pokemob.getAbility() != null)
                         mob.getEntityData().setString("Ability", pokemob.getAbility().toString());
                     pokemob = pokemob.megaEvolve(megaEntry);
-                    player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
+                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.success", "green", old,
                             megaEntry.getUnlocalizedName()));
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, true);
+                    Triggers.MEGAEVOLVEPOKEMOB.trigger((EntityPlayerMP) player, pokemob);
                 }
             }
             else
@@ -143,12 +146,12 @@ public class PacketChangeForme implements IMessage, IMessageHandler<PacketChange
                     if (!ability.isEmpty()) pokemob.setAbility(AbilityManager.getAbility(ability));
                     pokemob.setPokemonAIState(IMoveConstants.MEGAFORME, false);
                     megaEntry = pokemob.getPokedexEntry().getBaseForme();
-                    player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
+                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.revert", "green", old,
                             megaEntry.getUnlocalizedName()));
                 }
                 else
                 {
-                    player.addChatMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.failed", "red",
+                    player.sendMessage(CommandTools.makeTranslatedMessage("pokemob.megaevolve.failed", "red",
                             pokemob.getPokemonDisplayName()));
                 }
             }

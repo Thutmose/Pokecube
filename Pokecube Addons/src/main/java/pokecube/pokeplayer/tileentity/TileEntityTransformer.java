@@ -37,7 +37,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
 
     public void onInteract(EntityPlayer player)
     {
-        if (worldObj.isRemote || random) return;
+        if (world.isRemote || random) return;
         if (canEdit(player) || pubby)
         {
             if (!CompatWrapper.isValid(stack) && PokecubeManager.isFilled(player.getHeldItemMainhand()))
@@ -55,9 +55,9 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
 
     public void onStepped(EntityPlayer player)
     {
-        if (worldObj.isRemote || stepTick > 0) return;
+        if (world.isRemote || stepTick > 0) return;
         PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
-        boolean isPokemob = info.getPokemob(worldObj) != null;
+        boolean isPokemob = info.getPokemob(world) != null;
         if ((CompatWrapper.isValid(stack) || random) && !isPokemob)
         {
             IPokemob pokemob = getPokemob();
@@ -120,9 +120,9 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             else
             {
                 List<Integer> numbers = Lists.newArrayList(Database.data.keySet());
-                num = numbers.get(worldObj.rand.nextInt(numbers.size()));
+                num = numbers.get(world.rand.nextInt(numbers.size()));
             }
-            Entity entity = PokecubeMod.core.createPokemob(Database.getEntry(num), worldObj);
+            Entity entity = PokecubeMod.core.createPokemob(Database.getEntry(num), world);
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (entity != null)
             {
@@ -130,7 +130,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             }
             return pokemob;
         }
-        IPokemob pokemob = PokecubeManager.itemToPokemob(stack, worldObj);
+        IPokemob pokemob = PokecubeManager.itemToPokemob(stack, world);
         return pokemob;
     }
 

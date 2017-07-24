@@ -43,8 +43,8 @@ public abstract class PokemobMoves extends PokemobSexed
         }
         if (target instanceof EntityLivingBase)
         {
-            ((EntityLivingBase) target).setLastAttacker(getEntity());
-            getEntity().setLastAttacker(target);
+            ((EntityLivingBase) target).setRevengeTarget(getEntity());
+            getEntity().setRevengeTarget((EntityLivingBase) target);
         }
         int statusChange = getChanges();
         if ((statusChange & CHANGE_FLINCH) != 0)

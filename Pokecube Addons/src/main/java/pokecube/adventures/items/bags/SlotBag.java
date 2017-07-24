@@ -9,9 +9,9 @@ public class SlotBag extends Slot {
 
 	public boolean release = false;
 	
-	public SlotBag(IInventory inventory, int slotIndex, int xDisplayPosition, int yDisplayPosition)
+	public SlotBag(IInventory inventory, int slotIndex, int xDisplay, int yDisplay)
     {
-        super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
+        super(inventory, slotIndex, xDisplay, yDisplay);
     }
 
     /**

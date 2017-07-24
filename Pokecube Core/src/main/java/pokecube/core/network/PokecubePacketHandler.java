@@ -155,7 +155,7 @@ public class PokecubePacketHandler
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte((byte) channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
 
         @Override
@@ -228,7 +228,7 @@ public class PokecubePacketHandler
             @Override
             public PokecubeServerPacket onMessage(PokecubeServerPacket message, MessageContext ctx)
             {
-                EntityPlayer player = ctx.getServerHandler().playerEntity;
+                EntityPlayer player = ctx.getServerHandler().player;
                 new PacketHandler(player, message.buffer);
                 return null;
             }
@@ -249,7 +249,7 @@ public class PokecubePacketHandler
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
 
         public PokecubeServerPacket(byte[] data)
@@ -565,7 +565,7 @@ public class PokecubePacketHandler
     {
         PacketBuffer packetData = new PacketBuffer(Unpooled.buffer());
         packetData.writeByte(channel);
-        packetData.writeNBTTagCompoundToBuffer(nbt);
+        packetData.writeCompoundTag(nbt);
 
         return new PokecubeClientPacket(packetData);
     }

@@ -46,7 +46,7 @@ public class PacketTransform implements IMessage, IMessageHandler<PacketTransfor
         id = buf.readInt();
         try
         {
-            data = new PacketBuffer(buf).readNBTTagCompoundFromBuffer();
+            data = new PacketBuffer(buf).readCompoundTag();
         }
         catch (IOException e)
         {
@@ -58,7 +58,7 @@ public class PacketTransform implements IMessage, IMessageHandler<PacketTransfor
     public void toBytes(ByteBuf buf)
     {
         buf.writeInt(id);
-        new PacketBuffer(buf).writeNBTTagCompoundToBuffer(data);
+        new PacketBuffer(buf).writeCompoundTag(data);
     }
 
     static void apply(PacketTransform message, MessageContext ctx)

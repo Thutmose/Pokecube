@@ -215,7 +215,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         {
             if (PokecubeManager.isFilled(stack))
             {
-                IPokemob mob = PokecubeManager.itemToPokemob(stack, worldObj);
+                IPokemob mob = PokecubeManager.itemToPokemob(stack, world);
 
                 if (mob == null)
                 {
@@ -288,7 +288,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
@@ -309,12 +309,12 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     protected boolean hasPC()
     {
         boolean pc = false;
-        IBlockState state = worldObj.getBlockState(getPos());
+        IBlockState state = world.getBlockState(getPos());
         trade = !state.getValue(BlockTradingTable.TMC);
         int size = trade ? 2 : 1;
         if (size != inventory.size())
         {
-            List<ItemStack> old = Lists.newArrayList();
+            List<ItemStack> old = Lists.newArrayList(inventory);
             inventory = CompatWrapper.makeList(size);
             inventory.set(0, old.get(0));
         }
@@ -323,7 +323,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         for (EnumFacing side : EnumFacing.values())
         {
             Vector3 here = Vector3.getNewVector().set(this);
-            Block id = here.offset(side).getBlock(worldObj);
+            Block id = here.offset(side).getBlock(world);
             if (id == PokecubeItems.getBlock("pc"))
             {
                 pc = true;
@@ -342,9 +342,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
-        return worldObj.getTileEntity(getPos()) == this
+        return world.getTileEntity(getPos()) == this
                 && player.getDistanceSq(getPos().getX() + 0.5, getPos().getY() + 0.5, getPos().getZ() + 0.5) < 64;
     }
 
@@ -384,7 +384,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -393,9 +393,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
 
     public void openGUI(EntityPlayer player)
     {
-        boolean TMC = worldObj.getBlockState(getPos()).getValue(BlockTradingTable.TMC);
-        player.openGui(PokecubeMod.core, TMC ? Config.GUITMTABLE_ID : Config.GUITRADINGTABLE_ID, worldObj,
-                getPos().getX(), getPos().getY(), getPos().getZ());
+        boolean TMC = world.getBlockState(getPos()).getValue(BlockTradingTable.TMC);
+        player.openGui(PokecubeMod.core, TMC ? Config.GUITMTABLE_ID : Config.GUITRADINGTABLE_ID, world, getPos().getX(),
+                getPos().getY(), getPos().getZ());
     }
 
     public void pokeseal(ItemStack a, ItemStack b, IPokemob mob)
@@ -435,8 +435,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     @Override
     public void setField(int id, int value)
     {
-        if (id == 0) player1 = (EntityPlayer) worldObj.getEntityByID(value);
-        if (id == 1) player2 = (EntityPlayer) worldObj.getEntityByID(value);
+        if (id == 0) player1 = (EntityPlayer) world.getEntityByID(value);
+        if (id == 1) player2 = (EntityPlayer) world.getEntityByID(value);
     }
 
     public void trade()
@@ -455,8 +455,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         }
         if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }
 
-        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, worldObj);
-        IPokemob mon2 = PokecubeManager.itemToPokemob(poke2, worldObj);
+        IPokemob mon1 = PokecubeManager.itemToPokemob(poke1, world);
+        IPokemob mon2 = PokecubeManager.itemToPokemob(poke2, world);
 
         String owner1 = PokecubeManager.getOwner(poke1);
         String owner2 = PokecubeManager.getOwner(poke2);
@@ -479,11 +479,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             ItemStack to1 = poke2;
             ItemStack to2 = poke1;
             if (player1.inventory.getFirstEmptyStack() != -1) player1.inventory.addItemStackToInventory(to1);
-            else InventoryPC.addPokecubeToPC(to1, worldObj);
+            else InventoryPC.addPokecubeToPC(to1, world);
             if (player2.inventory.getFirstEmptyStack() != -1) player2.inventory.addItemStackToInventory(to2);
-            else InventoryPC.addPokecubeToPC(to2, worldObj);
-            MinecraftForge.EVENT_BUS.post(new TradeEvent(worldObj, to1));
-            MinecraftForge.EVENT_BUS.post(new TradeEvent(worldObj, to2));
+            else InventoryPC.addPokecubeToPC(to2, world);
+            MinecraftForge.EVENT_BUS.post(new TradeEvent(world, to1));
+            MinecraftForge.EVENT_BUS.post(new TradeEvent(world, to2));
             inventory = Lists.newArrayList(CompatWrapper.nullStack, CompatWrapper.nullStack);
         }
         player1 = null;
@@ -530,8 +530,8 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             return true;
         }
         int index = PokecubeManager.isFilled(a) ? 0 : 1;
-        IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory.get(0), worldObj)
-                : PokecubeManager.itemToPokemob(inventory.get(1), worldObj);
+        IPokemob mob = PokecubeManager.isFilled(a) ? PokecubeManager.itemToPokemob(inventory.get(0), world)
+                : PokecubeManager.itemToPokemob(inventory.get(1), world);
         if (!(a.getItem() == Items.EMERALD || b.getItem() == Items.EMERALD))
         {
             if (mob.getPokemonOwnerID() == null || player1.getUniqueID().equals(mob.getPokemonOwnerID()))

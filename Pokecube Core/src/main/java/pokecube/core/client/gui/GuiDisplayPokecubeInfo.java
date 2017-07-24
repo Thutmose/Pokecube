@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -139,9 +139,17 @@ public class GuiDisplayPokecubeInfo extends Gui
             GlStateManager.scale(scale, scale, scale);
             dx = -1;
             break;
-        case "bottom_right":
+        case "right_bottom":
             w = scaledWidth - w - dims[0];
             h = scaledHeight - h - dims[1];
+            GlStateManager.translate(w, h, 0);
+            GlStateManager.scale(scale, scale, scale);
+            dx = -1;
+            dy = -1;
+            break;
+        case "right_middle":
+            w = scaledWidth - w - dims[0];
+            h = scaledHeight / 2 - h - dims[1];
             GlStateManager.translate(w, h, 0);
             GlStateManager.scale(scale, scale, scale);
             dx = -1;
@@ -186,7 +194,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public GuiDisplayPokecubeInfo()
     {
         minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-        fontRenderer = minecraft.fontRendererObj;
+        fontRenderer = minecraft.fontRenderer;
         if (instance != null)
         {
             MinecraftForge.EVENT_BUS.unregister(instance);
@@ -207,7 +215,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             indexPokemob = 0;
         }
         if (indexPokemob >= getPokemobsToDisplay().length) { return; }
-        if (fontRenderer == null) fontRenderer = minecraft.fontRendererObj;
+        if (fontRenderer == null) fontRenderer = minecraft.fontRenderer;
         MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderSelectedInfo());
         MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderTargetInfo());
     }
@@ -256,7 +264,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             int u = 0;
             int v = 85;
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            BufferBuilder vertexbuffer = tessellator.getBuffer();
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
             vertexbuffer.pos(x + 0, y + height, this.zLevel).tex((u) * f, (v + height) * f1).endVertex();
             vertexbuffer.pos(x + width, y + height, this.zLevel).tex((u + width) * f, (v + height) * f1).endVertex();
@@ -446,7 +454,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             int u = 0;
             int v = 85;
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer vertexbuffer = tessellator.getBuffer();
+            BufferBuilder vertexbuffer = tessellator.getBuffer();
             vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
             vertexbuffer.pos(x + 0, y + height, this.zLevel).tex((u) * f, (v + height) * f1).endVertex();
             vertexbuffer.pos(x + width, y + height, this.zLevel).tex((u + width) * f, (v + height) * f1).endVertex();
@@ -561,7 +569,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
         if (refreshCounter > 0) return arrayRet;
 
-        EntityPlayer player = minecraft.thePlayer;
+        EntityPlayer player = minecraft.player;
 
         if (player == null || player.getEntityWorld() == null) return new IPokemob[0];
 
@@ -675,7 +683,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         if (getCurrentPokemob() == null) return;
 
-        EntityPlayer player = minecraft.thePlayer;
+        EntityPlayer player = minecraft.player;
         Entity attacker = getCurrentPokemob().getEntity();
         Entity target = Tools.getPointedEntity(player, 32);
         boolean teleport = false;
@@ -694,7 +702,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         {
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
             boolean attack = false;
-            if (target != null && !minecraft.thePlayer.isSneaking() && !sameOwner)
+            if (target != null && !minecraft.player.isSneaking() && !sameOwner)
             {
                 attack = true;
             }
@@ -709,7 +717,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -748,7 +756,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null) pokemob.returnToPokecube();
         else
         {
-            EntityPlayer player = minecraft.thePlayer;
+            EntityPlayer player = minecraft.player;
             Entity target = null;
             Vector3 look = Vector3.getNewVector().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
@@ -779,7 +787,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         }
         else
         {
-            EntityPlayer player = minecraft.thePlayer;
+            EntityPlayer player = minecraft.player;
             Entity target = null;
             Vector3 look = Vector3.getNewVector().set(player.getLook(1));
             Vector3 temp = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);

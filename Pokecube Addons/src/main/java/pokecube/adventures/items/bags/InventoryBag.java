@@ -377,7 +377,7 @@ public class InventoryBag implements IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer)
+    public boolean isUsableByPlayer(EntityPlayer entityplayer)
     {
         return true;
     }
@@ -440,7 +440,7 @@ public class InventoryBag implements IInventory
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

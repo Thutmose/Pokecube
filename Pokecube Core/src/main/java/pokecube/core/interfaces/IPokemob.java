@@ -709,6 +709,12 @@ public interface IPokemob
 
     NBTTagCompound writePokemobData();
 
+    int getAttackCooldown();
+
+    void setAttackCooldown(int timer);
+
+    String getLastMoveUsed();
+
     default boolean moveToShoulder(EntityPlayer player)
     {
         return false;

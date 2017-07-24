@@ -81,7 +81,7 @@ public class EntityLeader extends EntityTrainer
         {
             if (!rewardsCap.getRewards().isEmpty()) rewardsCap.getRewards().set(0, player.getHeldItem(hand).copy());
             else rewardsCap.getRewards().add(player.getHeldItem(hand).copy());
-            if (!getEntityWorld().isRemote) player.addChatMessage(
+            if (!getEntityWorld().isRemote) player.sendMessage(
                     new TextComponentString("Badge set to " + player.getHeldItem(hand).getDisplayName()));
             this.setHeldItem(EnumHand.OFF_HAND, rewardsCap.getRewards().get(0));
         }

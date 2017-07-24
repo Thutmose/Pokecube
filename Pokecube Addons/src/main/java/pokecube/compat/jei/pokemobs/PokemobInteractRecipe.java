@@ -7,7 +7,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
-import thut.lib.CompatWrapper;
 import thut.lib.IDefaultRecipe;
 
 public class PokemobInteractRecipe implements IDefaultRecipe
@@ -43,34 +42,27 @@ public class PokemobInteractRecipe implements IDefaultRecipe
     @Override
     public ItemStack getRecipeOutput()
     {
-        return outputStack != null ? outputStack : CompatWrapper.nullStack;
+        return outputStack != null ? outputStack : ItemStack.EMPTY;
     }
 
     ResourceLocation registryName;
 
-    // @Override
+    @Override
     public IRecipe setRegistryName(ResourceLocation name)
     {
         registryName = name;
         return this;
     }
 
-    // @Override
+    @Override
     public ResourceLocation getRegistryName()
     {
         return registryName;
     }
 
-    // @Override
+    @Override
     public Class<IRecipe> getRegistryType()
     {
         return IRecipe.class;
-    }
-
-    // @Override
-    public int getRecipeSize()
-    {
-        // TODO Auto-generated method stub
-        return 0;
     }
 }

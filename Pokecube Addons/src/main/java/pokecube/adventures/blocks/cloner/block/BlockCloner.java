@@ -159,7 +159,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
     }
 
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
         return this.getStateFromMeta(meta).withProperty(FACING, placer.getHorizontalFacing().getOpposite());
@@ -210,13 +210,13 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
                         new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
-                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                    entity_item.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
                 float factor = 0.005F;
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entity_item);
+                world.spawnEntity(entity_item);
                 CompatWrapper.setStackSize(item, 0);
             }
         }
@@ -262,7 +262,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
     {
         Vector3 v = Vector3.getNewVector().set(tile).addTo(0.5, 0, 0.5);
         AxisAlignedBB bb = new AxisAlignedBB(v.x - 1, v.y, v.z - 1, v.x + 1, v.y + 3, v.z + 1);
-        List<Entity> entities = tile.getWorld().getEntitiesWithinAABB(Entity.class, bb.expandXyz(1));
+        List<Entity> entities = tile.getWorld().getEntitiesWithinAABB(Entity.class, bb.grow(1));
         if (entities.isEmpty()) return;
 
         Matrix3 matBox = new Matrix3();
@@ -398,7 +398,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
             {
                 EntityPlayer player = (EntityPlayer) entity;
 
-                if (player.worldObj.isRemote)
+                if (player.world.isRemote)
                 {
                     // This fixes jitter, need a better way to handle this.
                     Minecraft.getMinecraft().gameSettings.viewBobbing = false;
@@ -410,12 +410,12 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
                 }
                 // Meed to set floatingTickCount to prevent being kicked for
                 // flying.
-                if (!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+                if (!player.capabilities.isCreativeMode && !player.world.isRemote)
                 {
                     EntityPlayerMP entityplayer = (EntityPlayerMP) player;
                     if (collidedY) entityplayer.connection.floatingTickCount = 0;
                 }
-                else if (player.worldObj.isRemote)
+                else if (player.world.isRemote)
                 {
                 }
             }

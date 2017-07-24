@@ -175,7 +175,7 @@ public class TabulaPackLoader extends AnimationLoader
             {
                 int rgba = 0xFF000000;
                 IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-                rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getMapColor().colorValue;
+                rgba += EnumDyeColor.byDyeDamage(pokemob.getSpecialInfo()).getColorValue();
                 return rgba;
             }
             return default_;

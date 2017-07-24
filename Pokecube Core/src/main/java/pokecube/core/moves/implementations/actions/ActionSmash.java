@@ -56,6 +56,7 @@ public class ActionSmash implements IMoveAction
             MinecraftForge.EVENT_BUS.post(evt);
             if (evt.isCanceled()) return false;
         }
+        level = Math.min(99, level);
         count = (int) Math.max(0, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)))
                 * hungerValue;
         if (count > 0)
@@ -67,7 +68,7 @@ public class ActionSmash implements IMoveAction
         if (!used)
         {
             World world = user.getEntity().getEntityWorld();
-            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+            List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().grow(1));
             if (!items.isEmpty())
             {
                 // TODO instead of using reverse smelting, make an event that
@@ -76,7 +77,7 @@ public class ActionSmash implements IMoveAction
                 for (int i = 0; i < items.size(); i++)
                 {
                     EntityItem item = items.get(i);
-                    ItemStack stack = item.getEntityItem();
+                    ItemStack stack = item.getItem();
                     if (Block.getBlockFromItem(stack.getItem()) == null) continue;
                     int num = CompatWrapper.getStackSize(stack);
                     ItemStack newstack = null;
@@ -97,7 +98,7 @@ public class ActionSmash implements IMoveAction
                         int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                         hunger = (int) Math.max(1, hunger / (float) user.getLevel());
                         user.setHungerTime(user.getHungerTime() + hunger);
-                        item.setEntityItemStack(newstack);
+                        item.setItem(newstack);
                         smelt = true;
                     }
                 }

@@ -14,12 +14,13 @@ import com.google.common.collect.Sets;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.PokedexEntry;
@@ -44,7 +45,7 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
             IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
             if (pokemob == null)
             {
-                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, minecraft.theWorld);
+                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, minecraft.world);
                 if (pokemob == null) return;
                 EventsHandlerClient.renderMobs.put(entry, pokemob);
             }
@@ -123,7 +124,7 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
             float f1 = (float) (colour >> 8 & 255) / 255.0F;
             float f2 = (float) (colour & 255) / 255.0F;
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer bufferbuilder = tessellator.getBuffer();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
                     GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE,
@@ -141,7 +142,7 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
     }
 
     @Override
-    public List<String> getTooltip(Minecraft minecraft, PokedexEntry ingredient, boolean tooltipFlag)
+    public List<String> getTooltip(Minecraft minecraft, PokedexEntry ingredient, ITooltipFlag tooltipFlag)
     {
         return Lists.newArrayList(ingredient.getName());
     }
@@ -149,14 +150,7 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
     @Override
     public FontRenderer getFontRenderer(Minecraft minecraft, PokedexEntry ingredient)
     {
-        return minecraft.fontRendererObj;
-    }
-
-    @Override
-    public List<String> getTooltip(Minecraft arg0, PokedexEntry arg1)
-    {
-        // TODO Auto-generated method stub
-        return Lists.newArrayList(arg1.getName());
+        return minecraft.fontRenderer;
     }
 
 }

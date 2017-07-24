@@ -5,8 +5,8 @@ import mcjty.lostcities.api.ILostChunkInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.gen.ChunkProviderServer;
+import net.minecraft.world.gen.IChunkGenerator;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -35,7 +35,7 @@ public class LostCityTerrainChecker extends PokecubeTerrainChecker
                 {
                     BlockPos pos = v.getPos();
                     ILostChunkGenerator lostGenerator = (ILostChunkGenerator) generator;
-                    ILostChunkInfo info = lostGenerator.getChunkInfo(chunk.zPosition, chunk.xPosition);
+                    ILostChunkInfo info = lostGenerator.getChunkInfo(chunk.z, chunk.x);
                     String type = info.getBuildingType();
                     if (!info.isCity()) break check;
                     int streetLevel = lostGenerator.getRealHeight(0);

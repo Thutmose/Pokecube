@@ -60,7 +60,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -73,7 +73,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketTrade message)
@@ -85,7 +85,7 @@ public class PacketTrade implements IMessage, IMessageHandler<PacketTrade, IMess
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == MAKETM)
         {

@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -48,6 +48,8 @@ import pokecube.core.database.stats.CaptureStats;
 import pokecube.core.database.stats.EggStats;
 import pokecube.core.database.stats.KillStats;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
@@ -181,8 +183,8 @@ public class GuiPokedex extends GuiScreen
             }
 
             String level = "L. " + pokemob.getLevel();
-            drawString(fontRendererObj, level, xOffset + 15, yOffset + 1, 0xffffff);
-            drawCenteredString(fontRendererObj, gender, xOffset - 20, yOffset + 122, genderColor);
+            drawString(fontRenderer, level, xOffset + 15, yOffset + 1, 0xffffff);
+            drawCenteredString(fontRenderer, gender, xOffset - 20, yOffset + 122, genderColor);
             byte[] nature = pokemob.getNature().getStatsMod();
 
             if (canEditPokemob() || PokecubeMod.debug)
@@ -211,34 +213,34 @@ public class GuiPokedex extends GuiScreen
                         colours[n] = 0xFF0000;
                     }
                 }
-                drawString(fontRendererObj, "HP", xOffset + 20, statYOffSet + 18, 0xFF0000);
-                drawString(fontRendererObj, "ATT", xOffset + 20, statYOffSet + 27, 0xF08030);
-                drawString(fontRendererObj, "DEF", xOffset + 20, statYOffSet + 36, 0xF8D030);
-                drawString(fontRendererObj, "ATTSPE", xOffset + 20, statYOffSet + 45, 0x6890F0);
-                drawString(fontRendererObj, "DEFSPE", xOffset + 20, statYOffSet + 54, 0x78C850);
-                drawString(fontRendererObj, "VIT", xOffset + 20, statYOffSet + 63, 0xF85888);
-                drawString(fontRendererObj, ": " + HP, xOffset + 60, statYOffSet + 18, 0xFF0000);
-                drawString(fontRendererObj, ": " + ATT, xOffset + 60, statYOffSet + 27, 0xF08030);
-                drawString(fontRendererObj, ": " + DEF, xOffset + 60, statYOffSet + 36, 0xF8D030);
-                drawString(fontRendererObj, ": " + ATTSPE, xOffset + 60, statYOffSet + 45, 0x6890F0);
-                drawString(fontRendererObj, ": " + DEFSPE, xOffset + 60, statYOffSet + 54, 0x78C850);
-                drawString(fontRendererObj, ": " + VIT, xOffset + 60, statYOffSet + 63, 0xF85888);
+                drawString(fontRenderer, "HP", xOffset + 20, statYOffSet + 18, 0xFF0000);
+                drawString(fontRenderer, "ATT", xOffset + 20, statYOffSet + 27, 0xF08030);
+                drawString(fontRenderer, "DEF", xOffset + 20, statYOffSet + 36, 0xF8D030);
+                drawString(fontRenderer, "ATTSPE", xOffset + 20, statYOffSet + 45, 0x6890F0);
+                drawString(fontRenderer, "DEFSPE", xOffset + 20, statYOffSet + 54, 0x78C850);
+                drawString(fontRenderer, "VIT", xOffset + 20, statYOffSet + 63, 0xF85888);
+                drawString(fontRenderer, ": " + HP, xOffset + 60, statYOffSet + 18, 0xFF0000);
+                drawString(fontRenderer, ": " + ATT, xOffset + 60, statYOffSet + 27, 0xF08030);
+                drawString(fontRenderer, ": " + DEF, xOffset + 60, statYOffSet + 36, 0xF8D030);
+                drawString(fontRenderer, ": " + ATTSPE, xOffset + 60, statYOffSet + 45, 0x6890F0);
+                drawString(fontRenderer, ": " + DEFSPE, xOffset + 60, statYOffSet + 54, 0x78C850);
+                drawString(fontRenderer, ": " + VIT, xOffset + 60, statYOffSet + 63, 0xF85888);
 
-                drawString(fontRendererObj, nat[0], xOffset + 100, statYOffSet + 18, colours[0]);
-                drawString(fontRendererObj, nat[1], xOffset + 100, statYOffSet + 27, colours[1]);
-                drawString(fontRendererObj, nat[2], xOffset + 100, statYOffSet + 36, colours[2]);
-                drawString(fontRendererObj, nat[3], xOffset + 100, statYOffSet + 45, colours[3]);
-                drawString(fontRendererObj, nat[4], xOffset + 100, statYOffSet + 54, colours[4]);
-                drawString(fontRendererObj, nat[5], xOffset + 100, statYOffSet + 63, colours[5]);
+                drawString(fontRenderer, nat[0], xOffset + 100, statYOffSet + 18, colours[0]);
+                drawString(fontRenderer, nat[1], xOffset + 100, statYOffSet + 27, colours[1]);
+                drawString(fontRenderer, nat[2], xOffset + 100, statYOffSet + 36, colours[2]);
+                drawString(fontRenderer, nat[3], xOffset + 100, statYOffSet + 45, colours[3]);
+                drawString(fontRenderer, nat[4], xOffset + 100, statYOffSet + 54, colours[4]);
+                drawString(fontRenderer, nat[5], xOffset + 100, statYOffSet + 63, colours[5]);
 
                 statYOffSet += 75;
-                drawString(fontRendererObj, "IV       EV", xOffset + 67, statYOffSet + 9, 0xFFFFFF);
-                drawString(fontRendererObj, "HP", xOffset + 20, statYOffSet + 18, 0xFF0000);
-                drawString(fontRendererObj, "ATT", xOffset + 20, statYOffSet + 27, 0xF08030);
-                drawString(fontRendererObj, "DEF", xOffset + 20, statYOffSet + 36, 0xF8D030);
-                drawString(fontRendererObj, "ATTSPE", xOffset + 20, statYOffSet + 45, 0x6890F0);
-                drawString(fontRendererObj, "DEFSPE", xOffset + 20, statYOffSet + 54, 0x78C850);
-                drawString(fontRendererObj, "VIT", xOffset + 20, statYOffSet + 63, 0xF85888);
+                drawString(fontRenderer, "IV       EV", xOffset + 67, statYOffSet + 9, 0xFFFFFF);
+                drawString(fontRenderer, "HP", xOffset + 20, statYOffSet + 18, 0xFF0000);
+                drawString(fontRenderer, "ATT", xOffset + 20, statYOffSet + 27, 0xF08030);
+                drawString(fontRenderer, "DEF", xOffset + 20, statYOffSet + 36, 0xF8D030);
+                drawString(fontRenderer, "ATTSPE", xOffset + 20, statYOffSet + 45, 0x6890F0);
+                drawString(fontRenderer, "DEFSPE", xOffset + 20, statYOffSet + 54, 0x78C850);
+                drawString(fontRenderer, "VIT", xOffset + 20, statYOffSet + 63, 0xF85888);
                 byte[] stats2 = pokemob.getIVs();
                 HP = stats2[0];
                 ATT = stats2[1];
@@ -255,19 +257,19 @@ public class GuiPokedex extends GuiScreen
                 int VIT2 = stats2[5] + 128;
 
                 int shift = 60;
-                drawString(fontRendererObj, ": " + HP, xOffset + shift, statYOffSet + 18, 0xFF0000);
-                drawString(fontRendererObj, ": " + ATT, xOffset + shift, statYOffSet + 27, 0xF08030);
-                drawString(fontRendererObj, ": " + DEF, xOffset + shift, statYOffSet + 36, 0xF8D030);
-                drawString(fontRendererObj, ": " + ATTSPE, xOffset + shift, statYOffSet + 45, 0x6890F0);
-                drawString(fontRendererObj, ": " + DEFSPE, xOffset + shift, statYOffSet + 54, 0x78C850);
-                drawString(fontRendererObj, ": " + VIT, xOffset + shift, statYOffSet + 63, 0xF85888);
+                drawString(fontRenderer, ": " + HP, xOffset + shift, statYOffSet + 18, 0xFF0000);
+                drawString(fontRenderer, ": " + ATT, xOffset + shift, statYOffSet + 27, 0xF08030);
+                drawString(fontRenderer, ": " + DEF, xOffset + shift, statYOffSet + 36, 0xF8D030);
+                drawString(fontRenderer, ": " + ATTSPE, xOffset + shift, statYOffSet + 45, 0x6890F0);
+                drawString(fontRenderer, ": " + DEFSPE, xOffset + shift, statYOffSet + 54, 0x78C850);
+                drawString(fontRenderer, ": " + VIT, xOffset + shift, statYOffSet + 63, 0xF85888);
                 shift = 105;
-                drawString(fontRendererObj, "" + HP2, xOffset + shift, statYOffSet + 18, 0xFF0000);
-                drawString(fontRendererObj, "" + ATT2, xOffset + shift, statYOffSet + 27, 0xF08030);
-                drawString(fontRendererObj, "" + DEF2, xOffset + shift, statYOffSet + 36, 0xF8D030);
-                drawString(fontRendererObj, "" + ATTSPE2, xOffset + shift, statYOffSet + 45, 0x6890F0);
-                drawString(fontRendererObj, "" + DEFSPE2, xOffset + shift, statYOffSet + 54, 0x78C850);
-                drawString(fontRendererObj, "" + VIT2, xOffset + shift, statYOffSet + 63, 0xF85888);
+                drawString(fontRenderer, "" + HP2, xOffset + shift, statYOffSet + 18, 0xFF0000);
+                drawString(fontRenderer, "" + ATT2, xOffset + shift, statYOffSet + 27, 0xF08030);
+                drawString(fontRenderer, "" + DEF2, xOffset + shift, statYOffSet + 36, 0xF8D030);
+                drawString(fontRenderer, "" + ATTSPE2, xOffset + shift, statYOffSet + 45, 0x6890F0);
+                drawString(fontRenderer, "" + DEFSPE2, xOffset + shift, statYOffSet + 54, 0x78C850);
+                drawString(fontRenderer, "" + VIT2, xOffset + shift, statYOffSet + 63, 0xF85888);
             }
         }
         else
@@ -281,7 +283,7 @@ public class GuiPokedex extends GuiScreen
                 num++;
             }
             String level = "N. " + num;
-            drawString(fontRendererObj, level, xOffset + 15, yOffset + 1, 0xffffff);
+            drawString(fontRenderer, level, xOffset + 15, yOffset + 1, 0xffffff);
             if (!mode)
             {
 
@@ -292,9 +294,9 @@ public class GuiPokedex extends GuiScreen
                 int j = (width - xSize) / 2;
                 int k = (height - ySize) / 2;
                 GL11.glTranslated(j + 185, k + 80, 0);
-                double xCoord = 0;
-                double yCoord = 0;
-                float zCoord = this.zLevel;
+                double x = 0;
+                double y = 0;
+                float z = this.zLevel;
                 float maxU = 1;
                 float maxV = 1;
                 float minU = -1;
@@ -305,12 +307,12 @@ public class GuiPokedex extends GuiScreen
                 float a = 1;
                 GlStateManager.disableTexture2D();
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder vertexbuffer = tessellator.getBuffer();
                 vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-                vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                vertexbuffer.pos((xCoord + maxU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
-                vertexbuffer.pos((xCoord + minU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((x + minU), (y + maxV), z).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((x + maxU), (y + maxV), z).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((x + maxU), (y + minV), z).color(r, g, b, a).endVertex();
+                vertexbuffer.pos((x + minU), (y + minV), z).color(r, g, b, a).endVertex();
                 tessellator.draw();
                 r = 1;
                 g = 0;
@@ -333,21 +335,21 @@ public class GuiPokedex extends GuiScreen
                     double dist = max * Math.sqrt(hDistSq) / baseRange;
                     v.scalarMultBy(dist);
                     GL11.glTranslated(v.x, v.z, 0);
-                    xCoord = v.x;
-                    yCoord = v.y;
+                    x = v.x;
+                    y = v.y;
                     vertexbuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-                    vertexbuffer.pos((xCoord + minU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                    vertexbuffer.pos((xCoord + maxU), (yCoord + maxV), zCoord).color(r, g, b, a).endVertex();
-                    vertexbuffer.pos((xCoord + maxU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
-                    vertexbuffer.pos((xCoord + minU), (yCoord + minV), zCoord).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((x + minU), (y + maxV), z).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((x + maxU), (y + maxV), z).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((x + maxU), (y + minV), z).color(r, g, b, a).endVertex();
+                    vertexbuffer.pos((x + minU), (y + minV), z).color(r, g, b, a).endVertex();
                     tessellator.draw();
                     GL11.glPopMatrix();
                 }
                 GL11.glPopMatrix();
                 GlStateManager.enableTexture2D();
                 String mess = I18n.format("gui.pokedex.baseradar");
-                int width = fontRendererObj.getStringWidth(mess);
-                drawString(fontRendererObj, mess, xOffset - width / 2 + 70, yOffset + 105, 0x78C850);
+                int width = fontRenderer.getStringWidth(mess);
+                drawString(fontRenderer, mess, xOffset - width / 2 + 70, yOffset + 105, 0x78C850);
             }
 
         }
@@ -384,12 +386,12 @@ public class GuiPokedex extends GuiScreen
         }
         index = Math.max(0, Math.min(index, names.size() - 6));
         int n;
-        drawString(fontRendererObj, "Moves", xOffset + 16, yOffset + 15, 0xFFFFFF);
+        drawString(fontRenderer, "Moves", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
         {
-            drawString(fontRendererObj, MovesUtils.getMoveName(names.get(n + index)).getFormattedText(), xOffset + 18,
+            drawString(fontRenderer, MovesUtils.getMoveName(names.get(n + index)).getFormattedText(), xOffset + 18,
                     yOffset + 30 + n * 10, 0xFF0000);
-            drawString(fontRendererObj, levels.get(n + index), xOffset + 92, yOffset + 30 + n * 10, 0xFF0000);
+            drawString(fontRenderer, levels.get(n + index), xOffset + 92, yOffset + 30 + n * 10, 0xFF0000);
         }
 
         drawSelectedMoves(xOffset + 5, yOffset + 0);
@@ -422,7 +424,7 @@ public class GuiPokedex extends GuiScreen
             if (title.equals("none")) title = names.get(1);
             if (title.equalsIgnoreCase("mushroomislandshore")) title = "Mushroom Shore";
             if (title.equalsIgnoreCase("birch forest hills m")) title = "Birch ForestHills M";
-            drawString(fontRendererObj, title, xOffset + 16, yOffset + 15, 0xFFFFFF);
+            drawString(fontRenderer, title, xOffset + 16, yOffset + 15, 0xFFFFFF);
             for (int n = 2; n < Math.min(names.size(), listSize); n++)
             {
                 int yO = yOffset + 10;
@@ -442,16 +444,16 @@ public class GuiPokedex extends GuiScreen
                         numbers = numbers + "%";
                     }
                 }
-                drawString(fontRendererObj, I18n.format(name), xOffset + 18, yO + n * 10, 0xFF0000);
-                drawString(fontRendererObj, numbers, xOffset + 108 - fontRendererObj.getStringWidth(numbers),
-                        yO + n * 10, 0xFF0000);
+                drawString(fontRenderer, I18n.format(name), xOffset + 18, yO + n * 10, 0xFF0000);
+                drawString(fontRenderer, numbers, xOffset + 108 - fontRenderer.getStringWidth(numbers), yO + n * 10,
+                        0xFF0000);
                 String time = "";
-                drawString(fontRendererObj, time, xOffset + 85, yO + n * 10, 0xFF0000);
+                drawString(fontRenderer, time, xOffset + 85, yO + n * 10, 0xFF0000);
             }
         }
         else if (getEntityToDisplay() != null)
         {
-            drawString(fontRendererObj, getEntityToDisplay().getDisplayName().getFormattedText(), xOffset + 16,
+            drawString(fontRenderer, getEntityToDisplay().getDisplayName().getFormattedText(), xOffset + 16,
                     yOffset + 15, 0xFFFFFF);
             List<String> biomes = PacketPokedex.values;
             try
@@ -469,31 +471,31 @@ public class GuiPokedex extends GuiScreen
                 int yO = yOffset + 30;
                 int colour = 0xFF0000;
                 if (n % 2 == 0) colour = 0xFF3300;
-                s = fontRendererObj.trimStringToWidth(s, 90);
-                fontRendererObj.drawString(s, xOffset + 18, yO + n * 10, colour);
+                s = fontRenderer.trimStringToWidth(s, 90);
+                fontRenderer.drawString(s, xOffset + 18, yO + n * 10, colour);
             }
         }
 
-        drawString(fontRendererObj, "User Stats", xOffset + 19, yOffset + 99, 0xFFFFFF);
+        drawString(fontRenderer, "User Stats", xOffset + 19, yOffset + 99, 0xFFFFFF);
 
         int count = KillStats.getNumberUniqueKilledBy(entityPlayer.getUniqueID());
         int count2 = KillStats.getTotalNumberKilledBy(entityPlayer.getUniqueID());
 
-        drawString(fontRendererObj, "Kills", xOffset + 19, yOffset + 112, 0xFFFFFF);
-        drawString(fontRendererObj, count + "/" + count2,
-                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 112, 0xffffff);
+        drawString(fontRenderer, "Kills", xOffset + 19, yOffset + 112, 0xFFFFFF);
+        drawString(fontRenderer, count + "/" + count2,
+                xOffset + 120 - fontRenderer.getStringWidth((count + "/" + count2)), yOffset + 112, 0xffffff);
 
         count = CaptureStats.getNumberUniqueCaughtBy(entityPlayer.getUniqueID());
         count2 = CaptureStats.getTotalNumberCaughtBy(entityPlayer.getUniqueID());
-        drawString(fontRendererObj, "Captures", xOffset + 19, yOffset + 126, 0xFFFFFF);
-        drawString(fontRendererObj, count + "/" + count2,
-                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 126, 0xffffff);
+        drawString(fontRenderer, "Captures", xOffset + 19, yOffset + 126, 0xFFFFFF);
+        drawString(fontRenderer, count + "/" + count2,
+                xOffset + 120 - fontRenderer.getStringWidth((count + "/" + count2)), yOffset + 126, 0xffffff);
 
         count = EggStats.getNumberUniqueHatchedBy(entityPlayer.getUniqueID());
         count2 = EggStats.getTotalNumberHatchedBy(entityPlayer.getUniqueID());
-        drawString(fontRendererObj, "Hatched", xOffset + 19, yOffset + 140, 0xFFFFFF);
-        drawString(fontRendererObj, count + "/" + count2,
-                xOffset + 120 - fontRendererObj.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
+        drawString(fontRenderer, "Hatched", xOffset + 19, yOffset + 140, 0xFFFFFF);
+        drawString(fontRenderer, count + "/" + count2,
+                xOffset + 120 - fontRenderer.getStringWidth((count + "/" + count2)), yOffset + 140, 0xffffff);
         World world = entityPlayer.getEntityWorld();
         List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
         count = 0;
@@ -507,9 +509,9 @@ public class GuiPokedex extends GuiScreen
                 else if (pokemob.getPokedexEntry().getPokedexNb() == pokedexEntry.getPokedexNb()) count++;
             }
         }
-        drawString(fontRendererObj, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
-        drawString(fontRendererObj, "" + count, xOffset + 120 - fontRendererObj.getStringWidth((count + "")),
-                yOffset + 154, 0xffffff);
+        drawString(fontRenderer, "Around", xOffset + 19, yOffset + 154, 0xFFFFFF);
+        drawString(fontRenderer, "" + count, xOffset + 120 - fontRenderer.getStringWidth((count + "")), yOffset + 154,
+                0xffffff);
     }
 
     /** Draws the breeding information page
@@ -528,18 +530,17 @@ public class GuiPokedex extends GuiScreen
         }
         index = Math.max(0, Math.min(index, names.size() - 6));
         int n;
-        drawString(fontRendererObj, "Possible Mates", xOffset + 16, yOffset + 15, 0xFFFFFF);
+        drawString(fontRenderer, "Possible Mates", xOffset + 16, yOffset + 15, 0xFFFFFF);
         for (n = 0; n < Math.min(names.size(), 6); n++)
         {
-            drawString(fontRendererObj, names.get(n + index), xOffset + 18, yOffset + 30 + n * 10, 0xFF0000);
+            drawString(fontRenderer, names.get(n + index), xOffset + 18, yOffset + 30 + n * 10, 0xFF0000);
         }
         if (pokemob != null)
         {
             Ability ability = pokemob.getAbility();
             if (ability != null)
             {
-                drawString(fontRendererObj, "AB: " + I18n.format(ability.getName()), xOffset + 19, yOffset + 99,
-                        0xFFFFFF);
+                drawString(fontRenderer, "AB: " + I18n.format(ability.getName()), xOffset + 19, yOffset + 99, 0xFFFFFF);
             }
             int happiness = pokemob.getHappiness();
             String message = "";
@@ -572,11 +573,11 @@ public class GuiPokedex extends GuiScreen
                 message = "pokemob.info.happy6";
             }
             message = I18n.format(message);
-            fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + 145, 100, 0xFFFFFF);
+            fontRenderer.drawSplitString(message, xOffset + 19, yOffset + 145, 100, 0xFFFFFF);
 
             int dy = 122;
             message = "Size: " + pokemob.getSize();
-            fontRendererObj.drawSplitString(message, xOffset + 19, yOffset + dy, 100, 0xFFFFFF);
+            fontRenderer.drawSplitString(message, xOffset + 19, yOffset + dy, 100, 0xFFFFFF);
         }
     }
 
@@ -588,7 +589,7 @@ public class GuiPokedex extends GuiScreen
     {
         Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
         List<TeleDest> locations = PokecubeSerializer.getInstance()
-                .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                .getTeleports(minecraft.player.getCachedUniqueIdString());
 
         if (locations.size() == 0) { return; }
         TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -596,8 +597,8 @@ public class GuiPokedex extends GuiScreen
         {
             String loc = location.loc.toIntString();
             loc = loc.replace(" ", "");
-            loc = fontRendererObj.trimStringToWidth(loc, 90);
-            drawString(fontRendererObj, loc, xOffset + 16, yOffset + 99 + 14 * index, PokeType.getType("fire").colour);
+            loc = fontRenderer.trimStringToWidth(loc, 90);
+            drawString(fontRenderer, loc, xOffset + 16, yOffset + 99 + 14 * index, PokeType.getType("fire").colour);
         }
     }
 
@@ -622,11 +623,11 @@ public class GuiPokedex extends GuiScreen
         renderMob();
         GL11.glPopMatrix();
         nicknameTextField.drawTextBox();
-        int length = fontRendererObj.getStringWidth(pokemobTextField.getText()) / 2;
-        pokemobTextField.xPosition -= length;
+        int length = fontRenderer.getStringWidth(pokemobTextField.getText()) / 2;
+        pokemobTextField.x -= length;
         pokemobTextField.drawTextBox();
-        pokemobTextField.xPosition += length;
-        drawCenteredString(fontRendererObj, "" + (page + 1), xOffset + 55, yOffset + 1, 0xffffff);
+        pokemobTextField.x += length;
+        drawCenteredString(fontRenderer, "" + (page + 1), xOffset + 55, yOffset + 1, 0xffffff);
         if (page == 0)
         {
             drawPage0(xOffset, yOffset);
@@ -650,13 +651,12 @@ public class GuiPokedex extends GuiScreen
 
         if (pokedexEntry != null)
         {
-            drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 28, yOffset + 02,
-                    0xffffff);
+            drawCenteredString(fontRenderer, "#" + pokedexEntry.getPokedexNb(), xOffset - 28, yOffset + 02, 0xffffff);
             try
             {
-                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), xOffset - 88,
+                drawCenteredString(fontRenderer, getTranslatedName(pokedexEntry.getType1()), xOffset - 88,
                         yOffset + 137, pokedexEntry.getType1().colour);
-                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType2()), xOffset - 44,
+                drawCenteredString(fontRenderer, getTranslatedName(pokedexEntry.getType2()), xOffset - 44,
                         yOffset + 137, pokedexEntry.getType2().colour);
             }
             catch (Exception e)
@@ -691,9 +691,9 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+            drawString(fontRenderer, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
                     yOffset + 99, move.getType(pokemob).colour);
-            drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 99, 0xffffff);
+            drawString(fontRenderer, "" + pwr, xOffset + 102, yOffset + 99, 0xffffff);
         }
 
         move = MovesUtils.getMoveFromName(pokemob.getMove(1));
@@ -708,9 +708,9 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+            drawString(fontRenderer, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
                     yOffset + 113, move.getType(pokemob).colour);
-            drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 113, 0xffffff);
+            drawString(fontRenderer, "" + pwr, xOffset + 102, yOffset + 113, 0xffffff);
         }
 
         move = MovesUtils.getMoveFromName(pokemob.getMove(2));
@@ -725,9 +725,9 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+            drawString(fontRenderer, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
                     yOffset + 127, move.getType(pokemob).colour);
-            drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 127, 0xffffff);
+            drawString(fontRenderer, "" + pwr, xOffset + 102, yOffset + 127, 0xffffff);
         }
 
         move = MovesUtils.getMoveFromName(pokemob.getMove(3));
@@ -742,9 +742,9 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+            drawString(fontRenderer, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
                     yOffset + 141, move.getType(pokemob).colour);
-            drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 141, 0xffffff);
+            drawString(fontRenderer, "" + pwr, xOffset + 102, yOffset + 141, 0xffffff);
         }
 
         move = MovesUtils.getMoveFromName(pokemob.getMove(4));
@@ -759,9 +759,9 @@ public class GuiPokedex extends GuiScreen
             {
                 pwr = "-";
             }
-            drawString(fontRendererObj, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
+            drawString(fontRenderer, MovesUtils.getMoveName(move.getName()).getFormattedText(), xOffset + 14,
                     yOffset + 155, move.getType(pokemob).colour);
-            drawString(fontRendererObj, "" + pwr, xOffset + 102, yOffset + 155, 0xffffff);
+            drawString(fontRenderer, "" + pwr, xOffset + 102, yOffset + 155, 0xffffff);
         }
     }
 
@@ -886,7 +886,7 @@ public class GuiPokedex extends GuiScreen
             GuiTeleport.instance().nextMove();
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                    .getTeleports(minecraft.player.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -902,7 +902,7 @@ public class GuiPokedex extends GuiScreen
             GuiTeleport.instance().previousMove();
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                    .getTeleports(minecraft.player.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -919,7 +919,7 @@ public class GuiPokedex extends GuiScreen
             {
                 volume = 1F;
             }
-            mc.thePlayer.playSound(pokedexEntry.getSoundEvent(), volume, 1.0F);
+            mc.player.playSound(pokedexEntry.getSoundEvent(), volume, 1.0F);
 
             nicknameTextField.setVisible(true);
             if (canEditPokemob())
@@ -988,7 +988,7 @@ public class GuiPokedex extends GuiScreen
                 {
                     Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                     List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                            .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                     if (locations.size() > 0)
                     {
@@ -1013,7 +1013,7 @@ public class GuiPokedex extends GuiScreen
             {
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1138,7 +1138,7 @@ public class GuiPokedex extends GuiScreen
         buttonList.clear();
         int yOffset = height / 2 - 80;
         int xOffset = width / 2;
-        nicknameTextField = new GuiTextField(0, fontRendererObj, xOffset + 14, yOffset + 14, 110, 10);
+        nicknameTextField = new GuiTextField(0, fontRenderer, xOffset + 14, yOffset + 14, 110, 10);
         nicknameTextField.setMaxStringLength(20);
         nicknameTextField.setEnableBackgroundDrawing(false);
         nicknameTextField.setFocused(false);
@@ -1150,7 +1150,7 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setText(name);
             nicknameTextField.setEnabled(true);
         }
-        pokemobTextField = new GuiTextField(0, fontRendererObj, xOffset - 65, yOffset + 123, 110, 10);
+        pokemobTextField = new GuiTextField(0, fontRenderer, xOffset - 65, yOffset + 123, 110, 10);
         pokemobTextField.setEnableBackgroundDrawing(false);
         pokemobTextField.setFocused(false);
         pokemobTextField.setEnabled(true);
@@ -1169,7 +1169,7 @@ public class GuiPokedex extends GuiScreen
         {
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                    .getTeleports(minecraft.player.getCachedUniqueIdString());
 
             if (locations.size() > 0)
             {
@@ -1195,7 +1195,7 @@ public class GuiPokedex extends GuiScreen
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1210,7 +1210,7 @@ public class GuiPokedex extends GuiScreen
 
                 Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
                 List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
+                        .getTeleports(minecraft.player.getCachedUniqueIdString());
 
                 if (locations.size() > 0)
                 {
@@ -1353,23 +1353,24 @@ public class GuiPokedex extends GuiScreen
             int k = 0;
 
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-
             if (pokemob == null) { return; }
-
-            if (!(StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
-                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0
-                    || StatsCollector.getKilled(pokedexEntry, Minecraft.getMinecraft().thePlayer) > 0)
-                    && !mc.thePlayer.capabilities.isCreativeMode)
+            pokemob.setSize(1);
+            pokemob.setShiny(false);
+            PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance()
+                    .getPlayerData(Minecraft.getMinecraft().player).getData(PokecubePlayerStats.class);
+            if ((StatsCollector.getCaptured(pokedexEntry, Minecraft.getMinecraft().player) > 0
+                    || StatsCollector.getHatched(pokedexEntry, Minecraft.getMinecraft().player) > 0)
+                    || mc.player.capabilities.isCreativeMode)
             {
-                pokemob.setSize(1);
-                pokemob.setShiny(false);
-                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
+            }
+            else if (stats.hasInspected(pokedexEntry))
+            {
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(127, 127, 127, 255);
             }
             else
             {
-                pokemob.setSize(1);
-                pokemob.setShiny(false);
-                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(255, 255, 255, 255);
+                if (entity instanceof IMobColourable) ((IMobColourable) entity).setRGBA(0, 0, 0, 255);
             }
 
             pokemob.setPokemonAIState(IMoveConstants.EXITINGCUBE, false);

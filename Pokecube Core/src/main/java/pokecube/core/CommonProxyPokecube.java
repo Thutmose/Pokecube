@@ -125,8 +125,8 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
 
     public World getWorld()
     {
-        if (FMLCommonHandler.instance().getMinecraftServerInstance().worldServers.length >= 1)
-            return FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0];
+        if (FMLCommonHandler.instance().getMinecraftServerInstance().worlds.length >= 1)
+            return FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0];
         return null;
     }
 
@@ -185,6 +185,11 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
     public void spawnParticle(World world, String par1Str, Vector3 location, Vector3 velocity, int... args)
     {
         PacketParticle.sendMessage(world, location, velocity, par1Str, args);
+    }
+
+    public void handshake(boolean revert)
+    {
+
     }
 
 }

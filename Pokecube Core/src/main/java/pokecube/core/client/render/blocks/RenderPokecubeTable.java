@@ -25,7 +25,7 @@ public class RenderPokecubeTable extends TileEntitySpecialRenderer {
     }
     
     @Override
-    public void renderTileEntityAt(TileEntity te, double x, double y, double z, float scale, int i) {
+    public void render(TileEntity te, double x, double y, double z, float scale, int i, float f) {
             GL11.glPushMatrix();
             GL11.glTranslatef((float) x + 0.5F, (float) y + 1.15F, (float) z + 0.5F);
 
@@ -33,7 +33,7 @@ public class RenderPokecubeTable extends TileEntitySpecialRenderer {
             GL11.glPushMatrix();
             GL11.glScaled(0.25, 0.25, 0.25);
             
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+            EntityPlayer player = Minecraft.getMinecraft().player;
             
             boolean starter = PokecubeSerializer.getInstance().hasStarter(player);
             

@@ -15,11 +15,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.berries.TileEntityBerries.Type;
 import pokecube.core.interfaces.IBerryFruitBlock;
@@ -68,7 +70,8 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     {
         if (!worldIn.isRemote && !worldIn.restoringBlockSnapshots)
         {
-            java.util.List<ItemStack> items = getDrops(worldIn, pos, state, fortune);
+            NonNullList<ItemStack> items = NonNullList.create();
+            getDrops(items, worldIn, pos, state, fortune);
             chance = net.minecraftforge.event.ForgeEventFactory.fireBlockHarvesting(items, worldIn, pos, state, fortune,
                     chance, false, harvesters.get());
 
@@ -89,7 +92,7 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
                     EntityItem entityitem = new EntityItem(worldIn, pos.getX() + d0, pos.getY() + d1, pos.getZ() + d2,
                             stack);
                     entityitem.setDefaultPickupDelay();
-                    worldIn.spawnEntityInWorld(entityitem);
+                    worldIn.spawnEntity(entityitem);
                 }
             }
         }
@@ -129,16 +132,15 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     }
 
     @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune)
     {
-        List<ItemStack> ret = new java.util.ArrayList<ItemStack>();
+        List<ItemStack> ret = drops;
         Random rand = world instanceof World ? ((World) world).rand : RANDOM;
         int count = quantityDropped(state, fortune, rand);
         ItemStack stack = getBerryStack(world, pos);
-        if (!CompatWrapper.isValid(stack)) return ret;
+        if (!CompatWrapper.isValid(stack)) return;
         CompatWrapper.setStackSize(stack, count);
         ret.add(stack);
-        return ret;
     }
 
     /** Returns the ID of the items to drop on destruction. */
@@ -208,5 +210,11 @@ public class BlockBerryFruit extends BlockBush implements IBerryFruitBlock, ITil
     {
         int i = par1Random.nextInt(2) + 1;
         return i;
+    }
+
+    @Override
+    public EnumPlantType getPlantType(IBlockAccess world, BlockPos pos)
+    {
+        return EnumPlantType.Crop;
     }
 }

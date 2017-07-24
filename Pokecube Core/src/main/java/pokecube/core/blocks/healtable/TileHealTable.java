@@ -133,7 +133,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return getWorld().getTileEntity(pos) == this && player.getDistanceSq(pos) < 64;
     }
@@ -244,7 +244,7 @@ public class TileHealTable extends TileEntity implements IInventory, ITickable
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

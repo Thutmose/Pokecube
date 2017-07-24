@@ -19,6 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -124,7 +125,7 @@ public class AIGatherStuff extends AIBase
                     close = Math.max(close, 2);
                     if (stuff.getDistanceToEntity(entity) < close)
                     {
-                        ItemStackTools.addItemStackToInventory(stuff.getEntityItem(), pokemob.getPokemobInventory(), 2);
+                        ItemStackTools.addItemStackToInventory(stuff.getItem(), pokemob.getPokemobInventory(), 2);
                         stuff.setDead();
                         reset();
                     }
@@ -228,8 +229,8 @@ public class AIGatherStuff extends AIBase
                 TickHandler.addBlockChange(stuffLoc, entity.dimension, Blocks.AIR);
                 if (state.getMaterial() != Material.GRASS)
                 {
-                    List<ItemStack> list;
-                    list = plant.getDrops(entity.getEntityWorld(), stuffLoc.getPos(), state, 0);
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    plant.getDrops(list, entity.getEntityWorld(), stuffLoc.getPos(), state, 0);
                     boolean replanted = false;
                     for (ItemStack stack : list)
                     {

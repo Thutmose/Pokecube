@@ -15,9 +15,9 @@ public class SpawnEvent extends Event
     {
         public final IPokemob pokemob;
 
-        public Despawn(Vector3 location, World worldObj, IPokemob pokemob_)
+        public Despawn(Vector3 location, World world, IPokemob pokemob_)
         {
-            super(pokemob_.getPokedexEntry(), location, worldObj);
+            super(pokemob_.getPokedexEntry(), location, world);
             pokemob = pokemob_;
         }
 
@@ -32,9 +32,9 @@ public class SpawnEvent extends Event
         public final IPokemob     pokemob;
         public final EntityLiving entity;
 
-        public Post(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+        public Post(PokedexEntry entry, Vector3 location, World world, IPokemob pokemob)
         {
-            super(entry, location, worldObj);
+            super(entry, location, world);
             this.pokemob = pokemob;
             entity = pokemob.getEntity();
         }
@@ -46,9 +46,9 @@ public class SpawnEvent extends Event
     @Cancelable
     public static class Pre extends SpawnEvent
     {
-        public Pre(PokedexEntry entry, Vector3 location, World worldObj)
+        public Pre(PokedexEntry entry, Vector3 location, World world)
         {
-            super(entry, location, worldObj);
+            super(entry, location, world);
         }
     }
 
@@ -63,9 +63,9 @@ public class SpawnEvent extends Event
          * can spawn, say in pokedex */
         public final boolean forSpawn;
 
-        public Check(PokedexEntry entry, Vector3 location, World worldObj, boolean forSpawn)
+        public Check(PokedexEntry entry, Vector3 location, World world, boolean forSpawn)
         {
-            super(entry, location, worldObj);
+            super(entry, location, world);
             this.forSpawn = forSpawn;
         }
     }
@@ -74,9 +74,9 @@ public class SpawnEvent extends Event
     {
         private PokedexEntry pick;
 
-        public Pick(PokedexEntry entry_, Vector3 location_, World worldObj_)
+        public Pick(PokedexEntry entry_, Vector3 location_, World world_)
         {
-            super(entry_, location_, worldObj_);
+            super(entry_, location_, world_);
             pick = entry_;
         }
 
@@ -106,9 +106,9 @@ public class SpawnEvent extends Event
          * anything that sets this afterwards will override default pick. */
         public static class Pre extends Pick
         {
-            public Pre(PokedexEntry entry_, Vector3 location_, World worldObj_)
+            public Pre(PokedexEntry entry_, Vector3 location_, World world_)
             {
-                super(entry_, location_, worldObj_);
+                super(entry_, location_, world_);
             }
         }
 
@@ -117,9 +117,9 @@ public class SpawnEvent extends Event
          * that was chosen before. */
         public static class Post extends Pick
         {
-            public Post(PokedexEntry entry_, Vector3 location_, World worldObj_)
+            public Post(PokedexEntry entry_, Vector3 location_, World world_)
             {
-                super(entry_, location_, worldObj_);
+                super(entry_, location_, world_);
             }
         }
     }
@@ -146,9 +146,9 @@ public class SpawnEvent extends Event
             this.level = level;
         }
 
-        public Level(PokedexEntry entry_, Vector3 location_, World worldObj_, int level)
+        public Level(PokedexEntry entry_, Vector3 location_, World world_, int level)
         {
-            super(entry_, location_, worldObj_);
+            super(entry_, location_, world_);
             this.level = level;
             this.original = level;
         }
@@ -161,9 +161,9 @@ public class SpawnEvent extends Event
         public final IPokemob     pokemob;
         public final EntityLiving entity;
 
-        protected SendOut(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+        protected SendOut(PokedexEntry entry, Vector3 location, World world, IPokemob pokemob)
         {
-            super(entry, location, worldObj);
+            super(entry, location, world);
             this.pokemob = pokemob;
             entity = pokemob.getEntity();
         }
@@ -175,17 +175,17 @@ public class SpawnEvent extends Event
         @Cancelable
         public static class Pre extends SendOut
         {
-            public Pre(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+            public Pre(PokedexEntry entry, Vector3 location, World world, IPokemob pokemob)
             {
-                super(entry, location, worldObj, pokemob);
+                super(entry, location, world, pokemob);
             }
         }
 
         public static class Post extends SendOut
         {
-            public Post(PokedexEntry entry, Vector3 location, World worldObj, IPokemob pokemob)
+            public Post(PokedexEntry entry, Vector3 location, World world, IPokemob pokemob)
             {
-                super(entry, location, worldObj, pokemob);
+                super(entry, location, world, pokemob);
             }
         }
     }
@@ -196,10 +196,10 @@ public class SpawnEvent extends Event
 
     public final World        world;
 
-    public SpawnEvent(PokedexEntry entry_, Vector3 location_, World worldObj_)
+    public SpawnEvent(PokedexEntry entry_, Vector3 location_, World world_)
     {
         entry = entry_;
         location = location_;
-        world = worldObj_;
+        world = world_;
     }
 }

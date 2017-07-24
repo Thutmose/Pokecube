@@ -48,7 +48,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
             this.starter = starter;
             this.fixed = fixed;
             this.starters = starters;
-            if (player.worldObj.isRemote) MinecraftForge.EVENT_BUS.register(this);
+            if (player.world.isRemote) MinecraftForge.EVENT_BUS.register(this);
         }
 
         @SideOnly(Side.CLIENT)
@@ -155,7 +155,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         if (pick.isCanceled()) return;
         items.clear();
         items.addAll(pick.starterPack);
-        PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class).setHasFirst();
+        PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class).setHasFirst(player);
         for (ItemStack e : items)
         {
             if (e == null || e.getItem() == null) continue;
@@ -224,7 +224,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -237,7 +237,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketChoose message)
@@ -249,7 +249,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == CHOOSE)
         {

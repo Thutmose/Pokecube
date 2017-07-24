@@ -10,8 +10,10 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
@@ -219,7 +221,7 @@ public class RecipeFossilRevive implements IPoweredRecipe
             EnumFacing dir = world.getBlockState(pos).getValue(BlockCloner.FACING);
             entity.setLocationAndAngles(pos.getX() + 0.5 + dir.getFrontOffsetX(), pos.getY() + 1,
                     pos.getZ() + 0.5 + dir.getFrontOffsetZ(), world.rand.nextFloat() * 360F, 0.0F);
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
             IMobGenetics genes = ClonerHelper.getGenes(dnaSource);
             if (genes != null)
             {
@@ -236,7 +238,6 @@ public class RecipeFossilRevive implements IPoweredRecipe
         return CompatWrapper.nullStack;
     }
 
-    @Override
     public int getRecipeSize()
     {
         return this.recipeItems.size();
@@ -246,5 +247,26 @@ public class RecipeFossilRevive implements IPoweredRecipe
     public ItemStack getRecipeOutput()
     {
         return CompatWrapper.nullStack;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
     }
 }

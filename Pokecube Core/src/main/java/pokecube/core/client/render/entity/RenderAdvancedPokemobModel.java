@@ -66,7 +66,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
             this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
         }
         if (model == null) return;
-        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, x, y, z))) return;
+        if (MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Pre(entity, this, partialTick, x, y, z))) return;
         GL11.glPushMatrix();
         this.preRenderCallback(entity, partialTick);
         GL11.glPushMatrix();
@@ -96,7 +96,7 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
         model.setPhase(phase);
         model.doRender(toRender, x, y, z, yaw, partialTick);
         model.renderStatus(toRender, x, y, z, yaw, partialTick);
-        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, x, y, z));
+        MinecraftForge.EVENT_BUS.post(new RenderLivingEvent.Post(entity, this, partialTick, x, y, z));
         GL11.glPopMatrix();
         this.postRenderCallback();
         GL11.glPopMatrix();

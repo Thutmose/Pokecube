@@ -111,7 +111,7 @@ public abstract class PokemobStats extends PokemobGenes
                             && getEntity().getEntityWorld().getGameRules().getBoolean("doMobLoot")
                             && !getEntity().getEntityWorld().isRemote)
                     {
-                        getEntity().getEntityWorld().spawnEntityInWorld(new EntityXPOrb(getEntity().getEntityWorld(),
+                        getEntity().getEntityWorld().spawnEntity(new EntityXPOrb(getEntity().getEntityWorld(),
                                 getEntity().posX, getEntity().posY, getEntity().posZ, 1));
                     }
                 }

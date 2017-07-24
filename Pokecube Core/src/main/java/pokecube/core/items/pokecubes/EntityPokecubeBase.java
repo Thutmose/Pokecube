@@ -50,7 +50,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     static final DataParameter<Integer>           ENTITYID       = EntityDataManager
             .<Integer> createKey(EntityPokecube.class, DataSerializers.VARINT);
     private static final DataParameter<ItemStack> ITEM           = EntityDataManager
-            .<ItemStack> createKey(EntityPokecube.class, DataSerializers.OPTIONAL_ITEM_STACK);
+            .<ItemStack> createKey(EntityPokecube.class, DataSerializers.ITEM_STACK);
     static final DataParameter<Boolean>           RELEASING      = EntityDataManager
             .<Boolean> createKey(EntityPokecube.class, DataSerializers.BOOLEAN);
 
@@ -91,7 +91,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
-        if (source == DamageSource.outOfWorld)
+        if (source == DamageSource.OUT_OF_WORLD)
         {
             if (PokecubeManager.isFilled(getItem()))
             {
@@ -173,7 +173,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
     @Override
     public void setThrowableHeading(double x, double y, double z, float velocity, float inacurracy)
     {
-        float f2 = MathHelper.sqrt_double(x * x + y * y + z * z);
+        float f2 = MathHelper.sqrt(x * x + y * y + z * z);
         x /= f2;
         y /= f2;
         z /= f2;
@@ -186,7 +186,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         this.motionX = x;
         this.motionY = y;
         this.motionZ = z;
-        float f3 = MathHelper.sqrt_double(x * x + z * z);
+        float f3 = MathHelper.sqrt(x * x + z * z);
         this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
         this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(y, f3) * 180.0D / Math.PI);
         this.ticksInGround = 0;
@@ -203,7 +203,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
 
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
         {
-            float f = MathHelper.sqrt_double(x * x + z * z);
+            float f = MathHelper.sqrt(x * x + z * z);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(x, z) * 180.0D / Math.PI);
             this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(y, f) * 180.0D / Math.PI);
             this.prevRotationPitch = this.rotationPitch;
@@ -228,7 +228,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         if (entity1 != null)
         {
             entity1.getEntity().setLocationAndAngles(posX, posY + 1.0D, posZ, rotationYaw, 0.0F);
-            boolean ret = getEntityWorld().spawnEntityInWorld(entity1.getEntity());
+            boolean ret = getEntityWorld().spawnEntity(entity1.getEntity());
 
             if (ret == false)
             {
@@ -245,7 +245,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
             {
                 ITextComponent mess = new TextComponentTranslation("pokecube.missed", entity1.getPokemonDisplayName());
-                ((EntityPlayer) shootingEntity).addChatMessage(mess);
+                ((EntityPlayer) shootingEntity).sendMessage(mess);
                 entity1.getEntity().setAttackTarget(shootingEntity);
             }
         }
@@ -282,7 +282,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                     getItem().getTagCompound().setTag(TagNames.OTHERMOB, tag);
                     getItem().setStackDisplayName(caught.getDisplayName().getFormattedText());
                     ITextComponent mess = new TextComponentTranslation("pokecube.caught", caught.getDisplayName());
-                    ((EntityPlayer) shootingEntity).addChatMessage(mess);
+                    ((EntityPlayer) shootingEntity).sendMessage(mess);
                     this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
                     this.playSound(POKECUBESOUND, 1, 1);
                 }
@@ -299,7 +299,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
         if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
         {
             ITextComponent mess = new TextComponentTranslation("pokecube.caught", mob.getPokemonDisplayName());
-            ((EntityPlayer) shootingEntity).addChatMessage(mess);
+            ((EntityPlayer) shootingEntity).sendMessage(mess);
             this.setPosition(shootingEntity.posX, shootingEntity.posY, shootingEntity.posZ);
             this.playSound(POKECUBESOUND, 1, 1);
         }
@@ -387,7 +387,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 return null;
             }
 
-            getEntityWorld().spawnEntityInWorld(entity);
+            getEntityWorld().spawnEntity(entity);
             entity1.popFromPokecube();
             entity1.setPokemonAIState(IMoveConstants.ANGRY, false);
             entity1.setPokemonAIState(IMoveConstants.TAMED, true);
@@ -431,7 +431,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                     IBlockState state = v.getBlockState(getEntityWorld());
                     if (state.getMaterial().isSolid()) v.y = Math.ceil(v.y);
                     v.moveEntity(newMob);
-                    getEntityWorld().spawnEntityInWorld(newMob);
+                    getEntityWorld().spawnEntity(newMob);
                     tag.removeTag(TagNames.MOBID);
                     tag.removeTag(TagNames.OTHERMOB);
                     entityDropItem(getItem(), 0.5f);

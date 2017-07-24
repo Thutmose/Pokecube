@@ -329,7 +329,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         here.clear().setVelocities(entity);
         entity.targetEntity = null;
         entity.targetLocation.clear();
-        getEntity().getEntityWorld().spawnEntityInWorld(entity);
+        getEntity().getEntityWorld().spawnEntity(entity);
     }
 
     @Override

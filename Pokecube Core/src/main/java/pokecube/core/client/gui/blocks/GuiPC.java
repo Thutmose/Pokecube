@@ -54,18 +54,18 @@ public class GuiPC extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        if (mc.thePlayer.getEntityWorld().isRemote)
+        if (mc.player.getEntityWorld().isRemote)
         {
             if (guibutton.id == 5 && cont.pcTile != null)// Toggle Bound
             {
                 cont.pcTile.toggleBound();
-                mc.thePlayer.closeScreen();
+                mc.player.closeScreen();
                 return;
             }
             if (guibutton.id == 8 && cont.pcTile != null)// Bind PC to self
             {
-                cont.pcTile.setBoundOwner(mc.thePlayer);
-                mc.thePlayer.closeScreen();
+                cont.pcTile.setBoundOwner(mc.player);
+                mc.player.closeScreen();
                 return;
             }
 
@@ -137,12 +137,12 @@ public class GuiPC extends GuiContainer
                     buttonList.get(6).enabled = release;
                     buttonList.get(6).visible = release;
                 }
-                mc.thePlayer.closeScreen();
+                mc.player.closeScreen();
             }
             else
             {
                 cont.updateInventoryPages((byte) (guibutton.id == 2 ? -1 : guibutton.id == 1 ? 1 : 0),
-                        mc.thePlayer.inventory);
+                        mc.player.inventory);
                 textFieldSelectedBox.setText(cont.getPageNb());
             }
         }
@@ -167,9 +167,9 @@ public class GuiPC extends GuiContainer
 
         String name = (cont.pcTile != null) ? cont.pcTile.getName() : "";
         String pcTitle = bound ? name : I18n.format("tile.pc.title", cont.inv.seenOwner ? "Thutmose" : "Someone");
-        fontRendererObj.drawString(cont.getPage(), xSize / 2 - fontRendererObj.getStringWidth(cont.getPage()) / 3 - 60,
+        fontRenderer.drawString(cont.getPage(), xSize / 2 - fontRenderer.getStringWidth(cont.getPage()) / 3 - 60,
                 13, 4210752);
-        fontRendererObj.drawString(pcTitle, xSize / 2 - fontRendererObj.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
+        fontRenderer.drawString(pcTitle, xSize / 2 - fontRenderer.getStringWidth(pcTitle) / 3 - 60, 4, 4210752);
         GL11.glPopMatrix();
 
         for (int i = 0; i < 54; i++)
@@ -193,9 +193,10 @@ public class GuiPC extends GuiContainer
     }
 
     @Override
-    public void drawScreen(int i1, int j, float f)
+    public void drawScreen(int mouseX, int mouseY, float f)
     {
-        super.drawScreen(i1, j, f);
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, f);
         textFieldSelectedBox.drawTextBox();
 
         if (!bound) textFieldSearch.drawTextBox();
@@ -233,6 +234,7 @@ public class GuiPC extends GuiContainer
                     GL11.glPopMatrix();
                 }
             }
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
@@ -281,15 +283,15 @@ public class GuiPC extends GuiContainer
 
         }
 
-        textFieldSelectedBox = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
+        textFieldSelectedBox = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 13, height / 2 - yOffset + 5,
                 25, 10);
         textFieldSelectedBox.setText(page);
 
-        textFieldBoxName = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 190, height / 2 - yOffset - 40,
+        textFieldBoxName = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 190, height / 2 - yOffset - 40,
                 100, 10);
         textFieldBoxName.setText(boxName);
 
-        textFieldSearch = new GuiTextField(0, fontRendererObj, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,
+        textFieldSearch = new GuiTextField(0, fontRenderer, width / 2 - xOffset - 10, height / 2 - yOffset - 121, 90,
                 10);
         textFieldSearch.setText("");
     }
@@ -300,7 +302,7 @@ public class GuiPC extends GuiContainer
         keyTyped2(par1, par2);
         if (par2 == 1)
         {
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             return;
         }
 
@@ -382,9 +384,9 @@ public class GuiPC extends GuiContainer
     @Override
     public void onGuiClosed()
     {
-        if (this.mc.thePlayer != null)
+        if (this.mc.player != null)
         {
-            this.inventorySlots.onContainerClosed(this.mc.thePlayer);
+            this.inventorySlots.onContainerClosed(this.mc.player);
         }
     }
 

@@ -28,10 +28,19 @@ public class GuiAFA extends GuiContainer
     }
 
     @Override
+    /** Draws the screen and all the components in it. */
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException
     {
         ContainerAFA container = (ContainerAFA) inventorySlots;
-        TileEntity te = container.worldObj.getTileEntity(container.pos);
+        TileEntity te = container.world.getTileEntity(container.pos);
         if (te == null) return;
 
         TileEntityAFA tile = (TileEntityAFA) te;
@@ -152,25 +161,26 @@ public class GuiAFA extends GuiContainer
     /** Draw the foreground layer for the GuiContainer (everything in front of
      * the items) */
     @Override
-    protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
+        super.drawGuiContainerForegroundLayer(mouseX, mouseY);
+        this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
                 4210752);
         ContainerAFA container = (ContainerAFA) inventorySlots;
-        if (container.worldObj != null)
+        if (container.world != null)
         {
-            TileEntity te = container.worldObj.getTileEntity(container.pos);
+            TileEntity te = container.world.getTileEntity(container.pos);
             if (te == null) return;
             TileEntityAFA cloner = (TileEntityAFA) te;
             String mess;
             int energy = cloner.getField(0);
             mess = "e:" + energy;
-            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 66, 4210752);
+            this.fontRenderer.drawString(mess, 148 - fontRenderer.getStringWidth(mess), 66, 4210752);
             int distance = cloner.getField(1);
             mess = "r:" + distance;
-            this.fontRendererObj.drawString(mess, 148 - fontRendererObj.getStringWidth(mess), 26, 4210752);
+            this.fontRenderer.drawString(mess, 148 - fontRenderer.getStringWidth(mess), 26, 4210752);
             if (cloner.ability != null && cloner.getStackInSlot(0) != null)
-                this.fontRendererObj.drawString("" + I18n.format(cloner.ability.getName()), 48, 6, 4210752);
+                this.fontRenderer.drawString("" + I18n.format(cloner.ability.getName()), 48, 6, 4210752);
         }
     }
 
@@ -186,7 +196,7 @@ public class GuiAFA extends GuiContainer
         // Range Control
         buttonList.add(new GuiButton(0, width / 2 - xOffset + 69, height / 2 - yOffset - 85, 20, 20, "\u25b2"));
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 69, height / 2 - yOffset - 65, 20, 20, "\u25bc"));
-        if (mc.thePlayer.capabilities.isCreativeMode)
+        if (mc.player.capabilities.isCreativeMode)
         {
             ContainerAFA container = (ContainerAFA) inventorySlots;
             int num = container.tile.getField(2);

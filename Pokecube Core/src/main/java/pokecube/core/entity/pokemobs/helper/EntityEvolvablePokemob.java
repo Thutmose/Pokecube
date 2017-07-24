@@ -43,7 +43,7 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     @Override
     public boolean isServerWorld()
     {
-        return worldObj != null && super.isServerWorld();
+        return world != null && super.isServerWorld();
     }
 
     @Override

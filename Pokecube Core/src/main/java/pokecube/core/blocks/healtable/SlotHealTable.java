@@ -16,10 +16,10 @@ public class SlotHealTable extends Slot
      * @param par2
      * @param par3
      * @param par4 */
-    public SlotHealTable(EntityPlayer par1EntityPlayer, IInventory inventory, int slotIndex, int xDisplayPosition,
-            int yDisplayPosition)
+    public SlotHealTable(EntityPlayer par1EntityPlayer, IInventory inventory, int slotIndex, int xDisplay,
+            int yDisplay)
     {
-        super(inventory, slotIndex, xDisplayPosition, yDisplayPosition);
+        super(inventory, slotIndex, xDisplay, yDisplay);
     }
 
     public void heal()

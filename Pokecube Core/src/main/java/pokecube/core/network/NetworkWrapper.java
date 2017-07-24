@@ -2,10 +2,7 @@ package pokecube.core.network;
 
 import java.lang.reflect.Method;
 import java.util.EnumMap;
-
-import org.apache.logging.log4j.Level;
-
-import com.google.common.base.Throwables;
+import java.util.logging.Level;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
@@ -15,7 +12,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
@@ -44,8 +40,8 @@ public class NetworkWrapper
         catch (Exception e)
         {
             // How is this possible?
-            FMLLog.log(Level.FATAL, e, "What? Netty isn't installed, what magic is this?");
-            throw Throwables.propagate(e);
+            PokecubeMod.log(Level.SEVERE, "What? Netty isn't installed, what magic is this?", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -63,8 +59,8 @@ public class NetworkWrapper
         }
         catch (Exception e)
         {
-            FMLLog.log(Level.FATAL, e, "It appears we somehow have a not-standard pipeline. Huh");
-            throw Throwables.propagate(e);
+            PokecubeMod.log(Level.SEVERE, "It appears we somehow have a not-standard pipeline. Huh", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -97,7 +93,7 @@ public class NetworkWrapper
         }
         catch (Exception e)
         {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

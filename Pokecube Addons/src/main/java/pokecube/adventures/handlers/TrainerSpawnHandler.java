@@ -197,7 +197,7 @@ public class TrainerSpawnHandler
                     && SpawnHandler.checkNoSpawnerInArea(w, (int) t.posX, (int) t.posY, (int) t.posZ))
             {
                 addTrainerCoord(t);
-                w.spawnEntityInWorld(t);
+                w.spawnEntity(t);
             }
             else t.setDead();
         }

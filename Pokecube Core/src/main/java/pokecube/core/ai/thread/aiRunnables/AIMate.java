@@ -161,8 +161,8 @@ public class AIMate extends AIBase
         if (pokemob.getLoveTimer() > 0)
         {
             float searchingLoveDist = 5F;
-            AxisAlignedBB bb = entity.getEntityBoundingBox().expand(searchingLoveDist, searchingLoveDist,
-                    searchingLoveDist);// grow in 1.12
+            AxisAlignedBB bb = entity.getEntityBoundingBox().grow(searchingLoveDist, searchingLoveDist,
+                    searchingLoveDist);
             List<Entity> list = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
             {
                 @Override
@@ -171,10 +171,8 @@ public class AIMate extends AIBase
                     return input instanceof EntityAnimal && CapabilityPokemob.getPokemobFor(input) != null;
                 }
             });
-            bb = entity.getEntityBoundingBox().expand(PokecubeMod.core.getConfig().maxSpawnRadius,
-                    2 * searchingLoveDist, PokecubeMod.core.getConfig().maxSpawnRadius);// grow
-                                                                                        // in
-                                                                                        // 1.12
+            bb = entity.getEntityBoundingBox().grow(PokecubeMod.core.getConfig().maxSpawnRadius, 2 * searchingLoveDist,
+                    PokecubeMod.core.getConfig().maxSpawnRadius);
             List<Entity> list2 = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
             {
                 @Override

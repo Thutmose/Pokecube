@@ -136,7 +136,7 @@ public class BlockBerryWood extends Block implements IMetaBlock
 	/** returns a list of blocks with the same ID, but different meta (eg: wood
 	 * returns 4 blocks) */
 	@SideOnly(Side.CLIENT)
-	public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
 	{
 		EnumType[] aenumtype = EnumType.values();
 		int i = aenumtype.length;
@@ -144,7 +144,7 @@ public class BlockBerryWood extends Block implements IMetaBlock
 		for (int j = 0; j < i; ++j)
 		{
 			EnumType enumtype = aenumtype[j];
-			list.add(new ItemStack(itemIn, 1, enumtype.getMetadata()));
+			list.add(new ItemStack(Item.getItemFromBlock(this), 1, enumtype.getMetadata()));
 		}
 	}
 

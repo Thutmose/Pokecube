@@ -30,7 +30,7 @@ public class TeamManager
         public String getTeam(Entity entityIn)
         {
             Team team = entityIn.getTeam();
-            String name = team == null ? "" : team.getRegisteredName();
+            String name = team == null ? "" : team.getName();
             IPokemob pokemob;
             if (entityIn instanceof IEntityOwnable && team == null)
             {
@@ -57,7 +57,6 @@ public class TeamManager
     public static boolean sameTeam(Entity entityA, Entity entityB)
     {
         String teamA = getTeam(entityA);
-        String teamB = getTeam(entityB);
-        return !teamA.isEmpty() && teamA.equals(teamB);
+        return !teamA.isEmpty() && provider.areAllied(teamA, entityB);
     }
 }

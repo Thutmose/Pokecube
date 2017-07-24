@@ -84,27 +84,27 @@ public class CommandTools
 
     public static void sendBadArgumentsMissingArg(ICommandSender sender)
     {
-        sender.addChatMessage(makeError("pokecube.command.invalidmissing"));
+        sender.sendMessage(makeError("pokecube.command.invalidmissing"));
     }
 
     public static void sendBadArgumentsTryTab(ICommandSender sender)
     {
-        sender.addChatMessage(makeError("pokecube.command.invalidtab"));
+        sender.sendMessage(makeError("pokecube.command.invalidtab"));
     }
 
     public static void sendError(ICommandSender sender, String text)
     {
-        sender.addChatMessage(makeError(text));
+        sender.sendMessage(makeError(text));
     }
 
     public static void sendMessage(ICommandSender sender, String text)
     {
         ITextComponent message = makeTranslatedMessage(text, null);
-        sender.addChatMessage(message);
+        sender.sendMessage(message);
     }
 
     public static void sendNoPermissions(ICommandSender sender)
     {
-        sender.addChatMessage(makeError("pokecube.command.noperms"));
+        sender.sendMessage(makeError("pokecube.command.noperms"));
     }
 }

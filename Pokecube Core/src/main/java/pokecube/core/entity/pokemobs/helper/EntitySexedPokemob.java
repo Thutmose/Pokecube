@@ -90,8 +90,8 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public void lay(IPokemob male)
     {
         if (PokecubeMod.debug) System.out.println(this + " lay()");
-        if (worldObj.isRemote) { return; }
-        int num = Tools.countPokemon(worldObj, here, PokecubeMod.core.getConfig().maxSpawnRadius);
+        if (world.isRemote) { return; }
+        int num = Tools.countPokemon(world, here, PokecubeMod.core.getConfig().maxSpawnRadius);
         if (!(getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
         Vector3 pos = Vector3.getNewVector().set(this).addTo(0, Math.max(this.height / 4, 0.5f), 0);
         if (pos.isClearOfBlocks(getEntityWorld()))
@@ -99,7 +99,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
             Entity eggItem = null;
             try
             {
-                eggItem = new EntityPokemobEgg(worldObj, posX, posY, posZ, this, male);
+                eggItem = new EntityPokemobEgg(world, posX, posY, posZ, this, male);
             }
             catch (Exception e1)
             {
@@ -113,7 +113,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
                 if (!event.isCanceled())
                 {
                     egg = eggItem;
-                    worldObj.spawnEntityInWorld(egg);
+                    world.spawnEntity(egg);
                 }
             }
             catch (Exception e)

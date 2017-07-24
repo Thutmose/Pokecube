@@ -79,7 +79,7 @@ public class GuiTrainerEdit extends GuiScreen
         else if (guibutton.id == 2)
         {
             sendChooseToServer();
-            CompatWrapper.sendChatMessage(mc.thePlayer, new TextComponentString(I18n.format("gui.trainer.saved")));
+            CompatWrapper.sendChatMessage(mc.player, new TextComponentString(I18n.format("gui.trainer.saved")));
         }
         else if (guibutton.id == 5)
         {
@@ -92,7 +92,7 @@ public class GuiTrainerEdit extends GuiScreen
         {
             resetTeam = true;
             sendChooseToServer();
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
             resetTeam = false;
         }
         else if (guibutton.id == 7)
@@ -100,7 +100,7 @@ public class GuiTrainerEdit extends GuiScreen
             PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEKILLTRAINER);
             packet.data.setInteger("I", trainer.getEntityId());
             PokecubeMod.packetPipeline.sendToServer(packet);
-            mc.thePlayer.closeScreen();
+            mc.player.closeScreen();
         }
         else
         {
@@ -157,8 +157,8 @@ public class GuiTrainerEdit extends GuiScreen
         int y1 = height / 2;
 
         String info = I18n.format("gui.trainer.stationary");
-        int l = fontRendererObj.getStringWidth(info);
-        this.fontRendererObj.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
+        int l = fontRenderer.getStringWidth(info);
+        this.fontRenderer.drawString(info, x1 + 90 - l / 2, y1 + 10, 0xffffff);
 
         ItemStack stack = trainer.getHeldItemOffhand();
         if (stack != null)
@@ -169,7 +169,7 @@ public class GuiTrainerEdit extends GuiScreen
             GL11.glPushMatrix();
             GL11.glTranslated(i1, j1, z);
             GL11.glScaled(8, 8, 8);
-            Minecraft.getMinecraft().getItemRenderer().renderItem(mc.thePlayer, stack, TransformType.GUI);
+            Minecraft.getMinecraft().getItemRenderer().renderItem(mc.player, stack, TransformType.GUI);
             GL11.glPopMatrix();
         }
 
@@ -181,8 +181,8 @@ public class GuiTrainerEdit extends GuiScreen
             {
                 PokedexEntry entry = getEntry(n);
                 field = textFieldLevels[n];
-                i1 = field.xPosition - 20;
-                j1 = field.yPosition - 3;
+                i1 = field.x - 20;
+                j1 = field.y - 3;
                 drawGradientRect(i1, j1, i1 + 16, j1 + 16, 0xffaaaaaa, 0xffaaaaaa);
                 double scale = 1;
                 if (entry != null)
@@ -220,8 +220,8 @@ public class GuiTrainerEdit extends GuiScreen
         int yOffset = -20;
         int xOffset = +20;
 
-        textFieldName = new GuiTextField(0, fontRendererObj, width / 2 - 80, height / 4 + 10 + yOffset, 130, 10);
-        textFieldType = new GuiTextField(0, fontRendererObj, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
+        textFieldName = new GuiTextField(0, fontRenderer, width / 2 - 80, height / 4 + 10 + yOffset, 130, 10);
+        textFieldType = new GuiTextField(0, fontRenderer, width / 2 - 50, height / 4 + 40 + yOffset, 100, 10);
         textFieldType.setEnabled(false);
 
         oldName = trainer instanceof EntityTrainer ? ((EntityTrainer) trainer).name : "";
@@ -245,10 +245,10 @@ public class GuiTrainerEdit extends GuiScreen
         for (int i = 0; i < 6; i++)
         {
             xOffset = -50;
-            textFieldPokemobs[i] = new GuiTextField(0, fontRendererObj, width / 2 - 70 + xOffset,
+            textFieldPokemobs[i] = new GuiTextField(0, fontRenderer, width / 2 - 70 + xOffset,
                     height / 4 + 60 + i * 20 + yOffset, 100, 10);
             xOffset = +20;
-            textFieldLevels[i] = new GuiTextField(0, fontRendererObj, width / 2 - 15 + xOffset,
+            textFieldLevels[i] = new GuiTextField(0, fontRenderer, width / 2 - 15 + xOffset,
                     height / 4 + 60 + i * 20 + yOffset, 30, 10);
 
             ItemStack stack = pokemobCap.getPokemob(i);

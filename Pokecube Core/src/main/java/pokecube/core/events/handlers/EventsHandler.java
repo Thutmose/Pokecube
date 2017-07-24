@@ -17,9 +17,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IMerchant;
 import net.minecraft.entity.INpc;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.boss.EntityDragon;
-import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.IMob;
@@ -28,7 +28,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -216,7 +215,7 @@ public class EventsHandler
         List<IPokemob> ret = new ArrayList<IPokemob>();
 
         AxisAlignedBB box = new AxisAlignedBB(owner.posX, owner.posY, owner.posZ, owner.posX, owner.posY, owner.posZ)
-                .expand(distance, distance, distance);
+                .grow(distance, distance, distance);
 
         List<EntityLivingBase> pokemobs = owner.getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class, box);
         for (EntityLivingBase o : pokemobs)
@@ -281,13 +280,13 @@ public class EventsHandler
             else if (o instanceof EntityPokecube)
             {
                 EntityPokecube mob = (EntityPokecube) o;
-                if (CompatWrapper.isValid(mob.getEntityItem()))
+                if (CompatWrapper.isValid(mob.getItem()))
                 {
-                    String name = PokecubeManager.getOwner(mob.getEntityItem());
+                    String name = PokecubeManager.getOwner(mob.getItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getCachedUniqueIdString())))
                     {
-                        ItemStack cube = mob.getEntityItem();
+                        ItemStack cube = mob.getItem();
                         ItemTossEvent evt = new ItemTossEvent(
                                 new EntityItem(mob.getEntityWorld(), mob.posX, mob.posY, mob.posZ, cube), player);
                         MinecraftForge.EVENT_BUS.post(evt);
@@ -348,7 +347,7 @@ public class EventsHandler
             if (!CompatWrapper.isValid(stack)) return;
             EntityItem item = new EntityItem(evt.getWorld(), evt.getPos().getX() + 0.5, evt.getPos().getY() + 0.5,
                     evt.getPos().getZ() + 0.5, stack);
-            evt.getWorld().spawnEntityInWorld(item);
+            evt.getWorld().spawnEntity(item);
         }
         if (evt.getState().getBlock() == PokecubeItems.pokecenter)
         {
@@ -379,7 +378,7 @@ public class EventsHandler
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntity());
         if (PokecubeMod.core.getConfig().disableVanillaMonsters && pokemob == null && evt.getEntity() instanceof IMob
-                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof EntityDragonPart)
+                && !(evt.getEntity() instanceof EntityDragon || evt.getEntity() instanceof MultiPartEntityPart)
                 && evt.getEntity().getClass().getName().contains("net.minecraft"))
         {
             evt.getEntity().setDead();
@@ -396,6 +395,11 @@ public class EventsHandler
             // TODO maybe replace stuff here
             evt.setCanceled(true);
             return;
+        }
+        if (evt.getEntity() instanceof IPokemob && evt.getEntity().getEntityData().getBoolean("onShoulder"))
+        {
+            ((IPokemob) evt.getEntity()).setPokemonAIState(IPokemob.SITTING, false);
+            evt.getEntity().getEntityData().removeTag("onShoulder");
         }
         if (evt.getEntity() instanceof EntityCreeper)
         {
@@ -497,7 +501,7 @@ public class EventsHandler
     @SubscribeEvent
     public void livingHurtEvent(LivingHurtEvent evt)
     {
-        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.inWall)
+        if (evt.getEntityLiving() instanceof EntityPlayer && evt.getSource() == DamageSource.IN_WALL)
         {
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getRidingEntity());
             if (pokemob != null) evt.setCanceled(true);
@@ -507,15 +511,16 @@ public class EventsHandler
     @SubscribeEvent
     public void livingDeath(LivingDeathEvent evt)
     {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-        // if (pokemob != null && !evt.getEntity().getEntityWorld().isRemote)
-        // pokemob.returnToPokecube();
-        if (evt.getEntity().getEntityWorld().isRemote || pokemob != null) return;
-        pokemob = CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getLastAttacker());
-        if (pokemob != null && evt.getSource().getEntity() != evt.getEntityLiving().getLastAttacker())
-        {
-            evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
-        }
+        // IPokemob pokemob =
+        // CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
+        // if (evt.getEntity().worldObj.isRemote || pokemob != null) return;
+        // pokemob =
+        // CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getLastAttacker());
+        // if (pokemob != null && evt.getSource().getEntity() !=
+        // evt.getEntityLiving().getLastAttacker())
+        // {//TODO see if this was needed?
+        // evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
+        // }
     }
 
     @SubscribeEvent
@@ -573,21 +578,19 @@ public class EventsHandler
             EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
             BlockPos here;
             BlockPos old;
-            here = new BlockPos(MathHelper.floor_double(player.chasingPosX) >> 4,
-                    MathHelper.floor_double(player.chasingPosY) >> 4, MathHelper.floor_double(player.chasingPosZ) >> 4);
-            old = new BlockPos(MathHelper.floor_double(player.prevChasingPosX) >> 4,
-                    MathHelper.floor_double(player.prevChasingPosY) >> 4,
-                    MathHelper.floor_double(player.prevChasingPosZ) >> 4);
+            here = new BlockPos(MathHelper.floor(player.chasingPosX) >> 4, MathHelper.floor(player.chasingPosY) >> 4,
+                    MathHelper.floor(player.chasingPosZ) >> 4);
+            old = new BlockPos(MathHelper.floor(player.prevChasingPosX) >> 4,
+                    MathHelper.floor(player.prevChasingPosY) >> 4, MathHelper.floor(player.prevChasingPosZ) >> 4);
             if (!here.equals(old)) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(evt.getEntityLiving()),
                     evt.getEntity().getEntityWorld());
         }
     }
 
     @SubscribeEvent
-    public void onItemCapabilityAttach(AttachCapabilitiesEvent<Item> event)
+    public void onItemCapabilityAttach(AttachCapabilitiesEvent<ItemStack> event)
     {
-        event.addCapability(new ResourceLocation("pokecube:megawearable"),
-                new MegaCapability(((AttachCapabilitiesEvent.Item) event).getItemStack()));
+        event.addCapability(new ResourceLocation("pokecube:megawearable"), new MegaCapability(event.getObject()));
     }
 
     private List<EntityLiving> needsAI = Lists.newArrayList();
@@ -755,7 +758,7 @@ public class EventsHandler
             if (pokecube.isLoot && pokecube.cannotCollect(event.getEntityPlayer()))
             {
                 PacketPokecube.sendMessage(event.getEntityPlayer(), pokecube.getEntityId(),
-                        pokecube.worldObj.getTotalWorldTime() + pokecube.resetTime);
+                        pokecube.world.getTotalWorldTime() + pokecube.resetTime);
             }
         }
     }

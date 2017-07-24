@@ -98,7 +98,7 @@ public abstract class Condition implements ISpecialCaptureCondition, ISpecialSpa
         String message = "msg.notrust.txt";
         ITextComponent component = new TextComponentTranslation(message,
                 new TextComponentTranslation(getEntry().getUnlocalizedName()));
-        trainer.addChatMessage(component);
+        trainer.sendMessage(component);
     }
 
     public void sendNoHere(Entity trainer)
@@ -106,7 +106,7 @@ public abstract class Condition implements ISpecialCaptureCondition, ISpecialSpa
         String message = "msg.nohere.txt";
         ITextComponent component = new TextComponentTranslation(message,
                 new TextComponentTranslation(getEntry().getUnlocalizedName()));
-        trainer.addChatMessage(component);
+        trainer.sendMessage(component);
     }
 
     public void sendAngered(Entity trainer)
@@ -114,6 +114,6 @@ public abstract class Condition implements ISpecialCaptureCondition, ISpecialSpa
         String message = "msg.angeredlegend.txt";
         ITextComponent component = new TextComponentTranslation(message,
                 new TextComponentTranslation(getEntry().getUnlocalizedName()));
-        trainer.addChatMessage(component);
+        trainer.sendMessage(component);
     }
 }

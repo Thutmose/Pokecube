@@ -27,13 +27,15 @@ public class ParticleFlow extends MoveAnimationBase
     {
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        reallyInitRGBA();
         if (customColour) return;
         if (particle.equals("airbubble"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else if (particle.equals("aurora"))
         {
@@ -42,11 +44,11 @@ public class ParticleFlow extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else if (particle.equals("spark"))
         {
-            rgba = 0x78000000 + EnumDyeColor.YELLOW.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.YELLOW.getColorValue();
         }
         else
         {
@@ -89,7 +91,7 @@ public class ParticleFlow extends MoveAnimationBase
                     temp1.set(factor * (0.5 - rand.nextDouble()), factor * (0.5 - rand.nextDouble()),
                             factor * (0.5 - rand.nextDouble()));
                 }
-                PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle,
+                PokecubeCore.proxy.spawnParticle(info.attacker.world, particle,
                         source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, particleLife);
             }
         }

@@ -69,7 +69,7 @@ public class GeneralCommands extends CommandBase
         {
             text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid arguments, try TAB for options";
             message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-            sender.addChatMessage(message);
+            sender.sendMessage(message);
             return;
         }
         for (int i = 1; i < args.length; i++)
@@ -87,7 +87,7 @@ public class GeneralCommands extends CommandBase
             {
                 text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid arguments, missing option";
                 message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                sender.sendMessage(message);
                 return;
             }
             boolean check = args.length <= 2;
@@ -98,7 +98,7 @@ public class GeneralCommands extends CommandBase
                 text = TextFormatting.RED + "" + TextFormatting.ITALIC
                         + "Invalid arguments, invalid option, use TAB to see valid choices";
                 message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                sender.sendMessage(message);
                 return;
             }
             try
@@ -117,14 +117,14 @@ public class GeneralCommands extends CommandBase
                         text += o;
                     }
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.addChatMessage(message);
+                    sender.sendMessage(message);
                     return;
                 }
                 if (!isOp)
                 {
                     text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.addChatMessage(message);
+                    sender.sendMessage(message);
                     return;
                 }
                 try
@@ -135,7 +135,7 @@ public class GeneralCommands extends CommandBase
                 {
                     text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.addChatMessage(message);
+                    sender.sendMessage(message);
                     return;
                 }
                 o = field.get(Config.instance);
@@ -149,7 +149,7 @@ public class GeneralCommands extends CommandBase
                     text += o;
                 }
                 message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                sender.sendMessage(message);
                 return;
             }
             catch (Exception e)
@@ -158,7 +158,7 @@ public class GeneralCommands extends CommandBase
                 text = TextFormatting.RED + "" + TextFormatting.ITALIC
                         + "Error while checking config field, please report this as a bug.";
                 message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.addChatMessage(message);
+                sender.sendMessage(message);
                 return;
             }
         }
@@ -178,12 +178,12 @@ public class GeneralCommands extends CommandBase
                         TRAINERSDIE = on;
                         text = TextFormatting.GREEN + "Trainer all dieing set to " + on;
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                        sender.addChatMessage(message);
+                        sender.sendMessage(message);
                         return;
                     }
                     text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
                     message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.addChatMessage(message);
+                    sender.sendMessage(message);
                     return;
                 }
 
@@ -193,25 +193,25 @@ public class GeneralCommands extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return this.aliases;
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokeAdv";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender icommandsender)
+    public String getUsage(ICommandSender icommandsender)
     {
         return "pokeAdv <text>";
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
             BlockPos pos)
     {
         if (args.length == 2 && args[0].equalsIgnoreCase("settings"))

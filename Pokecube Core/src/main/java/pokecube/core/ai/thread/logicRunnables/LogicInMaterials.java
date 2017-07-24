@@ -40,7 +40,7 @@ public class LogicInMaterials extends LogicBase
 
                     value = Float.parseFloat(pokemob.getPokedexEntry().hatedMaterial[1]);
                     String action = pokemob.getPokedexEntry().hatedMaterial[2];
-                    float f = entity.getBrightness(0);// no arg in 1.12
+                    float f = entity.getBrightness();
                     if (f > value && entity.getEntityWorld().canSeeSky(entity.getPosition()))
                     {
                         if (action.equalsIgnoreCase("despawn"))
@@ -49,7 +49,7 @@ public class LogicInMaterials extends LogicBase
                         }
                         else if (action.equalsIgnoreCase("hurt") && Math.random() < 0.1)
                         {
-                            entity.attackEntityFrom(DamageSource.onFire, 1);
+                            entity.attackEntityFrom(DamageSource.ON_FIRE, 1);
                         }
                     }
                 }

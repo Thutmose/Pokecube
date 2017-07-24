@@ -242,7 +242,7 @@ public class ModelWrapper extends ModelBase implements IModel
         }
 
         int red = 255, green = 255, blue = 255;
-        int brightness = entity.getBrightnessForRender(partialTick);
+        int brightness = entity.getBrightnessForRender();
         int alpha = 255;
         if (entity instanceof IMobColourable)
         {

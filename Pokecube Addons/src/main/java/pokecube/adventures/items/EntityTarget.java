@@ -26,7 +26,7 @@ public class EntityTarget extends EntityLiving
     @Override
     protected void damageEntity(DamageSource par1DamageSource, float par2)
     {
-        Entity source = par1DamageSource.getEntity();
+        Entity source = par1DamageSource.getTrueSource();
         if (source != null && source instanceof EntityLiving)
         {
             EntityLiving ent = (EntityLiving) source;

@@ -48,7 +48,7 @@ public class PacketTeams implements IMessage, IMessageHandler<PacketTeams, IMess
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -61,7 +61,7 @@ public class PacketTeams implements IMessage, IMessageHandler<PacketTeams, IMess
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketTeams message)
@@ -73,7 +73,7 @@ public class PacketTeams implements IMessage, IMessageHandler<PacketTeams, IMess
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         player.getEntityWorld();
     }

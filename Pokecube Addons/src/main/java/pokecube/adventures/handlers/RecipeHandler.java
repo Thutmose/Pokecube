@@ -13,16 +13,12 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.RecipeSorter.Category;
 import pokecube.adventures.blocks.cloner.ClonerHelper;
 import pokecube.adventures.blocks.cloner.ClonerHelper.DNAPack;
 import pokecube.adventures.blocks.cloner.recipe.RecipeFossilRevive;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector;
 import pokecube.adventures.blocks.cloner.recipe.RecipeSelector.SelectorValue;
 import pokecube.adventures.comands.Config;
-import pokecube.adventures.items.bags.RecipeBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
@@ -280,13 +276,13 @@ public class RecipeHandler
     }
 
     public static void register()
-    {
-        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
-                "after:minecraft:shapeless");
-        RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
-                "after:minecraft:shapeless");
-        GameRegistry.addRecipe(new RecipeBag());
-        GameRegistry.addRecipe(new RecipeSelector());
+    {//TODO Recipes
+//        RecipeSorter.register("pokecube_adventures:bag", RecipeBag.class, Category.SHAPELESS,
+//                "after:minecraft:shapeless");
+//        RecipeSorter.register("pokecube_adventures:selectors", RecipeSelector.class, Category.SHAPELESS,
+//                "after:minecraft:shapeless");
+//        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:bag"),new RecipeBag());
+//        GameRegistry.addRecipe(new ResourceLocation("pokecube_adventures:selectors"), new RecipeSelector());
         addClonerRecipes();
     }
 }

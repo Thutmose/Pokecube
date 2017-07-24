@@ -116,7 +116,7 @@ public class RenderPokemobs extends RenderPokemob
                 }
                 else
                 {
-                    to = claz.getConstructor(World.class).newInstance(from.worldObj);
+                    to = claz.getConstructor(World.class).newInstance(from.getEntityWorld());
                 }
                 EntityTools.copyEntityData(to, from);
                 EntityTools.copyEntityTransforms(to, entity);

@@ -8,6 +8,8 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IWorldEventListener;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
@@ -37,9 +39,11 @@ public class SphericalFunction extends MoveAnimationBase
 
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        reallyInitRGBA();
         if (customColour) return;
         if (particle.equals("airbubble"))
         {
@@ -52,7 +56,7 @@ public class SphericalFunction extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else
         {
@@ -82,7 +86,7 @@ public class SphericalFunction extends MoveAnimationBase
         {
             setVector(i, temp);
             temp.scalarMultBy(scale).addTo(source);
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp, null, rgba, particleLife);
+            PokecubeCore.proxy.spawnParticle(info.attacker.world, particle, temp, null, rgba, particleLife);
         }
     }
 

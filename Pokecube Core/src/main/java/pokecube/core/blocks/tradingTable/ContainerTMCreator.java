@@ -51,7 +51,7 @@ public class ContainerTMCreator extends Container
     @Override
     public boolean canInteractWith(EntityPlayer entityPlayer)
     {
-        return tile.isUseableByPlayer(entityPlayer);
+        return tile.isUsableByPlayer(entityPlayer);
     }
 
     protected void clearSlots()

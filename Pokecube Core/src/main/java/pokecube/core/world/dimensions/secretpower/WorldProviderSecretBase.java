@@ -16,7 +16,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.border.WorldBorder;
-import net.minecraft.world.chunk.IChunkGenerator;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.storage.ISaveHandler;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.stats.CaptureStats;
@@ -72,7 +72,7 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public IChunkGenerator createChunkGenerator()
     {
-        return new ChunkProviderSecretBase(worldObj);
+        return new ChunkProviderSecretBase(world);
     }
 
     /** Called when the world is performing a save. Only used to save the state
@@ -80,14 +80,14 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onWorldSave()
     {
-        ISaveHandler saveHandler = worldObj.getSaveHandler();
+        ISaveHandler saveHandler = world.getSaveHandler();
         File file = saveHandler.getWorldDirectory();
         file = new File(file, getSaveFolder());
         file = new File(file, "data" + File.separator + "worldInfo.dat");
         try
         {
             NBTTagCompound tag = new NBTTagCompound();
-            int size = worldObj.getWorldBorder().getSize();
+            int size = world.getWorldBorder().getSize();
             tag.setInteger("border", size);
             owner = PokecubeDimensionManager.getOwner(getDimension());
             if (owner != null && !owner.isEmpty()) tag.setString("owner", owner);
@@ -103,7 +103,7 @@ public class WorldProviderSecretBase extends WorldProvider
 
     public void onWorldLoad()
     {
-        ISaveHandler saveHandler = worldObj.getSaveHandler();
+        ISaveHandler saveHandler = world.getSaveHandler();
         File file = saveHandler.getWorldDirectory();
         file = new File(file, getSaveFolder());
         file = new File(file, "data" + File.separator + "worldInfo.dat");
@@ -135,7 +135,7 @@ public class WorldProviderSecretBase extends WorldProvider
                         e.printStackTrace();
                     }
                 }
-                worldObj.getWorldBorder().setSize(size);
+                world.getWorldBorder().setSize(size);
             }
             catch (IOException e)
             {
@@ -156,7 +156,7 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onPlayerAdded(EntityPlayerMP player)
     {
-        if (!player.isDead) player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.enter"));
+        if (!player.isDead) player.sendMessage(new TextComponentTranslation("pokecube.secretBase.enter"));
         owner = PokecubeDimensionManager.getOwner(getDimension());
         if (!owner.isEmpty())
         {
@@ -172,7 +172,7 @@ public class WorldProviderSecretBase extends WorldProvider
                 parser.setVarValue("h", h);
                 size = (int) parser.getValue();
                 size = Math.min(size, PokecubeCore.core.getConfig().baseMaxSize * 16);
-                worldObj.getWorldBorder().setSize(size);
+                world.getWorldBorder().setSize(size);
             }
             catch (Exception e)
             {
@@ -185,13 +185,13 @@ public class WorldProviderSecretBase extends WorldProvider
     @Override
     public void onPlayerRemoved(EntityPlayerMP player)
     {
-        if (!player.isDead) player.addChatMessage(new TextComponentTranslation("pokecube.secretBase.exit"));
+        if (!player.isDead) player.sendMessage(new TextComponentTranslation("pokecube.secretBase.exit"));
     }
 
     @Override
-    protected void createBiomeProvider()
+    protected void init()
     {
-        this.biomeProvider = new BiomeProviderSecretBase(worldObj);
+        this.biomeProvider = new BiomeProviderSecretBase(world);
     }
 
     @Override

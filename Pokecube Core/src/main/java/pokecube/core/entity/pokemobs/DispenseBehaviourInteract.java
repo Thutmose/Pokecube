@@ -47,7 +47,7 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
     {
         EnumFacing dir = null;
         IBlockState state = source.getBlockState();
-        for (IProperty<?> prop : state.getPropertyNames())
+        for (IProperty<?> prop : state.getPropertyKeys())
         {
             if (prop.getValueClass() == EnumFacing.class)
             {
@@ -62,7 +62,7 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
         player.posZ = source.getZ();
 
         Vector3 loc = Vector3.getNewVector().set(source.getBlockPos().offset(dir));
-        AxisAlignedBB box = loc.getAABB().expandXyz(1.5);
+        AxisAlignedBB box = loc.getAABB().grow(1.5);
         List<EntityLiving> mobs = source.getWorld().getEntitiesWithinAABB(EntityLiving.class, box);
         Collections.shuffle(mobs);
         if (!mobs.isEmpty())

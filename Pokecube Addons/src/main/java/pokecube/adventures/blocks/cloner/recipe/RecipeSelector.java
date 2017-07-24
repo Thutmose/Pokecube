@@ -9,7 +9,9 @@ import com.google.common.collect.Maps;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -129,7 +131,6 @@ public class RecipeSelector implements IDefaultRecipe
         return output;
     }
 
-    @Override
     public int getRecipeSize()
     {
         return 2;
@@ -139,6 +140,27 @@ public class RecipeSelector implements IDefaultRecipe
     public ItemStack getRecipeOutput()
     {
         return output;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
     }
 
 }

@@ -3,6 +3,7 @@ package pokecube.core.events.handlers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -12,6 +13,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.item.ItemExpireEvent;
@@ -67,9 +69,9 @@ public class PCEventsHandler
             else if (o instanceof EntityPokecube)
             {
                 EntityPokecube cube = (EntityPokecube) o;
-                if (cube.getEntityItem() != null)
+                if (cube.getItem() != null)
                 {
-                    IPokemob poke = PokecubeManager.itemToPokemob(cube.getEntityItem(), cube.getEntityWorld());
+                    IPokemob poke = PokecubeManager.itemToPokemob(cube.getItem(), cube.getEntityWorld());
                     if (poke != null && poke.getPokemonOwner() != null && poke.getPokemonOwner() == player)
                     {
                         ret.add(poke);
@@ -107,13 +109,13 @@ public class PCEventsHandler
             else if (o instanceof EntityPokecube)
             {
                 EntityPokecube cube = (EntityPokecube) o;
-                if (cube.getEntityItem() != null)
+                if (cube.getItem() != null)
                 {
-                    String name = PokecubeManager.getOwner(cube.getEntityItem());
+                    String name = PokecubeManager.getOwner(cube.getItem());
                     if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getCachedUniqueIdString())))
                     {
-                        InventoryPC.addStackToPC(name, cube.getEntityItem());
+                        InventoryPC.addStackToPC(name, cube.getItem());
                         cube.setDead();
                     }
                 }
@@ -129,6 +131,21 @@ public class PCEventsHandler
     @SubscribeEvent
     public void PCLoggin(EntityJoinWorldEvent evt)
     {
+        // I will deal with some pokemob related bugs here, as to not have
+        // multiple event handlers for this.
+        if (evt.getWorld() instanceof WorldServer && evt.getEntity() instanceof IPokemob)
+        {
+            UUID id = evt.getEntity().getUniqueID();
+            WorldServer serer = (WorldServer) evt.getWorld();
+            if (serer.getEntityFromUuid(id) != null)
+            {
+                evt.setCanceled(true);
+                PokecubeMod.log(Level.WARNING, "Tried to load duplicate " + evt.getEntity(),
+                        new IllegalArgumentException());
+            }
+            return;
+        }
+
         if (!(evt.getEntity() instanceof EntityPlayer)) return;
 
         EntityPlayer entityPlayer = (EntityPlayer) evt.getEntity();
@@ -181,19 +198,19 @@ public class PCEventsHandler
         if (evt.getItem().getEntityWorld().isRemote) return;
         InventoryPlayer inv = evt.getEntityPlayer().inventory;
         int num = inv.getFirstEmptyStack();
-        if (!PokecubeManager.isFilled(evt.getItem().getEntityItem())) { return; }
-        String owner = PokecubeManager.getOwner(evt.getItem().getEntityItem());
+        if (!PokecubeManager.isFilled(evt.getItem().getItem())) { return; }
+        String owner = PokecubeManager.getOwner(evt.getItem().getItem());
         if (evt.getEntityPlayer().getCachedUniqueIdString().equals(owner))
         {
             if (num == -1)
             {
-                InventoryPC.addPokecubeToPC(evt.getItem().getEntityItem(), evt.getEntityPlayer().getEntityWorld());
+                InventoryPC.addPokecubeToPC(evt.getItem().getItem(), evt.getEntityPlayer().getEntityWorld());
                 evt.getItem().setDead();
             }
         }
         else
         {
-            InventoryPC.addPokecubeToPC(evt.getItem().getEntityItem(), evt.getEntityPlayer().getEntityWorld());
+            InventoryPC.addPokecubeToPC(evt.getItem().getItem(), evt.getEntityPlayer().getEntityWorld());
             evt.getItem().setDead();
             evt.setCanceled(true);
         }
@@ -206,9 +223,9 @@ public class PCEventsHandler
     public void playerTossPokecubeToPC(ItemTossEvent evt)
     {
         if (evt.getEntityItem().getEntityWorld().isRemote) return;
-        if (PokecubeManager.isFilled(evt.getEntityItem().getEntityItem()))
+        if (PokecubeManager.isFilled(evt.getEntityItem().getItem()))
         {
-            InventoryPC.addPokecubeToPC(evt.getEntityItem().getEntityItem(), evt.getEntityItem().getEntityWorld());
+            InventoryPC.addPokecubeToPC(evt.getEntityItem().getItem(), evt.getEntityItem().getEntityWorld());
             evt.getEntityItem().setDead();
             evt.setCanceled(true);
         }
@@ -222,10 +239,10 @@ public class PCEventsHandler
     @SubscribeEvent
     public void sendPokemobToPCOnItemExpiration(ItemExpireEvent evt)
     {
-        if (PokecubeManager.isFilled(evt.getEntityItem().getEntityItem()))
+        if (PokecubeManager.isFilled(evt.getEntityItem().getItem()))
         {
             if (evt.getEntityItem().getEntityWorld().isRemote) return;
-            InventoryPC.addPokecubeToPC(evt.getEntityItem().getEntityItem(), evt.getEntityItem().getEntityWorld());
+            InventoryPC.addPokecubeToPC(evt.getEntityItem().getItem(), evt.getEntityItem().getEntityWorld());
         }
     }
 
@@ -250,9 +267,9 @@ public class PCEventsHandler
         List<EntityItem> toRemove = Lists.newArrayList();
         for (EntityItem item : evt.getDrops())
         {
-            if (item != null && item.getEntityItem() != null && ContainerPC.isItemValid(item.getEntityItem()))
+            if (item != null && item.getItem() != null && ContainerPC.isItemValid(item.getItem()))
             {
-                InventoryPC.addStackToPC(evt.getEntity().getCachedUniqueIdString(), item.getEntityItem().copy());
+                InventoryPC.addStackToPC(evt.getEntity().getCachedUniqueIdString(), item.getItem().copy());
                 toRemove.add(item);
             }
         }

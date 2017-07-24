@@ -62,7 +62,7 @@ public class InventoryPlayerPokemob extends AnimalChest
     @Override
     public void closeInventory(EntityPlayer player)
     {
-        if (player.worldObj.isRemote) return;
+        if (player.world.isRemote) return;
         IPokemob e = PokePlayer.PROXY.getPokemob(player);
         saveToPokemob(e, player);
     }

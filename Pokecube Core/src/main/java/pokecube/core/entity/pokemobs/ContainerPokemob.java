@@ -47,22 +47,22 @@ public class ContainerPokemob extends Container
             }
 
             /** Check if the stack is a valid item for this slot. Always true
-             * beside for the armor slots. */
-            @Override
-            public boolean isItemValid(ItemStack stack)
-            {
-                return PokecubeItems.isValidHeldItem(stack);
-            }
-
-            @Override
-            public ItemStack func_190901_a(EntityPlayer playerIn, ItemStack stack)
+			 * beside for the armor slots. */
+			@Override
+			public boolean isItemValid(ItemStack stack)
+			{
+				return PokecubeItems.isValidHeldItem(stack);
+			}
+		    
+			@Override
+            public ItemStack onTake(EntityPlayer playerIn, ItemStack stack)
             {
                 ItemStack old = getStack();
                 if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
                 {
                     e.getPokedexEntry().onHeldItemChange(stack, old, e);
                 }
-                return super.func_190901_a(playerIn, stack);
+                return super.onTake(playerIn, stack);
             }
 
             /** Helper method to put a stack in the slot. */
@@ -115,7 +115,7 @@ public class ContainerPokemob extends Container
     @Override
     public boolean canInteractWith(EntityPlayer p_75145_1_)
     {
-        return this.pokemobInv.isUseableByPlayer(p_75145_1_) && this.pokemob.getEntity().isEntityAlive()
+        return this.pokemobInv.isUsableByPlayer(p_75145_1_) && this.pokemob.getEntity().isEntityAlive()
                 && this.pokemob.getEntity().getDistanceToEntity(p_75145_1_) < 8.0F;
     }
 

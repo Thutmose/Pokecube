@@ -37,9 +37,9 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     }
 
     @Override
-    protected void rotateCorpse(T par1EntityLiving, float par2, float par3, float par4)
+    protected void applyRotations(T par1EntityLiving, float par2, float par3, float par4)
     {
-        super.rotateCorpse(par1EntityLiving, par2, par3, par4);
+        super.applyRotations(par1EntityLiving, par2, par3, par4);
         if (!checkedForSleep)
         {
             checkedForSleep = true;
@@ -48,7 +48,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         if (par1EntityLiving.getHealth() <= 0)
         {
             float f = ((float) par1EntityLiving.deathTime + par4 - 1.0F) / 20.0F * 1.6F;
-            f = MathHelper.sqrt_float(f);
+            f = MathHelper.sqrt(f);
 
             if (f > 1.0F)
             {

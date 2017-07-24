@@ -42,7 +42,8 @@ tile.pokesiphon.name=Energy Siphon
 gui.trainer.stationary=Trainer Wanders
 gui.trainer.saved=Saved Trainer
 
-gui.jei.pokemobs=Pokemob Evolution
+gui.jei.pokemobs=Pokémob Evolution
+gui.jei.pokemobs.interact=Pokémob Interactions
 gui.jei.pokemob.evo.level=Level %s
 gui.jei.pokemob.evo.traded=When Traded
 gui.jei.pokemob.evo.night=At Night
@@ -56,6 +57,8 @@ gui.jei.pokemob.evo.chance=With chance %s
 
 gui.jei.pokemob.gender.male=Male
 gui.jei.pokemob.gender.female=Female
+
+gui.jei.pokemob.nogender=When not %s
 
 container.splicer=Splicer
 container.extractor=Gene Extractor
@@ -84,10 +87,13 @@ msg.team.deny=§cYou are not allowed to do that in land owned by Team %1$s
 msg.team.enterLand=You have entered land owned by Team %1$s
 msg.team.exitLand=You have left land owned by Team %1$s
 
+achievement.pokeadv.trainer.root=Your Pokécube Adventure
+achievement.pokeadv.trainer.root.desc=Your Interactions with Trainers.
+
 achievement.pokeadv.defeat.trainer=Defeat a trainer
 achievement.pokeadv.defeat.trainer.desc=Defeat a trainer
-achievement.pokeadv.defeat.leader=Defeat a trainer
-achievement.pokeadv.defeat.leader.desc=Defeat a trainer
+achievement.pokeadv.defeat.leader=Defeat a Gym Leader
+achievement.pokeadv.defeat.leader.desc=Defeat a Gym Leader
 achievement.achievement.pokeadv.get.badgenormal=Get a normal Badge
 achievement.achievement.pokeadv.get.badgenormal.desc=Get a normal Badge
 achievement.achievement.pokeadv.get.badgefighting=Get a fighting Badge
@@ -124,6 +130,8 @@ achievement.achievement.pokeadv.get.badgedark=Get a dark Badge
 achievement.achievement.pokeadv.get.badgedark.desc=Get a dark Badge
 achievement.achievement.pokeadv.get.badgefairy=Get a fairy Badge
 achievement.achievement.pokeadv.get.badgefairy.desc=Get a fairy Badge
+
+pokecube.expshare.tooltip=Gives extra EXP if the Pokémob holding this is within 16 blocks of the battle.
 
 #Config Stuff
 

@@ -7,6 +7,8 @@ import org.nfunk.jep.JEP;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.world.IWorldEventListener;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
@@ -33,9 +35,11 @@ public class CylindricalFunction extends MoveAnimationBase
 
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
+        reallyInitRGBA();
         if (customColour) return;
         if (particle.equals("airbubble"))
         {
@@ -48,7 +52,7 @@ public class CylindricalFunction extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
         }
         else
         {
@@ -74,7 +78,7 @@ public class CylindricalFunction extends MoveAnimationBase
             if (density < 1 && Math.random() > density) continue;
             if (i / dist > 1) return;
             setVector(angleF, temp, i / dist, temp1);
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle,
+            PokecubeCore.proxy.spawnParticle(info.attacker.world, particle,
                     source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, particleLife);
         }
     }

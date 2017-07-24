@@ -6,7 +6,9 @@ import java.util.Locale;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import thut.lib.CompatWrapper;
@@ -26,12 +28,6 @@ public class RecipeWearables implements IDefaultRecipe
     public ItemStack getRecipeOutput()
     {
         return output;
-    }
-
-    @Override
-    public int getRecipeSize()
-    {
-        return 10;
     }
 
     @Override
@@ -97,6 +93,27 @@ public class RecipeWearables implements IDefaultRecipe
             output.getTagCompound().setInteger("dyeColour", colour);
         }
         return CompatWrapper.isValid(output);
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
     }
 
 }

@@ -35,7 +35,7 @@ public class EntityRequestPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(EntityRequestPacket packet, MessageContext ctx) {
-			EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+			EntityPlayerMP player = ctx.getServerHandler().player;
 			NBTEdit.log(Level.TRACE, player.getName() + " requested entity with Id #" + packet.entityID);
 			NBTEdit.NETWORK.sendEntity(player, packet.entityID);
 			return null;

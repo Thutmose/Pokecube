@@ -65,18 +65,24 @@ public class PokemobAIHurt extends EntityAIBase
         this.targetSearchDelay = 10 + this.taskOwner.getRNG().nextInt(5);
         Path path = this.taskOwner.getNavigator().getPathToEntityLiving(p_75295_1_);
 
-        if (path == null) { return false; }
+        if (path == null)
+        {
+            return false;
+        }
         PathPoint pathpoint = path.getFinalPathPoint();
 
-        if (pathpoint == null) { return false; }
-        int i = pathpoint.xCoord - MathHelper.floor_double(p_75295_1_.posX);
-        int j = pathpoint.zCoord - MathHelper.floor_double(p_75295_1_.posZ);
+        if (pathpoint == null)
+        {
+            return false;
+        }
+        int i = pathpoint.x - MathHelper.floor(p_75295_1_.posX);
+        int j = pathpoint.z - MathHelper.floor(p_75295_1_.posZ);
         return i * i + j * j <= 2.25D;
     }
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
-    public boolean continueExecuting()// shouldContinueExecuting in 1.12
+    public boolean shouldContinueExecuting()
     {
         EntityLivingBase entitylivingbase = this.taskOwner.getAttackTarget();
 
@@ -92,7 +98,10 @@ public class PokemobAIHurt extends EntityAIBase
         {
             double d0 = this.getTargetDistance();
 
-            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0) { return false; }
+            if (this.taskOwner.getDistanceSqToEntity(entitylivingbase) > d0 * d0)
+            {
+                return false;
+            }
             if (this.shouldCheckSight)
             {
                 if (this.taskOwner.getEntitySenses().canSee(entitylivingbase))
@@ -145,8 +154,8 @@ public class PokemobAIHurt extends EntityAIBase
             else if (p_75296_1_ instanceof EntityPlayer && !p_75296_2_
                     && ((EntityPlayer) p_75296_1_).capabilities.disableDamage) { return false; }
 
-            if (!this.taskOwner.isWithinHomeDistanceFromPosition(new BlockPos(MathHelper.floor_double(p_75296_1_.posX),
-                    MathHelper.floor_double(p_75296_1_.posY), MathHelper.floor_double(p_75296_1_.posZ))))
+            if (!this.taskOwner.isWithinHomeDistanceFromPosition(new BlockPos(MathHelper.floor(p_75296_1_.posX),
+                    MathHelper.floor(p_75296_1_.posY), MathHelper.floor(p_75296_1_.posZ))))
             {
                 return false;
             }
@@ -209,7 +218,7 @@ public class PokemobAIHurt extends EntityAIBase
                     this.taskOwner.getClass(),
                     new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ,
                             this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)
-                                    .expand(d0, 10.0D, d0));// grow in 1.12
+                                    .grow(d0, 10.0D, d0));
             Iterator<? extends EntityCreature> iterator = list.iterator();
 
             while (iterator.hasNext())

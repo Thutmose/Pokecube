@@ -16,11 +16,11 @@ public class BiomeProviderSecretBase extends BiomeProvider
 {
     /** The biome generator object. */
     private Biome biomeGenerator;
-    final World worldObj;
+    final World world;
 
     public BiomeProviderSecretBase(World worldIn)
     {
-        this.worldObj = worldIn;
+        this.world = worldIn;
         biomeGenerator = Biomes.DEFAULT;
     }
 

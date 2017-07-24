@@ -55,7 +55,7 @@ public class ItemPokedex extends Item
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        if (!world.isRemote) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(player), player.worldObj);
+        if (!world.isRemote) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(player), player.world);
         if (!player.isSneaking())
         {
             showGui(player);
@@ -95,10 +95,10 @@ public class ItemPokedex extends Item
         {
             ITextComponent message = CommandTools.makeTranslatedMessage("pokedex.locationinfo1", "green",
                     Database.spawnables.size());
-            playerIn.addChatMessage(message);
+            playerIn.sendMessage(message);
             message = CommandTools.makeTranslatedMessage("pokedex.locationinfo2", "green",
                     Pokedex.getInstance().getEntries().size());
-            playerIn.addChatMessage(message);
+            playerIn.sendMessage(message);
         }
 
         if (!playerIn.isSneaking()) showGui(playerIn);

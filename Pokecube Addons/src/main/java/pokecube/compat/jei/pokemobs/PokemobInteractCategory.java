@@ -1,10 +1,6 @@
 package pokecube.compat.jei.pokemobs;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.Lists;
 
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.gui.IDrawable;
@@ -91,13 +87,6 @@ public class PokemobInteractCategory implements IRecipeCategory<PokemobInteractR
     public String getModName()
     {
         return "Pokecube";
-    }
-
-    @Override
-    public List<String> getTooltipStrings(int arg0, int arg1)
-    {
-        // TODO Auto-generated method stub
-        return Lists.newArrayList();
     }
 
 }

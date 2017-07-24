@@ -1,6 +1,5 @@
 package pokecube.core.ai.thread.aiRunnables;
 
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.Block;
@@ -15,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
@@ -135,7 +135,7 @@ public class AIHungry extends AIBase
             {
                 float ratio = (float) ((hungerTime - hurtTime) / deathTime);
                 boolean dead = entity.getMaxHealth() * ratio > entity.getHealth();
-                entity.attackEntityFrom(DamageSource.starve, entity.getMaxHealth() * ratio);
+                entity.attackEntityFrom(DamageSource.STARVE, entity.getMaxHealth() * ratio);
                 if (!dead) pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
                 else pokemob.displayMessageToOwner(
@@ -184,8 +184,7 @@ public class AIHungry extends AIBase
         if (hunger != hungerTime) pokemob.setHungerTime(hunger);
 
         if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == tick
-                && !entity.getEntityWorld().isRemote && pokemob.getHungerCooldown() < 0
-                && pokemob.getHungerTime() < 0)
+                && !entity.getEntityWorld().isRemote && pokemob.getHungerCooldown() < 0 && pokemob.getHungerTime() < 0)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
             float toHeal = entity.getHealth() + dh;
@@ -207,7 +206,7 @@ public class AIHungry extends AIBase
         if (distance < 3)
         {
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-            berry.setEntityItemStack(fruit);
+            berry.setItem(fruit);
             pokemob.eat(berry);
             toRun.addElement(new InventoryChange(entity, 2, fruit, true));
             TickHandler.addBlockChange(foodLoc, entity.dimension, Blocks.AIR);
@@ -228,7 +227,7 @@ public class AIHungry extends AIBase
             {
                 addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                berry.setEntityItemStack(fruit);
+                berry.setItem(fruit);
                 pokemob.noEat(berry);
                 foodLoc.clear();
             }
@@ -243,7 +242,7 @@ public class AIHungry extends AIBase
         if (dist < diff)
         {
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-            berry.setEntityItemStack(new ItemStack(b.getBlock()));
+            berry.setItem(new ItemStack(b.getBlock()));
             pokemob.eat(berry);
             if (PokecubeMod.core.getConfig().pokemobsEatPlants)
             {
@@ -251,8 +250,8 @@ public class AIHungry extends AIBase
                         location.getBlockState(world).getMaterial() == Material.GRASS ? Blocks.DIRT : Blocks.AIR);
                 if (location.getBlockState(world).getMaterial() != Material.GRASS)
                 {
-                    List<ItemStack> list;// non null list in 1.12
-                    list = b.getBlock().getDrops(world, foodLoc.getPos(), foodLoc.getBlockState(world), 0);
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    b.getBlock().getDrops(list, world, foodLoc.getPos(), foodLoc.getBlockState(world), 0);
                     for (ItemStack stack : list)
                         toRun.addElement(new InventoryChange(entity, 2, stack, true));
                 }
@@ -298,7 +297,7 @@ public class AIHungry extends AIBase
                     && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                berry.setEntityItemStack(new ItemStack(b.getBlock()));
+                berry.setItem(new ItemStack(b.getBlock()));
                 pokemob.noEat(berry);
                 foodLoc.clear();
                 addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
@@ -329,7 +328,7 @@ public class AIHungry extends AIBase
                 }
             }
             setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-            berry.setEntityItemStack(new ItemStack(b.getBlock()));
+            berry.setItem(new ItemStack(b.getBlock()));
             pokemob.eat(berry);
             foodLoc.clear();
             addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
@@ -368,7 +367,7 @@ public class AIHungry extends AIBase
             if (shouldChangePath && !pathed)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                berry.setEntityItemStack(new ItemStack(b.getBlock()));
+                berry.setItem(new ItemStack(b.getBlock()));
                 pokemob.noEat(berry);
                 foodLoc.clear();
                 if (pokemob.hasHomeArea())
@@ -430,7 +429,7 @@ public class AIHungry extends AIBase
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.COBBLESTONE);
                     }
                 }
-                berry.setEntityItemStack(new ItemStack(b));
+                berry.setItem(new ItemStack(b));
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 pokemob.eat(berry);
                 return;
@@ -468,7 +467,7 @@ public class AIHungry extends AIBase
                     pokemob.getPokemobInventory().setInventorySlotContents(i, CompatWrapper.nullStack);
                 }
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                berry.setEntityItemStack(stack.copy());
+                berry.setItem(stack.copy());
                 pokemob.eat(berry);
                 return;
             }

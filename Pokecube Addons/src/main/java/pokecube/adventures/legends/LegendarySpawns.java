@@ -60,7 +60,7 @@ public class LegendarySpawns
                     {
                         entity = pokemob.setForSpawn(Tools.levelToXp(entry.getEvolutionMode(), 50)).getEntity();
                     }
-                    worldIn.spawnEntityInWorld(entity);
+                    worldIn.spawnEntity(entity);
                 }
             }
             evt.setCanceled(true);

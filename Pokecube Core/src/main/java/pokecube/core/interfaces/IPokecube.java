@@ -123,4 +123,5 @@ public interface IPokecube
     {
         return CapabilityPokemob.getPokemobFor(hit) != null;
     }
+
 }

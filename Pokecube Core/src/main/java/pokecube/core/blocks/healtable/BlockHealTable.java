@@ -34,7 +34,7 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
     public BlockHealTable()
     {
         super(Material.CLOTH);
-        setHardness(20);
+        setHardness(1000);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(FIXED,
                 Boolean.FALSE));
         this.setCreativeTab(CreativeTabs.REDSTONE);
@@ -84,13 +84,13 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
                         new ItemStack(item.getItem(), CompatWrapper.getStackSize(item), item.getItemDamage()));
                 if (item.hasTagCompound())
                 {
-                    entity_item.getEntityItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
+                    entity_item.getItem().setTagCompound((NBTTagCompound) item.getTagCompound().copy());
                 }
                 float factor = 0.005F;
                 entity_item.motionX = rand.nextGaussian() * factor;
                 entity_item.motionY = rand.nextGaussian() * factor + 0.2F;
                 entity_item.motionZ = rand.nextGaussian() * factor;
-                world.spawnEntityInWorld(entity_item);
+                world.spawnEntity(entity_item);
                 CompatWrapper.setStackSize(item, 0);
             }
         }
@@ -136,7 +136,7 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
             if (playerIn.capabilities.isCreativeMode && !worldIn.isRemote && hand == EnumHand.MAIN_HAND)
             {
                 state = state.cycleProperty(FIXED);
-                playerIn.addChatMessage(new TextComponentString(
+                playerIn.sendMessage(new TextComponentString(
                         "Set Block to " + (state.getValue(BlockHealTable.FIXED) ? "Breakable" : "Unbreakable")));
                 worldIn.setBlockState(pos, state);
             }
@@ -149,7 +149,7 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
     @Override
     /** Called when a block is placed using its ItemBlock. Args: World, X, Y, Z,
      * side, hitX, hitY, hitZ, block metadata */
-    public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
         if (!world.isRemote) PokecubeSerializer.getInstance().addChunks(world, pos);

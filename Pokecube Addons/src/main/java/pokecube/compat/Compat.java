@@ -67,12 +67,12 @@ public class Compat
                 if (result.status == Status.OUTDATED)
                 {
                     ITextComponent mess = ClientProxy.getOutdatedMessage(result, "Pokecube Revival");
-                    (event.player).addChatMessage(mess);
+                    (event.player).sendMessage(mess);
                 }
                 if (PokecubeAdv.tesla)
                 {
                     ITextComponent mess = new TextComponentTranslation("pokecube.power.tesla");
-                    (event.player).addChatMessage(mess);
+                    (event.player).sendMessage(mess);
                 }
             }
         }

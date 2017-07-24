@@ -16,17 +16,19 @@ import com.google.common.collect.Sets;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.GameData;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.Tools;
 
 public class XMLRecipeHandler
 {
-    public static Set<String>                recipeFiles = Sets.newHashSet();
-    public static Map<String, IRecipeParser> recipeParsers   = Maps.newHashMap();
+    private static int                       num           = 0;
+    public static Set<String>                recipeFiles   = Sets.newHashSet();
+    public static Map<String, IRecipeParser> recipeParsers = Maps.newHashMap();
 
     public static class DefaultParser implements IRecipeParser
     {
@@ -56,9 +58,10 @@ public class XMLRecipeHandler
                 failed = failed || o == null;
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
             IRecipe toAdd = null;
-            if (recipe.shapeless) toAdd = new ShapelessOreRecipe(output, inputs.toArray());
-            else toAdd = new ShapedOreRecipe(output, inputs.toArray());
-            GameRegistry.addRecipe(toAdd);
+            ResourceLocation group = new ResourceLocation(PokecubeMod.ID, "loaded");
+            if (recipe.shapeless) toAdd = new ShapelessOreRecipe(group, output, inputs.toArray());
+            else toAdd = new ShapedOreRecipe(group, output, inputs.toArray());
+            GameData.register_impl(toAdd.setRegistryName(new ResourceLocation("pokecube", "autoloaded" + (num++))));
         }
 
     }
@@ -89,7 +92,8 @@ public class XMLRecipeHandler
         @XmlElement(name = "Input")
         public List<XMLRecipeInput> inputs    = Lists.newArrayList();
         @XmlAnyAttribute
-        public Map<QName, String> values = Maps.newHashMap();
+        public Map<QName, String>   values    = Maps.newHashMap();
+
         @Override
         public String toString()
         {

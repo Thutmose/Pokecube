@@ -300,7 +300,7 @@ public class EntityPokecube extends EntityPokecubeBase
 
         if (this.prevRotationPitch == 0.0F && this.prevRotationYaw == 0.0F)
         {
-            float f = MathHelper.sqrt_double(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            float f = MathHelper.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
             this.prevRotationYaw = this.rotationYaw = (float) (Math.atan2(this.motionX, this.motionZ) * 180.0D
                     / Math.PI);
             this.prevRotationPitch = this.rotationPitch = (float) (Math.atan2(this.motionY, f) * 180.0D / Math.PI);
@@ -314,7 +314,7 @@ public class EntityPokecube extends EntityPokecubeBase
         {
             AxisAlignedBB axisalignedbb = state.getBoundingBox(getEntityWorld(), pos);
 
-            if (axisalignedbb != null && axisalignedbb.isVecInside(new Vec3d(this.posX, this.posY, this.posZ)))
+            if (axisalignedbb != null && axisalignedbb.contains(new Vec3d(this.posX, this.posY, this.posZ)))
             {// contains in 1.12
                 this.inGround = true;
                 tilePos = pos;

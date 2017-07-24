@@ -15,12 +15,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     public TabulaModelSet set;
     public TabulaWrapper  model;
 
-    // Values used to properly reset GL state after rendering.
-    boolean               blend;
-    boolean               light;
-    int                   src;
-    int                   dst;
-
     public TabulaModelRenderer(TabulaModelSet set)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);

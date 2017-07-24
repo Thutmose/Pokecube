@@ -48,7 +48,7 @@ public class PacketPokeAdv
                 {
                     try
                     {
-                        NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
+                        NBTTagCompound tag = buffer.readCompoundTag();
                         if (tag == null) return;
                         NBTTagList list = (NBTTagList) tag.getTag("pc");
                         InventoryPC.loadFromNBT(list, true);
@@ -103,7 +103,7 @@ public class PacketPokeAdv
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
             // System.out.println(buffer.array().length);
         }
 
@@ -156,7 +156,7 @@ public class PacketPokeAdv
                 {
                     try
                     {
-                        NBTTagCompound tag = buffer.readNBTTagCompoundFromBuffer();
+                        NBTTagCompound tag = buffer.readCompoundTag();
                         String biome = tag.getString("biome");
                         if (player.getHeldItemMainhand() != null
                                 && player.getHeldItemMainhand().getItem() instanceof ItemTarget
@@ -178,7 +178,7 @@ public class PacketPokeAdv
             @Override
             public IMessage onMessage(MessageServer message, MessageContext ctx)
             {
-                EntityPlayer player = ctx.getServerHandler().playerEntity;
+                EntityPlayer player = ctx.getServerHandler().player;
 
                 return handleServerSide(player, message.buffer);
             }
@@ -197,7 +197,7 @@ public class PacketPokeAdv
         {
             this.buffer = new PacketBuffer(Unpooled.buffer());
             buffer.writeByte(channel);
-            buffer.writeNBTTagCompoundToBuffer(nbt);
+            buffer.writeCompoundTag(nbt);
         }
 
         public MessageServer(byte[] data)

@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.village.Village;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -133,19 +134,19 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
     {
         if (caveAdjusted)
         {
-//            if (world instanceof WorldServer)// only on 1.12
-//            {
-//                WorldServer worldS = (WorldServer) world;
-//                for (String key : structureSubbiomeMap.keySet())
-//                {
-//                    if (worldS.getChunkProvider().chunkGenerator.isInsideStructure(worldS, key, v.getPos()))
-//                    {
-//                        String mapping = structureSubbiomeMap.get(key);
-//                        BiomeType biome = BiomeType.getBiome(mapping, true);
-//                        return biome.getType();
-//                    }
-//                }
-//            }
+            if (world instanceof WorldServer)
+            {
+                WorldServer worldS = (WorldServer) world;
+                for (String key : structureSubbiomeMap.keySet())
+                {
+                    if (worldS.getChunkProvider().chunkGenerator.isInsideStructure(worldS, key, v.getPos()))
+                    {
+                        String mapping = structureSubbiomeMap.get(key);
+                        BiomeType biome = BiomeType.getBiome(mapping, true);
+                        return biome.getType();
+                    }
+                }
+            }
             if (world.provider.doesWaterVaporize() || chunk.canSeeSky(v.getPos())
                     || !PokecubeCore.core.getConfig().autoDetectSubbiomes)
                 return -1;
@@ -222,10 +223,10 @@ public class PokecubeTerrainChecker implements ISubBiomeChecker
             sky = v.findNextSolidBlock(world, Vector3.secondAxisNeg, 16) == null;
             if (sky) return BiomeType.SKY.getType();
         }
-        if (world.villageCollectionObj != null)
+        if (world.villageCollection != null)
         {
-            Village village = world.villageCollectionObj.getNearestVillage(
-                    new BlockPos(MathHelper.floor_double(v.x), MathHelper.floor_double(v.y), MathHelper.floor_double(v.z)), 2);
+            Village village = world.villageCollection.getNearestVillage(
+                    new BlockPos(MathHelper.floor(v.x), MathHelper.floor(v.y), MathHelper.floor(v.z)), 2);
             if (village != null)
             {
                 biome = VILLAGE.getType();

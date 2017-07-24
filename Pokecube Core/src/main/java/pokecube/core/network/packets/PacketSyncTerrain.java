@@ -90,7 +90,7 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
             PacketBuffer buffer = new PacketBuffer(buf);
             try
             {
-                data = buffer.readNBTTagCompoundFromBuffer();
+                data = buffer.readCompoundTag();
             }
             catch (IOException e)
             {
@@ -113,7 +113,7 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
         else if (type == TERRAIN)
         {
             PacketBuffer buffer = new PacketBuffer(buf);
-            buffer.writeNBTTagCompoundToBuffer(data);
+            buffer.writeCompoundTag(data);
         }
     }
 
@@ -121,7 +121,7 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
     {
         EntityPlayer player;
         player = PokecubeCore.getPlayer(null);
-        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.worldObj).getTerrain(message.x, message.y,
+        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.world).getTerrain(message.x, message.y,
                 message.z);
 
         if (message.type == EFFECTS)

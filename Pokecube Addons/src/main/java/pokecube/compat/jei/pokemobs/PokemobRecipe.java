@@ -38,30 +38,23 @@ public class PokemobRecipe implements IDefaultRecipe
 
     ResourceLocation registryName;
 
-    // @Override
+    @Override
     public IRecipe setRegistryName(ResourceLocation name)
     {
         registryName = name;
         return this;
     }
 
-    // @Override
+    @Override
     public ResourceLocation getRegistryName()
     {
         return registryName;
     }
 
-    // @Override
+    @Override
     public Class<IRecipe> getRegistryType()
     {
         return IRecipe.class;
-    }
-
-    // @Override
-    public int getRecipeSize()
-    {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
 }

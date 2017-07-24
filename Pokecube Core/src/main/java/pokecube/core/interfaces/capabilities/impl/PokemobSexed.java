@@ -123,7 +123,7 @@ public abstract class PokemobSexed extends PokemobStats
                 if (!event.isCanceled())
                 {
                     egg = eggItem;
-                    getEntity().getEntityWorld().spawnEntityInWorld(egg);
+                    getEntity().getEntityWorld().spawnEntity(egg);
                 }
             }
             catch (Exception e)

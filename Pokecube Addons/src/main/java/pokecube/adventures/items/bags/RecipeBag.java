@@ -4,7 +4,9 @@ import java.util.List;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import thut.lib.CompatWrapper;
@@ -26,11 +28,11 @@ public class RecipeBag implements IDefaultRecipe
         return output;
     }
 
-    @Override
-    public int getRecipeSize()
-    {
-        return 10;
-    }
+    // @Override
+    // public int getRecipeSize()
+    // {
+    // return 10;
+    // }
 
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
@@ -83,4 +85,24 @@ public class RecipeBag implements IDefaultRecipe
         return CompatWrapper.isValid(output);
     }
 
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
+    }
 }

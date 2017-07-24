@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import thut.api.maths.Vector3;
+import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
@@ -145,7 +146,7 @@ public class BiomeMatcher
                 Biome b = Biome.REGISTRY.getObject(key);
                 if (b != null)
                 {
-                    if (b.getBiomeName().replaceAll(" ", "").equalsIgnoreCase(biomeName))
+                    if (BiomeDatabase.getBiomeName(b).replaceAll(" ", "").equalsIgnoreCase(biomeName))
                     {
                         biome = b;
                         break;

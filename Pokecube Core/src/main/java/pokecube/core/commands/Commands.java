@@ -117,7 +117,7 @@ public class Commands extends CommandBase
                     }
                     if (o instanceof EntityPokemobEgg) ((Entity) o).setDead();
                 }
-                cSender.addChatMessage(new TextComponentString("Killed " + count));
+                cSender.sendMessage(new TextComponentString("Killed " + count));
                 return true;
             }
             CommandTools.sendNoPermissions(cSender);
@@ -145,8 +145,8 @@ public class Commands extends CommandBase
                     {
                         if (!all || e.getPokedexEntry() == Database.getEntry(name))
                         {
-                            if (o.getDistance(cSender.getPositionVector().xCoord, cSender.getPositionVector().yCoord,
-                                    cSender.getPositionVector().zCoord) > PokecubeMod.core.getConfig().maxSpawnRadius)
+                            if (o.getDistance(cSender.getPositionVector().x, cSender.getPositionVector().y,
+                                    cSender.getPositionVector().z) > PokecubeMod.core.getConfig().maxSpawnRadius)
                                 count2++;
                             else count1++;
                             Integer i = counts.get(e.getPokedexEntry());
@@ -155,9 +155,8 @@ public class Commands extends CommandBase
                         }
                     }
                 }
-                cSender.addChatMessage(
-                        CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
-                cSender.addChatMessage(new TextComponentString(counts.toString()));
+                cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
+                cSender.sendMessage(new TextComponentString(counts.toString()));
                 return true;
             }
             CommandTools.sendNoPermissions(cSender);
@@ -193,7 +192,7 @@ public class Commands extends CommandBase
                         }
                     }
                 }
-                cSender.addChatMessage(new TextComponentString("Culled " + n));
+                cSender.sendMessage(new TextComponentString("Culled " + n));
                 return true;
             }
             CommandTools.sendNoPermissions(cSender);
@@ -289,14 +288,14 @@ public class Commands extends CommandBase
                         if (check)
                         {
                             boolean has = tag.getBoolean(reward);
-                            cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward",
-                                    "", player.getName(), reward, has));
+                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward", "",
+                                    player.getName(), reward, has));
                         }
                         else
                         {
                             tag.setBoolean(reward, false);
-                            cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward",
-                                    "", player.getName(), reward));
+                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward", "",
+                                    player.getName(), reward));
                             PokecubePlayerDataHandler.saveCustomData(player);
                         }
                     }
@@ -325,7 +324,7 @@ public class Commands extends CommandBase
                     packet.data.setBoolean("C", false);
                     packet.data.setBoolean("H", false);
                     PokecubePacketHandler.sendToClient(packet, player);
-                    cSender.addChatMessage(
+                    cSender.sendMessage(
                             CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
                     CommandTools.sendMessage(player, "pokecube.command.canchoose");
 
@@ -373,7 +372,7 @@ public class Commands extends CommandBase
                             PokecubePacketHandler.sendToClient(packet, player);
                             PokecubePacketHandler.sendToClient(packet, player);
 
-                            cSender.addChatMessage(
+                            cSender.sendMessage(
                                     CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
                             CommandTools.sendMessage(player, "pokecube.command.canchoose");
                         }
@@ -408,11 +407,11 @@ public class Commands extends CommandBase
                     System.out.println(toAdd);
                     for (PokedexEntry prev : toAdd)
                     {
-                        boolean has = stats.getCaptures(player.getUniqueID()).containsKey(prev);
-                        has = has || stats.getHatches(player.getUniqueID()).containsKey(prev);
+                        boolean has = stats.getCaptures().containsKey(prev);
+                        has = has || stats.getHatches().containsKey(prev);
                         if (!has)
                         {
-                            stats.addCapture(player.getUniqueID(), entry);
+                            stats.addCapture(entry);
                         }
                     }
                 }
@@ -470,7 +469,8 @@ public class Commands extends CommandBase
                     {
                         PokecubeSerializer.getInstance().setHasStarter(player, true);
                         PacketDataSync.sendInitPacket(player, "pokecube-data");
-                        cSender.addChatMessage(
+                        PacketDataSync.sendInitPacket(player, "pokecube-stats");
+                        cSender.sendMessage(
                                 new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
                     }
                 }
@@ -547,26 +547,25 @@ public class Commands extends CommandBase
     }
 
     @Override
-    public List<String> getCommandAliases()
+    public List<String> getAliases()
     {
         return this.aliases;
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokecube";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender icommandsender)
+    public String getUsage(ICommandSender icommandsender)
     {
         return "pokecube <text>";
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
-            BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
     {
         boolean isOp = CommandTools.isOp(sender);
         List<String> ret = new ArrayList<String>();

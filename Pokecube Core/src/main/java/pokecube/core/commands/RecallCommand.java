@@ -34,13 +34,13 @@ public class RecallCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokerecall";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokerecall <optional:name,cubes,stay,all>";
     }
@@ -101,7 +101,7 @@ public class RecallCommand extends CommandBase
                 boolean owned = owner != null;
                 if (!owned)
                 {
-                    String ownerId = PokecubeManager.getOwner(cube.getEntityItem());
+                    String ownerId = PokecubeManager.getOwner(cube.getItem());
                     if (!ownerId.isEmpty())
                     {
                         owned = !ownerId.equals(PokecubeMod.fakeUUID.toString());
@@ -111,17 +111,17 @@ public class RecallCommand extends CommandBase
                 {
                     try
                     {
-                        if (PokecubeManager.isFilled(cube.getEntityItem()))
+                        if (PokecubeManager.isFilled(cube.getItem()))
                         {
                             mob = CapabilityPokemob.getPokemobFor(cube.sendOut());
                             if (mob != null) mob.returnToPokecube();
-                            else PokecubeMod.log(cube.getEntityItem().getDisplayName());
+                            else PokecubeMod.log(cube.getItem().getDisplayName());
                         }
                         else cube.setDead();
                     }
                     catch (Exception e)
                     {
-                        System.err.println(cube.getEntityItem().getDisplayName());
+                        System.err.println(cube.getItem().getDisplayName());
                     }
                     num++;
                 }
@@ -129,11 +129,11 @@ public class RecallCommand extends CommandBase
         }
         if (num == 0)
         {
-            cSender.addChatMessage(new TextComponentTranslation("pokecube.recall.fail"));
+            cSender.sendMessage(new TextComponentTranslation("pokecube.recall.fail"));
         }
         else
         {
-            cSender.addChatMessage(new TextComponentTranslation("pokecube.recall.success", num));
+            cSender.sendMessage(new TextComponentTranslation("pokecube.recall.success", num));
         }
     }
 }

@@ -38,7 +38,7 @@ public class AIGuardEgg extends AIBase
         if (cooldown-- > 0 || egg != null) { return; }
         if (pokemob.getSexe() == IPokemob.MALE) return;
         cooldown = 20;
-        AxisAlignedBB bb = entity.getEntityBoundingBox().expand(16, 8, 16);// grow in 1.12
+        AxisAlignedBB bb = entity.getEntityBoundingBox().grow(16, 8, 16);
         List<Entity> list2 = entity.getEntityWorld().getEntitiesInAABBexcluding(entity, bb, new Predicate<Entity>()
         {
             @Override

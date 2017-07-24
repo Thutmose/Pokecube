@@ -1,3 +1,6 @@
+/**
+ *
+ */
 package pokecube.core;
 
 import static pokecube.core.PokecubeItems.removeFromHoldables;
@@ -25,9 +28,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.registries.GameData;
+import net.minecraftforge.registries.IForgeRegistry;
 import pokecube.core.handlers.Config;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.handlers.RecipeHandler;
@@ -111,8 +113,8 @@ public class Mod_Pokecube_Helper
 
     public void initAllBlocks()
     {
-        allBlocks.clear();//GameData.getWrapper(Block.class).iterator(); in 1.12
-        Iterator<Block> iter = GameData.getBlockRegistry().iterator();
+        allBlocks.clear();
+        Iterator<Block> iter = GameData.getWrapper(Block.class).iterator();
         while (iter.hasNext())
         {
             Block b = iter.next();
@@ -161,7 +163,7 @@ public class Mod_Pokecube_Helper
     }
 
     public void registerSound(SoundEvent sound, ResourceLocation location)
-    {// GameData.register_impl in 1.12
-        GameRegistry.register(sound.setRegistryName(location));
+    {
+        GameData.register_impl(sound.setRegistryName(location));
     }
 }

@@ -30,7 +30,7 @@ public class GuiInfoMessages
     public static void addMessage(ITextComponent message)
     {
         instance.messages.push(message.getFormattedText());
-        instance.time = Minecraft.getMinecraft().thePlayer.ticksExisted;
+        instance.time = Minecraft.getMinecraft().player.ticksExisted;
         instance.recent.addFirst(message.getFormattedText());
         if (instance.messages.size() > 100)
         {
@@ -66,7 +66,7 @@ public class GuiInfoMessages
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
         if (event.getType() != ElementType.CHAT && (minecraft.currentScreen instanceof GuiChat)) return;
 
-        int texH = minecraft.fontRendererObj.FONT_HEIGHT;
+        int texH = minecraft.fontRenderer.FONT_HEIGHT;
         int trim = PokecubeCore.core.getConfig().messageWidth;
         int paddingXPos = PokecubeCore.core.getConfig().messagePadding[0];
         int paddingXNeg = PokecubeCore.core.getConfig().messagePadding[1];
@@ -75,7 +75,7 @@ public class GuiInfoMessages
         minecraft.entityRenderer.setupOverlayRendering();
         int[] mess = GuiDisplayPokecubeInfo.applyTransform(PokecubeCore.core.getConfig().messageRef,
                 PokecubeMod.core.getConfig().messagePos,
-                new int[] { PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRendererObj.FONT_HEIGHT },
+                new int[] { PokecubeMod.core.getConfig().messageWidth, 7 * minecraft.fontRenderer.FONT_HEIGHT },
                 PokecubeMod.core.getConfig().messageSize);
         int x = 0, y = 0;
         float s = PokecubeMod.core.getConfig().messageSize;
@@ -118,7 +118,7 @@ public class GuiInfoMessages
             if (offset < 0) offset = 0;
             if (offset > messages.size() - 7) offset = messages.size() - 7;
         }
-        else if (time > minecraft.thePlayer.ticksExisted - 30)
+        else if (time > minecraft.player.ticksExisted - 30)
         {
             num = 6;
             offset = 0;
@@ -127,7 +127,7 @@ public class GuiInfoMessages
         {
             offset = 0;
             num = 6;
-            time = minecraft.thePlayer.ticksExisted;
+            time = minecraft.player.ticksExisted;
             if (!recent.isEmpty())
             {
                 recent.removeLast();
@@ -145,14 +145,14 @@ public class GuiInfoMessages
             if (index < 0) index = 0;
             if (index > size) break;
             String mess2 = toUse.get(index);
-            List<String> mess1 = minecraft.fontRendererObj.listFormattedStringToWidth(mess2, trim);
+            List<String> mess1 = minecraft.fontRenderer.listFormattedStringToWidth(mess2, trim);
             for (int j = mess1.size() - 1; j >= 0; j--)
             {
                 h = y + texH * (shift);
                 w = x - trim;
                 int ph = 6 * texH - h;
                 GuiScreen.drawRect(w - paddingXNeg, ph, w + trim + paddingXPos, ph + texH, 0x66000000);
-                minecraft.fontRendererObj.drawString(mess1.get(j), x - trim, ph, 0xffffff, true);
+                minecraft.fontRenderer.drawString(mess1.get(j), x - trim, ph, 0xffffff, true);
                 if (j != 0) shift++;
             }
             shift++;

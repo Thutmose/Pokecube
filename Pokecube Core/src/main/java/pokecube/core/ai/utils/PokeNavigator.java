@@ -55,8 +55,8 @@ public class PokeNavigator extends PathNavigate
     public PokeNavigator(EntityLiving entity, World world)
     {
         super(entity, world);
-        this.theEntity = entity;
-        this.worldObj = world;
+        this.entity = entity;
+        this.world = world;
         this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
         pokemob = CapabilityPokemob.getPokemobFor(entity);
         canSwim = true;
@@ -72,7 +72,7 @@ public class PokeNavigator extends PathNavigate
                 || pokemob.getStatus() == IPokemob.STATUS_FRZ)
             return false;
         if (pokemob.getPokemonAIState(IPokemob.SITTING)) return false;
-        return this.theEntity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
+        return this.entity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
     }
 
     /** sets active PathHeap to null */
@@ -83,9 +83,9 @@ public class PokeNavigator extends PathNavigate
     }
 
     @Override
-    public Vec3d getEntityPosition()
+    protected Vec3d getEntityPosition()
     {
-        return new Vec3d(this.theEntity.posX, this.getPathableYPos(), this.theEntity.posZ);
+        return new Vec3d(this.entity.posX, this.getPathableYPos(), this.entity.posZ);
     }
 
     /** gets the actively used PathHeap */
@@ -99,20 +99,22 @@ public class PokeNavigator extends PathNavigate
      * path swim or not */
     private int getPathableYPos()
     {
-        boolean inWater = this.theEntity.isInWater();
+        boolean inWater = this.entity.isInWater();
         if (canDive && inWater)
         {
-            return (int) (this.theEntity.posY + 0.5D);
+            return (int) (this.entity.posY + 0.5D);
         }
         else if (canFly && !inWater)
         {
-            return (int) (this.theEntity.posY + 0.5D);
+            return (int) (this.entity.posY + 0.5D);
         }
         else if (inWater && this.canSwim)
         {
-            int i = (int) this.theEntity.posY;
-            Block block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
-                    MathHelper.floor_double(this.theEntity.posZ))).getBlock();
+            int i = (int) this.entity.posY;
+            Block block = this.world
+                    .getBlockState(
+                            new BlockPos(MathHelper.floor(this.entity.posX), i, MathHelper.floor(this.entity.posZ)))
+                    .getBlock();
             int j = 0;
 
             do
@@ -120,15 +122,17 @@ public class PokeNavigator extends PathNavigate
                 if (block != Blocks.FLOWING_WATER && block != Blocks.WATER) { return i; }
 
                 ++i;
-                block = this.worldObj.getBlockState(new BlockPos(MathHelper.floor_double(this.theEntity.posX), i,
-                        MathHelper.floor_double(this.theEntity.posZ))).getBlock();
+                block = this.world
+                        .getBlockState(
+                                new BlockPos(MathHelper.floor(this.entity.posX), i, MathHelper.floor(this.entity.posZ)))
+                        .getBlock();
                 ++j;
             }
             while (j <= 16);
 
-            return (int) this.theEntity.posY;
+            return (int) this.entity.posY;
         }
-        return (int) (this.theEntity.posY + 0.5D);
+        return (int) (this.entity.posY + 0.5D);
 
     }
 
@@ -162,7 +166,7 @@ public class PokeNavigator extends PathNavigate
 
         if (this.canNavigate())
         {
-            ret = pathfinder.getPathHeapToEntity(this.theEntity, entity, this.getPathSearchRange());
+            ret = pathfinder.getPathHeapToEntity(this.entity, entity, this.getPathSearchRange());
         }
         return ret;
     }
@@ -189,7 +193,7 @@ public class PokeNavigator extends PathNavigate
 
         if (this.canNavigate())
         {
-            ret = pathfinder.getEntityPathToXYZ(this.theEntity, pos.getX(), pos.getY(), pos.getZ(),
+            ret = pathfinder.getEntityPathToXYZ(this.entity, pos.getX(), pos.getY(), pos.getZ(),
                     this.getPathSearchRange());
         }
         return ret;
@@ -213,8 +217,8 @@ public class PokeNavigator extends PathNavigate
         // for (int i = 0; i < dist; i++)
         // {
         // v1.set(v).add(dir.x * i, dir.y * i - 1, dir.z * i);
-        // if ((!canFly && pather.getBlockPathWeight(worldObj, v1) >= 40)
-        // || !pather.fits(worldObj, v1.addTo(0, 1, 0), null)) { return false; }
+        // if ((!canFly && pather.getBlockPathWeight(world, v1) >= 40)
+        // || !pather.fits(world, v1.addTo(0, 1, 0), null)) { return false; }
         // }
         // return true;
     }
@@ -223,7 +227,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean isInLiquid()
     {
-        return theEntity.isInWater() || theEntity.isInLava();
+        return entity.isInWater() || entity.isInLava();
     }
 
     /** If null path or reached the end */
@@ -251,19 +255,18 @@ public class PokeNavigator extends PathNavigate
                     && this.currentPath.getCurrentPathIndex() < this.currentPath.getCurrentPathLength())
             {
                 Vec3d vec3d = this.getEntityPosition();
-                Vec3d vec3d1 = this.currentPath.getVectorFromIndex(this.theEntity,
-                        this.currentPath.getCurrentPathIndex());
+                Vec3d vec3d1 = this.currentPath.getVectorFromIndex(this.entity, this.currentPath.getCurrentPathIndex());
 
-                if (vec3d.yCoord > vec3d1.yCoord && !this.theEntity.onGround
-                        && MathHelper.floor_double(vec3d.xCoord) == MathHelper.floor_double(vec3d1.xCoord)
-                        && MathHelper.floor_double(vec3d.zCoord) == MathHelper.floor_double(vec3d1.zCoord))
+                if (vec3d.y > vec3d1.y && !this.entity.onGround
+                        && MathHelper.floor(vec3d.x) == MathHelper.floor(vec3d1.x)
+                        && MathHelper.floor(vec3d.z) == MathHelper.floor(vec3d1.z))
                 {
                     this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
                 }
             }
             if (!this.noPath())
             {
-                Vec3d vec3d2 = this.currentPath.getPosition(this.theEntity);
+                Vec3d vec3d2 = this.currentPath.getPosition(this.entity);
                 if (vec3d2 != null)
                 {
                     BlockPos blockpos = (new BlockPos(vec3d2)).down();
@@ -272,15 +275,14 @@ public class PokeNavigator extends PathNavigate
                     if (point instanceof thut.api.pathing.PathPoint)
                     {
                         thut.api.pathing.PathPoint pointT = (thut.api.pathing.PathPoint) point;
-                        dx = pointT.x - pointT.xCoord;
-                        dy = pointT.y - pointT.yCoord;
-                        dz = pointT.z - pointT.zCoord;
+                        dx = pointT.x - pointT.x;
+                        dy = pointT.y - pointT.y;
+                        dz = pointT.z - pointT.z;
                     }
-                    AxisAlignedBB axisalignedbb = this.worldObj.getBlockState(blockpos).getBoundingBox(this.worldObj,
+                    AxisAlignedBB axisalignedbb = this.world.getBlockState(blockpos).getBoundingBox(this.world,
                             blockpos);
                     vec3d2 = vec3d2.subtract(0.0D, 1.0D - axisalignedbb.maxY, 0.0D);
-                    this.theEntity.getMoveHelper().setMoveTo(vec3d2.xCoord + dx, vec3d2.yCoord + dy, vec3d2.zCoord + dz,
-                            this.speed);
+                    this.entity.getMoveHelper().setMoveTo(vec3d2.x + dx, vec3d2.y + dy, vec3d2.z + dz, this.speed);
                 }
             }
         }
@@ -294,31 +296,30 @@ public class PokeNavigator extends PathNavigate
 
         for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
         {
-            if ((double) this.currentPath.getPathPointFromIndex(j).yCoord != Math.floor(vec3d.yCoord))
+            if ((double) this.currentPath.getPathPointFromIndex(j).y != Math.floor(vec3d.y))
             {
                 i = j;
                 break;
             }
         }
 
-        this.maxDistanceToWaypoint = this.theEntity.width > 0.75F ? this.theEntity.width / 2.0F : 1f;
+        this.maxDistanceToWaypoint = this.entity.width > 0.75F ? this.entity.width / 2.0F : 1f;
         Vec3d vec3d1 = this.currentPath.getCurrentPos();
 
-        if (MathHelper.abs((float) (this.theEntity.posX - (vec3d1.xCoord + 0.5D))) < this.maxDistanceToWaypoint
-                && MathHelper.abs((float) (this.theEntity.posZ - (vec3d1.zCoord + 0.5D))) < this.maxDistanceToWaypoint
-                && Math.abs(this.theEntity.posY - vec3d1.yCoord) < 0.75D)
+        if (MathHelper.abs((float) (this.entity.posX - (vec3d1.x + 0.5D))) < this.maxDistanceToWaypoint
+                && MathHelper.abs((float) (this.entity.posZ - (vec3d1.z + 0.5D))) < this.maxDistanceToWaypoint
+                && Math.abs(this.entity.posY - vec3d1.y) < 0.75D)
         {
             this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
         }
 
-        int k = MathHelper.ceiling_float_int(this.theEntity.width);
-        int l = MathHelper.ceiling_float_int(this.theEntity.height);
+        int k = MathHelper.ceil(this.entity.width);
+        int l = MathHelper.ceil(this.entity.height);
         int i1 = k;
 
         for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
         {
-            if (this.isDirectPathBetweenPoints(vec3d, this.currentPath.getVectorFromIndex(this.theEntity, j1), k, l,
-                    i1))
+            if (this.isDirectPathBetweenPoints(vec3d, this.currentPath.getVectorFromIndex(this.entity, j1), k, l, i1))
             {
                 this.currentPath.setCurrentPathIndex(j1);
                 break;
@@ -336,14 +337,14 @@ public class PokeNavigator extends PathNavigate
     @Override
     public void removeSunnyPath()
     {
-        if (!this.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(this.theEntity.posX),
-                (int) (this.theEntity.posY + 0.5D), MathHelper.floor_double(this.theEntity.posZ))))
+        if (!this.world.canBlockSeeSky(new BlockPos(MathHelper.floor(this.entity.posX), (int) (this.entity.posY + 0.5D),
+                MathHelper.floor(this.entity.posZ))))
         {
             for (int i = 0; i < this.getPath().getCurrentPathLength(); ++i)
             {
                 PathPoint pathpoint = this.getPath().getPathPointFromIndex(i);
 
-                if (this.worldObj.canBlockSeeSky(new BlockPos(pathpoint.xCoord, pathpoint.yCoord, pathpoint.zCoord)))
+                if (this.world.canBlockSeeSky(new BlockPos(pathpoint.x, pathpoint.y, pathpoint.z)))
                 {
                     this.getPath().setCurrentPathLength(i - 1);
                     return;
@@ -398,7 +399,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean tryMoveToXYZ(double x, double y, double z, double speed)
     {
-        Path PathHeap = this.getPathToXYZ(MathHelper.floor_double(x), ((int) y), MathHelper.floor_double(z));
+        Path PathHeap = this.getPathToXYZ(MathHelper.floor(x), ((int) y), MathHelper.floor(z));
         return this.setPath(PathHeap, speed);
     }
 

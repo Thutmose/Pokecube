@@ -53,7 +53,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         PacketBuffer buffer = new PacketBuffer(buf);
         try
         {
-            data = buffer.readNBTTagCompoundFromBuffer();
+            data = buffer.readCompoundTag();
         }
         catch (IOException e)
         {
@@ -66,7 +66,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
     {
         buf.writeByte(message);
         PacketBuffer buffer = new PacketBuffer(buf);
-        buffer.writeNBTTagCompoundToBuffer(data);
+        buffer.writeCompoundTag(data);
     }
 
     void processMessage(MessageContext ctx, PacketTrainer message)
@@ -78,7 +78,7 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         if (message.message == MESSAGEUPDATETRAINER)
         {

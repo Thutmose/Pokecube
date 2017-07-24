@@ -57,14 +57,14 @@ public class MoveEventsHandler
     public static boolean attemptSmelt(IPokemob attacker, Vector3 location)
     {
         World world = attacker.getEntity().getEntityWorld();
-        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().expandXyz(1));
+        List<EntityItem> items = world.getEntitiesWithinAABB(EntityItem.class, location.getAABB().grow(1));
         if (!items.isEmpty())
         {
             boolean smelt = false;
             for (int i = 0; i < items.size(); i++)
             {
                 EntityItem item = items.get(i);
-                ItemStack stack = item.getEntityItem();
+                ItemStack stack = item.getItem();
                 int num = CompatWrapper.getStackSize(stack);
                 ItemStack newstack = FurnaceRecipes.instance().getSmeltingResult(stack);
                 if (newstack != null)
@@ -79,8 +79,8 @@ public class MoveEventsHandler
                     }
                     else if (f < 1.0F)
                     {
-                        int j = MathHelper.floor_float(i1 * f);
-                        if (j < MathHelper.ceiling_float_int(i1 * f) && Math.random() < i1 * f - j)
+                        int j = MathHelper.floor(i1 * f);
+                        if (j < MathHelper.ceil(i1 * f) && Math.random() < i1 * f - j)
                         {
                             ++j;
                         }
@@ -92,14 +92,13 @@ public class MoveEventsHandler
                     {
                         int k = EntityXPOrb.getXPSplit(i1);
                         i1 -= k;
-                        world.spawnEntityInWorld(
-                                new EntityXPOrb(world, location.x, location.y + 1.5D, location.z + 0.5D, k));
+                        world.spawnEntity(new EntityXPOrb(world, location.x, location.y + 1.5D, location.z + 0.5D, k));
                     }
                     int hunger = PokecubeCore.core.getConfig().baseSmeltingHunger * num;
                     hunger = (int) Math.max(1, hunger / (float) attacker.getLevel());
                     if (f > 0) hunger *= f;
                     attacker.setHungerTime(attacker.getHungerTime() + hunger);
-                    item.setEntityItemStack(newstack);
+                    item.setItem(newstack);
                     item.lifespan += 6000;
                     smelt = true;
                 }
@@ -447,8 +446,7 @@ public class MoveEventsHandler
                 break;
             }
 
-        if (move.attacker == this && !blockMove && applied.getMoveStats().blocked
-                && applied.getMoveStats().blockTimer-- <= 0)
+        if (user && !blockMove && applied.getMoveStats().blocked && applied.getMoveStats().blockTimer-- <= 0)
         {
             applied.getMoveStats().blocked = false;
             applied.getMoveStats().blockTimer = 0;
@@ -487,7 +485,7 @@ public class MoveEventsHandler
         for (int i = 0; i < 3; ++i)
         {
             particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.worldObj, "mobSpell", particleLoc, vel);
+            PokecubeMod.core.spawnParticle(entity.world, "mobSpell", particleLoc, vel);
         }
     }
 
@@ -503,7 +501,7 @@ public class MoveEventsHandler
         for (i = 0; i < 3; ++i)
         {
             particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.worldObj, "mobSpell", particleLoc, vel);
+            PokecubeMod.core.spawnParticle(entity.world, "mobSpell", particleLoc, vel);
         }
     }
 }

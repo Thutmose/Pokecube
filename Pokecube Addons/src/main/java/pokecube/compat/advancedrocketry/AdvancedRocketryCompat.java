@@ -361,7 +361,7 @@ public class AdvancedRocketryCompat
                 else
                 {
                     DimensionProperties props = DimensionManager.getInstance()
-                            .getDimensionProperties(event.getEntity().getEntityWorld().provider.getDimension());
+                            .getDimensionProperties(event.getEntity().world.provider.getDimension());
                     boolean moon = props.isMoon();
                     if (moon && goUp)
                     {
@@ -373,7 +373,7 @@ public class AdvancedRocketryCompat
                         Collections.sort(moons);
                         if (!moons.isEmpty())
                         {
-                            double angle = ((event.getEntity().getEntityWorld().getWorldTime() % props.rotationalPeriod)
+                            double angle = ((event.getEntity().world.getWorldTime() % props.rotationalPeriod)
                                     / (double) props.rotationalPeriod) * 2 * Math.PI;
                             double diff = 2 * Math.PI;
                             int whichMoon = 0;

@@ -77,33 +77,33 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
         }
     }
 
-    public static final String          DEFAULTPHASE   = "idle";
+    public static final String          DEFAULTPHASE      = "idle";
     public String                       name;
-    public String                       currentPhase   = "idle";
-    public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
+    public String                       currentPhase      = "idle";
+    public HashMap<String, PartInfo>    parts             = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>> global;
-    public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
-    public Set<String>                  headParts      = Sets.newHashSet();
+    public HashMap<String, Animation>   animations        = new HashMap<String, Animation>();
+    public Set<String>                  headParts         = Sets.newHashSet();
     public TextureHelper                texturer;
 
     public IAnimationChanger            animator;;
-    public Vector3                      offset         = Vector3.getNewVector();;
-    public Vector3                      scale          = Vector3.getNewVector();
+    public Vector3                      offset            = Vector3.getNewVector();;
+    public Vector3                      scale             = Vector3.getNewVector();
 
-    public Vector5                      rotations      = new Vector5();
+    public Vector5                      rotations         = new Vector5();
 
     public ModelWrapper                 model;
-    public int                          headDir        = 2;
-    public int                          headAxis       = 2;
-    public int                          headAxis2      = 0;
+    public int                          headDir           = 2;
+    public int                          headAxis          = 2;
+    public int                          headAxis2         = 0;
     /** A set of names of shearable parts. */
-    public Set<String>                  shearableParts = Sets.newHashSet();
+    public Set<String>                  shearableParts    = Sets.newHashSet();
 
     /** A set of namess of dyeable parts. */
-    public Set<String>                  dyeableParts   = Sets.newHashSet();
-    public float[]                      headCaps       = { -180, 180 };
+    public Set<String>                  dyeableParts      = Sets.newHashSet();
+    public float[]                      headCaps          = { -180, 180 };
 
-    public float[]                      headCaps1      = { -20, 40 };
+    public float[]                      headCaps1         = { -20, 40 };
     ResourceLocation                    texture;
 
     public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, Model model)

@@ -14,7 +14,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
@@ -50,16 +50,16 @@ public class GuiPokemob extends GuiContainer
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY)
+        public void drawButton(Minecraft mc, int mouseX, int mouseY, float f)
         {
-            super.drawButton(mc, mouseX, mouseY);
+            super.drawButton(mc, mouseX, mouseY, f);
             if (id == PacketPokemobGui.BUTTONTOGGLESTAY || id == PacketPokemobGui.BUTTONTOGGLESIT)
             {
                 PokedexEntry entry = Database.getEntry("eevee");
                 IPokemob renderMob = EventsHandlerClient.renderMobs.get(entry);
                 if (renderMob == null)
                 {
-                    Entity mob = PokecubeMod.core.createPokemob(entry, mc.theWorld);
+                    Entity mob = PokecubeMod.core.createPokemob(entry, mc.world);
                     EventsHandlerClient.renderMobs.put(entry, renderMob = CapabilityPokemob.getPokemobFor(mob));
                 }
                 if (renderMob == null)
@@ -90,10 +90,10 @@ public class GuiPokemob extends GuiContainer
                         }
                     }
                     mc.getTextureManager().bindTexture(texture);
-                    int x = xPosition + 2;
-                    int y = yPosition + 1;
+                    int x = this.x + 2;
+                    int y = this.y + 1;
                     Tessellator tessellator = Tessellator.getInstance();
-                    VertexBuffer vertexbuffer = tessellator.getBuffer();
+                    BufferBuilder vertexbuffer = tessellator.getBuffer();
                     vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
                     vertexbuffer.pos(x + 0, y + height - 2, this.zLevel).tex(0, 1).endVertex();
                     vertexbuffer.pos(x + width - 2, y + height - 2, this.zLevel).tex(1, 1).endVertex();
@@ -104,14 +104,14 @@ public class GuiPokemob extends GuiContainer
                 }
                 renderMob.getEntity().onGround = false;
 
-                int x = xPosition + width / 2 - 2;
-                int y = yPosition + height / 2 + 7;
+                int x = this.x + width / 2 - 2;
+                int y = this.y + height / 2 + 7;
                 double scale = 0.9f;
                 GL11.glPushMatrix();
                 GL11.glTranslatef(x, y, 0F);
                 GL11.glRotated(90, 0, 1, 0);
                 GL11.glScaled(scale, scale, scale);
-                renderMob.getEntity().ticksExisted = mc.thePlayer.ticksExisted;
+                renderMob.getEntity().ticksExisted = mc.player.ticksExisted;
                 renderMob.getEntity().setRotationYawHead(0);
                 renderMob.getEntity().rotationYaw = 0;
                 Object o;
@@ -145,11 +145,11 @@ public class GuiPokemob extends GuiContainer
             else
             {
                 mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                this.drawTexturedModalRect(xPosition + 2, yPosition + 2,
+                this.drawTexturedModalRect(x + 2, y + 2,
                         mc.getTextureMapBlocks().getAtlasSprite("minecraft:items/diamond_sword"), 16, 16);
                 if (!pokemob.getPokemonAIState(IMoveConstants.GUARDING))
                 {
-                    this.drawGradientRect(xPosition + 2, yPosition + 2, xPosition + width - 2, yPosition + width - 2,
+                    this.drawGradientRect(x + 2, y + 2, x + width - 2, y + width - 2,
                             0x88884444, 0x88884444);
                 }
             }
@@ -174,8 +174,8 @@ public class GuiPokemob extends GuiContainer
          * Equivalent of MouseListener.mousePressed(MouseEvent e). */
         public boolean mousePressed(Minecraft mc, int mouseX, int mouseY)
         {
-            return this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition
-                    && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            return this.enabled && this.visible && mouseX >= this.x && mouseY >= this.y
+                    && mouseX < this.x + this.width && mouseY < this.y + this.height;
         }
 
         @Override
@@ -294,9 +294,9 @@ public class GuiPokemob extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
     {
-        this.fontRendererObj.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
+        this.fontRenderer.drawString(this.pokeInventory.hasCustomName() ? this.pokeInventory.getName()
                 : I18n.format(this.pokeInventory.getName(), new Object[0]), 8, 6, 4210752);
-        this.fontRendererObj.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
+        this.fontRenderer.drawString(this.playerInventory.hasCustomName() ? this.playerInventory.getName()
                 : I18n.format(this.playerInventory.getName(), new Object[0]), 8, this.ySize - 96 + 2, 4210752);
     }
 
@@ -337,6 +337,7 @@ public class GuiPokemob extends GuiContainer
             else text.add(I18n.format("pokemob.stance.stand"));
             this.drawHoveringText(text, x, y);
         }
+        this.renderHoveredToolTip(x, y);
     }
 
     @Override

@@ -111,7 +111,7 @@ public abstract class PokemobAI extends PokemobEvolves
             mainBox.addOffsetTo(offset).addOffsetTo(vec);
             AxisAlignedBB box = mainBox.getBoundingBox();
             AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
-            box1 = box1.addCoord(getEntity().motionX, getEntity().motionY, getEntity().motionZ);
+            box1 = box1.grow(getEntity().motionX, getEntity().motionY, getEntity().motionZ);
             aabbs = mainBox.getCollidingBoxes(box1, getEntity().getEntityWorld(), getEntity().getEntityWorld());
             // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
             Matrix3.expandAABBs(aabbs, box);
@@ -154,7 +154,7 @@ public abstract class PokemobAI extends PokemobEvolves
         {
             aabb = aabb.setMaxY(aabb.minY + 3);
         }
-        aabb = aabb.expandXyz(Math.min(3, diff));
+        aabb = aabb.grow(Math.min(3, diff));
         List<AxisAlignedBB> aabbs = new Matrix3().getCollidingBoxes(aabb, getEntity().getEntityWorld(), world);
         Matrix3.expandAABBs(aabbs, aabb);
         if (aabb.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);

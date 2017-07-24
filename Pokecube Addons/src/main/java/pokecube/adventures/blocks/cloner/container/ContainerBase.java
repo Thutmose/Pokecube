@@ -51,7 +51,7 @@ public abstract class ContainerBase extends Container
             {
                 if (vals[j] != tile.getField(j))
                 {
-                    icrafting.sendProgressBarUpdate(this, j, this.tile.getField(j));
+                    icrafting.sendWindowProperty(this, j, this.tile.getField(j));
                 }
                 vals[j] = tile.getField(j);
             }
@@ -116,7 +116,7 @@ public abstract class ContainerBase extends Container
             }
             if (CompatWrapper.getStackSize(itemstack1) != CompatWrapper
                     .getStackSize(itemstack)) { return CompatWrapper.nullStack; }
-            slot.func_190901_a(playerIn, itemstack1);
+            slot.onTake(playerIn, itemstack1);
         }
         return itemstack;
     }

@@ -13,9 +13,9 @@ public class ChunkCoordinate extends BlockPos {
 	
 	public static ChunkCoordinate getChunkCoordFromWorldCoord(int x, int y, int z, int dim)
 	{
-	       int i = MathHelper.floor_double(x / 16.0D);
-	        int j = MathHelper.floor_double(y / 16.0D);
-	        int k = MathHelper.floor_double(z / 16.0D);
+	       int i = MathHelper.floor(x / 16.0D);
+	        int j = MathHelper.floor(y / 16.0D);
+	        int k = MathHelper.floor(z / 16.0D);
 	        return new ChunkCoordinate(i, j, k, dim);
 	}
 	

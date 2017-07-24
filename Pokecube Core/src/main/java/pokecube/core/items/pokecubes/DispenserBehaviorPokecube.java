@@ -21,7 +21,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
     {
         EnumFacing dir = null;
         IBlockState state = source.getBlockState();
-        for (IProperty<?> prop : state.getPropertyNames())
+        for (IProperty<?> prop : state.getPropertyKeys())
         {
             if (prop.getValueClass() == EnumFacing.class)
             {
@@ -66,6 +66,7 @@ public class DispenserBehaviorPokecube implements IBehaviorDispenseItem
             player.setHeldItem(EnumHand.MAIN_HAND, stack);
             stack.onItemUse(player, source.getWorld(), source.getBlockPos().offset(dir), EnumHand.MAIN_HAND,
                     EnumFacing.UP, 0.5f, 0.5f, 0.5f);
+            player.inventory.clear();
         }
         else if (stack.getItem() instanceof IPokecube)
         {

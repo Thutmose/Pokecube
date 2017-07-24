@@ -47,8 +47,8 @@ public class CaptureEvent extends Event
         this.pokecube = pokecube;
         if (pokecube != null)
         {
-            this.filledCube = pokecube.getEntityItem();
-            this.caught = PokecubeManager.itemToPokemob((pokecube.getEntityItem()), pokecube.getEntityWorld());
+            this.filledCube = pokecube.getItem();
+            this.caught = PokecubeManager.itemToPokemob((pokecube.getItem()), pokecube.getEntityWorld());
         }
         else
         {
@@ -61,7 +61,7 @@ public class CaptureEvent extends Event
     {
         this.pokecube = pokecube;
         caught = hit;
-        filledCube = pokecube.getEntityItem();
+        filledCube = pokecube.getItem();
     }
 
 }

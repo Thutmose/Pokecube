@@ -58,7 +58,7 @@ public class PacketParticle implements IMessage, IMessageHandler<PacketParticle,
         velocity = Vector3.readFromBuff(buffer);
         try
         {
-            particle = buffer.readStringFromBuffer(30);
+            particle = buffer.readString(30);
         }
         catch (Exception e)
         {

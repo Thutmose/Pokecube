@@ -7,7 +7,9 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.utils.TagNames;
@@ -30,13 +32,6 @@ public class RecipePokeseals implements IDefaultRecipe
     public ItemStack getRecipeOutput()
     {
         return this.toCraft;
-    }
-
-    /** Returns the size of the recipe area */
-    @Override
-    public int getRecipeSize()
-    {
-        return 10;
     }
 
     /** Used to check if a recipe matches current crafting inventory */
@@ -165,5 +160,26 @@ public class RecipePokeseals implements IDefaultRecipe
         NBTTagCompound cubeTag = pokecubeTag.getCompoundTag("tag");
         cubeTag.setTag(TagNames.POKESEAL, seal.getTagCompound().getCompoundTag(TagNames.POKESEAL));
         return cube;
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
     }
 }

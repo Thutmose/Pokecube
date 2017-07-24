@@ -25,6 +25,15 @@ public class GuiDaycare extends GuiContainer
     }
 
     @Override
+    /** Draws the screen and all the components in it. */
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    @Override
     protected void actionPerformed(GuiButton button) throws IOException
     {
 
@@ -47,7 +56,7 @@ public class GuiDaycare extends GuiContainer
     @Override
     protected void drawGuiContainerForegroundLayer(int p_146979_1_, int p_146979_2_)
     {
-        this.fontRendererObj.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
+        this.fontRenderer.drawString(I18n.format("container.inventory", new Object[0]), 8, this.ySize - 96 + 2,
                 4210752);
     }
 

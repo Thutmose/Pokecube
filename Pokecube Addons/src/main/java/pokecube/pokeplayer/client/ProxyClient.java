@@ -27,7 +27,7 @@ public class ProxyClient extends Proxy
     public IPokemob getPokemob(EntityPlayer player)
     {
         IPokemob ret = super.getPokemob(player);
-        if (ret != null && player.worldObj.isRemote)
+        if (ret != null && player.world.isRemote)
         {
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
             info.setPlayer(player);
@@ -78,7 +78,7 @@ public class ProxyClient extends Proxy
     @SubscribeEvent
     public void renderHand(RenderHandEvent event)
     {
-        IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
+        IPokemob pokemob = getPokemob(Minecraft.getMinecraft().player);
         if (pokemob == null) return;
         event.setCanceled(true);
     }
@@ -86,7 +86,7 @@ public class ProxyClient extends Proxy
     @SubscribeEvent
     public void mouseClickEvent(MouseEvent event)
     {
-        IPokemob pokemob = getPokemob(Minecraft.getMinecraft().thePlayer);
+        IPokemob pokemob = getPokemob(Minecraft.getMinecraft().player);
         if (pokemob != null && event.getButton() == 0 && event.isButtonstate())
         {
             if (GuiScreen.isAltKeyDown())

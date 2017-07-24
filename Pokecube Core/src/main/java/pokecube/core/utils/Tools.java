@@ -213,7 +213,7 @@ public class Tools
     {
         int ret = 0;
         List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
-                location.getAABB().expand(distance, distance, distance));
+                location.getAABB().grow(distance, distance, distance));
         for (EntityLiving o : list)
         {
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
@@ -233,7 +233,7 @@ public class Tools
     {
         int ret = 0;
         List<EntityLiving> list = world.getEntitiesWithinAABB(EntityLiving.class,
-                location.getAABB().expand(distance, distance, distance));
+                location.getAABB().grow(distance, distance, distance));
         for (EntityLiving o : list)
         {
             IPokemob mob = CapabilityPokemob.getPokemobFor(o);
@@ -252,7 +252,7 @@ public class Tools
     {
         AxisAlignedBB box = location.getAABB();
         List<EntityLivingBase> list = world.getEntitiesWithinAABB(EntityLivingBase.class,
-                box.expand(radius, radius, radius));
+                box.grow(radius, radius, radius));
         int num = 0;
         for (EntityLivingBase o : list)
         {
@@ -269,7 +269,7 @@ public class Tools
 
     public static int getExp(float coef, int baseXP, int level)
     {
-        return MathHelper.floor_float(coef * baseXP * level / 7F);
+        return MathHelper.floor(coef * baseXP * level / 7F);
     }
 
     public static int getHealedPokemobSerialization()
@@ -299,8 +299,8 @@ public class Tools
     public static int getHP(int BS, int IV, int EV, int level)
     {
         if (BS == 1) return 1;
-        int EP = MathHelper.floor_double((EV + 128) / 4);
-        return 10 + (MathHelper.floor_double((2 * BS) + IV + EP + 100) * level / 100);
+        int EP = MathHelper.floor((EV + 128) / 4);
+        return 10 + (MathHelper.floor((2 * BS) + IV + EP + 100) * level / 100);
     }
 
     private static int getLevelFromTable(int index, int exp)
@@ -322,21 +322,19 @@ public class Tools
         Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         double d0 = distance;
         Vec3d vec31 = entity.getLook(0);
-        Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+        Vec3d vec32 = vec3.addVector(vec31.x * d0, vec31.y * d0, vec31.z * d0);
         Entity pointedEntity = null;
         float f = 0.5F;
-        List<Entity> list = entity.getEntityWorld()
-                .getEntitiesInAABBexcluding(
-                        entity, entity.getEntityBoundingBox()
-                                .addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(f, f, f),
-                        Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
-                        {
-                            @Override
-                            public boolean apply(Entity entity)
-                            {
-                                return entity.canBeCollidedWith();
-                            }
-                        }));
+        List<Entity> list = entity.getEntityWorld().getEntitiesInAABBexcluding(entity,
+                entity.getEntityBoundingBox().expand(vec31.x * d0, vec31.y * d0, vec31.z * d0).grow(f, f, f),
+                Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+                {
+                    @Override
+                    public boolean apply(Entity entity)
+                    {
+                        return entity.canBeCollidedWith();
+                    }
+                }));
         double d2 = distance;
 
         for (int j = 0; j < list.size(); ++j)
@@ -346,7 +344,7 @@ public class Tools
             AxisAlignedBB axisalignedbb = entity1.getEntityBoundingBox().expand(f1, f1, f1);
             RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
-            if (axisalignedbb.isVecInside(vec3))
+            if (axisalignedbb.contains(vec3))
             {
                 if (d2 >= 0.0D)
                 {
@@ -383,7 +381,7 @@ public class Tools
         Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         double d0 = distance;
         Vec3d vec31 = entity.getLook(0);
-        Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+        Vec3d vec32 = vec3.addVector(vec31.x * d0, vec31.y * d0, vec31.z * d0);
         RayTraceResult result = entity.getEntityWorld().rayTraceBlocks(vec3, vec32, false, true, false);
         if (result == null || result.hitVec == null) return null;
         Vector3 vec = Vector3.getNewVector().set(result.hitVec);
@@ -633,8 +631,8 @@ public class Tools
         boolean flag = entityplayer.inventory.addItemStackToInventory(itemstack);
         if (flag)
         {
-            entityplayer.worldObj.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY,
-                    entityplayer.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
+            entityplayer.world.playSound((EntityPlayer) null, entityplayer.posX, entityplayer.posY, entityplayer.posZ,
+                    SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
                     ((entityplayer.getRNG().nextFloat() - entityplayer.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             entityplayer.inventoryContainer.detectAndSendChanges();
         }

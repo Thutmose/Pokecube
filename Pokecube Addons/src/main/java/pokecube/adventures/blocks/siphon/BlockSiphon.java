@@ -46,7 +46,7 @@ public class BlockSiphon extends Block implements ITileEntityProvider
             TileEntitySiphon tile = (TileEntitySiphon) worldIn.getTileEntity(pos);
             ITextComponent message = CommandTools.makeTranslatedMessage("block.rfsiphon.info", "gold",
                     tile.currentOutput, tile.theoreticalOutput);
-            playerIn.addChatMessage(message);
+            playerIn.sendMessage(message);
         }
         return false;
     }

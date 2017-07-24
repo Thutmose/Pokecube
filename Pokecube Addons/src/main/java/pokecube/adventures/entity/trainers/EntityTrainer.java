@@ -131,10 +131,10 @@ public class EntityTrainer extends EntityTrainerBase
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
-        if (source.getEntity() != null && (source.getEntity() instanceof EntityLivingBase)
-                && !(source.getEntity() instanceof EntityPlayer))
+        if (source.getTrueSource() != null && (source.getTrueSource() instanceof EntityLivingBase)
+                && !(source.getTrueSource() instanceof EntityPlayer))
         {
-            Entity entity = source.getEntity();
+            Entity entity = source.getTrueSource();
             if (entity instanceof IEntityOwnable)
             {
                 if (((IEntityOwnable) entity).getOwner() != null)
@@ -145,10 +145,10 @@ public class EntityTrainer extends EntityTrainerBase
             if (pokemobsCap.getAttackCooldown() <= 0)
             {
                 pokemobsCap.setTarget((EntityLivingBase) entity);
-                if (entity != source.getEntity()) return false;
+                if (entity != source.getTrueSource()) return false;
             }
         }
-        if (source == DamageSource.drown) return false;
+        if (source == DamageSource.DROWN) return false;
         if (Config.instance.trainersInvul) return false;
         return super.attackEntityFrom(source, amount);
     }
@@ -167,7 +167,7 @@ public class EntityTrainer extends EntityTrainerBase
     }
 
     @Override
-    public EntityLivingBase getAITarget()
+    public EntityLivingBase getAttackTarget()
     {
         return pokemobsCap.getTarget();
     }
@@ -257,7 +257,7 @@ public class EntityTrainer extends EntityTrainerBase
             this.setItemStackToSlot(EntityEquipmentSlot.OFFHAND, pokemobsCap.getType().held);
         }
 
-        EntityLivingBase target = getAITarget() != null ? getAITarget()
+        EntityLivingBase target = getAttackTarget() != null ? getAttackTarget()
                 : getAttackTarget() != null ? getAttackTarget() : null;
 
         if (target != null)
@@ -327,7 +327,7 @@ public class EntityTrainer extends EntityTrainerBase
                     ItemStack i = pokemobsCap.getPokemob(ind);
                     if (CompatWrapper.isValid(i)) message += i.getDisplayName() + " ";
                 }
-                player.addChatMessage(new TextComponentString(message));
+                player.sendMessage(new TextComponentString(message));
             }
             else if (!getEntityWorld().isRemote && player.isSneaking()
                     && player.getHeldItemMainhand().getItem() == Items.STICK)

@@ -47,7 +47,7 @@ public abstract class EntityTrainerBase extends EntityHasTrades
         if (!isServerWorld()) return;
         if (pokemobsCap.getOutID() != null && pokemobsCap.getOutMob() == null)
         {
-            Entity mob = getServer().worldServerForDimension(dimension).getEntityFromUuid(pokemobsCap.getOutID());
+            Entity mob = getServer().getWorld(dimension).getEntityFromUuid(pokemobsCap.getOutID());
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
             pokemobsCap.setOutMob(pokemob);
             if (pokemobsCap.getOutMob() == null) pokemobsCap.setOutID(null);

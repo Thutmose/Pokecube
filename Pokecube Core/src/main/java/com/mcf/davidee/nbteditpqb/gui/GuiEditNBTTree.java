@@ -134,7 +134,7 @@ public class GuiEditNBTTree extends GuiScreen
     @Override
     public void updateScreen()
     {
-        if (!mc.thePlayer.isEntityAlive()) quitWithoutSaving();
+        if (!mc.player.isEntityAlive()) quitWithoutSaving();
         else guiTree.updateScreen();
     }
 
@@ -164,7 +164,7 @@ public class GuiEditNBTTree extends GuiScreen
     {
         this.drawDefaultBackground();
         guiTree.draw(x, y);
-        this.drawCenteredString(mc.fontRendererObj, this.screenTitle, this.width / 2, 5, 16777215);
+        this.drawCenteredString(mc.fontRenderer, this.screenTitle, this.width / 2, 5, 16777215);
         if (guiTree.getWindow() == null) super.drawScreen(x, y, par3);
         else super.drawScreen(-1, -1, par3);
     }
@@ -177,7 +177,7 @@ public class GuiEditNBTTree extends GuiScreen
 
     public Entity getEntity()
     {
-        return entity ? mc.theWorld.getEntityByID(entityOrX) : null;
+        return entity ? mc.world.getEntityByID(entityOrX) : null;
     }
 
     public boolean isTileEntity()

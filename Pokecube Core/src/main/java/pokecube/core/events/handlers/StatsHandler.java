@@ -36,9 +36,9 @@ public class StatsHandler
             evt.setCanceled(true);
             if (catcher instanceof EntityPlayer)
             {
-                ((EntityPlayer) catcher).addChatMessage(new TextComponentTranslation("pokecube.denied"));
+                ((EntityPlayer) catcher).sendMessage(new TextComponentTranslation("pokecube.denied"));
             }
-            evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getEntityItem(), (float) 0.5);
+            evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getItem(), (float) 0.5);
             evt.pokecube.setDead();
             return;
         }
@@ -51,9 +51,9 @@ public class StatsHandler
                 evt.setCanceled(true);
                 if (catcher instanceof EntityPlayer)
                 {
-                    ((EntityPlayer) catcher).addChatMessage(new TextComponentTranslation("pokecube.denied"));
+                    ((EntityPlayer) catcher).sendMessage(new TextComponentTranslation("pokecube.denied"));
                 }
-                evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getEntityItem(), (float) 0.5);
+                evt.pokecube.entityDropItem(((EntityPokecube) evt.pokecube).getItem(), (float) 0.5);
                 evt.pokecube.setDead();
                 return;
             }

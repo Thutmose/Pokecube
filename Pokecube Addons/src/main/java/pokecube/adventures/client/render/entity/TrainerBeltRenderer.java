@@ -45,7 +45,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         this.pokemobCap = CapabilityHasPokemobs.getHasPokemobs(entitylivingbaseIn);
         if (pokemobCap.countPokemon() <= 0) return;
 
-        int brightness = entitylivingbaseIn.getBrightnessForRender(partialTicks);
+        int brightness = entitylivingbaseIn.getBrightnessForRender();
         // First pass of render
         GL11.glPushMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -78,7 +78,7 @@ public class TrainerBeltRenderer implements LayerRenderer<EntityLivingBase>
         GL11.glScalef(s, s, s);
         this.livingEntityRenderer.bindTexture(belt_2);
         EnumDyeColor ret = EnumDyeColor.GRAY;
-        Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+        Color colour = new Color(ret.getColorValue() + 0xFF000000);
         int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
         for (IExtendedModelPart part : model2.getParts().values())
         {

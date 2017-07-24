@@ -11,7 +11,7 @@ import thut.core.common.blocks.SmartSlot;
 
 public class ContainerCloner extends ContainerBase
 {
-    public World            worldObj;
+    public World            world;
     public TileEntityCloner tile;
     public BlockPos         pos;
 
@@ -19,7 +19,7 @@ public class ContainerCloner extends ContainerBase
     {
         super(inv, tile);
         this.tile = tile;
-        this.worldObj = tile.getWorld();
+        this.world = tile.getWorld();
         this.pos = tile.getPos();
         tile.setCraftMatrix(new CraftMatrix(this, tile, 3, 3));
 

@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.creativetab.CreativeTabs;
@@ -90,7 +90,7 @@ public abstract class PokecubeMod
 
     public static double                          MAX_DENSITY                = 1;
     public static Map<String, String>             gifts                      = Maps.newHashMap();
-    public static List<String>                    giftLocations              = Lists.newArrayList();
+    public static Set<String>                     giftLocations              = Sets.newHashSet();
     public static Map<PokedexEntry, Class<?>>     pokedexmap                 = Maps.newHashMap();
     public static Map<PokedexEntry, Class<?>>     genericMobClasses          = Maps.newHashMap();
 
@@ -147,12 +147,12 @@ public abstract class PokecubeMod
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
                 if (FMLClientHandler.instance().getServer() != null)
-                    world = FMLClientHandler.instance().getServer().worldServerForDimension(dim);
+                    world = FMLClientHandler.instance().getServer().getWorld(dim);
                 else world = null;
             }
             else
             {
-                world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+                world = FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(dim);
             }
 
             FakePlayer fakeplayer = FakePlayerFactory.get(world,
@@ -164,7 +164,9 @@ public abstract class PokecubeMod
 
     public static FakePlayer getFakePlayer(World world)
     {
-        return getFakePlayer(world.provider.getDimension());
+        FakePlayer player = getFakePlayer(world.provider.getDimension());
+        player.setWorld(world);
+        return player;
     }
 
     public static boolean isDeobfuscated()

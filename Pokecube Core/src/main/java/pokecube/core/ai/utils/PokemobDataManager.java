@@ -52,10 +52,10 @@ public class PokemobDataManager extends EntityDataManager
         EntityDataManager.DataEntry<T> entry = getEntry(key);
         T old = entry.getValue();
         super.set(key, value);
-        if (entity.worldObj == null || !ObjectUtils.notEqual(value, old)
-                || entity.worldObj.getEntityByID(entity.getEntityId()) == entity)
+        if (entity.world == null || !ObjectUtils.notEqual(value, old)
+                || entity.world.getEntityByID(entity.getEntityId()) == entity)
             return;
-        if (!entity.worldObj.isRemote && manualSyncSet.contains(key))
+        if (!entity.world.isRemote && manualSyncSet.contains(key))
         {
             PacketPokemobMetadata message = new PacketPokemobMetadata();
             message.wrapped.writeInt(entity.getEntityId());
@@ -75,7 +75,7 @@ public class PokemobDataManager extends EntityDataManager
     public void readEntry(PacketBuffer buf) throws IOException
     {
         short id = buf.readUnsignedByte();
-        int i = buf.readVarIntFromBuffer();
+        int i = buf.readVarInt();
         DataSerializer<?> dataserializer = DataSerializers.getSerializer(i);
         Object value = dataserializer.read(buf);
         DataParameter key = dataserializer.createKey(id);
@@ -88,7 +88,7 @@ public class PokemobDataManager extends EntityDataManager
         int i = DataSerializers.getSerializerId(dataparameter.getSerializer());
         if (i < 0) { throw new EncoderException("Unknown serializer type " + dataparameter.getSerializer()); }
         buf.writeByte(dataparameter.getId());
-        buf.writeVarIntToBuffer(i);
+        buf.writeVarInt(i);
         dataparameter.getSerializer().write(buf, entry.getValue());
     }
 

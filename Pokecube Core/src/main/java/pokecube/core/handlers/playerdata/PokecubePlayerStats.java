@@ -1,24 +1,25 @@
 package pokecube.core.handlers.playerdata;
 
-import java.util.HashMap;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.stats.Achievement;
-import net.minecraft.stats.AchievementList;
-import net.minecraft.stats.StatisticsManager;
-import net.minecraftforge.common.AchievementPage;
-import pokecube.core.PokecubeCore;
-import pokecube.core.PokecubeItems;
-import pokecube.core.achievements.AchievementCatch;
-import pokecube.core.achievements.AchievementHatch;
-import pokecube.core.achievements.AchievementKill;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.handlers.playerdata.advancements.AdvancementGenerator;
+import pokecube.core.handlers.playerdata.advancements.triggers.Triggers;
+import pokecube.core.interfaces.IPokemob;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
 /** Player capture/hatch/kill stats */
@@ -27,75 +28,62 @@ public class PokecubePlayerStats extends PlayerData
     private Map<PokedexEntry, Integer> hatches;
     private Map<PokedexEntry, Integer> captures;
     private Map<PokedexEntry, Integer> kills;
+    private Set<PokedexEntry>          inspected;
     protected boolean                  hasFirst = false;
-    private NBTTagCompound             backup;
-    protected UUID                     uuid;
 
     public PokecubePlayerStats()
     {
         super();
     }
 
-    public void initAchievements(StatisticsManager manager)
+    public void initMaps()
     {
         captures = Maps.newHashMap();
         hatches = Maps.newHashMap();
         kills = Maps.newHashMap();
-        for (PokedexEntry e : catchAchievements.keySet())
-        {
-            int num = manager.readStat(catchAchievements.get(e));
-            if (num > 0) captures.put(e, num);
-        }
-        for (PokedexEntry e : hatchAchievements.keySet())
-        {
-            int num = manager.readStat(hatchAchievements.get(e));
-            if (num > 0) hatches.put(e, num);
-        }
-        for (PokedexEntry e : killAchievements.keySet())
-        {
-            int num = manager.readStat(killAchievements.get(e));
-            if (num > 0) kills.put(e, num);
-        }
+        inspected = Sets.newHashSet();
     }
 
-    public void addCapture(UUID player, PokedexEntry entry)
+    public boolean hasInspected(PokedexEntry entry)
     {
-        Achievement ach = catchAchievements.get(entry);
-        if (ach == null)
-        {
-            System.err.println("missing for " + entry);
-            return;
-        }
-        int num = getManager(player).readStat(ach);
-        getCaptures(player).put(entry, num + 1);
-        getPlayer(player).addStat(ach);
+        if (inspected == null) initMap();
+        return inspected.contains(entry);
     }
 
-    public void addKill(UUID player, PokedexEntry entry)
+    public boolean inspect(EntityPlayer player, IPokemob pokemob)
     {
-        Achievement ach = killAchievements.get(entry);
-        if (ach == null)
-        {
-            System.err.println("missing for " + entry);
-            return;
-        }
-        int num = getManager(player).readStat(ach);
-        getKills(player).put(entry, num + 1);
-        getPlayer(player).addStat(ach);
+        if (inspected == null) initMap();
+        if (player instanceof EntityPlayerMP) Triggers.INSPECTPOKEMOB.trigger((EntityPlayerMP) player, pokemob);
+        return inspected.add(pokemob.getPokedexEntry());
     }
 
-    public void addHatch(UUID player, PokedexEntry entry)
+    public void addCapture(PokedexEntry entry)
     {
-        Achievement ach = hatchAchievements.get(entry);
-        if (ach == null) { return; }
-        int num = getManager(player).readStat(ach);
-        getHatches(player).put(entry, num + 1);
-        getPlayer(player).addStat(ach);
+        int num = getCaptures().get(entry) == null ? 0 : getCaptures().get(entry);
+        getCaptures().put(entry, num + 1);
     }
 
-    public void setHasFirst()
+    public void addKill(PokedexEntry entry)
+    {
+        int num = getKills().get(entry) == null ? 0 : getKills().get(entry);
+        getKills().put(entry, num + 1);
+    }
+
+    public void addHatch(PokedexEntry entry)
+    {
+        int num = getHatches().get(entry) == null ? 0 : getHatches().get(entry);
+        getHatches().put(entry, num + 1);
+    }
+
+    public void setHasFirst(EntityPlayer player)
     {
         hasFirst = true;
+        Triggers.FIRSTPOKEMOB.trigger((EntityPlayerMP) player);
+    }
+
+    public boolean hasFirst()
+    {
+        return hasFirst;
     }
 
     @Override
@@ -107,29 +95,45 @@ public class PokecubePlayerStats extends PlayerData
     @Override
     public boolean shouldSync()
     {
-        return false;
+        return true;
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag)
+    public void writeToNBT(NBTTagCompound tag_)
     {
-        tag = backup;
+        NBTTagCompound tag = new NBTTagCompound();
+        for (PokedexEntry e : getKills().keySet())
+        {
+            tag.setInteger(e.getName(), getKills().get(e));
+        }
+        tag_.setTag("kills", tag);
+        tag = new NBTTagCompound();
+        for (PokedexEntry e : getCaptures().keySet())
+        {
+            tag.setInteger(e.getName(), getCaptures().get(e));
+        }
+        tag_.setTag("captures", tag);
+        tag = new NBTTagCompound();
+        for (PokedexEntry e : getHatches().keySet())
+        {
+            tag.setInteger(e.getName(), getHatches().get(e));
+        }
+        tag_.setTag("hatches", tag);
+        NBTTagList list = new NBTTagList();
+        for (PokedexEntry e : inspected)
+        {
+            list.appendTag(new NBTTagString(e.getName()));
+        }
+        tag_.setTag("inspected", list);
+        tag_.setBoolean("F", hasFirst);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound tag)
     {
-        EntityPlayer player = PokecubeCore.proxy.getPlayer(uuid);
-        if (player == null || tag == null) return;
-
-        if (player.worldObj.isRemote)
-        {
-            initAchievements(getManager(uuid));
-            return;
-        }
-        backup = tag;
         NBTTagCompound temp = tag.getCompoundTag("kills");
         PokedexEntry entry;
+        initMaps();
         hasFirst = tag.getBoolean("F");
         for (String s : temp.getKeySet())
         {
@@ -137,7 +141,7 @@ public class PokecubePlayerStats extends PlayerData
             if (num > 0 && (entry = Database.getEntry(s)) != null)
             {
                 for (int i = 0; i < num; i++)
-                    addKill(uuid, entry);
+                    addKill(entry);
             }
         }
         temp = tag.getCompoundTag("captures");
@@ -147,7 +151,7 @@ public class PokecubePlayerStats extends PlayerData
             if (num > 0 && (entry = Database.getEntry(s)) != null)
             {
                 for (int i = 0; i < num; i++)
-                    addCapture(uuid, entry);
+                    addCapture(entry);
             }
         }
         temp = tag.getCompoundTag("hatches");
@@ -157,7 +161,18 @@ public class PokecubePlayerStats extends PlayerData
             if (num > 0 && (entry = Database.getEntry(s)) != null)
             {
                 for (int i = 0; i < num; i++)
-                    addHatch(uuid, entry);
+                    addHatch(entry);
+            }
+        }
+        if (tag.hasKey("inspected"))
+        {
+            NBTTagList list = (NBTTagList) tag.getTag("inspected");
+            if (inspected == null) initMaps();
+            for (int i = 0; i < list.tagCount(); i++)
+            {
+                String s = list.getStringTagAt(i);
+                entry = Database.getEntry(s);
+                if (entry != null) inspected.add(entry);
             }
         }
     }
@@ -168,162 +183,102 @@ public class PokecubePlayerStats extends PlayerData
         return "pokecubeStats";
     }
 
-    public Map<PokedexEntry, Integer> getCaptures(UUID player)
+    public Map<PokedexEntry, Integer> getCaptures()
     {
-        if (captures == null) initAchievements(getManager(player));
+        if (captures == null) initMaps();
         return captures;
     }
 
-    public Map<PokedexEntry, Integer> getKills(UUID player)
+    public Map<PokedexEntry, Integer> getKills()
     {
-        if (kills == null) initAchievements(getManager(player));
+        if (kills == null) initMaps();
         return kills;
     }
 
-    public Map<PokedexEntry, Integer> getHatches(UUID player)
+    public Map<PokedexEntry, Integer> getHatches()
     {
-        if (hatches == null) initAchievements(getManager(player));
+        if (hatches == null) initMaps();
         return hatches;
     }
 
-    private StatisticsManager getManager(UUID player)
-    {
-        return PokecubeCore.proxy.getManager(player);
-    }
-
-    private EntityPlayer getPlayer(UUID player)
-    {
-        return PokecubeCore.proxy.getPlayer(player);
-    }
-
-    // Achievements
-    public static Achievement                        get1stPokemob;
-    // public static HashMap<Integer, Achievement> pokemobAchievements;
-
-    public static AchievementPage                    achievementPageCatch;
-    public static AchievementPage                    achievementPageKill;
-    public static AchievementPage                    achievementPageHatch;
-    public static HashMap<PokedexEntry, Achievement> catchAchievements = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Achievement> hatchAchievements = Maps.newHashMap();
-    public static HashMap<PokedexEntry, Achievement> killAchievements  = Maps.newHashMap();
-
     public static void initAchievements()
     {
-        if (get1stPokemob == null)
-        {
-            System.out.println("REGISTERING ACHIEVEMENT");
-            get1stPokemob = (new AchievementCatch(null, -3, -3, PokecubeItems.getItem("pokedex"), null));
-            get1stPokemob.registerStat();
-            AchievementList.ACHIEVEMENTS.add(get1stPokemob);
-            achievementPageCatch = new AchievementPage("Pokecube Captures");
-            AchievementPage.registerAchievementPage(achievementPageCatch);
-            achievementPageHatch = new AchievementPage("Pokecube Hatchs");
-            AchievementPage.registerAchievementPage(achievementPageHatch);
-            achievementPageKill = new AchievementPage("Pokecube Kills");
-            AchievementPage.registerAchievementPage(achievementPageKill);
-        }
+
+        // Comment in this stuff if you want to generate get item achivements
+        // for different types.
+        // for (PokeType type : PokeType.values())
+        // {
+        // if (type != PokeType.unknown)
+        // {
+        // String json = BadgeGen.makeJson(type.name,
+        // "pokecube_adventures:trainers/root");
+        // File dir = new
+        // File("./mods/pokecube/assets/pokecube_adventures/advancements/trainers/");
+        // if (!dir.exists()) dir.mkdirs();
+        // File file = new File(dir, "get_" + type.name + "_badge.json");
+        // try
+        // {
+        // FileWriter write = new FileWriter(file);
+        // write.write(json);
+        // write.close();
+        // }
+        // catch (IOException e)
+        // {
+        // e.printStackTrace();
+        // }
+        // }
+        // }
     }
 
-    /** This is moved here for future 1.12 stuff. */
-    public static void registerAchievements(PokedexEntry e)
+    /** Comment these out to re-generate advancements. */
+    public static void registerAchievements(PokedexEntry entry)
     {
-        if (e.getStats() == null || e.evs == null)
-        {
-            System.err.println(new NullPointerException(e + " is missing stats or evs " + e.getStats() + " " + e.evs));
-        }
-        int x = -2 + (e.getPokedexNb() / 16) * 2;
-        int y = -2 + (e.getPokedexNb() % 16) * 2 - 1;
-        if (!hatchAchievements.containsKey(e) && e.evolvesFrom == null)
-        {
-            registerHatchAchieve(e);
-        }
-        if (!catchAchievements.containsKey(e))
-        {
-            registerCatchAchieve(e);
-        }
-        if (!killAchievements.containsKey(e))
-        {
-            AchievementKill kill = new AchievementKill(e, x, y, PokecubeItems.getEmptyCube(0), null);
-            kill.registerStat();
-            achievementPageKill.getAchievements().add(kill);
-            killAchievements.put(e, kill);
-        }
+        // if (!entry.base) return;
+        // make(entry, "catch", "pokecube_mobs:capture/get_first_pokemob",
+        // "capture");
+        // make(entry, "kill", "pokecube_mobs:kill/root", "kill");
+        // make(entry, "hatch", "pokecube_mobs:hatch/root", "hatch");
     }
 
-    private static Achievement registerHatchAchieve(PokedexEntry e)
+    protected static void make(PokedexEntry entry, String id, String parent, String path)
     {
-        if (hatchAchievements.containsKey(e)) return hatchAchievements.get(e);
-        int x = -2 + (e.getPokedexNb() / 16) * 2;
-        int y = -2 + (e.getPokedexNb() % 16) * 2 - 1;
-        PokedexEntry actual = e.getBaseForme() != null ? e.getBaseForme() : e;
-        Achievement hatch = actual != e ? registerHatchAchieve(actual)
-                : new AchievementHatch(actual, x, y, PokecubeItems.getEmptyCube(0), null);
-        if (e != actual) hatchAchievements.put(e, hatch);
-        if (!hatchAchievements.containsKey(actual))
+        ResourceLocation key = new ResourceLocation(entry.getModId(), id + "_" + entry.getName());
+        String json = AdvancementGenerator.makeJson(entry, id, parent);
+        File dir = new File("./mods/pokecube/assets/pokecube_mobs/advancements/" + path + "/");
+        if (!dir.exists()) dir.mkdirs();
+        File file = new File(dir, key.getResourcePath() + ".json");
+        try
         {
-            hatch.registerStat();
-            achievementPageHatch.getAchievements().add(hatch);
-            hatchAchievements.put(actual, hatch);
+            FileWriter write = new FileWriter(file);
+            write.write(json);
+            write.close();
         }
-        return hatch;
-    }
-
-    private static Achievement registerCatchAchieve(PokedexEntry e)
-    {
-        if (catchAchievements.containsKey(e)) return catchAchievements.get(e);
-        int x = -2 + (e.getPokedexNb() / 16) * 2;
-        int y = -4 + (e.getPokedexNb() % 16) * 2 - 1;
-        Achievement parent = null;
-        if (e.evolvesFrom != null && e.getSpawnData() == null)
+        catch (IOException e)
         {
-            boolean baseCanSpawn = false;
-            PokedexEntry from = e.evolvesFrom;
-            while (from != null && !baseCanSpawn)
-            {
-                baseCanSpawn = from.getSpawnData() != null;
-                from = from.evolvesFrom;
-            }
-            if (baseCanSpawn) parent = registerCatchAchieve(e.evolvesFrom);
+            e.printStackTrace();
         }
-        PokedexEntry actual = e.getBaseForme() != null ? e.getBaseForme() : e;
-        Achievement catc = actual != e ? registerCatchAchieve(actual)
-                : new AchievementCatch(actual, x, y, PokecubeItems.getEmptyCube(0), parent);
-        if (e != actual) catchAchievements.put(e, catc);
-        if (!catchAchievements.containsKey(actual))
-        {
-            catc.registerStat();
-            achievementPageCatch.getAchievements().add(catc);
-            catchAchievements.put(actual, catc);
-        }
-        return catc;
-    }
-
-    private static Map<String, Achievement> achievements = Maps.newHashMap();
-
-    public static Achievement getAchievement(String desc)
-    {
-        return achievements.get(desc);
     }
 
     public static void initMap()
     {
-        for (Achievement a : AchievementList.ACHIEVEMENTS)
-        {
-            if (a == null) continue;
-            try
-            {
-                String name = a.statId;
-                if (name != null) achievements.put(name, a);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
+        // Comment this in to generate a sounds.json.
+        // File dir = new File("./mods/pokecube/assets/pokecube_mobs/");
+        // if (!dir.exists()) dir.mkdirs();
+        // File file = new File(dir, "sounds.json");
+        // String json = SoundJsonGenerator.generateSoundJson();
+        // try
+        // {
+        // FileWriter write = new FileWriter(file);
+        // write.write(json);
+        // write.close();
+        // }
+        // catch (IOException e)
+        // {
+        // e.printStackTrace();
+        // }
     }
 
     public static void reset()
     {
-        achievements.clear();
     }
 }

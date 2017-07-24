@@ -50,7 +50,7 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     {
         PacketBuffer buffer = new PacketBuffer(buf);
         entityId = buffer.readInt();
-        name = buffer.readStringFromBuffer(20);
+        name = buffer.readString(20);
     }
 
     @Override
@@ -64,8 +64,8 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
     static void processMessage(MessageContext ctx, PacketNickname message)
     {
         EntityPlayer player;
-        player = ctx.getServerHandler().playerEntity;
-        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, message.entityId, true);
+        player = ctx.getServerHandler().player;
+        Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.world, message.entityId, true);
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         if (pokemob == null) return;
         String name = ChatAllowedCharacters.filterAllowedCharacters(new String(message.name));
@@ -80,12 +80,12 @@ public class PacketNickname implements IMessage, IMessageHandler<PacketNickname,
         {
             if (pokemob.getPokemonOwner() != null)
             {
-                pokemob.getPokemonOwner().addChatMessage(new TextComponentTranslation("pokemob.rename.deny"));
+                pokemob.getPokemonOwner().sendMessage(new TextComponentTranslation("pokemob.rename.deny"));
             }
         }
         else
         {
-            pokemob.getPokemonOwner().addChatMessage(new TextComponentTranslation("pokemob.rename.success",
+            pokemob.getPokemonOwner().sendMessage(new TextComponentTranslation("pokemob.rename.success",
                     pokemob.getPokemonDisplayName().getFormattedText(), name));
             pokemob.setPokemonNickname(name);
         }

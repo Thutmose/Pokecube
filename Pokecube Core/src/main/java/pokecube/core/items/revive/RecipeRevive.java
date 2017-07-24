@@ -2,7 +2,9 @@ package pokecube.core.items.revive;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemob;
@@ -25,12 +27,6 @@ public class RecipeRevive implements IDefaultRecipe
     public ItemStack getRecipeOutput()
     {
         return healed;
-    }
-
-    @Override
-    public int getRecipeSize()
-    {
-        return 10;
     }
 
     @Override
@@ -82,6 +78,27 @@ public class RecipeRevive implements IDefaultRecipe
             return CompatWrapper.isValid(healed);
         }
         return CompatWrapper.isValid(healed);
+    }
+
+    ResourceLocation registryName;
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name)
+    {
+        registryName = name;
+        return this;
+    }
+
+    @Override
+    public ResourceLocation getRegistryName()
+    {
+        return registryName;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType()
+    {
+        return IRecipe.class;
     }
 
 }

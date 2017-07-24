@@ -77,7 +77,7 @@ public class EntityPokemobEgg extends EntityLiving
     /** Called when the entity is attacked. */
     public boolean attackEntityFrom(DamageSource source, float damage)
     {
-        Entity e = source.getSourceOfDamage();// getImmediateSource
+        Entity e = source.getImmediateSource();// getImmediateSource
         if (!getEntityWorld().isRemote && e != null && e instanceof EntityPlayer)
         {
             if (this.delayBeforeCanPickup > 0) { return false; }

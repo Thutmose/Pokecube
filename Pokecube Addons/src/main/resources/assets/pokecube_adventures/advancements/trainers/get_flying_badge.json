@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "item": "pokecube_adventures:badge",
+      "nbt": "{\"type\":\"badgeflying\"}"
+    },
+    "title": {
+      "translate": "achievement.achievement.pokeadv.get.badgeflying"
+    },
+    "description": {
+      "translate": "achievement.achievement.pokeadv.get.badgeflying.desc"
+    }
+  },
+  "criteria": {
+    "get_badge": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "pokecube_adventures:badge",
+            "nbt": "{\"type\":\"badgeflying\"}"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "pokecube_adventures:trainers/root"
+}

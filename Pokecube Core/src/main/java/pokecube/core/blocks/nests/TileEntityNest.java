@@ -47,7 +47,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public boolean addForbiddenSpawningCoord()
     {
-        return SpawnHandler.addForbiddenSpawningCoord(getPos(), worldObj.provider.getDimension(), 10);
+        return SpawnHandler.addForbiddenSpawningCoord(getPos(), world.provider.getDimension(), 10);
     }
 
     public void addResident(IPokemob resident)
@@ -151,7 +151,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return false;
     }
@@ -187,7 +187,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
 
     public boolean removeForbiddenSpawningCoord()
     {
-        return SpawnHandler.removeForbiddenSpawningCoord(getPos(), worldObj.provider.getDimension());
+        return SpawnHandler.removeForbiddenSpawningCoord(getPos(), world.provider.getDimension());
     }
 
     public void removeResident(IPokemob resident)
@@ -223,13 +223,13 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     public void update()
     {
         time++;
-        int power = worldObj.getRedstonePower(getPos(), EnumFacing.DOWN);// .getBlockPowerInput(xCoord,
-                                                                         // yCoord,
-                                                                         // zCoord);
+        int power = world.getRedstonePower(getPos(), EnumFacing.DOWN);// .getBlockPowerInput(x,
+                                                                         // y,
+                                                                         // z);
 
-        if (worldObj.isRemote || (worldObj.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
+        if (world.isRemote || (world.getDifficulty() == EnumDifficulty.PEACEFUL && power == 0)) return;
 
-        if (worldObj.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(),
+        if (world.getClosestPlayer(getPos().getX(), getPos().getY(), getPos().getZ(),
                 PokecubeMod.core.getConfig().maxSpawnRadius, false) == null)
             return;
 
@@ -246,12 +246,12 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
         if (data != null)
         {
             Vector3 here = Vector3.getNewVector().set(this);
-            SpawnBiomeMatcher matcher = data.getMatcher(worldObj, here);
+            SpawnBiomeMatcher matcher = data.getMatcher(world, here);
             int min = data.getMin(matcher);
-            num = min + worldObj.rand.nextInt(data.getMax(matcher) - min + 1);
+            num = min + world.rand.nextInt(data.getMax(matcher) - min + 1);
         }
         // System.out.println("tick");
-        if (residents.size() < num && time > 200 + worldObj.rand.nextInt(2000))
+        if (residents.size() < num && time > 200 + world.rand.nextInt(2000))
         {
             time = 0;
             ItemStack eggItem = ItemPokemobEgg.getEggStack(pokedexNb);
@@ -259,13 +259,13 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
             nbt.setIntArray("nestLocation", new int[] { getPos().getX(), getPos().getY(), getPos().getZ() });
             eggItem.setTagCompound(nbt);
             Random rand = new Random();
-            EntityPokemobEgg egg = new EntityPokemobEgg(worldObj, getPos().getX() + rand.nextGaussian(),
+            EntityPokemobEgg egg = new EntityPokemobEgg(world, getPos().getX() + rand.nextGaussian(),
                     getPos().getY() + 1, getPos().getZ() + rand.nextGaussian(), eggItem, null);
             EggEvent.Lay event = new EggEvent.Lay(egg);
             MinecraftForge.EVENT_BUS.post(event);
             if (!event.isCanceled())
             {
-                worldObj.spawnEntityInWorld(egg);
+                world.spawnEntity(egg);
             }
         }
     }
@@ -304,7 +304,7 @@ public class TileEntityNest extends TileEntity implements ITickable, IInventory
     }
 
     // 1.11
-    public boolean func_191420_l()
+    public boolean isEmpty()
     {
         return true;
     }

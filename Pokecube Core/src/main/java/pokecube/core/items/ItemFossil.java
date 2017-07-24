@@ -2,12 +2,15 @@ package pokecube.core.items;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.handlers.HeldItemHandler;
@@ -26,7 +29,7 @@ public class ItemFossil extends Item
      * description */
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean bool)
+    public void addInformation(ItemStack stack, @Nullable World playerIn, List<String> list, ITooltipFlag advanced)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("pokemon"))
         {
@@ -47,13 +50,13 @@ public class ItemFossil extends Item
     /** returns a list of items with the same ID, but different meta (eg: dye
      * returns 16 items) */
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        if (tab != getCreativeTab()) return;
+        if (!this.isInCreativeTab(tab)) return;
         ItemStack stack;
         for (String s : HeldItemHandler.fossilVariants)
         {
-            stack = new ItemStack(itemIn);
+            stack = new ItemStack(this);
             stack.setTagCompound(new NBTTagCompound());
             stack.getTagCompound().setString("pokemon", s);
             subItems.add(stack);

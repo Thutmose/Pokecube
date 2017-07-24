@@ -35,7 +35,7 @@ public class MoveQueue
 
         public void queueMove(EntityMoveUse move)
         {
-            MoveQueue queue = queues.get(move.worldObj);
+            MoveQueue queue = queues.get(move.world);
             if (queue == null) throw new NullPointerException("why is world queue null?");
             if (move.getUser() != null) queue.moves.add(move);
         }
@@ -105,7 +105,7 @@ public class MoveQueue
             if (toUse)
             {
                 IPokemob mob = CapabilityPokemob.getPokemobFor(move.getUser());
-                world.spawnEntityInWorld(move);
+                world.spawnEntity(move);
                 move.getMove().applyHungerCost(mob);
                 MovesUtils.displayMoveMessages(mob, move.getTarget(), move.getMove().name);
             }

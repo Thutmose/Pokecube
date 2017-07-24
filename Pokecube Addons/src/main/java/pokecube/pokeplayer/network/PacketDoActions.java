@@ -74,7 +74,7 @@ public class PacketDoActions implements IMessage, IMessageHandler<PacketDoAction
             {
                 PacketDataSync.sendInitPacket(player, "pokecube-data");
             }
-            Entity closest = PokecubeMod.core.getEntityProvider().getEntity(player.worldObj, id, false);
+            Entity closest = PokecubeMod.core.getEntityProvider().getEntity(player.world, id, false);
             if (closest != null)
             {
                 pokemob.executeMove(closest, v.set(closest), closest.getDistanceToEntity(pokemob.getEntity()));
@@ -98,7 +98,7 @@ public class PacketDoActions implements IMessage, IMessageHandler<PacketDoAction
             GuiAsPokemob.moveIndex = index;
             return;
         }
-        player = ctx.getServerHandler().playerEntity;
+        player = ctx.getServerHandler().player;
         if (channel == MOVEUSE)
         {
             message.handleMoveUse(PokePlayer.PROXY.getPokemob(player), player);

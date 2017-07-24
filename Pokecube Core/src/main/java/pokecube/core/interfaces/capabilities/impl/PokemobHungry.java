@@ -29,7 +29,7 @@ public abstract class PokemobHungry extends PokemobMoves
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
         if (e instanceof EntityItem)
         {
-            ItemStack item = ((EntityItem) e).getEntityItem();
+            ItemStack item = ((EntityItem) e).getItem();
             if (item.getItem() instanceof IPokemobUseable)
             {
                 ((IPokemobUseable) item.getItem()).applyEffect(getEntity(), item);

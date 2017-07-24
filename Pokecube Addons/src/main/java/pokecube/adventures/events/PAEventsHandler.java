@@ -169,9 +169,9 @@ public class PAEventsHandler
     {
         IHasPokemobs pokemobHolder = CapabilityHasPokemobs.getHasPokemobs(evt.getEntityLiving());
         if (pokemobHolder != null && pokemobHolder.getTarget() == null
-                && evt.getSource().getSourceOfDamage() instanceof EntityLivingBase)
+                && evt.getSource().getTrueSource() instanceof EntityLivingBase)
         {
-            pokemobHolder.setTarget((EntityLivingBase) evt.getSource().getSourceOfDamage());
+            pokemobHolder.setTarget((EntityLivingBase) evt.getSource().getTrueSource());
         }
     }
 
@@ -287,7 +287,7 @@ public class PAEventsHandler
         for (int i = 0; i < 6; i++)
         {
             DataParameter<ItemStack> CUBE = EntityDataManager.<ItemStack> createKey(clazz,
-                    DataSerializers.OPTIONAL_ITEM_STACK);
+                    DataSerializers.ITEM_STACK);
 
             holder.pokemobs[i] = CUBE;
         }

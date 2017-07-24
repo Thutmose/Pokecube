@@ -42,7 +42,7 @@ public abstract class CommonProxy
         StatisticsManagerServer manager = mcServer.getPlayerList().playerStatFiles.get(player);
         if (manager == null)
         {
-            File file1 = new File(mcServer.worldServerForDimension(0).getSaveHandler().getWorldDirectory(), "stats");
+            File file1 = new File(mcServer.getWorld(0).getSaveHandler().getWorldDirectory(), "stats");
             File file2 = new File(file1, player + ".json");
             manager = new StatisticsManagerServer(mcServer, file2);
             manager.readStatFile();

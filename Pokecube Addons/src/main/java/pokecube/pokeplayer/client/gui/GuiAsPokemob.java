@@ -36,7 +36,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     @Override
     public IPokemob[] getPokemobsToDisplay()
     {
-        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.player);
         if (pokemob != null) return new IPokemob[] { pokemob };
         return super.getPokemobsToDisplay();
     }
@@ -44,7 +44,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     @Override
     public IPokemob getCurrentPokemob()
     {
-        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.player);
         if (pokemob == null) return super.getCurrentPokemob();
         return pokemob;
     }
@@ -52,7 +52,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
     @Override
     public void pokemobAttack()
     {
-        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.player);
         if (pokemob == null)
         {
             super.pokemobAttack();
@@ -60,7 +60,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         }
         if (!useMove) return;
         useMove = false;
-        EntityPlayer player = minecraft.thePlayer;
+        EntityPlayer player = minecraft.player;
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
         buffer.writeByte(PacketDoActions.MOVEUSE);
         float range = 16;
@@ -78,7 +78,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
         Vector3 look = Vector3.getNewVector().set(player.getLookVec());
         Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-        Vector3 v = pos.findNextSolidBlock(player.worldObj, look, range);
+        Vector3 v = pos.findNextSolidBlock(player.world, look, range);
         if (target != null)
         {
             if (v == null) v = Vector3.getNewVector();
@@ -99,7 +99,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 
             Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
             List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getUniqueID().toString());
+                    .getTeleports(minecraft.player.getUniqueID().toString());
 
             if (locations.size() > 0)
             {
@@ -151,7 +151,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
 
     boolean isPokemob()
     {
-        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.thePlayer);
+        IPokemob pokemob = PokePlayer.PROXY.getPokemob(minecraft.player);
         return pokemob != null;
     }
 }

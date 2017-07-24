@@ -50,7 +50,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
     private void doCropTick()
     {
         if (new Random().nextInt(PokecubeMod.core.getConfig().cropGrowthTicks) == 0
-                && worldObj.getLightFromNeighbors(pos.up()) >= 9)
+                && world.getLightFromNeighbors(pos.up()) >= 9)
         {
             growCrop();
         }
@@ -59,13 +59,13 @@ public class TileEntityBerries extends TileEntity implements ITickable
     private void doLeafTick()
     {
         if (new Random().nextInt(PokecubeMod.core.getConfig().leafBerryTicks) == 0
-                && worldObj.getLightFromNeighbors(pos.down()) >= 9)
+                && world.getLightFromNeighbors(pos.down()) >= 9)
         {
-            if (worldObj.getBlockState(pos).getBlock().isAir(worldObj.getBlockState(pos), worldObj, pos))
+            if (world.getBlockState(pos).getBlock().isAir(world.getBlockState(pos), world, pos))
             {
-                worldObj.setBlockToAir(pos);
+                world.setBlockToAir(pos);
             }
-            else if (worldObj.getBlockState(pos.down()).getBlock().isAir(worldObj.getBlockState(pos.down()), worldObj,
+            else if (world.getBlockState(pos.down()).getBlock().isAir(world.getBlockState(pos.down()), world,
                     pos.down()))
             {
                 placeBerry();
@@ -83,7 +83,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (worldObj.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
@@ -98,7 +98,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
     public void growCrop()
     {
         BlockPos up = pos.up();
-        if (!(worldObj.getBlockState(up).getBlock().isAir(worldObj.getBlockState(up), worldObj, up))) return;
+        if (!(world.getBlockState(up).getBlock().isAir(world.getBlockState(up), world, up))) return;
         stage++;
         if (stage > 7) stage = 7;
         if (stage == 7)
@@ -106,24 +106,24 @@ public class TileEntityBerries extends TileEntity implements ITickable
             TreeGrower grower = null;
             if ((grower = trees.get(berryId)) != null)
             {
-                if (!TerrainGen.saplingGrowTree(worldObj, worldObj.rand, pos)) return;
-                grower.growTree(worldObj, getPos(), berryId);
+                if (!TerrainGen.saplingGrowTree(world, world.rand, pos)) return;
+                grower.growTree(world, getPos(), berryId);
                 return;
             }
             stage = 1;
             Block fruit = BerryManager.berryFruit;
-            worldObj.setBlockState(up, fruit.getDefaultState());
-            TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(up);
+            world.setBlockState(up, fruit.getDefaultState());
+            TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(up);
             tile.setBerryId(berryId);
         }
-        worldObj.setBlockState(pos, worldObj.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)),
+        world.setBlockState(pos, world.getBlockState(pos).withProperty(BlockCrops.AGE, Integer.valueOf(stage)),
                 2);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (worldObj.isRemote)
+        if (world.isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -133,8 +133,8 @@ public class TileEntityBerries extends TileEntity implements ITickable
     public void placeBerry()
     {
         Block fruit = BerryManager.berryFruit;
-        worldObj.setBlockState(pos.down(), fruit.getDefaultState());
-        TileEntityBerries tile = (TileEntityBerries) worldObj.getTileEntity(pos.down());
+        world.setBlockState(pos.down(), fruit.getDefaultState());
+        TileEntityBerries tile = (TileEntityBerries) world.getTileEntity(pos.down());
         if (tile != null) tile.setBerryId(berryId);
     }
 
@@ -162,7 +162,7 @@ public class TileEntityBerries extends TileEntity implements ITickable
     @Override
     public void update()
     {
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
         switch (type)
         {
         case CROP:

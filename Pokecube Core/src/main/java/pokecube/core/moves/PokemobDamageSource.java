@@ -68,7 +68,7 @@ public class PokemobDamageSource extends DamageSource
     }
 
     @Override
-    public Entity getEntity()
+    public Entity getTrueSource()
     {
         IPokemob sourceMob = CapabilityPokemob.getPokemobFor(this.damageSourceEntity);
         if (sourceMob != null && sourceMob.getOwner() != null) return sourceMob.getOwner();
@@ -82,12 +82,7 @@ public class PokemobDamageSource extends DamageSource
 
     @Nullable
     @Override
-    public Entity getSourceOfDamage()
-    {
-        return getActualEntity();
-    }
-
-    public Entity getActualEntity()
+    public Entity getImmediateSource()
     {
         return this.damageSourceEntity;
     }

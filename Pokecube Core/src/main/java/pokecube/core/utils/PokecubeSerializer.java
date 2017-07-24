@@ -269,7 +269,7 @@ public class PokecubeSerializer
                 pos.setInteger("y", location.getY());
                 pos.setInteger("z", location.getZ());
                 ticket.getModData().setTag("pos", pos);
-                ChunkPos chunk = world.getChunkFromBlockCoords(location).getChunkCoordIntPair();
+                ChunkPos chunk = world.getChunkFromBlockCoords(location).getPos();
                 ForgeChunkManager.forceChunk(ticket, chunk);
                 tickets.put(location, ticket);
             }

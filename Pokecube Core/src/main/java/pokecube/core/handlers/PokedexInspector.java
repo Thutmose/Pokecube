@@ -51,7 +51,7 @@ public class PokedexInspector
                 if (giveReward)
                 {
                     tag.setBoolean(tagString, true);
-                    entity.addChatMessage(new TextComponentTranslation(message));
+                    entity.sendMessage(new TextComponentTranslation(message));
                     EntityPlayer entityPlayer = (EntityPlayer) entity;
                     Tools.giveItem(entityPlayer, reward);
                     PokecubePlayerDataHandler.saveCustomData(entity.getCachedUniqueIdString());

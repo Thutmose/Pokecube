@@ -225,7 +225,7 @@ public class LogicMiscUpdate extends LogicBase
                 heart.set(entity.posX + rand.nextFloat() * entity.width * 2.0F - entity.width,
                         entity.posY + 0.5D + rand.nextFloat() * entity.height,
                         entity.posZ + rand.nextFloat() * entity.width * 2.0F - entity.width);
-                PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "heart", heart, null);
+                PokecubeMod.core.spawnParticle(entity.world, "heart", heart, null);
             }
         }
         int[] args = {};

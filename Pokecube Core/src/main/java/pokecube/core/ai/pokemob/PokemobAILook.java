@@ -46,7 +46,7 @@ public class PokemobAILook extends EntityAIBase
 
     /** Returns whether an in-progress EntityAIBase should continue executing */
     @Override
-    public boolean continueExecuting()// shouldContinueExecuting in 1.12
+    public boolean shouldContinueExecuting()
     {
         if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || (pokemob.getStatus() & IPokemob.STATUS_SLP) > 0)
             return false;
@@ -103,8 +103,8 @@ public class PokemobAILook extends EntityAIBase
             else
             {
                 this.closestEntity = this.theWatcher.getEntityWorld().findNearestEntityWithinAABB(this.watchedClass,
-                        this.theWatcher.getEntityBoundingBox().expand(this.maxDistanceForPlayer, 3.0D,
-                                this.maxDistanceForPlayer), // grow in 1.12
+                        this.theWatcher.getEntityBoundingBox().grow(this.maxDistanceForPlayer, 3.0D,
+                                this.maxDistanceForPlayer),
                         this.theWatcher);
             }
 

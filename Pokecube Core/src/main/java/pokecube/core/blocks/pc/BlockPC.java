@@ -31,7 +31,7 @@ public class BlockPC extends BlockRotatable implements ITileEntityProvider
         this.setLightOpacity(0);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP,
                 Boolean.valueOf(false)));
-        this.setHardness(100);
+        this.setHardness(500);
         this.setResistance(100);
         this.setLightLevel(1f);
     }

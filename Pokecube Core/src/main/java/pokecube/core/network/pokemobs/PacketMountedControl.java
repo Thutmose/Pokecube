@@ -78,7 +78,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
         }
         else
         {
-            player = ctx.getServerHandler().playerEntity;
+            player = ctx.getServerHandler().player;
         }
         Entity mob = player.getEntityWorld().getEntityByID(message.entityId);
         if (mob != null && mob instanceof EntityAiPokemob)

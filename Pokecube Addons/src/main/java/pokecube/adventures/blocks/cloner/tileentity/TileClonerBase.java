@@ -52,7 +52,7 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player)
+    public boolean isUsableByPlayer(EntityPlayer player)
     {
         return user == null || user == player;
     }
@@ -226,7 +226,7 @@ public abstract class TileClonerBase extends TileEntity implements IPoweredProgr
     @Override
     public void update()
     {
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
         checkRecipes();
     }
 

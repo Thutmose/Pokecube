@@ -2,8 +2,7 @@ package pokecube.core.interfaces.capabilities.impl;
 
 import java.lang.reflect.Method;
 
-import javax.swing.text.html.parser.Entity;
-
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;

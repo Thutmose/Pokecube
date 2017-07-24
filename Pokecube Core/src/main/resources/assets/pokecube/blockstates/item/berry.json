@@ -1,0 +1,13 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "builtin/generated",
+    "transform": "forge:default-item",
+    "textures": {"layer0": "pokecube:items/nullberry"}
+  },
+  "variants": {
+    "type": {
+      "null": {"textures": {"layer0": "pokecube:items/nullberry"}}
+    }
+  }
+}

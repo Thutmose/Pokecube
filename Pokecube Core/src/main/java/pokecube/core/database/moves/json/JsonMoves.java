@@ -10,9 +10,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import pokecube.core.interfaces.PokecubeMod;
 
 public class JsonMoves
 {
@@ -183,15 +186,15 @@ public class JsonMoves
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            PokecubeMod.log(Level.WARNING, "Error with read " + file, e);
             moves = new MovesJson();
             try
             {
                 write(file);
             }
-            catch (IOException e1)
+            catch (Exception e1)
             {
-                e1.printStackTrace();
+                PokecubeMod.log(Level.WARNING, "Error with write " + file, e);
             }
         }
     }

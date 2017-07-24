@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -160,6 +159,14 @@ public class Database
     {
         missingno.type1 = PokeType.unknown;
         missingno.type2 = PokeType.unknown;
+        missingno.evs = new byte[6];
+        missingno.stats = new int[6];
+        missingno.stats[0] = 33;
+        missingno.stats[1] = 136;
+        missingno.stats[2] = 0;
+        missingno.stats[3] = 6;
+        missingno.stats[4] = 6;
+        missingno.stats[5] = 29;
     }
 
     /** These are used for config added databasea <br>
@@ -383,9 +390,9 @@ public class Database
                 JsonMoves.merge(anims, moves);
                 MovesParser.load(moves);
             }
-            catch (IOException e1)
+            catch (Exception e1)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s, e1);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e1);
             }
         }
         boolean loaded = false;
@@ -402,7 +409,7 @@ public class Database
             }
             catch (Exception e)
             {
-                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s, e);
+                PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e);
             }
         }
 
@@ -412,8 +419,11 @@ public class Database
         }
         catch (Exception e)
         {
-            PokecubeMod.log(Level.SEVERE, "Error with databases", e);
-            throw new RuntimeException("Database loading failed, this is very bad.");
+            PokecubeMod.log(Level.SEVERE, "Error with databases " + e);
+            allFormes.add(missingno);
+            // TODO autoregister missingno here?
+            // throw new RuntimeException("Database loading failed, this is very
+            // bad.");
         }
 
         PokecubeMod.log("Loaded " + data.size() + " by number, and " + allFormes.size() + " by formes from databases.");

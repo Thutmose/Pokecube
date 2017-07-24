@@ -19,6 +19,11 @@ type.dragon=dragon
 type.dark=dark
 type.fairy=fairy
 
+item.nullBerry.name=Berry
+item.nullBerry.desc=Just a Berry, Pokémobs might eat it.
+
+pkmn.missingno.name=MissingNo.
+
 death.attack.terrain.sandstorm=%1$s §cdied to the Sandstorm
 death.attack.terrain.hail=%1$s §cdied to Hail
 

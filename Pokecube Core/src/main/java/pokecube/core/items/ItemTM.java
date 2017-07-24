@@ -1,5 +1,7 @@
 package pokecube.core.items;
 
+import java.util.logging.Level;
+
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,6 +27,11 @@ public class ItemTM extends ItemPokemobUseable
         if (stack.getItem() instanceof ItemTM)
         {
             Move_Base attack = MovesUtils.getMoveFromName(move.trim());
+            if (attack == null)
+            {
+                PokecubeMod.log(Level.WARNING, "Attempting to make TM for un-registered move: " + move);
+                return;
+            }
             NBTTagCompound nbt = stack.getTagCompound() == null ? new NBTTagCompound() : stack.getTagCompound();
 
             nbt.setString("move", move.trim());

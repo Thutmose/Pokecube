@@ -85,7 +85,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob.DefaultPokemob;
+import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;

@@ -36,7 +36,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob.DefaultPokemob;
+import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import thut.api.entity.IMobColourable;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;

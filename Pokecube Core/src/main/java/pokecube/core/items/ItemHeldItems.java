@@ -60,7 +60,7 @@ public class ItemHeldItems extends Item
     @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems)
     {
-        if (tab != getCreativeTab()) return;
+        if (!this.isInCreativeTab(tab)) return;
         ItemStack stack;
         for (String s : variants)
         {

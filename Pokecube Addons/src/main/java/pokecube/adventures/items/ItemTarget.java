@@ -153,6 +153,7 @@ public class ItemTarget extends CompatItem
     protected List<ItemStack> getTabItems(Item itemIn, CreativeTabs tab)
     {
         List<ItemStack> subItems = Lists.newArrayList();
+        if (!this.isInCreativeTab(tab)) return subItems;
         subItems.add(new ItemStack(itemIn, 1, 0));
         subItems.add(new ItemStack(itemIn, 1, 1));
         subItems.add(new ItemStack(itemIn, 1, 3));

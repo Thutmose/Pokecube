@@ -39,7 +39,7 @@ public class StatsCollector
     public static void addCapture(IPokemob captured)
     {
         String owner;
-        if (captured.getPokemonOwner() instanceof EntityPlayer && !(captured.getPokemonOwner() instanceof FakePlayer))
+        if (captured.getPokemonOwner() instanceof EntityPlayerMP && !(captured.getPokemonOwner() instanceof FakePlayer))
         {
             EntityPlayerMP player = (EntityPlayerMP) captured.getPokemonOwner();
             owner = captured.getPokemonOwner().getCachedUniqueIdString();

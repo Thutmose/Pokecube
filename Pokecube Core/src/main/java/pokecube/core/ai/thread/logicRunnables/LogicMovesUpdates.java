@@ -96,15 +96,15 @@ public class LogicMovesUpdates extends LogicBase
         {
             pokemob.setTransformedTo(pokemob.getLover());
         }
-        if (pokemob.getAbility() != null)
+        if (pokemob.getAbility() != null && entity.isServerWorld())
         {
             pokemob.getAbility().onUpdate(pokemob);
         }
         if (!entity.isDead && CompatWrapper.isValid(pokemob.getHeldItem())
                 && pokemob.getHeldItem().getItem() instanceof ItemPokemobUseable)
         {
-            boolean used = ((IPokemobUseable) pokemob.getHeldItem().getItem())
-                    .itemUse(pokemob.getHeldItem(), entity, null);
+            boolean used = ((IPokemobUseable) pokemob.getHeldItem().getItem()).itemUse(pokemob.getHeldItem(), entity,
+                    null);
             if (used)
             {
                 ItemStack stack = pokemob.getHeldItem().splitStack(1);

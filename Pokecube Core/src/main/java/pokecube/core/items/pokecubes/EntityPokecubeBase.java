@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -247,7 +246,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             {
                 ITextComponent mess = new TextComponentTranslation("pokecube.missed", entity1.getPokemonDisplayName());
                 ((EntityPlayer) shootingEntity).addChatMessage(mess);
-                ((EntityCreature) entity1).setAttackTarget(shootingEntity);
+                entity1.getEntity().setAttackTarget(shootingEntity);
             }
         }
         else

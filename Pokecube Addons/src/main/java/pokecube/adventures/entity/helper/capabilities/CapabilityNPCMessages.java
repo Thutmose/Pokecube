@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.FakePlayer;
 import pokecube.adventures.entity.helper.Action;
 import pokecube.adventures.entity.helper.MessageState;
 import pokecube.core.interfaces.PokecubeMod;
@@ -107,6 +108,7 @@ public class CapabilityNPCMessages
         @Override
         public void sendMessage(MessageState state, Entity target, Object... args)
         {
+            if (target instanceof FakePlayer) return;
             target.addChatMessage(new TextComponentTranslation(messages.get(state), args));
             if (PokecubeMod.core.getConfig().debug) PokecubeMod.log(state + ": " + messages.get(state));
         }
@@ -114,6 +116,7 @@ public class CapabilityNPCMessages
         @Override
         public void doAction(MessageState state, EntityLivingBase target)
         {
+            if (target instanceof FakePlayer) return;
             Action action = actions.get(state);
             if (action != null && target instanceof EntityPlayer) action.doAction((EntityPlayer) target);
         }

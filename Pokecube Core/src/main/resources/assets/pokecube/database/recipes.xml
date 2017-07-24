@@ -104,7 +104,7 @@
         <Input id="minecraft:glass" key="G"/>
         <Input id="minecraft:dye" d="4" key="I"/>
     </Recipe>
-    <Recipe map="III,CBC,III">//Snagcube
+    <Recipe map="IGI,CBC,III">//Snagcube
         <Output n="3" id="pokecube:pokeseal"/>
         <Input id="minecraft:ghast_tear" d="1" key="G"/>
         <Input id="minecraft:stone_button" key="B"/>

@@ -291,7 +291,7 @@ public class RenderHealth
                 UUID owner = pokemob.getPokemonOwnerID();
                 boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
                 int colour = isOwner ? config.ownedNameColour
-                        : owner == null ? nametag ? config.unknownNameColour : config.unknownNameColour
+                        : owner == null ? nametag ? config.caughtNamedColour : config.unknownNameColour
                                 : config.otherOwnedNameColour;
                 mc.fontRendererObj.drawString(name, 0, 0, colour);
 

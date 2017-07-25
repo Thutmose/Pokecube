@@ -53,9 +53,14 @@ import pokecube.core.ai.utils.AISaveHandler;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.commands.Commands;
+import pokecube.core.commands.CountCommand;
+import pokecube.core.commands.CullCommand;
 import pokecube.core.commands.GiftCommand;
+import pokecube.core.commands.KillCommand;
 import pokecube.core.commands.MakeCommand;
+import pokecube.core.commands.MeteorCommand;
 import pokecube.core.commands.RecallCommand;
+import pokecube.core.commands.ResetCommand;
 import pokecube.core.commands.SecretBaseCommand;
 import pokecube.core.commands.SettingsCommand;
 import pokecube.core.commands.TMCommand;
@@ -727,6 +732,11 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new TMCommand());
         event.registerServerCommand(new RecallCommand());
         event.registerServerCommand(new SecretBaseCommand());
+        event.registerServerCommand(new KillCommand());
+        event.registerServerCommand(new CountCommand());
+        event.registerServerCommand(new CullCommand());
+        event.registerServerCommand(new MeteorCommand());
+        event.registerServerCommand(new ResetCommand());
         PokecubeTemplates.serverInit(event.getServer());
         registerSpawns();
         try

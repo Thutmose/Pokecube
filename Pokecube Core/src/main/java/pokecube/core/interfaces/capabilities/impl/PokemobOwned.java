@@ -225,8 +225,6 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             MinecraftForge.EVENT_BUS.post(evtrec);
             if (getEntity().getHealth() > 0 && evtrec.isCanceled()) { return; }
 
-            Entity owner = getPokemonOwner();
-
             if (getPokemonAIState(MEGAFORME) || getPokedexEntry().isMega)
             {
                 this.setPokemonAIState(MEGAFORME, false);
@@ -237,11 +235,13 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 base.returnToPokecube();
                 return;
             }
+
+            Entity owner = getPokemonOwner();
             this.setPokemonAIState(IMoveConstants.NOMOVESWAP, false);
             this.setPokemonAIState(IMoveConstants.ANGRY, false);
             getEntity().setAttackTarget(null);
             getEntity().captureDrops = true;
-            if (owner instanceof EntityPlayer && !isShadow())
+            if (owner instanceof EntityPlayer)
             {
                 ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                 EntityPlayer player = (EntityPlayer) owner;
@@ -253,13 +253,12 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 if (noRoom)
                 {
                     getEntity().captureDrops = true;
-                    ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack, 0F),
-                            PokecubeMod.getFakePlayer());
+                    ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack, 0F), player);
                     MinecraftForge.EVENT_BUS.post(toss);
                     noRoom = !toss.isCanceled();
                     if (noRoom)
                     {
-                        onToss((EntityLivingBase) owner, itemstack);
+                        onToss(player, itemstack);
                     }
                 }
                 else
@@ -267,16 +266,15 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                     boolean added = player.inventory.addItemStackToInventory(itemstack);
                     if (!added)
                     {
-                        ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack, 0F),
-                                PokecubeMod.getFakePlayer());
+                        ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack, 0F), player);
                         MinecraftForge.EVENT_BUS.post(toss);
                         added = toss.isCanceled();
                     }
                 }
                 if (!owner.isSneaking() && !getEntity().isDead)
                 {
-                    boolean has = StatsCollector.getCaptured(getPokedexEntry(), ((EntityPlayer) owner)) > 0;
-                    has = has || StatsCollector.getHatched(getPokedexEntry(), ((EntityPlayer) owner)) > 0;
+                    boolean has = StatsCollector.getCaptured(getPokedexEntry(), player) > 0;
+                    has = has || StatsCollector.getHatched(getPokedexEntry(), player) > 0;
                     if (!has)
                     {
                         StatsCollector.addCapture(this);
@@ -295,7 +293,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                     MinecraftForge.EVENT_BUS.post(toss);
                     if (!toss.isCanceled())
                     {
-                        onToss((EntityLivingBase) owner, itemstack);
+                        onToss(null, itemstack);
                     }
                 }
                 else
@@ -323,7 +321,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
 
     private void onToss(EntityLivingBase owner, ItemStack itemstack)
     {
-        EntityPokecube entity = new EntityPokecube(getEntity().getEntityWorld(), (EntityLivingBase) owner, itemstack);
+        EntityPokecube entity = new EntityPokecube(getEntity().getEntityWorld(), owner, itemstack);
         here.set(getEntity());
         here.moveEntity(entity);
         here.clear().setVelocities(entity);

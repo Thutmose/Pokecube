@@ -141,7 +141,7 @@ public class Move_Explode extends Move_Basic
                     mob.getEntityWorld().spawnParticle(EnumParticleTypes.EXPLOSION_LARGE, mob.posX, mob.posY, mob.posZ,
                             1.0D, 0.0D, 0.0D, new int[0]);
                 }
-                actualAttack(pokemob, Vector3.getNewVector().set(pokemob).add(0,
+                actualAttack(pokemob, Vector3.getNewVector().set(pokemob.getEntity()).add(0,
                         pokemob.getSize() * pokemob.getPokedexEntry().height / 2, 0));
             }
         }

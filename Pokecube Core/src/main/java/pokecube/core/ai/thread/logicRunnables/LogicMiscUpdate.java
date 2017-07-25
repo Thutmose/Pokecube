@@ -146,7 +146,7 @@ public class LogicMiscUpdate extends LogicBase
 
         // Particle stuff below here, WARNING, RESETTING RNG HERE
         rand = new Random();
-        Vector3 particleLoc = Vector3.getNewVector().set(pokemob);
+        Vector3 particleLoc = Vector3.getNewVector().set(entity);
         boolean randomV = false;
         Vector3 particleVelo = Vector3.getNewVector();
         boolean pokedex = false;

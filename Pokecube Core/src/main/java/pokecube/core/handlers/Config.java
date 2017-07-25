@@ -237,6 +237,8 @@ public class Config extends ConfigBase
     public float                         interactDelayScale           = 1;
     @Configure(category = mobAI)
     public boolean                       pokemobsOnShoulder           = true;
+    @Configure(category = mobAI)
+    public int                           fishHookBaitRange            = 16;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};

@@ -102,8 +102,7 @@ public abstract class PokemobSexed extends PokemobStats
         if (getEntity().getEntityWorld().isRemote) { return; }
         int num = Tools.countPokemon(getEntity().getEntityWorld(), here, PokecubeMod.core.getConfig().maxSpawnRadius);
         if (!(getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;
-        Vector3 pos = Vector3.getNewVector().set(this).addTo(0,
-                Math.max(getPokedexEntry().height * getSize() / 4, 0.5f), 0);
+        Vector3 pos = here.set(getEntity()).addTo(0, Math.max(getPokedexEntry().height * getSize() / 4, 0.5f), 0);
         if (pos.isClearOfBlocks(getEntity().getEntityWorld()))
         {
             Entity eggItem = null;

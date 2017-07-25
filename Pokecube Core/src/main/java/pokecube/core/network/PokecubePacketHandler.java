@@ -428,7 +428,7 @@ public class PokecubePacketHandler
                     }
 
                     ItemStack item = PokecubeManager.pokemobToItem(pokemob);
-                    ((Entity) pokemob).isDead = true;
+                    pokemob.getEntity().isDead = true;
                     return item;
                 }
 

@@ -240,6 +240,7 @@ public class TypeTrainer
         {
             for (SpawnBiomeMatcher matcher : type.matchers.keySet())
             {
+                matcher.reset();
                 matcher.parse();
             }
         }

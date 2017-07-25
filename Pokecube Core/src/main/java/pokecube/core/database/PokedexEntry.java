@@ -205,8 +205,7 @@ public class PokedexEntry
                     correctItem = Tools.isSameStack(mobs, item);
                 }
             }
-            if (Tools.isSameStack(mob.getHeldItem(),
-                    PokecubeItems.getStack("everstone"))) { return false; }
+            if (Tools.isSameStack(mob.getHeldItem(), PokecubeItems.getStack("everstone"))) { return false; }
             if (Tools.isSameStack(mobs, PokecubeItems.getStack("everstone"))) { return false; }
             ret = ret && correctItem;
             boolean correctLevel = mob.getLevel() >= level;
@@ -532,6 +531,7 @@ public class PokedexEntry
         {
             for (SpawnBiomeMatcher matcher : matchers.keySet())
             {
+                matcher.reset();
                 matcher.parse();
             }
         }

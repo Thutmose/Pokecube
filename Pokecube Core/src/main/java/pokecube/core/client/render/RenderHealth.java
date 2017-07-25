@@ -215,7 +215,8 @@ public class RenderHealth
                 boolean captureOrHatch = StatsCollector.getCaptured(pokemob.getPokedexEntry(),
                         Minecraft.getMinecraft().player) > 0
                         || StatsCollector.getHatched(pokemob.getPokedexEntry(), Minecraft.getMinecraft().player) > 0;
-                nametag = nametag || captureOrHatch || stats.hasInspected(pokemob.getPokedexEntry());
+                boolean scanned = false;
+                nametag = nametag || captureOrHatch || (scanned = stats.hasInspected(pokemob.getPokedexEntry()));
                 if (!nametag)
                 {
                     nameComp.getStyle().setObfuscated(true);
@@ -296,8 +297,8 @@ public class RenderHealth
                 UUID owner = pokemob.getPokemonOwnerID();
                 boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
                 int colour = isOwner ? config.ownedNameColour
-                        : owner == null ? nametag ? config.scannedNameColour : config.unknownNameColour
-                                : config.otherOwnedNameColour;
+                        : owner == null ? nametag ? scanned ? config.scannedNameColour : config.caughtNamedColour
+                                : config.unknownNameColour : config.otherOwnedNameColour;
                 mc.fontRenderer.drawString(name, 0, 0, colour);
 
                 GlStateManager.pushMatrix();

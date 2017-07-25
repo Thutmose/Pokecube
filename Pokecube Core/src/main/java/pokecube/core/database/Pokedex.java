@@ -3,10 +3,19 @@
  */
 package pokecube.core.database;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import pokecube.core.interfaces.PokecubeMod;
 
 /** @author Manchou */
 public class Pokedex
@@ -22,19 +31,21 @@ public class Pokedex
         return instance;
     }
 
-    private HashSet<Integer>      entries;
-    private HashSet<PokedexEntry> registeredFormes;
+    private ArrayList<PokedexEntry>    entries;
+    private Map<PokedexEntry, Integer> entryIndecies;
+    private HashSet<PokedexEntry>      registeredFormes;
 
     /**
      *
      */
     private Pokedex()
     {
-        entries = Sets.newHashSet();
+        entries = Lists.newArrayList();
+        entryIndecies = Maps.newHashMap();
         registeredFormes = Sets.newHashSet();
     }
 
-    public HashSet<Integer> getEntries()
+    public List<PokedexEntry> getEntries()
     {
         return entries;
     }
@@ -42,6 +53,11 @@ public class Pokedex
     public Set<PokedexEntry> getRegisteredEntries()
     {
         return registeredFormes;
+    }
+
+    public Integer getIndex(PokedexEntry entry)
+    {
+        return entryIndecies.get(entry);
     }
 
     public PokedexEntry getEntry(Integer pokedexNb)
@@ -53,95 +69,57 @@ public class Pokedex
 
     public PokedexEntry getFirstEntry()
     {
-        int pokedexNb = 0;
-        PokedexEntry returned = null;
-
-        do
-        {
-            pokedexNb += 1;
-            returned = getEntry(pokedexNb);
-
-            if (returned != null) { return returned; }
-        }
-        while (pokedexNb < 1500);
-
-        return Database.missingno;
+        if (entries.isEmpty()) registerPokemon(Database.missingno);
+        return entries.get(0);
     }
 
     public PokedexEntry getLastEntry()
     {
-        int pokedexNb = 1500;
-        PokedexEntry returned = null;
-
-        do
-        {
-            pokedexNb -= 1;
-            returned = getEntry(pokedexNb);
-
-            if (returned != null) { return returned; }
-        }
-        while (pokedexNb > 00);
-
-        return Database.missingno;
+        if (entries.isEmpty()) return getFirstEntry();
+        return entries.get(entries.size() - 1);
     }
 
     public PokedexEntry getNext(PokedexEntry pokedexEntry, int i)
     {
-        int pokedexNb = pokedexEntry != null ? pokedexEntry.pokedexNb : 0;
-        PokedexEntry returned = null;
-
-        do
+        Integer index = entryIndecies.get(pokedexEntry);
+        if (index == null)
         {
-            pokedexNb += i;
-
-            if (pokedexNb >= 1500)
-            {
-                pokedexNb = pokedexNb - i + 1;
-            }
-
-            returned = getEntry(pokedexNb);
-
-            if (returned != null) { return returned; }
+            PokecubeMod.log(Level.WARNING, "Attempt to get a non existant entry: " + pokedexEntry,
+                    new NullPointerException());
+            return getFirstEntry();
         }
-        while (pokedexNb < 1500);
-
-        // if(pokedexEntry==null||returned == null) System.err.println("Null
-        // Entry "+pokedexEntry+" "+returned);
-        return pokedexEntry;
+        while (index + i < 0)
+            i += entries.size();
+        index = (index + i) % entries.size();
+        System.out.println(index);
+        return entries.get(index);
     }
 
     public PokedexEntry getPrevious(PokedexEntry pokedexEntry, int i)
     {
-        int pokedexNb = pokedexEntry.pokedexNb;
-        PokedexEntry returned = null;
-
-        do
-        {
-            pokedexNb -= i;
-
-            if (pokedexNb <= 0)
-            {
-                pokedexNb = pokedexNb + i - 1;
-            }
-
-            returned = getEntry(pokedexNb);
-
-            if (returned != null) { return returned; }
-        }
-        while (pokedexNb > 0);
-
-        return pokedexEntry;
+        return getNext(pokedexEntry, -i);
     }
 
     public void registerPokemon(PokedexEntry entry)
     {
         if (entry == null || entry.pokedexNb == 0) { return; }
-        getEntries().add(entry.pokedexNb);
+        entries.add(entry);
         registeredFormes.add(entry);
+        resort();
     }
 
     public boolean isRegistered(PokedexEntry entry)
     {
         return registeredFormes.contains(entry);
+    }
+
+    private void resort()
+    {
+        Collections.sort(entries, Database.COMPARATOR);
+        entryIndecies.clear();
+        for (int i = 0; i < entries.size(); i++)
+        {
+            entryIndecies.put(entries.get(i), i);
+        }
     }
 }

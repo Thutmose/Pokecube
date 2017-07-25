@@ -3,7 +3,6 @@ package pokecube.modelloader.items;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -280,22 +279,7 @@ public class ItemModelReloader extends Item
                             newDatabase.pokemon.add(entry);
                         }
                     }
-                    Collections.sort(newDatabase.pokemon, new Comparator<XMLPokedexEntry>()
-                    {
-                        @Override
-                        public int compare(XMLPokedexEntry o1, XMLPokedexEntry o2)
-                        {
-                            int diff = o1.number - o2.number;
-                            if (diff == 0)
-                            {
-                                boolean o1base = o1.base != null ? o1.base : false;
-                                boolean o2base = o2.base != null ? o2.base : false;
-                                if (o1base && !o2base) diff = -1;
-                                else if (o2base && !o1base) diff = 1;
-                            }
-                            return diff;
-                        }
-                    });
+                    Collections.sort(newDatabase.pokemon, PokedexEntryLoader.ENTRYSORTER);
                     String json = prettyGson.toJson(newDatabase);
                     FileWriter writer = new FileWriter(new File(file));
                     writer.append(json);

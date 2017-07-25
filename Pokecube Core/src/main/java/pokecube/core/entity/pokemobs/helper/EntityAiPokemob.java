@@ -1064,7 +1064,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
             // Check saddle for riding.
             if (getPokemonAIState(SADDLED) && !player.isSneaking() && isOwner
-                    && (held == CompatWrapper.nullStack || held.getItem() != PokecubeItems.pokedex)
+                    && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
                     && handleHmAndSaddle(player, new ItemStack(Items.SADDLE)))
             {
                 this.setJumping(false);

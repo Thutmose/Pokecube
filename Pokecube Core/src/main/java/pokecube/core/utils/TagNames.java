@@ -39,7 +39,6 @@ public interface TagNames
             }
         }
         PokecubeMod.log(itemRootTag + "");
-        Thread.dumpStack();
         return ret;
     }
 

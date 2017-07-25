@@ -98,7 +98,7 @@ public abstract class PokemobAI extends PokemobEvolves
             double z = getPokedexEntry().length * getSize();
             double y = getPokedexEntry().height * getSize();
             double v = vec.setToVelocity(getEntity()).mag();
-            vec.set(this);
+            vec.set(getEntity());
             vec2.set(x + v, y + v, z + v);
             Matrix3 mainBox = new Matrix3();
             Vector3 offset = Vector3.getNewVector();
@@ -217,7 +217,7 @@ public abstract class PokemobAI extends PokemobEvolves
         int byte0 = dataManager.get(params.AIACTIONSTATESDW);
         if (state == STAYING && flag)
         {
-            here.set(this);
+            here.set(getEntity());
             setHome(here.intX(), here.intY(), here.intZ(), 16);
         }
         if (flag)

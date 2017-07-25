@@ -122,7 +122,7 @@ public class AICombatMovement extends AIBase
     public void tryDodge()
     {
         if (!shouldDodge()) return;
-        Vector3 loc = Vector3.getNewVector().set(pokemob);
+        Vector3 loc = Vector3.getNewVector().set(attacker);
         Vector3 target = Vector3.getNewVector().set(attacker.getAttackTarget());
         Vector3 temp = Vector3.getNewVector();
         Vector3 perp = target.subtractFrom(loc).rotateAboutLine(Vector3.secondAxis, Math.PI / 2, temp);

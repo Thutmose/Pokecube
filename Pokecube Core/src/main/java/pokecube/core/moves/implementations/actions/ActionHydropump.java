@@ -33,13 +33,13 @@ public class ActionHydropump implements IMoveAction
             if (evt.isCanceled()) return false;
         }
         MoveEventsHandler.doDefaultWater(user, MovesUtils.getMoveFromName(getMoveName()), location);
-        Vector3 source = Vector3.getNewVector().set(user);
+        Vector3 source = Vector3.getNewVector().set(user.getEntity());
         double dist = source.distanceTo(location);
         Vector3 dir = location.subtract(source).norm();
         Vector3 temp = Vector3.getNewVector();
         for (int i = 0; i < dist; i++)
         {
-            Entity player = (Entity) user;
+            Entity player = user.getEntity();
             temp.set(dir).scalarMultBy(i).addTo(source);
             IBlockState state = temp.getBlockState(player.getEntityWorld());
             if (!state.getMaterial().isReplaceable()) continue;

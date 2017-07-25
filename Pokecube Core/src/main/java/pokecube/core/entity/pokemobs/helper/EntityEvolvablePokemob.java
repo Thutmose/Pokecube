@@ -6,15 +6,11 @@ package pokecube.core.entity.pokemobs.helper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
-import thut.lib.CompatWrapper;
 
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
 {
-    private ItemStack stack = CompatWrapper.nullStack;
-
     public EntityEvolvablePokemob(World world)
     {
         super(world);
@@ -50,24 +46,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onLivingUpdate()
     {
         if (this.ticksExisted > 100) forceSpawn = false;
-
-        int num = getEvolutionTicks();
-        if (num > 0)
-        {
-            setEvolutionTicks(getEvolutionTicks() - 1);
-        }
-        boolean evolving = this.getPokemonAIState(EVOLVING);
-        if (num <= 0 && evolving)
-        {
-            this.setPokemonAIState(EVOLVING, false);
-        }
-        if (num <= 50 && evolving)
-        {
-            this.evolve(false, false, stack);
-            this.setPokemonAIState(EVOLVING, false);
-        }
-        if (PokecubeSerializer.getInstance().getPokemob(getPokemonUID()) == null)
-            PokecubeSerializer.getInstance().addPokemob(this);
         super.onLivingUpdate();
     }
 

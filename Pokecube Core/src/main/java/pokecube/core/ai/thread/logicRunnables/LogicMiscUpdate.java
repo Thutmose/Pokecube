@@ -16,6 +16,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -53,29 +54,15 @@ public class LogicMiscUpdate extends LogicBase
         {
             ((IShearable) entity).isShearable(null, entity.getEntityWorld(), entity.getPosition());
         }
-        // If angry and has no target, make it not angry.
-        if (pokemob.getPokemonAIState(IMoveConstants.ANGRY) && entity.getAttackTarget() == null)
-        {
-            pokemob.setPokemonAIState(ANGRY, false);
-        }
-        else if (entity.getAttackTarget() != null)
-        {
-            lastHadTargetTime = 100;
-            reset = false;
-        }
-        // If not angry, decrement last had target time, and if that is 0 or
-        // less, reset to no stat modifiers.
-        if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
-        {
-            lastHadTargetTime--;
-            if (lastHadTargetTime <= 0 && !reset)
-            {
-                reset = true;
-                for (Stats stat : Stats.values())
-                    pokemob.getModifiers().getDefaultMods().setModifier(stat, 0);
-                pokemob.getMoveStats().reset();
-            }
-        }
+
+        // Check that AI states are correct
+        checkAIStates();
+
+        // Check evolution
+        checkEvolution();
+
+        // Check and tick inventory
+        checkInventory(world);
         for (int i = 0; i < 5; i++)
         {
             flavourAmounts[i] = pokemob.getFlavourAmount(i);
@@ -101,37 +88,7 @@ public class LogicMiscUpdate extends LogicBase
                 }
             }
         }
-        if (!named && pokemob.getPokedexEntry() != null)
-        {
-            pokemob.getPokemobInventory().setCustomName(entity.getName());
-            named = true;
-        }
-        for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
-        {
-            ItemStack stack;
-            if ((stack = pokemob.getPokemobInventory().getStackInSlot(i)) != CompatWrapper.nullStack)
-            {
-                stack.getItem().onUpdate(stack, world, entity, i, false);
-            }
-        }
 
-        int state = pokemob.getTotalAIState();
-        if (getAIState(IMoveConstants.TAMED, state) && (pokemob.getPokemonOwnerID() == null))
-        {
-            pokemob.setPokemonAIState(IMoveConstants.TAMED, false);
-        }
-        if (pokemob.getLoveTimer() > 600)
-        {
-            pokemob.resetLoveStatus();
-        }
-        if (entity.ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
-        {
-            pokemob.setPokemonAIState(EXITINGCUBE, false);
-        }
-        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && !entity.getNavigator().noPath())
-        {
-            entity.getNavigator().clearPathEntity();
-        }
         if (!entity.getEntityWorld().isRemote) return;
 
         int id = pokemob.getTargetID();
@@ -285,5 +242,90 @@ public class LogicMiscUpdate extends LogicBase
     protected boolean getAIState(int state, int array)
     {
         return (array & state) != 0;
+    }
+
+    private void checkEvolution()
+    {
+        int num = pokemob.getEvolutionTicks();
+        if (num > 0)
+        {
+            pokemob.setEvolutionTicks(pokemob.getEvolutionTicks() - 1);
+        }
+        boolean evolving = pokemob.getPokemonAIState(EVOLVING);
+        if (num <= 0 && evolving)
+        {
+            pokemob.setPokemonAIState(EVOLVING, false);
+        }
+        if (num <= 50 && evolving)
+        {
+            pokemob.evolve(false, false, pokemob.getEvolutionStack());
+            pokemob.setPokemonAIState(EVOLVING, false);
+        }
+        if (PokecubeSerializer.getInstance().getPokemob(pokemob.getPokemonUID()) == null)
+            PokecubeSerializer.getInstance().addPokemob(pokemob);
+    }
+
+    private void checkAIStates()
+    {
+
+        int state = pokemob.getTotalAIState();
+
+        // If angry and has no target, make it not angry.
+        if (getAIState(IPokemob.ANGRY, state) && entity.getAttackTarget() == null)
+        {
+            pokemob.setPokemonAIState(ANGRY, false);
+        }
+        else if (entity.getAttackTarget() != null)
+        {
+            lastHadTargetTime = 100;
+            reset = false;
+        }
+        // If not angry, decrement last had target time, and if that is 0 or
+        // less, reset to no stat modifiers.
+        if (!pokemob.getPokemonAIState(IMoveConstants.ANGRY))
+        {
+            lastHadTargetTime--;
+            if (lastHadTargetTime <= 0 && !reset)
+            {
+                reset = true;
+                for (Stats stat : Stats.values())
+                    pokemob.getModifiers().getDefaultMods().setModifier(stat, 0);
+                pokemob.getMoveStats().reset();
+            }
+        }
+
+        if (getAIState(IMoveConstants.TAMED, state) && (pokemob.getPokemonOwnerID() == null))
+        {
+            pokemob.setPokemonAIState(IMoveConstants.TAMED, false);
+        }
+        if (pokemob.getLoveTimer() > 600)
+        {
+            pokemob.resetLoveStatus();
+        }
+        if (entity.ticksExisted > EXITCUBEDURATION && getAIState(EXITINGCUBE, state))
+        {
+            pokemob.setPokemonAIState(EXITINGCUBE, false);
+        }
+        if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && !entity.getNavigator().noPath())
+        {
+            entity.getNavigator().clearPathEntity();
+        }
+    }
+
+    private void checkInventory(World world)
+    {
+        if (!named && pokemob.getPokedexEntry() != null)
+        {
+            pokemob.getPokemobInventory().setCustomName(entity.getName());
+            named = true;
+        }
+        for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
+        {
+            ItemStack stack;
+            if ((stack = pokemob.getPokemobInventory().getStackInSlot(i)) != CompatWrapper.nullStack)
+            {
+                stack.getItem().onUpdate(stack, world, entity, i, false);
+            }
+        }
     }
 }

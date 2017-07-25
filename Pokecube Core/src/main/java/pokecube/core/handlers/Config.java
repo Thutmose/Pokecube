@@ -144,39 +144,39 @@ public class Config extends ConfigBase
     /** Will herbivores eat plants */
     public boolean                       pokemobsEatPlants            = true;
     @Configure(category = mobAI)
-    /** Is there a warning before a wild pokémob attacks the player. */
+    /** Is there a warning before a wild pokï¿½mob attacks the player. */
     public boolean                       pokemobagresswarning         = true;
     @Configure(category = mobAI)
     @SyncConfig
     /** Distance to player needed to agress the player */
     public int                           mobAggroRadius               = 3;
     @Configure(category = mobAI)
-    /** Approximate number of ticks before pokémob starts taking hunger
+    /** Approximate number of ticks before pokï¿½mob starts taking hunger
      * damage */
     public int                           pokemobLifeSpan              = 8000;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public int                           maxWildPlayerDamage          = 10;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public int                           maxOwnedPlayerDamage         = 10;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        wildPlayerDamageRatio        = 1;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        wildPlayerDamageMagic        = 0.1;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        ownedPlayerDamageRatio       = 1;
     @Configure(category = mobAI)
-    /** Capped damage to players by pokémobs */
+    /** Capped damage to players by pokï¿½mobs */
     public double                        ownedPlayerDamageMagic       = 0.1;
     @Configure(category = mobAI)
     /** Scaling factor for damage against not pokemobs */
     public double                        pokemobToOtherMobDamageRatio = 1;
     @Configure(category = mobAI)
-    /** Warning time before a wild pokémob attacks a player */
+    /** Warning time before a wild pokï¿½mob attacks a player */
     public int                           pokemobagressticks           = 100;
     @Configure(category = mobAI)
     public boolean                       pokemobsDamageOwner          = false;
@@ -505,6 +505,8 @@ public class Config extends ConfigBase
     public int                           otherOwnedNameColour         = 0xFF5555;
     @Configure(category = healthbars)
     public int                           caughtNamedColour            = 0x5555FF;
+    @Configure(category = healthbars)
+    public int                           scannedNameColour            = 0x88FFFF;
     @Configure(category = healthbars)
     public int                           unknownNameColour            = 0x888888;
 

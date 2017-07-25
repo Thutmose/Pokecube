@@ -153,7 +153,7 @@ public class EntityPokemobEgg extends EntityLiving
         if (entry == null) return null;
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, getEntityWorld()));
         if (pokemob == null) return null;
-        here.moveEntity((Entity) pokemob);
+        here.moveEntity(pokemob.getEntity());
         ItemPokemobEgg.initPokemobGenetics(pokemob, getHeldItemMainhand().getTagCompound());
         pokemob.getEntity().setWorld(getEntityWorld());
         return pokemob;
@@ -203,7 +203,7 @@ public class EntityPokemobEgg extends EntityLiving
         {
             IPokemob mob = getPokemob(false);
             if (mob == null) this.setDead();
-            else((EntityLiving) mob).playLivingSound();
+            else mob.getEntity().playLivingSound();
         }
         TileEntity te = here.getTileEntity(getEntityWorld(), EnumFacing.DOWN);
         if (te == null) te = here.getTileEntity(getEntityWorld());

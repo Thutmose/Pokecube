@@ -3,11 +3,6 @@ package pokecube.core.commands;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -15,42 +10,23 @@ import net.minecraft.command.EntitySelector;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import pokecube.core.blocks.pc.InventoryPC;
 import pokecube.core.database.Database;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.moves.MovesParser;
 import pokecube.core.database.moves.json.JsonMoves;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
-import pokecube.core.handlers.playerdata.PokecubePlayerStats;
-import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokecubeSerializer;
-import thut.api.boom.ExplosionCustom;
-import thut.api.maths.Vector3;
 
 public class Commands extends CommandBase
 {
@@ -76,178 +52,21 @@ public class Commands extends CommandBase
 
     private boolean doDebug(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
-
-        if (args[0].equalsIgnoreCase("kill"))
-        {
-            boolean all = args.length > 1 && args[1].equalsIgnoreCase("all");
-
-            int id = -1;
-            if (args.length > 1)
-            {
-                try
-                {
-                    id = Integer.parseInt(args[1]);
-                }
-                catch (NumberFormatException e)
-                {
-
-                }
-            }
-
-            if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-            {
-                World world = cSender.getEntityWorld();
-                List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
-                int count = 0;
-                for (Entity o : entities)
-                {
-                    IPokemob e = CapabilityPokemob.getPokemobFor(o);
-                    if (e != null)
-                    {
-                        if (id == -1 && !e.getPokemonAIState(IMoveConstants.TAMED) || all)
-                        {
-                            e.getEntity().setDead();
-                            count++;
-                        }
-                        if (id != -1 && e.getEntity().getEntityId() == id)
-                        {
-                            e.getEntity().setDead();
-                            count++;
-                        }
-                    }
-                    if (o instanceof EntityPokemobEgg) ((Entity) o).setDead();
-                }
-                cSender.sendMessage(new TextComponentString("Killed " + count));
-                return true;
-            }
-            CommandTools.sendNoPermissions(cSender);
-            return false;
-        }
-        if (args[0].equalsIgnoreCase("count"))
-        {
-            boolean all = args.length > 1;
-            if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-            {
-                World world = cSender.getEntityWorld();
-                List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
-                int count1 = 0;
-                int count2 = 0;
-                String name = "";
-                Map<PokedexEntry, Integer> counts = Maps.newHashMap();
-                if (all)
-                {
-                    name = args[1];
-                }
-                for (Entity o : entities)
-                {
-                    IPokemob e = CapabilityPokemob.getPokemobFor(o);
-                    if (e != null)
-                    {
-                        if (!all || e.getPokedexEntry() == Database.getEntry(name))
-                        {
-                            if (o.getDistance(cSender.getPositionVector().x, cSender.getPositionVector().y,
-                                    cSender.getPositionVector().z) > PokecubeMod.core.getConfig().maxSpawnRadius)
-                                count2++;
-                            else count1++;
-                            Integer i = counts.get(e.getPokedexEntry());
-                            if (i == null) i = 0;
-                            counts.put(e.getPokedexEntry(), i + 1);
-                        }
-                    }
-                }
-                cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
-                cSender.sendMessage(new TextComponentString(counts.toString()));
-                return true;
-            }
-            CommandTools.sendNoPermissions(cSender);
-            return false;
-        }
-        if (args[0].equalsIgnoreCase("cull"))
-        {
-            boolean all = args.length > 1;
-            if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-            {
-                World world = cSender.getEntityWorld();
-                List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
-                String name = "";
-                if (all)
-                {
-                    name = args[1];
-                }
-                int n = 0;
-                for (Entity o : entities)
-                {
-                    IPokemob e = CapabilityPokemob.getPokemobFor(o);
-                    if (e != null)
-                    {
-                        if (!all || e.getPokedexEntry() == Database.getEntry(name))
-                        {
-                            if (o.getEntityWorld().getClosestPlayerToEntity((Entity) e,
-                                    PokecubeMod.core.getConfig().maxSpawnRadius) == null
-                                    && !e.getPokemonAIState(IMoveConstants.TAMED))
-                            {
-                                o.setDead();
-                                n++;
-                            }
-                        }
-                    }
-                }
-                cSender.sendMessage(new TextComponentString("Culled " + n));
-                return true;
-            }
-            CommandTools.sendNoPermissions(cSender);
-            return false;
-        }
-
-        if (args[0].equalsIgnoreCase("items"))
-        {
-
-            WorldServer world = (WorldServer) cSender.getEntityWorld();
-            List<Entity> items = world.loadedEntityList;
-            for (Entity e : items)
-            {
-                if (e instanceof EntityItem) e.setDead();
-            }
-            return true;
-        }
+//        if (args[0].equalsIgnoreCase("items"))
+//        {
+//            WorldServer world = (WorldServer) cSender.getEntityWorld();
+//            List<Entity> items = world.loadedEntityList;
+//            for (Entity e : items)
+//            {
+//                if (e instanceof EntityItem) e.setDead();
+//            }
+//            return true;
+//        }
         return false;
     }
 
     private boolean doMeteor(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
     {
-
-        if (args[0].equalsIgnoreCase("meteor"))
-        {
-            if (isOp)
-            {
-                Random rand = new Random();
-                float energy = (float) Math.abs((rand.nextGaussian() + 1) * 50);
-                if (args.length > 1)
-                {
-                    try
-                    {
-                        energy = Float.parseFloat(args[1]);
-                    }
-                    catch (NumberFormatException e)
-                    {
-
-                    }
-                }
-                Vector3 v = Vector3.getNewVector().set(cSender).add(0, 255 - cSender.getPosition().getY(), 0);
-                if (energy > 0)
-                {
-                    Vector3 location = Vector3.getNextSurfacePoint(cSender.getEntityWorld(), v, Vector3.secondAxisNeg,
-                            255);
-                    ExplosionCustom boom = new ExplosionCustom(cSender.getEntityWorld(),
-                            PokecubeMod.getFakePlayer(cSender.getEntityWorld()), location, energy).setMeteor(true);
-                    boom.doExplosion();
-                }
-                PokecubeSerializer.getInstance().addMeteorLocation(v);
-                return true;
-            }
-            CommandTools.sendNoPermissions(cSender);
-            return false;
-        }
         return false;
     }
 
@@ -288,14 +107,14 @@ public class Commands extends CommandBase
                         if (check)
                         {
                             boolean has = tag.getBoolean(reward);
-                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward", "",
-                                    player.getName(), reward, has));
+                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.checkreward",
+                                    "", player.getName(), reward, has));
                         }
                         else
                         {
                             tag.setBoolean(reward, false);
-                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward", "",
-                                    player.getName(), reward));
+                            cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.resetreward",
+                                    "", player.getName(), reward));
                             PokecubePlayerDataHandler.saveCustomData(player);
                         }
                     }
@@ -312,129 +131,13 @@ public class Commands extends CommandBase
                 return true;
             }
         }
-        else if (args[0].equalsIgnoreCase("reset"))
-        {
-            if (args.length == 1 && cSender instanceof EntityPlayer)
-            {
-                if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-                {
-                    EntityPlayer player = (EntityPlayer) cSender;
-                    PokecubeSerializer.getInstance().setHasStarter(player, false);
-                    PacketChoose packet = new PacketChoose(PacketChoose.OPENGUI);
-                    packet.data.setBoolean("C", false);
-                    packet.data.setBoolean("H", false);
-                    PokecubePacketHandler.sendToClient(packet, player);
-                    cSender.sendMessage(
-                            CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
-                    CommandTools.sendMessage(player, "pokecube.command.canchoose");
-
-                }
-                else
-                {
-                    CommandTools.sendNoPermissions(cSender);
-                    return false;
-                }
-
-                return true;
-            }
-            if (args.length == 2)
-            {
-                WorldServer world = (WorldServer) cSender.getEntityWorld();
-                EntityPlayer player = null;
-
-                int num = 1;
-                int index = 0;
-                String name = null;
-
-                if (targets != null)
-                {
-                    num = targets.length;
-                }
-                else
-                {
-                    name = args[1];
-                    player = world.getPlayerEntityByName(name);
-                }
-
-                for (int i = 0; i < num; i++)
-                    if (isOp || !FMLCommonHandler.instance().getMinecraftServerInstance().isDedicatedServer())
-                    {
-                        if (targets != null)
-                        {
-                            player = targets[index];
-                        }
-                        if (player != null)
-                        {
-                            PokecubeSerializer.getInstance().setHasStarter(player, false);
-                            PacketChoose packet = new PacketChoose(PacketChoose.OPENGUI);
-                            packet.data.setBoolean("C", false);
-                            packet.data.setBoolean("H", false);
-                            PokecubePacketHandler.sendToClient(packet, player);
-                            PokecubePacketHandler.sendToClient(packet, player);
-
-                            cSender.sendMessage(
-                                    CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
-                            CommandTools.sendMessage(player, "pokecube.command.canchoose");
-                        }
-                    }
-                    else
-                    {
-                        CommandTools.sendNoPermissions(cSender);
-                        return false;
-                    }
-                return true;
-            }
-        }
         return false;
     }
 
     private boolean doFixAcievements(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
             throws CommandException
     {
-        if (args[0].equalsIgnoreCase("fixFromPC") && args.length == 2)
-        {
-            EntityPlayer player = getPlayer(cSender.getServer(), cSender, args[1]);
-            InventoryPC pc = InventoryPC.getPC(player);
-            PokecubePlayerStats stats = PokecubePlayerDataHandler.getInstance().getPlayerData(player)
-                    .getData(PokecubePlayerStats.class);
-            for (ItemStack stack : pc.getContents())
-            {
-                PokedexEntry entry;
-                if (stack != null && (entry = PokecubeManager.getEntry(stack)) != null)
-                {
-                    List<PokedexEntry> toAdd = Lists.newArrayList();
-                    populateFromNextForme(toAdd, entry);
-                    System.out.println(toAdd);
-                    for (PokedexEntry prev : toAdd)
-                    {
-                        boolean has = stats.getCaptures().containsKey(prev);
-                        has = has || stats.getHatches().containsKey(prev);
-                        if (!has)
-                        {
-                            stats.addCapture(entry);
-                        }
-                    }
-                }
-            }
-            return true;
-        }
         return false;
-    }
-
-    private void populateFromNextForme(List<PokedexEntry> toAdd, PokedexEntry entry)
-    {
-        for (PokedexEntry e : entry.related)
-        {
-            for (EvolutionData d : e.evolutions)
-            {
-                if (d.evolution == entry)
-                {
-                    toAdd.add(e);
-                    populateFromNextForme(toAdd, e);
-                    break;
-                }
-            }
-        }
     }
 
     private boolean doSetHasStarter(ICommandSender cSender, String[] args, boolean isOp, EntityPlayerMP[] targets)
@@ -469,7 +172,6 @@ public class Commands extends CommandBase
                     {
                         PokecubeSerializer.getInstance().setHasStarter(player, true);
                         PacketDataSync.sendInitPacket(player, "pokecube-data");
-                        PacketDataSync.sendInitPacket(player, "pokecube-stats");
                         cSender.sendMessage(
                                 new TextComponentTranslation("pokecube.command.denystarter", player.getName()));
                     }
@@ -565,7 +267,8 @@ public class Commands extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos)
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
+            BlockPos pos)
     {
         boolean isOp = CommandTools.isOp(sender);
         List<String> ret = new ArrayList<String>();

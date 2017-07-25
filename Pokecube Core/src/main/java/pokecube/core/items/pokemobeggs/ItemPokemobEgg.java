@@ -84,7 +84,7 @@ public class ItemPokemobEgg extends Item
     public static ItemStack getEggStack(IPokemob pokemob)
     {
         ItemStack stack = getEggStack(pokemob.getPokedexEntry());
-        initStack((Entity) pokemob, pokemob, stack);
+        initStack(pokemob.getEntity(), pokemob, stack);
         return stack;
     }
 
@@ -98,15 +98,15 @@ public class ItemPokemobEgg extends Item
             if (pokemob == null) return null;
             fakeMobs.put(entry, pokemob);
         }
-        location.moveEntity((Entity) pokemob);
+        location.moveEntity(pokemob.getEntity());
         return pokemob;
     }
 
     private static void getGenetics(IPokemob mother, IPokemob father, NBTTagCompound nbt)
     {
         IMobGenetics eggs = IMobGenetics.GENETICS_CAP.getDefaultInstance();
-        IMobGenetics mothers = ((Entity) mother).getCapability(IMobGenetics.GENETICS_CAP, null);
-        IMobGenetics fathers = ((Entity) father).getCapability(IMobGenetics.GENETICS_CAP, null);
+        IMobGenetics mothers = mother.getEntity().getCapability(IMobGenetics.GENETICS_CAP, null);
+        IMobGenetics fathers = father.getEntity().getCapability(IMobGenetics.GENETICS_CAP, null);
         GeneticsManager.initEgg(eggs, mothers, fathers);
         NBTBase tag = IMobGenetics.GENETICS_CAP.getStorage().writeNBT(IMobGenetics.GENETICS_CAP, eggs, null);
         nbt.setTag(GeneticsManager.GENES, tag);
@@ -120,7 +120,7 @@ public class ItemPokemobEgg extends Item
         {
             e.printStackTrace();
         }
-        nbt.setString("motherId", ((Entity) mother).getCachedUniqueIdString());
+        nbt.setString("motherId", mother.getEntity().getCachedUniqueIdString());
         return;
     }
 
@@ -182,13 +182,13 @@ public class ItemPokemobEgg extends Item
     public static EntityLivingBase getOwner(IPokemob mob)
     {
         Vector3 location = Vector3.getNewVector().set(mob);
-        EntityPlayer player = ((Entity) mob).getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
+        EntityPlayer player = mob.getEntity().getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
                 PLAYERDIST, false);
         EntityLivingBase owner = player;
         AxisAlignedBB box = location.getAABB().grow(MOBDIST, MOBDIST, MOBDIST);
         if (owner == null)
         {
-            List<EntityLivingBase> list = ((Entity) mob).getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,
+            List<EntityLivingBase> list = mob.getEntity().getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,
                     box, new Predicate<EntityLivingBase>()
                     {
                         @Override
@@ -198,7 +198,7 @@ public class ItemPokemobEgg extends Item
                                     && !(input instanceof EntityPlayer);
                         }
                     });
-            EntityLivingBase closestTo = (EntityLivingBase) mob;
+            EntityLivingBase closestTo = mob.getEntity();
             EntityLivingBase t = null;
             double d0 = Double.MAX_VALUE;
 
@@ -222,7 +222,7 @@ public class ItemPokemobEgg extends Item
         if (owner == null)
         {
             Entity nearest = mob.getEntity().getEntityWorld().findNearestEntityWithinAABB(EntityLiving.class, box,
-                    (Entity) mob);
+                    mob.getEntity());
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(nearest);
             if (pokemob != null && pokemob.getPokemonOwner() instanceof EntityPlayer)
                 player = (EntityPlayer) pokemob.getPokemonOwner();

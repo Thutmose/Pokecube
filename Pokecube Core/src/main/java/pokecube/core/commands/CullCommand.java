@@ -26,13 +26,13 @@ public class CullCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokecull";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokecull";
     }
@@ -69,6 +69,6 @@ public class CullCommand extends CommandBase
                 }
             }
         }
-        cSender.addChatMessage(new TextComponentString("Culled " + n));
+        cSender.sendMessage(new TextComponentString("Culled " + n));
     }
 }

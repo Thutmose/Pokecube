@@ -28,13 +28,13 @@ public class CountCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokecount";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokecount";
     }
@@ -63,8 +63,8 @@ public class CountCommand extends CommandBase
             {
                 if (!specific || e.getPokedexEntry() == entry)
                 {
-                    if (o.getDistance(cSender.getPositionVector().xCoord, cSender.getPositionVector().yCoord,
-                            cSender.getPositionVector().zCoord) > PokecubeMod.core.getConfig().maxSpawnRadius)
+                    if (o.getDistance(cSender.getPositionVector().x, cSender.getPositionVector().y,
+                            cSender.getPositionVector().z) > PokecubeMod.core.getConfig().maxSpawnRadius)
                         count2++;
                     else count1++;
                     Integer i = counts.get(e.getPokedexEntry());
@@ -73,7 +73,7 @@ public class CountCommand extends CommandBase
                 }
             }
         }
-        cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
-        cSender.addChatMessage(new TextComponentString(counts.toString()));
+        cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
+        cSender.sendMessage(new TextComponentString(counts.toString()));
     }
 }

@@ -24,13 +24,13 @@ public class KillCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokekill";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokekill <optional:all|id>";
     }
@@ -76,6 +76,6 @@ public class KillCommand extends CommandBase
             }
             if (o instanceof EntityPokemobEgg) o.setDead();
         }
-        cSender.addChatMessage(new TextComponentString("Killed " + count));
+        cSender.sendMessage(new TextComponentString("Killed " + count));
     }
 }

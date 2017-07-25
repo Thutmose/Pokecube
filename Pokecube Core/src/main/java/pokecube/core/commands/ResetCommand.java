@@ -18,13 +18,13 @@ public class ResetCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokereset";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokereset <player>";
     }
@@ -39,7 +39,7 @@ public class ResetCommand extends CommandBase
         packet.data.setBoolean("C", false);
         packet.data.setBoolean("H", false);
         PokecubePacketHandler.sendToClient(packet, player);
-        cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
+        cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
         CommandTools.sendMessage(player, "pokecube.command.canchoose");
     }
 }

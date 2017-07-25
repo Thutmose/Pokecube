@@ -1,6 +1,5 @@
 package pokecube.pokeplayer;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,7 +31,7 @@ public class Proxy implements IGuiHandler
         if (pokemob != null)
         {
             info.setPlayer(player);
-            EntityTools.copyEntityTransforms((EntityLivingBase) info.getPokemob(player.getEntityWorld()), player);
+            EntityTools.copyEntityTransforms(info.getPokemob(player.getEntityWorld()).getEntity(), player);
             info.save(player);
         }
     }

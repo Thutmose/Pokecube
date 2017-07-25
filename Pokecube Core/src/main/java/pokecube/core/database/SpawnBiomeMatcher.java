@@ -74,6 +74,9 @@ public class SpawnBiomeMatcher
 
     public final SpawnRule spawnRule;
 
+    boolean                parsed             = false;
+    boolean                valid              = true;
+
     public SpawnBiomeMatcher(SpawnRule rules)
     {
         this.spawnRule = rules;
@@ -104,8 +107,20 @@ public class SpawnBiomeMatcher
         }
     }
 
+    public void reset()
+    {
+        validBiomes.clear();
+        validSubBiomes.clear();
+        blackListBiomes.clear();
+        blackListSubBiomes.clear();
+        parsed = false;
+        valid = true;
+    }
+
     public void parse()
     {
+        if (parsed) return;
+        parsed = true;
         validBiomes.clear();
         validSubBiomes.clear();
         blackListBiomes.clear();
@@ -166,31 +181,27 @@ public class SpawnBiomeMatcher
                 }
             }
         }
+        boolean hasForgeTypes = false;
         if (typeString != null)
         {
             String[] args = typeString.split(",");
             for (String s : args)
             {
-                BiomeType subBiome = BiomeType.getBiome(s.trim(), false);
-                if (subBiome == BiomeType.NONE)
+                BiomeDictionary.Type type;
+                type = CompatWrapper.getBiomeType(s);
+                if (type != null)
                 {
-                    BiomeDictionary.Type type;
-                    type = CompatWrapper.getBiomeType(s);
-                    if (type == null) subBiome = BiomeType.NONE;
-                    if (type != null)
+                    hasForgeTypes = true;
+                    if (type == BiomeDictionary.Type.WATER)
                     {
-                        if (type == BiomeDictionary.Type.WATER)
-                        {
-                            validTypes.add(BiomeDictionary.Type.RIVER);
-                            validTypes.add(BiomeDictionary.Type.OCEAN);
-                        }
-                        else validTypes.add(type);
+                        validTypes.add(BiomeDictionary.Type.RIVER);
+                        validTypes.add(BiomeDictionary.Type.OCEAN);
                     }
+                    else validTypes.add(type);
+                    continue;
                 }
-                else
-                {
-                    validSubBiomes.add(subBiome);
-                }
+                BiomeType subBiome = BiomeType.getBiome(s.trim(), false);
+                validSubBiomes.add(subBiome);
             }
         }
         if (biomeBlacklistString != null)
@@ -222,6 +233,19 @@ public class SpawnBiomeMatcher
             String[] args = typeBlacklistString.split(",");
             for (String s : args)
             {
+
+                BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);
+                if (type != null)
+                {
+                    if (type == BiomeDictionary.Type.WATER)
+                    {
+                        blackListTypes.add(BiomeDictionary.Type.RIVER);
+                        blackListTypes.add(BiomeDictionary.Type.OCEAN);
+                    }
+                    else blackListTypes.add(type);
+                    continue;
+                }
+
                 BiomeType subBiome = null;
                 for (BiomeType b : BiomeType.values())
                 {
@@ -231,21 +255,7 @@ public class SpawnBiomeMatcher
                         break;
                     }
                 }
-                if (subBiome == null)
-                {
-                    BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);
-                    ;//
-                    if (type != null)
-                    {
-                        if (type == BiomeDictionary.Type.WATER)
-                        {
-                            blackListTypes.add(BiomeDictionary.Type.RIVER);
-                            blackListTypes.add(BiomeDictionary.Type.OCEAN);
-                        }
-                        else blackListTypes.add(type);
-                    }
-                }
-                else
+                if (subBiome != BiomeType.NONE)
                 {
                     blackListSubBiomes.add(subBiome);
                 }
@@ -279,6 +289,12 @@ public class SpawnBiomeMatcher
             }
         }
         validBiomes.removeAll(toRemove);
+        if (hasForgeTypes && validBiomes.isEmpty()) valid = false;
+        if (validSubBiomes.isEmpty() && validBiomes.isEmpty() && blackListBiomes.isEmpty()
+                && blackListSubBiomes.isEmpty())
+        {
+            valid = false;
+        }
     }
 
     public boolean matches(SpawnCheck checker)
@@ -305,11 +321,8 @@ public class SpawnBiomeMatcher
 
     private boolean biomeMatches(SpawnCheck checker)
     {
-        if (validSubBiomes.isEmpty() && validBiomes.isEmpty() && blackListBiomes.isEmpty()
-                && blackListSubBiomes.isEmpty())
-        {
-            parse();
-        }
+        parse();
+        if (!valid) return false;
         if (validSubBiomes.contains(BiomeType.ALL)) { return true; }
         if (validSubBiomes.contains(BiomeType.NONE) || (validBiomes.isEmpty() && validSubBiomes.isEmpty()
                 && blackListSubBiomes.isEmpty() && blackListBiomes.isEmpty()))

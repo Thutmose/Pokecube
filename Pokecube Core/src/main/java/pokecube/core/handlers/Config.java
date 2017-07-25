@@ -499,6 +499,14 @@ public class Config extends ConfigBase
     public boolean                       showOnlyFocused              = false;
     @Configure(category = healthbars)
     public boolean                       enableDebugInfo              = true;
+    @Configure(category = healthbars)
+    public int                           ownedNameColour              = 0x55FF55;
+    @Configure(category = healthbars)
+    public int                           otherOwnedNameColour         = 0xFF5555;
+    @Configure(category = healthbars)
+    public int                           caughtNamedColour            = 0x5555FF;
+    @Configure(category = healthbars)
+    public int                           unknownNameColour            = 0x888888;
 
     @Configure(category = items, needsMcRestart = true)
     public String[]                      customHeldItems              = {};

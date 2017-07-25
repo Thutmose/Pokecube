@@ -154,6 +154,25 @@ public class Database
 
     public static final PokedexEntry                       missingno        = new PokedexEntry(0, "missingno");
 
+    public static final Comparator<PokedexEntry>           COMPARATOR       = new Comparator<PokedexEntry>()
+                                                                            {
+                                                                                @Override
+                                                                                public int compare(PokedexEntry o1,
+                                                                                        PokedexEntry o2)
+                                                                                {
+                                                                                    int diff = o1.getPokedexNb()
+                                                                                            - o2.getPokedexNb();
+                                                                                    if (diff == 0)
+                                                                                    {
+                                                                                        if (o1.base && !o2.base)
+                                                                                            diff = -1;
+                                                                                        else if (o2.base && !o1.base)
+                                                                                            diff = 1;
+                                                                                    }
+                                                                                    return diff;
+                                                                                }
+                                                                            };
+
     // Init some stuff for the missignno entry.
     static
     {
@@ -657,22 +676,7 @@ public class Database
                 removed.add(p);
             }
         }
-        Collections.sort(toRemove, new Comparator<PokedexEntry>()
-        {
-            @Override
-            public int compare(PokedexEntry o1, PokedexEntry o2)
-            {
-                int diff = o1.getPokedexNb() - o2.getPokedexNb();
-                if (diff == 0)
-                {
-                    boolean o1base = o1.base;
-                    boolean o2base = o2.base;
-                    if (o1base && !o2base) diff = -1;
-                    else if (o2base && !o1base) diff = 1;
-                }
-                return diff;
-            }
-        });
+        Collections.sort(toRemove, COMPARATOR);
         PokecubeMod.log("Removing " + toRemove);
         ProgressManager.pop(bar);
         bar = ProgressManager.push("Removal", toRemove.size());
@@ -695,21 +699,7 @@ public class Database
         toRemove.clear();
         List<PokedexEntry> sortedEntries = Lists.newArrayList();
         sortedEntries.addAll(Database.allFormes);
-        Comparator<PokedexEntry> sorter = new Comparator<PokedexEntry>()
-        {
-            @Override
-            public int compare(PokedexEntry o1, PokedexEntry o2)
-            {
-                int diff = o1.getPokedexNb() - o2.getPokedexNb();
-                if (diff == 0)
-                {
-                    if (o1.base && !o2.base) diff = -1;
-                    else if (o2.base && !o1.base) diff = 1;
-                }
-                return diff;
-            }
-        };
-        Collections.sort(sortedEntries, sorter);
+        Collections.sort(sortedEntries, COMPARATOR);
 
         for (PokedexEntry e : sortedEntries)
         {
@@ -802,7 +792,7 @@ public class Database
         System.out.println(toRemove.size() + " Pokemon Formes Removed");
         allFormes.removeAll(toRemove);
         ProgressManager.pop(bar);
-        Collections.sort(removed, sorter);
+        Collections.sort(removed, COMPARATOR);
         bar = ProgressManager.push("Relations", allFormes.size());
         for (PokedexEntry p : allFormes)
         {

@@ -274,14 +274,7 @@ public class GuiPokedex extends GuiScreen
         }
         else
         {
-            int num = 1;
-            PokedexEntry test = Pokedex.getInstance().getFirstEntry();
-            PokedexEntry thisEntry = pokedexEntry.base ? pokedexEntry : pokedexEntry.getBaseForme();
-            while (test != thisEntry && num < 1500)
-            {
-                test = Pokedex.getInstance().getNext(test, 1);
-                num++;
-            }
+            int num = Pokedex.getInstance().getIndex(pokedexEntry) + 1;
             String level = "N. " + num;
             drawString(fontRenderer, level, xOffset + 15, yOffset + 1, 0xffffff);
             if (!mode)

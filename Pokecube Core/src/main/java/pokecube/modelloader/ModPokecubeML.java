@@ -85,22 +85,7 @@ public class ModPokecubeML implements IMobProvider
             {
                 PokedexEntry e1 = Database.getEntry(o1);
                 PokedexEntry e2 = Database.getEntry(o2);
-                return new Comparator<PokedexEntry>()
-                {
-                    @Override
-                    public int compare(PokedexEntry o1, PokedexEntry o2)
-                    {
-                        int diff = o1.getPokedexNb() - o2.getPokedexNb();
-                        if (diff == 0)
-                        {
-                            boolean o1base = o1.base;
-                            boolean o2base = o2.base;
-                            if (o1base && !o2base) diff = -1;
-                            else if (o2base && !o1base) diff = 1;
-                        }
-                        return diff;
-                    }
-                }.compare(e1, e2);
+                return Database.COMPARATOR.compare(e1, e2);
             }
         });
     }

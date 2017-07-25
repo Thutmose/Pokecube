@@ -87,7 +87,7 @@ public class Move_Explode extends Move_Basic
     public void attack(IPokemob attacker, Entity attacked)
     {
         if (attacker.getEntity().isDead) return;
-        EntityLiving mob = (EntityLiving) attacker.getEntity();
+        EntityLiving mob = attacker.getEntity();
         IPokemob pokemob = attacker;
         if (pokemob.getMoveStats().timeSinceIgnited-- <= 0)
         {
@@ -152,7 +152,7 @@ public class Move_Explode extends Move_Basic
     @Override
     public void attack(IPokemob attacker, Vector3 attacked)
     {
-        if (((Entity) attacker).isDead) return;
+        if (attacker.getEntity().isDead) return;
         if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker);
         else
         {
@@ -166,8 +166,8 @@ public class Move_Explode extends Move_Basic
      * @param location */
     public void actualAttack(IPokemob attacker, Vector3 location)
     {
-        List<Entity> targets = ((Entity) attacker).getEntityWorld()
-                .getEntitiesWithinAABBExcludingEntity((Entity) attacker, location.getAABB().expandXyz(8));
+        List<Entity> targets = attacker.getEntity().getEntityWorld()
+                .getEntitiesWithinAABBExcludingEntity(attacker.getEntity(), location.getAABB().expandXyz(8));
         List<Entity> toRemove = Lists.newArrayList();
         for (Entity e : targets)
             if (!(e instanceof EntityLivingBase)) toRemove.add(e);
@@ -232,22 +232,4 @@ public class Move_Explode extends Move_Basic
     {
         return null;
     }
-
-    // @Override
-    // public int getDuration()
-    // {
-    // return 3;
-    // }
-    //
-    // @Override
-    // public boolean onSource()
-    // {
-    // return true;
-    // }
-    //
-    // @Override
-    // public boolean onTarget()
-    // {
-    // return false;
-    // }
 }

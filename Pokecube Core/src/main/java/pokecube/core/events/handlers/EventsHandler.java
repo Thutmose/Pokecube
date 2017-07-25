@@ -601,17 +601,17 @@ public class EventsHandler
             {
                 List<EntityLiving> stale = Lists.newArrayList();
                 List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
-                for (EntityLiving npc : toProcess)
+                for (EntityLiving mob : toProcess)
                 {
-                    if (npc.ticksExisted == 0) continue;
-                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(npc);
+                    if (mob.ticksExisted == 0) continue;
+                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
                     if (pokemob == null)
                     {
-                        stale.add(npc);
+                        stale.add(mob);
                         continue;
                     }
-                    pokemob.setEntity(npc);
-                    // TODO add in AI stuff here.
+                    pokemob.setEntity(mob);
+                    stale.add(mob);
                 }
                 needsAI.removeAll(stale);
             }

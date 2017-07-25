@@ -53,25 +53,25 @@ import thut.lib.CompatWrapper;
 public class PokedexEntryLoader
 {
 
-    private static final Gson                        gson;
+    private static final Gson                       gson;
 
-    private static final Comparator<XMLPokedexEntry> ENTRYSORTER = new Comparator<XMLPokedexEntry>()
-                                                                 {
-                                                                     @Override
-                                                                     public int compare(XMLPokedexEntry o1,
-                                                                             XMLPokedexEntry o2)
-                                                                     {
-                                                                         int diff = o1.number - o2.number;
-                                                                         if (diff == 0)
-                                                                         {
-                                                                             if (o1.base && !o2.base) diff = -1;
-                                                                             else if (o2.base && !o1.base) diff = 1;
-                                                                         }
-                                                                         return diff;
-                                                                     }
-                                                                 };
+    public static final Comparator<XMLPokedexEntry> ENTRYSORTER = new Comparator<XMLPokedexEntry>()
+                                                                {
+                                                                    @Override
+                                                                    public int compare(XMLPokedexEntry o1,
+                                                                            XMLPokedexEntry o2)
+                                                                    {
+                                                                        int diff = o1.number - o2.number;
+                                                                        if (diff == 0)
+                                                                        {
+                                                                            if (o1.base && !o2.base) diff = -1;
+                                                                            else if (o2.base && !o1.base) diff = 1;
+                                                                        }
+                                                                        return diff;
+                                                                    }
+                                                                };
 
-    public static XMLPokedexEntry                    missingno   = new XMLPokedexEntry();
+    public static XMLPokedexEntry                   missingno   = new XMLPokedexEntry();
 
     static
     {

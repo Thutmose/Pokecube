@@ -304,7 +304,7 @@ public class CommonProxy implements IGuiHandler
             {
                 PokedexEntry e1 = Database.getEntry(o1);
                 PokedexEntry e2 = Database.getEntry(o2);
-                return e1.getPokedexNb() - e2.getPokedexNb();
+                return Database.COMPARATOR.compare(e1, e2);
             }
         });
         String[] entryArr = entries.toArray(new String[0]);

@@ -233,6 +233,19 @@ public class SpawnBiomeMatcher
             String[] args = typeBlacklistString.split(",");
             for (String s : args)
             {
+
+                BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);
+                if (type != null)
+                {
+                    if (type == BiomeDictionary.Type.WATER)
+                    {
+                        blackListTypes.add(BiomeDictionary.Type.RIVER);
+                        blackListTypes.add(BiomeDictionary.Type.OCEAN);
+                    }
+                    else blackListTypes.add(type);
+                    continue;
+                }
+
                 BiomeType subBiome = null;
                 for (BiomeType b : BiomeType.values())
                 {
@@ -242,21 +255,7 @@ public class SpawnBiomeMatcher
                         break;
                     }
                 }
-                if (subBiome == null)
-                {
-                    BiomeDictionary.Type type = CompatWrapper.getBiomeType(s);
-                    ;//
-                    if (type != null)
-                    {
-                        if (type == BiomeDictionary.Type.WATER)
-                        {
-                            blackListTypes.add(BiomeDictionary.Type.RIVER);
-                            blackListTypes.add(BiomeDictionary.Type.OCEAN);
-                        }
-                        else blackListTypes.add(type);
-                    }
-                }
-                else
+                if (subBiome != BiomeType.NONE)
                 {
                     blackListSubBiomes.add(subBiome);
                 }

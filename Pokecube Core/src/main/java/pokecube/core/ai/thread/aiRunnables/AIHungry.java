@@ -1,5 +1,6 @@
 package pokecube.core.ai.thread.aiRunnables;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -9,12 +10,14 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.projectile.EntityFishHook;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
@@ -109,6 +112,33 @@ public class AIHungry extends AIBase
             }
         }
 
+        if (shouldRun() || Math.random() > 0.99)
+        {
+            if (pokemob.getPokedexEntry().swims())
+            {// grow in 1.12
+                AxisAlignedBB bb = v.set(entity).addTo(0, entity.getEyeHeight(), 0).getAABB()
+                        .expandXyz(PokecubeMod.core.getConfig().fishHookBaitRange);
+                List<EntityFishHook> hooks = entity.getEntityWorld().getEntitiesWithinAABB(EntityFishHook.class, bb);
+                pokemob.setPokemonAIState(IPokemob.HUNTING, true);
+                if (!hooks.isEmpty())
+                {
+                    Collections.shuffle(hooks);
+                    EntityFishHook hook = hooks.get(0);
+                    if (v.isVisible(world, v1.set(hook)))
+                    {
+                        Path path = entity.getNavigator().getPathToEntityLiving(hook);
+                        addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                        addTargetInfo(entity, hook);
+                        if (entity.getDistanceSqToEntity(hook) < 2)
+                        {
+                            hook.caughtEntity = entity;
+                            pokemob.eat(hook);
+                        }
+                    }
+                }
+            }
+        }
+
         double hurtTime = deathTime / 2d;
         Random rand = new Random(pokemob.getRNGValue());
         int tick = rand.nextInt(100);
@@ -184,8 +214,7 @@ public class AIHungry extends AIBase
         if (hunger != hungerTime) pokemob.setHungerTime(hunger);
 
         if (entity.getAttackTarget() == null && !entity.isDead && entity.ticksExisted % 100 == tick
-                && !entity.getEntityWorld().isRemote && pokemob.getHungerCooldown() < 0
-                && pokemob.getHungerTime() < 0)
+                && !entity.getEntityWorld().isRemote && pokemob.getHungerCooldown() < 0 && pokemob.getHungerTime() < 0)
         {
             float dh = Math.max(1, entity.getMaxHealth() * 0.05f);
             float toHeal = entity.getHealth() + dh;
@@ -264,7 +293,7 @@ public class AIHungry extends AIBase
         {
             boolean shouldChangePath = true;
             block = false;
-            v.set(pokemob).add(0, entity.height, 0);
+            v.set(entity).add(0, entity.height, 0);
             Vector3 p, m;
             if (pokemob.isHerbivore())
             {
@@ -338,7 +367,7 @@ public class AIHungry extends AIBase
         {
             boolean shouldChangePath = true;
             block = false;
-            v.set(pokemob).add(0, entity.height, 0);
+            v.set(entity).add(0, entity.height, 0);
 
             Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
                     PokecubeMod.core.getConfig().getRocks());
@@ -416,7 +445,7 @@ public class AIHungry extends AIBase
             {
                 if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
                 {
-                    v.set(pokemob).offsetBy(EnumFacing.DOWN);
+                    v.set(entity).offsetBy(EnumFacing.DOWN);
                     if (b == Blocks.COBBLESTONE)
                     {
                         TickHandler.addBlockChange(v, entity.dimension, Blocks.GRAVEL);
@@ -450,10 +479,22 @@ public class AIHungry extends AIBase
                 return;
             }
         }
-
         if (pokemob.getPokedexEntry().swims())
-        {
-            // TODO find a fish hook to attack
+        {// grow in 1.12
+            AxisAlignedBB bb = v.set(entity).addTo(0, entity.getEyeHeight(), 0).getAABB()
+                    .expandXyz(PokecubeMod.core.getConfig().fishHookBaitRange);
+            List<EntityFishHook> hooks = entity.getEntityWorld().getEntitiesWithinAABB(EntityFishHook.class, bb);
+            if (!hooks.isEmpty())
+            {
+                Collections.shuffle(hooks);
+                EntityFishHook hook = hooks.get(0);
+                if (v.isVisible(world, v1.set(hook)))
+                {// We return here, as main thread tick will deal with the
+                 // eating of this fish hook as to prevent concurrency issues
+                 // with trying to get it.
+                    return;
+                }
+            }
         }
 
         // check inventory for berries
@@ -479,7 +520,7 @@ public class AIHungry extends AIBase
         if (pokemob.getPokemonAIState(IMoveConstants.TAMED))
         {
             IInventory container = null;
-            v.set(pokemob).add(0, entity.height, 0);
+            v.set(entity).add(0, entity.height, 0);
 
             Vector3 temp = v.findClosestVisibleObject(world, true, 10, Blocks.TRAPPED_CHEST);
 
@@ -519,7 +560,7 @@ public class AIHungry extends AIBase
             return;
         }
         block = false;
-        v.set(pokemob).add(0, entity.height, 0);
+        v.set(entity).add(0, entity.height, 0);
 
         if (foodLoc.isEmpty())
         {
@@ -581,7 +622,7 @@ public class AIHungry extends AIBase
         if (pokemob.getHome() == null
                 || (pokemob.getHome().getX() == 0 && pokemob.getHome().getY() == 0 & pokemob.getHome().getZ() == 0))
         {
-            v1.set(pokemob);
+            v1.set(entity);
             pokemob.setHome(v1.intX(), v1.intY(), v1.intZ(), 16);
         }
         if (pokemob.hasHomeArea() && entity.getPosition().distanceSq(pokemob.getHome()) > 9) return false;
@@ -648,6 +689,6 @@ public class AIHungry extends AIBase
         if (foodLoc.distToEntity(entity) > 32) foodLoc.clear();
         if (pokemob.getHungerCooldown() > 0) return false;
         if (!foodLoc.isEmpty()) return true;
-        return pokemob.getPokemonAIState(IMoveConstants.HUNTING);
+        return hunting;
     }
 }

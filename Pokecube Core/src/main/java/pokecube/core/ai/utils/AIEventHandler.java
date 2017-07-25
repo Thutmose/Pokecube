@@ -37,7 +37,7 @@ public class AIEventHandler
                     && ((EntityLiving) evt.getEntityLiving()).getNavigator().noPath())
             {
                 Vector3 v = AIIdle.getRandomPointNear(evt.getEntity().getEntityWorld(), pokemob,
-                        Vector3.getNewVector().set(pokemob), 8);
+                        Vector3.getNewVector().set(pokemob.getEntity()), 8);
                 if (v != null)
                 {
                     ((EntityLiving) evt.getEntityLiving()).getNavigator().tryMoveToXYZ(v.x, v.y, v.z,

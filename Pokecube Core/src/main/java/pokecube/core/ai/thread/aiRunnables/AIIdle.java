@@ -60,7 +60,7 @@ public class AIIdle extends AIBase
         else if (Math.random() > 0.95 && !tamed)
         {
             boolean down = true;
-            Vector3 loc = Vector3.findNextSolidBlock(world, v.set(mob), Vector3.secondAxisNeg, v.y);
+            Vector3 loc = Vector3.findNextSolidBlock(world, v.set(mob.getEntity()), Vector3.secondAxisNeg, v.y);
             if (loc != null && loc.offsetBy(EnumFacing.UP).getBlockMaterial(world).isLiquid())
             {
                 down = false;
@@ -184,7 +184,7 @@ public class AIIdle extends AIBase
                 if (mob.getHome() == null
                         || (mob.getHome().getX() == 0 && mob.getHome().getY() == 0 & mob.getHome().getZ() == 0))
                 {
-                    v1.set(mob);
+                    v1.set(entity);
                     mob.setHome(v1.intX(), v1.intY(), v1.intZ(), 16);
                 }
                 distance = (int) Math.min(distance, mob.getHomeDistance());

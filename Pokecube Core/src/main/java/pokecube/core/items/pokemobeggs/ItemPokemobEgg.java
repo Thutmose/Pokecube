@@ -180,7 +180,7 @@ public class ItemPokemobEgg extends Item
 
     public static EntityLivingBase getOwner(IPokemob mob)
     {
-        Vector3 location = Vector3.getNewVector().set(mob);
+        Vector3 location = Vector3.getNewVector().set(mob.getEntity());
         EntityPlayer player = mob.getEntity().getEntityWorld().getClosestPlayer(location.x, location.y, location.z,
                 PLAYERDIST, false);
         EntityLivingBase owner = player;

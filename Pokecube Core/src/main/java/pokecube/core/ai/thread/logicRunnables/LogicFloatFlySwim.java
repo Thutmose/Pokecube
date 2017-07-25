@@ -36,7 +36,7 @@ public class LogicFloatFlySwim extends LogicBase
         if (transformed != null) entry = transformed.getPokedexEntry();
 
         Vector3 here = Vector3.getNewVector();
-        here.set(pokemob);
+        here.set(entity);
         doFloatFly(here);
         doSwim(here);
     }
@@ -96,7 +96,7 @@ public class LogicFloatFlySwim extends LogicBase
         if (canFloat && !pokemob.getPokemonAIState(IMoveConstants.INWATER))
         {
             float floatHeight = (float) entry.preferedHeight;
-            Vector3 down = Vector3.getNextSurfacePoint(entity.getEntityWorld(), here.set(pokemob),
+            Vector3 down = Vector3.getNextSurfacePoint(entity.getEntityWorld(), here.set(pokemob.getEntity()),
                     Vector3.secondAxisNeg, floatHeight);
             if (down != null) here.set(down);
             if (!(here.getBlock(entity.getEntityWorld())).isReplaceable(entity.getEntityWorld(), here.getPos())
@@ -110,7 +110,7 @@ public class LogicFloatFlySwim extends LogicBase
             {
                 entity.motionY -= 0.02;
             }
-            here.set(pokemob);
+            here.set(pokemob.getEntity());
         }
         if ((entry.floats() || entry.flys()) && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {

@@ -40,6 +40,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import pokecube.core.database.stats.StatsCollector;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -145,7 +146,7 @@ public class RenderHealth
             entity = (EntityLivingBase) entity.getRidingEntity();
             ridingStack.push(entity);
         }
-
+        Config config = PokecubeMod.core.getConfig();
         Minecraft mc = Minecraft.getMinecraft();
 
         float pastTranslate = 0F;
@@ -156,8 +157,7 @@ public class RenderHealth
             processing:
             {
                 float distance = passedEntity.getDistanceToEntity(viewPoint);
-                if (distance > PokecubeMod.core.getConfig().maxDistance || !passedEntity.canEntityBeSeen(viewPoint)
-                        || entity.isInvisible())
+                if (distance > config.maxDistance || !passedEntity.canEntityBeSeen(viewPoint) || entity.isInvisible())
                     break processing;
 
                 double x = passedEntity.lastTickPosX + (passedEntity.posX - passedEntity.lastTickPosX) * partialTicks;
@@ -175,9 +175,8 @@ public class RenderHealth
 
                 preRender();
 
-                GlStateManager.translate(
-                        (float) (x - renderManager.viewerPosX), (float) (y - renderManager.viewerPosY
-                                + passedEntity.height + PokecubeMod.core.getConfig().heightAbove),
+                GlStateManager.translate((float) (x - renderManager.viewerPosX),
+                        (float) (y - renderManager.viewerPosY + passedEntity.height + config.heightAbove),
                         (float) (z - renderManager.viewerPosZ));
                 GL11.glNormal3f(0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(-renderManager.playerViewY, 0.0F, 1.0F, 0.0F);
@@ -187,10 +186,10 @@ public class RenderHealth
                 Tessellator tessellator = Tessellator.getInstance();
                 VertexBuffer buffer = tessellator.getBuffer();
 
-                float padding = PokecubeMod.core.getConfig().backgroundPadding;
-                int bgHeight = PokecubeMod.core.getConfig().backgroundHeight;
-                int barHeight1 = PokecubeMod.core.getConfig().barHeight;
-                float size = PokecubeMod.core.getConfig().plateSize;
+                float padding = config.backgroundPadding;
+                int bgHeight = config.backgroundHeight;
+                int barHeight1 = config.barHeight;
+                float size = config.plateSize;
 
                 int r = 0;
                 int g = 255;
@@ -226,7 +225,7 @@ public class RenderHealth
                 float healthSize = size * (health / maxHealth);
 
                 // Background
-                if (PokecubeMod.core.getConfig().drawBackground)
+                if (config.drawBackground)
                 {
                     buffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
                     buffer.pos(-size - padding, -bgHeight, 0.0D).color(0, 0, 0, 64).endVertex();
@@ -291,14 +290,16 @@ public class RenderHealth
 
                 UUID owner = pokemob.getPokemonOwnerID();
                 boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
-                int colour = isOwner ? 0xFFFFFF : owner == null ? 0x888888 : 0xAA4444;
+                int colour = isOwner ? config.ownedNameColour
+                        : owner == null ? nametag ? config.unknownNameColour : config.unknownNameColour
+                                : config.otherOwnedNameColour;
                 mc.fontRendererObj.drawString(name, 0, 0, colour);
 
                 GlStateManager.pushMatrix();
                 float s1 = 0.75F;
                 GlStateManager.scale(s1, s1, s1);
 
-                int h = PokecubeMod.core.getConfig().hpTextHeight;
+                int h = config.hpTextHeight;
                 String maxHpStr = "" + (int) (Math.round(maxHealth * 100.0) / 100.0);
                 String hpStr = "" + (int) (Math.round(health * 100.0) / 100.0);
                 String healthStr = hpStr + "/" + maxHpStr;
@@ -322,7 +323,7 @@ public class RenderHealth
                 mc.fontRendererObj.drawString(lvlStr, 2, h, 0xFFFFFF);
                 mc.fontRendererObj.drawString(gender,
                         (int) (size / (s * s1) * 2) - 2 - mc.fontRendererObj.getStringWidth(gender), h - 1, colour);
-                if (PokecubeMod.core.getConfig().enableDebugInfo && mc.gameSettings.showDebugInfo)
+                if (config.enableDebugInfo && mc.gameSettings.showDebugInfo)
                     mc.fontRendererObj.drawString("ID: \"" + entityID + "\"", 0, h + 16, 0xFFFFFFFF);
                 GlStateManager.popMatrix();
 
@@ -332,17 +333,17 @@ public class RenderHealth
                 GlStateManager.scale(s1, s1, s1);
                 GlStateManager.translate(size / (s * s1) * 2 - 16, 0F, 0F);
                 mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                if (CompatWrapper.isValid(stack) && PokecubeMod.core.getConfig().showHeldItem)
+                if (CompatWrapper.isValid(stack) && config.showHeldItem)
                 {
                     renderIcon(off, 0, stack, 16, 16);
                     off -= 16;
                 }
 
-                if (armor > 0 && PokecubeMod.core.getConfig().showArmor)
+                if (armor > 0 && config.showArmor)
                 {
                     int ironArmor = armor % 5;
                     int diamondArmor = armor / 5;
-                    if (!PokecubeMod.core.getConfig().groupArmor)
+                    if (!config.groupArmor)
                     {
                         ironArmor = armor;
                         diamondArmor = 0;

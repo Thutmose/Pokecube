@@ -9,15 +9,15 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.PokecubeCore;
+import pokecube.core.blocks.TileEntityOwnable;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
-public class TileHealTable extends TileEntity implements IInventory, ITickable
+public class TileHealTable extends TileEntityOwnable implements IInventory, ITickable
 {
     public static SoundEvent MUSICLOOP;
     private List<ItemStack>  inventory = CompatWrapper.makeList(9);

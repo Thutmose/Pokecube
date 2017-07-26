@@ -74,7 +74,6 @@ public interface TagNames
     public static final String SPECIALTAG   = "specialInfo";
     public static final String SCALE        = "scale";
     public static final String NEWMOVES     = "newMoves";
-    public static final String NUMNEWMOVES  = "numberMoves";
     public static final String MOVEINDEX    = "index";
     public static final String EXP          = "exp";
     public static final String SEXE         = "sexe";

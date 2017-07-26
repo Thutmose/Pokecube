@@ -56,7 +56,7 @@ public interface IPokemob
 {
     @CapabilityInject(IPokemob.class)
     public static final Capability<IPokemob> POKEMOB_CAP = null;
-    
+
     public static enum HappinessType
     {
         TIME(2, 2, 1), LEVEL(5, 3, 2), BERRY(3, 2, 1), EVBERRY(10, 5, 2), FAINT(-1, -1, -1), TRADE(0, 0, 0);
@@ -416,6 +416,8 @@ public interface IPokemob
         {
             IGNORE.add("ongoingEffects");
             IGNORE.add("moves");
+            IGNORE.add("newMoves");
+            IGNORE.add("num");
         }
         public Entity                         weapon1;
 
@@ -465,11 +467,11 @@ public interface IPokemob
 
         // these two are used for tracking learning new moves.
         public int                            num                        = 0;
-        public int                            newMoves                   = 0;
 
         // next tick when a move can be used
         public int                            nextMoveTick               = 0;
         public String[]                       moves                      = new String[4];
+        public List<String>                   newMoves                   = Lists.newArrayList();
 
         public void reset()
         {

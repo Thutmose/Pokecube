@@ -58,7 +58,7 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                                {
                                                                    IPokemob testMob = CapabilityPokemob
                                                                            .getPokemobFor(input);
-                                                                   if (testMob != null && input != pokemob)
+                                                                   if (testMob != null && input != pokemob.getEntity())
                                                                    {
                                                                        if (!TeamManager.sameTeam(entity,
                                                                                input)) { return true; }

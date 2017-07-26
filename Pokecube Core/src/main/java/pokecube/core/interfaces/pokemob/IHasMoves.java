@@ -1,8 +1,6 @@
 package pokecube.core.interfaces.pokemob;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
@@ -27,6 +25,7 @@ import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import thut.api.maths.Vector3;
+import thut.api.network.PacketHandler;
 
 public interface IHasMoves extends IHasStats
 {
@@ -104,11 +103,12 @@ public interface IHasMoves extends IHasStats
             else if (moveIndex0 >= moves.length || moveIndex1 >= moves.length)
             {
                 if (getMove(4) == null) return;
-
-                getMoveStats().newMoves--;
-                moves[3] = getMove(4);
+                String move = getMove(4);
+                getMoveStats().newMoves.remove(move);
+                moves[3] = move;
                 setMoves(moves);
-                if (getMoveStats().newMoves <= 0) this.setPokemonAIState(LEARNINGMOVE, false);
+                if (getMoveStats().newMoves.isEmpty()) this.setPokemonAIState(LEARNINGMOVE, false);
+                PacketHandler.sendEntityUpdate(getEntity());
             }
             else
             {
@@ -170,29 +170,8 @@ public interface IHasMoves extends IHasStats
         if (index >= 0 && index < 4) { return moves[index]; }
         if (index == 4 && moves[3] != null && getPokemonAIState(IMoveConstants.LEARNINGMOVE))
         {
-            List<String> list;
-            List<String> lastMoves = new ArrayList<String>();
-            int n = getLevel();
-
-            while (n > 0)
-            {
-                list = getPokedexEntry().getMovesForLevel(this.getLevel(), --n);
-                if (!list.isEmpty())
-                {
-                    list:
-                    for (String s : list)
-                    {
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) continue list;
-                        }
-                        lastMoves.add(s);
-                    }
-                    break;
-                }
-            }
-
-            if (!lastMoves.isEmpty()) { return lastMoves.get(getMoveStats().num % lastMoves.size()); }
+            if (!getMoveStats().newMoves.isEmpty()) { return getMoveStats().newMoves
+                    .get(getMoveStats().num % getMoveStats().newMoves.size()); }
         }
 
         if (index == 5) { return IMoveConstants.MOVE_NONE; }
@@ -270,25 +249,18 @@ public interface IHasMoves extends IHasStats
         {
             if (getPokemonAIState(IMoveConstants.TAMED))
             {
-                String[] current = getMoves();
-                if (current[3] != null)
+                if (moves[3] != null)
                 {
-                    for (String s : current)
-                    {
-                        if (s == null) continue;
-                        for (String s1 : moves)
-                        {
-                            if (s.equals(s1)) return;
-                        }
-                    }
                     for (String s : moves)
                     {
                         if (s == null) continue;
-                        ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
-                                thisMob.getPokemonDisplayName().getFormattedText(), s);
-                        thisMob.displayMessageToOwner(mess);
-                        getMoveStats().newMoves++;
+                        if (s.equals(moveName)) return;
                     }
+                    ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.move.notify.learn", "",
+                            thisMob.getPokemonDisplayName().getFormattedText(),
+                            new TextComponentTranslation(MovesUtils.getUnlocalizedMove(moveName)));
+                    thisMob.displayMessageToOwner(mess);
+                    getMoveStats().newMoves.add(moveName);
                     setPokemonAIState(LEARNINGMOVE, true);
                     return;
                 }

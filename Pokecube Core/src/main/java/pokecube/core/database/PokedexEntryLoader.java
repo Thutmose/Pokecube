@@ -265,10 +265,13 @@ public class PokedexEntryLoader
         }
 
         @XmlElement(name = "LVLUP")
-        public LvlUp lvlupMoves;
+        public LvlUp  lvlupMoves;
 
         @XmlElement(name = "MISC")
-        public Misc  misc;
+        public Misc   misc;
+
+        @XmlElement(name = "EVOMOVES")
+        public String evolutionMoves;
     }
 
     @XmlRootElement(name = "STATS")
@@ -476,6 +479,10 @@ public class PokedexEntryLoader
                 if (moves.misc == null)
                 {
                     moves.misc = other.moves.misc;
+                }
+                if (moves.evolutionMoves != null)
+                {
+                    moves.evolutionMoves = other.moves.evolutionMoves;
                 }
             }
             if (body == null && other.body != null)
@@ -723,6 +730,14 @@ public class PokedexEntryLoader
         }
         entry.addMoves(allMoves, lvlUpMoves);
 
+        if (xmlMoves.evolutionMoves != null)
+        {
+            String[] moves = xmlMoves.evolutionMoves.split(",");
+            for (String s : moves)
+            {
+                entry.getEvolutionMoves().add(s);
+            }
+        }
     }
 
     private static void initStats(PokedexEntry entry, StatsNode xmlStats)

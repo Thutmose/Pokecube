@@ -676,6 +676,10 @@ public class PokedexEntry
     /** Map of Level to Moves learned. */
     @CopyToGender
     private Map<Integer, ArrayList<String>>     lvlUpMoves;
+    /** The abilities available to the pokedex entry. */
+    @CopyToGender
+    protected ArrayList<String>                 evolutionMoves   = Lists.newArrayList();
+
     protected PokedexEntry                      male             = null;
 
     /** Mass of the pokemon in kg. */
@@ -1141,9 +1145,16 @@ public class PokedexEntry
         return modId;
     }
 
+    /** A list of all valid moves for this pokemob */
     public List<String> getMoves()
     {
         return possibleMoves;
+    }
+
+    /** Moves to be learned right after evolution. */
+    public List<String> getEvolutionMoves()
+    {
+        return evolutionMoves;
     }
 
     public List<String> getMovesForLevel(int level)
@@ -1170,7 +1181,7 @@ public class PokedexEntry
 
         if (lvlUpMoves == null) return ret;
 
-        if (oldLevel == 0) return getMovesForLevel(level);
+        if (oldLevel <= 0) return getMovesForLevel(level);
 
         for (int i = oldLevel; i < level; i++)
         {
@@ -1642,14 +1653,27 @@ public class PokedexEntry
             lvlUpMoves = getBaseForme().lvlUpMoves;
         }
 
-        for (int i = 0; i < possibleMoves.size(); i++)
+        for (String s : possibleMoves)
         {
-            String s = possibleMoves.get(i);
-            if (MovesUtils.isMoveImplemented(s))
+            if (MovesUtils.isMoveImplemented(s) && !moves.contains(s))
             {
                 moves.add(s);
             }
         }
+        List<String> staleEvoMoves = Lists.newArrayList();
+        for (String s : evolutionMoves)
+        {
+            boolean implemented = MovesUtils.isMoveImplemented(s);
+            if (implemented && !moves.contains(s))
+            {
+                moves.add(s);
+            }
+            else if (!implemented)
+            {
+                staleEvoMoves.add(s);
+            }
+        }
+        evolutionMoves.removeAll(staleEvoMoves);
         possibleMoves.clear();
         possibleMoves.addAll(moves);
         List<Integer> toRemove = new ArrayList<Integer>();

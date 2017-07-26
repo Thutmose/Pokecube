@@ -71,8 +71,9 @@ public class AIMate extends AIBase
         if ((pokemob.getLover() != null || !pokemob.getMalesForBreeding().isEmpty())
                 && (transforms || pokemob.getSexe() != IPokemob.MALE))
         {
-            if (pokemob.getMalesForBreeding().size() == 1 && pokemob.getLover() == null)
-                pokemob.setLover((Entity) pokemob.getMalesForBreeding().get(0));
+            if (pokemob.getMalesForBreeding().size() == 1 && pokemob.getLover() == null
+                    && pokemob.getMalesForBreeding().get(0) instanceof IPokemob)
+                pokemob.setLover(((IPokemob) pokemob.getMalesForBreeding().get(0)).getEntity());
             if (pokemob.getMalesForBreeding().size() <= 1) tryFindMate();
             else initiateMateFight();
         }
@@ -203,15 +204,15 @@ public class AIMate extends AIBase
                     if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
                 }
 
-                if (transforms && otherTransforms) continue;
+                if (transforms && otherTransforms || !(entityanimal.getEntity() instanceof EntityAnimal)) continue;
 
-                boolean validMate = pokemob.canMate((EntityAnimal) entityanimal);
+                boolean validMate = pokemob.canMate((EntityAnimal) entityanimal.getEntity());
 
-                if (!validMate
-                        || entity.getDistanceSqToEntity((Entity) entityanimal) > searchingLoveDist * searchingLoveDist)
+                if (!validMate || entity.getDistanceSqToEntity(entityanimal.getEntity()) > searchingLoveDist
+                        * searchingLoveDist)
                     continue;
 
-                if (!Vector3.isVisibleEntityFromEntity(entity, (Entity) entityanimal)
+                if (!Vector3.isVisibleEntityFromEntity(entity, entityanimal.getEntity())
                         || entityanimal.getPokemonAIState(IMoveConstants.ANGRY))
                     continue;
 

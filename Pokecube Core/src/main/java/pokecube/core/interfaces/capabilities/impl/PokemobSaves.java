@@ -1,12 +1,15 @@
 package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 import com.google.common.base.Optional;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.TagNames;
 import thut.lib.CompatWrapper;
 
@@ -58,7 +61,20 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         // Read moves tag
         if (!movesTag.hasNoTags())
         {
-            getMoveStats().newMoves = movesTag.getByte(NUMNEWMOVES);
+            if (movesTag.hasKey(NEWMOVES))
+            {
+                try
+                {
+                    getMoveStats().newMoves.clear();
+                    NBTTagList newMoves = (NBTTagList) movesTag.getTag(NEWMOVES);
+                    for (int i = 0; i < newMoves.tagCount(); i++)
+                        getMoveStats().newMoves.add(newMoves.getStringTagAt(i));
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, "Error loading new moves for " + getEntity().getName(), e);
+                }
+            }
             this.setMoveIndex(movesTag.getInteger(MOVEINDEX));
             this.getDataManager().set(params.LASTMOVE, movesTag.getString(LASTUSED));
             this.setAttackCooldown(movesTag.getInteger(COOLDOWN));
@@ -151,7 +167,15 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         // Write moves tag
         NBTTagCompound movesTag = new NBTTagCompound();
         movesTag.setInteger(MOVEINDEX, getMoveIndex());
-        movesTag.setByte(NUMNEWMOVES, (byte) getMoveStats().newMoves);
+        if (!getMoveStats().newMoves.isEmpty())
+        {
+            NBTTagList newMoves = new NBTTagList();
+            for (String s : getMoveStats().newMoves)
+            {
+                newMoves.appendTag(new NBTTagString(s));
+            }
+            movesTag.setTag(NEWMOVES, newMoves);
+        }
         movesTag.setString(LASTUSED, getDataManager().get(params.LASTMOVE));
         movesTag.setInteger(COOLDOWN, getAttackCooldown());
 

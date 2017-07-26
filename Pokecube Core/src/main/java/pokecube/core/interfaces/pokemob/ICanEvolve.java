@@ -35,6 +35,7 @@ import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
+import thut.api.network.PacketHandler;
 import thut.lib.CompatWrapper;
 
 public interface ICanEvolve extends IHasEntry, IHasOwner
@@ -153,7 +154,11 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     {
                         for (String s1 : moves)
                         {
-                            if (s.equals(s1)) return theMob;
+                            if (s.equals(s1))
+                            {
+                                moves.remove(s1);
+                                break;
+                            }
                         }
                     }
                     for (String s : moves)
@@ -162,9 +167,10 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                         ITextComponent mess = new TextComponentTranslation("pokemob.move.notify.learn",
                                 theMob.getPokemonDisplayName(), move);
                         theMob.displayMessageToOwner(mess);
-                        theMob.getMoveStats().newMoves++;
+                        theMob.getMoveStats().newMoves.add(s);
                     }
                     theMob.setPokemonAIState(LEARNINGMOVE, true);
+                    PacketHandler.sendEntityUpdate(getEntity());
                     return theMob;
                 }
             }

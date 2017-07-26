@@ -606,6 +606,11 @@ public class EventsHandler
                 List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
                 for (EntityLiving mob : toProcess)
                 {
+                    if (mob.isDead)
+                    {
+                        stale.add(mob);
+                        continue;
+                    }
                     if (mob.ticksExisted == 0) continue;
                     IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
                     if (pokemob == null)

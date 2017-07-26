@@ -2,7 +2,6 @@ package pokecube.core.utils;
 
 import net.minecraft.nbt.NBTTagCompound;
 import pokecube.core.events.handlers.EventsHandler;
-import pokecube.core.interfaces.PokecubeMod;
 
 public interface TagNames
 {
@@ -18,7 +17,6 @@ public interface TagNames
             NBTTagCompound caps = entityRootTag.getCompoundTag(FORGECAPS);
             if (caps.hasKey(POKEMOBCAP)) { return caps.getCompoundTag(POKEMOBCAP); }
         }
-        PokecubeMod.log(entityRootTag + "");
         return ret;
     }
 
@@ -38,7 +36,6 @@ public interface TagNames
                 if (caps.hasKey(POKEMOBCAP)) { return caps.getCompoundTag(POKEMOBCAP); }
             }
         }
-        PokecubeMod.log(itemRootTag + "");
         return ret;
     }
 

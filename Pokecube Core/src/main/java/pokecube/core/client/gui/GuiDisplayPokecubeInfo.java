@@ -360,7 +360,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (dir == -1)
             {
                 h -= 14 + 12 * (moveCount - 1) - (4 - moveCount) * 2;
-            }
+            }//System.out.println(Arrays.toString(pokemob.getMoves())+" "+pokemob);
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
                 int index = moveIndex;

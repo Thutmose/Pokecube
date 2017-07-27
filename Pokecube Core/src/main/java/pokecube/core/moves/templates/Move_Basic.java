@@ -108,19 +108,23 @@ public class Move_Basic extends Move_Base implements IMoveConstants
     @Override
     public void attack(IPokemob attacker, Entity attacked)
     {
+        IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
         if (attacker.getStatus() == STATUS_SLP)
         {
-            MovesUtils.displayStatusMessages(attacker, attacked, STATUS_SLP, false);
+            if (attackedMob != null)
+                MovesUtils.displayStatusMessages(attackedMob, attacker.getEntity(), STATUS_SLP, false);
             return;
         }
         if (attacker.getStatus() == STATUS_FRZ)
         {
-            MovesUtils.displayStatusMessages(attacker, attacked, STATUS_FRZ, false);
+            if (attackedMob != null)
+                MovesUtils.displayStatusMessages(attackedMob, attacker.getEntity(), STATUS_FRZ, false);
             return;
         }
         if (attacker.getStatus() == STATUS_PAR && Math.random() > 0.75)
         {
-            MovesUtils.displayStatusMessages(attacker, attacked, STATUS_PAR, false);
+            if (attackedMob != null)
+                MovesUtils.displayStatusMessages(attackedMob, attacker.getEntity(), STATUS_PAR, false);
             return;
         }
         if (AnimationMultiAnimations.isThunderAnimation(getAnimation(attacker)))
@@ -139,11 +143,11 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         playSounds(attacker.getEntity(), attacked, null);
         byte statusChange = STATUS_NON;
         byte changeAddition = CHANGE_NONE;
-        if (move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.statusChance)
+        if (move.statusChange != STATUS_NON && MovesUtils.rand.nextFloat() <= move.statusChance)
         {
             statusChange = move.statusChange;
         }
-        if (move.change != CHANGE_NONE && MovesUtils.rand.nextInt(100) <= move.chanceChance)
+        if (move.change != CHANGE_NONE && MovesUtils.rand.nextFloat() <= move.chanceChance)
         {
             changeAddition = move.change;
         }
@@ -554,7 +558,9 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if ((efficiency > 0 || packet.getMove().move.attackCategory == CATEGORY_SELF) && statusChange != STATUS_NON)
         {
-            MovesUtils.setStatus(attacked, statusChange);
+            if (MovesUtils.setStatus(attacked, statusChange))
+                MovesUtils.displayStatusMessages(attacker, attacked, statusChange, true);
+            else MovesUtils.displayEfficiencyMessages(attacker, attacked, -2, 0);
         }
         if (efficiency > 0 && changeAddition != CHANGE_NONE) MovesUtils.addChange(attacked, changeAddition);
 

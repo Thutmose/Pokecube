@@ -114,8 +114,15 @@ public class RenderHealth
         if (PokecubeMod.core.getConfig().showOnlyFocused)
         {
             Entity focused = getEntityLookedAt(mc.player);
-            if (focused != null && focused instanceof EntityLivingBase && focused.isEntityAlive())
+            if (focused != null && focused instanceof EntityLivingBase && focused.isEntityAlive()) try
+            {
                 renderHealthBar((EntityLivingBase) focused, partialTicks, cameraEntity);
+            }
+            catch (Exception e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         else
         {
@@ -127,8 +134,15 @@ public class RenderHealth
                         && entity.isInRangeToRender3d(renderingVector.getX(), renderingVector.getY(),
                                 renderingVector.getZ())
                         && (entity.ignoreFrustumCheck || frustum.isBoundingBoxInFrustum(entity.getEntityBoundingBox()))
-                        && entity.isEntityAlive() && entity.getRecursivePassengers().isEmpty())
+                        && entity.isEntityAlive() && entity.getRecursivePassengers().isEmpty()) try
+                {
                     renderHealthBar((EntityLivingBase) entity, partialTicks, cameraEntity);
+                }
+                catch (Exception e)
+                {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
         }
     }
 

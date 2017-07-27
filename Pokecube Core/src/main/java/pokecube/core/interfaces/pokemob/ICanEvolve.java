@@ -231,10 +231,6 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 this.setPokemonOwner((UUID) null);
                 thisEntity.setDead();
 
-                // Learn evolution moves and update ability.
-                for (String s : newEntry.getEvolutionMoves())
-                    evoMob.learn(s);
-                evoMob.setAbility(newEntry.getAbility(thisMob.getAbilityIndex(), evoMob));
                 // Schedule adding to world.
                 if (thisEntity.addedToChunk)
                 {
@@ -301,9 +297,16 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 evo.specificSpawnInit();
                 evo.getMoveStats().oldLevel = data.level - 1;
                 evo.levelUp(evo.getLevel());
+
+                // Learn evolution moves and update ability.
+                for (String s : evo.getPokedexEntry().getEvolutionMoves())
+                    evo.learn(s);
+                evo.setAbility(evo.getPokedexEntry().getAbility(thisMob.getAbilityIndex(), evo));
+
                 // Send post evolve event.
                 evt = new EvolveEvent.Post(evo);
                 MinecraftForge.EVENT_BUS.post(evt);
+                // Kill old entity.
                 getEntity().setDead();
                 return evo;
             }
@@ -348,18 +351,33 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 }
                 // Evolve the mob.
                 IPokemob evo = megaEvolve(((EvolveEvent.Pre) evt).forme);
-                // Clear held item if used for evolving.
-                if (neededItem)
-                {
-                    evo.setHeldItem(CompatWrapper.nullStack);
-                }
                 if (evo != null)
                 {
+                    // Clear held item if used for evolving.
+                    if (neededItem)
+                    {
+                        evo.setHeldItem(CompatWrapper.nullStack);
+                    }
                     evt = new EvolveEvent.Post(evo);
                     MinecraftForge.EVENT_BUS.post(evt);
+
+                    // Lean any moves that should are supposed to have just
+                    // learnt.
                     if (delayed) evo.getMoveStats().oldLevel = evo.getLevel() - 1;
                     else if (data != null) evo.getMoveStats().oldLevel = data.level - 1;
                     evo.levelUp(evo.getLevel());
+
+                    // Don't immediately try evolving again, only wild ones
+                    // should do that.
+                    evo.setEvolutionTicks(-1);
+                    evo.setPokemonAIState(EVOLVING, false);
+
+                    // Learn evolution moves and update ability.
+                    for (String s : evo.getPokedexEntry().getEvolutionMoves())
+                        evo.learn(s);
+                    evo.setAbility(evo.getPokedexEntry().getAbility(thisMob.getAbilityIndex(), evo));
+
+                    // Kill old entity.
                     thisEntity.setDead();
                 }
                 return evo;

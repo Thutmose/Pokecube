@@ -8,7 +8,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -213,6 +212,9 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 tag.getCompoundTag(TagNames.VISUALSTAG).removeTag(TagNames.FORME);
                 evoMob.readPokemobData(tag);
 
+                // Sync held item
+                evoMob.setHeldItem(thisMob.getHeldItem());
+
                 // Sync genes
                 IMobGenetics oldGenes = thisEntity.getCapability(IMobGenetics.GENETICS_CAP, null);
                 IMobGenetics newGenes = evolution.getCapability(IMobGenetics.GENETICS_CAP, null);
@@ -291,7 +293,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 // Remove held item if it had one.
                 if (neededItem)
                 {
-                    evo.getEntity().setHeldItem(EnumHand.MAIN_HAND, CompatWrapper.nullStack);
+                    evo.setHeldItem(CompatWrapper.nullStack);
                 }
                 // Init things like moves.
                 evo.specificSpawnInit();
@@ -360,7 +362,6 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     }
                     evt = new EvolveEvent.Post(evo);
                     MinecraftForge.EVENT_BUS.post(evt);
-
                     // Lean any moves that should are supposed to have just
                     // learnt.
                     if (delayed) evo.getMoveStats().oldLevel = evo.getLevel() - 1;

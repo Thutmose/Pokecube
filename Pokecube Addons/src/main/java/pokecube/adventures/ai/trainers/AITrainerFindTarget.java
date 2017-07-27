@@ -71,7 +71,7 @@ public class AITrainerFindTarget extends EntityAIBase
         Vector3 here = Vector3.getNewVector().set(entity);
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
-                here.getAABB().expand(16, 16, 16));
+                here.getAABB().grow(16, 16, 16));
 
         int sight = trainer.getAgressDistance();
         for (Object o : targets)

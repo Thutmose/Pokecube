@@ -3,13 +3,10 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
-import java.io.IOException;
-
 import javax.annotation.Nullable;
 
 import org.nfunk.jep.JEP;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,8 +14,6 @@ import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -378,22 +373,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         }
     }
 
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void readSpawnData(ByteBuf data)
-    {
-        super.readSpawnData(data);
-        PacketBuffer buffer = new PacketBuffer(data);
-        try
-        {
-            this.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public IPokemob setExp(int exp, boolean notifyLevelUp)
     {
@@ -404,16 +383,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     public void setPokemonNickname(String nickname)
     {
         pokemobCap.setPokemonNickname(nickname);
-    }
-
-    /** Use this for anything that does not change or need to be updated. */
-    @Override
-    public void writeSpawnData(ByteBuf data)
-    {
-        super.writeSpawnData(data);
-        PacketBuffer buffer = new PacketBuffer(data);
-        NBTTagCompound tag = writePokemobData();
-        buffer.writeNBTTagCompoundToBuffer(tag);
     }
 
     @Override

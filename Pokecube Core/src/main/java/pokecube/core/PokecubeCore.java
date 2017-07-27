@@ -207,8 +207,10 @@ public class PokecubeCore extends PokecubeMod
                 Database.spawnables.add(dbe);
             }
         }
+        Collections.sort(Database.spawnables, Database.COMPARATOR);
         for (PokedexEntry dbe : Database.spawnables)
         {
+            if (core.getConfig().debug) PokecubeMod.log("_ " + dbe + " __");
             if (Pokedex.getInstance().getEntry(dbe.getPokedexNb()) != null && !spawns.contains(dbe))
             {
                 spawns.add(dbe);

@@ -1235,6 +1235,9 @@ public class GuiPokedex extends GuiScreen
                             break;
                         }
                     }
+                    // If the pokedex entry is not actually registered, use old
+                    // entry.
+                    if (Pokedex.getInstance().getIndex(entry) == null) entry = null;
                 }
                 if (entry != null)
                 {

@@ -227,7 +227,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             IMobGenetics.GENETICS_CAP.readNBT(genes, null, list);
             pokemobCap.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
             pokemobCap.onGenesChanged();
-            System.out.println(Arrays.toString(pokemobCap.getMoves()) + " " + pokemobCap);
         }
         catch (Exception e)
         {

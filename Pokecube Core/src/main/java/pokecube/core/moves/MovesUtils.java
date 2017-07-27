@@ -95,6 +95,13 @@ public class MovesUtils implements IMoveConstants
         return true;
     }
 
+    /** @param attacker
+     * @param attacked
+     * @param efficiency
+     *            -1 = missed, -2 = failed, 0 = no effect, <1 = not effective, 1
+     *            = normal effecive, >1 = supereffective
+     * @param criticalRatio
+     *            >1 = critical hit. */
     public static void displayEfficiencyMessages(IPokemob attacker, Entity attacked, float efficiency,
             float criticalRatio)
     {
@@ -317,17 +324,17 @@ public class MovesUtils implements IMoveConstants
         {
             if (attacker != null)
             {
-                text = CommandTools.makeTranslatedMessage(message, "green", attacker.getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "green", attacked.getDisplayName());
                 attacker.displayMessageToOwner(text);
             }
-            if (attackedPokemob != null)
+            if (attackedPokemob != null && attackedPokemob.getPokemonOwnerID() != null)
             {
                 text = CommandTools.makeTranslatedMessage(message, "red", attackedPokemob.getPokemonDisplayName());
                 attackedPokemob.displayMessageToOwner(text);
             }
             else if (attacked instanceof EntityPlayer && attacker != null)
             {
-                text = CommandTools.makeTranslatedMessage(message, "red", attacker.getPokemonDisplayName());
+                text = CommandTools.makeTranslatedMessage(message, "red", attacked.getDisplayName());
                 PacketPokemobMessage.sendMessage((EntityPlayer) attacked, attacked.getEntityId(), text);
             }
         }
@@ -690,17 +697,18 @@ public class MovesUtils implements IMoveConstants
         if (move_Base.move.baseEntry.protectionMoves) MoveEntry.protectionMoves.add(move_Base.name);
     }
 
-    public static void setStatus(Entity attacked, byte status)
+    public static boolean setStatus(Entity attacked, byte status)
     {
-        displayStatusMessages(null, attacked, status, true);
         IPokemob attackedPokemob = CapabilityPokemob.getPokemobFor(attacked);
         if (attackedPokemob != null)
         {
             boolean apply = attackedPokemob.setStatus(status);
             if (!apply)
             {
-                // TODO message here about no status effect.
+                return false;
             }
+            else attackedPokemob.getEntity().getNavigator().clearPathEntity();
+            return true;
         }
         else if (attacked instanceof EntityLivingBase)
         {
@@ -742,6 +750,7 @@ public class MovesUtils implements IMoveConstants
             }
 
         }
+        return true;
     }
 
     public static Entity targetHit(final Entity attacker, Vector3 dest)

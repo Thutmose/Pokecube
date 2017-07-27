@@ -2,6 +2,8 @@ package pokecube.core.entity.pokemobs.helper;
 
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.COLOURGENE;
 
+import java.util.Arrays;
+
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -203,9 +205,9 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void writeSpawnData(ByteBuf data)
     {
+        pokemobCap.onGenesChanged();
         IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
         PacketBuffer buffer = new PacketBuffer(data);
-
         NBTTagList list = (NBTTagList) IMobGenetics.GENETICS_CAP.writeNBT(genes, null);
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setTag("g", list);
@@ -225,6 +227,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             IMobGenetics.GENETICS_CAP.readNBT(genes, null, list);
             pokemobCap.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
             pokemobCap.onGenesChanged();
+            System.out.println(Arrays.toString(pokemobCap.getMoves()) + " " + pokemobCap);
         }
         catch (Exception e)
         {

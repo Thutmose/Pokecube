@@ -59,11 +59,11 @@ public class Move_Explode extends Move_Basic
 
             byte statusChange = STATUS_NON;
             byte changeAddition = CHANGE_NONE;
-            if (move.move.statusChange != STATUS_NON && MovesUtils.rand.nextInt(100) <= move.move.statusChance)
+            if (move.move.statusChange != STATUS_NON && MovesUtils.rand.nextFloat() <= move.move.statusChance)
             {
                 statusChange = move.move.statusChange;
             }
-            if (move.move.change != CHANGE_NONE && MovesUtils.rand.nextInt(100) <= move.move.chanceChance)
+            if (move.move.change != CHANGE_NONE && MovesUtils.rand.nextFloat() <= move.move.chanceChance)
             {
                 changeAddition = move.move.change;
             }

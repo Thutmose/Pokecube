@@ -56,13 +56,13 @@ public class LogicMiscUpdate extends LogicBase
         }
 
         // Check that AI states are correct
-        checkAIStates();
+        if (!world.isRemote) checkAIStates();
 
         // Check evolution
-        checkEvolution();
+        if (!world.isRemote) checkEvolution();
 
         // Check and tick inventory
-        checkInventory(world);
+        if (!world.isRemote) checkInventory(world);
         for (int i = 0; i < 5; i++)
         {
             flavourAmounts[i] = pokemob.getFlavourAmount(i);
@@ -252,14 +252,19 @@ public class LogicMiscUpdate extends LogicBase
             pokemob.setEvolutionTicks(pokemob.getEvolutionTicks() - 1);
         }
         boolean evolving = pokemob.getPokemonAIState(EVOLVING);
-        if (num <= 0 && evolving)
+        if (evolving)
         {
-            pokemob.setPokemonAIState(EVOLVING, false);
-        }
-        if (num <= 50 && evolving)
-        {
-            pokemob.evolve(false, false, pokemob.getEvolutionStack());
-            pokemob.setPokemonAIState(EVOLVING, false);
+            if (num <= 0)
+            {
+                pokemob.setPokemonAIState(EVOLVING, false);
+                pokemob.setEvolutionTicks(-1);
+            }
+            if (num <= 50)
+            {
+                pokemob.evolve(false, false, pokemob.getEvolutionStack());
+                pokemob.setPokemonAIState(EVOLVING, false);
+                pokemob.setEvolutionTicks(-1);
+            }
         }
         if (PokecubeSerializer.getInstance().getPokemob(pokemob.getPokemonUID()) == null)
             PokecubeSerializer.getInstance().addPokemob(pokemob);

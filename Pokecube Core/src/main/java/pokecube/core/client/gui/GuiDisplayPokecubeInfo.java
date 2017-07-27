@@ -374,8 +374,16 @@ public class GuiDisplayPokecubeInfo extends Gui
                     GL11.glPushMatrix();// TODO find out why both needed
                     minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
                     this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91, 13);
+
                     if (currentMoveIndex == index)
                     {
+                        // Draw selected indictator
+                        GL11.glColor4f(0F, 0.9F, 0.9F, 0.9F);
+                        this.drawTexturedModalRect(movesOffsetX + w, movesOffsetY + 13 * index + h, 43, 21 + h1, 91,
+                                13);
+                        GL11.glColor4f(0F, 1.0F, 1.0F, 1.0F);
+
+                        // Draw cooldown box
                         float timer = 1;
                         Move_Base lastMove;
                         if ((lastMove = MovesUtils.getMoveFromName(pokemob.getLastMoveUsed())) != null)

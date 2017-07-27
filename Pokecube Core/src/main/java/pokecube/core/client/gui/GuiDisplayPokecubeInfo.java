@@ -747,7 +747,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         if (GuiScreen.isShiftKeyDown() && pokemob != null)
         {
-            MessageServer message = new MessageServer(MessageServer.COME, ((Entity) pokemob).getEntityId());
+            MessageServer message = new MessageServer(MessageServer.COME, pokemob.getEntity().getEntityId());
             PokecubeMod.packetPipeline.sendToServer(message);
             return;
         }
@@ -782,7 +782,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if ((pokemob = getCurrentPokemob()) != null)
         {
             PacketPokemobGui packet = new PacketPokemobGui(PacketPokemobGui.BUTTONTOGGLESIT,
-                    ((Entity) pokemob).getEntityId());
+                    pokemob.getEntity().getEntityId());
             PokecubeMod.packetPipeline.sendToServer(packet);
         }
         else

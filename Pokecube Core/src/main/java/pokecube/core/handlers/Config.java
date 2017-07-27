@@ -261,7 +261,7 @@ public class Config extends ConfigBase
     public String[]                      blocksStones                 = { "minecraft:stone variant=stone",
             "minecraft:stone variant=granite", "minecraft:stone variant=diorite", "minecraft:stone variant=andesite",
             "minecraft:netherrack", "minecraft:sandstone type=sandstone",
-            "minecraft:red_sandstone type=red_sandstone" };
+            "minecraft:red_sandstone type=red_sandstone", "minecraft:cobblestone" };
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksOre                    = { ".*:.*_ore", ".*:ore*" };
     @Configure(category = world, needsMcRestart = true)

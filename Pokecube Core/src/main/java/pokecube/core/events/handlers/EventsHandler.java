@@ -28,6 +28,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -563,7 +564,7 @@ public class EventsHandler
             if (deny)
             {
                 // Add message here about cannot use items right now
-                player.addChatMessage(new TextComponentTranslation("pokemob.action.cannotuse"));
+                player.sendMessage(new TextComponentTranslation("pokemob.action.cannotuse"));
                 return;
             }
 
@@ -697,7 +698,7 @@ public class EventsHandler
         if (!CompatWrapper.isValid(toDrop)) return;
         Entity entity = dropper.getEntity();
         EntityItem drop = new EntityItem(entity.getEntityWorld(), entity.posX, entity.posY + 0.5, entity.posZ, toDrop);
-        entity.getEntityWorld().spawnEntityInWorld(drop);
+        entity.getEntityWorld().spawnEntity(drop);
         dropper.setHeldItem(CompatWrapper.nullStack);
     }
 

@@ -2,8 +2,12 @@ package pokecube.modelloader.common;
 
 import java.io.File;
 import java.util.Comparator;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import net.minecraftforge.common.MinecraftForge;
+import pokecube.modelloader.ModPokecubeML;
 import thut.core.common.config.ConfigBase;
 import thut.core.common.config.Configure;
 
@@ -14,7 +18,14 @@ public class Config extends ConfigBase
     @Configure(category = "loading")
     public String[]           priorityOrder = { "pokecube_ml", "pokecube_mobs" };
 
+    @Configure(category = "loading")
+    public boolean            preload       = false;
+
+    @Configure(category = "loading")
+    public String[]           preloadedMobs = {};
+
     public Comparator<String> modIdComparator;
+    public Set<String>        toPreload     = Sets.newHashSet();
 
     public Config()
     {
@@ -49,8 +60,9 @@ public class Config extends ConfigBase
                 return prioro1 - prioro2;
             }
         };
-
-        // TODO checkResourcesForModels =
-        // config.getBoolean("checkForResourcepacks", "General", true,
+        toPreload.clear();
+        for (String s : preloadedMobs)
+            toPreload.add(s);
+        ModPokecubeML.preload = preload;
     }
 }

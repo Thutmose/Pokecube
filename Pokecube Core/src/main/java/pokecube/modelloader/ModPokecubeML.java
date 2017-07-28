@@ -70,7 +70,7 @@ public class ModPokecubeML implements IMobProvider
 
     public static Set<String>         scanPaths               = Sets.newHashSet("assets/pokecube_ml/entity/models/");
 
-    public static boolean             preload                 = true;
+    public static boolean             preload                 = false;
 
     @SidedProxy(clientSide = "pokecube.modelloader.client.ClientProxy", serverSide = "pokecube.modelloader.CommonProxy")
     public static CommonProxy         proxy;

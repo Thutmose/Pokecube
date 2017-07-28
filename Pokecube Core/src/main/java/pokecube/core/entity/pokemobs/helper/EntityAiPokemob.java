@@ -12,10 +12,7 @@ import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
@@ -66,21 +63,15 @@ import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
-import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemobUseable;
-import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.items.ItemPokedex;
-import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.Tools;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.entity.ai.ILogicRunnable;
@@ -901,183 +892,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     // 1.10
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack held)
     {
-        if (hand != EnumHand.MAIN_HAND) return false;
-        ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
-        // Check shearable interaction.
-        if (getPokedexEntry().interact(key) && CompatWrapper.isValid(held)
-                && Tools.isSameStack(key, held)) { return false; }
-        // Check Pokedex Entry defined Interaction for player.
-        if (getPokedexEntry().interact(player, this, true)) return true;
-        Item torch = Item.getItemFromBlock(Blocks.TORCH);
-        boolean isOwner = false;
-        if (getPokemonAIState(IMoveConstants.TAMED) && getOwner() != null)
-        {
-            isOwner = getOwner().getEntityId() == player.getEntityId();
-        }
-        // Either push pokemob around, or if sneaking, make it try to climb on
-        // shoulder
-        if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
-        {
-            Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
-            look.y = 0.2;
-            this.motionX += look.x;
-            this.motionY += look.y;
-            this.motionZ += look.z;
-            return false;
-        }
-        // Debug thing to maximize happiness
-        if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
-        {
-            if (player.capabilities.isCreativeMode && player.isSneaking())
-            {
-                this.addHappiness(255);
-            }
-        }
-        // Debug thing to increase hunger time
-        if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
-        {
-            if (player.capabilities.isCreativeMode && player.isSneaking())
-            {
-                this.setHungerTime(this.getHungerTime() + 4000);
-            }
-        }
-        // Use shiny charm to make shiny
-        if (isOwner && CompatWrapper.isValid(held)
-                && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
-        {
-            if (player.isSneaking())
-            {
-                this.setShiny(!this.isShiny());
-                held.splitStack(1);
-            }
-            return true;
-        }
-
-        // is Dyeable
-        if (CompatWrapper.isValid(held) && getPokedexEntry().dyeable)
-        {
-            if (held.getItem() == Items.DYE)
-            {
-                setSpecialInfo(held.getItemDamage());
-                CompatWrapper.increment(held, -1);
-                return true;
-            }
-            else if (held.getItem() == Items.SHEARS) { return false; }
-        }
-
-        // Open Pokedex Gui
-        if (CompatWrapper.isValid(held) && held.getItem() instanceof ItemPokedex)
-        {
-            if (PokecubeCore.isOnClientSide() && !player.isSneaking())
-            {
-                player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, worldObj, (int) posX, (int) posY,
-                        (int) posZ);
-            }
-            return true;
-        }
-        boolean deny = getPokemonAIState(IMoveConstants.NOITEMUSE);
-        if (deny && getAttackTarget() == null)
-        {
-            deny = false;
-            this.setPokemonAIState(NOITEMUSE, false);
-        }
-
-        if (deny)
-        {
-            // Add message here about cannot use items right now
-            player.addChatMessage(new TextComponentTranslation("pokemob.action.cannotuse"));
-            return false;
-        }
-
-        // Owner only interactions.
-        if (isOwner && !PokecubeCore.isOnClientSide())
-        {
-            if (CompatWrapper.isValid(held))
-            {
-                // Check if it should evolve from item, do so if yes.
-                if (PokecubeItems.isValidEvoItem(held) && canEvolve(held))
-                {
-                    IPokemob evolution = evolve(true, false, held);
-                    if (evolution != null)
-                    {
-                        CompatWrapper.increment(held, -1);
-                        if (!CompatWrapper.isValid(held))
-                        {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                    CompatWrapper.nullStack);
-                        }
-                    }
-                    return true;
-                }
-                int fav = Nature.getFavouriteBerryIndex(getNature());
-                // Check if favourte berry and sneaking, if so, do breeding
-                // stuff.
-                if (player.isSneaking() && getAttackTarget() == null && held.getItem() instanceof ItemBerry
-                        && (fav == -1 || fav == held.getItemDamage()))
-                {
-                    if (!player.capabilities.isCreativeMode)
-                    {
-                        CompatWrapper.increment(held, -1);
-                        if (!CompatWrapper.isValid(held))
-                        {
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                    CompatWrapper.nullStack);
-                        }
-                    }
-                    this.loveTimer = 10;
-                    this.setAttackTarget(null);
-                    this.worldObj.setEntityState(this, (byte) 18);
-                    return true;
-                }
-                // Otherwise check if useable item.
-                if (held.getItem() instanceof IPokemobUseable)
-                {
-                    boolean used = ((IPokemobUseable) held.getItem()).itemUse(held, this, player);
-                    this.setPokemonAIState(NOITEMUSE, true);
-                    if (used)
-                    {
-                        held.splitStack(1);
-                        return true;
-                    }
-                }
-                // Try to hold the item.
-                if (canBeHeld(held))
-                {
-                    ItemStack heldItem = getHeldItemMainhand();
-                    if (heldItem != CompatWrapper.nullStack)
-                    {
-                        dropItem();
-                    }
-                    ItemStack toSet = held.copy();
-                    CompatWrapper.setStackSize(toSet, 1);
-                    setHeldItem(toSet);
-                    this.setPokemonAIState(NOITEMUSE, true);
-                    CompatWrapper.increment(held, -1);
-                    if (!CompatWrapper.isValid(held))
-                    {
-                        player.inventory.setInventorySlotContents(player.inventory.currentItem,
-                                CompatWrapper.nullStack);
-                    }
-                    return true;
-                }
-            }
-
-            // Check saddle for riding.
-            if (getPokemonAIState(SADDLED) && !player.isSneaking() && isOwner
-                    && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
-                    && handleHmAndSaddle(player, new ItemStack(Items.SADDLE)))
-            {
-                this.setJumping(false);
-                return true;
-            }
-
-            // Open Gui
-            if (!PokecubeCore.isOnClientSide() && isOwner)
-            {
-                openGUI(player);
-                return true;
-            }
-        }
         return false;
     }
 

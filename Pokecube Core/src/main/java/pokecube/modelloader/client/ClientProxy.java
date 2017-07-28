@@ -165,6 +165,7 @@ public class ClientProxy extends CommonProxy
         registerRenderInformation();
     }
 
+    @Override
     public void reloadModel(PokedexEntry model)
     {
         TabulaPackLoader.remove(model);

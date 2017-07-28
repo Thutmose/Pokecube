@@ -1613,7 +1613,7 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
-        this.sound = new ResourceLocation(getModId() + ":" + sound.toLowerCase(Locale.US));
+        this.sound = new ResourceLocation(getModId() + ":" + sound);
     }
 
     public void setSpawnData(SpawnData data)

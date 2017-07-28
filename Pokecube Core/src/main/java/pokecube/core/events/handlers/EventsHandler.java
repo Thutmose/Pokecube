@@ -35,10 +35,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.gen.structure.MapGenNetherBridge;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -82,12 +84,17 @@ import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager.GeneticsProvider;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemobUseable;
+import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
+import pokecube.core.items.ItemPokedex;
+import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
@@ -453,8 +460,241 @@ public class EventsHandler
     }
 
     @SubscribeEvent
-    public void interactEvent(PlayerInteractEvent.RightClickBlock evt)
+    public void interactEvent(PlayerInteractEvent.EntityInteractSpecific evt)
     {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getTarget());
+        if (pokemob != null && !evt.getWorld().isRemote)
+        {
+            EntityPlayer player = evt.getEntityPlayer();
+            EnumHand hand = evt.getHand();
+            ItemStack held = player.getHeldItem(hand);
+            EntityLiving entity = pokemob.getEntity();
+            if (hand != EnumHand.MAIN_HAND) return;
+            PokedexEntry entry = pokemob.getPokedexEntry();
+            ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
+            // Check shearable interaction.
+            if (entry.interact(key) && CompatWrapper.isValid(held) && Tools.isSameStack(key, held)) { return; }
+            // Check Pokedex Entry defined Interaction for player.
+            if (entry.interact(player, pokemob, true))
+            {
+                evt.setCanceled(true);
+                return;
+            }
+            Item torch = Item.getItemFromBlock(Blocks.TORCH);
+            boolean isOwner = false;
+            if (pokemob.getPokemonAIState(IMoveConstants.TAMED) && pokemob.getOwner() != null)
+            {
+                isOwner = pokemob.getOwner().getEntityId() == player.getEntityId();
+            }
+            // Either push pokemob around, or if sneaking, make it try to climb
+            // on
+            // shoulder
+            if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
+            {
+                Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
+                look.y = 0.2;
+                look.addVelocities(evt.getTarget());
+                return;
+            }
+            // Debug thing to maximize happiness
+            if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.APPLE)
+            {
+                if (player.capabilities.isCreativeMode && player.isSneaking())
+                {
+                    pokemob.addHappiness(255);
+                }
+            }
+            // Debug thing to increase hunger time
+            if (isOwner && CompatWrapper.isValid(held) && held.getItem() == Items.GOLDEN_HOE)
+            {
+                if (player.capabilities.isCreativeMode && player.isSneaking())
+                {
+                    pokemob.setHungerTime(pokemob.getHungerTime() + 4000);
+                }
+            }
+            // Use shiny charm to make shiny
+            if (isOwner && CompatWrapper.isValid(held)
+                    && ItemStack.areItemStackTagsEqual(held, PokecubeItems.getStack("shiny_charm")))
+            {
+                if (player.isSneaking())
+                {
+                    pokemob.setShiny(!pokemob.isShiny());
+                    held.splitStack(1);
+                }
+                evt.setCanceled(true);
+                return;
+            }
+
+            // is Dyeable
+            if (CompatWrapper.isValid(held) && entry.dyeable)
+            {
+                if (held.getItem() == Items.DYE)
+                {
+                    pokemob.setSpecialInfo(held.getItemDamage());
+                    CompatWrapper.increment(held, -1);
+                    evt.setCanceled(true);
+                    return;
+                }
+                else if (held.getItem() == Items.SHEARS) { return; }
+            }
+
+            // Open Pokedex Gui
+            if (CompatWrapper.isValid(held) && held.getItem() instanceof ItemPokedex)
+            {
+                if (PokecubeCore.isOnClientSide() && !player.isSneaking())
+                {
+                    player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, entity.getEntityWorld(),
+                            (int) entity.posX, (int) entity.posY, (int) entity.posZ);
+                }
+                evt.setCanceled(true);
+                return;
+            }
+            boolean deny = pokemob.getPokemonAIState(IMoveConstants.NOITEMUSE);
+            if (deny && entity.getAttackTarget() == null)
+            {
+                deny = false;
+                pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, false);
+            }
+
+            if (deny)
+            {
+                // Add message here about cannot use items right now
+                player.addChatMessage(new TextComponentTranslation("pokemob.action.cannotuse"));
+                return;
+            }
+
+            // Owner only interactions.
+            if (isOwner && !PokecubeCore.isOnClientSide())
+            {
+                if (CompatWrapper.isValid(held))
+                {
+                    // Check if it should evolve from item, do so if yes.
+                    if (PokecubeItems.isValidEvoItem(held) && pokemob.canEvolve(held))
+                    {
+                        IPokemob evolution = pokemob.evolve(true, false, held);
+                        if (evolution != null)
+                        {
+                            CompatWrapper.increment(held, -1);
+                            if (!CompatWrapper.isValid(held))
+                            {
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                        CompatWrapper.nullStack);
+                            }
+                        }
+                        evt.setCanceled(true);
+                        return;
+                    }
+                    int fav = Nature.getFavouriteBerryIndex(pokemob.getNature());
+                    // Check if favourte berry and sneaking, if so, do breeding
+                    // stuff.
+                    if (player.isSneaking() && entity.getAttackTarget() == null && held.getItem() instanceof ItemBerry
+                            && (fav == -1 || fav == held.getItemDamage()))
+                    {
+                        if (!player.capabilities.isCreativeMode)
+                        {
+                            CompatWrapper.increment(held, -1);
+                            if (!CompatWrapper.isValid(held))
+                            {
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                        CompatWrapper.nullStack);
+                            }
+                        }
+                        pokemob.setLoveTimer(0);
+                        entity.setAttackTarget(null);
+                        entity.getEntityWorld().setEntityState(entity, (byte) 18);
+                        evt.setCanceled(true);
+                        return;
+                    }
+                    // Otherwise check if useable item.
+                    if (held.getItem() instanceof IPokemobUseable)
+                    {
+                        boolean used = ((IPokemobUseable) held.getItem()).itemUse(held, entity, player);
+                        pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+                        if (used)
+                        {
+                            held.splitStack(1);
+                            evt.setCanceled(true);
+                            return;
+                        }
+                    }
+                    // Try to hold the item.
+                    if (PokecubeItems.isValidHeldItem(held))
+                    {
+                        ItemStack heldItem = pokemob.getHeldItem();
+                        if (CompatWrapper.isValid(heldItem))
+                        {
+                            dropItem(pokemob);
+                        }
+                        ItemStack toSet = held.copy();
+                        CompatWrapper.setStackSize(toSet, 1);
+                        pokemob.setHeldItem(toSet);
+                        pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+                        CompatWrapper.increment(held, -1);
+                        if (!CompatWrapper.isValid(held))
+                        {
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem,
+                                    CompatWrapper.nullStack);
+                        }
+                        evt.setCanceled(true);
+                        return;
+                    }
+                }
+
+                // Check saddle for riding.
+                if (pokemob.getPokemonAIState(IMoveConstants.SADDLED) && !player.isSneaking() && isOwner
+                        && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
+                        && handleHmAndSaddle(player, pokemob))
+                {
+                    entity.setJumping(false);
+                    evt.setCanceled(true);
+                    return;
+                }
+
+                // Open Gui
+                if (!PokecubeCore.isOnClientSide() && isOwner)
+                {
+                    pokemob.getPokemobInventory().setCustomName(entity.getDisplayName().getFormattedText());
+                    player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, entity.getEntityWorld(),
+                            entity.getEntityId(), 0, 0);
+                    evt.setCanceled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean isRidable(Entity rider, IPokemob pokemob)
+    {
+        PokedexEntry entry = pokemob.getPokedexEntry();
+        if (entry == null)
+        {
+            System.err.println("Null Entry for " + pokemob);
+            return false;
+        }
+        if (!entry.ridable) return false;
+        float scale = pokemob.getSize();
+        return (entry.height * scale + entry.width * scale) > rider.width
+                && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;
+    }
+
+    private boolean handleHmAndSaddle(EntityPlayer entityplayer, IPokemob pokemob)
+    {
+        if (isRidable(entityplayer, pokemob))
+        {
+            if (entityplayer.isServerWorld()) entityplayer.startRiding(pokemob.getEntity());
+            return true;
+        }
+        return false;
+    }
+
+    private void dropItem(IPokemob dropper)
+    {
+        ItemStack toDrop = dropper.getHeldItem();
+        if (!CompatWrapper.isValid(toDrop)) return;
+        Entity entity = dropper.getEntity();
+        EntityItem drop = new EntityItem(entity.getEntityWorld(), entity.posX, entity.posY + 0.5, entity.posZ, toDrop);
+        entity.getEntityWorld().spawnEntityInWorld(drop);
+        dropper.setHeldItem(CompatWrapper.nullStack);
     }
 
     @SubscribeEvent

@@ -431,6 +431,11 @@ public class CommonProxy implements IGuiHandler
         // implementation
     }
 
+    public void reloadModel(PokedexEntry model)
+    {
+        
+    }
+
     private ResourceLocation[] toLocations(String modid, String ext, String... entries)
     {
         ResourceLocation[] ret = new ResourceLocation[entries.length];

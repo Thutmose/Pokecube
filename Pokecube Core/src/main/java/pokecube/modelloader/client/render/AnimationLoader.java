@@ -26,6 +26,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
+import pokecube.modelloader.common.Config;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationBuilder;
@@ -231,9 +232,10 @@ public class AnimationLoader
                 if (entry != null)
                 {
                     models.put(name, new Model(model, texture, animation, entry.getName()));
-                    if (loaded && ModPokecubeML.preload)
+                    if (loaded) getModel(name);
+                    if (loaded && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
                     {
-                        getModel(name);
+                        ModPokecubeML.proxy.reloadModel(entry);
                     }
                 }
                 else
@@ -253,9 +255,10 @@ public class AnimationLoader
                     else
                     {
                         models.put(name, new Model(existing.model, texture, animation, entry.getName()));
-                        if (loaded && ModPokecubeML.preload)
+                        if (loaded) getModel(name);
+                        if (loaded && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
                         {
-                            getModel(name);
+                            ModPokecubeML.proxy.reloadModel(entry);
                         }
                     }
                 }

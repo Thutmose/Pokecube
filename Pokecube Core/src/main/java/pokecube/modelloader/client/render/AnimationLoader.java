@@ -33,6 +33,7 @@ import thut.core.client.render.animation.AnimationRegistry;
 import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IModelRenderer.Vector5;
+import thut.core.client.render.model.ModelFactory;
 import thut.core.client.render.tabula.components.Animation;
 
 public class AnimationLoader
@@ -186,24 +187,19 @@ public class AnimationLoader
 
         ResourceLocation texture = new ResourceLocation(
                 s.replace(provider.getModelDirectory(entry), provider.getTextureDirectory(entry)) + ".png");
-        try
-        {
-            model = new ResourceLocation(s + ".x3d");
-            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
-            res.close();
-        }
-        catch (IOException e1)
+        for (String ext : ModelFactory.getValidExtensions())
         {
             try
             {
-                model = new ResourceLocation(s + ".smd");
+                model = new ResourceLocation(s + "." + ext);
                 IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
                 res.close();
+                break;
             }
-            catch (IOException e2)
+            catch (IOException e1)
             {
-                model = null;
             }
+            model = null;
         }
         try
         {

@@ -16,11 +16,6 @@ public class CapabilityPokemob
     public static IPokemob getPokemobFor(ICapabilityProvider entityIn)
     {
         if (entityIn == null) return null;
-        // For now, I will default to instanceof, as to not break things in
-        // testing.
-        // if (IPokemob.class.isInstance(entityIn)) return
-        // IPokemob.class.cast(entityIn);
-
         IPokemob pokemobHolder = null;
         if (entityIn.hasCapability(POKEMOB_CAP, null)) return entityIn.getCapability(POKEMOB_CAP, null);
         else if (IPokemob.class.isInstance(entityIn)) return IPokemob.class.cast(entityIn);

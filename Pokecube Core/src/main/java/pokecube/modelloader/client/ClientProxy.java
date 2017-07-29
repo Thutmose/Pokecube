@@ -235,7 +235,7 @@ public class ClientProxy extends CommonProxy
                     }
                     catch (IOException e2)
                     {
-                        if (PokecubeMod.core.getConfig().debug) PokecubeMod
+                        if (PokecubeMod.debug) PokecubeMod
                                 .log("No model for " + name + " in " + mod + " " + provider.getModelDirectory(p));
                         continue;
                     }

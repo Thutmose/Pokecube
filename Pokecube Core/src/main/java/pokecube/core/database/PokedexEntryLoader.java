@@ -1445,7 +1445,7 @@ public class PokedexEntryLoader
                     if ((move == null || move.isEmpty()) && !CompatWrapper.isValid(stack)
                             && (ability == null || ability.isEmpty()))
                     {
-                        if (PokecubeMod.core.getConfig().debug) PokecubeMod.log("Skipping Mega: " + entry + " -> "
+                        if (PokecubeMod.debug) PokecubeMod.log("Skipping Mega: " + entry + " -> "
                                 + formeEntry + " as it has no conditions, or conditions cannot be met.");
                         continue;
                     }
@@ -1462,7 +1462,7 @@ public class PokedexEntryLoader
                     }
                     formeEntry.isMega = true;
                     entry.megaRules.put(formeEntry, mrule);
-                    if (PokecubeMod.core.getConfig().debug)
+                    if (PokecubeMod.debug)
                         PokecubeMod.log("Added Mega: " + entry + " -> " + formeEntry);
                 }
             }

@@ -321,7 +321,14 @@ public class ClientProxy extends CommonProxy
                             @Override
                             public Render<? super EntityLiving> createRenderFor(RenderManager manager)
                             {
-                                return new RenderAdvancedPokemobModel(s, manager, 1);
+                                RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
+                                PokedexEntry entry = Database.getEntry(s);
+                                if (entry != null && (ModPokecubeML.preload
+                                        || Config.instance.toPreload.contains(entry.getName())))
+                                {
+                                    renderer.preload();
+                                }
+                                return (Render<? super EntityLiving>) renderer;
                             }
                         }, mod);
                     }
@@ -350,7 +357,14 @@ public class ClientProxy extends CommonProxy
                     @Override
                     public Render<? super EntityLiving> createRenderFor(RenderManager manager)
                     {
-                        return new RenderAdvancedPokemobModel(s, manager, 1);
+                        RenderAdvancedPokemobModel<?> renderer = new RenderAdvancedPokemobModel(s, manager, 1);
+                        PokedexEntry entry = Database.getEntry(s);
+                        if (entry != null
+                                && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
+                        {
+                            renderer.preload();
+                        }
+                        return (Render<? super EntityLiving>) renderer;
                     }
                 }, mod);
             }

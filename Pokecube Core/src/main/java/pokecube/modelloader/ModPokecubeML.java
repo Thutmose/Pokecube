@@ -158,7 +158,7 @@ public class ModPokecubeML implements IMobProvider
         {
         }
         proxy.searchModels();
-        if (PokecubeMod.core.getConfig().debug)
+        if (PokecubeMod.debug)
         {
             for (PokedexEntry e : Database.allFormes)
             {
@@ -171,7 +171,7 @@ public class ModPokecubeML implements IMobProvider
             loadMob(s.toLowerCase(Locale.ENGLISH));
         }
         ExtraDatabase.apply();
-        if (PokecubeMod.core.getConfig().debug)
+        if (PokecubeMod.debug)
         {
             sort(addedPokemon);
             PokecubeMod.log(addedPokemon + " " + addedPokemon.size());
@@ -184,7 +184,7 @@ public class ModPokecubeML implements IMobProvider
         sort(addedPokemon);
         for (String s : addedPokemon)
         {
-            if (PokecubeMod.core.getConfig().debug) PokecubeMod.log("reg: " + s);
+            if (PokecubeMod.debug) PokecubeMod.log("reg: " + s);
             registerMob(s.toLowerCase(Locale.ENGLISH));
         }
     }

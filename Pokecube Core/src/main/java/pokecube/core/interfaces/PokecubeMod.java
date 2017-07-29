@@ -74,9 +74,9 @@ public abstract class PokecubeMod
     public static final int                       FULL_HEALTH                = MAX_DAMAGE - 1;
     private static HashMap<Integer, FakePlayer>   fakePlayers                = new HashMap<Integer, FakePlayer>();
 
-    /** If you are a developer, you can set this flag to true. Set to false
-     * before a build. */
-    public final static boolean                   debug                      = false;
+    /** When true, this will result in a bunch of debug spam being printed to
+     * Pokecube.log. */
+    public static boolean                         debug                      = false;
 
     public static PokecubeMod                     core;
 

@@ -89,7 +89,7 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
 
     public void lay(IPokemob male)
     {
-        if (PokecubeMod.debug) System.out.println(this + " lay()");
+        if (PokecubeMod.debug) PokecubeMod.log(this + " lay()");
         if (world.isRemote) { return; }
         int num = Tools.countPokemon(world, here, PokecubeMod.core.getConfig().maxSpawnRadius);
         if (!(getOwner() instanceof EntityPlayer) && num > PokecubeMod.core.getConfig().mobSpawnNumber * 1.25) return;

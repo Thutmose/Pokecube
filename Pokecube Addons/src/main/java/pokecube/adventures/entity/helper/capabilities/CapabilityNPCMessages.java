@@ -110,7 +110,7 @@ public class CapabilityNPCMessages
         {
             if (target instanceof FakePlayer) return;
             target.sendMessage(new TextComponentTranslation(messages.get(state), args));
-            if (PokecubeMod.core.getConfig().debug) PokecubeMod.log(state + ": " + messages.get(state));
+            if (PokecubeMod.debug) PokecubeMod.log(state + ": " + messages.get(state));
         }
 
         @Override

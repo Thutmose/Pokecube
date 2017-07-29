@@ -554,7 +554,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         double dt = (System.nanoTime() - time) / 10e3D;
         average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
         double toolong = 500;
-        if (PokecubeMod.core.getConfig().debug && dt > toolong && !world.isRemote)
+        if (PokecubeMod.debug && dt > toolong && !world.isRemote)
         {
             here.set(here.getPos());
             String toLog = "%3$s took %2$s\u00B5s to tick, it is located at %1$s, the average has been %4$s\u00B5s";

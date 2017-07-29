@@ -215,7 +215,7 @@ public final class SpawnHandler
             pokemob = pokemob.setForSpawn(maxXP);
             pokemob.specificSpawnInit();
             double dt = (System.nanoTime() - time) / 10e3D;
-            if (PokecubeMod.core.getConfig().debug && dt > 100)
+            if (PokecubeMod.debug && dt > 100)
             {
                 temp.set(temp.set(posX, posY, posZ).getPos());
                 String toLog = "location: %1$s took: %2$s\u00B5s to spawn Init for %3$s";
@@ -503,7 +503,7 @@ public final class SpawnHandler
         if (v == null) { return ret; }
         if (!isPointValidForSpawn(world, v, dbe)) return ret;
         double dt = (System.nanoTime() - time) / 10e3D;
-        if (PokecubeMod.core.getConfig().debug && dt > 500)
+        if (PokecubeMod.debug && dt > 500)
         {
             temp.set(v.getPos());
             String toLog = "location: %1$s took: %2$s\u00B5s to find a valid spawn and location";
@@ -513,7 +513,7 @@ public final class SpawnHandler
         time = System.nanoTime();
         ret += num = doSpawnForType(world, v, dbe, parser, t);
         dt = (System.nanoTime() - time) / 10e3D;
-        if (PokecubeMod.core.getConfig().debug && dt > 500)
+        if (PokecubeMod.debug && dt > 500)
         {
             temp.set(v.getPos());
             String toLog = "location: %1$s took: %2$s\u00B5s to find a valid spawn for %3$s %4$s";
@@ -629,7 +629,7 @@ public final class SpawnHandler
                 long time = System.nanoTime();
                 int num = doSpawnForLocation(world, v);
                 double dt = (System.nanoTime() - time) / 10e3D;
-                if (PokecubeMod.core.getConfig().debug && dt > 1000)
+                if (PokecubeMod.debug && dt > 1000)
                 {
                     PokecubeMod.log(dt + "\u00B5" + "s for player " + players.get(0).getDisplayNameString() + " at " + v
                             + ", spawned " + num);

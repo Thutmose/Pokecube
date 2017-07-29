@@ -204,7 +204,7 @@ public class ExtraDatabase
             ProgressBar loading = ProgressManager.push("XML Files", file.entries.size());
             for (XMLPokedexEntry fileEntry : file.entries)
             {
-                if (PokecubeMod.core.getConfig().debug) PokecubeMod.log("ResourceEntry: " + fileEntry.name);
+                if (PokecubeMod.debug) PokecubeMod.log("ResourceEntry: " + fileEntry.name);
                 loading.step(fileEntry.name);
                 XMLPokedexEntry old = PokedexEntryLoader.database.map.get(fileEntry.name);
                 if (old != null) PokedexEntryLoader.mergeNonDefaults(PokedexEntryLoader.missingno, fileEntry, old);

@@ -1,5 +1,7 @@
 package pokecube.modelloader.client.render;
 
+import java.util.HashMap;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,9 +19,11 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.core.client.render.model.IAnimationChanger;
+import thut.core.client.render.model.IModel;
 import thut.core.client.render.model.IModelRenderer;
 import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.smd.SMDModel;
+import thut.core.client.render.tabula.components.Animation;
 
 public class SMDModelRenderer<T extends EntityLiving> extends RenderLivingBase<T> implements IModelRenderer<T>
 {
@@ -106,7 +110,7 @@ public class SMDModelRenderer<T extends EntityLiving> extends RenderLivingBase<T
     }
 
     @Override
-    public boolean hasPhase(String phase)
+    public boolean hasAnimation(String phase)
     {
         // TODO Auto-generated method stub
         return false;
@@ -178,10 +182,38 @@ public class SMDModelRenderer<T extends EntityLiving> extends RenderLivingBase<T
     }
 
     @Override
-    public void setPhase(String phase)
+    public void setAnimation(String phase)
     {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void scaleEntity(Entity entity, IModel model, float partialTick)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public IAnimationChanger getAnimationChanger()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getAnimation()
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public HashMap<String, Animation> getAnimations()
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

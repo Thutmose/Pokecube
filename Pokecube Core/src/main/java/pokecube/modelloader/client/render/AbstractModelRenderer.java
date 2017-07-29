@@ -6,6 +6,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -14,11 +15,14 @@ import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import thut.api.maths.Vector3;
+import thut.core.client.render.model.IModel;
 import thut.core.client.render.model.IModelRenderer;
 
 public abstract class AbstractModelRenderer<T extends EntityLiving> extends RenderLivingBase<T>
         implements IModelRenderer<T>
 {
+    final Vector3   rotPoint          = Vector3.getNewVector();
 
     // Used to check if it has a custom sleeping animation.
     private boolean checkedForSleep   = false;
@@ -43,7 +47,7 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         if (!checkedForSleep)
         {
             checkedForSleep = true;
-            hasSleepAnimation = hasPhase("sleeping") || hasPhase("sleep") || hasPhase("asleep");
+            hasSleepAnimation = hasAnimation("sleeping") || hasAnimation("sleep") || hasAnimation("asleep");
         }
         if (par1EntityLiving.getHealth() <= 0)
         {
@@ -125,4 +129,36 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
 
     abstract void setStatusRender(boolean value);
 
+    @Override
+    public void scaleEntity(Entity entity, IModel model, float partialTick)
+    {
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
+        {
+            float s = 1;
+            float sx = (float) getScale().x;
+            float sy = (float) getScale().y;
+            float sz = (float) getScale().z;
+            s = (mob.getSize());
+            if (partialTick <= 1)
+            {
+                int ticks = mob.getEntity().ticksExisted;
+                if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
+                {
+                    float max = 5;
+                    s *= (ticks) / max;
+                }
+            }
+            sx *= s;
+            sy *= s;
+            sz *= s;
+            rotPoint.set(getRotationOffset()).scalarMultBy(s);
+            model.setOffset(rotPoint);
+            if (!getScale().isEmpty()) GlStateManager.scale(sx, sy, sz);
+            else
+            {
+                GlStateManager.scale(s, s, s);
+            }
+        }
+    }
 }

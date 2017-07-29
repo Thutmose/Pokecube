@@ -1,7 +1,7 @@
 package pokecube.modelloader.client.render;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
-import pokecube.modelloader.client.render.wrappers.ModelWrapper;
+import thut.core.client.render.wrappers.ModelWrapper;
 
 public class ModelWrapperEvent extends Event
 {

@@ -25,42 +25,26 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import pokecube.modelloader.common.Config;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationBuilder;
 import thut.core.client.render.animation.AnimationRandomizer;
 import thut.core.client.render.animation.AnimationRegistry;
+import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IModelRenderer.Vector5;
 import thut.core.client.render.tabula.components.Animation;
 
 public class AnimationLoader
 {
-    public static class Model
-    {
-        public ResourceLocation model;
-        public ResourceLocation texture;
-        public ResourceLocation animation;
-        public String           name;
-
-        public Model(ResourceLocation model, ResourceLocation texture, ResourceLocation animation, String name)
-        {
-            this.model = model;
-            this.texture = texture;
-            this.animation = animation;
-            this.name = name;
-        }
-
-    }
-
     public static boolean                         loaded    = false;
 
     static String                                 file      = "";
     @SuppressWarnings("rawtypes")
     public static HashMap<String, IModelRenderer> modelMaps = new HashMap<String, IModelRenderer>();
 
-    public static HashMap<String, Model>          models    = new HashMap<String, Model>();
+    public static HashMap<String, ModelHolder>    models    = new HashMap<String, ModelHolder>();
 
     public static void addStrings(String key, Node node, Set<String> toAddTo)
     {
@@ -124,7 +108,7 @@ public class AnimationLoader
     {
         IModelRenderer<?> ret = modelMaps.get(name);
         if (ret != null) return ret;
-        Model model = models.get(name);
+        ModelHolder model = models.get(name);
         if (model == null) { return null; }
         if ((ret = modelMaps.get(model.name)) != null) return ret;
         parse(model);
@@ -231,7 +215,7 @@ public class AnimationLoader
             {
                 if (entry != null)
                 {
-                    models.put(name, new Model(model, texture, animation, entry.getName()));
+                    models.put(name, new ModelHolder(model, texture, animation, entry.getName()));
                     if (loaded) getModel(name);
                     if (loaded && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
                     {
@@ -247,14 +231,14 @@ public class AnimationLoader
             {
                 if (entry != null && entry.getBaseForme() != null)
                 {
-                    Model existing = models.get(entry.getBaseForme().getName());
+                    ModelHolder existing = models.get(entry.getBaseForme().getName());
                     if (existing == null)
                     {
                         toReload.add(s);
                     }
                     else
                     {
-                        models.put(name, new Model(existing.model, texture, animation, entry.getName()));
+                        models.put(name, new ModelHolder(existing.model, texture, animation, entry.getName()));
                         if (loaded) getModel(name);
                         if (loaded && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
                         {
@@ -274,14 +258,14 @@ public class AnimationLoader
     public static void load()
     {
         ModPokecubeML.proxy.populateModels();
-        for (Model m : models.values())
+        for (ModelHolder m : models.values())
         {
             parse(m);
         }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static void parse(Model model)
+    public static void parse(ModelHolder model)
     {
         try
         {
@@ -422,7 +406,7 @@ public class AnimationLoader
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);
                 loaded.rotations = rotation;
-                loaded.headParts.addAll(headNames);
+                loaded.model.getHeadParts().addAll(headNames);
                 loaded.shearableParts.addAll(shear);
                 loaded.dyeableParts.addAll(dye);
                 loaded.texturer = texturer;
@@ -475,11 +459,16 @@ public class AnimationLoader
                     animator.init(anims);
                 }
 
-                if (headDir != 2) loaded.headDir = headDir;
-                loaded.headAxis = headAxis;
-                loaded.headAxis2 = headAxis2;
-                loaded.headCaps = headCaps;
-                loaded.headCaps1 = headCaps1;
+                if (loaded.model.imodel.getHeadInfo() != null)
+                {
+                    if (headDir != 2) loaded.model.imodel.getHeadInfo().headDirection = headDir;
+                    loaded.model.imodel.getHeadInfo().yawAxis = headAxis;
+                    loaded.model.imodel.getHeadInfo().pitchAxis = headAxis2;
+                    loaded.model.imodel.getHeadInfo().yawCapMin = headCaps[0];
+                    loaded.model.imodel.getHeadInfo().yawCapMax = headCaps[1];
+                    loaded.model.imodel.getHeadInfo().pitchCapMin = headCaps1[0];
+                    loaded.model.imodel.getHeadInfo().pitchCapMax = headCaps1[1];
+                }
 
                 loaded.model.preProcessAnimations(loaded.animations.values());
                 models.put(modelName, model);

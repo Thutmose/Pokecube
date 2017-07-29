@@ -260,8 +260,8 @@ public class Config extends ConfigBase
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksStones                 = { "minecraft:stone variant=stone",
             "minecraft:stone variant=granite", "minecraft:stone variant=diorite", "minecraft:stone variant=andesite",
-            "minecraft:netherrack", "minecraft:sandstone type=sandstone",
-            "minecraft:red_sandstone type=red_sandstone", "minecraft:cobblestone" };
+            "minecraft:netherrack", "minecraft:sandstone type=sandstone", "minecraft:red_sandstone type=red_sandstone",
+            "minecraft:cobblestone" };
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksOre                    = { ".*:.*_ore", ".*:ore*" };
     @Configure(category = world, needsMcRestart = true)
@@ -571,7 +571,7 @@ public class Config extends ConfigBase
         SpawnHandler.refreshSubbiomes = refreshSubbiomes;
 
         PokecubeSerializer.MeteorDistance = meteorDistance * meteorDistance;
-
+        PokecubeMod.debug = debug;
         for (String loc : mystLocs)
         {
             PokecubeMod.giftLocations.add(loc);

@@ -23,10 +23,8 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
-import pokecube.modelloader.common.Config;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationBuilder;
@@ -218,11 +216,6 @@ public class AnimationLoader
                 {
                     models.put(name, new ModelHolder(model, texture, animation, entry.getName()));
                     if (loaded) getModel(name);
-                    if (loaded && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
-                    {
-                        if (PokecubeMod.debug) PokecubeMod.log("Preloading model for " + entry);
-                        ModPokecubeML.proxy.reloadModel(entry);
-                    }
                 }
                 else
                 {
@@ -242,11 +235,6 @@ public class AnimationLoader
                     {
                         models.put(name, new ModelHolder(existing.model, texture, animation, entry.getName()));
                         if (loaded) getModel(name);
-                        if (loaded && (ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
-                        {
-                            if (PokecubeMod.debug) PokecubeMod.log("Preloading model for " + entry);
-                            ModPokecubeML.proxy.reloadModel(entry);
-                        }
                     }
                 }
             }

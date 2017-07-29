@@ -30,9 +30,11 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.CommonProxy;
 import pokecube.modelloader.IMobProvider;
+import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.gui.GuiAnimate;
 import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.TabulaPackLoader;
+import pokecube.modelloader.common.Config;
 import pokecube.modelloader.items.ItemModelReloader;
 
 public class ClientProxy extends CommonProxy
@@ -163,6 +165,22 @@ public class ClientProxy extends CommonProxy
         ProgressManager.pop(bar);
         TabulaPackLoader.postProcess();
         registerRenderInformation();
+
+        if (AnimationLoader.loaded)
+        {
+            bar = ProgressManager.push("Preloading Models", Database.allFormes.size());
+            for (PokedexEntry entry : Database.allFormes)
+            {
+                if ((ModPokecubeML.preload || Config.instance.toPreload.contains(entry.getName())))
+                {
+                    bar.step("Preloading " + entry.getName());
+                    if (PokecubeMod.debug) PokecubeMod.log("Preloading model for " + entry);
+                    ModPokecubeML.proxy.reloadModel(entry);
+                }
+                else bar.step("Skipping " + entry.getName());
+            }
+            ProgressManager.pop(bar);
+        }
     }
 
     @Override
@@ -273,6 +291,10 @@ public class ClientProxy extends CommonProxy
     {
         super.postInit();
         AnimationLoader.loaded = true;
+        if (Config.instance.preload || !Config.instance.toPreload.isEmpty())
+        {
+            populateModels();
+        }
     }
 
     @Override

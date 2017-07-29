@@ -9,6 +9,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import pokecube.core.database.Database;
+import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -40,6 +42,22 @@ public class RenderAdvancedPokemobModel<T extends EntityLiving> extends RenderPo
     {
         super(manager, null, par2);
         modelName = name;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void preload()
+    {
+        PokedexEntry entry = Database.getEntry(modelName);
+        model = (IModelRenderer<T>) getRenderer(modelName, null);
+        if (model == null && entry.getBaseForme() != null)
+        {
+            model = (IModelRenderer<T>) getRenderer(entry.getBaseForme().getName(), null);
+            AnimationLoader.modelMaps.put(entry.getName(), model);
+        }
+        if (model != null && model instanceof RenderLivingBase)
+        {
+            this.mainModel = ((RenderLivingBase<?>) model).getMainModel();
+        }
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })

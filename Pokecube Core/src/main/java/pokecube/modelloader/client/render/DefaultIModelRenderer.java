@@ -11,10 +11,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.modelloader.client.render.AnimationLoader.Model;
 import pokecube.modelloader.client.render.wrappers.ModelWrapper;
 import thut.api.maths.Vector3;
-import thut.api.maths.Vector4;
+import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IPartTexturer;
@@ -23,61 +22,6 @@ import thut.core.client.render.x3d.X3dModel;
 
 public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {
-    public static class Vector5
-    {
-        public Vector4 rotations;
-        public int     time;
-
-        public Vector5()
-        {
-            this.time = 0;
-            this.rotations = new Vector4();
-        }
-
-        public Vector5(Vector4 rotation, int time)
-        {
-            this.rotations = rotation;
-            this.time = time;
-        }
-
-        public Vector5 interpolate(Vector5 v, float time, boolean wrap)
-        {
-            if (v.time == 0) return this;
-
-            if (Double.isNaN(rotations.x))
-            {
-                rotations = new Vector4();
-            }
-            Vector4 rotDiff = rotations.copy();
-
-            if (rotations.x == rotations.z && rotations.z == rotations.y && rotations.y == rotations.w
-                    && rotations.w == 0)
-            {
-                rotations.x = 1;
-            }
-
-            if (!v.rotations.equals(rotations))
-            {
-                rotDiff = v.rotations.subtractAngles(rotations);
-
-                rotDiff = rotations.addAngles(rotDiff.scalarMult(time));
-            }
-            if (Double.isNaN(rotDiff.x))
-            {
-                rotDiff = new Vector4(0, 1, 0, 0);
-            }
-            Vector5 ret = new Vector5(rotDiff, v.time);
-            return ret;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "|r:" + rotations + "|t:" + time;
-        }
-    }
-
-    public static final String          DEFAULTPHASE   = "idle";
     public String                       name;
     public String                       currentPhase   = "idle";
     public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
@@ -86,27 +30,22 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     public Set<String>                  headParts      = Sets.newHashSet();
     public TextureHelper                texturer;
 
-    public IAnimationChanger            animator;;
+    public IAnimationChanger            animator;
     public Vector3                      offset         = Vector3.getNewVector();;
     public Vector3                      scale          = Vector3.getNewVector();
 
     public Vector5                      rotations      = new Vector5();
 
     public ModelWrapper                 model;
-    public int                          headDir        = 2;
-    public int                          headAxis       = 2;
-    public int                          headAxis2      = 0;
     /** A set of names of shearable parts. */
     public Set<String>                  shearableParts = Sets.newHashSet();
 
     /** A set of namess of dyeable parts. */
     public Set<String>                  dyeableParts   = Sets.newHashSet();
-    public float[]                      headCaps       = { -180, 180 };
 
-    public float[]                      headCaps1      = { -20, 40 };
     ResourceLocation                    texture;
 
-    public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, Model model)
+    public DefaultIModelRenderer(HashMap<String, ArrayList<Vector5>> global, ModelHolder model)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         name = model.name;
@@ -119,10 +58,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
         if (model.model.getResourcePath().contains(".x3d")) this.model.imodel = new X3dModel(model.model);
         if (this.model.imodel == null) { return; }
         initModelParts();
-        if (headDir == 2)
-        {
-            headDir = (this.model.imodel instanceof X3dModel) ? 1 : -1;
-        }
         this.global = global;
     }
 
@@ -195,7 +130,7 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     }
 
     @Override
-    public boolean hasPhase(String phase)
+    public boolean hasAnimation(String phase)
     {
         return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase);
     }
@@ -215,12 +150,12 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     }
 
     @Override
-    public void setPhase(String phase)
+    public void setAnimation(String phase)
     {
         currentPhase = phase;
     }
 
-    public void updateModel(HashMap<String, ArrayList<Vector5>> global, Model model)
+    public void updateModel(HashMap<String, ArrayList<Vector5>> global, ModelHolder model)
     {
         name = model.name;
         this.texture = model.texture;
@@ -232,5 +167,23 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     void setStatusRender(boolean value)
     {
         model.statusRender = value;
+    }
+
+    @Override
+    public IAnimationChanger getAnimationChanger()
+    {
+        return animator;
+    }
+
+    @Override
+    public String getAnimation()
+    {
+        return currentPhase;
+    }
+
+    @Override
+    public HashMap<String, Animation> getAnimations()
+    {
+        return animations;
     }
 }

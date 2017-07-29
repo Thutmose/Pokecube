@@ -1,5 +1,7 @@
 package pokecube.modelloader.client.render;
 
+import java.util.HashMap;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import pokecube.core.database.PokedexEntry;
@@ -7,19 +9,15 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import pokecube.modelloader.client.render.wrappers.TabulaWrapper;
+import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.tabula.components.ModelJson;
 
 public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {
     public TabulaModelSet set;
     public TabulaWrapper  model;
-
-    // Values used to properly reset GL state after rendering.
-    boolean               blend;
-    boolean               light;
-    int                   src;
-    int                   dst;
 
     public TabulaModelRenderer(TabulaModelSet set)
     {
@@ -51,7 +49,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    public boolean hasPhase(String phase)
+    public boolean hasAnimation(String phase)
     {
         ModelJson modelj = null;
         if (set != null) modelj = set.parser.modelMap.get(set.model);
@@ -59,7 +57,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    public void setPhase(String phase)
+    public void setAnimation(String phase)
     {
         model.phase = phase;
     }
@@ -68,5 +66,23 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     void setStatusRender(boolean value)
     {
         model.statusRender = value;
+    }
+
+    @Override
+    public IAnimationChanger getAnimationChanger()
+    {
+        return set.animator;
+    }
+
+    @Override
+    public String getAnimation()
+    {
+        return model.phase;
+    }
+
+    @Override
+    public HashMap<String, Animation> getAnimations()
+    {
+        return set.loadedAnimations;
     }
 }

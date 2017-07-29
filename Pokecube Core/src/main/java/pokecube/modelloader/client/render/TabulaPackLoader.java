@@ -33,13 +33,13 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.IMobProvider;
-import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import thut.api.maths.Vector3;
 import thut.core.client.render.animation.AnimationBuilder;
 import thut.core.client.render.animation.AnimationRandomizer;
 import thut.core.client.render.animation.AnimationRegistry;
 import thut.core.client.render.animation.AnimationRegistry.IPartRenamer;
 import thut.core.client.render.model.IAnimationChanger;
+import thut.core.client.render.model.IModelRenderer.Vector5;
 import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.tabula.components.CubeGroup;
@@ -73,21 +73,6 @@ public class TabulaPackLoader extends AnimationLoader
         public Set<String>                dyeableIdents    = Sets.newHashSet();
         /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
-        /** Translation of the model */
-        public Vector3                    shift            = Vector3.getNewVector();
-        /** Global rotation of the model */
-        public Vector5                    rotation;
-        /** Scale of the model */
-        public Vector3                    scale            = Vector3.getNewVector();
-        /** Limits on the rotation of the head yaw */
-        public float[]                    headCap          = { -180, 180 };
-        /** Limits on the rotation of the head pitch */
-        public float[]                    headCap1         = { -30, 30 };
-        /** Which axis the head rotates around, 0,1 or for x, y */
-        public int                        headAxis         = 1;
-        /** Which direction the head rotates */
-        public int                        headDir          = 1;
-        private float[]                   headInfo         = new float[6];
         /** Internal, used to determine if it should copy xml data from base
          * forme. */
         private boolean                   foundExtra       = false;

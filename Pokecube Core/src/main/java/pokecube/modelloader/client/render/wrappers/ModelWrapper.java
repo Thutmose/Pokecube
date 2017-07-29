@@ -2,6 +2,7 @@ package pokecube.modelloader.client.render.wrappers;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -9,31 +10,28 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.modelloader.client.render.AnimationLoader.Model;
-import pokecube.modelloader.client.render.DefaultIModelRenderer;
-import pokecube.modelloader.client.render.DefaultIModelRenderer.Vector5;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationHelper;
+import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IModel;
+import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IModelRenderer.Vector5;
 import thut.core.client.render.model.IRetexturableModel;
 import thut.core.client.render.tabula.components.Animation;
 
 public class ModelWrapper extends ModelBase implements IModel
 {
-    public final Model                    model;
-    public final DefaultIModelRenderer<?> renderer;
-    public IModel                         imodel;
-    public boolean                        statusRender   = false;
-    protected float                       rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
-    protected float                       rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
+    public final ModelHolder       model;
+    public final IModelRenderer<?> renderer;
+    public IModel                  imodel;
+    public boolean                 statusRender   = false;
+    protected float                rotationPointX = 0, rotationPointY = 0, rotationPointZ = 0;
+    protected float                rotateAngleX   = 0, rotateAngleY = 0, rotateAngleZ = 0, rotateAngle = 0;
 
-    public ModelWrapper(Model model, DefaultIModelRenderer<?> renderer)
+    public ModelWrapper(ModelHolder model, IModelRenderer<?> renderer)
     {
         this.model = model;
         this.renderer = renderer;
@@ -46,16 +44,16 @@ public class ModelWrapper extends ModelBase implements IModel
     {
         GlStateManager.pushMatrix();
         GlStateManager.disableCull();
-        for (String partName : renderer.parts.keySet())
+        for (String partName : imodel.getParts().keySet())
         {
             IExtendedModelPart part = imodel.getParts().get(partName);
             if (part == null) continue;
             try
             {
-                if (renderer.texturer != null && part instanceof IRetexturableModel)
+                if (renderer.getTexturer() != null && part instanceof IRetexturableModel)
                 {
-                    renderer.texturer.bindObject(entityIn);
-                    if (!statusRender) ((IRetexturableModel) part).setTexturer(renderer.texturer);
+                    renderer.getTexturer().bindObject(entityIn);
+                    if (!statusRender) ((IRetexturableModel) part).setTexturer(renderer.getTexturer());
                     else((IRetexturableModel) part).setTexturer(null);
                 }
                 if (part.getParent() == null)
@@ -84,11 +82,11 @@ public class ModelWrapper extends ModelBase implements IModel
             float headPitch, float scaleFactor, Entity entityIn)
     {
         float partialTick = ageInTicks - entityIn.ticksExisted;
-        if (renderer.animator != null) renderer.currentPhase = renderer.animator
-                .modifyAnimation((EntityLiving) entityIn, partialTick, renderer.currentPhase);
-        transformGlobal(renderer.currentPhase, entityIn, Minecraft.getMinecraft().getRenderPartialTicks(), netHeadYaw,
+        if (renderer.getAnimationChanger() != null) renderer.setAnimation(renderer.getAnimationChanger()
+                .modifyAnimation((EntityLiving) entityIn, partialTick, renderer.getAnimation()));
+        transformGlobal(renderer.getAnimation(), entityIn, Minecraft.getMinecraft().getRenderPartialTicks(), netHeadYaw,
                 headPitch);
-        updateAnimation(entityIn, renderer.currentPhase, partialTick, netHeadYaw, headPitch, limbSwing);
+        updateAnimation(entityIn, renderer.getAnimation(), partialTick, netHeadYaw, headPitch, limbSwing);
     }
 
     /** Used for easily adding entity-dependent animations. The second and third
@@ -112,48 +110,25 @@ public class ModelWrapper extends ModelBase implements IModel
         imodel.preProcessAnimations(animations);
     }
 
+    private final Vector5 rots = new Vector5();
+
     protected void transformGlobal(String currentPhase, Entity entity, float partialTick, float rotationYaw,
             float rotationPitch)
     {
-        if (renderer.rotations == null)
+        Vector5 rotations = renderer.getRotations();
+        if (rotations == null)
         {
-            renderer.rotations = new Vector5();
+            rotations = rots;
         }
-        this.setRotationAngles(renderer.rotations.rotations);
-        this.setRotationPoint(renderer.offset);
-        float s = 1;
-        float sx = (float) renderer.scale.x;
-        float sy = (float) renderer.scale.y;
-        float sz = (float) renderer.scale.z;
+        this.setRotationAngles(rotations.rotations);
+        this.setOffset(renderer.getRotationOffset());
         float dy = rotationPointY - 1.5f;
-        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
-        if (mob != null)
-        {
-            s = (mob.getSize());
-            if (partialTick <= 1)
-            {
-                int ticks = mob.getEntity().ticksExisted;
-                if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
-                {
-                    float max = 5;
-                    s *= (ticks) / max;
-                }
-            }
-            sx *= s;
-            sy *= s;
-            sz *= s;
-            this.setRotationPoint(rotationPointX * s, rotationPointY * s, rotationPointZ * s);
-        }
         this.rotate();
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.rotate(90, 1, 0, 0);
         GlStateManager.translate(0, 0, dy);
         this.translate();
-        if (!renderer.scale.isEmpty()) GlStateManager.scale(sx, sy, sz);
-        else
-        {
-            GlStateManager.scale(s, s, s);
-        }
+        renderer.scaleEntity(entity, this, partialTick);
     }
 
     protected void rotate()
@@ -169,7 +144,7 @@ public class ModelWrapper extends ModelBase implements IModel
     protected void updateAnimation(Entity entity, String currentPhase, float partialTicks, float headYaw,
             float headPitch, float limbSwing)
     {
-        for (String partName : renderer.parts.keySet())
+        for (String partName : imodel.getParts().keySet())
         {
             IExtendedModelPart part = imodel.getParts().get(partName);
             updateSubParts(entity, currentPhase, partialTicks, part, headYaw, headPitch, limbSwing);
@@ -182,60 +157,60 @@ public class ModelWrapper extends ModelBase implements IModel
         if (parent == null) return;
 
         parent.resetToInit();
-        boolean anim = renderer.animations.containsKey(currentPhase);
+        boolean anim = renderer.getAnimations().containsKey(currentPhase);
         if (anim)
         {
-            if (AnimationHelper.doAnimation(renderer.animations.get(currentPhase), entity, parent.getName(), parent,
-                    partialTick, limbSwing))
+            if (AnimationHelper.doAnimation(renderer.getAnimations().get(currentPhase), entity, parent.getName(),
+                    parent, partialTick, limbSwing))
             {
             }
-            else if (renderer.animations.containsKey(DefaultIModelRenderer.DEFAULTPHASE))
+            else if (renderer.getAnimations().containsKey(IModelRenderer.DEFAULTPHASE))
             {
-                AnimationHelper.doAnimation(renderer.animations.get(DefaultIModelRenderer.DEFAULTPHASE), entity,
+                AnimationHelper.doAnimation(renderer.getAnimations().get(IModelRenderer.DEFAULTPHASE), entity,
                         parent.getName(), parent, partialTick, limbSwing);
             }
         }
-
-        if (isHead(parent.getName()))
+        HeadInfo info = imodel.getHeadInfo();
+        if (info != null && isHead(parent.getName()))
         {
             float ang;
             float ang2 = -headPitch;
             float head = headYaw + 180;
             float diff = 0;
-            if (renderer.headDir != -1) head *= -1;
+            if (info.headDirection != -1) head *= -1;
             diff = (head) % 360;
             diff = (diff + 360) % 360;
             diff = (diff - 180) % 360;
-            diff = Math.max(diff, renderer.headCaps[0]);
-            diff = Math.min(diff, renderer.headCaps[1]);
+            diff = Math.max(diff, info.yawCapMin);
+            diff = Math.min(diff, info.yawCapMax);
             ang = diff;
-            ang2 = Math.max(ang2, renderer.headCaps1[0]);
-            ang2 = Math.min(ang2, renderer.headCaps1[1]);
+            ang2 = Math.max(ang2, info.pitchCapMin);
+            ang2 = Math.min(ang2, info.pitchCapMax);
             Vector4 dir;
-            if (renderer.headAxis == 0)
+            if (info.yawAxis == 0)
             {
-                dir = new Vector4(renderer.headDir, 0, 0, ang);
+                dir = new Vector4(info.headDirection, 0, 0, ang);
             }
-            else if (renderer.headAxis == 2)
+            else if (info.yawAxis == 2)
             {
-                dir = new Vector4(0, 0, renderer.headDir, ang);
+                dir = new Vector4(0, 0, info.headDirection, ang);
             }
             else
             {
-                dir = new Vector4(0, renderer.headDir, 0, ang);
+                dir = new Vector4(0, info.headDirection, 0, ang);
             }
             Vector4 dir2;
-            if (renderer.headAxis2 == 2)
+            if (info.pitchAxis == 2)
             {
-                dir2 = new Vector4(0, 0, renderer.headDir, ang2);
+                dir2 = new Vector4(0, 0, info.headDirection, ang2);
             }
-            else if (renderer.headAxis2 == 1)
+            else if (info.pitchAxis == 1)
             {
-                dir2 = new Vector4(0, renderer.headDir, 0, ang2);
+                dir2 = new Vector4(0, info.headDirection, 0, ang2);
             }
             else
             {
-                dir2 = new Vector4(renderer.headDir, 0, 0, ang2);
+                dir2 = new Vector4(info.headDirection, 0, 0, ang2);
             }
             parent.setPostRotations(dir);
             parent.setPostRotations2(dir2);
@@ -262,7 +237,7 @@ public class ModelWrapper extends ModelBase implements IModel
 
     private boolean isHead(String partName)
     {
-        return renderer.headParts.contains(partName);
+        return getHeadParts().contains(partName);
     }
 
     public void setRotationAngles(Vector4 rotations)
@@ -280,9 +255,15 @@ public class ModelWrapper extends ModelBase implements IModel
         this.rotationPointZ = par3;
     }
 
-    public void setRotationPoint(Vector3 point)
+    public void setOffset(Vector3 point)
     {
         setRotationPoint((float) point.x, (float) point.y, (float) point.z);
+    }
+
+    @Override
+    public Set<String> getHeadParts()
+    {
+        return imodel.getHeadParts();
     }
 
 }

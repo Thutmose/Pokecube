@@ -153,7 +153,7 @@ public class Move_Explode extends Move_Basic
     public void attack(IPokemob attacker, Vector3 attacked)
     {
         if (attacker.getEntity().isDead) return;
-        if (PokecubeMod.core.getConfig().explosions) attack(attacker, (Entity) attacker);
+        if (PokecubeMod.core.getConfig().explosions) attack(attacker, attacker.getEntity());
         else
         {
             super.attack(attacker, attacked);

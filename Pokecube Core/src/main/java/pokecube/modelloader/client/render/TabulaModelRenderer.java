@@ -1,31 +1,34 @@
 package pokecube.modelloader.client.render;
 
+import java.util.HashMap;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
-import pokecube.modelloader.client.render.wrappers.TabulaWrapper;
+import thut.api.maths.Vector3;
+import thut.core.client.render.model.IAnimationChanger;
+import thut.core.client.render.model.IModel;
 import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.tabula.components.ModelJson;
+import thut.core.client.render.wrappers.TabulaWrapper;
 
 public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {
     public TabulaModelSet set;
     public TabulaWrapper  model;
 
-    // Values used to properly reset GL state after rendering.
-    boolean               blend;
-    boolean               light;
-    int                   src;
-    int                   dst;
-
     public TabulaModelRenderer(TabulaModelSet set)
     {
         super(Minecraft.getMinecraft().getRenderManager(), null, 0);
         this.set = set;
-        this.model = new TabulaWrapper(set);
+        this.model = new TabulaWrapper(set.model, set.parser, this);
         mainModel = model;
     }
 
@@ -51,7 +54,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    public boolean hasPhase(String phase)
+    public boolean hasAnimation(String phase)
     {
         ModelJson modelj = null;
         if (set != null) modelj = set.parser.modelMap.get(set.model);
@@ -59,7 +62,7 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    public void setPhase(String phase)
+    public void setAnimation(String phase)
     {
         model.phase = phase;
     }
@@ -68,5 +71,74 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     void setStatusRender(boolean value)
     {
         model.statusRender = value;
+    }
+
+    @Override
+    public IAnimationChanger getAnimationChanger()
+    {
+        return set;
+    }
+
+    @Override
+    public String getAnimation()
+    {
+        return model.phase;
+    }
+
+    @Override
+    public HashMap<String, Animation> getAnimations()
+    {
+        return set.loadedAnimations;
+    }
+
+    @Override
+    public Vector3 getScale()
+    {
+        return set.scale;
+    }
+
+    @Override
+    public Vector3 getRotationOffset()
+    {
+        return set.shift;
+    }
+
+    @Override
+    public Vector5 getRotations()
+    {
+        return set.rotation;
+    }
+
+    @Override
+    public void scaleEntity(Entity entity, IModel model, float partialTick)
+    {
+        float s = 1;
+        float sx = (float) getScale().x;
+        float sy = (float) getScale().y;
+        float sz = (float) getScale().z;
+        float dx = (float) getRotationOffset().x;
+        float dy = (float) getRotationOffset().y;
+        float dz = (float) getRotationOffset().z;
+        IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
+        if (mob != null)
+        {
+            s = (mob.getSize());
+            if (partialTick <= 1)
+            {
+                int ticks = mob.getEntity().ticksExisted;
+                if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5)
+                {
+                    float max = 5;
+                    s *= (ticks) / max;
+                }
+            }
+            sx *= s;
+            sy *= s;
+            sz *= s;
+        }
+        dy += (1 - sy) * 1.5;
+        getRotations().rotations.glRotate();
+        GlStateManager.translate(dx, dy, dz);
+        GlStateManager.scale(sx, sy, sz);
     }
 }

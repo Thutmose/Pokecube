@@ -335,7 +335,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
 
         if (packet.infatuateTarget && targetPokemob != null)
         {
-            targetPokemob.getMoveStats().infatuateTarget = (Entity) attacker;
+            targetPokemob.getMoveStats().infatuateTarget = attacker.getEntity();
         }
 
         if (packet.infatuateAttacker)

@@ -194,7 +194,16 @@ public class AnimationLoader
         }
         catch (IOException e1)
         {
-            model = null;
+            try
+            {
+                model = new ResourceLocation(s + ".smd");
+                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(model);
+                res.close();
+            }
+            catch (IOException e2)
+            {
+                model = null;
+            }
         }
         try
         {

@@ -16,6 +16,7 @@ import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IPartTexturer;
+import thut.core.client.render.smd.SMDModel;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.wrappers.ModelWrapper;
 import thut.core.client.render.x3d.X3dModel;
@@ -54,7 +55,8 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
         this.model = evt.wrapper;
         this.mainModel = this.model;
         this.texture = model.texture;
-        if (model.model.getResourcePath().contains(".x3d")) this.model.imodel = new X3dModel(model.model);
+        if (model.model.getResourcePath().endsWith(".x3d")) this.model.imodel = new X3dModel(model.model);
+        else if (model.model.getResourcePath().endsWith(".smd")) this.model.imodel = new SMDModel(model.model);
         if (this.model.imodel == null) { return; }
         initModelParts();
         this.global = global;

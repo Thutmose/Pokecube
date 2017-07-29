@@ -11,13 +11,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.modelloader.client.render.wrappers.ModelWrapper;
 import thut.api.maths.Vector3;
 import thut.core.client.render.animation.ModelHolder;
 import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.tabula.components.Animation;
+import thut.core.client.render.wrappers.ModelWrapper;
 import thut.core.client.render.x3d.X3dModel;
 
 public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
@@ -27,7 +27,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>> global;
     public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
-    public Set<String>                  headParts      = Sets.newHashSet();
     public TextureHelper                texturer;
 
     public IAnimationChanger            animator;
@@ -185,5 +184,23 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     public HashMap<String, Animation> getAnimations()
     {
         return animations;
+    }
+
+    @Override
+    public Vector3 getScale()
+    {
+        return scale;
+    }
+
+    @Override
+    public Vector3 getRotationOffset()
+    {
+        return offset;
+    }
+
+    @Override
+    public Vector5 getRotations()
+    {
+        return rotations;
     }
 }

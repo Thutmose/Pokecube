@@ -65,17 +65,25 @@ public class TabulaPackLoader extends AnimationLoader
         private HashMap<String, String>   mergedAnimations = Maps.newHashMap();
 
         /** The root part of the head. */
-        private Set<String>               headRoots        = Sets.newHashSet();
-        private String                    headRoot         = "";
         /** A set of identifiers of shearable parts. */
         public Set<String>                shearableIdents  = Sets.newHashSet();
         /** A set of identifiers of dyeable parts. */
         public Set<String>                dyeableIdents    = Sets.newHashSet();
         /** Animations loaded from the XML */
         public HashMap<String, Animation> loadedAnimations = Maps.newHashMap();
-        /** Internal, used to determine if it should copy xml data from base
-         * forme. */
+        /** Translation of the model */
+        public Vector3                    shift            = Vector3.getNewVector();
+        /** Global rotation of the model */
+        public Vector5                    rotation;
+        /** Scale of the model */
+        public Vector3                    scale            = Vector3.getNewVector();
         private boolean                   foundExtra       = false;
+
+        // These get copied into the headInfo for the model.
+        int                               headAxis         = 1;
+        int                               headDir          = 1;
+        float[]                           headCap          = { -180, 180 };
+        float[]                           headCap1         = { -30, 30 };
 
         public TabulaModelSet(TabulaModel model, TabulaModelParser parser, ResourceLocation extraData,
                 PokedexEntry entry)
@@ -106,6 +114,20 @@ public class TabulaPackLoader extends AnimationLoader
                     // animations built in.
                 }
             }
+            if (model.getHeadParts().isEmpty())
+            {
+                String[] defaultHeads = { "head", "Head" };
+                convertToIdents(defaultHeads);
+                if (defaultHeads[0] != null) model.getHeadParts().add(defaultHeads[0]);
+                else if (defaultHeads[1] != null) model.getHeadParts().add(defaultHeads[1]);
+            }
+            model.getHeadInfo().yawCapMin = headCap[0];
+            model.getHeadInfo().yawCapMax = headCap[1];
+            model.getHeadInfo().headDirection = headDir;
+            model.getHeadInfo().pitchCapMin = headCap1[0];
+            model.getHeadInfo().pitchCapMax = headCap1[1];
+            model.getHeadInfo().pitchAxis = 0;
+            model.getHeadInfo().yawAxis = 1;
         }
 
         public TabulaModelSet(TabulaModelSet from, ResourceLocation extraData, PokedexEntry entry)
@@ -167,24 +189,6 @@ public class TabulaPackLoader extends AnimationLoader
         }
 
         @Override
-        public float[] getHeadInfo()
-        {
-            return headInfo;
-        }
-
-        /** Returns true of the given identifier matches the part listed as the
-         * root of the head.
-         * 
-         * @param identifier
-         * @return */
-        @Override
-        public boolean isHeadRoot(String identifier)
-        {
-            if (!headRoots.isEmpty()) { return headRoots.contains(identifier); }
-            return identifier.equals(headRoot);
-        }
-
-        @Override
         public boolean isPartHidden(String part, Entity entity, boolean default_)
         {
             if (shearableIdents.contains(part))
@@ -199,7 +203,8 @@ public class TabulaPackLoader extends AnimationLoader
         @Override
         public String modifyAnimation(EntityLiving entity, float partialTicks, String phase)
         {
-            return animator.modifyAnimation(entity, partialTicks, phase);
+            if (animator != null) return animator.modifyAnimation(entity, partialTicks, phase);
+            return phase;
         }
 
         public void parse(ResourceLocation animation) throws Exception
@@ -253,6 +258,7 @@ public class TabulaPackLoader extends AnimationLoader
                                 headDir = getHeadDir(part, headDir);
                                 headDir = Math.min(1, headDir);
                                 headDir = Math.max(-1, headDir);
+
                                 setHeadCaps(part, headCap, headCap1);
                             }
                             catch (Exception e)
@@ -305,7 +311,7 @@ public class TabulaPackLoader extends AnimationLoader
                             String[] names = temp.toArray(new String[0]);
                             this.convertToIdents(names);
                             for (String s : names)
-                                headRoots.add(s);
+                                model.getHeadParts().add(s);
                             temp.clear();
                             addStrings("shear", part, toAdd);
                             temp.addAll(toAdd);
@@ -416,12 +422,13 @@ public class TabulaPackLoader extends AnimationLoader
                 anims.addAll(loadedAnimations.values());
                 animator.init(anims);
             }
-            headInfo[0] = headCap[0];
-            headInfo[1] = headCap[1];
-            headInfo[2] = headDir;
-            headInfo[3] = headCap1[0];
-            headInfo[4] = headCap1[1];
-            headInfo[5] = headAxis;
+            model.getHeadInfo().yawCapMin = headCap[0];
+            model.getHeadInfo().yawCapMax = headCap[1];
+            model.getHeadInfo().headDirection = headDir;
+            model.getHeadInfo().pitchCapMin = headCap1[0];
+            model.getHeadInfo().pitchCapMax = headCap1[1];
+            model.getHeadInfo().pitchAxis = 0;
+            model.getHeadInfo().yawAxis = 1;
         }
 
         private void processMetadata()
@@ -450,11 +457,6 @@ public class TabulaPackLoader extends AnimationLoader
 
         private void processMetadataForCubeInfo(CubeInfo cube)
         {
-            if (headRoot.isEmpty() && cube.name.toLowerCase(java.util.Locale.ENGLISH).contains("head")
-                    && cube.parentIdentifier != null)
-            {
-                headRoot = cube.identifier;
-            }
             for (String s : cube.metadata)
             {
                 if (s.equalsIgnoreCase("shearable"))
@@ -467,7 +469,7 @@ public class TabulaPackLoader extends AnimationLoader
                 }
                 if (s.equalsIgnoreCase("head"))
                 {
-                    headRoots.add(cube.identifier);
+                    model.getHeadParts().add(cube.identifier);
                 }
             }
             for (CubeInfo cube1 : cube.children)

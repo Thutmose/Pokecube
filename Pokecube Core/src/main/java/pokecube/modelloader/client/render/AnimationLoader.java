@@ -44,7 +44,7 @@ public class AnimationLoader
     @SuppressWarnings("rawtypes")
     public static HashMap<String, IModelRenderer> modelMaps = new HashMap<String, IModelRenderer>();
 
-    public static HashMap<String, ModelHolder>          models    = new HashMap<String, ModelHolder>();
+    public static HashMap<String, ModelHolder>    models    = new HashMap<String, ModelHolder>();
 
     public static void addStrings(String key, Node node, Set<String> toAddTo)
     {
@@ -406,7 +406,7 @@ public class AnimationLoader
                 loaded.offset.set(offset);
                 loaded.scale.set(scale);
                 loaded.rotations = rotation;
-                loaded.headParts.addAll(headNames);
+                loaded.model.getHeadParts().addAll(headNames);
                 loaded.shearableParts.addAll(shear);
                 loaded.dyeableParts.addAll(dye);
                 loaded.texturer = texturer;
@@ -459,11 +459,16 @@ public class AnimationLoader
                     animator.init(anims);
                 }
 
-                if (headDir != 2) loaded.headDir = headDir;
-                loaded.headAxis = headAxis;
-                loaded.headAxis2 = headAxis2;
-                loaded.headCaps = headCaps;
-                loaded.headCaps1 = headCaps1;
+                if (loaded.model.imodel.getHeadInfo() != null)
+                {
+                    if (headDir != 2) loaded.model.imodel.getHeadInfo().headDirection = headDir;
+                    loaded.model.imodel.getHeadInfo().yawAxis = headAxis;
+                    loaded.model.imodel.getHeadInfo().pitchAxis = headAxis2;
+                    loaded.model.imodel.getHeadInfo().yawCapMin = headCaps[0];
+                    loaded.model.imodel.getHeadInfo().yawCapMax = headCaps[1];
+                    loaded.model.imodel.getHeadInfo().pitchCapMin = headCaps1[0];
+                    loaded.model.imodel.getHeadInfo().pitchCapMax = headCaps1[1];
+                }
 
                 loaded.model.preProcessAnimations(loaded.animations.values());
                 models.put(modelName, model);

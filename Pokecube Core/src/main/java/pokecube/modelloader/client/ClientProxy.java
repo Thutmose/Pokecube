@@ -36,6 +36,7 @@ import pokecube.modelloader.client.render.AnimationLoader;
 import pokecube.modelloader.client.render.TabulaPackLoader;
 import pokecube.modelloader.common.Config;
 import pokecube.modelloader.items.ItemModelReloader;
+import thut.core.client.render.model.ModelFactory;
 
 public class ClientProxy extends CommonProxy
 {
@@ -110,23 +111,27 @@ public class ClientProxy extends CommonProxy
                     }
                     catch (Exception e1)
                     {
-                        try
+                        for (String ext : ModelFactory.getValidExtensions())
                         {
-                            ResourceLocation tex = new ResourceLocation(mod,
-                                    provider.getModelDirectory(p) + name + ".x3d");
-                            IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                            res.getInputStream().close();
-                            res.close();
-                            ArrayList<String> models = modModels.get(mod);
-                            if (models == null)
+                            try
                             {
-                                modModels.put(mod, models = new ArrayList<String>());
+                                ResourceLocation tex = new ResourceLocation(mod,
+                                        provider.getModelDirectory(p) + name + "." + ext);
+                                IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                                res.getInputStream().close();
+                                res.close();
+                                ArrayList<String> models = modModels.get(mod);
+                                if (models == null)
+                                {
+                                    modModels.put(mod, models = new ArrayList<String>());
+                                }
+                                if (!models.contains(name)) models.add(name);
+                                break;
                             }
-                            if (!models.contains(name)) models.add(name);
-                        }
-                        catch (Exception e2)
-                        {
+                            catch (Exception e2)
+                            {
 
+                            }
                         }
                     }
                 }
@@ -221,21 +226,33 @@ public class ClientProxy extends CommonProxy
             }
             catch (Exception e)
             {
-                try
+                boolean validModel = false;
+                for (String ext : ModelFactory.getValidExtensions())
                 {
-                    // Then look for an x3d model
-                    ResourceLocation tex = new ResourceLocation(mod, provider.getModelDirectory(p) + name + ".x3d");
-                    IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
-                    res.close();
-                    ArrayList<String> models = modModels.get(mod);
-                    if (models == null)
+                    try
                     {
-                        modModels.put(mod, models = new ArrayList<String>());
+                        // Then look for an ModelFactory model
+                        ResourceLocation tex = new ResourceLocation(mod,
+                                provider.getModelDirectory(p) + name + "." + ext);
+                        IResource res = Minecraft.getMinecraft().getResourceManager().getResource(tex);
+                        res.close();
+                        ArrayList<String> models = modModels.get(mod);
+                        if (models == null)
+                        {
+                            modModels.put(mod, models = new ArrayList<String>());
+                        }
+                        validModel = true;
+                        models.remove(name);
+                        if (!models.contains(name)) models.add(name);
+                        break;
                     }
-                    models.remove(name);
-                    if (!models.contains(name)) models.add(name);
+                    catch (Exception e2)
+                    {
+
+                    }
                 }
-                catch (IOException e1)
+
+                if (!validModel)
                 {
                     try
                     {

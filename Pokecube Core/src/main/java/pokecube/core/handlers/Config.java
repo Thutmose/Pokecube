@@ -561,6 +561,8 @@ public class Config extends ConfigBase
             String[] args = s.split(":");
             PokecubeTerrainChecker.structureSubbiomeMap.put(args[0], args[1]);
         }
+        if (attackCooldown <= 0) attackCooldown = 1;
+
         SpawnHandler.MAX_DENSITY = mobDensityMultiplier;
         SpawnHandler.MAXNUM = mobSpawnNumber;
         if (breedingDelay < 600) breedingDelay = 1000;

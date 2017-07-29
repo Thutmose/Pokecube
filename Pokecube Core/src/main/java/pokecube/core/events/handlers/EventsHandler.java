@@ -99,7 +99,6 @@ import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
-import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
@@ -113,7 +112,6 @@ import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 import thut.lib.CompatWrapper;
 
 public class EventsHandler
@@ -808,12 +806,6 @@ public class EventsHandler
     public void livingUpdate(LivingUpdateEvent evt)
     {
         if (evt.getEntity().getEntityWorld().isRemote || evt.getEntity().isDead) return;
-        if (evt.getEntityLiving().getEntityWorld().getTotalWorldTime() % 40 == 0)
-        {
-            TerrainSegment terrain = TerrainManager.getInstance().getTerrainForEntity(evt.getEntity());
-            PokemobTerrainEffects effect = (PokemobTerrainEffects) terrain.geTerrainEffect("pokemobEffects");
-            effect.doEffect(evt.getEntityLiving(), false);
-        }
         if (evt.getEntityLiving() instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) evt.getEntityLiving();
@@ -869,7 +861,6 @@ public class EventsHandler
 
     @SuppressWarnings("unchecked")
     @SubscribeEvent
-    /** Priority low, so that the IPokemob capability is added first. */
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
         boolean isPokemob = false;

@@ -2,8 +2,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.COLOURGENE;
 
-import java.util.Arrays;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

@@ -37,6 +37,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.common.ExtraDatabase;
+import thut.core.client.render.model.ModelFactory;
 
 /** This class actually does nothing on server side. But its implementation on
  * client side does.
@@ -397,10 +398,14 @@ public class CommonProxy implements IGuiHandler
         boolean[] ret = new boolean[entry.length];
         try
         {
-            tex = toLocations(modid, ".x3d", entry);
-            filesExist(mod, ret, tex);
             tex = toLocations(modid, ".xml", entry);
             filesExist(mod, ret, tex);
+
+            for (String ext : ModelFactory.getValidExtensions())
+            {
+                tex = toLocations(modid, "." + ext, entry);
+                filesExist(mod, ret, tex);
+            }
             tex = toLocations(modid, ".tbl", entry);
             filesExist(mod, ret, tex);
         }
@@ -433,7 +438,7 @@ public class CommonProxy implements IGuiHandler
 
     public void reloadModel(PokedexEntry model)
     {
-        
+
     }
 
     private ResourceLocation[] toLocations(String modid, String ext, String... entries)

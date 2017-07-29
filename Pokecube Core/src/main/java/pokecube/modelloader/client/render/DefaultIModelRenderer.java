@@ -17,10 +17,8 @@ import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.model.ModelFactory;
-import thut.core.client.render.smd.SMDModel;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.wrappers.ModelWrapper;
-import thut.core.client.render.x3d.X3dModel;
 
 public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModelRenderer<T>
 {

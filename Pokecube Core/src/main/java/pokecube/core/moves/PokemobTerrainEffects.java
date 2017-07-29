@@ -73,6 +73,8 @@ public class PokemobTerrainEffects implements ITerrainEffect
 
     public void doEffect(EntityLivingBase entity)
     {
+        if (entity.getEntityWorld().getTotalWorldTime() % (2 * PokecubeMod.core.getConfig().attackCooldown) != 0)
+            return;
         IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
         if (mob != null)
         {

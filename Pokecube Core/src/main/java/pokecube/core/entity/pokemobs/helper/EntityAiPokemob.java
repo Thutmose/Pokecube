@@ -69,15 +69,12 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobDamageSource;
-import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
 import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.entity.ai.ILogicRunnable;
 import thut.api.maths.Vector3;
-import thut.api.terrain.TerrainManager;
-import thut.api.terrain.TerrainSegment;
 import thut.lib.CompatWrapper;
 
 /** @author Manchou */
@@ -93,8 +90,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     private boolean            popped         = false;
     private PokemobAI          aiObject;
     private boolean            isAFish        = false;
-
-    private TerrainSegment     currentTerrain = null;
 
     public EntityAiPokemob(World world)
     {
@@ -801,14 +796,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         for (ILogicRunnable logic : aiStuff.aiLogic)
         {
             logic.doServerTick(worldObj);
-        }
-        // TODO move this over to a capability or something.
-        TerrainSegment t = TerrainManager.getInstance().getTerrainForEntity(this);
-        if (!t.equals(currentTerrain))
-        {
-            currentTerrain = t;
-            PokemobTerrainEffects effect = (PokemobTerrainEffects) currentTerrain.geTerrainEffect("pokemobEffects");
-            effect.doEntryEffect(this);
         }
         if (egg != null && egg.isDead)
         {

@@ -91,7 +91,6 @@ public class Pokedex
         while (index + i < 0)
             i += entries.size();
         index = (index + i) % entries.size();
-        System.out.println(index);
         return entries.get(index);
     }
 

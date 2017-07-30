@@ -5,8 +5,6 @@ package pokecube.core.entity.pokemobs.helper;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import pokecube.core.PokecubeItems;
-import pokecube.core.utils.Tools;
 
 /** @author Manchou */
 public abstract class EntityEvolvablePokemob extends EntityDropPokemob
@@ -53,10 +51,6 @@ public abstract class EntityEvolvablePokemob extends EntityDropPokemob
     public void onUpdate()
     {
         super.onUpdate();
-        if (Tools.isSameStack(getHeldItemMainhand(), PokecubeItems.getStack("everstone")))
-        {
-            setPokemonAIState(TRADED, false);
-        }
     }
 
     /** @param evolutionTicks

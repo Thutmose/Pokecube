@@ -8,7 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -16,7 +15,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public abstract class PokemobSexed extends PokemobStats
@@ -135,24 +133,21 @@ public abstract class PokemobSexed extends PokemobStats
 
     protected void mate(IBreedingMob male)
     {
-        if (male == null || ((Entity) male).isDead) return;
+        IPokemob mate = (IPokemob) male;
+        if (male == null || mate.getEntity().isDead) return;
         if (this.getSexe() == MALE || male.getSexe() == FEMALE && male != this)
         {
-            ((EntityPokemob) male).mateWith(this);
+            ((IPokemob) male).mateWith(this);
             return;
         }
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 2;
-        if (male instanceof IHungrymob)
-        {
-            IHungrymob hungry = (IHungrymob) male;
-            hungry.setHungerTime(hungry.getHungerTime() + hungerValue);
-        }
+        mate.setHungerTime(mate.getHungerTime() + hungerValue);
         setHungerTime(getHungerTime() + hungerValue);
-        ((EntityPokemob) male).setLover(null);
-        ((EntityPokemob) male).resetInLove();
+        mate.setLover(null);
+        mate.resetLoveStatus();
         getEntity().setAttackTarget(null);
-        ((EntityPokemob) male).setAttackTarget(null);
-        lay((IPokemob) male);
+        mate.getEntity().setAttackTarget(null);
+        lay(mate);
         resetLoveStatus();
         lover = null;
     }

@@ -55,7 +55,7 @@ public class AIMate extends AIBase
         }
         if (cooldown-- > 0) { return; }
         super.doMainThreadTick(world);
-        if (entity.isInLove() && pokemob.getLover() == null)
+        if (pokemob.getLoveTimer() > 0 && pokemob.getLover() == null)
         {
             findLover();
         }
@@ -144,6 +144,7 @@ public class AIMate extends AIBase
 
     public Entity findLover()
     {
+        if (pokemob.getLover() != null) { return pokemob.getLover(); }
         boolean transforms = false;
         for (String s : pokemob.getMoves())
         {
@@ -155,7 +156,6 @@ public class AIMate extends AIBase
                 && !Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().maxSpawnRadius,
                         PokecubeMod.core.getConfig().maxSpawnRadius / 4, entity))
             return null;
-        if (pokemob.getLover() != null) { return pokemob.getLover(); }
         if ((pokemob.getSexe() == IPokemob.MALE && !transforms)
                 || pokemob.getMalesForBreeding().size() > 0) { return null; }
 

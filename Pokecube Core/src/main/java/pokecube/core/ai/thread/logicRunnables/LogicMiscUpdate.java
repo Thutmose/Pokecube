@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
+import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -17,6 +18,7 @@ import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
@@ -35,6 +37,7 @@ public class LogicMiscUpdate extends LogicBase
     boolean           reset             = false;
     boolean           initHome          = false;
     boolean           named             = false;
+    boolean           checkedEvol       = false;
     Vector3           v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(EntityAnimal entity)
@@ -246,10 +249,22 @@ public class LogicMiscUpdate extends LogicBase
 
     private void checkEvolution()
     {
+
+        if (Tools.isSameStack(pokemob.getHeldItem(), PokecubeItems.getStack("everstone")))
+        {
+            pokemob.setTraded(false);
+        }
+
         int num = pokemob.getEvolutionTicks();
         if (num > 0)
         {
             pokemob.setEvolutionTicks(pokemob.getEvolutionTicks() - 1);
+        }
+        if (!checkedEvol && pokemob.traded())
+        {
+            pokemob.evolve(true, false);
+            checkedEvol = true;
+            return;
         }
         boolean evolving = pokemob.getPokemonAIState(EVOLVING);
         if (evolving)

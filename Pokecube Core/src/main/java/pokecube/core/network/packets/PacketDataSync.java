@@ -33,6 +33,7 @@ import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.SyncConfig;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.config.Configure;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 import thut.core.common.handlers.PlayerDataHandler.PlayerDataManager;
 
@@ -77,6 +78,8 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
         for (Field f : Config.class.getDeclaredFields())
         {
             SyncConfig c = f.getAnnotation(SyncConfig.class);
+            Configure conf = f.getAnnotation(Configure.class);
+            if (conf != null && conf.category().equals(Config.client)) continue;
             if (c != null)
             {
                 try

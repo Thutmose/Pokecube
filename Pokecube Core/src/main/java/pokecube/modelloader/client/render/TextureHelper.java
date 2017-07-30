@@ -42,6 +42,7 @@ public class TextureHelper implements IPartTexturer
             }
         }
     }
+
     private static class SequenceState
     {
         double[] arr;
@@ -54,6 +55,7 @@ public class TextureHelper implements IPartTexturer
                 if (d >= 1) shift = false;
         }
     }
+
     private static class TexState
     {
         Map<Integer, double[]>    aiStates     = Maps.newHashMap();
@@ -111,7 +113,7 @@ public class TextureHelper implements IPartTexturer
             toFill[0] = dx;
             toFill[1] = dy;
             int info = pokemob.getSpecialInfo();
-            Random random = new Random(pokemob.getEntity().ticksExisted);
+            Random random = new Random();
             if (infoStates.containsKey(info))
             {
                 double[] arr = infoStates.get(info);
@@ -124,7 +126,8 @@ public class TextureHelper implements IPartTexturer
 
             for (Integer i : aiStates.keySet())
             {
-                if (pokemob.getPokemonAIState(i))
+                if (pokemob.getPokemonAIState(i)
+                        || i == IPokemob.SLEEPING && (pokemob.getStatus() & IMoveConstants.STATUS_SLP) != 0)
                 {
                     double[] arr = aiStates.get(i);
                     dx = arr[0];
@@ -152,7 +155,7 @@ public class TextureHelper implements IPartTexturer
             for (RandomState state : randomStates)
             {
                 double[] arr = state.arr;
-                if (random.nextDouble() < state.chance)
+                if (random.nextFloat() < state.chance)
                 {
                     dx = arr[0];
                     dy = arr[1];
@@ -186,11 +189,14 @@ public class TextureHelper implements IPartTexturer
             return null;
         }
     }
+
     public final static Map<String, Integer> mappedStates = Maps.newHashMap();
+
     public static int getState(String trigger)
     {
         return getState(trigger, true);
     }
+
     static int getState(String trigger, boolean exception)
     {
         if (mappedStates.containsKey(trigger)) return mappedStates.get(trigger);
@@ -215,25 +221,26 @@ public class TextureHelper implements IPartTexturer
         }
         return -1;
     }
-    IPokemob                                 pokemob;
-    PokedexEntry                             entry;
+
+    IPokemob                         pokemob;
+    PokedexEntry                     entry;
     /** Map of part/material name -> texture name */
-    Map<String, String>                      texNames     = Maps.newHashMap();
+    Map<String, String>              texNames     = Maps.newHashMap();
     /** Map of part/material name -> map of custom state -> texture name */
-    Map<String, Map<String, String>>         texNames2    = Maps.newHashMap();
-    ResourceLocation                         default_tex;
-    String                                   default_path;
+    Map<String, Map<String, String>> texNames2    = Maps.newHashMap();
+    ResourceLocation                 default_tex;
+    String                           default_path;
 
-    Map<String, Boolean>                     smoothing    = Maps.newHashMap();
+    Map<String, Boolean>             smoothing    = Maps.newHashMap();
 
-    boolean                                  default_flat = true;
+    boolean                          default_flat = true;
 
     /** Map of part/material name -> resource location */
-    Map<String, ResourceLocation>            texMap       = Maps.newHashMap();
+    Map<String, ResourceLocation>    texMap       = Maps.newHashMap();
 
-    Map<String, TexState>                    texStates    = Maps.newHashMap();
+    Map<String, TexState>            texStates    = Maps.newHashMap();
 
-    Map<String, String>                      formeMap     = Maps.newHashMap();
+    Map<String, String>              formeMap     = Maps.newHashMap();
 
     public TextureHelper(Node node)
     {
@@ -310,7 +317,7 @@ public class TextureHelper implements IPartTexturer
     {
         if (bindPerState(part)) return;
         String texName = texNames.containsKey(part) ? texNames.get(part) : default_path;
-        if(texName == null || texName.trim().isEmpty())
+        if (texName == null || texName.trim().isEmpty())
         {
             texNames.put(part, default_path);
         }

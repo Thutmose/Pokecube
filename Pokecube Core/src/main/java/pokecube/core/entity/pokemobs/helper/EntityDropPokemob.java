@@ -35,14 +35,14 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     /** Drop the equipment for this entity. */
     protected void dropEquipment(boolean p_82160_1_, int p_82160_2_)
     {
-        if (this.getPokemonAIState(IMoveConstants.TAMED)) return;
+        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)) return;
         super.dropEquipment(p_82160_1_, p_82160_2_);
     }
 
     @Override
     protected void dropFewItems(boolean wasRecentlyHit, int lootingModifier)
     {
-        if (!getPokemonAIState(IMoveConstants.TAMED))
+        if (!pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
         {
             for (int i = 2; i < pokemobCap.getPokemobInventory().getSizeInventory(); i++)
             {
@@ -53,8 +53,8 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         }
 
         if (wasEaten || !wasRecentlyHit) return;
-        if (getPokemonAIState(IMoveConstants.TAMED)) return;
-        List<ItemStack> drops = getPokedexEntry().getRandomDrops(lootingModifier);
+        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED)) return;
+        List<ItemStack> drops = pokemobCap.getPokedexEntry().getRandomDrops(lootingModifier);
         for (ItemStack stack : drops)
         {
             if (isBurning() && stack != CompatWrapper.nullStack)
@@ -77,9 +77,9 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         ItemStack toDrop = this.getHeldItemMainhand();
         if (toDrop == CompatWrapper.nullStack) return;
 
-        EntityItem drop = new EntityItem(this.worldObj, this.posX, this.posY + 0.5, this.posZ, toDrop);
-        this.worldObj.spawnEntityInWorld(drop);
-        this.setHeldItem(CompatWrapper.nullStack);
+        EntityItem drop = new EntityItem(this.getEntityWorld(), this.posX, this.posY + 0.5, this.posZ, toDrop);
+        this.getEntityWorld().spawnEntityInWorld(drop);
+        pokemobCap.setHeldItem(CompatWrapper.nullStack);
     }
 
     @Override
@@ -106,7 +106,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     protected int getExperiencePoints(EntityPlayer player)
     {
         float scale = PokecubeCore.core.getConfig().expFromDeathDropScale;
-        int exp = (int) Math.max(1, this.getBaseXP() * scale * 0.01 * Math.sqrt(getLevel()));
+        int exp = (int) Math.max(1, pokemobCap.getBaseXP() * scale * 0.01 * Math.sqrt(pokemobCap.getLevel()));
         return exp;
     }
 }

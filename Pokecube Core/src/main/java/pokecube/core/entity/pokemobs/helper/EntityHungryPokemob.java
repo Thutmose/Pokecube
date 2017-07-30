@@ -8,15 +8,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.ChunkCoordinate;
 import thut.api.maths.Vector3;
 
 public abstract class EntityHungryPokemob extends EntityAiPokemob
 {
-    int           fleeingTick;
+    int fleeingTick;
 
     public EntityHungryPokemob(World world)
     {
@@ -42,9 +42,9 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
                 this.setAttackTarget((EntityLivingBase) attacker);
         }
 
-        if (getPokemonAIState(IMoveConstants.TAMED)
-                && ((attacker instanceof EntityPlayer && ((EntityPlayer) attacker) == getOwner()))) { return false; }
-        setPokemonAIState(SITTING, false);
+        if (pokemobCap.getPokemonAIState(IMoveConstants.TAMED) && ((attacker instanceof EntityPlayer
+                && ((EntityPlayer) attacker) == pokemobCap.getOwner()))) { return false; }
+        pokemobCap.setPokemonAIState(IMoveConstants.SITTING, false);
 
         EntityLivingBase oldTarget = getAttackTarget();
         if (super.attackEntityFrom(source, damage))
@@ -56,11 +56,11 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
             {
                 c = new ChunkCoordinate(vec.set(oldTarget), dimension);
             }
-            if (!getPokemonAIState(IMoveConstants.TAMED))
+            if (!pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
             {
                 if (attacker instanceof EntityPlayer)
                 {
-                    setPokemonAIState(ANGRY, true);
+                    pokemobCap.setPokemonAIState(IMoveConstants.ANGRY, true);
                 }
                 if (attacker instanceof EntityLivingBase && getAttackTarget() != attacker)
                 {
@@ -73,19 +73,17 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
                 setAttackTarget((EntityLivingBase) attacker);
                 fleeingTick = 0;
             }
-
-            if (attacker instanceof IPokemob)
+            IPokemob agres = CapabilityPokemob.getPokemobFor(attacker);
+            if (agres != null)
             {
-                IPokemob agres = (IPokemob) attacker;
-
-                if (agres.getPokedexEntry().isFood(getPokedexEntry()) && agres.getPokemonAIState(HUNTING) && c != null)
+                if (agres.getPokedexEntry().isFood(pokemobCap.getPokedexEntry())
+                        && agres.getPokemonAIState(IMoveConstants.HUNTING) && c != null)
                 {
                     fleeingTick = 100;
                 }
-
-                if (((EntityPokemob) attacker).getLover() == this)
+                if (agres.getLover() == this)
                 {
-                    this.setLover(attacker);
+                    agres.setLover(attacker);
                 }
                 if (getAttackTarget() != attacker) setAttackTarget((EntityLivingBase) attacker);
                 fleeingTick = 0;
@@ -102,23 +100,8 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         return false;
     }
 
-    @Override
-    public void eat(Entity e)
-    {
-        pokemobCap.eat(e);
-    }
-
-    @Override
-    public boolean eatsBerries()
-    {
-        return pokemobCap.eatsBerries();
-    }
-
-    @Override
-    public boolean filterFeeder()
-    {
-        return pokemobCap.filterFeeder();
-    }
+    // The following methods are from IPathingMob
+    // TODO make a capability in ThutCore to deal with this instead.
 
     @Override
     public boolean floats()
@@ -145,21 +128,15 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
     }
 
     @Override
-    public int getHungerCooldown()
-    {
-        return pokemobCap.getHungerCooldown();
-    }
-
-    @Override
-    public int getHungerTime()
-    {
-        return pokemobCap.getHungerTime();
-    }
-
-    @Override
     public Vector3 getMobSizes()
     {
         return pokemobCap.getMobSizes();
+    }
+
+    @Override
+    public boolean fits(IBlockAccess world, Vector3 location, Vector3 directionFrom)
+    {
+        return pokemobCap.fits(world, location, directionFrom);
     }
 
     @Override
@@ -168,89 +145,9 @@ public abstract class EntityHungryPokemob extends EntityAiPokemob
         return pokemobCap.getPathTime();
     }
 
-    /** @return does this pokemon hunt for food */
-    @Override
-    public boolean isCarnivore()
-    {
-        return pokemobCap.isCarnivore();
-    }
-
-    @Override
-    public boolean isElectrotroph()
-    {
-        return pokemobCap.isElectrotroph();
-    }
-
-    /** @return Does this pokemon eat grass */
-    @Override
-    public boolean isHerbivore()
-    {
-        return pokemobCap.isHerbivore();
-    }
-
-    @Override
-    public boolean isLithotroph()
-    {
-        return pokemobCap.isLithotroph();
-    }
-
-    @Override
-    public boolean isPhototroph()
-    {
-        return pokemobCap.isPhototroph();
-    }
-
-    @Override
-    public boolean neverHungry()
-    {
-        return pokemobCap.neverHungry();
-    }
-
-    @Override
-    public void noEat(Entity e)
-    {
-        pokemobCap.noEat(e);
-    }
-
-    @Override
-    public void onLivingUpdate()
-    {
-        super.onLivingUpdate();
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
-    }
-
-    @Override
-    public void setHungerCooldown(int hungerCooldown)
-    {
-        pokemobCap.setHungerCooldown(hungerCooldown);
-    }
-
-    @Override
-    public void setHungerTime(int hungerTime)
-    {
-        pokemobCap.setHungerTime(hungerTime);
-    }
-
     @Override
     public boolean swims()
     {
         return pokemobCap.swims();
-    }
-
-    @Override
-    public int getFlavourAmount(int index)
-    {
-        return pokemobCap.getFlavourAmount(index);
-    }
-
-    @Override
-    public void setFlavourAmount(int index, int amount)
-    {
-        pokemobCap.setFlavourAmount(index, amount);
     }
 }

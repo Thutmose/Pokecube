@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 
 public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
 {
@@ -90,5 +91,10 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
     default boolean traded()
     {
         return getPokemonAIState(TRADED);
+    }
+
+    default LogicMountedControl getController()
+    {
+        return null;
     }
 }

@@ -669,7 +669,7 @@ public class EventsHandler
             System.err.println("Null Entry for " + pokemob);
             return false;
         }
-        if (!entry.ridable) return false;
+        if (!entry.ridable || pokemob.getPokemonAIState(IPokemob.GUARDING)) return false;
         float scale = pokemob.getSize();
         return (entry.height * scale + entry.width * scale) > rider.width
                 && Math.max(entry.width, entry.length) * scale > rider.width * 1.8;

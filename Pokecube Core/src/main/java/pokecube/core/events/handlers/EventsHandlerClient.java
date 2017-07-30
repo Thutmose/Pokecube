@@ -53,7 +53,6 @@ import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.client.render.RenderHealth;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -227,9 +226,10 @@ public class EventsHandlerClient
         if (event.player.isRiding() && Minecraft.getMinecraft().currentScreen == null)
         {
             Entity e = event.player.getRidingEntity();
-            if (e instanceof EntityAiPokemob)
+            pokemob = CapabilityPokemob.getPokemobFor(e);
+            if (pokemob != null)
             {
-                LogicMountedControl controller = ((EntityAiPokemob) e).controller;
+                LogicMountedControl controller = pokemob.getController();
                 if (controller == null) break control;
                 controller.backInputDown = ((EntityPlayerSP) event.player).movementInput.backKeyDown;
                 controller.forwardInputDown = ((EntityPlayerSP) event.player).movementInput.forwardKeyDown;

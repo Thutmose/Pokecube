@@ -9,8 +9,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
-import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PacketMountedControl implements IMessage, IMessageHandler<PacketMountedControl, IMessage>
 {
@@ -81,9 +82,10 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
             player = ctx.getServerHandler().playerEntity;
         }
         Entity mob = player.getEntityWorld().getEntityByID(message.entityId);
-        if (mob != null && mob instanceof EntityAiPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        if (pokemob != null && pokemob.getController() != null)
         {
-            LogicMountedControl controller = ((EntityAiPokemob) mob).controller;
+            LogicMountedControl controller = pokemob.getController();
             controller.forwardInputDown = (message.message & FORWARD) > 0;
             controller.backInputDown = (message.message & BACK) > 0;
             controller.leftInputDown = (message.message & LEFT) > 0;

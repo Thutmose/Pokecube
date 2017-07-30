@@ -154,9 +154,10 @@ pokecube.mega.noring=§cYou are not wearing anything that will allow %1$s §cto 
 
 pokecube.professor.deny=Professor: §cYou have already recieved a Pokémob
 pokedex.setteleport=Pokécenter set as a Teleport Location
-pokedex.locationinfo1=There are %1$s Registered Spawns
-pokedex.locationinfo2=There are %1$s registered Pokémobs
-pokedex.locationinfo3=%1$s Spawn here
+pokedex.locationinfo1=There are %1$s Registered Spawns.
+pokedex.locationinfo2=There are %1$s Registered Pokémobs.
+pokedex.locationinfo3=There are %1$s Registerd Forms of Pokémobs.
+pokedex.locationinfo4=%1$s Spawn here
 
 pokedex.inspect.nothing=§cThere are no new rewards from the Pokédex
 pokedex.inspect.available=§aYou have a new Pokédex reward available, click the Blue light in the Pokédex to get it!

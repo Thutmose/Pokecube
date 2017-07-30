@@ -24,6 +24,7 @@ public class LogicMountedControl extends LogicBase
     public boolean backInputDown    = false;
     public boolean upInputDown      = false;
     public boolean downInputDown    = false;
+    public boolean followOwnerLook  = false;
 
     public LogicMountedControl(IPokemob pokemob_)
     {
@@ -119,13 +120,20 @@ public class LogicMountedControl extends LogicBase
             entity.motionX *= 0.5;
             entity.motionZ *= 0.5;
         }
-        if (leftInputDown)
+        if (!followOwnerLook)
         {
-            entity.rotationYaw -= 5;
+            if (leftInputDown)
+            {
+                entity.rotationYaw -= 5;
+            }
+            if (rightInputDown)
+            {
+                entity.rotationYaw += 5;
+            }
         }
-        if (rightInputDown)
+        else if (!entity.getPassengers().isEmpty())
         {
-            entity.rotationYaw += 5;
+            entity.rotationYaw = entity.getPassengers().get(0).rotationYaw;
         }
     }
 

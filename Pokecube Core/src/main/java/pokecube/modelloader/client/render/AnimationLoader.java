@@ -148,8 +148,15 @@ public class AnimationLoader
                 time = node.getAttributes().getNamedItem("time").getNodeValue();
             r = rotation.split(",");
             t = Integer.parseInt(time);
-            ro.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()),
-                    Float.parseFloat(r[3].trim()));
+            try
+            {
+                ro.set(Float.parseFloat(r[0].trim()), Float.parseFloat(r[1].trim()), Float.parseFloat(r[2].trim()),
+                        Float.parseFloat(r[3].trim()));
+            }
+            catch (Exception e)
+            {
+                ro.set(0, 1, 0, 0);
+            }
             return new Vector5(ro, t);
         }
         return default_;

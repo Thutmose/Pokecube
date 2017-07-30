@@ -86,7 +86,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     private PokeNavigator     navi;
     private PokemobMoveHelper mover;
-    private boolean           popped  = false;
     private PokemobAI         aiObject;
     private boolean           isAFish = false;
 
@@ -783,11 +782,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void onUpdate()
     {
-        if (popped && getPokemonAIState(TRADED))
-        {
-            evolve(true, false);
-            popped = false;
-        }
         if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
         dimension = worldObj.provider.getDimension();
         super.onUpdate();
@@ -850,8 +844,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void popFromPokecube()
     {
         super.popFromPokecube();
-        popped = true;
-        if (worldObj.isRemote) return;
+        if (getEntityWorld().isRemote) return;
         this.playSound(this.getSound(), 0.5f, 1);
         if (this.isShiny())
         {
@@ -860,7 +853,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 particleLoc.set(posX + rand.nextFloat() * width * 2.0F - width, posY + 0.5D + rand.nextFloat() * height,
                         posZ + rand.nextFloat() * width * 2.0F - width);
-                PokecubeMod.core.spawnParticle(worldObj, EnumParticleTypes.VILLAGER_HAPPY.getParticleName(),
+                PokecubeMod.core.spawnParticle(getEntityWorld(), EnumParticleTypes.VILLAGER_HAPPY.getParticleName(),
                         particleLoc, null);
             }
         }

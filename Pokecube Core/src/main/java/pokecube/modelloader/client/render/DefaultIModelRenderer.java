@@ -131,7 +131,8 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     @Override
     public boolean hasAnimation(String phase)
     {
-        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase);
+        return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase)
+                || model.imodel.getBuiltInAnimations().contains(phase);
     }
 
     private void initModelParts()

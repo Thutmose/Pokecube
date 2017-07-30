@@ -10,11 +10,8 @@ import javax.vecmath.Vector3f;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import pokecube.core.database.PokedexEntry;
 import thut.api.entity.IMultiplePassengerEntity;
 
 /** Handles the HM behaviour.
@@ -34,7 +31,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     public EntityMountablePokemob(World world)
     {
         super(world);
-        this.stepHeight = 1.2f;
+        this.stepHeight = 1;
     }
 
     @Override
@@ -58,7 +55,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     @Override
     public double getMountedYOffset()
     {
-        return this.height * this.getPokedexEntry().passengerOffsets[0][1];
+        return this.height * pokemobCap.getPokedexEntry().passengerOffsets[0][1];
     }
 
     @Override
@@ -68,52 +65,15 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     }
 
     @Override
-    public boolean getOnGround()
-    {
-        return pokemobCap.getOnGround();
-    }
-
-    @Override
     public double getYOffset()
     {
         double ret = yOffset;
         return ret;// - 1.6F;
     }
 
-    /** Called when a player interacts with its pokemob with an item such as HM
-     * or saddle.
-     * 
-     * @param entityplayer
-     *            the player which makes the action
-     * @param itemstack
-     *            the id of the item
-     * @return if the use worked */
-    protected boolean handleHmAndSaddle(EntityPlayer entityplayer, ItemStack itemstack)
-    {
-        if (isRidable(entityplayer))
-        {
-            if (!world.isRemote) entityplayer.startRiding(this);
-            return true;
-        }
-        return false;
-    }
-
     public boolean isPokemobJumping()
     {
         return this.pokemobJumping;
-    }
-
-    public boolean isRidable(Entity rider)
-    {
-        PokedexEntry entry = this.getPokedexEntry();
-        if (entry == null)
-        {
-            System.err.println("Null Entry for " + this);
-            return false;
-        }
-        if (!entry.ridable) return false;
-        return (entry.height * getSize() + entry.width * getSize()) > rider.width
-                && Math.max(entry.width, entry.length) * getSize() > rider.width * 1.8;
     }
 
     /** Returns true if the entity is riding another entity, used by render to
@@ -133,7 +93,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
         if (getRidingEntity() != null)
         {
             rotationYaw = getRidingEntity().rotationYaw;
-            if (this.getAttackTarget() != null && !world.isRemote)
+            if (this.getAttackTarget() != null && !worldObj.isRemote)
             {
                 this.dismountRidingEntity();
                 counterMount = 0;
@@ -150,7 +110,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     @Override
     public boolean shouldDismountInWater(Entity rider)
     {
-        return !this.canUseDive();
+        return !pokemobCap.canUseDive();
     }
 
     /** main AI tick function, replaces updateEntityActionState */
@@ -176,12 +136,13 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
                 }
             }
         }
-        if (index >= getPokedexEntry().passengerOffsets.length) index = 0;
-        double[] offset = this.getPokedexEntry().passengerOffsets[index];
+        if (index >= pokemobCap.getPokedexEntry().passengerOffsets.length) index = 0;
+        double[] offset = pokemobCap.getPokedexEntry().passengerOffsets[index];
         seat.x = (float) offset[0];
         seat.y = (float) offset[1];
         seat.z = (float) offset[2];
-        float dx = this.getPokedexEntry().width * this.getSize(), dz = this.getPokedexEntry().length * this.getSize();
+        float dx = pokemobCap.getPokedexEntry().width * pokemobCap.getSize(),
+                dz = pokemobCap.getPokedexEntry().length * pokemobCap.getSize();
         seat.x *= dx;
         seat.y *= this.height;
         seat.z *= dz;

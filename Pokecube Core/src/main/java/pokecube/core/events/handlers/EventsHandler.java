@@ -417,7 +417,8 @@ public class EventsHandler
                         @Override
                         public boolean apply(EntityPokemobBase input)
                         {
-                            return input.isType(PokeType.getType("psychic"));
+                            IPokemob pokemob = CapabilityPokemob.getPokemobFor(input);
+                            return pokemob.isType(PokeType.getType("psychic"));
                         }
                     }, 6.0F, 1.0D, 1.2D);
             creeper.tasks.addTask(3, avoidAI);

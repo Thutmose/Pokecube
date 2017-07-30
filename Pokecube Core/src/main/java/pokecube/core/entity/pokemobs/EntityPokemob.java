@@ -11,6 +11,6 @@ public class EntityPokemob extends EntityPokemobBase
     public EntityPokemob(World world)
     {
         super(world);
-        init(getPokedexNb());
+        init(pokemobCap.getPokedexNb());
     }
 }

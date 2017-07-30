@@ -54,18 +54,19 @@ public class JERCompat
                                                                   @Override
                                                                   public IMobRenderHook.RenderInfo transform(
                                                                           IMobRenderHook.RenderInfo renderInfo,
-                                                                          EntityPokemob pokemob)
+                                                                          EntityPokemob entity)
                                                                   {
+                                                                      IPokemob pokemob = CapabilityPokemob
+                                                                              .getPokemobFor(entity);
                                                                       float mobScale = pokemob.getSize();
-                                                                      pokemob.prevRotationYawHead = pokemob.rotationYawHead;
-                                                                      pokemob.prevRotationPitch = pokemob.rotationPitch;
+                                                                      entity.prevRotationYawHead = entity.rotationYawHead;
+                                                                      entity.prevRotationPitch = entity.rotationPitch;
                                                                       float size = Math.max(
-                                                                              pokemob.getPokedexEntry().width
-                                                                                      * mobScale,
+                                                                              pokemob.getPokedexEntry().width * mobScale,
                                                                               Math.max(
                                                                                       pokemob.getPokedexEntry().height
                                                                                               * mobScale,
-                                                                                      pokemob.getPokedexEntry().length
+                                                                                              pokemob.getPokedexEntry().length
                                                                                               * mobScale));
                                                                       float zoom = (float) (1f / Math.pow(size, 0.7));
                                                                       renderInfo.scale = zoom;

@@ -8,6 +8,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.moves.PokemobDamageSource;
 import thut.api.maths.Vector3;
 
@@ -29,7 +30,7 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
             int armour = 0;
             if (source.isMagicDamage())
             {
-                armour = (int) ((getStat(Stats.SPDEFENSE, true)) / 12.5);
+                armour = (int) ((pokemobCap.getStat(Stats.SPDEFENSE, true)) / 12.5);
             }
             else
             {
@@ -54,51 +55,9 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
 
     protected void attackEntityAsPokemob(Entity entity, float f)
     {
-        if (getLover() == entity) return;
+        if (pokemobCap.getLover() == entity) return;
         Vector3 v = Vector3.getNewVector().set(entity);
-        executeMove(entity, v, f);
-    }
-
-    @Override
-    public void executeMove(Entity target, Vector3 targetLocation, float f)
-    {
-        pokemobCap.executeMove(target, targetLocation, f);
-    }
-
-    @Override
-    public int getExplosionState()
-    {
-        return pokemobCap.getExplosionState();
-    }
-
-    @Override
-    public int getMoveIndex()
-    {
-        return pokemobCap.getMoveIndex();
-    }
-
-    @Override
-    public String[] getMoves()
-    {
-        return super.getMoves();
-    }
-
-    @Override
-    public PokemobMoveStats getMoveStats()
-    {
-        return pokemobCap.getMoveStats();
-    }
-
-    @Override
-    public byte getStatus()
-    {
-        return pokemobCap.getStatus();
-    }
-
-    @Override
-    public short getStatusTimer()
-    {
-        return pokemobCap.getStatusTimer();
+        pokemobCap.executeMove(entity, v, f);
     }
 
     @Override
@@ -106,66 +65,6 @@ public abstract class EntityMovesPokemob extends EntitySexedPokemob
      * InventoryPlayer.getTotalArmorValue */
     public int getTotalArmorValue()
     {
-        return (int) ((getStat(Stats.DEFENSE, true)) / 12.5);
-    }
-
-    @Override
-    public Entity getTransformedTo()
-    {
-        return pokemobCap.getTransformedTo();
-    }
-
-    @Override
-    public void healStatus()
-    {
-        pokemobCap.healStatus();
-    }
-
-    @Override
-    public void setExplosionState(int i)
-    {
-        pokemobCap.setExplosionState(i);
-    }
-
-    @Override
-    public void setMoveIndex(int moveIndex)
-    {
-        pokemobCap.setMoveIndex(moveIndex);
-    }
-
-    @Override
-    public boolean setStatus(byte status)
-    {
-        return pokemobCap.setStatus(status);
-    }
-
-    @Override
-    public void setStatusTimer(short timer)
-    {
-        pokemobCap.setStatusTimer(timer);
-    }
-
-    @Override
-    public void setTransformedTo(Entity to)
-    {
-        pokemobCap.setTransformedTo(to);
-    }
-
-    @Override
-    public int getAttackCooldown()
-    {
-        return pokemobCap.getAttackCooldown();
-    }
-
-    @Override
-    public void setAttackCooldown(int timer)
-    {
-        pokemobCap.setAttackCooldown(timer);;
-    }
-
-    @Override
-    public String getLastMoveUsed()
-    {
-        return pokemobCap.getLastMoveUsed();
+        return (int) ((pokemobCap.getStat(Stats.DEFENSE, true)) / 12.5);
     }
 }

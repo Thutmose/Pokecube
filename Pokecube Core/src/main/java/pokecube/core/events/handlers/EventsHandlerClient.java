@@ -256,6 +256,7 @@ public class EventsHandlerClient
                 }
                 controller.upInputDown = up;
                 controller.downInputDown = down;
+                controller.followOwnerLook = PokecubeMod.core.getConfig().riddenMobsTurnWithLook;
                 PacketMountedControl.sendControlPacket(e, controller);
             }
         }

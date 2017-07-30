@@ -15,12 +15,13 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PacketMountedControl implements IMessage, IMessageHandler<PacketMountedControl, IMessage>
 {
-    private static final byte FORWARD = 1;
-    private static final byte BACK    = 2;
-    private static final byte LEFT    = 4;
-    private static final byte RIGHT   = 8;
-    private static final byte UP      = 16;
-    private static final byte DOWN    = 32;
+    private static final byte FORWARD  = 1;
+    private static final byte BACK     = 2;
+    private static final byte LEFT     = 4;
+    private static final byte RIGHT    = 8;
+    private static final byte UP       = 16;
+    private static final byte DOWN     = 32;
+    private static final byte SYNCLOOK = 64;
 
     int                       entityId;
     byte                      message;
@@ -35,6 +36,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
         if (controller.rightInputDown) packet.message += RIGHT;
         if (controller.upInputDown) packet.message += UP;
         if (controller.downInputDown) packet.message += DOWN;
+        if (controller.followOwnerLook) packet.message += SYNCLOOK;
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
@@ -92,6 +94,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
             controller.rightInputDown = (message.message & RIGHT) > 0;
             controller.upInputDown = (message.message & UP) > 0;
             controller.downInputDown = (message.message & DOWN) > 0;
+            controller.followOwnerLook = (message.message & SYNCLOOK) > 0;
         }
     }
 }

@@ -71,35 +71,13 @@ public class AnimationLoader
         modelMaps.remove(entry.getName());
     }
 
-    public static int getHeadAxis(Node node, int default_)
+    public static int getIntValue(Node node, String key, int default_)
     {
         int ret = default_;
         if (node.getAttributes() == null) return ret;
-        if (node.getAttributes().getNamedItem("headAxis") != null)
+        if (node.getAttributes().getNamedItem(key) != null)
         {
-            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis").getNodeValue());
-        }
-        return ret;
-    }
-
-    public static int getHeadAxis2(Node node, int default_)
-    {
-        int ret = default_;
-        if (node.getAttributes() == null) return ret;
-        if (node.getAttributes().getNamedItem("headAxis2") != null)
-        {
-            ret = Integer.parseInt(node.getAttributes().getNamedItem("headAxis2").getNodeValue());
-        }
-        return ret;
-    }
-
-    public static int getHeadDir(Node node, int default_)
-    {
-        int ret = default_;
-        if (node.getAttributes() == null) return ret;
-        if (node.getAttributes().getNamedItem("headDir") != null)
-        {
-            ret = Integer.parseInt(node.getAttributes().getNamedItem("headDir").getNodeValue());
+            ret = Integer.parseInt(node.getAttributes().getNamedItem(key).getNodeValue());
         }
         return ret;
     }
@@ -281,6 +259,7 @@ public class AnimationLoader
             doc.getDocumentElement().normalize();
             NodeList modelList = doc.getElementsByTagName("model");
             int headDir = 2;
+            int headDir2 = 2;
             int headAxis = 2;
             int headAxis2 = 1;
             float[] headCaps = { -180, 180 };
@@ -311,9 +290,10 @@ public class AnimationLoader
                             offset = getOffset(part, offset);
                             scale = getScale(part, scale);
                             rotation = getRotation(part, rotation);
-                            headDir = getHeadDir(part, headDir);
-                            headAxis = getHeadAxis(part, 2);
-                            headAxis2 = getHeadAxis2(part, 0);
+                            headDir = getIntValue(part, "headDir", headDir);
+                            headDir2 = getIntValue(part, "headDir2", headDir2);
+                            headAxis = getIntValue(part, "headAxis", 2);
+                            headAxis2 = getIntValue(part, "headAxis2", 0);
                             addStrings("head", part, headNames);
                             addStrings("shear", part, shear);
                             addStrings("dye", part, dye);
@@ -345,9 +325,10 @@ public class AnimationLoader
                                 offset = getOffset(part, offset);
                                 scale = getScale(part, scale);
                                 rotation = getRotation(part, rotation);
-                                headDir = getHeadDir(part, headDir);
-                                headAxis = getHeadAxis(part, 2);
-                                headAxis2 = getHeadAxis2(part, 0);
+                                headDir = getIntValue(part, "headDir", headDir);
+                                headDir2 = getIntValue(part, "headDir2", headDir2);
+                                headAxis = getIntValue(part, "headAxis", 2);
+                                headAxis2 = getIntValue(part, "headAxis2", 0);
                                 addStrings("head", part, headNames);
                                 addStrings("shear", part, shear);
                                 addStrings("dye", part, dye);
@@ -464,7 +445,8 @@ public class AnimationLoader
 
                 if (loaded.model.imodel.getHeadInfo() != null)
                 {
-                    if (headDir != 2) loaded.model.imodel.getHeadInfo().headDirection = headDir;
+                    if (headDir != 2) loaded.model.imodel.getHeadInfo().yawDirection = headDir;
+                    if (headDir2 != 2) loaded.model.imodel.getHeadInfo().pitchDirection = headDir2;
                     loaded.model.imodel.getHeadInfo().yawAxis = headAxis;
                     loaded.model.imodel.getHeadInfo().pitchAxis = headAxis2;
                     loaded.model.imodel.getHeadInfo().yawCapMin = headCaps[0];

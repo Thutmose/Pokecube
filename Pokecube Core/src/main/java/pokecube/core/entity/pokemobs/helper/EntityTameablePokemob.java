@@ -5,10 +5,8 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -22,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
@@ -30,7 +27,6 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
-import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -40,10 +36,11 @@ import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import thut.api.entity.IMobColourable;
 import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
+import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityAnimal implements IPokemob, IInventoryChangedListener,
-        IShearable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IJumpingMount
+public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener, IShearable,
+        IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IJumpingMount, IPathingMob
 {
 
     protected boolean              looksWithInterest;
@@ -53,12 +50,12 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     protected boolean              isPokemonWet;
     protected float                timePokemonIsShaking;
     protected float                prevTimePokemonIsShaking;
-    public float                   length           = 1;
-    protected Vector3              here             = Vector3.getNewVector();
-    protected Vector3              vec              = Vector3.getNewVector();
-    protected Vector3              v1               = Vector3.getNewVector();
-    protected Vector3              v2               = Vector3.getNewVector();
-    protected Vector3              vBak             = Vector3.getNewVector();
+    public float                   length = 1;
+    protected Vector3              here   = Vector3.getNewVector();
+    protected Vector3              vec    = Vector3.getNewVector();
+    protected Vector3              v1     = Vector3.getNewVector();
+    protected Vector3              v2     = Vector3.getNewVector();
+    protected Vector3              vBak   = Vector3.getNewVector();
 
     protected final DefaultPokemob pokemobCap;
 
@@ -81,12 +78,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         return ret;
     }
 
-    @Override
-    public void displayMessageToOwner(ITextComponent message)
-    {
-        pokemobCap.displayMessageToOwner(message);
-    }
-
     /** Moved all of these into Tameable, to keep them together */
     @Override
     protected void entityInit()
@@ -104,64 +95,10 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         return (array & state) != 0;
     }
 
-    @Override
-    public String getPokemobTeam()
-    {
-        return pokemobCap.getPokemobTeam();
-    }
-
-    @Override
-    public void setPokemobTeam(String team)
-    {
-        pokemobCap.setPokemobTeam(team);
-    }
-
-    @Override
-    public ItemStack getHeldItemMainhand()
-    {
-        return super.getHeldItemMainhand();
-    }
-
-    @Override
-    public BlockPos getHome()
-    {
-        return pokemobCap.getHome();
-    }
-
-    @Override
-    public float getHomeDistance()
-    {
-        return pokemobCap.getHomeDistance();
-    }
-
     @SideOnly(Side.CLIENT)
     public float getInterestedAngle(float f)
     {
         return (headRotationOld + (headRotation - headRotationOld) * f) * 0.15F * (float) Math.PI;
-    }
-
-    @Override
-    public UUID getOriginalOwnerUUID()
-    {
-        return pokemobCap.getOriginalOwnerUUID();
-    }
-
-    @Override
-    public AnimalChest getPokemobInventory()
-    {
-        return pokemobCap.getPokemobInventory();
-    }
-
-    @Override
-    public EntityLivingBase getPokemonOwner()
-    {
-        return pokemobCap.getPokemonOwner();
-    }
-
-    @Override
-    public UUID getPokemonOwnerID()
-    {
-        return pokemobCap.getPokemonOwnerID();
     }
 
     @SideOnly(Side.CLIENT)
@@ -185,13 +122,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     /** returns true if a sheeps wool has been sheared */
     public boolean getSheared()
     {
-        return pokemobCap.getPokemonAIState(SHEARED);
-    }
-
-    @Override
-    public int getSpecialInfo()
-    {
-        return pokemobCap.getSpecialInfo();
+        return pokemobCap.getPokemonAIState(IPokemob.SHEARED);
     }
 
     @Override
@@ -200,12 +131,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         if (pokemobCap.getOwner() == this) { return this.getEntityWorld().getScoreboard()
                 .getPlayersTeam(this.getCachedUniqueIdString()); }
         return super.getTeam();
-    }
-
-    @Override
-    public boolean hasHomeArea()
-    {
-        return pokemobCap.hasHomeArea();
     }
 
     public void init(int nb)
@@ -230,7 +155,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         /** Checks if the pokedex entry has shears listed, if so, then apply to
          * any mod shears as well. */
         ItemStack key = new ItemStack(Items.SHEARS);
-        if (getPokedexEntry().interact(key))
+        if (pokemobCap.getPokedexEntry().interact(key))
         {
             long last = getEntityData().getLong("lastSheared");
 
@@ -267,7 +192,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
     public List<ItemStack> onSheared(ItemStack item, IBlockAccess world, BlockPos pos, int fortune)
     {
         ItemStack key = new ItemStack(Items.SHEARS);
-        if (getPokedexEntry().interact(key))
+        if (pokemobCap.getPokedexEntry().interact(key))
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
@@ -275,14 +200,15 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
             getEntityData().setLong("lastSheared", this.world.getTotalWorldTime());
 
             int i = 1 + rand.nextInt(3);
-            List<ItemStack> list = getPokedexEntry().getInteractResult(key);
+            List<ItemStack> list = pokemobCap.getPokedexEntry().getInteractResult(key);
 
             for (int j = 0; j < i; j++)
             {
                 for (ItemStack stack : list)
                 {
                     ItemStack toAdd = stack.copy();
-                    if (getPokedexEntry().dyeable) toAdd.setItemDamage(15 - getSpecialInfo() & 15);
+                    if (pokemobCap.getPokedexEntry().dyeable)
+                        toAdd.setItemDamage(15 - pokemobCap.getSpecialInfo() & 15);
                     ret.add(toAdd);
                 }
             }
@@ -302,23 +228,11 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
 
     public void openGUI(EntityPlayer player)
     {
-        if (!this.world.isRemote && (!this.isBeingRidden()) && this.getPokemonAIState(IMoveConstants.TAMED))
+        if (!this.world.isRemote && (!this.isBeingRidden()) && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
         {
             pokemobCap.getPokemobInventory().setCustomName(this.getDisplayName().getFormattedText());
             player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, world, getEntityId(), 0, 0);
         }
-    }
-
-    @Override
-    public void popFromPokecube()
-    {
-        pokemobCap.popFromPokecube();
-    }
-
-    @Override
-    public void returnToPokecube()
-    {
-        pokemobCap.returnToPokecube();
     }
 
     /** Will get destroyed next tick. */
@@ -328,63 +242,9 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IPok
         super.setDead();
     }
 
-    @Override
-    public void setHeldItem(ItemStack itemStack)
-    {
-        pokemobCap.setHeldItem(itemStack);
-    }
-
-    @Override
-    public void setHome(int x, int y, int z, int distance)
-    {
-        pokemobCap.setHome(x, y, z, distance);
-    }
-
-    @Override
-    public void setHp(float min)
-    {
-        pokemobCap.setHp(min);
-    }
-
-    @Override
-    public void setOriginalOwnerUUID(UUID original)
-    {
-        pokemobCap.setOriginalOwnerUUID(original);
-    }
-
-    @Override
-    public void setPokemonOwner(EntityLivingBase e)
-    {
-        pokemobCap.setPokemonOwner(e);
-    }
-
-    @Override
-    public void setPokemonOwner(UUID owner)
-    {
-        pokemobCap.setPokemonOwner(owner);
-    }
-
     /** make a sheep sheared if set to true */
     public void setSheared(boolean sheared)
     {
-        setPokemonAIState(SHEARED, sheared);
-    }
-
-    @Override
-    public void setSpecialInfo(int info)
-    {
-        pokemobCap.setSpecialInfo(info);
-    }
-
-    @Override
-    public void specificSpawnInit()
-    {
-        pokemobCap.specificSpawnInit();
-    }
-
-    @Override
-    public boolean isPlayerOwned()
-    {
-        return pokemobCap.isPlayerOwned();
+        pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, sheared);
     }
 }

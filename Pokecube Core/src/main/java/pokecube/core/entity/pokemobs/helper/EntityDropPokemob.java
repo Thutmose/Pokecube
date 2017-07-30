@@ -78,7 +78,7 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
         if (toDrop == CompatWrapper.nullStack) return;
 
         EntityItem drop = new EntityItem(this.getEntityWorld(), this.posX, this.posY + 0.5, this.posZ, toDrop);
-        this.getEntityWorld().spawnEntityInWorld(drop);
+        this.getEntityWorld().spawnEntity(drop);
         pokemobCap.setHeldItem(CompatWrapper.nullStack);
     }
 

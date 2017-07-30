@@ -3,12 +3,12 @@ package pokecube.core.entity.pokemobs;
 import javax.vecmath.Vector3f;
 
 import net.minecraft.entity.IEntityMultiPart;
-import net.minecraft.entity.boss.EntityDragonPart;
+import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
 
-public class EntityPokemobPart extends EntityDragonPart// implements IPokemob
+public class EntityPokemobPart extends MultiPartEntityPart// implements IPokemob
 {
     public final IPokemob      parent;
     public final Vector3f      offset;

@@ -74,14 +74,14 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             return false;
         }
-        else if (this.worldObj.isRemote)
+        else if (this.world.isRemote)
         {
             return false;
         }
         else
         {
-            this.entityAge = 0;
-            IPokemob sourceMob = CapabilityPokemob.getPokemobFor(source.getEntity());
+            this.idleTime = 0;
+            IPokemob sourceMob = CapabilityPokemob.getPokemobFor(source.getTrueSource());
             if (source.isExplosion() && sourceMob != null
                     && pokemobCap.isType(PokeType.getType("ghost"))) { return false; }
 
@@ -89,7 +89,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                     && PokecubeMod.core.getConfig().onlyPokemobsDamagePokemobs)
                 return false;
 
-            if (source.getEntity() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
+            if (source.getTrueSource() instanceof EntityPlayer && !(source instanceof PokemobDamageSource))
                 amount *= PokecubeMod.core.getConfig().playerToPokemobDamageScale;
 
             if (this.getHealth() <= 0.0F)
@@ -123,7 +123,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 }
 
                 this.attackedAtYaw = 0.0F;
-                Entity entity = source.getEntity();
+                Entity entity = source.getTrueSource();
 
                 if (entity != null)
                 {
@@ -151,9 +151,9 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
                 if (flag)
                 {
-                    this.worldObj.setEntityState(this, (byte) 2);
+                    this.world.setEntityState(this, (byte) 2);
 
-                    if (source != DamageSource.drown)
+                    if (source != DamageSource.DROWN)
                     {
                         this.setBeenAttacked();
                     }
@@ -202,7 +202,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
                 }
                 else
                 {
-                    SoundEvent s1 = this.getHurtSound();
+                    SoundEvent s1 = this.getHurtSound(source);
 
                     if (flag && s1 != null)
                     {
@@ -242,7 +242,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public void onKillEntity(EntityLivingBase attacked)
     {
-        if (worldObj.isRemote) return;
+        if (world.isRemote) return;
         IPokemob attacker = pokemobCap;
         IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
         if (PokecubeCore.core.getConfig().nonPokemobExp && attackedMob == null)

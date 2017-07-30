@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
+import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
 import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
@@ -16,15 +16,15 @@ import thut.api.maths.Vector3;
  * too well. For now this runs on the main thread. */
 public class LogicCollision extends LogicBase
 {
-    final EntityPokemobBase collider;
-    Vector3                 lastCheck     = Vector3.getNewVector();
-    Vector<AxisAlignedBB>   boxes;
-    int                     lastTickCheck = 0;
+    final EntityPokemob   collider;
+    Vector3               lastCheck     = Vector3.getNewVector();
+    Vector<AxisAlignedBB> boxes;
+    int                   lastTickCheck = 0;
 
     public LogicCollision(IPokemob pokemob_)
     {
         super(pokemob_);
-        collider = (EntityPokemobBase) entity;
+        collider = (EntityPokemob) pokemob.getEntity();
     }
 
     @Override
@@ -41,9 +41,9 @@ public class LogicCollision extends LogicBase
         Vector3 vec = Vector3.getNewVector();
         Vector3 vec2 = Vector3.getNewVector();
         List<AxisAlignedBB> aabbs;
-        double x = collider.getPokedexEntry().width * collider.getSize();
-        double z = collider.getPokedexEntry().length * collider.getSize();
-        double y = collider.getPokedexEntry().height * collider.getSize();
+        double x = pokemob.getPokedexEntry().width * pokemob.getSize();
+        double z = pokemob.getPokedexEntry().length * pokemob.getSize();
+        double y = pokemob.getPokedexEntry().height * pokemob.getSize();
         double v = vec.setToVelocity(collider).mag();
         vec.set(collider);
         vec2.set(x + v, y + v, z + v);

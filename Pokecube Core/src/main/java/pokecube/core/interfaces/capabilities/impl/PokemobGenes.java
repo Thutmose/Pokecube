@@ -583,10 +583,5 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
         setEVs(getEVs());
         
         setSize(getSize());
-
-        if (getEntity() instanceof IPokemob)
-        {
-            IPokemob.class.cast(getEntity()).onGenesChanged();
-        }
     }
 }

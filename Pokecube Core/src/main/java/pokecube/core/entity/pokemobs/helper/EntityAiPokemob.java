@@ -65,7 +65,7 @@ import pokecube.core.events.InitAIEvent;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.PokemobDamageSource;
@@ -115,15 +115,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean canBreatheUnderwater()
     {
-        return (getType1() == PokeType.getType("water") || getType2() == PokeType.getType("water")
-                || getPokedexEntry().shouldDive || getPokedexEntry().swims());
+        return (pokemobCap.getType1() == PokeType.getType("water") || pokemobCap.getType2() == PokeType.getType("water")
+                || pokemobCap.getPokedexEntry().shouldDive || pokemobCap.getPokedexEntry().swims());
     }
 
     @Override
     public void fall(float distance, float damageMultiplier)
     {
-        PokedexEntry entry = getPokedexEntry();
-        boolean canFloat = entry.floats() || entry.flys() || canUseFly();
+        PokedexEntry entry = pokemobCap.getPokedexEntry();
+        boolean canFloat = entry.floats() || entry.flys() || pokemobCap.canUseFly();
         if (distance > 4 + height) distance = 0;
         if (distance < 5) damageMultiplier = 0;
         if (!canFloat) super.fall(distance, damageMultiplier);
@@ -136,7 +136,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         if (aiObject == null)
         {
-            aiObject = AISaveHandler.instance().getAI(this);
+            aiObject = AISaveHandler.instance().getAI(pokemobCap);
         }
         return aiObject;
     }
@@ -150,23 +150,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public float getDirectionPitch()
-    {
-        return pokemobCap.getDirectionPitch();
-    }
-
-    @Override
     public EntityMoveHelper getMoveHelper()
     {
         if (mover != null) return mover;
         return super.getMoveHelper();
     }
 
-    @Override
-    public double getMovementSpeed()
-    {
-        return pokemobCap.getMovementSpeed();
-    }
     ////////////////////////// Death Related things////////////////////////
 
     @Override
@@ -189,13 +178,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
      *         should be added. */
     public ItemStack getPickedResult(RayTraceResult target)
     {
-        return ItemPokemobEgg.getEggStack(this);
-    }
-
-    @Override
-    public boolean getPokemonAIState(int state)
-    {
-        return pokemobCap.getPokemonAIState(state);
+        return ItemPokemobEgg.getEggStack(pokemobCap);
     }
 
     /////////////////// Movement related things///////////////////////////
@@ -220,7 +203,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             if (!this.inWater)
             {
-                if (!swims())
+                if (!pokemobCap.swims())
                 {
                     float f = MathHelper
                             .sqrt_double(this.motionX * this.motionX * 0.20000000298023224D
@@ -274,7 +257,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void init(int nb)
     {
         super.init(nb);
-        if (getEntityWorld() != null) initAI(getPokedexEntry());
+        if (getEntityWorld() != null) initAI(pokemobCap.getPokedexEntry());
     }
 
     protected void initAI(PokedexEntry entry)
@@ -314,15 +297,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         // Add in the various logic AIs that are needed on both client and
         // server.
-        aiStuff.addAILogic(new LogicInLiquid(this));
-        aiStuff.addAILogic(new LogicCollision(this));
+        aiStuff.addAILogic(new LogicInLiquid(pokemobCap));
+        aiStuff.addAILogic(new LogicCollision(pokemobCap));
         aiStuff.addAILogic(new LogicMovesUpdates(this));
         aiStuff.addAILogic(new LogicInMaterials(this));
         aiStuff.addAILogic(new LogicFloatFlySwim(this));
         aiStuff.addAILogic(new LogicMiscUpdate(this));
 
         // Controller is done separately for ease of locating it for controls.
-        aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(this));
+        aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(pokemobCap));
 
         if (worldObj.isRemote) return;
 
@@ -372,7 +355,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean isInWater()
     {
-        return getPokemonAIState(INWATER);
+        return pokemobCap.getPokemonAIState(IMoveConstants.INWATER);
     }
 
     @Override
@@ -395,7 +378,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             // The extra factor fixes tiny pokemon being unable to jump up one
             // block.
-            this.motionY += 0.5D + factor * 1 / getPokedexEntry().height;
+            this.motionY += 0.5D + factor * 1 / pokemobCap.getPokedexEntry().height;
 
             Potion jump = Potion.getPotionFromResourceLocation("jump_boost");
 
@@ -432,13 +415,13 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         double d0;
         if (isServerWorld())
         {
-            PokedexEntry entry = getPokedexEntry();
-            IPokemob transformed = CapabilityPokemob.getPokemobFor(getTransformedTo());
+            PokedexEntry entry = pokemobCap.getPokedexEntry();
+            IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemobCap.getTransformedTo());
             if (transformed != null)
             {
                 entry = transformed.getPokedexEntry();
             }
-            int aiState = getTotalAIState();
+            int aiState = pokemobCap.getTotalAIState();
             boolean isAbleToFly = entry.floats() || entry.flys();
             boolean isWaterMob = entry.swims();
             boolean shouldGoDown = false;
@@ -457,25 +440,25 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             }
             if (!(shouldGoDown || shouldGoUp) && entry.floats())
             {
-                setDirectionPitch(0);
+                pokemobCap.setDirectionPitch(0);
             }
             if (!(shouldGoDown || shouldGoUp) && entry.flys())
             {
-                setDirectionPitch(0);
+                pokemobCap.setDirectionPitch(0);
             }
             if (!(shouldGoDown || shouldGoUp) && entry.swims())
             {
-                setDirectionPitch(0);
+                pokemobCap.setDirectionPitch(0);
             }
-            if ((getAIState(SLEEPING, aiState) || getStatus() == STATUS_SLP || getStatus() == STATUS_FRZ)
-                    && isAbleToFly)
+            if ((getAIState(IMoveConstants.SLEEPING, aiState) || pokemobCap.getStatus() == IMoveConstants.STATUS_SLP
+                    || pokemobCap.getStatus() == IMoveConstants.STATUS_FRZ) && isAbleToFly)
                 shouldGoDown = true;
 
             if (this.isInWater())
             {
                 d0 = this.posY;
                 float f2 = 0.1F;
-                float f6 = swims() ? 2.5f : 1;
+                float f6 = pokemobCap.swims() ? 2.5f : 1;
                 float f4;
                 float f3 = f2 * f6;
 
@@ -602,7 +585,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         this.motionY = 0.0D;
                     }
                 }
-                else if (!isAbleToFly || this.getAIState(SITTING, aiState) || this.getAIState(SLEEPING, aiState))
+                else if (!isAbleToFly || this.getAIState(IMoveConstants.SITTING, aiState)
+                        || this.getAIState(IMoveConstants.SLEEPING, aiState))
                 {
                     this.motionY -= 0.08D;
                 }
@@ -663,10 +647,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     * MathHelper.cos(this.rotationPitch * (float) Math.PI / 180.0F);
             float f5 = MathHelper.cos(this.rotationYaw * (float) Math.PI / 180.0F)
                     * MathHelper.cos(this.rotationPitch * (float) Math.PI / 180.0F);
-            float f6 = -MathHelper.sin(getDirectionPitch() * (float) Math.PI / 180.0F);
+            float f6 = -MathHelper.sin(pokemobCap.getDirectionPitch() * (float) Math.PI / 180.0F);
             this.motionX += strafe * f5 - forward * f4;
             this.motionZ += forward * f5 + strafe * f4;
-            this.motionY += (f6 * getMovementSpeed());
+            this.motionY += (f6 * pokemobCap.getMovementSpeed());
         }
     }
 
@@ -708,14 +692,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             captureDrops = true;
             capturedDrops.clear();
 
-            boolean shadowDrop = (this.isShadow() && this.getLevel() < 40);
+            boolean shadowDrop = (pokemobCap.isShadow() && pokemobCap.getLevel() < 40);
 
             if (this.canDropLoot() && this.worldObj.getGameRules().getBoolean("doMobLoot") && !shadowDrop)
             {
                 this.dropFewItems(this.recentlyHit > 0, i);
                 this.dropEquipment(this.recentlyHit > 0, i);
 
-                if (recentlyHit > 0 && !getPokemonAIState(IPokemob.TAMED))
+                if (recentlyHit > 0 && !pokemobCap.getPokemonAIState(IPokemob.TAMED))
                 {
                     int i1 = this.getExperiencePoints(this.attackingPlayer);
                     i1 = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i1);
@@ -745,14 +729,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     protected void onDeathUpdate()
     {
-        if (!PokecubeCore.isOnClientSide() && getPokemonAIState(IMoveConstants.TAMED))
+        if (!PokecubeCore.isOnClientSide() && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
         {
-            HappinessType.applyHappiness(this, HappinessType.FAINT);
-            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own", getPokemonDisplayName());
-            displayMessageToOwner(mess);
-            returnToPokecube();
+            HappinessType.applyHappiness(pokemobCap, HappinessType.FAINT);
+            ITextComponent mess = new TextComponentTranslation("pokemob.action.faint.own",
+                    pokemobCap.getPokemonDisplayName());
+            pokemobCap.displayMessageToOwner(mess);
+            pokemobCap.returnToPokecube();
         }
-        if (!getPokemonAIState(IMoveConstants.TAMED))
+        if (!pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
         {
             AISaveHandler.instance().removeAI(this);
             if (this.getHeldItemMainhand() != CompatWrapper.nullStack) PokecubeItems.deValidate(getHeldItemMainhand());
@@ -782,12 +767,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void onUpdate()
     {
-        if (getPokedexEntry().floats() || getPokedexEntry().flys()) fallDistance = 0;
-        dimension = worldObj.provider.getDimension();
+        if (pokemobCap.getPokedexEntry().floats() || pokemobCap.getPokedexEntry().flys()) fallDistance = 0;
+        dimension = getEntityWorld().provider.getDimension();
         super.onUpdate();
         for (ILogicRunnable logic : aiStuff.aiLogic)
         {
-            logic.doServerTick(worldObj);
+            logic.doServerTick(getEntityWorld());
         }
         if (egg != null && egg.isDead)
         {
@@ -806,7 +791,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
 
         }
-        if (isWet() && !(this.canUseSurf()))
+        if (isWet() && !(pokemobCap.canUseSurf()))
         {
             isPokemonShaking = true;
             isPokemonWet = false;
@@ -824,7 +809,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 prevTimePokemonIsShaking = 0.0F;
                 timePokemonIsShaking = 0.0F;
             }
-            if (timePokemonIsShaking > 0.4F && !swims())
+            if (timePokemonIsShaking > 0.4F && !pokemobCap.swims())
             {
                 float f = (float) posY;
                 int i = (int) (MathHelper.sin((timePokemonIsShaking - 0.4F) * (float) Math.PI) * 7F);
@@ -836,25 +821,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     worldObj.spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2, motionX,
                             motionY, motionZ);
                 }
-            }
-        }
-    }
-
-    @Override
-    public void popFromPokecube()
-    {
-        super.popFromPokecube();
-        if (getEntityWorld().isRemote) return;
-        this.playSound(this.getSound(), 0.5f, 1);
-        if (this.isShiny())
-        {
-            Vector3 particleLoc = Vector3.getNewVector();
-            for (int i = 0; i < 20; ++i)
-            {
-                particleLoc.set(posX + rand.nextFloat() * width * 2.0F - width, posY + 0.5D + rand.nextFloat() * height,
-                        posZ + rand.nextFloat() * width * 2.0F - width);
-                PokecubeMod.core.spawnParticle(getEntityWorld(), EnumParticleTypes.VILLAGER_HAPPY.getParticleName(),
-                        particleLoc, null);
             }
         }
     }
@@ -874,15 +840,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public void onSetTarget(EntityLivingBase entity)
-    {
-        pokemobCap.onSetTarget(entity);
-    }
-
-    @Override
     public void setAttackTarget(EntityLivingBase entity)
     {
-        if (entity != null && entity.equals(this.getPokemonOwner())) { return; }
+        if (entity != null && entity.equals(pokemobCap.getPokemonOwner())) { return; }
         if (entity != null && entity.equals(this)) { return; }
         super.setAttackTarget(entity);
     }
@@ -892,19 +852,23 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         if (addedToChunk)
         {
-            PokecubeSerializer.getInstance().removePokemob(this);
+            PokecubeSerializer.getInstance().removePokemob(pokemobCap);
             AISaveHandler.instance().removeAI(this);
-            if (getAbility() != null)
+
+            // TODO move this to an event listener.
+            if (pokemobCap.getAbility() != null)
             {
-                getAbility().destroy();
+                pokemobCap.getAbility().destroy();
             }
-            if (getHome() != null && getHome().getY() > 0 && worldObj.isAreaLoaded(getHome(), 2))
+
+            if (pokemobCap.getHome() != null && pokemobCap.getHome().getY() > 0
+                    && getEntityWorld().isAreaLoaded(pokemobCap.getHome(), 2))
             {
-                TileEntity te = worldObj.getTileEntity(getHome());
+                TileEntity te = getEntityWorld().getTileEntity(pokemobCap.getHome());
                 if (te != null && te instanceof TileEntityNest)
                 {
                     TileEntityNest nest = (TileEntityNest) te;
-                    nest.removeResident(this);
+                    nest.removeResident(pokemobCap);
                 }
             }
         }
@@ -912,21 +876,15 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public void setDirectionPitch(float pitch)
-    {
-        pokemobCap.setDirectionPitch(pitch);
-    }
-
-    @Override
     public void setJumping(boolean jump)
     {
         if (!worldObj.isRemote)
         {
-            setPokemonAIState(JUMPING, jump);
+            pokemobCap.setPokemonAIState(IMoveConstants.JUMPING, jump);
         }
         else
         {
-            isJumping = getPokemonAIState(JUMPING);
+            isJumping = pokemobCap.getPokemonAIState(IMoveConstants.JUMPING);
         }
     }
 
@@ -934,25 +892,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public void setMoveForward(float forward)
     {
         this.moveForward = forward;
-    }
-
-    @Override
-    public void setPokemonAIState(int state, boolean flag)
-    {
-        pokemobCap.setPokemonAIState(state, flag);
-    }
-
-    @Override
-    protected void updateAITasks()
-    {
-        super.updateAITasks();
-    }
-
-    @Override
-    /** main AI tick function, replaces updateEntityActionState */
-    protected void updateAITick()
-    {
-        super.updateAITick();
     }
 
     @Override
@@ -1004,29 +943,5 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     public boolean selfManaged()
     {
         return pokemobCap.selfManaged();
-    }
-
-    @Override
-    public int getTotalAIState()
-    {
-        return pokemobCap.getTotalAIState();
-    }
-
-    @Override
-    public void setTotalAIState(int state)
-    {
-        pokemobCap.setTotalAIState(state);
-    }
-
-    @Override
-    public int getTargetID()
-    {
-        return pokemobCap.getTargetID();
-    }
-
-    @Override
-    public void setTargetID(int id)
-    {
-        pokemobCap.setTargetID(id);
     }
 }

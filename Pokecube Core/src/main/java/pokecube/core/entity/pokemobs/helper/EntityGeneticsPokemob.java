@@ -7,11 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.abilities.Ability;
 import pokecube.core.entity.pokemobs.genetics.genes.ColourGene;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.Nature;
 import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.IMobGenetics;
 
@@ -30,96 +26,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     public void init(int nb)
     {
         super.init(nb);
-    }
-
-    @Override
-    public Ability getAbility()
-    {
-        return pokemobCap.getAbility();
-    }
-
-    @Override
-    public int getAbilityIndex()
-    {
-        return pokemobCap.getAbilityIndex();
-    }
-
-    @Override
-    public void setAbility(Ability ability)
-    {
-        pokemobCap.setAbility(ability);
-    }
-
-    @Override
-    public void setAbilityIndex(int ability)
-    {
-        pokemobCap.setAbilityIndex(ability);
-    }
-
-    @Override
-    public float getSize()
-    {
-        return pokemobCap.getSize();
-    }
-
-    @Override
-    public void setIVs(byte[] ivs)
-    {
-        pokemobCap.setIVs(ivs);
-    }
-
-    @Override
-    public void setEVs(byte[] evs)
-    {
-        pokemobCap.setEVs(evs);
-    }
-
-    @Override
-    public byte[] getEVs()
-    {
-        return pokemobCap.getEVs();
-    }
-
-    @Override
-    public byte[] getIVs()
-    {
-        return pokemobCap.getIVs();
-    }
-
-    @Override
-    public String[] getMoves()
-    {
-        return pokemobCap.getMoves();
-    }
-
-    @Override
-    public void setMove(int i, String moveName)
-    {
-        pokemobCap.setMove(i, moveName);
-    }
-
-    @Override
-    public void setNature(Nature nature)
-    {
-        pokemobCap.setNature(nature);
-    }
-
-    @Override
-    public Nature getNature()
-    {
-        return pokemobCap.getNature();
-    }
-
-    @Override
-    public void setMoves(String[] moves)
-    {
-        pokemobCap.setMoves(moves);
-    }
-
-    @Override
-    public void setSize(float size)
-    {
-        pokemobCap.setSize(size);
     }
 
     @Override
@@ -156,43 +62,6 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
         }
     }
 
-    @Override
-    public boolean isShiny()
-    {
-        return pokemobCap.isShiny();
-    }
-
-    @Override
-    public void setShiny(boolean shiny)
-    {
-        pokemobCap.setShiny(shiny);
-    }
-
-    @Override
-    public PokedexEntry getPokedexEntry()
-    {
-        return pokemobCap.getPokedexEntry();
-    }
-
-    @Override
-    public IPokemob setPokedexEntry(PokedexEntry newEntry)
-    {
-        return pokemobCap.setPokedexEntry(newEntry);
-    }
-
-    @Override
-    public byte getSexe()
-    {
-        return pokemobCap.getSexe();
-    }
-
-    @Override
-    public void setSexe(byte sexe)
-    {
-        pokemobCap.setSexe(sexe);
-    }
-
-    @Override
     public void onGenesChanged()
     {
         genesColour = null;
@@ -203,6 +72,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
     @Override
     public void writeSpawnData(ByteBuf data)
     {
+        this.onGenesChanged();
         pokemobCap.onGenesChanged();
         IMobGenetics genes = getCapability(IMobGenetics.GENETICS_CAP, null);
         PacketBuffer buffer = new PacketBuffer(data);
@@ -225,6 +95,7 @@ public abstract class EntityGeneticsPokemob extends EntityTameablePokemob
             IMobGenetics.GENETICS_CAP.readNBT(genes, null, list);
             pokemobCap.readPokemobData(buffer.readNBTTagCompoundFromBuffer());
             pokemobCap.onGenesChanged();
+            this.onGenesChanged();
         }
         catch (Exception e)
         {

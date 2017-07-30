@@ -81,15 +81,14 @@ import thut.lib.CompatWrapper;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    private GuardAI            guardAI;
-    public LogicMountedControl controller;
-    private AIStuff            aiStuff;
+    private GuardAI           guardAI;
+    private AIStuff           aiStuff;
 
-    private PokeNavigator      navi;
-    private PokemobMoveHelper  mover;
-    private boolean            popped         = false;
-    private PokemobAI          aiObject;
-    private boolean            isAFish        = false;
+    private PokeNavigator     navi;
+    private PokemobMoveHelper mover;
+    private boolean           popped  = false;
+    private PokemobAI         aiObject;
+    private boolean           isAFish = false;
 
     public EntityAiPokemob(World world)
     {
@@ -324,7 +323,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         aiStuff.addAILogic(new LogicMiscUpdate(this));
 
         // Controller is done separately for ease of locating it for controls.
-        pokemobCap.controller = controller = new LogicMountedControl(this);
+        aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(this));
 
         if (worldObj.isRemote) return;
 
@@ -769,7 +768,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             onGround = true;
         }
-        controller.doServerTick(worldObj);
         super.onLivingUpdate();
         if (isServerWorld() && isPokemonShaking && !isPokemonWet && !hasPath() && onGround)
         {

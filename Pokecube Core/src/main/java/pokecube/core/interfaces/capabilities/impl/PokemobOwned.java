@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import pokecube.core.PokecubeCore;
+import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.client.gui.GuiInfoMessages;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.database.stats.StatsCollector;
@@ -42,7 +43,6 @@ import thut.lib.CompatWrapper;
 
 public abstract class PokemobOwned extends PokemobAI implements IInventoryChangedListener
 {
-
     @Override
     public void displayMessageToOwner(ITextComponent message)
     {
@@ -413,5 +413,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public boolean isPlayerOwned()
     {
         return this.getPokemonAIState(IMoveConstants.TAMED) && players;
+    }
+
+    @Override
+    public LogicMountedControl getController()
+    {
+        return controller;
     }
 }

@@ -99,6 +99,9 @@ public class ItemPokedex extends Item
             message = CommandTools.makeTranslatedMessage("pokedex.locationinfo2", "green",
                     Pokedex.getInstance().getEntries().size());
             playerIn.addChatMessage(message);
+            message = CommandTools.makeTranslatedMessage("pokedex.locationinfo3", "green",
+                    Pokedex.getInstance().getRegisteredEntries().size());
+            playerIn.addChatMessage(message);
         }
 
         if (!playerIn.isSneaking()) showGui(playerIn);

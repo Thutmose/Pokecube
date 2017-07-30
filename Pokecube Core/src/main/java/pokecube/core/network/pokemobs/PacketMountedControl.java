@@ -9,17 +9,19 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
-import pokecube.core.entity.pokemobs.helper.EntityAiPokemob;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PacketMountedControl implements IMessage, IMessageHandler<PacketMountedControl, IMessage>
 {
-    private static final byte FORWARD = 1;
-    private static final byte BACK    = 2;
-    private static final byte LEFT    = 4;
-    private static final byte RIGHT   = 8;
-    private static final byte UP      = 16;
-    private static final byte DOWN    = 32;
+    private static final byte FORWARD  = 1;
+    private static final byte BACK     = 2;
+    private static final byte LEFT     = 4;
+    private static final byte RIGHT    = 8;
+    private static final byte UP       = 16;
+    private static final byte DOWN     = 32;
+    private static final byte SYNCLOOK = 64;
 
     int                       entityId;
     byte                      message;
@@ -34,6 +36,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
         if (controller.rightInputDown) packet.message += RIGHT;
         if (controller.upInputDown) packet.message += UP;
         if (controller.downInputDown) packet.message += DOWN;
+        if (controller.followOwnerLook) packet.message += SYNCLOOK;
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
@@ -81,15 +84,17 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
             player = ctx.getServerHandler().playerEntity;
         }
         Entity mob = player.getEntityWorld().getEntityByID(message.entityId);
-        if (mob != null && mob instanceof EntityAiPokemob)
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        if (pokemob != null && pokemob.getController() != null)
         {
-            LogicMountedControl controller = ((EntityAiPokemob) mob).controller;
+            LogicMountedControl controller = pokemob.getController();
             controller.forwardInputDown = (message.message & FORWARD) > 0;
             controller.backInputDown = (message.message & BACK) > 0;
             controller.leftInputDown = (message.message & LEFT) > 0;
             controller.rightInputDown = (message.message & RIGHT) > 0;
             controller.upInputDown = (message.message & UP) > 0;
             controller.downInputDown = (message.message & DOWN) > 0;
+            controller.followOwnerLook = (message.message & SYNCLOOK) > 0;
         }
     }
 }

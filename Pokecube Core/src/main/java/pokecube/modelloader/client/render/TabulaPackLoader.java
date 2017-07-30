@@ -123,7 +123,7 @@ public class TabulaPackLoader extends AnimationLoader
             }
             model.getHeadInfo().yawCapMin = headCap[0];
             model.getHeadInfo().yawCapMax = headCap[1];
-            model.getHeadInfo().headDirection = headDir;
+            model.getHeadInfo().yawDirection = headDir;
             model.getHeadInfo().pitchCapMin = headCap1[0];
             model.getHeadInfo().pitchCapMax = headCap1[1];
             model.getHeadInfo().pitchAxis = 0;
@@ -254,8 +254,8 @@ public class TabulaPackLoader extends AnimationLoader
                                 offset = getOffset(part, offset);
                                 scale = getScale(part, scale);
                                 rotation = getRotation(part, rotation);
-                                headAxis = getHeadAxis(part, headAxis);
-                                headDir = getHeadDir(part, headDir);
+                                headAxis = getIntValue(part, "headAxis", headAxis);
+                                headDir = getIntValue(part, "headDir", headDir);
                                 headDir = Math.min(1, headDir);
                                 headDir = Math.max(-1, headDir);
 
@@ -302,8 +302,8 @@ public class TabulaPackLoader extends AnimationLoader
                             offset = getOffset(part, offset);
                             scale = getScale(part, scale);
                             rotation = getRotation(part, rotation);
-                            headDir = getHeadDir(part, headDir);
-                            headAxis = getHeadAxis(part, 1);
+                            headDir = getIntValue(part, "headDir", headDir);
+                            headAxis = getIntValue(part, "headAxis", 1);
                             Set<String> toAdd = Sets.newHashSet();
                             addStrings("head", part, toAdd);
                             ArrayList<String> temp = new ArrayList<String>(toAdd);
@@ -424,7 +424,7 @@ public class TabulaPackLoader extends AnimationLoader
             }
             model.getHeadInfo().yawCapMin = headCap[0];
             model.getHeadInfo().yawCapMax = headCap[1];
-            model.getHeadInfo().headDirection = headDir;
+            model.getHeadInfo().yawDirection = headDir;
             model.getHeadInfo().pitchCapMin = headCap1[0];
             model.getHeadInfo().pitchCapMax = headCap1[1];
             model.getHeadInfo().pitchAxis = 0;

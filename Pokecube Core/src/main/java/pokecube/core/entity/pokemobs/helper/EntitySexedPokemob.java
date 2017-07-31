@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.world.World;
 import thut.api.entity.IBreedingMob;
 
@@ -28,7 +27,8 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     @Override
     public EntityAgeable createChild(EntityAgeable var1)
     {
-        return this.spawnBabyAnimal((EntityAnimal) var1);
+        // TODO possibly check the IPokemob and return and egg?
+        return null;
     }
 
     @Override
@@ -42,16 +42,5 @@ public abstract class EntitySexedPokemob extends EntityStatsPokemob
     public boolean isInLove()
     {
         return loveTimer > 0 || lover != null;
-    }
-
-    @Override
-    public void resetInLove()
-    {
-    }
-
-    // @Override
-    public EntityAnimal spawnBabyAnimal(EntityAnimal entityanimal)
-    {
-        return null;
     }
 }

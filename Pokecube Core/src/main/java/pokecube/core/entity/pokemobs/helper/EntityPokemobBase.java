@@ -124,12 +124,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-    }
-
-    @Override
     public SoundEvent getAmbientSound()
     {
         return pokemobCap.getPokedexEntry().getSoundEvent();
@@ -198,6 +192,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected float getSoundVolume()
     {
+        // TODO possible config for this?
         return 0.15F;
     }
 

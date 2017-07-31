@@ -24,10 +24,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
 
     public int        counterMount = 0;
 
-    protected boolean pokemobJumping;
-
-    protected float   jumpPower;
-
     public EntityMountablePokemob(World world)
     {
         super(world);
@@ -43,11 +39,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
             counterMount = 0;
         }
         return super.attackEntityFrom(source, i);
-    }
-
-    public boolean checkHunger()
-    {
-        return false;
     }
 
     /** Returns the Y offset from the entity's position for any entity riding
@@ -69,19 +60,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     {
         double ret = yOffset;
         return ret;// - 1.6F;
-    }
-
-    public boolean isPokemobJumping()
-    {
-        return this.pokemobJumping;
-    }
-
-    /** Returns true if the entity is riding another entity, used by render to
-     * rotate the legs to be in 'sit' position for players. */
-    @Override
-    public boolean isRiding()
-    {
-        return super.isRiding();
     }
 
     @Override
@@ -111,12 +89,6 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
     public boolean shouldDismountInWater(Entity rider)
     {
         return !pokemobCap.canUseDive();
-    }
-
-    /** main AI tick function, replaces updateEntityActionState */
-    protected void updateAITick()
-    {
-
     }
 
     @Override

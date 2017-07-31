@@ -19,7 +19,7 @@ public abstract class Ability
         return damage;
     }
 
-    /** Called when the pokemob is set to dead. */
+    /** Ensure to call this if your entity is ever set dead. */
     public void destroy()
     {
     }

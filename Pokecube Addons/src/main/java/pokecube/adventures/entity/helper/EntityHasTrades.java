@@ -108,14 +108,15 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         int i = 3 + this.rand.nextInt(4);
         if (recipe.getRewardsExp())
         {
-            this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY + 0.5D, this.posZ, i));
+            this.getEntityWorld().spawnEntityInWorld(
+                    new EntityXPOrb(this.getEntityWorld(), this.posX, this.posY + 0.5D, this.posZ, i));
         }
     }
 
     @Override
     public void verifySellingItem(ItemStack stack)
     {
-        if (!this.worldObj.isRemote && this.livingSoundTime > -this.getTalkInterval() + 20)
+        if (!this.getEntityWorld().isRemote && this.livingSoundTime > -this.getTalkInterval() + 20)
         {
             this.livingSoundTime = -this.getTalkInterval();
 

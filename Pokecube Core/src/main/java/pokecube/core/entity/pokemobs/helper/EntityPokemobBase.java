@@ -54,9 +54,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
     private EntityPokemobPart[] partsArray;
 
-    public Matrix3              mainBox;
-    private Vector3             offset       = Vector3.getNewVector();
-
     private float               nextStepDistance;
 
     public EntityPokemobBase(World world)
@@ -269,7 +266,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             AxisAlignedBB box = mainBox.getBoundingBox();
             AxisAlignedBB box1 = box.expand(2 + x, 2 + y, 2 + z);
             box1 = box1.addCoord(motionX, motionY, motionZ);
-            aabbs = mainBox.getCollidingBoxes(box1, worldObj, worldObj);
+            aabbs = mainBox.getCollidingBoxes(box1, getEntityWorld(), getEntityWorld());
             // Matrix3.mergeAABBs(aabbs, x/2, y/2, z/2);
             Matrix3.expandAABBs(aabbs, box);
             if (box.getAverageEdgeLength() < 3) Matrix3.mergeAABBs(aabbs, 0.01, 0.01, 0.01);
@@ -290,9 +287,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (!this.addedToChunk) return;
         boolean normalSize = this.height > 0.5 && this.width < 1 && this.width > 0.25 && this.length < 1
                 && this.length > 0.25;
-        if (!multibox || normalSize || mainBox == null)
+        if (pokemobCap.mainBox == null) pokemobCap.setSize(pokemobCap.getSize());
+        if (!multibox || normalSize || pokemobCap.mainBox == null)
         {
-            if (mainBox == null) pokemobCap.setSize(pokemobCap.getSize());
             this.noClip = false;
             super.moveEntity(type, x, y, z);
             return;
@@ -300,7 +297,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         else if (aabbs != null)
         {
             double x0 = x, y0 = y, z0 = z;
-            IBlockAccess world = worldObj;
+            IBlockAccess world = getEntityWorld();
             Vector3 diffs = Vector3.getNewVector();
             diffs.set(x, y, z);
             boolean multi = false;
@@ -332,17 +329,18 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             }
             else
             {
-                mainBox.boxMin().clear();
-                mainBox.boxMax().x = pokemobCap.getPokedexEntry().width * pokemobCap.getSize();
-                mainBox.boxMax().z = pokemobCap.getPokedexEntry().length * pokemobCap.getSize();
-                mainBox.boxMax().y = pokemobCap.getPokedexEntry().height * pokemobCap.getSize();
-                offset.set(-mainBox.boxMax().x / 2, 0, -mainBox.boxMax().z / 2);
-                double ar = mainBox.boxMax().x / mainBox.boxMax().z;
-                if (ar > 2 || ar < 0.5) mainBox.set(2, mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
-                mainBox.addOffsetTo(offset).addOffsetTo(here);
-                this.setEntityBoundingBox(mainBox.getBoundingBox());
+                pokemobCap.mainBox.boxMin().clear();
+                pokemobCap.mainBox.boxMax().x = pokemobCap.getPokedexEntry().width * pokemobCap.getSize();
+                pokemobCap.mainBox.boxMax().z = pokemobCap.getPokedexEntry().length * pokemobCap.getSize();
+                pokemobCap.mainBox.boxMax().y = pokemobCap.getPokedexEntry().height * pokemobCap.getSize();
+                pokemobCap.offset.set(-pokemobCap.mainBox.boxMax().x / 2, 0, -pokemobCap.mainBox.boxMax().z / 2);
+                double ar = pokemobCap.mainBox.boxMax().x / pokemobCap.mainBox.boxMax().z;
+                if (ar > 2 || ar < 0.5)
+                    pokemobCap.mainBox.set(2, pokemobCap.mainBox.rows[2].set(0, 0, (-rotationYaw) * Math.PI / 180));
+                pokemobCap.mainBox.addOffsetTo(pokemobCap.offset).addOffsetTo(here);
+                this.setEntityBoundingBox(pokemobCap.mainBox.getBoundingBox());
                 getTileCollsionBoxes();
-                diffs.set(mainBox.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
+                diffs.set(pokemobCap.mainBox.doTileCollision(world, aabbs, this, Vector3.empty, diffs, false));
                 x = diffs.x;
                 y = diffs.y;
                 z = diffs.z;
@@ -361,7 +359,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             double newY = y + yOff + dy;
             double size = Math.max(pokemobCap.getSize() * pokemobCap.getPokedexEntry().length, 3);
             Vector3 dir = Vector3.getNewVector().set(x, newY, z).norm().scalarMult(size);
-            boolean border = worldObj.getWorldBorder().contains(getEntityBoundingBox().offset(dir.x, dir.y, dir.z));
+            boolean border = getEntityWorld().getWorldBorder()
+                    .contains(getEntityBoundingBox().offset(dir.x, dir.y, dir.z));
             if (!border)
             {
                 x = newY = z = 0;
@@ -381,7 +380,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
             this.onGround = y0 != y && y0 <= 0.0D;
             this.isCollided = this.isCollidedHorizontally || this.isCollidedVertically;
             BlockPos blockpos = getPosition().down();
-            IBlockState state = worldObj.getBlockState(blockpos);
+            IBlockState state = getEntityWorld().getBlockState(blockpos);
             Block block1 = state.getBlock();
 
             this.updateFallState(y, this.onGround, state, blockpos);
@@ -399,7 +398,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
 
                 if (block1 != null && this.onGround)
                 {
-                    block1.onEntityCollidedWithBlock(this.worldObj, blockpos, state, this);
+                    block1.onEntityCollidedWithBlock(this.getEntityWorld(), blockpos, state, this);
                 }
 
                 this.distanceWalkedModified = (float) (this.distanceWalkedModified
@@ -493,7 +492,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         double dt = (System.nanoTime() - time) / 10e3D;
         average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
         double toolong = 500;
-        if (PokecubeMod.debug && dt > toolong && !worldObj.isRemote)
+        if (PokecubeMod.debug && dt > toolong && !getEntityWorld().isRemote)
         {
             here.set(here.getPos());
             String toLog = "%3$s took %2$s\u00B5s to tick, it is located at %1$s, the average has been %4$s\u00B5s";
@@ -534,7 +533,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     public World getWorld()
     {
-        return worldObj;
+        return getEntityWorld();
     }
 
     @Override
@@ -553,7 +552,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void addEntityCrashInfo(CrashReportCategory category)
     {
         super.addEntityCrashInfo(category);
-        category.addCrashSection("World:", worldObj == null ? "NULL" : worldObj.toString());
+        category.addCrashSection("World:", getEntityWorld() == null ? "NULL" : getEntityWorld().toString());
         category.addCrashSection("Owner:",
                 pokemobCap.getPokemonOwnerID() == null ? "NULL" : pokemobCap.getPokemonOwnerID().toString());
         Thread.dumpStack();

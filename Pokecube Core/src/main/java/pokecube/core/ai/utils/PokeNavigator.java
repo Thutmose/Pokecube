@@ -164,6 +164,15 @@ public class PokeNavigator extends PathNavigate
         {
             ret = pathfinder.getPathHeapToEntity(this.theEntity, entity, this.getPathSearchRange());
         }
+        if (ret != null)
+        {
+            for (int i = 0; i < ret.getCurrentPathLength(); i++)
+            {
+                PathPoint p = ret.getPathPointFromIndex(i);
+                BlockPos pos = new BlockPos(p.xCoord, p.yCoord + 5, p.zCoord);
+                theEntity.getEntityWorld().setBlockState(pos, Blocks.GOLD_BLOCK.getDefaultState());
+            }
+        }
         return ret;
     }
 
@@ -202,21 +211,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean isDirectPathBetweenPoints(Vec3d start, Vec3d end, int sizeX, int sizeY, int sizeZ)
     {
-        // if (true)
         return false;
-        // v.set(start);
-        // v1.set(end);
-        // Vector3 dir = v1.subtract(v);
-        // double dist = dir.mag();
-        // dir.scalarMultBy(1 / dist);
-        // IPathingMob pather = (IPathingMob) pokemob;
-        // for (int i = 0; i < dist; i++)
-        // {
-        // v1.set(v).add(dir.x * i, dir.y * i - 1, dir.z * i);
-        // if ((!canFly && pather.getBlockPathWeight(worldObj, v1) >= 40)
-        // || !pather.fits(worldObj, v1.addTo(0, 1, 0), null)) { return false; }
-        // }
-        // return true;
     }
 
     /** Returns true if the entity is in water or lava, false otherwise */
@@ -236,96 +231,13 @@ public class PokeNavigator extends PathNavigate
     @Override
     public void onUpdateNavigation()
     {
-        ++this.totalTicks;
-        if (this.tryUpdatePath)
-        {
-            this.updatePath();
-        }
-        if (!this.noPath())
-        {
-            if (this.canNavigate())
-            {
-                this.pathFollow();
-            }
-            else if (this.currentPath != null
-                    && this.currentPath.getCurrentPathIndex() < this.currentPath.getCurrentPathLength())
-            {
-                Vec3d vec3d = this.getEntityPosition();
-                Vec3d vec3d1 = this.currentPath.getVectorFromIndex(this.theEntity,
-                        this.currentPath.getCurrentPathIndex());
-
-                if (vec3d.yCoord > vec3d1.yCoord && !this.theEntity.onGround
-                        && MathHelper.floor_double(vec3d.xCoord) == MathHelper.floor_double(vec3d1.xCoord)
-                        && MathHelper.floor_double(vec3d.zCoord) == MathHelper.floor_double(vec3d1.zCoord))
-                {
-                    this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
-                }
-            }
-            if (!this.noPath())
-            {
-                Vec3d vec3d2 = this.currentPath.getPosition(this.theEntity);
-                if (vec3d2 != null)
-                {
-                    BlockPos blockpos = (new BlockPos(vec3d2)).down();
-                    PathPoint point = this.currentPath.getPathPointFromIndex(this.currentPath.getCurrentPathIndex());
-                    double dx = 0, dy = 0, dz = 0;
-                    if (point instanceof thut.api.pathing.PathPoint)
-                    {
-                        thut.api.pathing.PathPoint pointT = (thut.api.pathing.PathPoint) point;
-                        dx = pointT.x - pointT.xCoord;
-                        dy = pointT.y - pointT.yCoord;
-                        dz = pointT.z - pointT.zCoord;
-                    }
-                    AxisAlignedBB axisalignedbb = this.worldObj.getBlockState(blockpos).getBoundingBox(this.worldObj,
-                            blockpos);
-                    vec3d2 = vec3d2.subtract(0.0D, 1.0D - axisalignedbb.maxY, 0.0D);
-                    this.theEntity.getMoveHelper().setMoveTo(vec3d2.xCoord + dx, vec3d2.yCoord + dy, vec3d2.zCoord + dz,
-                            this.speed);
-                }
-            }
-        }
+        super.onUpdateNavigation();
     }
 
     @Override
     public void pathFollow()
     {
-        Vec3d vec3d = this.getEntityPosition();
-        int i = this.currentPath.getCurrentPathLength();
-
-        for (int j = this.currentPath.getCurrentPathIndex(); j < this.currentPath.getCurrentPathLength(); ++j)
-        {
-            if ((double) this.currentPath.getPathPointFromIndex(j).yCoord != Math.floor(vec3d.yCoord))
-            {
-                i = j;
-                break;
-            }
-        }
-
-        this.maxDistanceToWaypoint = this.theEntity.width > 0.75F ? this.theEntity.width / 2.0F : 1f;
-        Vec3d vec3d1 = this.currentPath.getCurrentPos();
-
-        if (MathHelper.abs((float) (this.theEntity.posX - (vec3d1.xCoord + 0.5D))) < this.maxDistanceToWaypoint
-                && MathHelper.abs((float) (this.theEntity.posZ - (vec3d1.zCoord + 0.5D))) < this.maxDistanceToWaypoint
-                && Math.abs(this.theEntity.posY - vec3d1.yCoord) < 0.75D)
-        {
-            this.currentPath.setCurrentPathIndex(this.currentPath.getCurrentPathIndex() + 1);
-        }
-
-        int k = MathHelper.ceiling_float_int(this.theEntity.width);
-        int l = MathHelper.ceiling_float_int(this.theEntity.height);
-        int i1 = k;
-
-        for (int j1 = i - 1; j1 >= this.currentPath.getCurrentPathIndex(); --j1)
-        {
-            if (this.isDirectPathBetweenPoints(vec3d, this.currentPath.getVectorFromIndex(this.theEntity, j1), k, l,
-                    i1))
-            {
-                this.currentPath.setCurrentPathIndex(j1);
-                break;
-            }
-        }
-
-        this.checkForStuck(vec3d);
+        super.pathFollow();
     }
 
     public void refreshCache()
@@ -336,20 +248,7 @@ public class PokeNavigator extends PathNavigate
     @Override
     public void removeSunnyPath()
     {
-        if (!this.worldObj.canBlockSeeSky(new BlockPos(MathHelper.floor_double(this.theEntity.posX),
-                (int) (this.theEntity.posY + 0.5D), MathHelper.floor_double(this.theEntity.posZ))))
-        {
-            for (int i = 0; i < this.getPath().getCurrentPathLength(); ++i)
-            {
-                PathPoint pathpoint = this.getPath().getPathPointFromIndex(i);
-
-                if (this.worldObj.canBlockSeeSky(new BlockPos(pathpoint.xCoord, pathpoint.yCoord, pathpoint.zCoord)))
-                {
-                    this.getPath().setCurrentPathLength(i - 1);
-                    return;
-                }
-            }
-        }
+        super.removeSunnyPath();
     }
 
     /** sets the active path data if path is 100% unique compared to old path,

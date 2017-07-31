@@ -137,15 +137,16 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += (rand.nextDouble() - 0.5) * width;
                 loc.y += rand.nextDouble();
                 loc.z += (rand.nextDouble() - 0.5) * width;
-                PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.WATER_BUBBLE.getParticleName(), loc,
-                        vel);
+                PokecubeMod.core.spawnParticle(entity.getEntityWorld(),
+                        EnumParticleTypes.WATER_BUBBLE.getParticleName(), loc, vel);
             }
             if (sealTag.getBoolean("Flames"))
             {
                 loc.x += (rand.nextDouble() - 0.5) * width;
                 loc.y += rand.nextDouble();
                 loc.z += (rand.nextDouble() - 0.5) * width;
-                PokecubeMod.core.spawnParticle(entity.worldObj, EnumParticleTypes.FLAME.getParticleName(), loc, vel);
+                PokecubeMod.core.spawnParticle(entity.getEntityWorld(), EnumParticleTypes.FLAME.getParticleName(), loc,
+                        vel);
             }
             // *
             if (sealTag.getBoolean("Leaves"))
@@ -156,7 +157,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += rand.nextGaussian() / 2;
                 loc.y += rand.nextGaussian() / 2;
                 loc.z += rand.nextGaussian() / 2;
-                PokecubeMod.core.spawnParticle(entity.worldObj, "leaf", loc, vel);
+                PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "leaf", loc, vel);
             }
             if (sealTag.hasKey("dye"))
             {
@@ -166,7 +167,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
                 loc.x += width * rand.nextGaussian() / 2;
                 loc.y += width * rand.nextGaussian() / 2;
                 loc.z += width * rand.nextGaussian() / 2;
-                PokecubeMod.core.spawnParticle(entity.worldObj, "powder", loc, vel,
+                PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "powder", loc, vel,
                         ItemDye.DYE_COLORS[sealTag.getInteger("dye")] | 0xFF000000);
             }
         }

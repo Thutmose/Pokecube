@@ -132,15 +132,16 @@ public class RenderHealth
                         && entity.isInRangeToRender3d(renderingVector.getX(), renderingVector.getY(),
                                 renderingVector.getZ())
                         && (entity.ignoreFrustumCheck || frustum.isBoundingBoxInFrustum(entity.getEntityBoundingBox()))
-                        && entity.isEntityAlive() && entity.getRecursivePassengers().isEmpty()) try
-                {
+                        && entity.isEntityAlive() && entity.getRecursivePassengers().isEmpty())
+                    try
+                    {
                     renderHealthBar((EntityLivingBase) entity, partialTicks, cameraEntity);
-                }
-                catch (Exception e)
-                {
+                    }
+                    catch (Exception e)
+                    {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                }
+                    }
         }
     }
 
@@ -432,7 +433,7 @@ public class RenderHealth
                 lookVector.yCoord * finalDistance, lookVector.zCoord * finalDistance);
 
         Entity lookedEntity = null;
-        List<Entity> entitiesInBoundingBox = e.worldObj
+        List<Entity> entitiesInBoundingBox = e.getEntityWorld()
                 .getEntitiesWithinAABBExcludingEntity(e,
                         e.getEntityBoundingBox().addCoord(lookVector.xCoord * finalDistance,
                                 lookVector.yCoord * finalDistance, lookVector.zCoord * finalDistance)
@@ -482,7 +483,7 @@ public class RenderHealth
         Vec3d look = e.getLookVec();
         if (look == null) return null;
 
-        return raycast(e.worldObj, vec, look, len);
+        return raycast(e.getEntityWorld(), vec, look, len);
     }
 
     public static RayTraceResult raycast(World world, Vec3d origin, Vec3d ray, double len)

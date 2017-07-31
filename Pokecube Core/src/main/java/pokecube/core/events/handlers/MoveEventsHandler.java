@@ -487,7 +487,7 @@ public class MoveEventsHandler
         for (int i = 0; i < 3; ++i)
         {
             particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.worldObj, "mobSpell", particleLoc, vel);
+            PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "mobSpell", particleLoc, vel);
         }
     }
 
@@ -503,7 +503,7 @@ public class MoveEventsHandler
         for (i = 0; i < 3; ++i)
         {
             particleLoc.set(entity.posX, entity.posY + 0.5D + rand.nextFloat() * entity.height, entity.posZ);
-            PokecubeMod.core.spawnParticle(entity.worldObj, "mobSpell", particleLoc, vel);
+            PokecubeMod.core.spawnParticle(entity.getEntityWorld(), "mobSpell", particleLoc, vel);
         }
     }
 }

@@ -89,7 +89,7 @@ public class ParticleFlow extends MoveAnimationBase
                     temp1.set(factor * (0.5 - rand.nextDouble()), factor * (0.5 - rand.nextDouble()),
                             factor * (0.5 - rand.nextDouble()));
                 }
-                PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle,
+                PokecubeCore.proxy.spawnParticle(info.attacker.getEntityWorld(), particle,
                         source.add(temp.scalarMult(i).addTo(temp1)), null, rgba, particleLife);
             }
         }

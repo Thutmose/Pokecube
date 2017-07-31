@@ -75,9 +75,7 @@ public class PokedexEntry
 
     public static class EvolutionData
     {
-        public String             biome        = "";
         public SpawnBiomeMatcher  matcher      = null;
-        public String             data_old;
         public Evolution          data;
         public boolean            dayOnly      = false;
         public final PokedexEntry evolution;
@@ -103,13 +101,6 @@ public class PokedexEntry
             evolution = evol;
         }
 
-        public EvolutionData(PokedexEntry evol, String data, String FX)
-        {
-            this(evol);
-            this.FX = FX;
-            this.data_old = data;
-        }
-
         public Entity getEvolution(World world)
         {
             if (evolution == null) return null;
@@ -130,8 +121,6 @@ public class PokedexEntry
 
         private void parse(Evolution data)
         {
-            // PokecubeMod.log("Parsing for NEW " + preEvolution + " -> " +
-            // evolution);
             if (data.level != null) this.level = data.level;
             if (data.location != null) this.matcher = new SpawnBiomeMatcher(data.location);
             if (data.animation != null) this.FX = data.animation;
@@ -240,7 +229,7 @@ public class PokedexEntry
             {
                 ret = ret && mob.getHappiness() >= 220;
             }
-            if (ret && !biome.isEmpty())
+            if (ret && matcher != null)
             {
                 ret = ret && isInBiome(mob);
             }

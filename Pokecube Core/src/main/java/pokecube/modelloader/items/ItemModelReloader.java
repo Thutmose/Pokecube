@@ -29,7 +29,6 @@ import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntryLoader;
 import pokecube.core.database.PokedexEntryLoader.Evolution;
 import pokecube.core.database.PokedexEntryLoader.Key;
-import pokecube.core.database.PokedexEntryLoader.SpawnRule;
 import pokecube.core.database.PokedexEntryLoader.StatsNode;
 import pokecube.core.database.PokedexEntryLoader.XMLDatabase;
 import pokecube.core.database.PokedexEntryLoader.XMLMegaRule;
@@ -129,40 +128,6 @@ public class ItemModelReloader extends Item
                                         if (d.move != null && !d.move.isEmpty()) evol.move = d.move;
                                         if (d.FX != null && !d.FX.isEmpty() && !d.FX.equals("3") && !d.FX.equals("_"))
                                             evol.animation = d.FX;
-                                        if (d.biome != null && !d.biome.isEmpty())
-                                        {
-                                            evol.location = new SpawnRule();
-
-                                            String types = "";
-                                            String blacklist = "";
-                                            String biomes = "";
-
-                                            String[] args = d.biome.split("`");
-                                            for (String arg : args)
-                                            {
-                                                if (arg.startsWith("T"))
-                                                {
-                                                    if (!types.isEmpty()) types += ", ";
-                                                    types += arg.substring(1);
-                                                }
-                                                else if (arg.startsWith("B"))
-                                                {
-                                                    if (!blacklist.isEmpty()) blacklist += ", ";
-                                                    blacklist += arg.substring(1);
-                                                }
-                                                else
-                                                {
-                                                    if (!biomes.isEmpty()) biomes += ", ";
-                                                    biomes += arg;
-                                                }
-                                            }
-
-                                            if (!types.isEmpty()) evol.location.values.put(new QName("types"), types);
-                                            if (!blacklist.isEmpty())
-                                                evol.location.values.put(new QName("typesBlacklist"), blacklist);
-                                            if (!biomes.isEmpty())
-                                                evol.location.values.put(new QName("biomes"), biomes);
-                                        }
                                         if (d.randomFactor != 1) evol.chance = d.randomFactor;
                                         if (d.item != null && CompatWrapper.isValid(d.item))
                                         {

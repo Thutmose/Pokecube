@@ -398,7 +398,7 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
             {
                 EntityPlayer player = (EntityPlayer) entity;
 
-                if (player.worldObj.isRemote)
+                if (player.getEntityWorld().isRemote)
                 {
                     // This fixes jitter, need a better way to handle this.
                     Minecraft.getMinecraft().gameSettings.viewBobbing = false;
@@ -410,12 +410,12 @@ public class BlockCloner extends BlockRotatable implements ITileEntityProvider
                 }
                 // Meed to set floatingTickCount to prevent being kicked for
                 // flying.
-                if (!player.capabilities.isCreativeMode && !player.worldObj.isRemote)
+                if (!player.capabilities.isCreativeMode && !player.getEntityWorld().isRemote)
                 {
                     EntityPlayerMP entityplayer = (EntityPlayerMP) player;
                     if (collidedY) entityplayer.connection.floatingTickCount = 0;
                 }
-                else if (player.worldObj.isRemote)
+                else if (player.getEntityWorld().isRemote)
                 {
                 }
             }

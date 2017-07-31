@@ -93,7 +93,7 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
         if (getRidingEntity() != null)
         {
             rotationYaw = getRidingEntity().rotationYaw;
-            if (this.getAttackTarget() != null && !worldObj.isRemote)
+            if (this.getAttackTarget() != null && !getEntityWorld().isRemote)
             {
                 this.dismountRidingEntity();
                 counterMount = 0;

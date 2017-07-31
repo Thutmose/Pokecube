@@ -38,8 +38,8 @@ import thut.api.maths.Vector3;
 import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
-public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener,
-        IShearable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IPathingMob
+public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener, IShearable,
+        IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IPathingMob
 {
 
     protected boolean              looksWithInterest;
@@ -49,12 +49,12 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
     protected boolean              isPokemonWet;
     protected float                timePokemonIsShaking;
     protected float                prevTimePokemonIsShaking;
-    public float                   length           = 1;
-    protected Vector3              here             = Vector3.getNewVector();
-    protected Vector3              vec              = Vector3.getNewVector();
-    protected Vector3              v1               = Vector3.getNewVector();
-    protected Vector3              v2               = Vector3.getNewVector();
-    protected Vector3              vBak             = Vector3.getNewVector();
+    public float                   length = 1;
+    protected Vector3              here   = Vector3.getNewVector();
+    protected Vector3              vec    = Vector3.getNewVector();
+    protected Vector3              v1     = Vector3.getNewVector();
+    protected Vector3              v2     = Vector3.getNewVector();
+    protected Vector3              vBak   = Vector3.getNewVector();
 
     protected final DefaultPokemob pokemobCap;
 
@@ -158,7 +158,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         {
             long last = getEntityData().getLong("lastSheared");
 
-            if (last < worldObj.getTotalWorldTime() - 800 && !worldObj.isRemote)
+            if (last < getEntityWorld().getTotalWorldTime() - 800 && !getEntityWorld().isRemote)
             {
                 setSheared(false);
             }
@@ -196,7 +196,7 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
 
-            getEntityData().setLong("lastSheared", worldObj.getTotalWorldTime());
+            getEntityData().setLong("lastSheared", getEntityWorld().getTotalWorldTime());
 
             int i = 1 + rand.nextInt(3);
             List<ItemStack> list = pokemobCap.getPokedexEntry().getInteractResult(key);
@@ -206,7 +206,8 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
                 for (ItemStack stack : list)
                 {
                     ItemStack toAdd = stack.copy();
-                    if (pokemobCap.getPokedexEntry().dyeable) toAdd.setItemDamage(15 - pokemobCap.getSpecialInfo() & 15);
+                    if (pokemobCap.getPokedexEntry().dyeable)
+                        toAdd.setItemDamage(15 - pokemobCap.getSpecialInfo() & 15);
                     ret.add(toAdd);
                 }
             }
@@ -226,10 +227,11 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
 
     public void openGUI(EntityPlayer player)
     {
-        if (!this.worldObj.isRemote && (!this.isBeingRidden()) && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
+        if (!this.getEntityWorld().isRemote && (!this.isBeingRidden())
+                && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
         {
             pokemobCap.getPokemobInventory().setCustomName(this.getDisplayName().getFormattedText());
-            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, worldObj, getEntityId(), 0, 0);
+            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, getEntityWorld(), getEntityId(), 0, 0);
         }
     }
 

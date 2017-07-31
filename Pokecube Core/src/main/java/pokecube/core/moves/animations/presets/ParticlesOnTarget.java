@@ -35,7 +35,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
         if (info.attacked != null) dw = info.attacked.width;
         float width = this.width * dw;
         temp.addTo(rand.nextGaussian() * width, rand.nextGaussian() * width, rand.nextGaussian() * width);
-        PokecubeMod.core.spawnParticle(info.attacker.worldObj, particle, temp, null, rgba);
+        PokecubeMod.core.spawnParticle(info.attacker.getEntityWorld(), particle, temp, null, rgba);
     }
 
     @Override

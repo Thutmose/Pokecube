@@ -74,7 +74,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         {
             return false;
         }
-        else if (this.worldObj.isRemote)
+        else if (this.getEntityWorld().isRemote)
         {
             return false;
         }
@@ -151,7 +151,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
 
                 if (flag)
                 {
-                    this.worldObj.setEntityState(this, (byte) 2);
+                    this.getEntityWorld().setEntityState(this, (byte) 2);
 
                     if (source != DamageSource.drown)
                     {
@@ -242,7 +242,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Override
     public void onKillEntity(EntityLivingBase attacked)
     {
-        if (worldObj.isRemote) return;
+        if (getEntityWorld().isRemote) return;
         IPokemob attacker = pokemobCap;
         IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
         if (PokecubeCore.core.getConfig().nonPokemobExp && attackedMob == null)

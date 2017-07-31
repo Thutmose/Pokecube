@@ -82,7 +82,7 @@ public class SphericalFunction extends MoveAnimationBase
         {
             setVector(i, temp);
             temp.scalarMultBy(scale).addTo(source);
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, temp, null, rgba, particleLife);
+            PokecubeCore.proxy.spawnParticle(info.attacker.getEntityWorld(), particle, temp, null, rgba, particleLife);
         }
     }
 

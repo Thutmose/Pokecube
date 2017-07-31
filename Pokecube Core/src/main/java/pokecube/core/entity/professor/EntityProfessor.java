@@ -84,7 +84,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
             EntityPlayer player = (EntityPlayer) e;
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemLuckyEgg)
             {
-                if (!this.worldObj.isRemote)
+                if (!this.getEntityWorld().isRemote)
                 {
                     if (this.type == ProfessorType.PROFESSOR) this.type = ProfessorType.HEALER;
                     else if (this.type == ProfessorType.HEALER) this.type = ProfessorType.PROFESSOR;
@@ -137,7 +137,7 @@ public class EntityProfessor extends EntityAgeable implements IEntityAdditionalS
     // 1.10
     public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack)
     {
-        if (!worldObj.isRemote && hand == EnumHand.MAIN_HAND)
+        if (!getEntityWorld().isRemote && hand == EnumHand.MAIN_HAND)
         {
             if (type == ProfessorType.PROFESSOR)
             {

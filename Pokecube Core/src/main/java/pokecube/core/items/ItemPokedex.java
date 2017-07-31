@@ -55,7 +55,7 @@ public class ItemPokedex extends Item
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemstack, World world, EntityPlayer player,
             EnumHand hand)
     {
-        if (!world.isRemote) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(player), player.worldObj);
+        if (!world.isRemote) SpawnHandler.refreshTerrain(Vector3.getNewVector().set(player), player.getEntityWorld());
         if (!player.isSneaking())
         {
             showGui(player);

@@ -253,8 +253,8 @@ public abstract class PokemobBase implements IPokemob
     BlockPos                       homePos;
 
     List<AxisAlignedBB>            aabbs            = null;
-    protected Matrix3              mainBox          = new Matrix3();
-    protected Vector3              offset           = Vector3.getNewVector();
+    public Matrix3                 mainBox          = new Matrix3();
+    public Vector3                 offset           = Vector3.getNewVector();
 
     protected float                length;
     // Essential Capabilites Objects

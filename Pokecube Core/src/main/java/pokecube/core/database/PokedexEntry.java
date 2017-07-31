@@ -374,7 +374,7 @@ public class PokedexEntry
             if (data.hasKey("lastInteract"))
             {
                 long time = data.getLong("lastInteract");
-                long diff = entity.worldObj.getTotalWorldTime() - time;
+                long diff = entity.getEntityWorld().getTotalWorldTime() - time;
                 if (diff < 100) { return false; }
             }
             ItemStack stack = getStackKey(held);
@@ -395,7 +395,7 @@ public class PokedexEntry
                 return false;
             }
             if (!doInteract) return true;
-            data.setLong("lastInteract", entity.worldObj.getTotalWorldTime());
+            data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime());
             List<ItemStack> results = stacks.get(stack);
             int index = player.getRNG().nextInt(results.size());
             ItemStack result = results.get(index).copy();

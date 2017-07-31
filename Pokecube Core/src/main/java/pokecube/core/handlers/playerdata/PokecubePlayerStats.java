@@ -122,7 +122,7 @@ public class PokecubePlayerStats extends PlayerData
         EntityPlayer player = PokecubeCore.proxy.getPlayer(uuid);
         if (player == null || tag == null) return;
 
-        if (player.worldObj.isRemote)
+        if (player.getEntityWorld().isRemote)
         {
             initAchievements(getManager(uuid));
             return;

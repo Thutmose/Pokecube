@@ -62,7 +62,7 @@ public class ParticleBeam extends MoveAnimationBase
         double frac = dist * info.currentTick / getDuration();
         Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
         for (double i = frac; i < dist; i += 0.1)
-            PokecubeCore.proxy.spawnParticle(info.attacker.worldObj, particle, source.add(temp.scalarMult(i)), null,
+            PokecubeCore.proxy.spawnParticle(info.attacker.getEntityWorld(), particle, source.add(temp.scalarMult(i)), null,
                     rgba, particleLife);
     }
 

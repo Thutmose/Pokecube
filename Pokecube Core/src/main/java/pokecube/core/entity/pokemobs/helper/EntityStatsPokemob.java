@@ -28,7 +28,6 @@ import pokecube.core.events.KillEvent;
 import pokecube.core.events.SpawnEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -326,16 +325,6 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
         else
         {
             setAttackTarget(null);
-        }
-    }
-
-    @Override
-    public void onUpdate()
-    {
-        super.onUpdate();
-        if (Math.random() > 0.999 && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
-        {
-            HappinessType.applyHappiness(pokemobCap, HappinessType.TIME);
         }
     }
 

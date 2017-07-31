@@ -125,12 +125,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     }
 
     @Override
-    protected void entityInit()
-    {
-        super.entityInit();
-    }
-
-    @Override
     public SoundEvent getAmbientSound()
     {
         return pokemobCap.getPokedexEntry().getSoundEvent();
@@ -199,6 +193,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     @Override
     protected float getSoundVolume()
     {
+        // TODO possible config for this?
         return 0.15F;
     }
 
@@ -285,8 +280,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void move(MoverType type, double x, double y, double z)
     {
         if (!this.addedToChunk) return;
-        boolean normalSize = this.height > 0.5 && this.width < 1 && this.width > 0.25 && this.length < 1
-                && this.length > 0.25;
+        boolean normalSize = this.height > 0.125 && this.width < 2 && this.width > 0.125 && this.length < 2
+                && this.length > 0.125;
         float max = Math.max(width, length);
         float min = Math.min(width, length);
         if (max / min < 2) normalSize = true;

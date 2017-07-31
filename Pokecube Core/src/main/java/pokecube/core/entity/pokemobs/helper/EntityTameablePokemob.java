@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.IJumpingMount;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
@@ -27,10 +26,8 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeItems;
-import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import thut.api.entity.IMobColourable;
@@ -76,13 +73,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
     {
         Entity ret = super.changeDimension(dimensionIn);
         return ret;
-    }
-
-    /** Moved all of these into Tameable, to keep them together */
-    @Override
-    protected void entityInit()
-    {
-        super.entityInit();
     }
 
     /** Used to get the state without continually looking up in dataManager.
@@ -138,11 +128,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         looksWithInterest = false;
     }
 
-    public boolean isChested()
-    {
-        return true;
-    }
-
     @Override
     protected boolean isMovementBlocked()
     {
@@ -177,15 +162,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
     // 1.10
     public void onInventoryChanged(InventoryBasic inventory)
     {
-    }
-
-    @Override
-    /** Called frequently so the entity can update its state every tick as
-     * required. For example, zombies and skeletons use this to react to
-     * sunlight and start to burn. */
-    public void onLivingUpdate()
-    {
-        super.onLivingUpdate();
     }
 
     @Override
@@ -224,23 +200,6 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         super.onUpdate();
         portalCounter = -1000;// TODO replace this with actual dupe fix for
                               // nether portals.
-    }
-
-    public void openGUI(EntityPlayer player)
-    {
-        if (!this.getEntityWorld().isRemote && (!this.isBeingRidden())
-                && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
-        {
-            pokemobCap.getPokemobInventory().setCustomName(this.getDisplayName().getFormattedText());
-            player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, getEntityWorld(), getEntityId(), 0, 0);
-        }
-    }
-
-    /** Will get destroyed next tick. */
-    @Override
-    public void setDead()
-    {
-        super.setDead();
     }
 
     /** make a sheep sheared if set to true */

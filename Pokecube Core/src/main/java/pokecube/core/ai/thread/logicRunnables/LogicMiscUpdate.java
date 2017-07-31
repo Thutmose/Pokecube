@@ -14,6 +14,7 @@ import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -66,6 +67,13 @@ public class LogicMiscUpdate extends LogicBase
 
         // Check and tick inventory
         if (!world.isRemote) checkInventory(world);
+
+        // Randomly increase happiness for being outside of pokecube.
+        if (Math.random() > 0.999 && pokemob.getPokemonAIState(IMoveConstants.TAMED))
+        {
+            HappinessType.applyHappiness(pokemob, HappinessType.TIME);
+        }
+
         for (int i = 0; i < 5; i++)
         {
             flavourAmounts[i] = pokemob.getFlavourAmount(i);

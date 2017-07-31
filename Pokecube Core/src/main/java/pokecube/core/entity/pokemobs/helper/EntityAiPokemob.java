@@ -56,7 +56,6 @@ import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.AISaveHandler;
-import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobJumpHelper;
@@ -84,35 +83,17 @@ import thut.lib.CompatWrapper;
 public abstract class EntityAiPokemob extends EntityMountablePokemob
 {
 
-    private GuardAI           guardAI;
-    private AIStuff           aiStuff;
-
-    private PokeNavigator     navi;
-    private PokemobMoveHelper mover;
-    private PokemobAI         aiObject;
-
     public EntityAiPokemob(World world)
     {
         super(world);
         here = Vector3.getNewVector();
     }
 
-    ///////////////////////////////////////// Init
-    ///////////////////////////////////////// things///////////////////////////////
-
-    @Override
-    public boolean attackEntityAsMob(Entity par1Entity)
-    {
-        return super.attackEntityAsMob(par1Entity);
-    }
-
     @Override
     public void attackEntityWithRangedAttack(EntityLivingBase p_82196_1_, float p_82196_2_)
     {
+        // TODO decide if I want to do something here?
     }
-
-    ///////////////////////////////////// AI
-    ///////////////////////////////////// States///////////////////////////////
 
     @Override
     public boolean canBreatheUnderwater()
@@ -131,18 +112,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (!canFloat) super.fall(distance, damageMultiplier);
     }
 
-    ////////////////// Things which happen every tick///////////////////////////
-
-    /** @return the aiObject */
-    public PokemobAI getAiObject()
-    {
-        if (aiObject == null)
-        {
-            aiObject = AISaveHandler.instance().getAI(pokemobCap);
-        }
-        return aiObject;
-    }
-
     /** Checks if the entity's current position is a valid location to spawn
      * this entity. */
     @Override
@@ -154,7 +123,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public EntityMoveHelper getMoveHelper()
     {
-        if (mover != null) return mover;
+        if (pokemobCap.mover != null) return pokemobCap.mover;
         return super.getMoveHelper();
     }
 
@@ -163,7 +132,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public PathNavigate getNavigator()
     {
-        if (navi != null) return navi;
+        if (pokemobCap.navi != null) return pokemobCap.navi;
 
         return super.getNavigator();
     }
@@ -190,7 +159,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     /** Get number of ticks, at least during which the living entity will be
      * silent. */
     public int getTalkInterval()
-    {
+    {// TODO config option for this maybe?
         return 400;
     }
 
@@ -262,10 +231,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     protected void initAI(PokedexEntry entry)
     {
-        pokemobCap.navi = navi = new PokeNavigator(this, getEntityWorld());
-        pokemobCap.mover = mover = new PokemobMoveHelper(this);
+        pokemobCap.navi = new PokeNavigator(this, getEntityWorld());
+        pokemobCap.mover = new PokemobMoveHelper(this);
         jumpHelper = new PokemobJumpHelper(this);
-        pokemobCap.aiStuff = aiStuff = new AIStuff(this);
+        pokemobCap.aiStuff = new AIStuff(this);
 
         float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
@@ -276,8 +245,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
         // Add in the vanilla like AI methods.
-        this.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
-        this.tasks.addTask(5, pokemobCap.guardAI = guardAI);
+        pokemobCap.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
+        this.tasks.addTask(5, pokemobCap.guardAI);
         this.tasks.addTask(5, pokemobCap.utilMoveAI = new PokemobAIUtilityMove(this));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
         if (PokecubeCore.core.getConfig().pokemobsOnShoulder)
@@ -286,34 +255,35 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
         // Add in the various logic AIs that are needed on both client and
         // server.
-        aiStuff.addAILogic(new LogicInLiquid(pokemobCap));
-        aiStuff.addAILogic(new LogicCollision(pokemobCap));
-        aiStuff.addAILogic(new LogicMovesUpdates(this));
-        aiStuff.addAILogic(new LogicInMaterials(this));
-        aiStuff.addAILogic(new LogicFloatFlySwim(this));
-        aiStuff.addAILogic(new LogicMiscUpdate(this));
+        pokemobCap.aiStuff.addAILogic(new LogicInLiquid(pokemobCap));
+        pokemobCap.aiStuff.addAILogic(new LogicCollision(pokemobCap));
+        pokemobCap.aiStuff.addAILogic(new LogicMovesUpdates(this));
+        pokemobCap.aiStuff.addAILogic(new LogicInMaterials(this));
+        pokemobCap.aiStuff.addAILogic(new LogicFloatFlySwim(this));
+        pokemobCap.aiStuff.addAILogic(new LogicMiscUpdate(this));
 
         // Controller is done separately for ease of locating it for controls.
-        aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(pokemobCap));
+        pokemobCap.aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(pokemobCap));
 
         if (getEntityWorld().isRemote) return;
 
         // Add in the Custom type of AI tasks.
-        aiStuff.addAITask(new AIAttack(this).setPriority(200));
-        aiStuff.addAITask(new AICombatMovement(this).setPriority(250));
+        pokemobCap.aiStuff.addAITask(new AIAttack(this).setPriority(200));
+        pokemobCap.aiStuff.addAITask(new AICombatMovement(this).setPriority(250));
         if (!entry.isStationary)
         {
-            aiStuff.addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
-                    .setPriority(400));
+            pokemobCap.aiStuff
+                    .addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
+                            .setPriority(400));
         }
-        aiStuff.addAITask(new AIGuardEgg(this).setPriority(250));
-        aiStuff.addAITask(new AIMate(this).setPriority(300));
-        aiStuff.addAITask(new AIHungry(this, new EntityItem(getEntityWorld()), 16).setPriority(300));
+        pokemobCap.aiStuff.addAITask(new AIGuardEgg(this).setPriority(250));
+        pokemobCap.aiStuff.addAITask(new AIMate(this).setPriority(300));
+        pokemobCap.aiStuff.addAITask(new AIHungry(this, new EntityItem(getEntityWorld()), 16).setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);
-        aiStuff.addAITask(ai.setPriority(350));
-        aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
-        aiStuff.addAITask(new AIIdle(this).setPriority(500));
-        aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
+        pokemobCap.aiStuff.addAITask(ai.setPriority(350));
+        pokemobCap.aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
+        pokemobCap.aiStuff.addAITask(new AIIdle(this).setPriority(500));
+        pokemobCap.aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
 
         // Send notification event of AI initilization, incase anyone wants to
         // affect it.
@@ -411,6 +381,12 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         boolean isAbleToFly = entry.floats() || entry.flys();
         boolean isWaterMob = entry.swims();
 
+        if (!(isAbleToFly || (isWaterMob && isInWater())))
+        {
+            super.travel(strafe, up, forward);
+            return;
+        }
+
         if (this.isServerWorld() || this.canPassengerSteer())
         {
             if (!this.isInWater())
@@ -479,8 +455,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         if (!this.world.isRemote || this.world.isBlockLoaded(blockpos$pooledmutableblockpos)
                                 && this.world.getChunkFromBlockCoords(blockpos$pooledmutableblockpos).isLoaded())
                         {
-                            if (!this.hasNoGravity() && (!isAbleToFly || this.getAIState(IMoveConstants.SITTING, aiState)
-                                    || this.getAIState(IMoveConstants.SLEEPING, aiState)))
+                            if (!this.hasNoGravity()
+                                    && (!isAbleToFly || this.getAIState(IMoveConstants.SITTING, aiState)
+                                            || this.getAIState(IMoveConstants.SLEEPING, aiState)))
                             {
                                 this.motionY -= 0.08D;
                             }
@@ -544,7 +521,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     f1 += (0.54600006F - f1) * f3 / 3.0F;
                     f2 += (this.getAIMoveSpeed() - f2) * f3 / 3.0F;
                 }
-
                 this.moveRelative(strafe, up, forward, f2);
                 this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= (double) f1;
@@ -719,7 +695,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         if (pokemobCap.getPokedexEntry().floats() || pokemobCap.getPokedexEntry().flys()) fallDistance = 0;
         dimension = getEntityWorld().provider.getDimension();
         super.onUpdate();
-        for (ILogicRunnable logic : aiStuff.aiLogic)
+        for (ILogicRunnable logic : pokemobCap.aiStuff.aiLogic)
         {
             logic.doServerTick(getEntityWorld());
         }
@@ -767,8 +743,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 {
                     float f1 = (rand.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
                     float f2 = (rand.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
-                    getEntityWorld().spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2, motionX,
-                            motionY, motionZ);
+                    getEntityWorld().spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2,
+                            motionX, motionY, motionZ);
                 }
             }
         }
@@ -803,13 +779,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         {
             PokecubeSerializer.getInstance().removePokemob(pokemobCap);
             AISaveHandler.instance().removeAI(this);
-
-            // TODO move this to an event listener.
-            if (pokemobCap.getAbility() != null)
-            {
-                pokemobCap.getAbility().destroy();
-            }
-
             if (pokemobCap.getHome() != null && pokemobCap.getHome().getY() > 0
                     && getEntityWorld().isAreaLoaded(pokemobCap.getHome(), 2))
             {
@@ -837,18 +806,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
     }
 
-    @Override // Is actually move Up
-    public void setMoveForward(float forward)
-    {
-        this.moveForward = forward;
-    }
-
     @Override
     protected void updateEntityActionState()
     {
         ++this.idleTime;
-        ;
-        navi.refreshCache();
         this.getEntityWorld().profiler.startSection("checkDespawn");
         this.despawnEntity();
         this.getEntityWorld().profiler.endSection();
@@ -866,11 +827,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getEntityWorld().profiler.endSection();
         this.getEntityWorld().profiler.startSection("mob tick");
         // Run last tick's results from AI stuff
-        this.aiStuff.runServerThreadTasks(getEntityWorld());
+        pokemobCap.aiStuff.runServerThreadTasks(getEntityWorld());
         // Schedule AIStuff to tick for next tick.
-        AIThreadManager.scheduleAITick(aiStuff);
+        AIThreadManager.scheduleAITick(pokemobCap.aiStuff);
         this.updateAITasks();
-        this.updateAITick();
         this.getEntityWorld().profiler.endSection();
         this.getEntityWorld().profiler.startSection("controls");
         this.getEntityWorld().profiler.startSection("move");

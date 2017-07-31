@@ -684,7 +684,7 @@ public class MovesUtils implements IMoveConstants
             }
             else
             {
-                var11.owner = PokecubeMod.getFakePlayer();
+                var11.owner = null;
             }
         }
         return var11;

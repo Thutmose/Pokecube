@@ -26,6 +26,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PokedexEntryIngredientRenderer implements IIngredientRenderer<PokedexEntry>
 {
@@ -44,7 +45,7 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
             IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
             if (pokemob == null)
             {
-                pokemob = (IPokemob) PokecubeMod.core.createPokemob(entry, minecraft.theWorld);
+                pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, minecraft.theWorld));
                 if (pokemob == null) return;
                 EventsHandlerClient.renderMobs.put(entry, pokemob);
             }
@@ -52,7 +53,7 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
             GL11.glTranslated(x + 8, y + 17, 10);
             double scale = 1.1;
             GL11.glScaled(scale, scale, scale);
-            EntityLiving entity = (EntityLiving) pokemob;
+            EntityLiving entity = pokemob.getEntity();
             float size = 0;
             float mobScale = pokemob.getSize();
             size = Math.max(pokemob.getPokedexEntry().width * mobScale,

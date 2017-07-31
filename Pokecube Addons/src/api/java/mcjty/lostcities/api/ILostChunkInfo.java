@@ -1,14 +1,22 @@
 package mcjty.lostcities.api;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 public interface ILostChunkInfo {
 
     /**
-     * Return true if this chunk represents a city (building or street)
+     * Return true if this chunk represents a part of a city (building or street)
      */
     boolean isCity();
+
+    /**
+     * If this chunk hosts the center of a city then this will retrieve the city information
+     * of that city.
+     */
+    @Nullable
+    ILostCityInfo getCityInfo();
 
     /**
      * Return the name of the building if there is a building here (name from asset registry)
@@ -32,7 +40,9 @@ public interface ILostChunkInfo {
     /**
      * Get the level of the city/landscape at this point. 0 is the lowest level. You can get
      * the real height uwing ILostChunkGenerator.getRealHeight(level).
-     * If there is a building at this chunk then this is the level of the first floor
+     * If there is a building at this chunk then this is the level of the first floor.
+     * If there is no city here then this represents a rough estimate of the height of the
+     * terrain
      */
     int getCityLevel();
 
@@ -55,8 +65,18 @@ public interface ILostChunkInfo {
      * the damage of the center of the subchunk
      * If this returns 0 there was no damage
      * Anything above 1 will completely destroy blocks
+     * Note that this damage is independent from the ruin system. Use getRuinLevel()
+     * to detect that.
      */
     float getDamage(int chunkY);
+
+    /**
+     * If ruins are enabled this will return the average height level at which the
+     * building in this chunk will be ruined. Actual destruction of blocks occurs
+     * randomly around this level. If this returns -1 the building is not ruined (but
+     * it can still be damaged by explosions).
+     */
+    int getRuinLevel();
 
     /**
      * Get all explosions that affect this chunk (this includes explosions outside the current

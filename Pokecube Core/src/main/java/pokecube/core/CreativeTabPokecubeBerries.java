@@ -23,13 +23,13 @@ public class CreativeTabPokecubeBerries extends CreativeTabs
     @SideOnly(Side.CLIENT)
     public ItemStack getIconItemStack()
     {
-        return BerryManager.getBerryItem("cheri");
+        return BerryManager.getBerryItem("null");
     }
 
     @Override
     public ItemStack getTabIconItem()
     {
-        return BerryManager.getBerryItem("cheri");
+        return BerryManager.getBerryItem("null");
     }
 
     @Override

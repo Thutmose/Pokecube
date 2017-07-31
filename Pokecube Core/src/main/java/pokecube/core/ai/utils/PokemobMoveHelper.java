@@ -42,6 +42,13 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
         boolean water = entry.swims() && entity.isInWater();
         boolean air = entry.flys() || entry.floats();
+
+        if (!(air || water))
+        {
+            super.onUpdateMoveHelper();
+            return;
+        }
+
         if (this.action == EntityMoveHelper.Action.MOVE_TO)
         {
             this.action = EntityMoveHelper.Action.WAIT;
@@ -69,11 +76,9 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 this.entity.setAIMoveSpeed((float) (this.speed
                         * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
             }
-            if (air || water)
-            {
-                entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
-                pokemob.setDirectionPitch(entity.rotationPitch);
-            }
+            entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
+            pokemob.setDirectionPitch(entity.rotationPitch);
+
         }
         else
         {

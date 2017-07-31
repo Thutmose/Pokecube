@@ -285,8 +285,8 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
     public void moveEntity(MoverType type, double x, double y, double z)
     {
         if (!this.addedToChunk) return;
-        boolean normalSize = this.height > 0.5 && this.width < 1 && this.width > 0.25 && this.length < 1
-                && this.length > 0.25;
+        boolean normalSize = this.height > 0.125 && this.width < 2 && this.width > 0.125 && this.length < 2
+                && this.length > 0.125;
         if (pokemobCap.mainBox == null) pokemobCap.setSize(pokemobCap.getSize());
         if (!multibox || normalSize || pokemobCap.mainBox == null)
         {

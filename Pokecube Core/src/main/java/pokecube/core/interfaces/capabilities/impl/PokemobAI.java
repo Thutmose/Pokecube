@@ -189,7 +189,7 @@ public abstract class PokemobAI extends PokemobEvolves
         this.setPokemonAIState(EVOLVING, false);
         popped = true;
         if (getEntity().getEntityWorld().isRemote) return;
-        getEntity().playSound(this.getSound(), 0.5f, 1);
+        getEntity().playSound(this.getSound(), 0.25f, 1);
         if (this.isShiny())
         {
             Vector3 particleLoc = Vector3.getNewVector();

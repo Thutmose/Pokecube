@@ -410,17 +410,27 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     /** Moves the entity based on the specified heading. Args: strafe,
      * forward */
-    public void moveEntityWithHeading(float f, float f1)
+    public void moveEntityWithHeading(float strafe, float forward)
     {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(this);
+        PokedexEntry entry = pokemob.getPokedexEntry();
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
+        if (transformed != null)
+        {
+            entry = transformed.getPokedexEntry();
+        }
+        boolean water = entry.swims() && this.isInWater();
+        boolean air = entry.flys() || entry.floats();
+
+        if (!(air || water))
+        {
+            super.moveEntityWithHeading(strafe, forward);
+            return;
+        }
+
         double d0;
         if (isServerWorld())
         {
-            PokedexEntry entry = pokemobCap.getPokedexEntry();
-            IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemobCap.getTransformedTo());
-            if (transformed != null)
-            {
-                entry = transformed.getPokedexEntry();
-            }
             int aiState = pokemobCap.getTotalAIState();
             boolean isAbleToFly = entry.floats() || entry.flys();
             boolean isWaterMob = entry.swims();
@@ -463,9 +473,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 float f4;
                 float f3 = f2 * f6;
 
-                f4 = Math.min(f1 * f3, f1);
+                f4 = Math.min(forward * f3, forward);
 
-                this.moveRelative(f, f1, f4);
+                this.moveRelative(strafe, forward, f4);
                 CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.800000011920929D;
                 this.motionY *= 0.800000011920929D;
@@ -484,7 +494,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             else if (this.isInLava())
             {
                 d0 = this.posY;
-                this.moveRelative(f, f1, 0.02F);
+                this.moveRelative(strafe, forward, 0.02F);
                 CompatWrapper.moveEntitySelf(this, this.motionX, this.motionY, this.motionZ);
                 this.motionX *= 0.5D;
                 this.motionY *= 0.5D;
@@ -528,7 +538,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     f4 = this.jumpMovementFactor;
                 }
 
-                this.moveRelative(f, f1, f4);
+                this.moveRelative(strafe, forward, f4);
                 f2 = 0.91F;
 
                 if (this.onGround)
@@ -819,8 +829,8 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 {
                     float f1 = (rand.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
                     float f2 = (rand.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
-                    getEntityWorld().spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2, motionX,
-                            motionY, motionZ);
+                    getEntityWorld().spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2,
+                            motionX, motionY, motionZ);
                 }
             }
         }
@@ -899,7 +909,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     protected void updateEntityActionState()
     {
         ++this.entityAge;
-        navi.refreshCache();
         this.getEntityWorld().theProfiler.startSection("checkDespawn");
         this.despawnEntity();
         this.getEntityWorld().theProfiler.endSection();

@@ -9,8 +9,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathPoint;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -163,15 +161,6 @@ public class PokeNavigator extends PathNavigate
         if (this.canNavigate())
         {
             ret = pathfinder.getPathHeapToEntity(this.theEntity, entity, this.getPathSearchRange());
-        }
-        if (ret != null)
-        {
-            for (int i = 0; i < ret.getCurrentPathLength(); i++)
-            {
-                PathPoint p = ret.getPathPointFromIndex(i);
-                BlockPos pos = new BlockPos(p.xCoord, p.yCoord + 5, p.zCoord);
-                theEntity.getEntityWorld().setBlockState(pos, Blocks.GOLD_BLOCK.getDefaultState());
-            }
         }
         return ret;
     }

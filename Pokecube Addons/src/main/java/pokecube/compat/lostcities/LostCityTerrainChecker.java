@@ -35,14 +35,14 @@ public class LostCityTerrainChecker extends PokecubeTerrainChecker
                 {
                     BlockPos pos = v.getPos();
                     ILostChunkGenerator lostGenerator = (ILostChunkGenerator) generator;
-                    ILostChunkInfo info = lostGenerator.getChunkInfo(chunk.z, chunk.x);
+                    ILostChunkInfo info = lostGenerator.getChunkInfo(chunk.x, chunk.z);
                     String type = info.getBuildingType();
                     if (!info.isCity()) break check;
                     int streetLevel = lostGenerator.getRealHeight(0);
                     int maxLevel = lostGenerator.getRealHeight(info.getNumFloors());
                     int minLevel = lostGenerator.getRealHeight(-info.getNumCellars());
                     int diff = pos.getY() - streetLevel;
-                    //Give a leeway of 5 blocks above for roof structures..
+                    // Give a leeway of 5 blocks above for roof structures..
                     boolean inStructure = pos.getY() >= minLevel && pos.getY() <= maxLevel + 5;
                     if (!inStructure) type = null;
                     // We only want streets to cover close to the ground, above

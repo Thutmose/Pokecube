@@ -17,6 +17,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.MovesUtils;
+import thut.api.terrain.BiomeType;
 import thut.lib.CompatWrapper;
 
 public class PokemobRecipeWrapper implements IRecipeWrapper
@@ -67,23 +68,22 @@ public class PokemobRecipeWrapper implements IRecipeWrapper
         {
             tooltips.add(I18n.format("gui.jei.pokemob.evo.day"));
         }
-        if (recipe.data.biome != null && !recipe.data.biome.isEmpty())
+        if (recipe.data.matcher != null)
         {
-            String[] biomes = recipe.data.biome.split(",");
-
             List<String> biomeNames = Lists.newArrayList();
-            for (String biome : biomes)
+            Iterator<Biome> it = Biome.REGISTRY.iterator();
+            while (it.hasNext())
             {
-                Iterator<Biome> it = Biome.REGISTRY.iterator();
-                while (it.hasNext())
+                Biome test = it.next();
+                boolean valid = recipe.data.matcher.validBiomes.contains(test);
+                if (valid)
                 {
-                    Biome test = it.next();
-                    boolean valid = checkPerType(test, biome);
-                    if (valid)
-                    {
-                        biomeNames.add(test.getBiomeName());
-                    }
+                    biomeNames.add(test.getBiomeName());
                 }
+            }
+            for (BiomeType t : recipe.data.matcher.validSubBiomes)
+            {
+                biomeNames.add(t.readableName);
             }
             tooltips.add(I18n.format("gui.jei.pokemob.evo.biome", biomeNames));
         }

@@ -4,6 +4,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.events.onload.InitDatabase;
+import pokecube.core.interfaces.PokecubeMod;
 import thut.api.terrain.TerrainSegment;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
@@ -22,5 +23,7 @@ public class LostCitiesCompat
     public void init(InitDatabase.Post event)
     {
         TerrainSegment.defaultChecker = new LostCityTerrainChecker(TerrainSegment.defaultChecker);
+        if (PokecubeMod.debug)
+            PokecubeMod.log("Register Terrain Checker for Lost Cities. " + TerrainSegment.defaultChecker);
     }
 }

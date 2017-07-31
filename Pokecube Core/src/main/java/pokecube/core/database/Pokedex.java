@@ -57,7 +57,8 @@ public class Pokedex
 
     public Integer getIndex(PokedexEntry entry)
     {
-        return entryIndecies.get(entry);
+        Integer ret;
+        return (ret = entryIndecies.get(entry)) != null ? ret : 0;
     }
 
     public PokedexEntry getEntry(Integer pokedexNb)
@@ -69,7 +70,7 @@ public class Pokedex
 
     public PokedexEntry getFirstEntry()
     {
-        if (entries.isEmpty()) registerPokemon(Database.missingno);
+        if (entries.isEmpty()) return Database.missingno;
         return entries.get(0);
     }
 

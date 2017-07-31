@@ -121,7 +121,7 @@ public class PacketSyncTerrain implements IMessage, IMessageHandler<PacketSyncTe
     {
         EntityPlayer player;
         player = PokecubeCore.getPlayer(null);
-        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.world).getTerrain(message.x, message.y,
+        TerrainSegment t = TerrainManager.getInstance().getTerrain(player.getEntityWorld()).getTerrain(message.x, message.y,
                 message.z);
 
         if (message.type == EFFECTS)

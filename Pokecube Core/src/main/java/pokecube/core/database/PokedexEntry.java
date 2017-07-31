@@ -402,7 +402,7 @@ public class PokedexEntry
             if (!doInteract) return true;
             int diff = interact.delay + interact.variance > 0 ? new Random().nextInt(interact.variance) : 0;
             diff *= PokecubeMod.core.getConfig().interactDelayScale;
-            data.setLong("lastInteract", entity.world.getTotalWorldTime() + diff);
+            data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime() + diff);
             IHungrymob hungrymob = ((IHungrymob) pokemob);
             hungrymob.setHungerTime((int) (hungrymob.getHungerTime()
                     + interact.baseHunger * PokecubeMod.core.getConfig().interactHungerScale));

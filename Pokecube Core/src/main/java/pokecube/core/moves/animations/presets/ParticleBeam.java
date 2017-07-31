@@ -5,8 +5,6 @@ import java.util.Random;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
 import net.minecraft.world.IWorldEventListener;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
@@ -14,12 +12,12 @@ import pokecube.core.moves.animations.AnimPreset;
 import pokecube.core.moves.animations.MoveAnimationBase;
 import thut.api.maths.Vector3;
 
-@AnimPreset(getPreset = "beam")
+@AnimPreset(getPreset="beam")
 public class ParticleBeam extends MoveAnimationBase
 {
-    Vector3 v   = Vector3.getNewVector();
-    boolean old = false;
-    Vector3 v1  = Vector3.getNewVector();
+    Vector3 v    = Vector3.getNewVector();
+    boolean old  = false;
+    Vector3 v1   = Vector3.getNewVector();
 
     public ParticleBeam()
     {
@@ -31,11 +29,9 @@ public class ParticleBeam extends MoveAnimationBase
 
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
-        reallyInitRGBA();
         if (customColour) return;
         if (particle.equals("airbubble"))
         {
@@ -48,7 +44,7 @@ public class ParticleBeam extends MoveAnimationBase
         }
         else if (particle.equals("iceshard"))
         {
-            rgba = 0x78000000 + EnumDyeColor.CYAN.getColorValue();
+            rgba = 0x78000000 + EnumDyeColor.CYAN.getMapColor().colorValue;
         }
         else
         {
@@ -66,8 +62,8 @@ public class ParticleBeam extends MoveAnimationBase
         double frac = dist * info.currentTick / getDuration();
         Vector3 temp = Vector3.getNewVector().set(target).subtractFrom(source).norm();
         for (double i = frac; i < dist; i += 0.1)
-            PokecubeCore.proxy.spawnParticle(info.attacker.world, particle, source.add(temp.scalarMult(i)), null, rgba,
-                    particleLife);
+            PokecubeCore.proxy.spawnParticle(info.attacker.getEntityWorld(), particle, source.add(temp.scalarMult(i)), null,
+                    rgba, particleLife);
     }
 
     @Override

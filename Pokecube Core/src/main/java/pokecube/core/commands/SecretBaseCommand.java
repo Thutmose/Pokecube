@@ -60,7 +60,7 @@ public class SecretBaseCommand extends CommandBase
             }
             else if (args[0].equals("exit"))
             {
-                if (player.world.provider instanceof WorldProviderSecretBase)
+                if (player.getEntityWorld().provider instanceof WorldProviderSecretBase)
                 {
                     String owner = PokecubeDimensionManager.getOwner(player.dimension);
                     BlockPos exit = PokecubeDimensionManager.getBaseEntrance(owner, 0);
@@ -102,8 +102,9 @@ public class SecretBaseCommand extends CommandBase
                     if (loc.w == player.dimension && pos.distToEntity(player) < 16)
                     {
                         BlockNest nest = (BlockNest) PokecubeItems.getBlock("pokemobNest");
-                        pos.setBlock(player.world, nest.getDefaultState().withProperty(nest.TYPE, 1));
-                        TileEntityBasePortal tile = (TileEntityBasePortal) player.world.getTileEntity(pos.getPos());
+                        pos.setBlock(player.getEntityWorld(), nest.getDefaultState().withProperty(nest.TYPE, 1));
+                        TileEntityBasePortal tile = (TileEntityBasePortal) player.getEntityWorld()
+                                .getTileEntity(pos.getPos());
                         tile.setPlacer(player);
                         Vector3 baseExit = Vector3.getNewVector();
                         baseExit.set(Double.parseDouble(args[1]), Double.parseDouble(args[2]),

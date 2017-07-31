@@ -3,8 +3,6 @@ package pokecube.core.moves.animations.presets;
 import java.util.Random;
 
 import net.minecraft.world.IWorldEventListener;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -19,11 +17,9 @@ public class ParticlesOnTarget extends MoveAnimationBase
     {
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
     public void initColour(long time, float partialTicks, Move_Base move)
     {
-        reallyInitRGBA();
         if (customColour) return;
         rgba = getColourFromMove(move, 255);
     }
@@ -39,7 +35,7 @@ public class ParticlesOnTarget extends MoveAnimationBase
         if (info.attacked != null) dw = info.attacked.width;
         float width = this.width * dw;
         temp.addTo(rand.nextGaussian() * width, rand.nextGaussian() * width, rand.nextGaussian() * width);
-        PokecubeMod.core.spawnParticle(info.attacker.world, particle, temp, null, rgba);
+        PokecubeMod.core.spawnParticle(info.attacker.getEntityWorld(), particle, temp, null, rgba);
     }
 
     @Override

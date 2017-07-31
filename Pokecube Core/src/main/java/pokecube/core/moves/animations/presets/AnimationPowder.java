@@ -69,7 +69,7 @@ public class AnimationPowder extends MoveAnimationBase
             temp.set(rand.nextGaussian(), rand.nextGaussian(), rand.nextGaussian());
             temp.scalarMult(0.010 * width);
             temp.addTo(target);
-            PokecubeCore.proxy.spawnParticle(info.attacker.world, particle, temp.copy(), null, rgba, particleLife);
+            PokecubeCore.proxy.spawnParticle(info.attacker.getEntityWorld(), particle, temp.copy(), null, rgba, particleLife);
         }
     }
 

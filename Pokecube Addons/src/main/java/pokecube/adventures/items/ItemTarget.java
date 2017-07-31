@@ -85,7 +85,7 @@ public class ItemTarget extends CompatItem
         {
             BlockPos pos = event.getTarget().getBlockPos();
             if (pos == null) return;
-            if (!player.world.getBlockState(pos).getMaterial().isSolid())
+            if (!player.getEntityWorld().getBlockState(pos).getMaterial().isSolid())
             {
                 Vec3d loc = player.getPositionVector().addVector(0, player.getEyeHeight(), 0)
                         .add(player.getLookVec().scale(2));

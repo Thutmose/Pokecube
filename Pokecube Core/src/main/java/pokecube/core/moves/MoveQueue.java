@@ -35,7 +35,11 @@ public class MoveQueue
 
         public void queueMove(EntityMoveUse move)
         {
+<<<<<<< HEAD
             MoveQueue queue = queues.get(move.world);
+=======
+            MoveQueue queue = queues.get(move.getEntityWorld());
+>>>>>>> refs/remotes/origin/1.11.x
             if (queue == null) throw new NullPointerException("why is world queue null?");
             if (move.getUser() != null) queue.moves.add(move);
         }

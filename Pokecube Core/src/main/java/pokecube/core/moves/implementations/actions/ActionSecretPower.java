@@ -34,7 +34,7 @@ public class ActionSecretPower implements IMoveAction
         long time = attacker.getEntity().getEntityData().getLong("lastAttackTick");
         if (time + (20 * 3) > attacker.getEntity().getEntityWorld().getTotalWorldTime()) return false;
         EntityPlayerMP owner = (EntityPlayerMP) attacker.getPokemonOwner();
-        IBlockState state = location.getBlockState(owner.world);
+        IBlockState state = location.getBlockState(owner.getEntityWorld());
         if (!(PokecubeTerrainChecker.isTerrain(state) || PokecubeTerrainChecker.isWood(state)))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.wrongloc");

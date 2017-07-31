@@ -34,6 +34,6 @@ public class ParticlesOnSource extends ParticlesOnTarget
         if (info.attacker != null) dw = info.attacker.width;
         float width = this.width * dw;
         temp.addTo(rand.nextGaussian() * width, rand.nextGaussian() * width, rand.nextGaussian() * width);
-        PokecubeMod.core.spawnParticle(info.attacker.world, particle, temp, null, rgba);
+        PokecubeMod.core.spawnParticle(info.attacker.getEntityWorld(), particle, temp, null, rgba);
     }
 }

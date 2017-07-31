@@ -148,7 +148,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public boolean getCanSpawnHere()
     {
-        return this.world.checkNoEntityCollision(this.getEntityBoundingBox());
+        return this.getEntityWorld().checkNoEntityCollision(this.getEntityBoundingBox());
     }
 
     @Override
@@ -226,7 +226,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     {
                         f2 = (this.rand.nextFloat() * 2.0F - 1.0F) * this.width;
                         f3 = (this.rand.nextFloat() * 2.0F - 1.0F) * this.width;
-                        this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX + f2, f1 + 1.0F,
+                        this.getEntityWorld().spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX + f2, f1 + 1.0F,
                                 this.posZ + f3, this.motionX, this.motionY - this.rand.nextFloat() * 0.2F,
                                 this.motionZ);
                     }
@@ -235,7 +235,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                     {
                         f2 = (this.rand.nextFloat() * 2.0F - 1.0F) * this.width;
                         f3 = (this.rand.nextFloat() * 2.0F - 1.0F) * this.width;
-                        this.world.spawnParticle(EnumParticleTypes.WATER_SPLASH, this.posX + f2, f1 + 1.0F,
+                        this.getEntityWorld().spawnParticle(EnumParticleTypes.WATER_SPLASH, this.posX + f2, f1 + 1.0F,
                                 this.posZ + f3, this.motionX, this.motionY, this.motionZ);
                     }
                 }
@@ -262,7 +262,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     protected void initAI(PokedexEntry entry)
     {
-        pokemobCap.navi = navi = new PokeNavigator(this, world);
+        pokemobCap.navi = navi = new PokeNavigator(this, getEntityWorld());
         pokemobCap.mover = mover = new PokemobMoveHelper(this);
         jumpHelper = new PokemobJumpHelper(this);
         pokemobCap.aiStuff = aiStuff = new AIStuff(this);
@@ -296,7 +296,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         // Controller is done separately for ease of locating it for controls.
         aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(pokemobCap));
 
-        if (world.isRemote) return;
+        if (getEntityWorld().isRemote) return;
 
         // Add in the Custom type of AI tasks.
         aiStuff.addAITask(new AIAttack(this).setPriority(200));
@@ -308,7 +308,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         }
         aiStuff.addAITask(new AIGuardEgg(this).setPriority(250));
         aiStuff.addAITask(new AIMate(this).setPriority(300));
-        aiStuff.addAITask(new AIHungry(this, new EntityItem(world), 16).setPriority(300));
+        aiStuff.addAITask(new AIHungry(this, new EntityItem(getEntityWorld()), 16).setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);
         aiStuff.addAITask(ai.setPriority(350));
         aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
@@ -350,7 +350,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void jump()
     {
-        if (world.isRemote) return;
+        if (getEntityWorld().isRemote) return;
         boolean ladder = this.isOnLadder();
         if (!ladder && !this.isInWater() && !this.isInLava())
         {
@@ -630,7 +630,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.dead = true;
         this.getCombatTracker().reset();
 
-        if (!this.world.isRemote)
+        if (!this.getEntityWorld().isRemote)
         {
             int i = 0;
 
@@ -707,7 +707,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             isPokemonWet = true;
             timePokemonIsShaking = 0.0F;
             prevTimePokemonIsShaking = 0.0F;
-            world.setEntityState(this, (byte) 8);
+            getEntityWorld().setEntityState(this, (byte) 8);
         }
     }
 
@@ -767,7 +767,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                 {
                     float f1 = (rand.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
                     float f2 = (rand.nextFloat() * 2.0F - 1.0F) * width * 0.5F;
-                    world.spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2, motionX,
+                    getEntityWorld().spawnParticle(EnumParticleTypes.WATER_SPLASH, posX + f1, f + 0.8F, posZ + f2, motionX,
                             motionY, motionZ);
                 }
             }
@@ -827,7 +827,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     @Override
     public void setJumping(boolean jump)
     {
-        if (!world.isRemote)
+        if (!getEntityWorld().isRemote)
         {
             pokemobCap.setPokemonAIState(IMoveConstants.JUMPING, jump);
         }
@@ -849,38 +849,38 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         ++this.idleTime;
         ;
         navi.refreshCache();
-        this.world.profiler.startSection("checkDespawn");
+        this.getEntityWorld().profiler.startSection("checkDespawn");
         this.despawnEntity();
-        this.world.profiler.endSection();
-        this.world.profiler.startSection("sensing");
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.startSection("sensing");
         this.senses.clearSensingCache();
-        this.world.profiler.endSection();
-        this.world.profiler.startSection("targetSelector");
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.startSection("targetSelector");
         this.targetTasks.onUpdateTasks();
-        this.world.profiler.endSection();
-        this.world.profiler.startSection("goalSelector");
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.startSection("goalSelector");
         this.tasks.onUpdateTasks();
-        this.world.profiler.endSection();
-        this.world.profiler.startSection("navigation");
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.startSection("navigation");
         this.getNavigator().onUpdateNavigation();
-        this.world.profiler.endSection();
-        this.world.profiler.startSection("mob tick");
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.startSection("mob tick");
         // Run last tick's results from AI stuff
-        this.aiStuff.runServerThreadTasks(world);
+        this.aiStuff.runServerThreadTasks(getEntityWorld());
         // Schedule AIStuff to tick for next tick.
         AIThreadManager.scheduleAITick(aiStuff);
         this.updateAITasks();
         this.updateAITick();
-        this.world.profiler.endSection();
-        this.world.profiler.startSection("controls");
-        this.world.profiler.startSection("move");
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.startSection("controls");
+        this.getEntityWorld().profiler.startSection("move");
         this.getMoveHelper().onUpdateMoveHelper();
-        this.world.profiler.endStartSection("look");
+        this.getEntityWorld().profiler.endStartSection("look");
         this.getLookHelper().onUpdateLook();
-        this.world.profiler.endStartSection("jump");
+        this.getEntityWorld().profiler.endStartSection("jump");
         this.getJumpHelper().doJump();
-        this.world.profiler.endSection();
-        this.world.profiler.endSection();
+        this.getEntityWorld().profiler.endSection();
+        this.getEntityWorld().profiler.endSection();
     }
 
     @Override

@@ -186,7 +186,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 {
                     final Map<PokedexEntry, Float> rates = Maps.newHashMap();
                     final Vector3 pos = Vector3.getNewVector().set(player);
-                    final SpawnCheck checker = new SpawnCheck(pos, player.world);
+                    final SpawnCheck checker = new SpawnCheck(pos, player.getEntityWorld());
                     ArrayList<PokedexEntry> names = new ArrayList<PokedexEntry>();
                     for (PokedexEntry e : Database.spawnables)
                     {

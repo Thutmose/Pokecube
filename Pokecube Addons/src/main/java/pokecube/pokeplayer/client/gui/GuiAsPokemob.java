@@ -78,7 +78,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
         Vector3 look = Vector3.getNewVector().set(player.getLookVec());
         Vector3 pos = Vector3.getNewVector().set(player).addTo(0, player.getEyeHeight(), 0);
-        Vector3 v = pos.findNextSolidBlock(player.world, look, range);
+        Vector3 v = pos.findNextSolidBlock(player.getEntityWorld(), look, range);
         if (target != null)
         {
             if (v == null) v = Vector3.getNewVector();

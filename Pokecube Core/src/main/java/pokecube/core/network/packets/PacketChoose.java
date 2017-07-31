@@ -48,7 +48,7 @@ public class PacketChoose implements IMessage, IMessageHandler<PacketChoose, IMe
             this.starter = starter;
             this.fixed = fixed;
             this.starters = starters;
-            if (player.world.isRemote) MinecraftForge.EVENT_BUS.register(this);
+            if (player.getEntityWorld().isRemote) MinecraftForge.EVENT_BUS.register(this);
         }
 
         @SideOnly(Side.CLIENT)

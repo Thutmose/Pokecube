@@ -60,7 +60,7 @@ public class RenderTrainer<T extends EntityLiving> extends RenderBiped<T>
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        long time = entity.world.getTotalWorldTime();
+        long time = entity.getEntityWorld().getTotalWorldTime();
         if (((EntityTrainer) entity).visibleTime > time) return;
         if (((EntityTrainer) entity).pokemobsCap.getGender() == 1)
         {

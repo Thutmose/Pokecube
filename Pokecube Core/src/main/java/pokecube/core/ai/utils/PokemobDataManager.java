@@ -52,10 +52,10 @@ public class PokemobDataManager extends EntityDataManager
         EntityDataManager.DataEntry<T> entry = getEntry(key);
         T old = entry.getValue();
         super.set(key, value);
-        if (entity.world == null || !ObjectUtils.notEqual(value, old)
-                || entity.world.getEntityByID(entity.getEntityId()) == entity)
+        if (entity.getEntityWorld() == null || !ObjectUtils.notEqual(value, old)
+                || entity.getEntityWorld().getEntityByID(entity.getEntityId()) == entity)
             return;
-        if (!entity.world.isRemote && manualSyncSet.contains(key))
+        if (!entity.getEntityWorld().isRemote && manualSyncSet.contains(key))
         {
             PacketPokemobMetadata message = new PacketPokemobMetadata();
             message.wrapped.writeInt(entity.getEntityId());

@@ -416,6 +416,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     {
         this.setHeldItem(this.wildHeldItem());
         setSpecialInfo(getPokedexEntry().defaultSpecial);
+        this.getEntity().setHealth(this.getEntity().getMaxHealth());
     }
 
     @Override

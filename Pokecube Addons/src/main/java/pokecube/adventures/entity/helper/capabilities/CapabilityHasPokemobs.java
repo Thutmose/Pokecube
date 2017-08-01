@@ -107,6 +107,12 @@ public class CapabilityHasPokemobs
             }
             for (int i = 0; i < 6; i++)
             {
+                if (!found && !CompatWrapper.isValid(getPokemob(i)))
+                {
+                    setPokemob(i, mob.copy());
+                    PokecubeManager.heal(getPokemob(i));
+                    break;
+                }
                 if (found && foundID == i) if (!CompatWrapper.isValid(getPokemob(i)))
                 {
                     PokecubeManager.heal(mob);

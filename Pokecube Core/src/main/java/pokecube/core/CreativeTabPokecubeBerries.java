@@ -25,7 +25,7 @@ public class CreativeTabPokecubeBerries extends CreativeTabs
     @SideOnly(Side.CLIENT)
     public ItemStack getIconItemStack()
     {
-        ItemStack ret = BerryManager.getBerryItem("cheri");
+        ItemStack ret = BerryManager.getBerryItem("null");
         if (ret == null || ret.getItem() == null)
         {
             Thread.dumpStack();

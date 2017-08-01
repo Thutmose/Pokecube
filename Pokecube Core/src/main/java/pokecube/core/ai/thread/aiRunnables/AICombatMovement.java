@@ -136,7 +136,7 @@ public class AICombatMovement extends AIBase
         }
         perp.scalarMultBy(pokemob.getPokedexEntry().width * pokemob.getSize());
         if (perp.magSq() > 0.3) perp.norm().scalarMultBy(0.3);
-        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !!attacker.onGround)
+        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !attacker.onGround)
             perp.scalarMultBy(0.2);
         perp.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getDodgeSound(),
@@ -201,7 +201,7 @@ public class AICombatMovement extends AIBase
         }
         pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
 
-        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !!attacker.onGround) return;
+        if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !attacker.onGround) return;
 
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);

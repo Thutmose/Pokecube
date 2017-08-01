@@ -1,6 +1,8 @@
 package pokecube.core.utils;
 
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.events.handlers.EventsHandler;
 
 public interface TagNames
@@ -39,8 +41,24 @@ public interface TagNames
         return ret;
     }
 
+    public static NBTBase getPokecubeGenesTag(NBTTagCompound itemRootTag)
+    {
+        NBTTagCompound ret = new NBTTagCompound();
+        if (itemRootTag.hasKey(POKEMOB))
+        {
+            NBTTagCompound entityRootTag = itemRootTag.getCompoundTag(POKEMOB);
+            if (entityRootTag.hasKey(FORGECAPS))
+            {
+                NBTTagCompound caps = entityRootTag.getCompoundTag(FORGECAPS);
+                if (caps.hasKey(GENESCAP)) { return caps.getCompoundTag(GENESCAP).getTag("V"); }
+            }
+        }
+        return ret;
+    }
+
     public static final String FORGECAPS    = "ForgeCaps";
     public static final String POKEMOBCAP   = EventsHandler.POKEMOBCAP.toString();
+    public static final String GENESCAP     = GeneticsManager.POKECUBEGENETICS.toString();
 
     /** The NBTTag name for the root of info */
     public static final String POKEMOBTAG   = "pokemob_tag";

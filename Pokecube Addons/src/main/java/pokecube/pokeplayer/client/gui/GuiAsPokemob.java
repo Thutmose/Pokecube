@@ -60,9 +60,6 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
         }
         if (!useMove) return;
         useMove = false;
-        EntityPlayer player = minecraft.thePlayer;
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-        buffer.writeByte(PacketDoActions.MOVEUSE);
         float range = 16;
         float contactRange = Math.max(1.5f, pokemob.getSize() * pokemob.getPokedexEntry().length);
         moveIndex = pokemob.getMoveIndex();
@@ -72,6 +69,10 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
             moveIndex = 0;
             move = MovesUtils.getMoveFromName(pokemob.getMove(moveIndex));
         }
+        if (move == null) return;
+        EntityPlayer player = minecraft.thePlayer;
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
+        buffer.writeByte(PacketDoActions.MOVEUSE);
         if ((move.getAttackCategory() & IMoveConstants.CATEGORY_CONTACT) > 0) range = contactRange;
         Entity target = Tools.getPointedEntity(player, range);
         buffer.writeInt(target != null ? target.getEntityId() : -1);

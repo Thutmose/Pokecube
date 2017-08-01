@@ -305,14 +305,24 @@ public class EventsHandler
     public static void setFromNBT(IPokemob pokemob, NBTTagCompound tag)
     {
         NBTTagCompound pokemobTag = TagNames.getPokecubePokemobTag(tag);
-        if (pokemobTag != null)
+        NBTBase genesTag = TagNames.getPokecubeGenesTag(tag);
+        pokemobTag.removeTag(TagNames.INVENTORYTAG);
+        pokemobTag.removeTag(TagNames.AITAG);
+        pokemobTag.removeTag(TagNames.MOVESTAG);
+        pokemob.readPokemobData(pokemobTag);
+        if (pokemob instanceof DefaultPokemob)
         {
-            pokemobTag.removeTag(TagNames.INVENTORYTAG);
-            pokemobTag.removeTag(TagNames.AITAG);
-            pokemobTag.removeTag(TagNames.MOVESTAG);
-            pokemob.readPokemobData(pokemobTag);
-            return;
+            try
+            {
+                DefaultPokemob poke = (DefaultPokemob) pokemob;
+                IMobGenetics.GENETICS_CAP.readNBT(poke.genes, null, genesTag);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
+        pokemob.onGenesChanged();
     }
 
     public MeteorAreaSetter meteorprocessor;

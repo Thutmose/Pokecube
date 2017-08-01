@@ -135,7 +135,7 @@ public class ItemHandler
     public static void handleLoot()
     {
         ItemStack share = PokecubeItems.getStack("exp_share");
-        LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
+        if (Config.instance.exp_shareLoot) LootHelpers.addLootEntry(LootTableList.CHESTS_SIMPLE_DUNGEON, null,
                 Loot.getEntryItem(share, 10, 1, "pokecube_adventures:exp_share"));
         if (Config.instance.HMLoot)
         {

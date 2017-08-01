@@ -56,7 +56,7 @@ public class EventsHandler
         }
         else if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking())
         {
-            CompatWrapper.processInitialInteract(((Entity) pokemob), event.getEntityPlayer(), event.getHand(),
+            CompatWrapper.processInitialInteract(pokemob.getEntity(), event.getEntityPlayer(), event.getHand(),
                     event.getItemStack());
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
                     .getData(PokeInfo.class);
@@ -84,7 +84,7 @@ public class EventsHandler
             IPokemob pokemob = proxy.getPokemob(player);
             if (pokemob != null)
             {
-                evt.moveInfo.attacked = (Entity) pokemob;
+                evt.moveInfo.attacked = pokemob.getEntity();
             }
         }
     }

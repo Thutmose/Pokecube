@@ -10,7 +10,6 @@ import pokecube.adventures.comands.Config;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.utils.PokeType;
-import thut.api.entity.IHungrymob;
 
 public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
 {
@@ -38,7 +37,7 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
     public long takePower(long power, boolean simulated)
     {
         if (!pokemob.isType(PokeType.getType("electric"))) return 0;
-        EntityLiving living = (EntityLiving) pokemob;
+        EntityLiving living = pokemob.getEntity();
         int spAtk = pokemob.getStat(Stats.SPATTACK, true);
         int atk = pokemob.getStat(Stats.ATTACK, true);
         int level = pokemob.getLevel();
@@ -71,8 +70,8 @@ public class ProviderPokemob implements ITeslaProducer, ICapabilityProvider
             }
             if (living.ticksExisted % 2 == 0)
             {
-                int time = ((IHungrymob) pokemob).getHungerTime();
-                ((IHungrymob) pokemob).setHungerTime(
+                int time = pokemob.getHungerTime();
+                pokemob.setHungerTime(
                         time + Config.instance.energyHungerCost + drain * Config.instance.energyHungerCost);
             }
         }

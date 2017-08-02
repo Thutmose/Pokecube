@@ -8,14 +8,12 @@ import static pokecube.core.handlers.ItemHandler.log0;
 import static pokecube.core.handlers.ItemHandler.log1;
 import static pokecube.core.handlers.ItemHandler.plank0;
 
-import java.awt.Color;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.properties.IProperty;
@@ -24,7 +22,6 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ISound.AttenuationType;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;
@@ -37,8 +34,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
@@ -58,7 +53,6 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -89,7 +83,6 @@ import pokecube.core.client.items.MegaStoneTextureHandler;
 import pokecube.core.client.items.VitaminTextureHandler;
 import pokecube.core.client.items.WearableTextureHandler;
 import pokecube.core.client.models.ModelPokemobEgg;
-import pokecube.core.client.models.ModelRing;
 import pokecube.core.client.render.RenderMoves;
 import pokecube.core.client.render.blocks.RenderPokecubeTable;
 import pokecube.core.client.render.blocks.RenderTradingTable;
@@ -112,12 +105,9 @@ import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.moves.animations.EntityMoveUse;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
-import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.particle.IParticle;
 import thut.core.client.render.particle.ParticleFactory;
 import thut.core.client.render.particle.ParticleHandler;
-import thut.core.client.render.x3d.X3dModel;
-import thut.lib.CompatWrapper;
 
 @SideOnly(Side.CLIENT)
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -602,119 +592,5 @@ public class ClientProxyPokecube extends CommonProxyPokecube
                 && (player == null || player.equals(Minecraft.getMinecraft().thePlayer.getUniqueID())))
             return Minecraft.getMinecraft().thePlayer;
         return super.getPlayer(player);
-    }
-
-    private X3dModel         beltl;
-    private X3dModel         belt2;
-    private ModelRing        ring   = new ModelRing();
-    private ResourceLocation belt_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
-    private ResourceLocation belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
-    ResourceLocation         hat_1  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat.png");
-    ResourceLocation         hat_2  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat2.png");
-    X3dModel                 hat1;
-    X3dModel                 hat2;
-
-    @Method(modid = "thut_wearables")
-    @Override
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
-            float partialTicks)
-    {
-        if (beltl == null)
-        {
-            beltl = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
-            belt2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
-            hat1 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
-            hat2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
-        }
-        switch (slot)
-        {
-        case WAIST:
-            int brightness = wearer.getBrightnessForRender(partialTicks);
-            GL11.glPushMatrix();
-            float dx = 0, dy = -.0f, dz = -0.6f;
-            GL11.glRotated(90, 1, 0, 0);
-            GL11.glRotated(180, 0, 0, 1);
-            GL11.glTranslatef(dx, dy, dz);
-            float s = 0.525f;
-            if (!CompatWrapper.isValid(wearer.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
-            {
-                s = 0.465f;
-            }
-            GL11.glScalef(s, s, s);
-            Minecraft.getMinecraft().renderEngine.bindTexture(belt_1);
-            beltl.renderAll();
-            GL11.glPopMatrix();
-            // Second pass with colour.
-            GL11.glPushMatrix();
-            GL11.glRotated(90, 1, 0, 0);
-            GL11.glRotated(180, 0, 0, 1);
-            GL11.glTranslatef(dx, dy, dz);
-            GL11.glScalef(s, s, s);
-            Minecraft.getMinecraft().renderEngine.bindTexture(belt_2);
-            EnumDyeColor ret = EnumDyeColor.GRAY;
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
-            {
-                int damage = stack.getTagCompound().getInteger("dyeColour");
-                ret = EnumDyeColor.byDyeDamage(damage);
-            }
-            Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
-            int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
-            for (IExtendedModelPart part : belt2.getParts().values())
-            {
-                part.setRGBAB(col);
-            }
-            belt2.renderAll();
-            GL11.glColor3f(1, 1, 1);
-            GL11.glPopMatrix();
-            break;
-        case ANKLE:
-            break;
-        case BACK:
-            break;
-        case EAR:
-            break;
-        case EYE:
-            break;
-        case FINGER:
-            ring.stack = stack;
-            // TODO see if the rotation angles matter, if so, send them too...
-            ring.render(wearer, 0, 0, partialTicks, 0, 0, 0.0625f);
-            break;
-        case HAT:
-            Minecraft minecraft = Minecraft.getMinecraft();
-            GlStateManager.pushMatrix();
-            s = 0.285f;
-            GL11.glScaled(s, -s, -s);
-            minecraft.renderEngine.bindTexture(hat_1);
-            hat1.renderAll();
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GL11.glScaled(s * 0.995f, -s * 0.995f, -s * 0.995f);
-            minecraft.renderEngine.bindTexture(hat_2);
-            ret = EnumDyeColor.RED;
-            brightness = wearer.getBrightnessForRender(partialTicks);
-            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
-            {
-                int damage = stack.getTagCompound().getInteger("dyeColour");
-                ret = EnumDyeColor.byDyeDamage(damage);
-            }
-            colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
-            int[] col2 = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
-            for (IExtendedModelPart part : hat2.getParts().values())
-            {
-                part.setRGBAB(col2);
-            }
-            hat2.renderAll();
-            GL11.glColor3f(1, 1, 1);
-            GlStateManager.popMatrix();
-            break;
-        case NECK:
-            break;
-        case WRIST:
-            break;
-        default:
-            break;
-        }
-
     }
 }

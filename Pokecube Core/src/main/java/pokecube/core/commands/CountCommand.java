@@ -1,9 +1,13 @@
 package pokecube.core.commands;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import net.minecraft.command.CommandBase;
@@ -73,7 +77,16 @@ public class CountCommand extends CommandBase
                 }
             }
         }
+        List<Map.Entry<PokedexEntry, Integer>> entries = Lists.newArrayList(counts.entrySet());
+        Collections.sort(entries, new Comparator<Map.Entry<PokedexEntry, Integer>>()
+        {
+            @Override
+            public int compare(Entry<PokedexEntry, Integer> o1, Entry<PokedexEntry, Integer> o2)
+            {
+                return o2.getValue() - o1.getValue();
+            }
+        });
         cSender.sendMessage(CommandTools.makeTranslatedMessage("pokecube.command.count", "", count1, count2));
-        cSender.sendMessage(new TextComponentString(counts.toString()));
+        cSender.sendMessage(new TextComponentString(entries.toString()));
     }
 }

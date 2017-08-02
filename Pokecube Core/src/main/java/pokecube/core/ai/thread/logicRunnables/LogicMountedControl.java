@@ -37,7 +37,7 @@ public class LogicMountedControl extends LogicBase
         super.doServerTick(world);
         if (!entity.isBeingRidden()) return;
         boolean move = false;
-
+        entity.rotationYaw = pokemob.getHeading();
         boolean shouldControl = entity.onGround;
         if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())
             shouldControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
@@ -121,19 +121,19 @@ public class LogicMountedControl extends LogicBase
             entity.motionZ *= 0.5;
         }
         if (!followOwnerLook)
-        {
+        {// TODO some way to make this change based on how long button is held?
             if (leftInputDown)
             {
-                entity.rotationYaw -= 5;
+                pokemob.setHeading(pokemob.getHeading() - 5);
             }
             if (rightInputDown)
             {
-                entity.rotationYaw += 5;
+                pokemob.setHeading(pokemob.getHeading() + 5);
             }
         }
         else if (!entity.getPassengers().isEmpty())
         {
-            entity.rotationYaw = entity.getPassengers().get(0).rotationYaw;
+            pokemob.setHeading(entity.getPassengers().get(0).rotationYaw);
         }
     }
 

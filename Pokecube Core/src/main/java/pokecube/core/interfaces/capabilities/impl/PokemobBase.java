@@ -76,6 +76,7 @@ public abstract class PokemobBase implements IPokemob
         params.LASTMOVE = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
         params.BOOMSTATEDW = EntityDataManager.<Byte> createKey(clazz, DataSerializers.BYTE);
         params.ZMOVECD = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
+        params.HEADINGDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
         params.DIRECTIONPITCHDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
         params.TRANSFORMEDTODW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HELDITEM = EntityDataManager.<ItemStack> createKey(clazz, DataSerializers.ITEM_STACK);
@@ -97,6 +98,7 @@ public abstract class PokemobBase implements IPokemob
         public DataParameter<Byte>            BOOMSTATEDW;
         public DataParameter<Integer>         ZMOVECD;
         public DataParameter<Float>           DIRECTIONPITCHDW;
+        public DataParameter<Float>           HEADINGDW;
         public DataParameter<Integer>         TRANSFORMEDTODW;
         public DataParameter<Integer>         AIACTIONSTATESDW;
         public DataParameter<Integer>         ATTACKTARGETIDDW;

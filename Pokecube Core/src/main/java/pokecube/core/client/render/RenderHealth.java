@@ -153,6 +153,11 @@ public class RenderHealth
 
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         if (pokemob == null) return;
+        Config config = PokecubeMod.core.getConfig();
+        Minecraft mc = Minecraft.getMinecraft();
+        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        if (renderManager == null || renderManager.renderViewEntity == null) return;
+        UUID viewerID = renderManager.renderViewEntity.getUniqueID();
 
         ridingStack.push(entity);
 
@@ -161,8 +166,6 @@ public class RenderHealth
             entity = (EntityLivingBase) entity.getRidingEntity();
             ridingStack.push(entity);
         }
-        Config config = PokecubeMod.core.getConfig();
-        Minecraft mc = Minecraft.getMinecraft();
 
         float pastTranslate = 0F;
         while (!ridingStack.isEmpty())
@@ -184,7 +187,6 @@ public class RenderHealth
                 float health = Math.min(maxHealth, entity.getHealth());
 
                 if (maxHealth <= 0) break processing;
-                RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 
                 GlStateManager.pushMatrix();
 
@@ -304,7 +306,7 @@ public class RenderHealth
                 GlStateManager.scale(s, s, s);
 
                 UUID owner = pokemob.getPokemonOwnerID();
-                boolean isOwner = renderManager.renderViewEntity.getUniqueID().equals(owner);
+                boolean isOwner = viewerID.equals(owner);
                 int colour = isOwner ? config.ownedNameColour
                         : owner == null ? nametag ? config.caughtNamedColour : config.unknownNameColour
                                 : config.otherOwnedNameColour;

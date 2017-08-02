@@ -12,6 +12,7 @@ import static pokecube.core.entity.pokemobs.genetics.GeneticsManager.SPECIESGENE
 
 import java.util.HashMap;
 import java.util.Random;
+import java.util.logging.Level;
 
 import com.google.common.collect.Maps;
 
@@ -315,6 +316,9 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     @Override
     public void setMove(int i, String moveName)
     {
+        // do not blanket set moves on client, or when transformed.
+        if (!entity.isServerWorld() || getTransformedTo() != null) return;
+
         String[] moves = getMoves();
         moves[i] = moveName;
         setMoves(moves);
@@ -352,7 +356,8 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
 
     public void setMoves(String[] moves)
     {
-        if (!entity.isServerWorld()) return;
+        // do not blanket set moves on client, or when transformed.
+        if (!entity.isServerWorld() || getTransformedTo() != null) return;
         String movesString = "";
 
         if (moves != null && moves.length == 4)
@@ -360,6 +365,16 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
             if (genesMoves == null)
             {
                 getMoves();
+            }
+            if (genesMoves == null || genesMoves.getExpressed() == null || getMoveStats() == null)
+            {
+                PokecubeMod.log(Level.WARNING, "Error in setMoves " + getEntity(), new NullPointerException());
+                PokecubeMod.log(Level.WARNING, "AllGenes: " + genes);
+                PokecubeMod.log(Level.WARNING, "Genes: " + genesMoves);
+                if (genesMoves != null) PokecubeMod.log(Level.WARNING, "Gene: " + genesMoves.getExpressed());
+                else PokecubeMod.log(Level.WARNING, "Gene: " + genesMoves);
+                PokecubeMod.log(Level.WARNING, "stats: " + getMoveStats());
+                return;
             }
             genesMoves.getExpressed().setValue(getMoveStats().moves = moves);
             int i = 0;
@@ -581,7 +596,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
         setMoves(getMoves());
         // Refresh the datamanager for evs
         setEVs(getEVs());
-        
+
         setSize(getSize());
     }
 }

@@ -125,22 +125,19 @@ public class LogicMountedControl extends LogicBase
             if (leftInputDown)
             {
                 pokemob.setHeading(pokemob.getHeading() - 5);
-                entity.setRenderYawOffset(pokemob.getHeading());
-                entity.setRotationYawHead(pokemob.getHeading());
             }
             if (rightInputDown)
             {
                 pokemob.setHeading(pokemob.getHeading() + 5);
-                entity.setRenderYawOffset(pokemob.getHeading());
-                entity.setRotationYawHead(pokemob.getHeading());
             }
         }
         else if (!entity.getPassengers().isEmpty())
         {
             pokemob.setHeading(entity.getPassengers().get(0).rotationYaw);
-            entity.setRenderYawOffset(pokemob.getHeading());
-            entity.setRotationYawHead(pokemob.getHeading());
         }
+        // Sync the rotations.
+        entity.setRenderYawOffset(pokemob.getHeading());
+        entity.setRotationYawHead(pokemob.getHeading());
     }
 
     @Override

@@ -270,17 +270,9 @@ public class Commands extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
             BlockPos pos)
     {
-        boolean isOp = CommandTools.isOp(sender);
         List<String> ret = new ArrayList<String>();
         if (args[0].isEmpty())
         {
-            if (isOp)
-            {
-                ret.add("count");
-                ret.add("kill");
-                ret.add("cull");
-                ret.add("reset");
-            }
             return ret;
         }
         if (ret.isEmpty() && args.length == 1)
@@ -293,18 +285,6 @@ public class Commands extends CommandBase
     @Override
     public boolean isUsernameIndex(String[] astring, int i)
     {
-        String arg = astring[0];
-        if (arg.equalsIgnoreCase("make"))
-        {
-            int j = astring.length - 1;
-            return i == j;
-        }
-        if (arg.equalsIgnoreCase("tm") || arg.equalsIgnoreCase("reset"))
-        {
-            if (arg.equalsIgnoreCase("reset")) return i == 1;
-            return i == 2;
-
-        }
         return false;
     }
 }

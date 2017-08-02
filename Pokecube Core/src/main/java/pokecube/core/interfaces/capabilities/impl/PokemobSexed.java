@@ -12,6 +12,7 @@ import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
@@ -23,11 +24,20 @@ public abstract class PokemobSexed extends PokemobStats
     @Override
     public boolean canMate(EntityAnimal entityAnimal)
     {
-        if (entityAnimal instanceof IPokemob)
+        IPokemob otherMob = CapabilityPokemob.getPokemobFor(entityAnimal);
+        if (otherMob != null)
         {
             PokedexEntry thisEntry = getPokedexEntry();
-            PokedexEntry thatEntry = ((IPokemob) entityAnimal).getPokedexEntry();
+            PokedexEntry thatEntry = otherMob.getPokedexEntry();
 
+            // Check if pokedex entries state they can breed, and then if so,
+            // ensure sexe is different.
+            boolean neutral = this.getSexe() == IPokemob.NOSEXE || otherMob.getSexe() == IPokemob.NOSEXE;
+            if (thisEntry.areRelated(thatEntry) || thatEntry.areRelated(thisEntry)
+                    && (neutral || ((IPokemob) entityAnimal).getSexe() != this.getSexe()))
+                return true;
+
+            // Otherwise check for transform.
             boolean transforms = false;
             boolean otherTransforms = false;
             for (String s : getMoves())
@@ -42,12 +52,8 @@ public abstract class PokemobSexed extends PokemobStats
             // can't breed two transformers
             if (transforms && otherTransforms) return false;
             else if (transforms || otherTransforms) // Anything else will mate
-                                                    // with ditto
+                                                    // with a transformer.
                 return true;
-            boolean neutral = this.getSexe() == IPokemob.NOSEXE;
-            return thisEntry.areRelated(thatEntry)
-                    && (neutral || ((IPokemob) entityAnimal).getSexe() != this.getSexe());
-
         }
 
         return false;

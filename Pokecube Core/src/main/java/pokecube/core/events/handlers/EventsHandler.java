@@ -573,9 +573,9 @@ public class EventsHandler
             }
 
             // Owner only interactions.
-            if (isOwner && !PokecubeCore.isOnClientSide())
+            if (isOwner)
             {
-                if (CompatWrapper.isValid(held))
+                if (CompatWrapper.isValid(held) && !PokecubeCore.isOnClientSide())
                 {
                     // Check if it should evolve from item, do so if yes.
                     if (PokecubeItems.isValidEvoItem(held) && pokemob.canEvolve(held))
@@ -650,7 +650,8 @@ public class EventsHandler
                 }
 
                 // Check saddle for riding.
-                if (pokemob.getPokemonAIState(IMoveConstants.SADDLED) && !player.isSneaking() && isOwner
+                if (pokemob.getPokemonAIState(IMoveConstants.SADDLED) && !player.isSneaking()
+                        && !PokecubeCore.isOnClientSide()
                         && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
                         && handleHmAndSaddle(player, pokemob))
                 {
@@ -660,9 +661,9 @@ public class EventsHandler
                 }
 
                 // Open Gui
-                if (!PokecubeCore.isOnClientSide() && isOwner)
+                pokemob.getPokemobInventory().setCustomName(entity.getDisplayName().getFormattedText());
+                if (!PokecubeCore.isOnClientSide())
                 {
-                    pokemob.getPokemobInventory().setCustomName(entity.getDisplayName().getFormattedText());
                     player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, entity.getEntityWorld(),
                             entity.getEntityId(), 0, 0);
                     evt.setCanceled(true);

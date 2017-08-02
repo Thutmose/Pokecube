@@ -142,11 +142,7 @@ public abstract class PokemobSexed extends PokemobStats
     {
         IPokemob mate = (IPokemob) male;
         if (male == null || mate.getEntity().isDead) return;
-        if (this.getSexe() == MALE || male.getSexe() == FEMALE && male != this)
-        {
-            ((IPokemob) male).mateWith(this);
-            return;
-        }
+        if (this.getSexe() == MALE || (male.getSexe() == FEMALE && male != this)) { return; }
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 2;
         mate.setHungerTime(mate.getHungerTime() + hungerValue);
         setHungerTime(getHungerTime() + hungerValue);

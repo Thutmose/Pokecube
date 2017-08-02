@@ -6,9 +6,7 @@ package pokecube.core;
 import java.util.UUID;
 
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.ISnooperInfo;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IThreadListener;
@@ -16,7 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.blocks.healtable.ContainerHealTable;
@@ -113,13 +110,6 @@ public class CommonProxyPokecube extends CommonProxy implements IGuiHandler
             }
         }
         return null;
-
-    }
-
-    @Method(modid = "thut_wearables")
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
-            float partialTicks)
-    {
 
     }
 

@@ -1,6 +1,13 @@
 package pokecube.compat.wearables;
 
+import java.awt.Color;
+
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -14,8 +21,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.items.bags.ItemBag;
+import thut.core.client.render.model.IExtendedModelPart;
+import thut.core.client.render.x3d.X3dModel;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
+import thut.wearables.EnumWearable;
+import thut.wearables.IActiveWearable;
 
 public class WearableCompat
 {
@@ -24,7 +35,7 @@ public class WearableCompat
     @CompatClass(phase = Phase.PRE)
     public static void preInitWearables()
     {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.wearables.WearableCompat());
+        MinecraftForge.EVENT_BUS.register(new WearableCompat());
     }
 
     public WearableCompat()
@@ -40,20 +51,76 @@ public class WearableCompat
         }
     }
 
-    public static class WearableBag implements thut.wearables.IActiveWearable, ICapabilityProvider
+    public static class WearableBag implements IActiveWearable, ICapabilityProvider
     {
         @Override
-        public thut.wearables.EnumWearable getSlot(ItemStack stack)
+        public EnumWearable getSlot(ItemStack stack)
         {
-            return thut.wearables.EnumWearable.BACK;
+            System.out.println(stack);
+            return EnumWearable.BACK;
         }
+
+        // One model for each layer.
+        @SideOnly(Side.CLIENT)
+        X3dModel                 bag1;
+        @SideOnly(Side.CLIENT)
+        X3dModel                 bag2;
+
+        // One Texture for each layer.
+        @SideOnly(Side.CLIENT)
+        private ResourceLocation BAG_1 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_1.png");
+        @SideOnly(Side.CLIENT)
+        private ResourceLocation BAG_2 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_2.png");
 
         @SideOnly(Side.CLIENT)
         @Override
-        public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
-                float partialTicks)
+        public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
         {
-            PokecubeAdv.proxy.renderWearable(slot, wearer, stack, partialTicks);
+            if (bag1 == null)
+            {
+                bag1 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
+                bag2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
+            }
+            int brightness = wearer.getBrightnessForRender(partialTicks);
+            ResourceLocation pass1 = BAG_1;
+            ResourceLocation pass2 = BAG_2;
+            GL11.glPushMatrix();
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+            // First pass of render
+            GL11.glPushMatrix();
+            GL11.glRotated(90, 1, 0, 0);
+            GL11.glRotated(180, 0, 0, 1);
+            GL11.glTranslated(0, -0.125, -0.6);
+            GL11.glScaled(0.7, 0.7, 0.7);
+            Minecraft.getMinecraft().renderEngine.bindTexture(pass1);
+            bag1.renderAll();
+            GL11.glPopMatrix();
+
+            // Second pass with colour.
+            GL11.glPushMatrix();
+            GL11.glRotated(90, 1, 0, 0);
+            GL11.glRotated(180, 0, 0, 1);
+            GL11.glTranslated(0, -0.125, -0.6);
+            GL11.glScaled(0.7, 0.7, 0.7);
+            Minecraft.getMinecraft().renderEngine.bindTexture(pass2);
+            EnumDyeColor ret = EnumDyeColor.YELLOW;
+            if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+            {
+                int damage = stack.getTagCompound().getInteger("dyeColour");
+                ret = EnumDyeColor.byDyeDamage(damage);
+            }
+            Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+            int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
+            for (IExtendedModelPart part : bag2.getParts().values())
+            {
+                part.setRGBAB(col);
+            }
+            bag2.renderAll();
+            GL11.glColor3f(1, 1, 1);
+            GL11.glPopMatrix();
+
+            GL11.glPopMatrix();
         }
 
         @Override
@@ -71,23 +138,18 @@ public class WearableCompat
         }
 
         @Override
-        public void onPutOn(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
-                int subIndex)
+        public void onPutOn(EntityLivingBase player, ItemStack itemstack, EnumWearable slot, int subIndex)
         {
         }
 
         @Override
-        public void onTakeOff(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
-                int subIndex)
+        public void onTakeOff(EntityLivingBase player, ItemStack itemstack, EnumWearable slot, int subIndex)
         {
         }
 
         @Override
-        public void onUpdate(EntityLivingBase player, ItemStack itemstack, thut.wearables.EnumWearable slot,
-                int subIndex)
+        public void onUpdate(EntityLivingBase player, ItemStack itemstack, EnumWearable slot, int subIndex)
         {
         }
-
     }
-
 }

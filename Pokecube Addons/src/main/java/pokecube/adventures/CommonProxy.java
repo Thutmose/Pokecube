@@ -1,15 +1,12 @@
 package pokecube.adventures;
 
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.adventures.blocks.afa.ContainerAFA;
 import pokecube.adventures.blocks.afa.ContainerDaycare;
@@ -33,12 +30,6 @@ public class CommonProxy implements IGuiHandler
     public EntityPlayer getPlayer()
     {
         return null;
-    }
-
-    @Method(modid = "thut_wearables")
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
-    {
-
     }
 
     public EntityPlayer getPlayer(String playerName)

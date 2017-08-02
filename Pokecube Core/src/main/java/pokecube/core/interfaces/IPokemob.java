@@ -418,6 +418,7 @@ public interface IPokemob
             IGNORE.add("moves");
             IGNORE.add("newMoves");
             IGNORE.add("num");
+            IGNORE.add("exp");
         }
         public Entity                         weapon1;
 
@@ -430,6 +431,7 @@ public interface IPokemob
         public int                            FURYCUTTERCOUNTER          = 0;
         public int                            DEFENSECURLCOUNTER         = 0;
         public boolean                        Exploding                  = false;
+        public int                            boomState                  = -1;
 
         public int                            SPECIALCOUNTER             = 0;
         /** Used for cooldown of crit chance moves */
@@ -457,6 +459,9 @@ public interface IPokemob
          * here, probably causes creeper animation to go weird) */
         public int                            lastActiveTime;
 
+        /** Entity ID of the mob we are transformed to */
+        public int                            transformedTo              = -1;
+
         /** The amount of time since the creeper was close enough to the player
          * to ignite */
         public int                            timeSinceIgnited;
@@ -467,11 +472,16 @@ public interface IPokemob
 
         // these two are used for tracking learning new moves.
         public int                            num                        = 0;
-
         // next tick when a move can be used
         public int                            nextMoveTick               = 0;
+        // The array of moves.
         public String[]                       moves                      = new String[4];
+        // Moves it is trying to learn.
         public List<String>                   newMoves                   = Lists.newArrayList();
+        // The last move we used.
+        public String                         lastMove;
+        // Storing exp in here as well.
+        public int                            exp                        = 0;
 
         public void reset()
         {

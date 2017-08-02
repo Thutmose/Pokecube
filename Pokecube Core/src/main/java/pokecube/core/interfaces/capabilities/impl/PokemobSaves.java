@@ -76,7 +76,6 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                 }
             }
             this.setMoveIndex(movesTag.getInteger(MOVEINDEX));
-            this.getDataManager().set(params.LASTMOVE, movesTag.getString(LASTUSED));
             this.setAttackCooldown(movesTag.getInteger(COOLDOWN));
         }
         // Read Inventory tag
@@ -176,7 +175,6 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             }
             movesTag.setTag(NEWMOVES, newMoves);
         }
-        movesTag.setString(LASTUSED, getDataManager().get(params.LASTMOVE));
         movesTag.setInteger(COOLDOWN, getAttackCooldown());
 
         // Write Inventory tag

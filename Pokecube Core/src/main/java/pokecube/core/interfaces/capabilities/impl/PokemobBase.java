@@ -52,18 +52,12 @@ public abstract class PokemobBase implements IPokemob
     private static DataParameters createParams(Class<? extends Entity> clazz)
     {
         DataParameters params = new DataParameters();
-
-        for (int i = 0; i < 6; i++)
-        {
-            params.EVS[i] = EntityDataManager.<Byte> createKey(clazz, DataSerializers.BYTE);
-        }
         for (int i = 0; i < 5; i++)
         {
             params.FLAVOURS[i] = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         }
         params.AIACTIONSTATESDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.ATTACKTARGETIDDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
-        params.EXPDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HUNGERDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.STATUSDW = EntityDataManager.<Byte> createKey(clazz, DataSerializers.BYTE);
         params.STATUSTIMERDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
@@ -72,10 +66,7 @@ public abstract class PokemobBase implements IPokemob
         params.EVOLTICKDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HAPPYDW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.ATTACKCOOLDOWN = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
-        params.MOVESDW = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
         params.NICKNAMEDW = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
-        params.LASTMOVE = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
-        params.BOOMSTATEDW = EntityDataManager.<Byte> createKey(clazz, DataSerializers.BYTE);
         params.ZMOVECD = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HEADINGDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
         params.DIRECTIONPITCHDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
@@ -87,23 +78,18 @@ public abstract class PokemobBase implements IPokemob
     @SuppressWarnings("unchecked")
     public static class DataParameters
     {
-        public final DataParameter<Byte>[]        EVS      = new DataParameter[6];
         public final DataParameter<Integer>[]     FLAVOURS = new DataParameter[5];
         public DataParameter<Optional<ItemStack>> HELDITEM;
         public DataParameter<Integer>             EVOLTICKDW;
         public DataParameter<Integer>             HAPPYDW;
         public DataParameter<Integer>             ATTACKCOOLDOWN;
-        public DataParameter<String>              MOVESDW;
         public DataParameter<String>              NICKNAMEDW;
-        public DataParameter<String>              LASTMOVE;
-        public DataParameter<Byte>                BOOMSTATEDW;
         public DataParameter<Integer>             ZMOVECD;
         public DataParameter<Float>               DIRECTIONPITCHDW;
         public DataParameter<Float>               HEADINGDW;
         public DataParameter<Integer>             TRANSFORMEDTODW;
         public DataParameter<Integer>             AIACTIONSTATESDW;
         public DataParameter<Integer>             ATTACKTARGETIDDW;
-        public DataParameter<Integer>             EXPDW;
         public DataParameter<Integer>             HUNGERDW;
         public DataParameter<Byte>                STATUSDW;
         public DataParameter<Integer>             STATUSTIMERDW;
@@ -112,7 +98,6 @@ public abstract class PokemobBase implements IPokemob
 
         public EntityDataManager register(EntityDataManager dataManager, EntityLiving entity)
         {
-            dataManager.register(EXPDW, new Integer(0));// exp for level 1
             dataManager.register(HUNGERDW, new Integer(0));// Hunger time
             // // for sheared status
             dataManager.register(NICKNAMEDW, "");// nickname
@@ -125,23 +110,17 @@ public abstract class PokemobBase implements IPokemob
             dataManager.register(AIACTIONSTATESDW, Integer.valueOf(0));
 
             // from EntityEvolvablePokemob
-            // dataManager.register(EVOLNBDW, new Integer(0));// current
-            // evolution
-            // nb
             dataManager.register(EVOLTICKDW, new Integer(0));// evolution tick
 
             // From EntityMovesPokemb
-            dataManager.register(BOOMSTATEDW, Byte.valueOf((byte) -1));
             dataManager.register(STATUSDW, Byte.valueOf((byte) -1));
             dataManager.register(MOVEINDEXDW, Byte.valueOf((byte) -1));
             dataManager.register(STATUSTIMERDW, Integer.valueOf(0));
             dataManager.register(ATTACKCOOLDOWN, Integer.valueOf(0));
 
-            dataManager.register(MOVESDW, "");
             dataManager.register(SPECIALINFO, Integer.valueOf(0));
             dataManager.register(TRANSFORMEDTODW, Integer.valueOf(-1));
 
-            dataManager.register(LASTMOVE, "");
             dataManager.register(ZMOVECD, Integer.valueOf(-1));
 
             // Held item sync
@@ -153,18 +132,9 @@ public abstract class PokemobBase implements IPokemob
                 dataManager.register(FLAVOURS[i], Integer.valueOf(0));
             }
 
-            // Flavours for various berries eaten.
-            for (int i = 0; i < 6; i++)
-            {
-                dataManager.register(EVS[i], Byte.MIN_VALUE);
-            }
-
             // TODO manual sync these? overwrite default datamanager?
             // PokemobDataManager manager = new PokemobDataManager(entity);
             // dataManager = manager;
-            // manager.manualSyncSet.add(EXPDW);
-            // manager.manualSyncSet.add(MOVEINDEXDW);
-            // manager.manualSyncSet.add(MOVESDW);
             // manager.manualSyncSet.add(TRANSFORMEDTODW);
             // manager.manualSyncSet.add(STATUSDW);
             // manager.manualSyncSet.add(EVOLTICKDW);

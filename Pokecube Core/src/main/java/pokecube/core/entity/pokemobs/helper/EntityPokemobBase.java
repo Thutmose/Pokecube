@@ -47,9 +47,10 @@ import thut.api.maths.Vector3;
 /** @author Manchou, Thutmose */
 public abstract class EntityPokemobBase extends EntityHungryPokemob implements IEntityMultiPart, TagNames
 {
-    public static boolean       multibox     = true;
+    public static boolean       multibox           = true;
+    public static double        averagePokemobTick = 0;
 
-    private int                 despawntimer = 0;
+    private int                 despawntimer       = 0;
 
     private EntityPokemobPart[] partsArray;
 
@@ -460,8 +461,6 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         // do nothing
     }
 
-    double average = 0;
-
     @Override
     public void onUpdate()
     {
@@ -484,14 +483,15 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         }
         super.onUpdate();
         double dt = (System.nanoTime() - time) / 10e3D;
-        average = ((average * (ticksExisted - 1)) + dt) / ticksExisted;
+        averagePokemobTick = ((averagePokemobTick * (ticksExisted - 1)) + dt) / ticksExisted;
         double toolong = 500;
         if (PokecubeMod.debug && dt > toolong && !getEntityWorld().isRemote)
         {
             here.set(here.getPos());
             String toLog = "%3$s took %2$s\u00B5s to tick, it is located at %1$s, the average has been %4$s\u00B5s";
             PokecubeMod.log(String.format(toLog, here, (int) dt,
-                    pokemobCap.getPokemonDisplayName().getUnformattedComponentText(), ((int) (average * 100)) / 100d));
+                    pokemobCap.getPokemonDisplayName().getUnformattedComponentText(),
+                    ((int) (averagePokemobTick * 100)) / 100d));
         }
     }
 

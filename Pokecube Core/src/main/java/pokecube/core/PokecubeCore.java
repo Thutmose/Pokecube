@@ -71,6 +71,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
+import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.events.handlers.EventsHandler;
@@ -785,6 +786,13 @@ public class PokecubeCore extends PokecubeMod
         PokecubePlayerStats.reset();
         if (PokecubeSerializer.instance != null) PokecubeSerializer.instance.clearInstance();
         AISaveHandler.clearInstance();
+        if (debug)
+        {
+            // limit to 1% precision
+            double value = ((int) (EntityPokemobBase.averagePokemobTick * 100)) / 100d;
+            log("Average Pokemob Tick Time for this Session: " + value + "\u00B5s");
+        }
+        EntityPokemobBase.averagePokemobTick = 0;
     }
 
 }

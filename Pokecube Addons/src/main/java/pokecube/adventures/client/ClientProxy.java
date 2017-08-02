@@ -6,12 +6,7 @@ import static pokecube.adventures.handlers.BlockHandler.siphon;
 import static pokecube.adventures.handlers.BlockHandler.warppad;
 import static pokecube.core.PokecubeItems.registerItemTexture;
 
-import java.awt.Color;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -20,11 +15,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
@@ -35,7 +27,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.CommonProxy;
 import pokecube.adventures.PokecubeAdv;
@@ -62,8 +53,6 @@ import pokecube.adventures.items.EntityTarget;
 import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.core.PokecubeCore;
 import thut.api.maths.Vector3;
-import thut.core.client.render.model.IExtendedModelPart;
-import thut.core.client.render.x3d.X3dModel;
 
 public class ClientProxy extends CommonProxy
 {
@@ -199,63 +188,5 @@ public class ClientProxy extends CommonProxy
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAFA.class, new RenderAFA());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityCloner.class, new RenderCloner());
-    }
-
-    X3dModel                 bag1;
-    X3dModel                 bag2;
-
-    private ResourceLocation BAG_1 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_1.png");
-    private ResourceLocation BAG_2 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_2.png");
-
-    @Method(modid = "thut_wearables")
-    @Override
-    public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
-            float partialTicks)
-    {
-        if (bag1 == null)
-        {
-            bag1 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
-            bag2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
-        }
-        int brightness = wearer.getBrightnessForRender(partialTicks);
-        ResourceLocation pass1 = BAG_1;
-        ResourceLocation pass2 = BAG_2;
-        GL11.glPushMatrix();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
-        // First pass of render
-        GL11.glPushMatrix();
-        GL11.glRotated(90, 1, 0, 0);
-        GL11.glRotated(180, 0, 0, 1);
-        GL11.glTranslated(0, -0.125, -0.6);
-        GL11.glScaled(0.7, 0.7, 0.7);
-        Minecraft.getMinecraft().renderEngine.bindTexture(pass1);
-        bag1.renderAll();
-        GL11.glPopMatrix();
-
-        // Second pass with colour.
-        GL11.glPushMatrix();
-        GL11.glRotated(90, 1, 0, 0);
-        GL11.glRotated(180, 0, 0, 1);
-        GL11.glTranslated(0, -0.125, -0.6);
-        GL11.glScaled(0.7, 0.7, 0.7);
-        Minecraft.getMinecraft().renderEngine.bindTexture(pass2);
-        EnumDyeColor ret = EnumDyeColor.YELLOW;
-        if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
-        {
-            int damage = stack.getTagCompound().getInteger("dyeColour");
-            ret = EnumDyeColor.byDyeDamage(damage);
-        }
-        Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
-        int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
-        for (IExtendedModelPart part : bag2.getParts().values())
-        {
-            part.setRGBAB(col);
-        }
-        bag2.renderAll();
-        GL11.glColor3f(1, 1, 1);
-        GL11.glPopMatrix();
-
-        GL11.glPopMatrix();
     }
 }

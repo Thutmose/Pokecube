@@ -93,19 +93,15 @@ public class WearablesCompat
         // rings use own model, so only 1 layer here, ring model handles own
         // textures.
         @SideOnly(Side.CLIENT)
-        private ModelRing        ring   = new ModelRing();
+        private ModelRing        ring;
 
         // Textures for each belt layer.
-        @SideOnly(Side.CLIENT)
         private ResourceLocation belt_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
-        @SideOnly(Side.CLIENT)
         private ResourceLocation belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
 
         // Textures for each hat layer.
-        @SideOnly(Side.CLIENT)
-        ResourceLocation         hat_1  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat.png");
-        @SideOnly(Side.CLIENT)
-        ResourceLocation         hat_2  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat2.png");
+        private ResourceLocation hat_1  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat.png");
+        private ResourceLocation hat_2  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat2.png");
 
         @SideOnly(Side.CLIENT)
         @Override
@@ -118,6 +114,7 @@ public class WearablesCompat
                 belt2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
                 hat1 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
                 hat2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
+                ring = new ModelRing();
             }
             switch (slot)
             {

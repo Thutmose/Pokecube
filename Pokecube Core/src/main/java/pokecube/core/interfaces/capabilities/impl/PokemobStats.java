@@ -16,6 +16,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.pokemobs.PacketNickname;
+import pokecube.core.network.pokemobs.PacketSyncExp;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Matrix3;
 import thut.lib.CompatWrapper;
@@ -38,12 +39,6 @@ public abstract class PokemobStats extends PokemobGenes
     }
 
     @Override
-    public int getExp()
-    {
-        return dataManager.get(params.EXPDW);
-    }
-
-    @Override
     public int getHappiness()
     {
         bonusHappiness = dataManager.get(params.HAPPYDW);
@@ -61,7 +56,7 @@ public abstract class PokemobStats extends PokemobGenes
     @Override
     public String getPokemonNickname()
     {
-        return dataManager.get(params.NICKNAMEDW);
+        return getDataManager().get(params.NICKNAMEDW);
     }
 
     @Override
@@ -76,16 +71,20 @@ public abstract class PokemobStats extends PokemobGenes
     }
 
     @Override
+    public int getExp()
+    {
+        return getMoveStats().exp;
+    }
+
+    @Override
     public IPokemob setExp(int exp, boolean notifyLevelUp)
     {
         if (getEntity().isDead) return this;
-
-        int old = dataManager.get(params.EXPDW);
+        int old = getMoveStats().exp;
         getMoveStats().oldLevel = this.getLevel();
         int lvl100xp = Tools.maxXPs[getExperienceMode()];
         exp = Math.min(lvl100xp, exp);
-
-        dataManager.set(params.EXPDW, exp);
+        getMoveStats().exp = exp;
         int newLvl = Tools.xpToLevel(getExperienceMode(), exp);
         int oldLvl = Tools.xpToLevel(getExperienceMode(), old);
         IPokemob ret = this;
@@ -117,6 +116,7 @@ public abstract class PokemobStats extends PokemobGenes
                 }
             }
         }
+        PacketSyncExp.sendUpdate(ret);
         return ret;
     }
 
@@ -189,7 +189,7 @@ public abstract class PokemobStats extends PokemobGenes
     {
         int level = Tools.xpToLevel(getExperienceMode(), exp);
         getMoveStats().oldLevel = 0;
-        dataManager.set(params.EXPDW, exp);
+        getMoveStats().exp = exp;
         IPokemob ret = this.levelUp(level);
         ItemStack held = getHeldItem();
         if (evolve) while (ret.canEvolve(held))
@@ -197,7 +197,7 @@ public abstract class PokemobStats extends PokemobGenes
             IPokemob temp = ret.evolve(false, true, held);
             if (temp == null) break;
             ret = temp;
-            ret.getDataManager().set(params.EXPDW, exp);
+            ret.getMoveStats().exp = exp;
             ret.levelUp(level);
         }
         return ret;

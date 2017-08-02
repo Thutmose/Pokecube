@@ -20,6 +20,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PacketSyncMoveUse;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
@@ -32,7 +33,7 @@ public abstract class PokemobMoves extends PokemobSexed
     {
         String currentMove = getMove(getMoveIndex());
         if (currentMove == MOVE_NONE || currentMove == null) { return; }
-        getDataManager().set(params.LASTMOVE, currentMove);
+        PacketSyncMoveUse.sendUpdate(this);
         if (target instanceof EntityLiving)
         {
             EntityLiving t = (EntityLiving) target;
@@ -146,7 +147,7 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public int getExplosionState()
     {
-        return (int) dataManager.get(params.BOOMSTATEDW);
+        return moveInfo.boomState;
     }
 
     @Override
@@ -202,7 +203,7 @@ public abstract class PokemobMoves extends PokemobSexed
     public void setExplosionState(int i)
     {
         if (i >= 0) moveInfo.Exploding = true;
-        dataManager.set(params.BOOMSTATEDW, Byte.valueOf((byte) i));
+        moveInfo.boomState = i;
     }
 
     @Override
@@ -263,14 +264,17 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public void setTransformedTo(Entity to)
     {
-        if (to != null) getDataManager().set(params.TRANSFORMEDTODW, to.getEntityId());
-        else getDataManager().set(params.TRANSFORMEDTODW, -1);
-        if (to instanceof IPokemob)
+        if (to != null) getMoveStats().transformedTo = to.getEntityId();
+        else getMoveStats().transformedTo = -1;
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(to);
+        PokedexEntry newEntry = getPokedexEntry();
+        if (pokemob != null)
         {
-            PokedexEntry newEntry = ((IPokemob) to).getPokedexEntry();
-            this.setType1(newEntry.getType1());
-            this.setType2(newEntry.getType2());
+            newEntry = pokemob.getPokedexEntry();
         }
+        this.setType1(newEntry.getType1());
+        this.setType2(newEntry.getType2());
+        getDataManager().set(params.TRANSFORMEDTODW, getMoveStats().transformedTo);
     }
 
     @Override
@@ -288,7 +292,7 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public String getLastMoveUsed()
     {
-        return this.getDataManager().get(params.LASTMOVE);
+        return this.getMoveStats().lastMove;
     }
 
     @Override

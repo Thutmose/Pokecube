@@ -38,8 +38,8 @@ import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketChangeForme;
+import pokecube.core.network.pokemobs.PacketSyncGene;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.entity.genetics.Alleles;
@@ -198,49 +198,33 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     @Override
     public void setEVs(byte[] evs)
     {
-        for (int i = 0; i < 6; i++)
-        {
-            dataManager.set(params.EVS[i], evs[i]);
-        }
         if (genesEVs == null) getEVs();
         if (genesEVs != null) genesEVs.getExpressed().setValue(evs);
+        PacketSyncGene.syncGene(getEntity(), genesEVs);
     }
-
-    byte[] evs = new byte[6];
 
     @Override
     public byte[] getEVs()
     {
-        if (!entity.isServerWorld() && entity.addedToChunk)
+        if (genesEVs == null)
         {
-            for (int i = 0; i < 6; i++)
-            {
-                evs[i] = dataManager.get(params.EVS[i]);
-            }
-            return evs;
-        }
-        else
-        {
+            if (genes == null) throw new RuntimeException("This should not be called here");
+            genesEVs = genes.getAlleles().get(EVSGENE);
             if (genesEVs == null)
             {
-                if (genes == null) throw new RuntimeException("This should not be called here");
-                genesEVs = genes.getAlleles().get(EVSGENE);
-                if (genesEVs == null)
-                {
-                    genesEVs = new Alleles();
-                    genes.getAlleles().put(EVSGENE, genesEVs);
-                }
-                if (genesEVs.getAlleles()[0] == null || genesEVs.getAlleles()[1] == null)
-                {
-                    EVsGene ivs = new EVsGene();
-                    genesEVs.getAlleles()[0] = ivs.getMutationRate() > rand.nextFloat() ? ivs.mutate() : ivs;
-                    genesEVs.getAlleles()[1] = ivs.getMutationRate() > rand.nextFloat() ? ivs.mutate() : ivs;
-                    genesEVs.refreshExpressed();
-                    genesEVs.getExpressed().setValue(new EVsGene().getValue());
-                }
+                genesEVs = new Alleles();
+                genes.getAlleles().put(EVSGENE, genesEVs);
             }
-            return genesEVs.getExpressed().getValue();
+            if (genesEVs.getAlleles()[0] == null || genesEVs.getAlleles()[1] == null)
+            {
+                EVsGene ivs = new EVsGene();
+                genesEVs.getAlleles()[0] = ivs.getMutationRate() > rand.nextFloat() ? ivs.mutate() : ivs;
+                genesEVs.getAlleles()[1] = ivs.getMutationRate() > rand.nextFloat() ? ivs.mutate() : ivs;
+                genesEVs.refreshExpressed();
+                genesEVs.getExpressed().setValue(new EVsGene().getValue());
+            }
         }
+        return genesEVs.getExpressed().getValue();
     }
 
     @Override
@@ -269,48 +253,26 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     @Override
     public String[] getMoves()
     {
-        if (!entity.isServerWorld() && entity.addedToChunk)
+        String[] moves = getMoveStats().moves;
+        if (genesMoves == null)
         {
-            String movesString = dataManager.get(params.MOVESDW);
-            String[] moves = new String[4];
-            if (movesString != null && movesString.length() > 2)
-            {
-                String[] movesSplit = movesString.split(",");
-                for (int i = 0; i < Math.min(4, movesSplit.length); i++)
-                {
-                    String move = movesSplit[i];
-
-                    if (move != null && move.length() > 1 && MovesUtils.isMoveImplemented(move))
-                    {
-                        moves[i] = move;
-                    }
-                }
-            }
-            return moves;
-        }
-        else
-        {
-            String[] moves = getMoveStats().moves;
+            if (genes == null) throw new RuntimeException("This should not be called here");
+            genesMoves = genes.getAlleles().get(MOVESGENE);
             if (genesMoves == null)
             {
-                if (genes == null) throw new RuntimeException("This should not be called here");
-                genesMoves = genes.getAlleles().get(MOVESGENE);
-                if (genesMoves == null)
-                {
-                    genesMoves = new Alleles();
-                    genes.getAlleles().put(MOVESGENE, genesMoves);
-                }
-                if (genesMoves.getAlleles()[0] == null || genesMoves.getAlleles()[1] == null)
-                {
-                    MovesGene gene = new MovesGene();
-                    gene.setValue(moves);
-                    genesMoves.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
-                    genesMoves.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
-                    genesMoves.refreshExpressed();
-                }
+                genesMoves = new Alleles();
+                genes.getAlleles().put(MOVESGENE, genesMoves);
             }
-            return getMoveStats().moves = genesMoves.getExpressed().getValue();
+            if (genesMoves.getAlleles()[0] == null || genesMoves.getAlleles()[1] == null)
+            {
+                MovesGene gene = new MovesGene();
+                gene.setValue(moves);
+                genesMoves.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesMoves.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
+                genesMoves.refreshExpressed();
+            }
         }
+        return getMoveStats().moves = genesMoves.getExpressed().getValue();
     }
 
     @Override
@@ -358,8 +320,6 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     {
         // do not blanket set moves on client, or when transformed.
         if (!entity.isServerWorld() || getTransformedTo() != null) return;
-        String movesString = "";
-
         if (moves != null && moves.length == 4)
         {
             if (genesMoves == null)
@@ -377,13 +337,8 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                 return;
             }
             genesMoves.getExpressed().setValue(getMoveStats().moves = moves);
-            int i = 0;
-            for (String s : moves)
-            {
-                if (s != null) movesString = i++ != 0 ? movesString + ("," + s) : s;
-            }
         }
-        dataManager.set(params.MOVESDW, movesString);
+        PacketSyncGene.syncGene(getEntity(), genesMoves);
     }
 
     @Override

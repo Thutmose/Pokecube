@@ -28,18 +28,17 @@ import thut.lib.CompatWrapper;
  * is out of combat. */
 public class LogicMiscUpdate extends LogicBase
 {
-    public static int EXITCUBEDURATION  = 40;
-    private int       lastHadTargetTime = 0;
-    private int[]     flavourAmounts    = new int[5];
-    PokedexEntry      entry;
-    String            particle          = null;
-    int               particleIntensity = 80;
-    int               particleCounter   = 0;
-    boolean           reset             = false;
-    boolean           initHome          = false;
-    boolean           named             = false;
-    boolean           checkedEvol       = false;
-    Vector3           v                 = Vector3.getNewVector();
+    public static int    EXITCUBEDURATION  = 40;
+    private int          lastHadTargetTime = 0;
+    private int[]        flavourAmounts    = new int[5];
+    private PokedexEntry entry;
+    private String       particle          = null;
+    private int          particleIntensity = 80;
+    private int          particleCounter   = 0;
+    private boolean      reset             = false;
+    private boolean      initHome          = false;
+    private boolean      checkedEvol       = false;
+    Vector3              v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(EntityAnimal entity)
     {
@@ -342,11 +341,6 @@ public class LogicMiscUpdate extends LogicBase
 
     private void checkInventory(World world)
     {
-        if (!named && pokemob.getPokedexEntry() != null)
-        {
-            pokemob.getPokemobInventory().setCustomName(entity.getName());
-            named = true;
-        }
         for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
         {
             ItemStack stack;

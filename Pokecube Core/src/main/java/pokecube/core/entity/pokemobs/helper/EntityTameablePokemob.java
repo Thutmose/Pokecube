@@ -5,8 +5,10 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.Items;
@@ -36,7 +38,7 @@ import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public abstract class EntityTameablePokemob extends EntityAnimal implements IInventoryChangedListener, IShearable,
-        IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IPathingMob
+        IEntityOwnable, IMobColourable, IRangedAttackMob, IAIMob, IEntityAdditionalSpawnData, IPathingMob
 {
 
     protected boolean              looksWithInterest;
@@ -205,5 +207,17 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
     public void setSheared(boolean sheared)
     {
         pokemobCap.setPokemonAIState(IMoveConstants.SHEARED, sheared);
+    }
+
+    @Override
+    public UUID getOwnerId()
+    {
+        return pokemobCap.getPokemonOwnerID();
+    }
+
+    @Override
+    public Entity getOwner()
+    {
+        return pokemobCap.getOwner();
     }
 }

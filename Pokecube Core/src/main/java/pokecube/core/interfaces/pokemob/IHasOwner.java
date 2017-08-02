@@ -97,4 +97,11 @@ public interface IHasOwner extends IEntityOwnable, IHasMobAIStates
     {
         return null;
     }
+
+    /** Sets the direction this mob is going when ridden, if the mob is not
+     * ridden, this method should do nothing. */
+    void setHeading(float heading);
+
+    /** @return The direction this mob is going, only relevant when ridden. */
+    float getHeading();
 }

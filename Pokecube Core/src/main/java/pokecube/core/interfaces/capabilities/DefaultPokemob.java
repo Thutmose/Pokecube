@@ -122,4 +122,21 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         return true;
     }
 
+    @Override
+    public void setHeading(float heading)
+    {
+        if (getEntity().isBeingRidden())
+        {
+            getEntity().rotationYaw = heading;
+            dataManager.set(params.HEADINGDW, heading);
+        }
+    }
+
+    @Override
+    public float getHeading()
+    {
+        if (getEntity().isBeingRidden()) { return dataManager.get(params.HEADINGDW); }
+        return getEntity().rotationYaw;
+    }
+
 }

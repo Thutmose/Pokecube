@@ -119,6 +119,7 @@ public abstract class PokemobBase implements IPokemob
 
             // From EntityAiPokemob
             dataManager.register(DIRECTIONPITCHDW, Float.valueOf(0));
+            dataManager.register(HEADINGDW, Float.valueOf(0));
             dataManager.register(ATTACKTARGETIDDW, Integer.valueOf(-1));
             dataManager.register(AIACTIONSTATESDW, Integer.valueOf(0));
 

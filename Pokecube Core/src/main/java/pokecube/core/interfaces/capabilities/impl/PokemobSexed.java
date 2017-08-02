@@ -33,8 +33,8 @@ public abstract class PokemobSexed extends PokemobStats
             // Check if pokedex entries state they can breed, and then if so,
             // ensure sexe is different.
             boolean neutral = this.getSexe() == IPokemob.NOSEXE || otherMob.getSexe() == IPokemob.NOSEXE;
-            if (thisEntry.areRelated(thatEntry) || thatEntry.areRelated(thisEntry)
-                    && (neutral || ((IPokemob) entityAnimal).getSexe() != this.getSexe()))
+            if (thisEntry.areRelated(thatEntry)
+                    || thatEntry.areRelated(thisEntry) && (neutral || otherMob.getSexe() != this.getSexe()))
                 return true;
 
             // Otherwise check for transform.
@@ -44,7 +44,7 @@ public abstract class PokemobSexed extends PokemobStats
             {
                 if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) transforms = true;
             }
-            for (String s : ((IPokemob) entityAnimal).getMoves())
+            for (String s : otherMob.getMoves())
             {
                 if (s != null && s.equalsIgnoreCase(IMoveNames.MOVE_TRANSFORM)) otherTransforms = true;
             }
@@ -62,6 +62,7 @@ public abstract class PokemobSexed extends PokemobStats
     @Override
     public Object getChild(IBreedingMob male)
     {
+        if (!IPokemob.class.isInstance(male)) return null;
         boolean transforms = false;
         boolean otherTransforms = ((IPokemob) male).getTransformedTo() != null;
         String[] moves = getMoves();

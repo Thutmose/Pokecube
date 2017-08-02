@@ -69,7 +69,7 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
         entityId = buffer.readInt();
         try
         {
-            genes.load(buffer.readNBTTagCompoundFromBuffer());
+            genes.load(buffer.readCompoundTag());
         }
         catch (Exception e)
         {
@@ -82,6 +82,6 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
     {
         PacketBuffer buffer = new PacketBuffer(buf);
         buffer.writeInt(entityId);
-        buffer.writeNBTTagCompoundToBuffer(genes.save());
+        buffer.writeCompoundTag(genes.save());
     }
 }

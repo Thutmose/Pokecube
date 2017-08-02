@@ -6,8 +6,6 @@ import java.util.Random;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Predicate;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockFence;
 import net.minecraft.client.resources.I18n;
@@ -15,7 +13,6 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -189,15 +186,7 @@ public class ItemPokemobEgg extends Item
         if (owner == null)
         {
             List<EntityLivingBase> list = mob.getEntity().getEntityWorld().getEntitiesWithinAABB(EntityLivingBase.class,
-                    box, new Predicate<EntityLivingBase>()
-                    {
-                        @Override
-                        public boolean apply(EntityLivingBase input)
-                        {
-                            return !(input instanceof EntityPokemobEgg) && !(input instanceof IEntityOwnable)
-                                    && !(input instanceof EntityPlayer);
-                        }
-                    });
+                    box);
             EntityLivingBase closestTo = mob.getEntity();
             EntityLivingBase t = null;
             double d0 = Double.MAX_VALUE;

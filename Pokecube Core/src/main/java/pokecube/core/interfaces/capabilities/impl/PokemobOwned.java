@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
@@ -14,7 +15,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -420,5 +423,29 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     public LogicMountedControl getController()
     {
         return controller;
+    }
+
+    @Override
+    public boolean moveToShoulder(EntityPlayer player)
+    {
+        NBTTagCompound nbttagcompound = new NBTTagCompound();
+        nbttagcompound.setString("id", this.getEntityString());
+        this.getEntity().writeToNBT(nbttagcompound);
+
+        if (player.addShoulderEntity(nbttagcompound))
+        {
+            this.getEntity().getEntityWorld().removeEntity(this.getEntity());
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    protected final String getEntityString()
+    {
+        ResourceLocation resourcelocation = EntityList.getKey(this.getEntity());
+        return resourcelocation == null ? null : resourcelocation.toString();
     }
 }

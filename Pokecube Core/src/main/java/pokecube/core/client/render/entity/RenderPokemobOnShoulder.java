@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.EntityTools;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
@@ -133,19 +134,17 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             }
 
             GlStateManager.disableRescaleNormal();
-            // System.out.println(nbttagcompound);
-            // System.out.println(nbttagcompound1);
             if (!left || !right)
             {
                 NBTTagCompound bakLeft = nbttagcompound.copy();
                 NBTTagCompound bakRight = nbttagcompound1.copy();
-                if (left)
+                if (right)
                 {
                     for (String s : bakLeft.getKeySet())
                         nbttagcompound.removeTag(s);
                 }
 
-                if (right)
+                if (left)
                 {
                     for (String s : bakRight.getKeySet())
                         nbttagcompound1.removeTag(s);
@@ -154,13 +153,13 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
                 parent.doRenderLayer(player, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw,
                         headPitch, scale);
 
-                if (left)
+                if (right)
                 {
                     for (String s : bakLeft.getKeySet())
                         nbttagcompound.setTag(s, bakLeft.getTag(s));
                 }
 
-                if (right)
+                if (left)
                 {
                     for (String s : bakRight.getKeySet())
                         nbttagcompound1.setTag(s, bakRight.getTag(s));
@@ -177,19 +176,18 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch,
             float scaleFactor, boolean left)
     {
-
         if (mobUUID == null || !mobUUID.equals(mobNBTTag.getUniqueId("UUID")) || mob == null
                 || entry != mob.getPokedexEntry())
         {
             mobUUID = mobNBTTag.getUniqueId("UUID");
             mobClass = EntityList.getClassFromName(mobNBTTag.getString("id"));
-            if (!IPokemob.class.isAssignableFrom(mobClass)) return null;
             mobRenderer = (RenderLivingBase<?>) this.renderManager
                     .getEntityClassRenderObject((Class<? extends Entity>) mobClass);
             mobModelBase = ((RenderLivingBase<?>) mobRenderer).getMainModel();
             Entity entity = EntityList.newEntity((Class<? extends Entity>) mobClass, player.world);
             entity.readFromNBT(mobNBTTag);
-            mob = (IPokemob) entity;
+            mob = CapabilityPokemob.getPokemobFor(entity);
+            if (mob == null) return null;
             texture = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
             if (mobModelBase == null)
             {
@@ -232,8 +230,11 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
         {
             ageInTicks = 0.0F;
         }
-        EntityLivingBase living = (EntityLivingBase) mob;
+        EntityLivingBase living = mob.getEntity();
         EntityTools.copyEntityTransforms(living, player);
+        mobModelBase.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor,
+                living);
+        mobModelBase.setLivingAnimations(living, limbSwing, limbSwingAmount, partialTick);
         mobModelBase.render(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         GlStateManager.popMatrix();
         return new RenderPokemobOnShoulder.DataHolder(mobUUID, mobRenderer, mobModelBase, texture, mobClass, entry,

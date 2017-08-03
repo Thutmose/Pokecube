@@ -505,6 +505,11 @@ public class EventsHandler
             // shoulder
             if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
             {
+                if (player.isSneaking())
+                {
+                    pokemob.moveToShoulder(player);
+                    return;
+                }
                 Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
                 look.y = 0.2;
                 look.addVelocities(evt.getTarget());

@@ -111,7 +111,9 @@ public class ClientProxy extends CommonProxy
                     }
                     catch (Exception e1)
                     {
-                        for (String ext : ModelFactory.getValidExtensions())
+                        List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
+                        Collections.sort(extensions, Config.instance.extensionComparator);
+                        for (String ext : extensions)
                         {
                             try
                             {
@@ -227,7 +229,9 @@ public class ClientProxy extends CommonProxy
             catch (Exception e)
             {
                 boolean validModel = false;
-                for (String ext : ModelFactory.getValidExtensions())
+                List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
+                Collections.sort(extensions, Config.instance.extensionComparator);
+                for (String ext : extensions)
                 {
                     try
                     {

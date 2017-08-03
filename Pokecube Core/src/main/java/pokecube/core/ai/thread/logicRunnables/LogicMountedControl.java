@@ -38,11 +38,12 @@ public class LogicMountedControl extends LogicBase
         if (!entity.isBeingRidden()) return;
         boolean move = false;
         entity.rotationYaw = pokemob.getHeading();
-        boolean shouldControl = entity.onGround;
-        if (pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys())
-            shouldControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
-        if ((pokemob.getPokedexEntry().shouldDive || pokemob.getPokedexEntry().shouldSurf) && entity.isInWater())
-            shouldControl = PokecubeCore.core.getConfig().surfEnabled || shouldControl;
+        boolean shouldControl = entity.onGround || pokemob.floats();
+        boolean verticalControl = false;
+        if (pokemob.canUseFly())
+            shouldControl = verticalControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
+        if ((pokemob.canUseSurf() || pokemob.canUseDive()) && entity.isInWater())
+            shouldControl = verticalControl = PokecubeCore.core.getConfig().surfEnabled || shouldControl;
 
         if (pokemob.getPokedexEntry().shouldDive)
         {
@@ -99,7 +100,7 @@ public class LogicMountedControl extends LogicBase
             {
                 entity.getJumpHelper().setJumping();
             }
-            else if (shouldControl)
+            else if (verticalControl)
             {
                 entity.motionY += 0.1;
             }
@@ -110,10 +111,14 @@ public class LogicMountedControl extends LogicBase
         }
         if (downInputDown)
         {
-            if (shouldControl && !entity.onGround)
+            if (verticalControl && !entity.onGround)
             {
                 entity.motionY -= 0.1;
             }
+        }
+        else if (!verticalControl && !entity.onGround)
+        {
+            entity.motionY -= 0.1;
         }
         if (!move)
         {

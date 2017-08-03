@@ -36,6 +36,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.modelloader.common.Config;
 import pokecube.modelloader.common.ExtraDatabase;
 import thut.core.client.render.model.ModelFactory;
 
@@ -400,8 +401,9 @@ public class CommonProxy implements IGuiHandler
         {
             tex = toLocations(modid, ".xml", entry);
             filesExist(mod, ret, tex);
-
-            for (String ext : ModelFactory.getValidExtensions())
+            List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
+            Collections.sort(extensions, Config.instance.extensionComparator);
+            for (String ext : extensions)
             {
                 tex = toLocations(modid, "." + ext, entry);
                 filesExist(mod, ret, tex);

@@ -19,12 +19,16 @@ public class Config extends ConfigBase
     public String[]           priorityOrder = { "pokecube_ml", "pokecube_mobs" };
 
     @Configure(category = "loading")
+    public String[]           modelPriority = { "x3d" };
+
+    @Configure(category = "loading")
     public boolean            preload       = false;
 
     @Configure(category = "loading")
     public String[]           preloadedMobs = {};
 
     public Comparator<String> modIdComparator;
+    public Comparator<String> extensionComparator;
     public Set<String>        toPreload     = Sets.newHashSet();
 
     public Config()
@@ -60,6 +64,23 @@ public class Config extends ConfigBase
                 return prioro1 - prioro2;
             }
         };
+        extensionComparator = new Comparator<String>()
+        {
+            @Override
+            public int compare(String o1, String o2)
+            {
+                int prioro1 = 0;
+                int prioro2 = 0;
+                for (int i = 0; i < modelPriority.length; i++)
+                {
+                    if (o1.equals(modelPriority[i])) prioro1 = i;
+                    if (o2.equals(modelPriority[i])) prioro2 = i;
+                }
+                if ((prioro1 - prioro2) == 0) return o1.compareTo(o2);
+                return prioro1 - prioro2;
+            }
+        };
+
         toPreload.clear();
         for (String s : preloadedMobs)
             toPreload.add(s);

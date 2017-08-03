@@ -3,8 +3,10 @@ package pokecube.modelloader.client.render;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -25,6 +28,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
+import pokecube.modelloader.common.Config;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.core.client.render.animation.AnimationBuilder;
@@ -172,7 +176,9 @@ public class AnimationLoader
 
         ResourceLocation texture = new ResourceLocation(
                 s.replace(provider.getModelDirectory(entry), provider.getTextureDirectory(entry)) + ".png");
-        for (String ext : ModelFactory.getValidExtensions())
+        List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
+        Collections.sort(extensions, Config.instance.extensionComparator);
+        for (String ext : extensions)
         {
             try
             {

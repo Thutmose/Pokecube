@@ -525,8 +525,7 @@ public interface IPokemob
      * @return whether this mob can be ridden with HMFly */
     default boolean canUseFly()
     {
-        return getPokedexEntry().flys()
-                || getPokedexEntry().shouldFly && (isType(PokeType.getType("flying")) && getPokedexEntry().shouldFly);
+        return getPokedexEntry().flys() || isType(PokeType.getType("flying")) && getPokedexEntry().shouldFly;
     }
 
     /** Whether this mob can use the item HMSurf to be ridden on water.

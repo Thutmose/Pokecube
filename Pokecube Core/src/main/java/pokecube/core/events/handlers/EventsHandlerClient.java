@@ -133,13 +133,8 @@ public class EventsHandlerClient
         if (num != 0)
         {
             PokedexEntry entry = Database.getEntry(num);
-            IPokemob pokemob = renderMobs.get(entry);
-            if (pokemob == null)
-            {
-                pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
-                if (pokemob == null) return null;
-                renderMobs.put(entry, pokemob);
-            }
+            IPokemob pokemob = getRenderMob(entry, world);
+            if (pokemob == null) return null;
             NBTTagCompound pokeTag = itemStack.getTagCompound();
             EventsHandler.setFromNBT(pokemob, pokeTag);
             pokemob.setPokecube(itemStack);
@@ -151,6 +146,19 @@ public class EventsHandlerClient
         }
 
         return null;
+    }
+
+    public static IPokemob getRenderMob(PokedexEntry entry, World world)
+    {
+        IPokemob pokemob = renderMobs.get(entry);
+        if (pokemob == null)
+        {
+            pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, world));
+            if (pokemob == null) return null;
+            pokemob.specificSpawnInit();
+            renderMobs.put(entry, pokemob);
+        }
+        return pokemob;
     }
 
     public static void renderMob(IPokemob pokemob, float tick)

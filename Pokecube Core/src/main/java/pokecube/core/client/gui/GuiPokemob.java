@@ -19,10 +19,10 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
@@ -33,8 +33,6 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.utils.EntityTools;
 import thut.api.entity.IHungrymob;
@@ -58,12 +56,7 @@ public class GuiPokemob extends GuiContainer
             if (id == PacketPokemobGui.BUTTONTOGGLESTAY || id == PacketPokemobGui.BUTTONTOGGLESIT)
             {
                 PokedexEntry entry = Database.getEntry("eevee");
-                IPokemob renderMob = EventsHandlerClient.renderMobs.get(entry);
-                if (renderMob == null && entry != null)
-                {
-                    Entity mob = PokecubeMod.core.createPokemob(entry, mc.theWorld);
-                    EventsHandlerClient.renderMobs.put(entry, renderMob = CapabilityPokemob.getPokemobFor(mob));
-                }
+                IPokemob renderMob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
                 if (renderMob == null)
                 {
                     // No Eevee found
@@ -207,14 +200,8 @@ public class GuiPokemob extends GuiContainer
         try
         {
             EntityLiving entity = pokemob.getEntity();
-            IPokemob cached = EventsHandlerClient.renderMobs.get(pokemob.getPokedexEntry());
-
-            if (cached == null)
-            {
-                EventsHandlerClient.getPokemobForRender(PokecubeManager.pokemobToItem(pokemob),
-                        entity.getEntityWorld());
-                cached = EventsHandlerClient.renderMobs.get(pokemob.getPokedexEntry());
-            }
+            IPokemob cached = EventsHandlerClient.getRenderMob(pokemob.getPokedexEntry(),
+                    PokecubeCore.proxy.getWorld());
             if (cached != null)
             {
                 cached.readPokemobData(pokemob.writePokemobData());

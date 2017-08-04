@@ -50,12 +50,12 @@ public class ResetCommand extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args,
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
             @Nullable BlockPos pos)
     {
         int last = args.length - 1;
         if (last >= 0 && isUsernameIndex(args,
-                last)) { return getListOfStringsMatchingLastWord(args, server.getAllUsernames()); }
+                last)) { return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames()); }
         return Collections.<String> emptyList();
     }
 

@@ -95,6 +95,7 @@ public class Pokecube extends Item implements IPokecube
     {
         super();
         this.setHasSubtypes(false);
+        this.setNoRepair();
         setMaxDamage(PokecubeMod.MAX_DAMAGE);
     }
 

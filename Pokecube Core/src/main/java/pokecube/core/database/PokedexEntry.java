@@ -420,9 +420,11 @@ public class PokedexEntry
 
         public static class SpawnEntry
         {
-            int   max  = 4;
-            int   min  = 2;
-            float rate = 0.0f;
+            int   max      = 4;
+            int   min      = 2;
+            float rate     = 0.0f;
+            int   level    = -1;
+            int   variance = -1;
         }
 
         public Map<SpawnBiomeMatcher, SpawnEntry> matchers = Maps.newHashMap();
@@ -466,6 +468,19 @@ public class PokedexEntry
         {
             SpawnEntry entry = matchers.get(matcher);
             return entry == null ? 2 : entry.min;
+        }
+
+        public int getLevel(SpawnBiomeMatcher matcher)
+        {
+            SpawnEntry entry = matchers.get(matcher);
+            return entry == null ? -1 : entry.level;
+        }
+
+        public int getVariance(SpawnBiomeMatcher matcher)
+        {
+            SpawnEntry entry = matchers.get(matcher);
+            int variance = entry == null ? -1 : entry.variance;
+            return variance == -1 ? PokecubeMod.core.getConfig().levelVariance : variance;
         }
 
         public float getWeight(SpawnBiomeMatcher matcher)

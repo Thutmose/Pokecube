@@ -1486,6 +1486,7 @@ public class PokedexEntryLoader
     {
         try
         {
+            PokedexEntry.InteractionLogic.initDefaults();
             makeEntries(false);
             PokemobBodies.initBodies();
         }

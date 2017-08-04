@@ -42,4 +42,10 @@ public class ResetCommand extends CommandBase
         cSender.addChatMessage(CommandTools.makeTranslatedMessage("pokecube.command.reset", "", player.getName()));
         CommandTools.sendMessage(player, "pokecube.command.canchoose");
     }
+
+    @Override
+    public boolean isUsernameIndex(String[] astring, int i)
+    {
+        return i == 0;
+    }
 }

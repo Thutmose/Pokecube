@@ -352,7 +352,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
                 ItemHeldItems.variants.add(s.toLowerCase(Locale.ENGLISH));
         }
 
-        PokecubeItems.held = new ItemHeldItems().setRegistryName(PokecubeMod.ID, "held");
         PokecubeItems.register(PokecubeItems.held, registry);
         for (String s : ItemHeldItems.variants)
         {

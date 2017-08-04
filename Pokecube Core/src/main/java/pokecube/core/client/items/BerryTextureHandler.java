@@ -1,5 +1,9 @@
 package pokecube.core.client.items;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -12,22 +16,22 @@ import pokecube.core.items.berries.BerryManager;
 
 public class BerryTextureHandler
 {
+    private static Map<String, ModelResourceLocation> models = Maps.newHashMap();
+
     public static class MeshDefinition implements ItemMeshDefinition
     {
         @Override
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
             String variant = BerryManager.berryNames.get(stack.getItemDamage());
-            if (variant == null || variant.isEmpty()) variant = "null";
-            if (variant.equals("null")) PokecubeMod.log(variant + " " + stack);
+            System.out.println(variant+" "+stack);
             return getLocation(variant);
         }
     }
 
     public static ModelResourceLocation getLocation(String name)
     {
-        return new ModelResourceLocation(new ResourceLocation("pokecube", "item/berry"),
-                "type=" + name.toLowerCase(java.util.Locale.ENGLISH));
+        return models.get(name);
     }
 
     public static void registerItemModels()
@@ -36,13 +40,15 @@ public class BerryTextureHandler
         for (String s : BerryManager.berryNames.values())
         {
             registerItemVariant("type=" + s);
-            PokecubeMod.log(s + " " + getLocation(s));
+            if (PokecubeMod.debug) PokecubeMod.log(s + " " + getLocation(s));
         }
     }
 
     private static void registerItemVariant(String variant)
     {
+        ModelResourceLocation loc;
         ModelBakery.registerItemVariants(PokecubeItems.berries,
-                new ModelResourceLocation(new ResourceLocation("pokecube", "item/berry"), variant));
+                loc = new ModelResourceLocation(new ResourceLocation("pokecube", "item/berry"), variant));
+        models.put(variant.replace("type=", ""), loc);
     }
 }

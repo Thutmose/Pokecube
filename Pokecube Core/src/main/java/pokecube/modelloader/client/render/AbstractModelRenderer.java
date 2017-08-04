@@ -16,23 +16,28 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
+import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IModel;
 import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IPartTexturer;
 
 public abstract class AbstractModelRenderer<T extends EntityLiving> extends RenderLivingBase<T>
         implements IModelRenderer<T>
 {
-    final Vector3   rotPoint          = Vector3.getNewVector();
+    final Vector3             rotPoint          = Vector3.getNewVector();
+
+    private IPartTexturer     texturer;
+    private IAnimationChanger animator;
 
     // Used to check if it has a custom sleeping animation.
-    private boolean checkedForSleep   = false;
-    private boolean hasSleepAnimation = false;
+    private boolean           checkedForSleep   = false;
+    private boolean           hasSleepAnimation = false;
 
     // Values used to properly reset the GL state after rendering.
-    boolean         blend;
-    boolean         light;
-    int             src;
-    int             dst;
+    boolean                   blend;
+    boolean                   light;
+    int                       src;
+    int                       dst;
 
     public AbstractModelRenderer(RenderManager renderManagerIn, ModelBase modelBaseIn, float shadowSizeIn)
     {
@@ -160,5 +165,29 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
                 GlStateManager.scale(s, s, s);
             }
         }
+    }
+
+    @Override
+    public IAnimationChanger getAnimationChanger()
+    {
+        return animator;
+    }
+
+    @Override
+    public IPartTexturer getTexturer()
+    {
+        return texturer;
+    }
+
+    @Override
+    public void setTexturer(IPartTexturer texturer)
+    {
+        this.texturer = texturer;
+    }
+
+    @Override
+    public void setAnimationChanger(IAnimationChanger changer)
+    {
+        this.animator = changer;
     }
 }

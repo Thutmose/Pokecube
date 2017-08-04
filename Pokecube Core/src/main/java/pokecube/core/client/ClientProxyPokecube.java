@@ -52,6 +52,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -233,13 +234,13 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         for (int i = 0; i < 19; i++)
         {
             ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:tm" + i));
-            PokecubeItems.registerItemTexture(tm, i, new ModelResourceLocation("pokecube:tm" + i, "inventory"));
+            registerItemTexture(tm, i, new ModelResourceLocation("pokecube:tm" + i, "inventory"));
         }
         ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:rarecandy"));
-        PokecubeItems.registerItemTexture(tm, 20, new ModelResourceLocation("pokecube:rarecandy", "inventory"));
+        registerItemTexture(tm, 20, new ModelResourceLocation("pokecube:rarecandy", "inventory"));
 
         ModelBakery.registerItemVariants(tm, new ResourceLocation("pokecube:emerald_shard"));
-        PokecubeItems.registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
+        registerItemTexture(tm, 19, new ModelResourceLocation("pokecube:emerald_shard", "inventory"));
 
         OBJLoader.INSTANCE.addDomain(PokecubeMod.ID.toLowerCase(java.util.Locale.ENGLISH));
 
@@ -298,11 +299,19 @@ public class ClientProxyPokecube extends CommonProxyPokecube
         registerItemTexture(Item.getItemFromBlock(log1), 1,
                 new ModelResourceLocation("pokecube:nanabwood", "inventory"));
 
-        ModelBakery.registerItemVariants(PokecubeItems.berries, new ResourceLocation("pokecube:nullberry"));
-        PokecubeItems.registerItemTexture(PokecubeItems.berries, 0,
-                new ModelResourceLocation("pokecube:nullberry", "inventory"));
+        // check if something provides more than just null berries, either
+        // resourcepack or mobs.
+        boolean berries = PokecubeMod.core.getConfig().extraberries || Loader.isModLoaded("pokecube_mobs");
+        if (!berries)
+        {
+            // If not, just register nullberry.
+            ModelBakery.registerItemVariants(PokecubeItems.berries, new ResourceLocation("pokecube:nullberry"));
+            registerItemTexture(PokecubeItems.berries, 0, new ModelResourceLocation("pokecube:nullberry", "inventory"));
+        }
+        // if so, register item models here.
+        else BerryTextureHandler.registerItemModels();
+
         MegaStoneTextureHandler.registerItemModels();
-        BerryTextureHandler.registerItemModels();
         VitaminTextureHandler.registerItemModels();
         FossilTextureHandler.registerItemModels();
         HeldItemTextureHandler.registerItemModels();

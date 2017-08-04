@@ -399,8 +399,8 @@ public class AnimationLoader
                 loaded.model.getHeadParts().addAll(headNames);
                 loaded.shearableParts.addAll(shear);
                 loaded.dyeableParts.addAll(dye);
-                loaded.texturer = texturer;
-                loaded.animator = animator;
+                loaded.setTexturer(texturer);
+                loaded.setAnimationChanger(animator);
                 for (Animation anim : tblAnims)
                 {
                     if (anim != null)

@@ -36,6 +36,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable
     {
         super();
         this.setHasSubtypes(true);
+        this.setMaxDamage(0);
     }
 
     /** allows items to add custom lines of information to the mouseover

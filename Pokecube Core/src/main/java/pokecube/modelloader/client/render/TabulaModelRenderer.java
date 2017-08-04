@@ -12,9 +12,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.client.render.TabulaPackLoader.TabulaModelSet;
 import thut.api.maths.Vector3;
-import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IModel;
-import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.tabula.components.ModelJson;
 import thut.core.client.render.wrappers.TabulaWrapper;
@@ -30,6 +28,8 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
         this.set = set;
         this.model = new TabulaWrapper(set.model, set.parser, this);
         mainModel = model;
+        this.setAnimationChanger(set);
+        this.setTexturer(set.texturer);
     }
 
     @Override
@@ -45,12 +45,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
             set = TabulaPackLoader.modelMap.get(entry.getBaseForme());
         }
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-    }
-
-    @Override
-    public IPartTexturer getTexturer()
-    {
-        return set.texturer;
     }
 
     @Override
@@ -71,12 +65,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     void setStatusRender(boolean value)
     {
         model.statusRender = value;
-    }
-
-    @Override
-    public IAnimationChanger getAnimationChanger()
-    {
-        return set;
     }
 
     @Override

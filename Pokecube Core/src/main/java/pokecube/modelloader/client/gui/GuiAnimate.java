@@ -14,8 +14,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
@@ -24,8 +24,6 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.client.ClientProxy;
 import pokecube.modelloader.client.render.TextureHelper;
@@ -196,20 +194,8 @@ public class GuiAnimate extends GuiScreen
         }
         if (entry != null)
         {
-            IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
-            if (pokemob == null)
-            {
-                Entity mob = PokecubeMod.core.createPokemob(entry, mc.world);
-                EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob.getPokemobFor(mob));
-                if (pokemob == null)
-                {
-                    System.out.println("Error with " + entry);
-                    return;
-                }
-
-                pokemob.specificSpawnInit();
-            }
-            pokemob.setPokedexEntry(entry);
+            IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
+            if (pokemob == null) return;
             forme.setText(pokemob.getPokedexEntry().getName());
             info.setText("" + pokemob.getSpecialInfo());
             if (button.id == 13)
@@ -254,12 +240,7 @@ public class GuiAnimate extends GuiScreen
         info.drawTextBox();
         PokedexEntry entry = null;
         if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
-        IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
-        if (pokemob == null)
-        {
-            Entity mob = PokecubeMod.core.createPokemob(entry, mc.world);
-            EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob.getPokemobFor(mob));
-        }
+        IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
         if (pokemob != null)
         {
             pokemob.specificSpawnInit();
@@ -283,13 +264,8 @@ public class GuiAnimate extends GuiScreen
         {
             entry = e1;
             pokedexNb = entry.getPokedexNb();
-            pokemob = EventsHandlerClient.renderMobs.get(entry);
-            if (pokemob == null)
-            {
-                EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.world)));
-                pokemob.specificSpawnInit();
-            }
+            pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
+            if (pokemob == null) return;
         }
         String[] gender = buttonList.get(12).displayString.split(":");
         if (gender[1].equalsIgnoreCase("m") && pokemob.getSexe() == IPokemob.FEMALE)
@@ -466,14 +442,8 @@ public class GuiAnimate extends GuiScreen
             if ((entry = Database.getEntry(pokedexNb)) == null) entry = Pokedex.getInstance().getFirstEntry();
             int num = (entry = Pokedex.getInstance().getNext(entry, 1)).getPokedexNb();
             if (num != pokedexNb) pokedexNb = num;
-            IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
-            if (pokemob == null)
-            {
-                EventsHandlerClient.renderMobs.put(entry,
-                        pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.world)));
-                if (pokemob == null) return;
-                pokemob.specificSpawnInit();
-            }
+            IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
+            if (pokemob == null) return;
             forme.setText(pokemob.getPokedexEntry().getName());
             mob = forme.getText();
             info.setText("" + pokemob.getSpecialInfo());
@@ -487,31 +457,9 @@ public class GuiAnimate extends GuiScreen
             }
             if (entry != null)
             {
-                IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
-                try
-                {
-                    if (pokemob == null || pokemob.getPokedexEntry() != entry)
-                    {
-                        EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob
-                                .getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.world)));
-                        pokemob.setPokedexEntry(entry);
-                        pokemob.specificSpawnInit();
-                    }
-                }
-                catch (Exception e)
-                {
-                    entry = Pokedex.getInstance().getFirstEntry();
-                    pokemob = EventsHandlerClient.renderMobs.get(entry);
-
-                    if (pokemob == null || pokemob.getPokedexEntry() != entry)
-                    {
-                        EventsHandlerClient.renderMobs.put(entry, pokemob = CapabilityPokemob
-                                .getPokemobFor(PokecubeMod.core.createPokemob(entry, mc.world)));
-                        pokemob.setPokedexEntry(entry);
-                        pokemob.specificSpawnInit();
-                    }
-                    pokedexNb = entry.getPokedexNb();
-                }
+                IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
+                if (pokemob == null) pokemob = EventsHandlerClient.getRenderMob(Pokedex.getInstance().getFirstEntry(),
+                        PokecubeCore.proxy.getWorld());
                 forme.setText(pokemob.getPokedexEntry().getName());
                 mob = forme.getText();
                 info.setText("" + pokemob.getSpecialInfo());

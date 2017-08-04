@@ -41,6 +41,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.GuiEvent;
 import pokecube.core.client.Resources;
+import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -51,6 +52,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
+import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -247,7 +249,10 @@ public class GuiDisplayPokecubeInfo extends Gui
         IPokemob pokemob = getCurrentPokemob();
         if (pokemob != null)
         {
+            EntityLiving real = pokemob.getEntity();
+            pokemob = EventsHandlerClient.getRenderMob(pokemob.getPokedexEntry(), real.getEntityWorld());
             EntityLiving entity = pokemob.getEntity();
+            EntityTools.copyEntityTransforms(entity, real);
             int currentMoveIndex = pokemob.getMoveIndex();
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             // Render HP
@@ -360,7 +365,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             if (dir == -1)
             {
                 h -= 14 + 12 * (moveCount - 1) - (4 - moveCount) * 2;
-            }//System.out.println(Arrays.toString(pokemob.getMoves())+" "+pokemob);
+            } // System.out.println(Arrays.toString(pokemob.getMoves())+"
+              // "+pokemob);
             for (moveIndex = 0; moveIndex < 4; moveIndex++)
             {
                 int index = moveIndex;

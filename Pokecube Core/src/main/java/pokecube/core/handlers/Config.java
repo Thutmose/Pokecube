@@ -111,6 +111,8 @@ public class Config extends ConfigBase
     @Configure(category = misc)
     public String[]                      snagblacklist                = { "net.minecraft.entity.boss.EntityDragon",
             "net.minecraft.entity.boss.EntityWither" };
+    @Configure(category = misc)
+    public boolean                       defaultInteractions          = true;
 
     // AI Related settings
     @Configure(category = mobAI)

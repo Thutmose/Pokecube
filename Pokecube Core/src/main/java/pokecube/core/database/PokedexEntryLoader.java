@@ -1144,6 +1144,14 @@ public class PokedexEntryLoader
         {
             spawnEntry.rate = Float.parseFloat(val);
         }
+        if ((val = rule.values.get(new QName("level"))) != null)
+        {
+            spawnEntry.level = Integer.parseInt(val);
+        }
+        if ((val = rule.values.get(new QName("variance"))) != null)
+        {
+            spawnEntry.variance = Integer.parseInt(val);
+        }
         SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rule);
         spawnData.matchers.put(matcher, spawnEntry);
     }
@@ -1451,8 +1459,8 @@ public class PokedexEntryLoader
                     if ((move == null || move.isEmpty()) && !CompatWrapper.isValid(stack)
                             && (ability == null || ability.isEmpty()))
                     {
-                        if (PokecubeMod.debug) PokecubeMod.log("Skipping Mega: " + entry + " -> "
-                                + formeEntry + " as it has no conditions, or conditions cannot be met.");
+                        if (PokecubeMod.debug) PokecubeMod.log("Skipping Mega: " + entry + " -> " + formeEntry
+                                + " as it has no conditions, or conditions cannot be met.");
                         continue;
                     }
                     MegaEvoRule mrule = new MegaEvoRule(entry);
@@ -1468,8 +1476,7 @@ public class PokedexEntryLoader
                     }
                     formeEntry.isMega = true;
                     entry.megaRules.put(formeEntry, mrule);
-                    if (PokecubeMod.debug)
-                        PokecubeMod.log("Added Mega: " + entry + " -> " + formeEntry);
+                    if (PokecubeMod.debug) PokecubeMod.log("Added Mega: " + entry + " -> " + formeEntry);
                 }
             }
         }

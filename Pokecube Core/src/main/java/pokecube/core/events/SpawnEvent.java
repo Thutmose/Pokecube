@@ -129,6 +129,7 @@ public class SpawnEvent extends Event
     public static class Level extends SpawnEvent
     {
         private int       level;
+        private final int variance;
         private final int original;
 
         public int getLevel()
@@ -146,11 +147,17 @@ public class SpawnEvent extends Event
             this.level = level;
         }
 
-        public Level(PokedexEntry entry_, Vector3 location_, World world_, int level)
+        public int getExpectedVariance()
         {
-            super(entry_, location_, world_);
+            return variance;
+        }
+
+        public Level(PokedexEntry entry_, Vector3 location_, World world, int level, int variance)
+        {
+            super(entry_, location_, world);
             this.level = level;
             this.original = level;
+            this.variance = variance;
         }
 
     }

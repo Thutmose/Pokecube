@@ -34,7 +34,9 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
+import pokecube.core.utils.EntityTools;
 import thut.api.entity.IHungrymob;
 
 public class GuiPokemob extends GuiContainer
@@ -205,6 +207,22 @@ public class GuiPokemob extends GuiContainer
         try
         {
             EntityLiving entity = pokemob.getEntity();
+            IPokemob cached = EventsHandlerClient.renderMobs.get(pokemob.getPokedexEntry());
+
+            if (cached == null)
+            {
+                EventsHandlerClient.getPokemobForRender(PokecubeManager.pokemobToItem(pokemob),
+                        entity.getEntityWorld());
+                cached = EventsHandlerClient.renderMobs.get(pokemob.getPokedexEntry());
+            }
+            if (cached != null)
+            {
+                cached.readPokemobData(pokemob.writePokemobData());
+                EntityTools.copyEntityTransforms(cached.getEntity(), entity);
+                entity = cached.getEntity();
+                pokemob = cached;
+            }
+
             float size = 0;
             int j = width;
             int k = height;
@@ -216,6 +234,8 @@ public class GuiPokemob extends GuiContainer
                 entity.rotationYawHead = 0;
                 entity.prevRotationYawHead = 0;
             }
+            entity.renderYawOffset = entity.prevRenderYawOffset = entity.ticksExisted;
+
             float zoom = (25f / size) * scale;
             GL11.glPushMatrix();
             GL11.glTranslatef(j + 55, k + 50, 50F);

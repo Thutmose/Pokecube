@@ -24,17 +24,14 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketTrade;
+import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
 
 public class GuiTradingTable extends GuiContainer
 {
     public final static float    POKEDEX_RENDER   = 1.5f;
     private float                yRenderAngle     = 10;
-
     private float                xRenderAngle     = 0;
-    private float                yHeadRenderAngle = 10;
-
-    private float                xHeadRenderAngle = 0;
 
     protected EntityPlayer       entityPlayer     = null;
 
@@ -194,18 +191,12 @@ public class GuiTradingTable extends GuiContainer
         RenderHelper.enableStandardItemLighting();
         GL11.glRotatef(-135F, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(-(float) Math.atan(f5 / 40F) * 20F, 1.0F, 0.0F, 0.0F);
-        entity.renderYawOffset = 0F;
-        entity.rotationYaw = yHeadRenderAngle;
-        entity.rotationPitch = xHeadRenderAngle;
-        entity.rotationYawHead = entity.rotationYaw;
+        EntityTools.copyEntityTransforms(entity, entityPlayer);
         GL11.glTranslatef(0.0F, (float) entity.getYOffset(), 0.0F);
         yRenderAngle = yRenderAngle + 0.15F;
         GL11.glRotatef(yRenderAngle, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef(xRenderAngle, 1.0F, 0.0F, 0.0F);
 
-        // LoggerPokecube.logError(""+triangle);
-        entity.limbSwing = 0;
-        entity.limbSwingAmount = 0;
         PokeType flying = PokeType.getType("flying");
         entity.onGround = !pokemob.isType(flying);
 

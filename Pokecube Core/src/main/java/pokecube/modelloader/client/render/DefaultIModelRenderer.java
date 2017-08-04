@@ -13,9 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import thut.api.maths.Vector3;
 import thut.core.client.render.animation.ModelHolder;
-import thut.core.client.render.model.IAnimationChanger;
 import thut.core.client.render.model.IExtendedModelPart;
-import thut.core.client.render.model.IPartTexturer;
 import thut.core.client.render.model.ModelFactory;
 import thut.core.client.render.tabula.components.Animation;
 import thut.core.client.render.wrappers.ModelWrapper;
@@ -27,9 +25,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     public HashMap<String, PartInfo>    parts          = Maps.newHashMap();
     HashMap<String, ArrayList<Vector5>> global;
     public HashMap<String, Animation>   animations     = new HashMap<String, Animation>();
-    public TextureHelper                texturer;
-
-    public IAnimationChanger            animator;
     public Vector3                      offset         = Vector3.getNewVector();;
     public Vector3                      scale          = Vector3.getNewVector();
 
@@ -123,12 +118,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     }
 
     @Override
-    public IPartTexturer getTexturer()
-    {
-        return texturer;
-    }
-
-    @Override
     public boolean hasAnimation(String phase)
     {
         return DefaultIModelRenderer.DEFAULTPHASE.equals(phase) || animations.containsKey(phase)
@@ -167,12 +156,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     void setStatusRender(boolean value)
     {
         model.statusRender = value;
-    }
-
-    @Override
-    public IAnimationChanger getAnimationChanger()
-    {
-        return animator;
     }
 
     @Override

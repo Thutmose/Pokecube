@@ -77,7 +77,7 @@ public class ClientProxy extends CommonProxy
         {
             bar.step(mod);
             IMobProvider provider = mobProviders.get(mod);
-            ProgressBar bar2 = ProgressManager.push("Pokemob", Database.allFormes.size());
+            ProgressBar bar2 = ProgressManager.push("Checking Pokemob Models", Database.allFormes.size());
             for (PokedexEntry p : Database.allFormes)
             {
                 bar2.step(p.getName());

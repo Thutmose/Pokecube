@@ -58,6 +58,11 @@ public class WorldGenTemplates implements IWorldGenerator
             if (!matcher.matches(Vector3.getNewVector().set(pos), world)) return;
             EnumFacing dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
             building = new TemplateStructure(template, pos, dir);
+            if (building.getBoundingBox() == null)
+            {
+                building = null;
+                return;
+            }
             if (!building.getBoundingBox().intersectsWith(chunkBox))
             {
                 building = null;

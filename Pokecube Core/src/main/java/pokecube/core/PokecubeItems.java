@@ -23,7 +23,6 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -31,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
 import pokecube.core.blocks.fossil.BlockFossilStone;
 import pokecube.core.blocks.healtable.BlockHealTable;
@@ -44,6 +44,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.HeldItemHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemFossil;
+import pokecube.core.items.ItemHeldItems;
 import pokecube.core.items.ItemLuckyEgg;
 import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.ItemTM;
@@ -58,27 +59,12 @@ import thut.lib.CompatWrapper;
 
 public class PokecubeItems extends Items
 {
-    private static class ItemRegister
-    {
-        public Item                  item;
-        public int                   meta;
-        public ModelResourceLocation loc;
+    private static HashMap<String, ItemStack>      itemstacks     = new HashMap<String, ItemStack>();
+    private static HashMap<String, Item>           items          = new HashMap<String, Item>();
 
-        public ItemRegister(Item i, int m, ModelResourceLocation l)
-        {
-            item = i;
-            meta = m;
-            loc = l;
-        }
+    private static HashMap<String, Block>          blocks         = new HashMap<String, Block>();
 
-    }
-
-    static HashMap<String, ItemStack>              itemstacks     = new HashMap<String, ItemStack>();
-    static HashMap<String, Item>                   items          = new HashMap<String, Item>();
-
-    static HashMap<String, Block>                  blocks         = new HashMap<String, Block>();
-
-    public static HashMap<Integer, Item[]>         pokecubes      = new HashMap<Integer, Item[]>();
+    private static HashMap<Integer, Item[]>        pokecubes      = new HashMap<Integer, Item[]>();
 
     /** Items that are allowed to be held by pokemobs */
     public static HashSet<ItemStack>               heldItems      = new HashSet<ItemStack>();
@@ -89,7 +75,7 @@ public class PokecubeItems extends Items
     public static HashSet<ItemStack>               evoItems       = new HashSet<ItemStack>();
 
     /** contains pokecubes that should be rendered using the default renderer */
-    public static Set<Integer>                     cubeIds        = new HashSet<>();
+    private static Set<Integer>                    cubeIds        = new HashSet<>();
 
     /** Items to be considered for re-animation, mapped to the pokedex number to
      * reanimate to. */
@@ -103,14 +89,13 @@ public class PokecubeItems extends Items
 
     public static HashMap<ItemStack, Integer>      spawnerDropMap = new HashMap<ItemStack, Integer>();
 
-    public static HashSet<ItemRegister>            textureMap     = new HashSet<ItemRegister>();
-
     public static Vector<Long>                     times          = new Vector<Long>();
 
     /** List of grass blocks for pokemobs to eat. */
     public static HashSet<Block>                   grasses        = new HashSet<Block>();
 
-    public static Item                             held;
+    public static Item                             held           = new ItemHeldItems().setRegistryName(PokecubeMod.ID,
+            "held");
     public static Item                             luckyEgg       = new ItemLuckyEgg().setUnlocalizedName("luckyegg")
             .setCreativeTab(creativeTabPokecube);
     public static Item                             pokemobEgg     = new ItemPokemobEgg()
@@ -466,10 +451,6 @@ public class PokecubeItems extends Items
     public static void init()
     {
         initVanillaHeldItems();
-        for (ItemRegister i : textureMap)
-        {
-            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(i.item, i.meta, i.loc);
-        }
 
         for (int i = 0; i < Short.MAX_VALUE; i++)
         {
@@ -686,7 +667,7 @@ public class PokecubeItems extends Items
 
     public static void registerItemTexture(Item item, int meta, ModelResourceLocation loc)
     {
-        textureMap.add(new ItemRegister(item, meta, loc));
+        ModelLoader.setCustomModelResourceLocation(item, meta, loc);
     }
 
     public static void removeFromEvos(String item)

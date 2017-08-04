@@ -428,6 +428,8 @@ public class Config extends ConfigBase
     public int                           autoRecallDistance           = 32;
     @Configure(category = client)
     public boolean                       riddenMobsTurnWithLook       = false;
+    @Configure(category = client)
+    public boolean                       extraberries                 = false;
 
     @Configure(category = advanced)
     String[]                             mystLocs                     = {};

@@ -33,6 +33,7 @@ import pokecube.core.utils.PokeType;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
 import thut.core.client.render.model.IModelRenderer;
+import thut.core.client.render.model.IPartTexturer;
 
 @SideOnly(Side.CLIENT)
 public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
@@ -242,21 +243,63 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
             double d2, float f, float partialTick)
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
-        byte status;
         if (pokemob == null) return;
-        if ((status = pokemob.getStatus()) == IMoveConstants.STATUS_NON) return;
-        ResourceLocation texture = null;
-        if (status == IMoveConstants.STATUS_FRZ)
-        {
-            texture = FRZ;
-        }
-        else if (status == IMoveConstants.STATUS_PAR)
-        {
-            texture = PAR;
-        }
-        if (texture == null) return;
+        final byte status = pokemob.getStatus();
+        if (status == IMoveConstants.STATUS_NON) return;
+        if (!(status == IMoveConstants.STATUS_FRZ || status == IMoveConstants.STATUS_PAR)) return;
 
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+        IPartTexturer oldTexturer = renderer.getTexturer();
+        IPartTexturer statusTexturer = new IPartTexturer()
+        {
+
+            @Override
+            public boolean shiftUVs(String part, double[] toFill)
+            {
+                return false;
+            }
+
+            @Override
+            public boolean isFlat(String part)
+            {
+                return true;
+            }
+
+            @Override
+            public boolean hasMapping(String part)
+            {
+                return true;
+            }
+
+            @Override
+            public void bindObject(Object thing)
+            {
+            }
+
+            @Override
+            public void applyTexture(String part)
+            {
+                ResourceLocation texture = null;
+                if (status == IMoveConstants.STATUS_FRZ)
+                {
+                    texture = FRZ;
+                }
+                else if (status == IMoveConstants.STATUS_PAR)
+                {
+                    texture = PAR;
+                }
+                FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+            }
+
+            @Override
+            public void addMapping(String part, String tex)
+            {
+            }
+
+            @Override
+            public void addCustomMapping(String part, String state, String tex)
+            {
+            }
+        };
 
         float time = (entity.ticksExisted + partialTick);
         GL11.glPushMatrix();
@@ -269,14 +312,16 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         float var7 = status == IMoveConstants.STATUS_FRZ ? 0.5f : 1F;
         GL11.glColor4f(var7, var7, var7, 0.5F);
-        var7 = status == IMoveConstants.STATUS_FRZ ? 1.08f : 1.05F;
+        var7 = 1;
         GL11.glScalef(var7, var7, var7);
         IMobColourable colour = (IMobColourable) entity;
         int[] col = colour.getRGBA();
         int[] bak = col.clone();
         col[3] = 85;
         colour.setRGBA(col);
+        renderer.setTexturer(statusTexturer);
         renderer.doRender(entity, d, d1, d2, f, partialTick);
+        renderer.setTexturer(oldTexturer);
         colour.setRGBA(bak);
         GL11.glMatrixMode(GL11.GL_TEXTURE);
         GL11.glLoadIdentity();

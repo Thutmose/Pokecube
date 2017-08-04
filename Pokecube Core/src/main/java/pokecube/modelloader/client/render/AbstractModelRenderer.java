@@ -97,7 +97,6 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         if (light) GL11.glEnable(GL11.GL_LIGHTING);
         if (!blend) GL11.glDisable(GL11.GL_BLEND);
         GL11.glBlendFunc(src, dst);
-        setStatusRender(false);
     }
 
     private void preRenderStatus()
@@ -109,7 +108,6 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        setStatusRender(true);
     }
 
     @Override
@@ -131,8 +129,6 @@ public abstract class AbstractModelRenderer<T extends EntityLiving> extends Rend
     {
         return RenderPokemobs.getInstance().getEntityTexturePublic(entity);
     }
-
-    abstract void setStatusRender(boolean value);
 
     @Override
     public void scaleEntity(Entity entity, IModel model, float partialTick)

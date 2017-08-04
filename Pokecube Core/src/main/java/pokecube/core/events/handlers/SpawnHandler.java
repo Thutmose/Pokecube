@@ -182,7 +182,7 @@ public final class SpawnHandler
     }
 
     public static EntityLiving creatureSpecificInit(EntityLiving entityliving, World world, double posX, double posY,
-            double posZ, Vector3 spawnPoint)
+            double posZ, Vector3 spawnPoint, int overrideLevel, int variance)
     {
         if (ForgeEventFactory.doSpecialSpawn(entityliving, world, (float) posX, (float) posY,
                 (float) posZ)) { return null; }
@@ -192,19 +192,24 @@ public final class SpawnHandler
             long time = System.nanoTime();
             int maxXP = 10;
             int level = 1;
-            if (expFunction)
+            if (expFunction && overrideLevel == -1)
             {
-                Vector3 location;
-                maxXP = getSpawnXp(world, location = Vector3.getNewVector().set(posX, posY, posZ),
-                        pokemob.getPokedexEntry());
-                SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), location, world,
-                        Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), maxXP));
+                maxXP = getSpawnXp(world, spawnPoint, pokemob.getPokedexEntry());
+                SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), spawnPoint, world,
+                        Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), maxXP), variance);
                 MinecraftForge.EVENT_BUS.post(event);
                 level = event.getLevel();
             }
-            else
+            else if (overrideLevel == -1)
             {
                 level = getSpawnLevel(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
+            }
+            else
+            {
+                SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), spawnPoint, world,
+                        overrideLevel, variance);
+                MinecraftForge.EVENT_BUS.post(event);
+                level = event.getLevel();
             }
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
             pokemob = pokemob.setForSpawn(maxXP);
@@ -335,22 +340,19 @@ public final class SpawnHandler
         int spawnLevel = 1;
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
+        int variance = 0;
         if (subBiomeLevels.containsKey(b))
         {
             Integer[] range = subBiomeLevels.get(b);
-            int dl = range[1] - range[0];
-            if (dl > 0) dl = new Random().nextInt(dl) + 1;
-            spawnLevel = range[0] + dl;
+            spawnLevel = range[0];
+            variance = range[1] - range[0];
         }
         else
         {
             spawnLevel = parse(world, location);
-            int variance = PokecubeMod.core.getConfig().levelVariance;
-            variance = new Random().nextInt(Math.max(1, variance));
-            spawnLevel += variance;
-            spawnLevel = Math.max(spawnLevel, 1);
+            variance = PokecubeMod.core.getConfig().levelVariance;
         }
-        SpawnEvent.Level event = new SpawnEvent.Level(pokemon, location, world, spawnLevel);
+        SpawnEvent.Level event = new SpawnEvent.Level(pokemon, location, world, spawnLevel, variance);
         MinecraftForge.EVENT_BUS.post(event);
         return event.getLevel();
     }
@@ -568,8 +570,8 @@ public final class SpawnHandler
                                 world.rand.nextFloat() * 360.0F, 0.0F);
                         if (entityliving.getCanSpawnHere())
                         {
-                            if ((entityliving = creatureSpecificInit(entityliving, world, x, y, z,
-                                    v3.set(entityliving))) != null)
+                            if ((entityliving = creatureSpecificInit(entityliving, world, x, y, z, v3.set(entityliving),
+                                    entry.getLevel(matcher), entry.getVariance(matcher))) != null)
                             {
                                 SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world,
                                         CapabilityPokemob.getPokemobFor(entityliving));

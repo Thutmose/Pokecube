@@ -443,9 +443,9 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     {
         ItemStack poke1 = inventory.get(0);
         ItemStack poke2 = inventory.get(1);
-        if (poke1 == CompatWrapper.nullStack || poke2 == CompatWrapper.nullStack || player1 == player2)
+        if (!PokecubeManager.isFilled(poke1) || !PokecubeManager.isFilled(poke2) || player1 == player2)
         {
-            if (player1 == player2 && (poke1 != CompatWrapper.nullStack && poke2 != CompatWrapper.nullStack))
+            if (player1 != null && player1 == player2 && (CompatWrapper.isValid(poke1) && CompatWrapper.isValid(poke2)))
             {
                 tryChange();
             }
@@ -490,14 +490,13 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
         player2 = null;
     }
 
-    public boolean tryChange()
+    private boolean tryChange()
     {
         ItemStack a = inventory.get(0);
         ItemStack b = inventory.get(1);
 
-        if (player1 != player2 || player1 == null) return false;
-        if (a == b || a == CompatWrapper.nullStack || b == CompatWrapper.nullStack) return false;
         if (!((PokecubeManager.isFilled(a)) || (PokecubeManager.isFilled(b)))) return false;
+        if (((PokecubeManager.isFilled(a)) && (PokecubeManager.isFilled(b)))) return false;
         if (a.getItem() instanceof IPokecube && b.getItem() instanceof IPokecube)
         {
             boolean aFilled;
@@ -506,12 +505,15 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             ItemStack second = aFilled ? b : a;
             ItemStack stack;
             int id = PokecubeItems.getCubeId(second);
+
+            // Pokeseal is id 2, send this to pokeseal recipe to process.
             if (id == -2)
             {
                 stack = RecipePokeseals.process(first, second);
             }
             else
             {
+                // Set the pokecube for the mob to the new one.
                 PokecubeManager.setOwner(first, player1.getUniqueID());
                 NBTTagCompound visualsTag = TagNames.getPokecubePokemobTag(first.getTagCompound())
                         .getCompoundTag(TagNames.VISUALSTAG);
@@ -523,6 +525,11 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
                 stack.getTagCompound().setTag(TagNames.POKEMOB,
                         first.getTagCompound().getCompoundTag(TagNames.POKEMOB).copy());
             }
+
+            // Extract and re-insert pokemob to ensure that the cube is properly
+            // setup.
+            stack = PokecubeManager.pokemobToItem(PokecubeManager.itemToPokemob(stack, getWorld()));
+
             player1.inventory.addItemStackToInventory(stack);
             player1 = null;
             player2 = null;

@@ -153,12 +153,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     }
 
     @Override
-    void setStatusRender(boolean value)
-    {
-        model.statusRender = value;
-    }
-
-    @Override
     public String getAnimation()
     {
         return currentPhase;

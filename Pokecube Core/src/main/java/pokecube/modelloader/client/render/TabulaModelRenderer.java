@@ -62,12 +62,6 @@ public class TabulaModelRenderer<T extends EntityLiving> extends AbstractModelRe
     }
 
     @Override
-    void setStatusRender(boolean value)
-    {
-        model.statusRender = value;
-    }
-
-    @Override
     public String getAnimation()
     {
         return model.phase;

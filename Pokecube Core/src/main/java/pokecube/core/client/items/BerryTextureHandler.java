@@ -24,7 +24,6 @@ public class BerryTextureHandler
         public ModelResourceLocation getModelLocation(ItemStack stack)
         {
             String variant = BerryManager.berryNames.get(stack.getItemDamage());
-            System.out.println(variant+" "+stack);
             return getLocation(variant);
         }
     }

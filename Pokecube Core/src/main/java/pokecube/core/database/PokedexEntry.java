@@ -241,7 +241,7 @@ public class PokedexEntry
     {
         static HashMap<PokeType, List<Interact>> defaults = new HashMap<>();
 
-        static
+        public static void initDefaults()
         {
             Interact fire = new Interact();
             fire.key = new Key();
@@ -261,8 +261,11 @@ public class PokedexEntry
             waterdrop.values.put(new QName("id"), "minecraft:water_bucket");
             water.action.drops.add(waterdrop);
 
-            defaults.put(PokeType.getType("fire"), Lists.newArrayList(fire));
-            defaults.put(PokeType.getType("water"), Lists.newArrayList(water));
+            if (PokecubeMod.core.getConfig().defaultInteractions)
+            {
+                defaults.put(PokeType.getType("fire"), Lists.newArrayList(fire));
+                defaults.put(PokeType.getType("water"), Lists.newArrayList(water));
+            }
         }
 
         protected static void initForEntry(PokedexEntry entry)

@@ -21,11 +21,11 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.client.Resources;
 import pokecube.core.database.Database;
@@ -256,18 +256,8 @@ public class GuiChooseFirstPokemob extends GuiScreen
 
     private EntityLiving getEntityToDisplay()
     {
-        IPokemob pokemob = EventsHandlerClient.renderMobs.get(pokedexEntry);
-        if (pokemob == null || pokemob.getPokedexEntry() != pokedexEntry)
-        {
-            Entity mob = PokecubeMod.core.createPokemob(pokedexEntry, mc.theWorld);
-            EventsHandlerClient.renderMobs.put(pokedexEntry, pokemob = CapabilityPokemob.getPokemobFor(mob));
-            if (pokemob == null)
-            {
-                System.out.println("Error with " + pokedexEntry);
-                return null;
-            }
-            pokemob.specificSpawnInit();
-        }
+        IPokemob pokemob = EventsHandlerClient.getRenderMob(pokedexEntry, PokecubeCore.proxy.getWorld());
+        if (pokemob == null) return null;
         return pokemob.getEntity();
     }
 

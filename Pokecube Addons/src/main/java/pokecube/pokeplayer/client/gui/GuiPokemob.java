@@ -18,11 +18,11 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
@@ -32,7 +32,6 @@ import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.pokeplayer.PokePlayer;
 import pokecube.pokeplayer.inventory.ContainerPokemob;
@@ -56,12 +55,7 @@ public class GuiPokemob extends GuiContainer
             if (id == PacketPokemobGui.BUTTONTOGGLESTAY || id == PacketPokemobGui.BUTTONTOGGLESIT)
             {
                 PokedexEntry entry = Database.getEntry("eevee");
-                IPokemob renderMob = EventsHandlerClient.renderMobs.get(entry);
-                if (renderMob == null)
-                {
-                    Entity mob = PokecubeMod.core.createPokemob(entry, mc.theWorld);
-                    EventsHandlerClient.renderMobs.put(entry, renderMob = CapabilityPokemob.getPokemobFor(mob));
-                }
+                IPokemob renderMob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
                 if (renderMob == null)
                 {
                     // No Eevee found

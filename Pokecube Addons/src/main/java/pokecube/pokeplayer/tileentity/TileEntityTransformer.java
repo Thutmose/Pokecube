@@ -27,6 +27,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
 {
     ItemStack stack    = CompatWrapper.nullStack;
     int[]     nums     = {};
+    int       lvl      = 5;
     boolean   random   = false;
     boolean   pubby    = false;
     int       stepTick = 20;
@@ -127,6 +128,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
             if (entity != null)
             {
+                pokemob.setForSpawn(Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), lvl), false);
                 pokemob.specificSpawnInit();
             }
             return pokemob;
@@ -144,10 +146,8 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             NBTTagCompound tag = tagCompound.getCompoundTag("stack");
             stack = CompatWrapper.fromTag(tag);
         }
-        if (tagCompound.hasKey("nums"))
-        {
-            nums = tagCompound.getIntArray("nums");
-        }
+        if (tagCompound.hasKey("nums")) nums = tagCompound.getIntArray("nums");
+        if (tagCompound.hasKey("lvl")) lvl = tagCompound.getInteger("lvl");
         stepTick = tagCompound.getInteger("stepTick");
         random = tagCompound.getBoolean("random");
         pubby = tagCompound.getBoolean("public");
@@ -168,10 +168,8 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             stack.writeToNBT(tag);
             tagCompound.setTag("stack", tag);
         }
-        if (nums != null)
-        {
-            tagCompound.setIntArray("nums", nums);
-        }
+        if (nums != null) tagCompound.setIntArray("nums", nums);
+        tagCompound.setInteger("lvl", lvl);
         tagCompound.setInteger("stepTick", stepTick);
         tagCompound.setBoolean("random", random);
         tagCompound.setBoolean("public", pubby);

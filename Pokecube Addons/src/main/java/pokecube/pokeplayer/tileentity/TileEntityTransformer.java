@@ -68,7 +68,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
                 stack = CompatWrapper.nullStack;
                 stepTick = 50;
             }
-            new EventsHandler.SendPacket(player);
+            EventsHandler.sendUpdate(player);
             return;
         }
         else if (!CompatWrapper.isValid(stack) && !random && isPokemob)
@@ -88,7 +88,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             }
             PokePlayer.PROXY.setPokemob(player, null);
             stack = pokemob;
-            new EventsHandler.SendPacket(player);
+            EventsHandler.sendUpdate(player);
             return;
         }
         else if (random && isPokemob)
@@ -104,7 +104,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             player.sendPlayerAbilities();
             PokePlayer.PROXY.setPokemob(player, null);
             stack = CompatWrapper.nullStack;
-            new EventsHandler.SendPacket(player);
+            EventsHandler.sendUpdate(player);
             return;
         }
     }

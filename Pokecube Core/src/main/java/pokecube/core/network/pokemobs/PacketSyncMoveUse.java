@@ -19,7 +19,7 @@ public class PacketSyncMoveUse implements IMessage, IMessageHandler<PacketSyncMo
         EntityPlayer player = PokecubeCore.getPlayer(null);
         int id = message.entityId;
         int index = message.index;
-        Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, false);
+        Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, true);
         IPokemob mob = CapabilityPokemob.getPokemobFor(e);
         if (mob != null)
         {

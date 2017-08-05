@@ -65,6 +65,19 @@ public class PacketTransform implements IMessage, IMessageHandler<PacketTransfor
     {
         World world = PokecubeCore.proxy.getWorld();
         Entity e = PokecubeMod.core.getEntityProvider().getEntity(world, message.id, false);
+        if (message.data.hasKey("U"))
+        {
+            EntityPlayer player = PokecubeCore.proxy.getPlayer((String) null);
+            if (message.data.hasKey("H"))
+            {
+                PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokeInfo.class);
+                IPokemob pokemob = info.getPokemob(world);
+                float health = message.data.getFloat("H");
+                pokemob.getEntity().setHealth(health);
+                player.setHealth(health);
+            }
+            return;
+        }
         if (e instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) e;

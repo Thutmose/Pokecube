@@ -252,6 +252,12 @@ public abstract class PokemobBase implements IPokemob
         return entity;
     }
 
+    @Override
+    public EntityDataManager getDataManager()
+    {
+        return this.dataManager;
+    }
+
     private boolean isSameDatamanager(EntityDataManager toTest)
     {
         if (this.dataManager == null) return false;

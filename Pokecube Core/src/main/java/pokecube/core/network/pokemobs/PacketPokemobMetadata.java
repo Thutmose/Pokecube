@@ -70,7 +70,7 @@ public class PacketPokemobMetadata implements IMessage, IMessageHandler<PacketPo
         Entity entity = PokecubeMod.core.getEntityProvider().getEntity(world, id, true);
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
         if (pokemob == null) { return; }
-        EntityDataManager manager = entity.getDataManager();
+        EntityDataManager manager = pokemob.getDataManager();
         if (manager instanceof PokemobDataManager)
         {
             try

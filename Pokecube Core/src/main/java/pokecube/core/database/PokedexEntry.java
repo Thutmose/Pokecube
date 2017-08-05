@@ -1137,8 +1137,8 @@ public class PokedexEntry
     {
         if (abilitiesHidden.isEmpty()) return null;
         else if (abilitiesHidden.size() == 1) return AbilityManager.getAbility(abilitiesHidden.get(0));
-        else if (abilitiesHidden.size() == 1) return pokemob.getSexe() == IPokemob.MALE
-                ? AbilityManager.getAbility(abilitiesHidden.get(1)) : AbilityManager.getAbility(abilitiesHidden.get(1));
+        else if (abilitiesHidden.size() == 2) return pokemob.getSexe() == IPokemob.MALE
+                ? AbilityManager.getAbility(abilitiesHidden.get(0)) : AbilityManager.getAbility(abilitiesHidden.get(1));
         return null;
 
     }

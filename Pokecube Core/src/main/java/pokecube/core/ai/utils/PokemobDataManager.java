@@ -54,7 +54,7 @@ public class PokemobDataManager extends EntityDataManager
     {
         EntityDataManager.DataEntry<T> entry = getEntry(key);
         T old = entry.getValue();
-        super.set(key, value);
+        wrappedManager.set(key, value);
         if (entity.getEntityWorld() == null || !ObjectUtils.notEqual(value, old)
                 || entity.getEntityWorld().getEntityByID(entity.getEntityId()) == entity)
             return;
@@ -82,7 +82,7 @@ public class PokemobDataManager extends EntityDataManager
         DataSerializer<?> dataserializer = DataSerializers.getSerializer(i);
         Object value = dataserializer.read(buf);
         DataParameter key = dataserializer.createKey(id);
-        super.set(key, value);
+        wrappedManager.set(key, value);
     }
 
     private static <T> void writeEntry(PacketBuffer buf, EntityDataManager.DataEntry<T> entry) throws IOException

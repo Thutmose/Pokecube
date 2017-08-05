@@ -85,6 +85,8 @@ import pokecube.core.entity.pokemobs.genetics.GeneticsManager.GeneticsProvider;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -560,6 +562,8 @@ public class EventsHandler
             // Open Pokedex Gui
             if (CompatWrapper.isValid(held) && held.getItem() instanceof ItemPokedex)
             {
+                PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerStats.class)
+                        .inspect(player, pokemob);
                 if (PokecubeCore.isOnClientSide() && !player.isSneaking())
                 {
                     player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, entity.getEntityWorld(),

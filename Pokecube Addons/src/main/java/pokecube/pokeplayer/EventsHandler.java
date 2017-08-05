@@ -60,7 +60,7 @@ public class EventsHandler
         else if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking())
         {
             EntityInteractSpecific evt = new EntityInteractSpecific(event.getEntityPlayer(), event.getHand(),
-                    event.getItemStack(), pokemob.getEntity(), new Vec3d(0, 0, 0));
+                    pokemob.getEntity(), new Vec3d(0, 0, 0));
             PokecubeCore.instance.events.interactEvent(evt);
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
                     .getData(PokeInfo.class);

@@ -79,15 +79,11 @@ public class WearablesCompat
 
         // 2 layers of belt rendering for the different colours.
         @SideOnly(Side.CLIENT)
-        private X3dModel         beltl;
-        @SideOnly(Side.CLIENT)
-        private X3dModel         belt2;
+        private X3dModel         belt;
 
         // 2 layers of hat rendering for the different colours.
         @SideOnly(Side.CLIENT)
-        X3dModel                 hat1;
-        @SideOnly(Side.CLIENT)
-        X3dModel                 hat2;
+        X3dModel                 hat;
 
         // rings use own model, so only 1 layer here, ring model handles own
         // textures.
@@ -107,18 +103,17 @@ public class WearablesCompat
         public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
                 float partialTicks)
         {
-            if (beltl == null)
+            if (belt == null)
             {
-                beltl = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
-                belt2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
-                hat1 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
-                hat2 = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
+                belt = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
+                hat = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
                 ring = new ModelRing();
             }
+            int brightness = wearer.getBrightnessForRender();
+            int[] col = new int[] { 255, 255, 255, 255, brightness };
             switch (slot)
             {
             case WAIST:
-                int brightness = wearer.getBrightnessForRender();
                 GL11.glPushMatrix();
                 float dx = 0, dy = -.0f, dz = -0.6f;
                 GL11.glRotated(90, 1, 0, 0);
@@ -131,7 +126,11 @@ public class WearablesCompat
                 }
                 GL11.glScalef(s, s, s);
                 Minecraft.getMinecraft().renderEngine.bindTexture(belt_1);
-                beltl.renderAll();
+                for (IExtendedModelPart part1 : belt.getParts().values())
+                {
+                    part1.setRGBAB(col);
+                }
+                belt.renderAll();
                 GL11.glPopMatrix();
                 // Second pass with colour.
                 GL11.glPushMatrix();
@@ -147,12 +146,14 @@ public class WearablesCompat
                     ret = EnumDyeColor.byDyeDamage(damage);
                 }
                 Color colour = new Color(ret.getColorValue() + 0xFF000000);
-                int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
-                for (IExtendedModelPart part : belt2.getParts().values())
+                col[0] = colour.getRed();
+                col[2] = colour.getGreen();
+                col[1] = colour.getBlue();
+                for (IExtendedModelPart part : belt.getParts().values())
                 {
                     part.setRGBAB(col);
                 }
-                belt2.renderAll();
+                belt.renderAll();
                 GL11.glColor3f(1, 1, 1);
                 GL11.glPopMatrix();
                 break;
@@ -176,7 +177,11 @@ public class WearablesCompat
                 s = 0.285f;
                 GL11.glScaled(s, -s, -s);
                 minecraft.renderEngine.bindTexture(hat_1);
-                hat1.renderAll();
+                for (IExtendedModelPart part1 : hat.getParts().values())
+                {
+                    part1.setRGBAB(col);
+                }
+                hat.renderAll();
                 GlStateManager.popMatrix();
                 GlStateManager.pushMatrix();
                 GL11.glScaled(s * 0.995f, -s * 0.995f, -s * 0.995f);
@@ -189,12 +194,14 @@ public class WearablesCompat
                     ret = EnumDyeColor.byDyeDamage(damage);
                 }
                 colour = new Color(ret.getColorValue() + 0xFF000000);
-                int[] col2 = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
-                for (IExtendedModelPart part : hat2.getParts().values())
+                col[0] = colour.getRed();
+                col[2] = colour.getGreen();
+                col[1] = colour.getBlue();
+                for (IExtendedModelPart part : hat.getParts().values())
                 {
-                    part.setRGBAB(col2);
+                    part.setRGBAB(col);
                 }
-                hat2.renderAll();
+                hat.renderAll();
                 GL11.glColor3f(1, 1, 1);
                 GlStateManager.popMatrix();
                 break;

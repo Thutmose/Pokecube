@@ -64,9 +64,7 @@ public class WearableCompat
         X3dModel                 bag;
 
         // One Texture for each layer.
-        @SideOnly(Side.CLIENT)
         private ResourceLocation BAG_1 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_1.png");
-        @SideOnly(Side.CLIENT)
         private ResourceLocation BAG_2 = new ResourceLocation(PokecubeAdv.ID, "textures/worn/bag_2.png");
 
         @SideOnly(Side.CLIENT)

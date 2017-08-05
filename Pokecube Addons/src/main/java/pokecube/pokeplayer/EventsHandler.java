@@ -7,14 +7,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerRespawnEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import pokecube.core.PokecubeCore;
 import pokecube.core.events.AttackEvent;
 import pokecube.core.events.EvolveEvent;
 import pokecube.core.events.MoveMessageEvent;
@@ -56,8 +59,9 @@ public class EventsHandler
         }
         else if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking())
         {
-            CompatWrapper.processInitialInteract(pokemob.getEntity(), event.getEntityPlayer(), event.getHand(),
-                    event.getItemStack());
+            EntityInteractSpecific evt = new EntityInteractSpecific(event.getEntityPlayer(), event.getHand(),
+                    event.getItemStack(), pokemob.getEntity(), new Vec3d(0, 0, 0));
+            PokecubeCore.instance.events.interactEvent(evt);
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
                     .getData(PokeInfo.class);
             info.save(event.getEntityPlayer());

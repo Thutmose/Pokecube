@@ -56,7 +56,6 @@ public class WearableCompat
         @Override
         public EnumWearable getSlot(ItemStack stack)
         {
-            System.out.println(stack);
             return EnumWearable.BACK;
         }
 

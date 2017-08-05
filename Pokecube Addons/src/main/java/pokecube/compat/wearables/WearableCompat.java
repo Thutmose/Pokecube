@@ -62,9 +62,7 @@ public class WearableCompat
 
         // One model for each layer.
         @SideOnly(Side.CLIENT)
-        X3dModel                 bag1;
-        @SideOnly(Side.CLIENT)
-        X3dModel                 bag2;
+        X3dModel                 bag;
 
         // One Texture for each layer.
         @SideOnly(Side.CLIENT)
@@ -76,10 +74,9 @@ public class WearableCompat
         @Override
         public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
         {
-            if (bag1 == null)
+            if (bag == null)
             {
-                bag1 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
-                bag2 = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
+                bag = new X3dModel(new ResourceLocation(PokecubeAdv.ID, "models/worn/bag.x3d"));
             }
             int brightness = wearer.getBrightnessForRender(partialTicks);
             ResourceLocation pass1 = BAG_1;
@@ -94,7 +91,12 @@ public class WearableCompat
             GL11.glTranslated(0, -0.125, -0.6);
             GL11.glScaled(0.7, 0.7, 0.7);
             Minecraft.getMinecraft().renderEngine.bindTexture(pass1);
-            bag1.renderAll();
+            int[] col = new int[] { 255, 255, 255, 255, brightness };
+            for (IExtendedModelPart part1 : bag.getParts().values())
+            {
+                part1.setRGBAB(col);
+            }
+            bag.renderAll();
             GL11.glPopMatrix();
 
             // Second pass with colour.
@@ -111,12 +113,14 @@ public class WearableCompat
                 ret = EnumDyeColor.byDyeDamage(damage);
             }
             Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
-            int[] col = { colour.getRed(), colour.getBlue(), colour.getGreen(), 255, brightness };
-            for (IExtendedModelPart part : bag2.getParts().values())
+            col[0] = colour.getRed();
+            col[2] = colour.getGreen();
+            col[1] = colour.getBlue();
+            for (IExtendedModelPart part : bag.getParts().values())
             {
                 part.setRGBAB(col);
             }
-            bag2.renderAll();
+            bag.renderAll();
             GL11.glColor3f(1, 1, 1);
             GL11.glPopMatrix();
 

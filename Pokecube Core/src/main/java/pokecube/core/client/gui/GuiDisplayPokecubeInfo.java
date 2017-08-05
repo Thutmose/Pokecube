@@ -242,6 +242,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             EntityLiving real = pokemob.getEntity();
+            String displayName = pokemob.getPokemonDisplayName().getFormattedText();
             pokemob = EventsHandlerClient.getRenderMob(pokemob.getPokedexEntry(), real.getEntityWorld());
             EntityLiving entity = pokemob.getEntity();
             EntityTools.copyEntityTransforms(entity, real);
@@ -330,7 +331,6 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             this.drawTexturedModalRect(nameOffsetX + w, nameOffsetY + h, 44, 0, 90, 13);
-            String displayName = entity.getDisplayName().getFormattedText();
             if (fontRenderer.getStringWidth(displayName) > 70)
             {
 

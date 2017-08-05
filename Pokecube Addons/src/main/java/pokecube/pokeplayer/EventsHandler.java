@@ -106,7 +106,7 @@ public class EventsHandler
                 PokecubeManager.heal(stack);
                 pokemob = PokecubeManager.itemToPokemob(stack, event.player.getEntityWorld());
                 proxy.setPokemob(event.player, pokemob);
-                new SendPacket(event.player);
+                sendUpdate(event.player);
             }
         }
     }
@@ -126,7 +126,12 @@ public class EventsHandler
             if (evt.getEntityLiving().getEntityData().getBoolean("isPlayer")
                     && CapabilityPokemob.getPokemobFor(evt.getEntityLiving()) != null)
             {
-                evt.setCanceled(true);
+                Entity real = evt.getEntityLiving().getEntityWorld().getEntityByID(evt.getEntity().getEntityId());
+                if (real != evt.getEntity() && real instanceof EntityPlayerMP)
+                {
+                    EntityPlayerMP player = (EntityPlayerMP) real;
+                    player.attackEntityFrom(evt.getSource(), Float.MAX_VALUE);
+                }
             }
             return;
         }
@@ -140,7 +145,7 @@ public class EventsHandler
                 PokecubeManager.heal(stack);
                 pokemob = PokecubeManager.itemToPokemob(stack, player.getEntityWorld());
                 proxy.setPokemob(player, pokemob);
-                new SendPacket(player);
+                sendUpdate(player);
             }
         }
     }
@@ -158,7 +163,7 @@ public class EventsHandler
             evt.setCanceled(true);
             if (!player.getEntityWorld().isRemote)
             {
-                new SendPacket(player);
+                sendUpdate(player);
             }
             return;
         }
@@ -178,7 +183,7 @@ public class EventsHandler
                 evt.setCanceled(true);
                 if (!player.getEntityWorld().isRemote)
                 {
-                    new SendPacket(player);
+                    sendUpdate(player);
                 }
                 return;
             }
@@ -187,9 +192,19 @@ public class EventsHandler
         EntityPlayer player = (EntityPlayer) evt.getEntity();
         if (!player.getEntityWorld().isRemote)
         {
-            new SendPacket(player);
-            new SendExsistingPacket(player);
+            sendUpdate(player);
+            sendExisting(player);
         }
+    }
+
+    public static void sendUpdate(EntityPlayer player)
+    {
+        new SendPacket(player);
+    }
+
+    public static void sendExisting(EntityPlayer player)
+    {
+        new SendExsistingPacket(player);
     }
 
     public static class SendPacket

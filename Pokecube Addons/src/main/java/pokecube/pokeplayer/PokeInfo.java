@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.RayTraceResult;
@@ -16,8 +17,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokeType;
-import pokecube.pokeplayer.EventsHandler.SendPacket;
 import pokecube.pokeplayer.inventory.InventoryPlayerPokemob;
+import pokecube.pokeplayer.network.PacketTransform;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 import thut.lib.Accessor;
 import thut.lib.CompatWrapper;
@@ -74,7 +75,7 @@ public class PokeInfo extends PlayerData
         save(player);
         if (!player.getEntityWorld().isRemote)
         {
-            new SendPacket(player);
+            EventsHandler.sendUpdate(player);
         }
     }
 
@@ -95,12 +96,16 @@ public class PokeInfo extends PlayerData
         save(player);
         if (!player.getEntityWorld().isRemote)
         {
-            new SendPacket(player);
+            EventsHandler.sendUpdate(player);
         }
     }
 
     public void onUpdate(EntityPlayer player)
     {
+        if (getPokemob(player.getEntityWorld()) == null && stack != null)
+        {
+            resetPlayer(player);
+        }
         if (pokemob == null) return;
         EntityLivingBase poke = pokemob.getEntity();
         if (!pokemob.getPokemonAIState(IPokemob.TAMED)) pokemob.setPokemonAIState(IPokemob.TAMED, true);
@@ -112,6 +117,14 @@ public class PokeInfo extends PlayerData
         }
         float health = poke.getHealth();
         EntityTools.copyEntityTransforms(poke, player);
+        if (player instanceof EntityPlayerMP)// && health != player.getHealth())
+        {
+            PacketTransform packet = new PacketTransform();
+            packet.id = player.getEntityId();
+            packet.data.setBoolean("U", true);
+            packet.data.setFloat("H", health);
+            PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
+        }
         player.setHealth(health);
         int num = pokemob.getHungerTime();
         int max = PokecubeMod.core.getConfig().pokemobLifeSpan;

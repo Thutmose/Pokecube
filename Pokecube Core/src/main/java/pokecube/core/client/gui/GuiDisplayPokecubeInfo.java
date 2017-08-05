@@ -341,10 +341,16 @@ public class GuiDisplayPokecubeInfo extends Gui
             this.drawTexturedModalRect(nameOffsetX + w, nameOffsetY + h, 44, 0, 90, 13);
             if (fontRenderer.getStringWidth(displayName) > 70)
             {
-
+                displayName = fontRenderer.trimStringToWidth(displayName, 70);
             }
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             fontRenderer.drawString(displayName, nameOffsetX + 3 + w, nameOffsetY + 3 + h, lightGrey);
+
+            // Render level
+            GL11.glColor4f(1.0F, 0.5F, 0.0F, 1.0F);
+            fontRenderer.drawString("L." + level, nameOffsetX + 88 + w - fontRenderer.getStringWidth("L." + level),
+                    nameOffsetY + 3 + h, lightGrey);
+            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
             // Draw number of pokemon
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);

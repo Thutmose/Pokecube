@@ -23,7 +23,7 @@ public class PacketSyncModifier implements IMessage, IMessageHandler<PacketSyncM
         int id = message.entityId;
         int modifier = message.modifier;
         float[] values = message.values;
-        Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, false);
+        Entity e = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, true);
         IPokemob mob = CapabilityPokemob.getPokemobFor(e);
         if (mob != null)
         {

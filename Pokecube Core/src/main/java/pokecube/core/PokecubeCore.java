@@ -228,7 +228,7 @@ public class PokecubeCore extends PokecubeMod
     public Mod_Pokecube_Helper helper;
     private Config             config;
     IEntityProvider            provider;
-    EventsHandler              events;
+    public EventsHandler       events;
 
     public PokecubeCore()
     {

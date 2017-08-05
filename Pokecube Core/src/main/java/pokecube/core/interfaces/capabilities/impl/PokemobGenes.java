@@ -319,7 +319,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     public void setMoves(String[] moves)
     {
         // do not blanket set moves on client, or when transformed.
-        if (!entity.isServerWorld() || getTransformedTo() != null) return;
+        if (entity.getEntityWorld().isRemote || getTransformedTo() != null) return;
         if (moves != null && moves.length == 4)
         {
             if (genesMoves == null)

@@ -57,7 +57,8 @@ public class Pokedex
 
     public Integer getIndex(PokedexEntry entry)
     {
-        return entryIndecies.get(entry);
+        Integer ret = entryIndecies.get(entry);
+        return ret == null ? 0 : ret;
     }
 
     public PokedexEntry getEntry(Integer pokedexNb)

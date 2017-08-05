@@ -19,6 +19,7 @@ public class BlockTransformer extends BlockPressurePlate implements ITileEntityP
     public BlockTransformer()
     {
         super(Material.IRON, Sensitivity.MOBS);
+        this.setHardness(100000);
     }
 
     @Override

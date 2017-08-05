@@ -138,6 +138,7 @@ public abstract class PokemobBase implements IPokemob
             manager.manualSyncSet.add(EVOLTICKDW);
             manager.manualSyncSet.add(NICKNAMEDW);
             manager.manualSyncSet.add(MOVEINDEXDW);
+            manager.manualSyncSet.add(ATTACKCOOLDOWN);
             manager.manualSyncSet.add(HUNGERDW);
             return manager;
         }

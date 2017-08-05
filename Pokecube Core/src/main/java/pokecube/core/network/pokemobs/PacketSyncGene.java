@@ -18,7 +18,7 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
 {
     public static void syncGene(Entity mob, Alleles gene)
     {
-        if (!mob.addedToChunk || mob.getEntityWorld().isRemote || gene == null) return;
+        if (mob.getEntityWorld().isRemote || gene == null) return;
         PacketSyncGene packet = new PacketSyncGene();
         packet.genes = gene;
         packet.entityId = mob.getEntityId();
@@ -48,7 +48,7 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
                 EntityPlayer player = PokecubeCore.getPlayer(null);
                 int id = message.entityId;
                 Alleles alleles = message.genes;
-                Entity mob = player.getEntityWorld().getEntityByID(id);
+                Entity mob = PokecubeMod.core.getEntityProvider().getEntity(player.getEntityWorld(), id, true);
                 if (mob == null) return;
                 IMobGenetics genes = mob.getCapability(IMobGenetics.GENETICS_CAP, null);
                 IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);

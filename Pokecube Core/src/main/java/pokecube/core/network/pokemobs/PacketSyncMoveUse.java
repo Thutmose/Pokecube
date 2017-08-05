@@ -29,8 +29,7 @@ public class PacketSyncMoveUse implements IMessage, IMessageHandler<PacketSyncMo
 
     public static void sendUpdate(IPokemob pokemob)
     {
-        if (!pokemob.getEntity().addedToChunk || !pokemob.getEntity().isServerWorld()
-                || !(pokemob.getPokemonOwner() instanceof EntityPlayer))
+        if (pokemob.getEntity().getEntityWorld().isRemote || !(pokemob.getPokemonOwner() instanceof EntityPlayer))
             return;
         PacketSyncMoveUse packet = new PacketSyncMoveUse();
         packet.entityId = pokemob.getEntity().getEntityId();

@@ -411,7 +411,8 @@ public class AIAttack extends AIBase implements IAICombat
             // Apply the move.
             float f = (float) targetLoc.distToEntity(attacker);
             Vector3 loc = targetLoc.copy();
-            addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension, loc, f);
+            if (attacker.addedToChunk)
+                addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension, loc, f);
             shouldPath = false;
             setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
             targetLoc.clear();

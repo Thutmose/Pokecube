@@ -845,7 +845,7 @@ public class PokedexEntryLoader
                     String[] vars = value.split(",");
                     for (int i = 0; i < vars.length; i++)
                     {
-                        entry.abilitiesHidden.add(vars[i].trim());
+                        if (!entry.abilitiesHidden.contains(vars[i].trim())) entry.abilitiesHidden.add(vars[i].trim());
                     }
                 }
                 if (keyString.equals("normal"))
@@ -853,7 +853,7 @@ public class PokedexEntryLoader
                     String[] vars = value.split(",");
                     for (int i = 0; i < vars.length; i++)
                     {
-                        entry.abilities.add(vars[i].trim());
+                        if (!entry.abilities.contains(vars[i].trim())) entry.abilities.add(vars[i].trim());
                     }
                     if (entry.abilities.size() == 1)
                     {

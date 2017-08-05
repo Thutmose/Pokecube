@@ -35,14 +35,17 @@ public class PokemobDataManager extends EntityDataManager
     final Map<Integer, EntityDataManager.DataEntry<?>> entrySet;
     private final ReadWriteLock                        theLock;
     public Set<DataParameter<?>>                       manualSyncSet = Sets.newHashSet();
+    public final EntityDataManager                     wrappedManager;
 
     public PokemobDataManager(Entity entityIn)
     {
         super(entityIn);
         this.entity = entityIn;
-        EntityDataManager manager = entityIn.getDataManager();
-        entrySet = ReflectionHelper.getPrivateValue(EntityDataManager.class, manager, "entries", "field_187234_c", "d");
-        theLock = ReflectionHelper.getPrivateValue(EntityDataManager.class, manager, "lock", "field_187235_d", "e");
+        wrappedManager = entityIn.getDataManager();
+        entrySet = ReflectionHelper.getPrivateValue(EntityDataManager.class, wrappedManager, "entries",
+                "field_187234_c", "d");
+        theLock = ReflectionHelper.getPrivateValue(EntityDataManager.class, wrappedManager, "lock", "field_187235_d",
+                "e");
         ReflectionHelper.setPrivateValue(EntityDataManager.class, this, entrySet, "entries", "field_187234_c", "d");
     }
 

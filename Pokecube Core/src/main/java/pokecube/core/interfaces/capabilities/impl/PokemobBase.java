@@ -21,6 +21,7 @@ import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
+import pokecube.core.ai.utils.PokemobDataManager;
 import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.AnimalChest;
@@ -95,7 +96,7 @@ public abstract class PokemobBase implements IPokemob
         public DataParameter<Byte>            MOVEINDEXDW;
         public DataParameter<Integer>         SPECIALINFO;
 
-        public EntityDataManager register(EntityDataManager dataManager, EntityLiving entity)
+        public PokemobDataManager register(EntityDataManager dataManager, EntityLiving entity)
         {
             dataManager.register(HUNGERDW, new Integer(0));// Hunger time
             // // for sheared status
@@ -131,14 +132,13 @@ public abstract class PokemobBase implements IPokemob
                 dataManager.register(FLAVOURS[i], Integer.valueOf(0));
             }
 
-            // TODO manual sync these? overwrite default datamanager?
-            // PokemobDataManager manager = new PokemobDataManager(entity);
-            // dataManager = manager;
-            // manager.manualSyncSet.add(TRANSFORMEDTODW);
-            // manager.manualSyncSet.add(STATUSDW);
-            // manager.manualSyncSet.add(EVOLTICKDW);
-            // manager.manualSyncSet.add(NICKNAMEDW);
-            return dataManager;
+            PokemobDataManager manager = new PokemobDataManager(entity);
+            manager.manualSyncSet.add(TRANSFORMEDTODW);
+            manager.manualSyncSet.add(STATUSDW);
+            manager.manualSyncSet.add(EVOLTICKDW);
+            manager.manualSyncSet.add(NICKNAMEDW);
+            manager.manualSyncSet.add(MOVEINDEXDW);
+            return manager;
         }
     }
 
@@ -214,7 +214,7 @@ public abstract class PokemobBase implements IPokemob
     protected Random               rand             = new Random();
     /** Data manager used for syncing data, this should be identical to
      * entity.getDataManager() */
-    public EntityDataManager       dataManager;
+    public PokemobDataManager      dataManager;
     /** Holds the data parameters used for syncing our stuff. */
     protected DataParameters       params;
 
@@ -237,7 +237,7 @@ public abstract class PokemobBase implements IPokemob
     public void setEntity(EntityLiving entityIn)
     {
         entity = entityIn;
-        if (this.dataManager != entity.getDataManager())
+        if (!isSameDatamanager(entity.getDataManager()))
         {
             this.params = getParameters(entity.getClass());
             this.dataManager = params.register(entity.getDataManager(), entity);
@@ -249,5 +249,17 @@ public abstract class PokemobBase implements IPokemob
     public EntityLiving getEntity()
     {
         return entity;
+    }
+
+    @Override
+    public EntityDataManager getDataManager()
+    {
+        return this.dataManager;
+    }
+
+    private boolean isSameDatamanager(EntityDataManager toTest)
+    {
+        if (this.dataManager == null) return false;
+        return toTest == this.dataManager.wrappedManager;
     }
 }

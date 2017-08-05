@@ -148,7 +148,7 @@ public class PokeInfo extends PlayerData
     private void setFlying(EntityPlayer player, boolean set)
     {
         if (pokemob == null) return;
-        boolean fly = pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys();
+        boolean fly = pokemob.getPokedexEntry().floats() || pokemob.getPokedexEntry().flys() || !set;
         boolean check = set ? !player.capabilities.allowFlying : player.capabilities.allowFlying;
         if (fly && check && player.getEntityWorld().isRemote && !player.capabilities.isCreativeMode)
         {

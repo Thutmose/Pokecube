@@ -18,6 +18,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.Tools;
+import pokecube.pokeplayer.EventsHandler;
 import pokecube.pokeplayer.PokeInfo;
 import pokecube.pokeplayer.PokePlayer;
 import thut.lib.CompatWrapper;
@@ -67,6 +68,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
                 stack = CompatWrapper.nullStack;
                 stepTick = 50;
             }
+            new EventsHandler.SendPacket(player);
             return;
         }
         else if (!CompatWrapper.isValid(stack) && !random && isPokemob)
@@ -86,6 +88,7 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             }
             PokePlayer.PROXY.setPokemob(player, null);
             stack = pokemob;
+            new EventsHandler.SendPacket(player);
             return;
         }
         else if (random && isPokemob)
@@ -97,13 +100,11 @@ public class TileEntityTransformer extends TileEntityOwnable implements ITickabl
             tag.removeTag("oldName");
             tag.removeTag("isPlayer");
             tag.removeTag("playerID");
-            if (player.capabilities.isFlying)
-            {
-                player.capabilities.isFlying = false;
-                player.sendPlayerAbilities();
-            }
+            player.capabilities.isFlying = false;
+            player.sendPlayerAbilities();
             PokePlayer.PROXY.setPokemob(player, null);
             stack = CompatWrapper.nullStack;
+            new EventsHandler.SendPacket(player);
             return;
         }
     }

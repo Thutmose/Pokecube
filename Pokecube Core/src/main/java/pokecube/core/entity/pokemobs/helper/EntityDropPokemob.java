@@ -95,10 +95,10 @@ public abstract class EntityDropPokemob extends EntityMovesPokemob
     }
 
     @Override
-    @Nullable // TODO move stuff over to using a loot table instead?
+    @Nullable
     protected ResourceLocation getLootTable()
     {
-        return null;
+        return pokemobCap.getPokedexEntry().lootTable;
     }
 
     @Override

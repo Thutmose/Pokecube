@@ -594,6 +594,10 @@ public class PokedexEntry
     public int                                  defaultSpecial   = 0;
     @CopyToGender
     public Map<ItemStack, Float>                drops            = Maps.newHashMap();
+    /** If the IPokemob supports this, then this will be the loot table used for
+     * its drops. */
+    @CopyToGender
+    public ResourceLocation                     lootTable        = null;
     /** indicatees of the specified special texture exists. Index 4 is used for
      * if the mob can be dyed */
     @CopyToGender

@@ -34,6 +34,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import pokecube.core.PokecubeItems;
@@ -282,9 +283,6 @@ public class PokedexEntryLoader
             @XmlAnyAttribute
             public Map<QName, String> values = Maps.newHashMap();
         }
-
-        @XmlAttribute
-        public String            spawns;
         // Evolution stuff
         @XmlElement(name = "Evolution")
         public List<Evolution>   evolutions     = Lists.newArrayList();
@@ -304,7 +302,11 @@ public class PokedexEntryLoader
         public List<Drop>        drops          = Lists.newArrayList();
         @XmlElement(name = "Held")
         public List<Drop>        held           = Lists.newArrayList();
+        @XmlElement(name = "lootTable")
+        public String            lootTable;
         // Spawn Rules
+        @XmlAttribute
+        public Boolean           overwrite;
         @XmlElement(name = "Spawn")
         public List<SpawnRule>   spawnRules     = Lists.newArrayList();
         // STATS
@@ -1153,7 +1155,7 @@ public class PokedexEntryLoader
     private static void parseSpawns(PokedexEntry entry, StatsNode xmlStats)
     {
         if (xmlStats.spawnRules.isEmpty()) return;
-        boolean overwrite = xmlStats.spawns == null ? false : Boolean.parseBoolean(xmlStats.spawns);
+        boolean overwrite = xmlStats.overwrite == null ? false : xmlStats.overwrite;
         SpawnData spawnData = entry.getSpawnData();
         if (spawnData == null || overwrite)
         {
@@ -1243,6 +1245,9 @@ public class PokedexEntryLoader
                 handleAddDrop(entry, d);
             }
         }
+        // Loot table
+        if (xmlStats.lootTable != null && !xmlStats.lootTable.isEmpty())
+            entry.lootTable = new ResourceLocation(xmlStats.lootTable);
         // Held
         if (!xmlStats.held.isEmpty())
         {

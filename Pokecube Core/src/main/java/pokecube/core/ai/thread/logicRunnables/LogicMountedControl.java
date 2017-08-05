@@ -120,11 +120,6 @@ public class LogicMountedControl extends LogicBase
         {
             entity.motionY -= 0.1;
         }
-        if (!move)
-        {
-            entity.motionX *= 0.5;
-            entity.motionZ *= 0.5;
-        }
         if (!followOwnerLook)
         {// TODO some way to make this change based on how long button is held?
             if (leftInputDown)
@@ -139,6 +134,44 @@ public class LogicMountedControl extends LogicBase
         else if (!entity.getPassengers().isEmpty())
         {
             pokemob.setHeading(entity.getPassengers().get(0).rotationYaw);
+            float f = moveSpeed / 2;
+            if (leftInputDown)
+            {
+                move = true;
+                if (shouldControl)
+                {
+                    if (!entity.onGround) f *= 2;
+                    entity.motionX += MathHelper.cos(-entity.rotationYaw * 0.017453292F) * f;
+                    entity.motionZ += MathHelper.sin(entity.rotationYaw * 0.017453292F) * f;
+                }
+                else if (entity.isInLava() || entity.isInWater())
+                {
+                    f *= 0.1;
+                    entity.motionX += MathHelper.cos(-entity.rotationYaw * 0.017453292F) * f;
+                    entity.motionZ += MathHelper.sin(entity.rotationYaw * 0.017453292F) * f;
+                }
+            }
+            if (rightInputDown)
+            {
+                move = true;
+                if (shouldControl)
+                {
+                    if (!entity.onGround) f *= 2;
+                    entity.motionX -= MathHelper.cos(-entity.rotationYaw * 0.017453292F) * f;
+                    entity.motionZ -= MathHelper.sin(entity.rotationYaw * 0.017453292F) * f;
+                }
+                else if (entity.isInLava() || entity.isInWater())
+                {
+                    f *= 0.1;
+                    entity.motionX -= MathHelper.cos(-entity.rotationYaw * 0.017453292F) * f;
+                    entity.motionZ -= MathHelper.sin(entity.rotationYaw * 0.017453292F) * f;
+                }
+            }
+        }
+        if (!move)
+        {
+            entity.motionX *= 0.5;
+            entity.motionZ *= 0.5;
         }
         // Sync the rotations.
         entity.setRenderYawOffset(pokemob.getHeading());

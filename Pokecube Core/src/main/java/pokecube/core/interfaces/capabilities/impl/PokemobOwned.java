@@ -428,6 +428,13 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     @Override
     public boolean moveToShoulder(EntityPlayer player)
     {
+        float scale = getSize();
+        float width = getPokedexEntry().width * scale;
+        float height = getPokedexEntry().height * scale;
+        float length = getPokedexEntry().length * scale;
+        boolean rightSize = width < 1 && height < 1 && length < 1;
+        rightSize |= getPokedexEntry().canSitShoulder;
+        if (!rightSize) return false;
         NBTTagCompound nbttagcompound = new NBTTagCompound();
         nbttagcompound.setString("id", this.getEntityString());
         this.getEntity().writeToNBT(nbttagcompound);

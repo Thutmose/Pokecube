@@ -427,7 +427,7 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public int                           autoRecallDistance           = 32;
     @Configure(category = client)
-    public boolean                       riddenMobsTurnWithLook       = false;
+    public boolean                       riddenMobsTurnWithLook       = true;
     @Configure(category = client)
     public boolean                       extraberries                 = false;
 

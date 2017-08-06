@@ -151,6 +151,7 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                 {
                     for (String s : current)
                     {
+                        if (s == null) continue;
                         for (String s1 : moves)
                         {
                             if (s.equals(s1))

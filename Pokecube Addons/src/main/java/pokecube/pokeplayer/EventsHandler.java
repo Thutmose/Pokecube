@@ -5,7 +5,6 @@ import java.util.UUID;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.MinecraftForge;
@@ -26,10 +25,8 @@ import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.items.ItemPokedex;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.pokeplayer.network.PacketTransform;
-import thut.lib.CompatWrapper;
 
 public class EventsHandler
 {
@@ -46,18 +43,7 @@ public class EventsHandler
     {
         IPokemob pokemob = proxy.getPokemob(event.getEntityPlayer());
         if (pokemob == null) return;
-        if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking()
-                && event.getItemStack().getItem() instanceof ItemPokedex)
-        {
-            pokemob.getPokemobInventory().addInventoryChangeListener((IInventoryChangedListener) pokemob);
-            if (!event.getWorld().isRemote)
-            {
-                event.setCanceled(true);
-                event.getEntityPlayer().openGui(PokePlayer.INSTANCE, Proxy.POKEMOBGUI,
-                        event.getEntityPlayer().getEntityWorld(), 0, 0, 0);
-            }
-        }
-        else if (CompatWrapper.isValid(event.getItemStack()) && event.getEntityPlayer().isSneaking())
+        if (event.getEntityPlayer().isSneaking())
         {
             EntityInteractSpecific evt = new EntityInteractSpecific(event.getEntityPlayer(), event.getHand(),
                     pokemob.getEntity(), new Vec3d(0, 0, 0));
@@ -65,7 +51,7 @@ public class EventsHandler
             PokeInfo info = PokecubePlayerDataHandler.getInstance().getPlayerData(event.getEntityPlayer())
                     .getData(PokeInfo.class);
             info.save(event.getEntityPlayer());
-            event.setCanceled(true);
+            if (evt.isCanceled()) event.setCanceled(true);
         }
     }
 

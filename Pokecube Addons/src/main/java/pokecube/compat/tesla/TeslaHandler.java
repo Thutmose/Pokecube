@@ -31,6 +31,7 @@ import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.compat.ai.AITeslaInterferance;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
@@ -72,11 +73,15 @@ public class TeslaHandler
     /** Priority low, so that the IPokemob capability is added first. */
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());
+        if (!event.getCapabilities().containsKey(EventsHandler.POKEMOBCAP)
+                || event.getCapabilities().containsKey(new ResourceLocation("pokecube:tesla"))
+                || event.getObject().getEntityWorld() == null)
+            return;
+        IPokemob pokemob = event.getCapabilities().get(EventsHandler.POKEMOBCAP)
+                .getCapability(CapabilityPokemob.POKEMOB_CAP, null);
         if (pokemob != null)
         {
-            if (pokemob.getEntity().getEntityWorld() != null)
-                event.addCapability(new ResourceLocation("pokecube:tesla"), new ProviderPokemob(pokemob));
+            event.addCapability(new ResourceLocation("pokecube:tesla"), new ProviderPokemob(pokemob));
         }
     }
 

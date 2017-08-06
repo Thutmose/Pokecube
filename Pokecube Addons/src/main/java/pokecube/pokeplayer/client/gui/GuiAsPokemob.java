@@ -58,7 +58,7 @@ public class GuiAsPokemob extends GuiDisplayPokecubeInfo
             super.pokemobAttack();
             return;
         }
-        if (!useMove) return;
+        if (!useMove || pokemob.getAttackCooldown() > 0) return;
         useMove = false;
         float range = 16;
         float contactRange = Math.max(1.5f, pokemob.getSize() * pokemob.getPokedexEntry().length);

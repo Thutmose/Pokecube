@@ -114,6 +114,7 @@ public class PokeInfo extends PlayerData
         if (player.capabilities.isCreativeMode)
         {
             poke.setHealth(poke.getMaxHealth());
+            pokemob.setHungerTime(0);
         }
         float health = poke.getHealth();
         EntityTools.copyEntityTransforms(poke, player);

@@ -427,6 +427,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             minecraft.renderEngine.bindTexture(Resources.GUI_BATTLE);
             this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
             GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
+            GL11.glColor4f(1, 1, 1, 1);
             GuiPokemob.renderMob(renderPokemob, -30, -25, 0, 0, 0, 0, 0, 0.75f);
         }
         GL11.glPopMatrix();

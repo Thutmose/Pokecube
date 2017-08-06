@@ -118,7 +118,6 @@ public class ItemTM extends ItemPokemobUseable
                     {
                         mob.setMove(index, name);
                     }
-                    tm.splitStack(1);
                     return true;
                 }
             }
@@ -151,7 +150,6 @@ public class ItemTM extends ItemPokemobUseable
                 int xp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() - 1);
                 pokemob.setExp(xp, true);
                 stack.setTagCompound(null);
-                stack.splitStack(1);
                 return true;
             }
         }
@@ -164,7 +162,6 @@ public class ItemTM extends ItemPokemobUseable
                 int xp = Tools.levelToXp(pokemob.getExperienceMode(), pokemob.getLevel() - 1);
                 pokemob.setExp(xp, true);
                 stack.setTagCompound(null);
-                stack.splitStack(1);
                 return true;
             }
         }

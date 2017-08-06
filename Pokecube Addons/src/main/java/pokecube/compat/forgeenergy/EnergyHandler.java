@@ -26,11 +26,11 @@ import pokecube.adventures.blocks.siphon.SiphonTickEvent;
 import pokecube.adventures.blocks.siphon.TileEntitySiphon;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.comands.Config;
+import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokeType;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Vector3;
 
 public class EnergyHandler
@@ -48,6 +48,7 @@ public class EnergyHandler
             if (living != null)
             {
                 IEnergyStorage producer = living.getCapability(CapabilityEnergy.ENERGY, null);
+                System.out.println(living + " " + producer);
                 if (producer != null)
                 {
                     double dSq = Math.max(1, living.getDistanceSq(tile.getPos().getX() + 0.5,
@@ -110,7 +111,12 @@ public class EnergyHandler
     /** Priority low, so that the IPokemob capability is added first. */
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
     {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(event.getObject());
+        if (!event.getCapabilities().containsKey(EventsHandler.POKEMOBCAP)
+                || event.getCapabilities().containsKey(new ResourceLocation("pokecube:energy"))
+                || event.getObject().getEntityWorld() == null)
+            return;
+        IPokemob pokemob = event.getCapabilities().get(EventsHandler.POKEMOBCAP)
+                .getCapability(CapabilityPokemob.POKEMOB_CAP, null);
         if (pokemob != null)
         {
             event.addCapability(new ResourceLocation("pokecube:energy"), new ProviderPokemob(pokemob));
@@ -314,7 +320,7 @@ public class EnergyHandler
         public int extractEnergy(int power, boolean simulate)
         {
             if (!canExtract()) return 0;
-            EntityLiving living = (EntityLiving) pokemob;
+            EntityLiving living = pokemob.getEntity();
             int spAtk = pokemob.getStat(Stats.SPATTACK, true);
             int atk = pokemob.getStat(Stats.ATTACK, true);
             int level = pokemob.getLevel();
@@ -347,8 +353,8 @@ public class EnergyHandler
                 }
                 if (living.ticksExisted % 2 == 0)
                 {
-                    int time = ((IHungrymob) pokemob).getHungerTime();
-                    ((IHungrymob) pokemob).setHungerTime(
+                    int time = pokemob.getHungerTime();
+                    pokemob.setHungerTime(
                             time + Config.instance.energyHungerCost + drain * Config.instance.energyHungerCost);
                 }
             }

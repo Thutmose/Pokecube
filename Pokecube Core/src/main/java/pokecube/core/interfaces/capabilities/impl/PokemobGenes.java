@@ -428,6 +428,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
     {
         if (genesShiny == null) isShiny();
         genesShiny.getExpressed().setValue(shiny);
+        PacketSyncGene.syncGene(getEntity(), genesShiny);
     }
 
     @Override

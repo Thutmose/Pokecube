@@ -110,7 +110,6 @@ import pokecube.core.utils.Tools;
 import thut.api.boom.ExplosionCustom;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.maths.Vector3;
-import thut.api.network.PacketHandler;
 import thut.api.terrain.BiomeType;
 import thut.api.terrain.TerrainManager;
 import thut.lib.CompatWrapper;

@@ -3,16 +3,22 @@ package pokecube.adventures.network.packets;
 import java.io.IOException;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
+import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.adventures.entity.trainers.EntityTrainer;
+import pokecube.adventures.entity.trainers.TypeTrainer;
 import pokecube.core.PokecubeCore;
+import thut.api.network.PacketHandler;
 
 public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, IMessage>
 {
@@ -82,7 +88,22 @@ public class PacketTrainer implements IMessage, IMessageHandler<PacketTrainer, I
         }
         if (message.message == MESSAGEUPDATETRAINER)
         {
-            // TODO fix this.
+            NBTBase tag = message.data.getTag("T");
+            int id = message.data.getInteger("I");
+            Entity mob = player.getEntityWorld().getEntityByID(id);
+            IHasPokemobs cap = CapabilityHasPokemobs.getHasPokemobs(mob);
+            if (cap != null)
+            {
+                CapabilityHasPokemobs.storage.readNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, cap, null, tag);
+                TypeTrainer old = cap.getType();
+                TypeTrainer type = TypeTrainer.getTrainer(message.data.getString("K"));
+                if (old != type)
+                {
+
+                    cap.setType(type);
+                }
+                PacketHandler.sendEntityUpdate(mob);
+            }
             return;
         }
         if (message.message == MESSAGENOTIFYDEFEAT)

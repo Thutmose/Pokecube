@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextComponentString;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
@@ -68,6 +69,12 @@ public class GuiTrainerEdit extends GuiScreen
     }
 
     @Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
+    }
+
+    @Override
     protected void actionPerformed(GuiButton guibutton)
     {
         if (guibutton.id == 1)
@@ -85,7 +92,7 @@ public class GuiTrainerEdit extends GuiScreen
         {
             byte gender = pokemobCap.getGender();
             pokemobCap.setGender((byte) (gender == 1 ? 2 : 1));
-            guibutton.displayString = gender == 1 ? "\u2642" : "\u2640";
+            guibutton.displayString = pokemobCap.getGender() == 1 ? "\u2642" : "\u2640";
             sendChooseToServer();
         }
         else if (guibutton.id == 6)
@@ -137,7 +144,6 @@ public class GuiTrainerEdit extends GuiScreen
                     index++;
                 }
             }
-            pokemobCap.setType(TypeTrainer.getTrainer(types.get(index)));
             textFieldType.setText(types.get(index));
             if (textFieldName.getText().startsWith(oldType))
             {
@@ -237,7 +243,7 @@ public class GuiTrainerEdit extends GuiScreen
         // Cycle Trainer Type buttons
         buttonList.add(new GuiButton(3, width / 2 - xOffset - 90, height / 2 - yOffset - 60, 50, 20, prev));
         buttonList.add(new GuiButton(4, width / 2 - xOffset + 80, height / 2 - yOffset - 60, 50, 20, next));
-        String gender = pokemobCap.getGender() == 2 ? "\u2642" : "\u2640";
+        String gender = pokemobCap.getGender() == 1 ? "\u2642" : "\u2640";
         buttonList.add(new GuiButton(5, width / 2 - xOffset - 90, height / 2 - yOffset - 90, 20, 20, gender));
         buttonList.add(new GuiButton(6, width / 2 - xOffset + 80, height / 2 - yOffset - 90, 50, 20, "Reset"));
         buttonList.add(new GuiButton(7, width / 2 - xOffset + 80, height / 2 - yOffset + 60, 50, 20, "Kill"));
@@ -430,11 +436,12 @@ public class GuiTrainerEdit extends GuiScreen
                     pokemob.setInteger(TagNames.EXP, exp);
                 }
             }
-            NBTTagCompound tag = new NBTTagCompound();
-            trainer.writeEntityToNBT(tag);
+            NBTBase tag = CapabilityHasPokemobs.storage.writeNBT(CapabilityHasPokemobs.HASPOKEMOBS_CAP, pokemobCap,
+                    null);
             PacketTrainer packet = new PacketTrainer(PacketTrainer.MESSAGEUPDATETRAINER);
             packet.data.setString("N", textFieldName.getText());
             packet.data.setTag("T", tag);
+            packet.data.setString("K", textFieldType.getText());
             packet.data.setInteger("I", trainer.getEntityId());
             packet.data.setBoolean("S", stationary);
             packet.data.setBoolean("R", resetTeam);

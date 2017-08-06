@@ -18,7 +18,7 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
 {
     public static void syncGene(Entity mob, Alleles gene)
     {
-        if (mob.getEntityWorld().isRemote || gene == null) return;
+        if (mob.getEntityWorld() == null || mob.getEntityWorld().isRemote || gene == null) return;
         PacketSyncGene packet = new PacketSyncGene();
         packet.genes = gene;
         packet.entityId = mob.getEntityId();
@@ -69,7 +69,7 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
         entityId = buffer.readInt();
         try
         {
-            genes.load(buffer.readNBTTagCompoundFromBuffer());
+            genes.load(buffer.readCompoundTag());
         }
         catch (Exception e)
         {
@@ -82,6 +82,6 @@ public class PacketSyncGene implements IMessage, IMessageHandler<PacketSyncGene,
     {
         PacketBuffer buffer = new PacketBuffer(buf);
         buffer.writeInt(entityId);
-        buffer.writeNBTTagCompoundToBuffer(genes.save());
+        buffer.writeCompoundTag(genes.save());
     }
 }

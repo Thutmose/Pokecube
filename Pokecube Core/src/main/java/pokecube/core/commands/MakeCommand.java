@@ -1,6 +1,7 @@
 package pokecube.core.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -293,9 +294,30 @@ public class MakeCommand extends CommandBase
                     offset.y = Double.parseDouble(vec[1].trim());
                     offset.z = Double.parseDouble(vec[2].trim());
                 }
+                else if (arg.equalsIgnoreCase("i"))
+                {
+                    String[] vec = val.split(",");
+                    byte[] ivs = new byte[6];
+                    if (vec.length == 1)
+                    {
+                        byte iv = Byte.parseByte(vec[0]);
+                        Arrays.fill(ivs, iv);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < 6; i++)
+                        {
+                            ivs[i] = Byte.parseByte(vec[i]);
+                        }
+                    }
+                }
                 else if (arg.equalsIgnoreCase("w"))
                 {
                     asWild = true;
+                }
+                else if (arg.equalsIgnoreCase("h"))
+                {
+                    mob.setSize(Float.parseFloat(val));
                 }
                 else if (arg.equalsIgnoreCase("p"))
                 {

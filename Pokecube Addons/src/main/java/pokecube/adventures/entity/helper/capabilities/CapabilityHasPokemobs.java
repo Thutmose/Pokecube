@@ -270,6 +270,7 @@ public class CapabilityHasPokemobs
             if (instance.getOutID() != null) nbt.setString("outPokemob", instance.getOutID().toString());
             if (instance.getType() != null) nbt.setString("type", instance.getType().name);
             nbt.setLong("nextBattle", instance.getCooldown());
+            nbt.setByte("gender", instance.getGender());
             if (instance instanceof DefaultPokemobs)
             {
                 DefaultPokemobs mobs = (DefaultPokemobs) instance;
@@ -312,6 +313,7 @@ public class CapabilityHasPokemobs
                 instance.setOutID(UUID.fromString(nbt.getString("outPokemob")));
             }
             instance.setNextSlot(nbt.getInteger("nextSlot"));
+            if (nbt.hasKey("gender")) instance.setGender(nbt.getByte("gender"));
             if (instance.getNextSlot() >= 6) instance.setNextSlot(0);
             if (instance instanceof DefaultPokemobs)
             {

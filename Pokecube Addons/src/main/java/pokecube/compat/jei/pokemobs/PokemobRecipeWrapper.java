@@ -13,6 +13,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.Biome;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.MovesUtils;
 import thut.api.terrain.BiomeType;
@@ -84,7 +85,23 @@ public class PokemobRecipeWrapper implements IRecipeWrapper
                     biomeNames.add(test.getBiomeName());
                 }
             }
-            System.out.println(recipe.data.matcher.spawnRule);
+            for (SpawnBiomeMatcher matcher : recipe.data.matcher.children)
+            {
+                it = Biome.REGISTRY.iterator();
+                for (BiomeType t : matcher.validSubBiomes)
+                {
+                    biomeNames.add(t.readableName);
+                }
+                while (it.hasNext())
+                {
+                    Biome test = it.next();
+                    boolean valid = matcher.validBiomes.contains(test);
+                    if (valid)
+                    {
+                        biomeNames.add(test.getBiomeName());
+                    }
+                }
+            }
             tooltips.add(I18n.format("gui.jei.pokemob.evo.biome", biomeNames));
         }
         if (recipe.data.happy)

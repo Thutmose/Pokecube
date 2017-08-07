@@ -174,14 +174,12 @@ public class WorldGenMultiTemplate implements IWorldGenerator
         for (Template template : templates.keySet())
         {
             TemplateStructure structure = templates.get(template);
-            BlockPos offset = structure.getBoundingBoxCenter();
-            template.size = new BlockPos(structure.getBoundingBox().getXSize(), 0,
-                    structure.getBoundingBox().getZSize());
+            StructureBoundingBox box = structure.getBoundingBox();
+            BlockPos offset = getCenter(box);
+            template.size = new BlockPos(box.getXSize(), 0, box.getZSize());
             offset = offset.down(offset.getY());
             template.relativeOffset = offset.add(mid);
-            System.out.println(template.template.template + " " + offset + " " + mid);
         }
-        System.out.println(templates.size() + " " + subTemplates);
     }
 
     private void syncTemplateGround(TemplateStructure from)
@@ -207,5 +205,11 @@ public class WorldGenMultiTemplate implements IWorldGenerator
                 }
             }
         }
+    }
+
+    private BlockPos getCenter(StructureBoundingBox box)
+    {
+        return new BlockPos(box.minX + (box.maxX - box.minX + 1) / 2, box.minY + (box.maxY - box.minY + 1) / 2,
+                box.minZ + (box.maxZ - box.minZ + 1) / 2);
     }
 }

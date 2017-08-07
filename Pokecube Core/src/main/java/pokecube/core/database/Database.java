@@ -432,11 +432,7 @@ public class Database
                 PokecubeMod.log(Level.SEVERE, "Error with " + CONFIGLOC + s + " " + e);
             }
         }
-        for (String s : PokecubeMod.core.getConfig().extraWorldgenDatabases)
-        {
-            XMLWorldgenHandler.loadStructures(s);
-        }
-        XMLWorldgenHandler.processStructures();
+        XMLWorldgenHandler.reloadWorldgen();
 
         try
         {

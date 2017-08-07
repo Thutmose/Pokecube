@@ -807,7 +807,6 @@ public class PokecubeCore extends PokecubeMod
         String name = file.getName();
         PokecubeTemplates.TEMPLATES = folder.replace(name, "pokecube" + seperator + "structures" + seperator + "");
         PokecubeTemplates.initFiles();
-        XMLWorldgenHandler.init(new File(PokecubeTemplates.TEMPLATES, "worldgen.json"));
-        return;
+        XMLWorldgenHandler.DEFAULT = new File(PokecubeTemplates.TEMPLATES, "worldgen.json");
     }
 }

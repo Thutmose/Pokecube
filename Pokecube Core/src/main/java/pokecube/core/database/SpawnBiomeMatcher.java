@@ -22,6 +22,8 @@ import thut.lib.CompatWrapper;
 
 public class SpawnBiomeMatcher
 {
+    public static final QName ATYPES          = new QName("anyType");
+
     public static final QName BIOMES          = new QName("biomes");
     public static final QName TYPES           = new QName("types");
     public static final QName BIOMESBLACKLIST = new QName("biomesBlacklist");
@@ -63,29 +65,46 @@ public class SpawnBiomeMatcher
         }
     }
 
-    public Set<Biome>      validBiomes        = Sets.newHashSet();
-    public Set<BiomeType>  validSubBiomes     = Sets.newHashSet();
-    public Set<Biome>      blackListBiomes    = Sets.newHashSet();
-    public Set<BiomeType>  blackListSubBiomes = Sets.newHashSet();
+    public Set<Biome>             validBiomes        = Sets.newHashSet();
+    public Set<BiomeType>         validSubBiomes     = Sets.newHashSet();
+    public Set<Biome>             blackListBiomes    = Sets.newHashSet();
+    public Set<BiomeType>         blackListSubBiomes = Sets.newHashSet();
 
-    float                  minLight           = 0;
-    float                  maxLight           = 1;
-    boolean                day                = true;
-    boolean                night              = true;
-    boolean                air                = true;
-    boolean                water              = false;
+    /** If the spawnRule has an anyType key, make a child for each type in it,
+     * then check if any of the children are valid. */
+    public Set<SpawnBiomeMatcher> children           = Sets.newHashSet();
 
-    public final SpawnRule spawnRule;
+    float                         minLight           = 0;
+    float                         maxLight           = 1;
+    boolean                       day                = true;
+    boolean                       night              = true;
+    boolean                       air                = true;
+    boolean                       water              = false;
 
-    boolean                parsed             = false;
-    boolean                valid              = true;
+    public final SpawnRule        spawnRule;
+
+    boolean                       parsed             = false;
+    boolean                       valid              = true;
 
     public SpawnBiomeMatcher(SpawnRule rules)
     {
         this.spawnRule = rules;
+        if (rules.values.containsKey(ATYPES))
+        {
+            String typeString = spawnRule.values.get(ATYPES);
+            String[] args = typeString.split(",");
+            for (String s : args)
+            {
+                SpawnRule newRule = new SpawnRule();
+                newRule.values.putAll(rules.values);
+                newRule.values.remove(ATYPES);
+                newRule.values.put(TYPES, s);
+                children.add(new SpawnBiomeMatcher(newRule));
+            }
+        }
     }
 
-    public void preParseSubBiomes()
+    private void preParseSubBiomes()
     {
         String typeString = spawnRule.values.get(TYPES);
         if (typeString != null)
@@ -118,12 +137,26 @@ public class SpawnBiomeMatcher
         blackListSubBiomes.clear();
         parsed = false;
         valid = true;
+        for (SpawnBiomeMatcher child : children)
+        {
+            child.reset();
+        }
     }
 
     public void parse()
     {
         if (parsed) return;
         parsed = true;
+
+        if (!children.isEmpty())
+        {
+            for (SpawnBiomeMatcher child : children)
+            {
+                child.parse();
+            }
+            return;
+        }
+
         validBiomes.clear();
         validSubBiomes.clear();
         blackListBiomes.clear();
@@ -264,8 +297,7 @@ public class SpawnBiomeMatcher
                 }
             }
         }
-
-        for (ResourceLocation key : Biome.REGISTRY.getKeys())
+        if (!validTypes.isEmpty()) for (ResourceLocation key : Biome.REGISTRY.getKeys())
         {
             Biome b = Biome.REGISTRY.getObject(key);
             if (b != null && !blackListBiomes.contains(b))
@@ -302,6 +334,14 @@ public class SpawnBiomeMatcher
 
     public boolean matches(SpawnCheck checker)
     {
+        if (!children.isEmpty())
+        {
+            for (SpawnBiomeMatcher child : children)
+            {
+                if (child.matches(checker)) return true;
+            }
+            return false;
+        }
         boolean biome = biomeMatches(checker);
         if (!biome) return false;
         boolean loc = conditionsMatch(checker);

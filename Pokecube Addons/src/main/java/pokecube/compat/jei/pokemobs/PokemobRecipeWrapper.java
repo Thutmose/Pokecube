@@ -12,13 +12,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
-import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.MovesUtils;
 import thut.api.terrain.BiomeType;
-import thut.lib.CompatWrapper;
 
 public class PokemobRecipeWrapper implements IRecipeWrapper
 {
@@ -70,8 +68,14 @@ public class PokemobRecipeWrapper implements IRecipeWrapper
         }
         if (recipe.data.matcher != null)
         {
+            recipe.data.matcher.reset();
+            recipe.data.matcher.parse();
             List<String> biomeNames = Lists.newArrayList();
             Iterator<Biome> it = Biome.REGISTRY.iterator();
+            for (BiomeType t : recipe.data.matcher.validSubBiomes)
+            {
+                biomeNames.add(t.readableName);
+            }
             while (it.hasNext())
             {
                 Biome test = it.next();
@@ -81,9 +85,22 @@ public class PokemobRecipeWrapper implements IRecipeWrapper
                     biomeNames.add(test.getBiomeName());
                 }
             }
-            for (BiomeType t : recipe.data.matcher.validSubBiomes)
+            for (SpawnBiomeMatcher matcher : recipe.data.matcher.children)
             {
-                biomeNames.add(t.readableName);
+                it = Biome.REGISTRY.iterator();
+                for (BiomeType t : matcher.validSubBiomes)
+                {
+                    biomeNames.add(t.readableName);
+                }
+                while (it.hasNext())
+                {
+                    Biome test = it.next();
+                    boolean valid = matcher.validBiomes.contains(test);
+                    if (valid)
+                    {
+                        biomeNames.add(test.getBiomeName());
+                    }
+                }
             }
             tooltips.add(I18n.format("gui.jei.pokemob.evo.biome", biomeNames));
         }
@@ -112,47 +129,6 @@ public class PokemobRecipeWrapper implements IRecipeWrapper
             tooltips.add(I18n.format("gui.jei.pokemob.evo.chance", var));
         }
         return tooltips;
-    }
-
-    boolean checkPerType(Biome actualBiome, String biome)
-    {
-        boolean specific = false;
-        if (biome.startsWith("T")) biome = biome.substring(1);
-        else specific = true;
-
-        if (specific) { return Database.convertMoveName(biome)
-                .equals(Database.convertMoveName(actualBiome.getBiomeName())); }
-
-        String[] args = biome.split("\'");
-        List<BiomeDictionary.Type> neededTypes = Lists.newArrayList();
-        List<BiomeDictionary.Type> bannedTypes = Lists.newArrayList();
-        for (String s : args)
-        {
-            if (!(s.startsWith("B") || s.startsWith("W"))) s = "W" + s;
-            String name = s.substring(1);
-            if (s.startsWith("B"))
-            {
-                BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
-                if (t != null) bannedTypes.add(t);
-            }
-            else if (s.startsWith("W"))
-            {
-                BiomeDictionary.Type t = CompatWrapper.getBiomeType(name);
-                if (t != null) neededTypes.add(t);
-            }
-        }
-        Biome b = actualBiome;
-        boolean correctType = true;
-        boolean bannedType = false;
-        for (BiomeDictionary.Type t : neededTypes)
-        {
-            correctType = correctType && CompatWrapper.isOfType(b, t);
-        }
-        for (BiomeDictionary.Type t : bannedTypes)
-        {
-            bannedType = bannedType || CompatWrapper.isOfType(b, t);
-        }
-        return correctType && !bannedType;
     }
 
     @Override

@@ -63,6 +63,7 @@ import pokecube.core.commands.RecallCommand;
 import pokecube.core.commands.ResetCommand;
 import pokecube.core.commands.SecretBaseCommand;
 import pokecube.core.commands.SettingsCommand;
+import pokecube.core.commands.StructureCommand;
 import pokecube.core.commands.TMCommand;
 import pokecube.core.database.CombatTypeLoader;
 import pokecube.core.database.Database;
@@ -736,6 +737,7 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new CullCommand());
         event.registerServerCommand(new MeteorCommand());
         event.registerServerCommand(new ResetCommand());
+        event.registerServerCommand(new StructureCommand());
         PokecubeTemplates.serverInit(event.getServer());
         registerSpawns();
         try

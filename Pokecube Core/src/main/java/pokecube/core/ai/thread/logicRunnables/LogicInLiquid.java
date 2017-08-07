@@ -2,8 +2,8 @@ package pokecube.core.ai.thread.logicRunnables;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
-import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
@@ -20,7 +20,13 @@ public class LogicInLiquid extends LogicBase
     @Override
     public void doLogic()
     {
-        world = TickHandler.getInstance().getWorldCache(entity.dimension);
+        // TODO see if this should be moved back to async.
+    }
+
+    @Override
+    public void doServerTick(World world)
+    {
+        super.doServerTick(world);
         if (world == null) return;
         boolean lava = false;
         boolean water = false;
@@ -44,5 +50,4 @@ public class LogicInLiquid extends LogicBase
         setPokemobAIState(INLAVA, lava);
         setPokemobAIState(INWATER, water);
     }
-
 }

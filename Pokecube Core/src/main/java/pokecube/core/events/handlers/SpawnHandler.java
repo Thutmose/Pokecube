@@ -33,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import pokecube.core.PokecubeCore;
+import pokecube.core.commands.MakeCommand;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.SpawnData;
 import pokecube.core.database.SpawnBiomeMatcher;
@@ -573,8 +574,14 @@ public final class SpawnHandler
                             if ((entityliving = creatureSpecificInit(entityliving, world, x, y, z, v3.set(entityliving),
                                     entry.getLevel(matcher), entry.getVariance(matcher))) != null)
                             {
-                                SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world,
-                                        CapabilityPokemob.getPokemobFor(entityliving));
+                                IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityliving);
+                                if (matcher.spawnRule.values.containsKey(SpawnBiomeMatcher.SPAWNCOMMAND))
+                                {
+                                    String[] args = matcher.spawnRule.values.get(SpawnBiomeMatcher.SPAWNCOMMAND)
+                                            .split(" ");
+                                    MakeCommand.setToArgs(args, pokemob, 0, v, false);
+                                }
+                                SpawnEvent.Post evt = new SpawnEvent.Post(dbe, v3, world, pokemob);
                                 MinecraftForge.EVENT_BUS.post(evt);
                                 world.spawnEntityInWorld(entityliving);
                                 totalSpawnCount++;

@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
@@ -221,23 +220,24 @@ public class MakeCommand extends CommandBase
         return ret;
     }
 
+    public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset)
+    {
+        return setToArgs(args, mob, index, offset, true);
+    }
+
     /** @param args
      * @param mob
      * @param command
      * @return owner name for pokemob if needed. */
-    public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset)
+    public static String setToArgs(String[] args, IPokemob mob, int index, Vector3 offset, boolean initLevel)
     {
-        boolean shiny = false;
         int red, green, blue;
-        byte gender = -3;
         red = green = blue = 255;
-        String ability = null;
         int exp = 10;
         int level = -1;
         String[] moves = new String[4];
         int mindex = 0;
         boolean asWild = false;
-        Nature nature = Nature.values()[new Random().nextInt(Nature.values().length)];
         String ownerName = "";
 
         if (index < args.length)
@@ -250,7 +250,7 @@ public class MakeCommand extends CommandBase
                 if (vals.length > 1) val = vals[1];
                 if (arg.equalsIgnoreCase("s"))
                 {
-                    shiny = true;
+                    mob.setShiny(true);
                 }
                 else if (arg.equalsIgnoreCase("l"))
                 {
@@ -259,8 +259,10 @@ public class MakeCommand extends CommandBase
                 }
                 else if (arg.equalsIgnoreCase("x"))
                 {
+                    byte gender = -3;
                     if (val.equalsIgnoreCase("f")) gender = IPokemob.FEMALE;
                     if (val.equalsIgnoreCase("m")) gender = IPokemob.MALE;
+                    if (gender != -3) mob.setSexe(gender);
                 }
                 else if (arg.equalsIgnoreCase("r"))
                 {
@@ -280,7 +282,9 @@ public class MakeCommand extends CommandBase
                 }
                 else if (arg.equalsIgnoreCase("a"))
                 {
+                    String ability = null;
                     ability = val;
+                    if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
                 }
                 else if (arg.equalsIgnoreCase("m") && mindex < 4)
                 {
@@ -321,6 +325,7 @@ public class MakeCommand extends CommandBase
                 }
                 else if (arg.equalsIgnoreCase("p"))
                 {
+                    Nature nature = null;
                     try
                     {
                         nature = Nature.values()[Integer.parseInt(val)];
@@ -329,6 +334,7 @@ public class MakeCommand extends CommandBase
                     {
                         nature = Nature.valueOf(val.toUpperCase(Locale.ENGLISH));
                     }
+                    if (nature != null) mob.setNature(nature);
                 }
                 else if (arg.equalsIgnoreCase("n") && !val.isEmpty())
                 {
@@ -341,22 +347,21 @@ public class MakeCommand extends CommandBase
             }
         }
         mob.setHp(mob.getEntity().getMaxHealth());
-        mob.setNature(nature);
-        mob.setShiny(shiny);
-        if (gender != -3) mob.setSexe(gender);
         if (mob.getEntity() instanceof IMobColourable)
             ((IMobColourable) mob.getEntity()).setRGBA(red, green, blue, 255);
-        if (asWild)
+        if (initLevel)
         {
-            mob = mob.setForSpawn(exp);
+            if (asWild)
+            {
+                mob = mob.setForSpawn(exp);
+            }
+            else
+            {
+                mob = mob.setExp(exp, asWild);
+                level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
+                mob.levelUp(level);
+            }
         }
-        else
-        {
-            mob = mob.setExp(exp, asWild);
-            level = Tools.xpToLevel(mob.getPokedexEntry().getEvolutionMode(), exp);
-            mob.levelUp(level);
-        }
-        if (AbilityManager.abilityExists(ability)) mob.setAbility(AbilityManager.getAbility(ability));
 
         for (int i1 = 0; i1 < 4; i1++)
         {

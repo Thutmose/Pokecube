@@ -140,6 +140,8 @@ public class XMLWorldgenHandler
                 WorldGenTemplates.TemplateGen template = new TemplateGen(struct.name,
                         new SpawnBiomeMatcher(struct.spawn), struct.chance, struct.offset);
                 WorldGenTemplates.templates.add(template);
+                WorldGenTemplates.namedTemplates.put(struct.name, new TemplateGen(struct.name,
+                        new SpawnBiomeMatcher(struct.spawn), struct.chance, struct.offset));
             }
             catch (Exception e)
             {
@@ -171,7 +173,33 @@ public class XMLWorldgenHandler
                     e.printStackTrace();
                 }
             }
-            if (!gen.subTemplates.isEmpty()) WorldGenTemplates.templates.add(gen);
+            if (!gen.subTemplates.isEmpty())
+            {
+                WorldGenTemplates.templates.add(gen);
+                gen = new WorldGenMultiTemplate();
+                gen.syncGround = struct.syncGround;
+                for (XMLStructure struct2 : struct.structures)
+                {
+                    try
+                    {
+                        WorldGenTemplates.TemplateGen subGen = new TemplateGen(struct2.name,
+                                new SpawnBiomeMatcher(struct2.spawn), struct2.chance, struct2.offset);
+                        WorldGenMultiTemplate.Template template = new WorldGenMultiTemplate.Template();
+                        template.template = subGen;
+                        String[] args = struct2.position.split(",");
+                        BlockPos pos = new BlockPos(Integer.parseInt(args[0]), Integer.parseInt(args[1]),
+                                Integer.parseInt(args[2]));
+                        template.offset = pos;
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(
+                                struct2.name + " " + struct2.spawn + " " + struct2.chance + " " + struct2.offset);
+                        e.printStackTrace();
+                    }
+                }
+                WorldGenTemplates.namedTemplates.put(struct.name, gen);
+            }
         }
     }
 

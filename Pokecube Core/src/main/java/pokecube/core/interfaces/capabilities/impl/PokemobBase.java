@@ -11,6 +11,7 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -27,6 +28,7 @@ import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.utils.Tools;
 import thut.api.entity.IBreedingMob;
 import thut.api.entity.ai.AIThreadManager.AIStuff;
 import thut.api.entity.genetics.Alleles;
@@ -264,5 +266,34 @@ public abstract class PokemobBase implements IPokemob
     {
         if (this.dataManager == null) return false;
         return toTest == this.dataManager.wrappedManager;
+    }
+
+    protected void setMaxHealth(float maxHealth)
+    {
+        getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
+    }
+
+    /** Handles health update.
+     * 
+     * @param level */
+    protected void updateHealth(int level)
+    {
+        float old = getEntity().getMaxHealth();
+        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
+        float health = getEntity().getHealth();
+
+        if (maxHealth > old)
+        {
+            float damage = old - health;
+            health = maxHealth - damage;
+
+            if (health > maxHealth)
+            {
+                health = maxHealth;
+            }
+        }
+
+        setMaxHealth(maxHealth);
+        getEntity().setHealth(health);
     }
 }

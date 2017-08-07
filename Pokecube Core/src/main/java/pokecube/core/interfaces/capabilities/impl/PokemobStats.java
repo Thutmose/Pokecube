@@ -1,6 +1,5 @@
 package pokecube.core.interfaces.capabilities.impl;
 
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -108,11 +107,6 @@ public abstract class PokemobStats extends PokemobGenes
         return ret;
     }
 
-    private void setMaxHealth(float maxHealth)
-    {
-        getEntity().getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(maxHealth);
-    }
-
     @Override
     public void setPokemonNickname(String nickname)
     {
@@ -134,30 +128,6 @@ public abstract class PokemobStats extends PokemobGenes
                 dataManager.set(params.NICKNAMEDW, nickname);
             }
         }
-    }
-
-    /** Handles health update.
-     * 
-     * @param level */
-    private void updateHealth(int level)
-    {
-        float old = getEntity().getMaxHealth();
-        float maxHealth = Tools.getHP(getPokedexEntry().getStatHP(), getIVs()[0], getEVs()[0], level);
-        float health = getEntity().getHealth();
-
-        if (maxHealth > old)
-        {
-            float damage = old - health;
-            health = maxHealth - damage;
-
-            if (health > maxHealth)
-            {
-                health = maxHealth;
-            }
-        }
-
-        setMaxHealth(maxHealth);
-        getEntity().setHealth(health);
     }
 
     @Override

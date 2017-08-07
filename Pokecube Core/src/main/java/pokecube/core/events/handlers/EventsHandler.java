@@ -503,8 +503,7 @@ public class EventsHandler
                 isOwner = pokemob.getOwner().getEntityId() == player.getEntityId();
             }
             // Either push pokemob around, or if sneaking, make it try to climb
-            // on
-            // shoulder
+            // on shoulder
             if (isOwner && CompatWrapper.isValid(held) && (held.getItem() == Items.STICK || held.getItem() == torch))
             {
                 if (player.isSneaking())
@@ -610,7 +609,8 @@ public class EventsHandler
                     int fav = Nature.getFavouriteBerryIndex(pokemob.getNature());
                     // Check if favourte berry and sneaking, if so, do breeding
                     // stuff.
-                    if (player.isSneaking() && entity.getAttackTarget() == null && held.getItem() instanceof ItemBerry
+                    if (PokecubeCore.instance.getConfig().berryBreeding && player.isSneaking()
+                            && entity.getAttackTarget() == null && held.getItem() instanceof ItemBerry
                             && (fav == -1 || fav == held.getItemDamage()))
                     {
                         if (!player.capabilities.isCreativeMode)

@@ -33,6 +33,8 @@ public class SpawnBiomeMatcher
     public static final QName MINLIGHT        = new QName("minLight");
     public static final QName MAXLIGHT        = new QName("maxLight");
 
+    public static final QName SPAWNCOMMAND    = new QName("command");
+
     public static class SpawnCheck
     {
         final boolean   day;

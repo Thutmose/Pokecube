@@ -56,6 +56,7 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
         tooltip.add(I18n.format("item.berry.desc"));
         String berryName = BerryManager.berryNames.get(stack.getItemDamage());
         info = I18n.format("item." + berryName + "Berry.desc");
+        if (info.startsWith("Format error: ")) info = info.replaceFirst("Format error: ", "");
         tooltip.add(info);
         if (TileEntityBerries.trees.containsKey(stack.getItemDamage()))
         {

@@ -113,6 +113,8 @@ public class Config extends ConfigBase
             "net.minecraft.entity.boss.EntityWither" };
     @Configure(category = misc)
     public boolean                       defaultInteractions          = true;
+    @Configure(category = misc)
+    public boolean                       berryBreeding                = true;
 
     // AI Related settings
     @Configure(category = mobAI)

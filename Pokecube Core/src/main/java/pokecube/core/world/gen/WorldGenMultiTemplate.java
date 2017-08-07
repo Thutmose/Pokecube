@@ -33,21 +33,24 @@ public class WorldGenMultiTemplate implements IWorldGenerator
 
     public List<Template> subTemplates = Lists.newArrayList();
     public boolean        syncGround   = false;
+    public BlockPos       origin;
+    public EnumFacing     dir;
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
-        int rX = random.nextInt(20);
-        int rZ = random.nextInt(20);
-
-        rX = rZ = 8;
-
-        int x = ((rX) % 16) + chunkX * 16;
-        int y = 255;
-        int z = ((rZ) % 16) + chunkZ * 16;
-        BlockPos pos = new BlockPos(x, y, z);
-        EnumFacing dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
+        if (origin == null)
+        {
+            int rX = random.nextInt(20);
+            int rZ = random.nextInt(20);
+            int x = ((rX) % 16) + chunkX * 16;
+            int y = 255;
+            int z = ((rZ) % 16) + chunkZ * 16;
+            origin = new BlockPos(x, y, z);
+            dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
+        }
+        BlockPos pos = origin;
         int average = -1;
 
         if (syncGround) for (Template template : subTemplates)
@@ -119,7 +122,6 @@ public class WorldGenMultiTemplate implements IWorldGenerator
                 }
                 if (template.template.isDone(buildingBox, chunkBox))
                 {
-                    if (!world.isRemote) System.out.println("done " + template.template.template);
                     template.template.building = null;
                     for (int k = 0; k < 4; k++)
                         template.template.cornersDone[k] = false;
@@ -138,9 +140,11 @@ public class WorldGenMultiTemplate implements IWorldGenerator
         }
         if (done)
         {
+            origin = null;
+            dir = null;
             for (Template template : subTemplates)
             {
-                // template.done = false;
+                template.done = false;
                 template.dir = null;
                 template.setFloor = false;
                 template.averageGround = -1;

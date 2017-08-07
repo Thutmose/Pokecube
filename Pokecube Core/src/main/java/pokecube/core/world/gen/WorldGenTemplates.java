@@ -1,9 +1,11 @@
 package pokecube.core.world.gen;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -25,13 +27,15 @@ public class WorldGenTemplates implements IWorldGenerator
 {
     public static class TemplateGen implements IWorldGenerator
     {
-        protected final float             chance;
-        protected final String            template;
-        protected final int               offset;
-        protected final SpawnBiomeMatcher spawnRule;
-        protected final boolean[]         cornersDone = new boolean[4];
+        protected final float          chance;
+        public final String            template;
+        public final int               offset;
+        public final SpawnBiomeMatcher spawnRule;
+        public final boolean[]         cornersDone = new boolean[4];
+        public BlockPos                origin;
+        public EnumFacing              dir;
 
-        protected TemplateStructure       building;
+        protected TemplateStructure    building;
 
         public TemplateGen(String template, SpawnBiomeMatcher matcher, float chance, int offset)
         {
@@ -46,23 +50,22 @@ public class WorldGenTemplates implements IWorldGenerator
                 IChunkProvider chunkProvider)
         {
             if (building == null && chance < random.nextFloat()) return;
-            int rX = random.nextInt(20) % 16;
-            int rZ = random.nextInt(20) % 16;
-            BlockPos offset = new BlockPos(rX, 255, rZ);
-            EnumFacing dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
-            build(offset, dir, random, chunkX, chunkZ, world);
+            if (origin == null)
+            {
+                int rX = random.nextInt(20) % 16;
+                int rZ = random.nextInt(20) % 16;
+                origin = new BlockPos(rX, 255, rZ);
+                dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
+            }
+            build(origin, dir, random, chunkX, chunkZ, world);
         }
 
         protected void getTemplate(EnumFacing dir, BlockPos offset, int chunkX, int chunkZ, World world,
                 StructureBoundingBox chunkBox)
         {
             if (building != null) return;
-            int x = offset.getX();
-            int y = offset.getY();
-            int z = offset.getZ();
-            BlockPos pos = new BlockPos(x, y, z);
-            if (!spawnRule.matches(new SpawnCheck(Vector3.getNewVector().set(pos), world))) return;
-            building = new TemplateStructure(template, pos, dir);
+            if (!spawnRule.matches(new SpawnCheck(Vector3.getNewVector().set(offset), world))) return;
+            building = new TemplateStructure(template, offset, dir);
             building.offset = this.offset;
             if (building.getBoundingBox() == null)
             {
@@ -82,6 +85,8 @@ public class WorldGenTemplates implements IWorldGenerator
             building.addComponentParts(world, random, chunkBox);
             if (isDone(buildingBox, chunkBox))
             {
+                origin = null;
+                dir = null;
                 building = null;
                 for (int k = 0; k < 4; k++)
                     cornersDone[k] = false;
@@ -150,7 +155,8 @@ public class WorldGenTemplates implements IWorldGenerator
         }
     }
 
-    public static List<IWorldGenerator> templates = Lists.newArrayList();
+    public static List<IWorldGenerator>        templates      = Lists.newArrayList();
+    public static Map<String, IWorldGenerator> namedTemplates = Maps.newHashMap();
 
     static
     {

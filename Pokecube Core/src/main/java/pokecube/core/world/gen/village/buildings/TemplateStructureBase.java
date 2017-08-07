@@ -18,10 +18,10 @@ import pokecube.core.world.gen.template.PokecubeTemplates;
 
 public abstract class TemplateStructureBase extends Village
 {
-    protected Template          template;
-    protected PlacementSettings placeSettings;
-    protected BlockPos          templatePosition;
-    int                         averageGroundLevel = -1;
+    public Template          template;
+    public PlacementSettings placeSettings;
+    public BlockPos          templatePosition;
+    public int               averageGroundLevel = -1;
 
     public static Rotation getFromDir(EnumFacing dir)
     {
@@ -189,7 +189,6 @@ public abstract class TemplateStructureBase extends Village
                     if (s.equals("Floor"))
                     {
                         setOffset(-blockpos.getY() + 1);
-
                         blockpos = blockpos.add(templatePosition);
                         if (boxIn.isVecInside(blockpos))
                         {
@@ -205,7 +204,7 @@ public abstract class TemplateStructureBase extends Village
             StructureBoundingBox buildBox = new StructureBoundingBox(boundingBox);
             buildBox.offset(0, this.averageGroundLevel - buildBox.minY + getOffset(), 0);
             this.templatePosition = new BlockPos(templatePosition.getX(), buildBox.minY, templatePosition.getZ());
-            this.placeSettings.setIgnoreEntities(false).setBoundingBox(boxIn);
+            this.placeSettings.setIgnoreEntities(worldIn.isRemote).setBoundingBox(boxIn);
             this.template.addBlocksToWorld(worldIn, this.templatePosition, this.placeSettings);
             Map<BlockPos, String> map = this.template.getDataBlocks(this.templatePosition, this.placeSettings);
             for (BlockPos blockpos : map.keySet())

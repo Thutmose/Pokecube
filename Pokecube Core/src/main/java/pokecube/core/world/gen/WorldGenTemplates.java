@@ -12,7 +12,9 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import pokecube.core.database.BiomeMatcher;
+import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.database.SpawnBiomeMatcher.SpawnCheck;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.world.gen.template.PokecubeTemplates;
@@ -23,20 +25,20 @@ public class WorldGenTemplates implements IWorldGenerator
 {
     public static class TemplateGen implements IWorldGenerator
     {
-        protected final float        chance;
-        protected final String       template;
-        protected final int          offset;
-        protected final BiomeMatcher matcher;
-        protected final boolean[]    cornersDone = new boolean[4];
+        protected final float             chance;
+        protected final String            template;
+        protected final int               offset;
+        protected final SpawnBiomeMatcher spawnRule;
+        protected final boolean[]         cornersDone = new boolean[4];
 
-        protected TemplateStructure  building;
+        protected TemplateStructure       building;
 
-        public TemplateGen(String template, String matcher, float chance, int offset)
+        public TemplateGen(String template, SpawnBiomeMatcher matcher, float chance, int offset)
         {
             this.chance = chance;
             this.template = template;
             this.offset = offset;
-            this.matcher = new BiomeMatcher(matcher);
+            this.spawnRule = matcher;
         }
 
         @Override
@@ -44,67 +46,61 @@ public class WorldGenTemplates implements IWorldGenerator
                 IChunkProvider chunkProvider)
         {
             if (building == null && chance < random.nextFloat()) return;
-            build(random, chunkX, chunkZ, world);
+            int rX = random.nextInt(20) % 16;
+            int rZ = random.nextInt(20) % 16;
+            BlockPos offset = new BlockPos(rX, 255, rZ);
+            EnumFacing dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
+            build(offset, dir, random, chunkX, chunkZ, world);
         }
 
-        protected void getTemplate(Random random, int chunkX, int chunkZ, World world, StructureBoundingBox chunkBox)
+        protected void getTemplate(EnumFacing dir, BlockPos offset, int chunkX, int chunkZ, World world,
+                StructureBoundingBox chunkBox)
         {
-            int rX = random.nextInt(20);
-            int rZ = random.nextInt(20);
-            int x = ((rX) % 16) + chunkX * 16;
-            int y = 255;
-            int z = ((rZ) % 16) + chunkZ * 16;
+            if (building != null) return;
+            int x = offset.getX();
+            int y = offset.getY();
+            int z = offset.getZ();
             BlockPos pos = new BlockPos(x, y, z);
-            if (!matcher.matches(Vector3.getNewVector().set(pos), world)) return;
-            EnumFacing dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
+            if (!spawnRule.matches(new SpawnCheck(Vector3.getNewVector().set(pos), world))) return;
             building = new TemplateStructure(template, pos, dir);
+            building.offset = this.offset;
             if (building.getBoundingBox() == null)
             {
                 building = null;
                 return;
             }
-            if (!building.getBoundingBox().intersectsWith(chunkBox))
-            {
-                building = null;
-                return;
-            }
-            building.offset = offset;
         }
 
-        protected void buildTemplate(Random random, int chunkX, int chunkZ, World world, StructureBoundingBox chunkBox)
-        {
-            int i, j;
-            StructureBoundingBox buildingBox = building.getBoundingBox();
-            for (int x = buildingBox.minX >> 4; x <= buildingBox.maxX >> 4; x++)
-                for (int z = buildingBox.minZ >> 4; z <= buildingBox.maxZ >> 4; z++)
-                {
-                    i = x << 4;
-                    j = z << 4;
-                    if (building == null || !world.isBlockLoaded(new BlockPos(i, 1, j))) continue;
-                    chunkBox = new StructureBoundingBox(i, 0, j, i + 16, 255, j + 16);
-                    building.addComponentParts(world, random, chunkBox);
-                    if (isDone(buildingBox, chunkBox))
-                    {
-                        building = null;
-                        for (int k = 0; k < 4; k++)
-                            cornersDone[k] = false;
-                        return;
-                    }
-                }
-        }
-
-        protected void build(Random random, int chunkX, int chunkZ, World world)
+        protected void buildTemplate(Random random, BlockPos offset, int chunkX, int chunkZ, World world,
+                StructureBoundingBox chunkBox)
         {
             int i = chunkX << 4;
             int j = chunkZ << 4;
-            StructureBoundingBox chunkBox = new StructureBoundingBox(i, 0, j, i + 16, 255, j + 16);
+            StructureBoundingBox buildingBox = building.getBoundingBox();
+            if (building == null) return;
+            chunkBox = new StructureBoundingBox(i, 0, j, i + 15, 255, j + 15);
+            building.addComponentParts(world, random, chunkBox);
+            if (isDone(buildingBox, chunkBox))
+            {
+                building = null;
+                for (int k = 0; k < 4; k++)
+                    cornersDone[k] = false;
+                return;
+            }
+        }
+
+        protected void build(BlockPos offset, EnumFacing dir, Random random, int chunkX, int chunkZ, World world)
+        {
+            int i = chunkX << 4;
+            int j = chunkZ << 4;
+            StructureBoundingBox chunkBox = new StructureBoundingBox(i, 0, j, i + 15, 255, j + 15);
             if (building == null)
             {
-                getTemplate(random, chunkX, chunkZ, world, chunkBox);
+                getTemplate(dir, offset, chunkX, chunkZ, world, chunkBox);
             }
             if (building != null)
             {
-                buildTemplate(random, chunkX, chunkZ, world, chunkBox);
+                buildTemplate(random, offset, chunkX, chunkZ, world, chunkBox);
             }
         }
 
@@ -126,12 +122,22 @@ public class WorldGenTemplates implements IWorldGenerator
 
     public static class TemplateGenStartBuilding extends TemplateGen
     {
-        public TemplateGenStartBuilding()
+        private static SpawnBiomeMatcher matcher()
         {
-            super(PokecubeTemplates.POKECENTER, "BTall", 1, -2);
+            SpawnRule rules = new SpawnRule();
+            rules.values.put(SpawnBiomeMatcher.TYPES, "all");
+            SpawnBiomeMatcher matcher = new SpawnBiomeMatcher(rules);
+            return matcher;
         }
 
-        protected void getTemplate(Random random, int chunkX, int chunkZ, World world, StructureBoundingBox chunkBox)
+        public TemplateGenStartBuilding()
+        {
+            super(PokecubeTemplates.POKECENTER, matcher(), 1, -2);
+        }
+
+        @Override
+        protected void getTemplate(EnumFacing dir, BlockPos offset, int chunkX, int chunkZ, World world,
+                StructureBoundingBox chunkBox)
         {
             building = null;
             if (!PokecubeMod.core.getConfig().doSpawnBuilding
@@ -140,11 +146,11 @@ public class WorldGenTemplates implements IWorldGenerator
             int x = world.getSpawnPoint().getX() / 16;
             int z = world.getSpawnPoint().getZ() / 16;
             if (x != chunkX || z != chunkZ) return;
-            super.getTemplate(random, chunkX, chunkZ, world, chunkBox);
+            super.getTemplate(dir, offset, chunkX, chunkZ, world, chunkBox);
         }
     }
 
-    public static List<TemplateGen> templates = Lists.newArrayList();
+    public static List<IWorldGenerator> templates = Lists.newArrayList();
 
     static
     {
@@ -159,7 +165,7 @@ public class WorldGenTemplates implements IWorldGenerator
         if (PokecubeMod.core.getConfig().whiteListEnabled
                 && !SpawnHandler.dimensionWhitelist.contains(world.provider.getDimension()))
             return;
-        for (TemplateGen gen : templates)
+        for (IWorldGenerator gen : templates)
             gen.generate(random, chunkX, chunkZ, world, chunkGenerator, chunkProvider);
     }
 }

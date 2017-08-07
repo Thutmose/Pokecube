@@ -47,7 +47,7 @@ public class GuiTrainerEdit extends GuiScreen
 
     GuiTextField                   textFieldType;
 
-    String                         oldType;
+    String                         oldType           = "";
     String                         oldName;
 
     private final IHasPokemobs     pokemobCap;
@@ -231,7 +231,7 @@ public class GuiTrainerEdit extends GuiScreen
         textFieldType.setEnabled(false);
 
         oldName = trainer instanceof EntityTrainer ? ((EntityTrainer) trainer).name : "";
-        oldType = pokemobCap.getType().name;
+        if (pokemobCap.getType() != null) oldType = pokemobCap.getType().name;
 
         String next = (stationary = aiCap.getAIState(IHasNPCAIStates.STATIONARY)) ? F : T;
         buttonList.add(new GuiButton(1, width / 2 - xOffset + 80, height / 2 - yOffset, 50, 20, next));
@@ -268,7 +268,7 @@ public class GuiTrainerEdit extends GuiScreen
         }
 
         textFieldName.setText(trainer.getCustomNameTag());
-        textFieldType.setText(pokemobCap.getType().name);
+        textFieldType.setText(oldType);
     }
 
     private PokedexEntry getEntry(int num)

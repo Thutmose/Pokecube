@@ -15,10 +15,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraft.world.gen.structure.StructureVillagePieces.House1;
-import net.minecraft.world.gen.structure.StructureVillagePieces.WoodHut;
-import net.minecraft.world.gen.structure.template.Template;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
 import pokecube.core.commands.CommandTools;
@@ -30,8 +26,6 @@ import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.world.gen.template.PokecubeTemplates;
-import pokecube.core.world.gen.village.buildings.TemplateStructure;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
@@ -112,53 +106,13 @@ public class ItemPokedex extends Item
     public void structureGenTest(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side)
     {
         Block b = worldIn.getBlockState(pos).getBlock();
+        // WorldServer world = (WorldServer) worldIn;
         int c = -5;
         int r = 60;
         System.out.println(side);
         if (b == Blocks.GOLD_BLOCK)
         {
-            String templateName = "pokemart";
-            Template template = PokecubeTemplates.getTemplate(templateName);
-            BlockPos size = template.getSize();
-            int x = -20;
-            int y = 64;
-            int z = -20;
-            StructureBoundingBox temp = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, size.getX(),
-                    size.getY(), size.getZ(), side);
-            BlockPos pos1 = new BlockPos(x, y, z);
-            TemplateStructure component = new TemplateStructure(templateName, pos1, side);
-            temp = component.getBoundingBox();
-            component.offset = -2;
-            StructureBoundingBox temp1 = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, 9, 9, 6,
-                    side);
-            House1 house = new House1(null, 0, itemRand, temp1, side);
-            StructureBoundingBox temp2 = StructureBoundingBox.getComponentToAddBoundingBox(x, y, z, 0, 0, 0, 4, 6, 5,
-                    side);
-            WoodHut house2 = new WoodHut(null, 0, itemRand, temp2, side);
-            c = -10;
-            r = 50;
-            x = -r;
-            z = -r;
-            boolean others = false;
-            System.out.println(temp);
 
-            // for (int i = x; i < c; i++)
-            // for (int k = z; k < c; k++)
-
-            for (int i = temp.minX; i <= temp.maxX; i++)
-                for (int k = temp.minZ; k <= temp.maxZ; k++)
-                {
-                    BlockPos pos2 = new BlockPos(i, 15, k);
-                    if ((pos2.getX() == -21 && pos2.getZ() == -21)) continue;
-                    StructureBoundingBox box = StructureBoundingBox.getComponentToAddBoundingBox(i, 1, k, 0, 0, 0, 1,
-                            512, 1, side);
-                    component.addComponentParts(worldIn, itemRand, box);
-                    if (!others) continue;
-                    worldIn.setBlockState(pos2, Blocks.STONE.getDefaultState());
-                    house.addComponentParts(worldIn, itemRand, box);
-                    worldIn.setBlockState(pos2.up(10), Blocks.STONE.getDefaultState());
-                    house2.addComponentParts(worldIn, itemRand, box);
-                }
         }
         else if (b == Blocks.DIAMOND_BLOCK)
         {

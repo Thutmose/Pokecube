@@ -54,7 +54,7 @@ import thut.lib.CompatWrapper;
 public class PokedexEntryLoader
 {
 
-    private static final Gson                       gson;
+    public static final Gson                        gson;
 
     public static final Comparator<XMLPokedexEntry> ENTRYSORTER = new Comparator<XMLPokedexEntry>()
                                                                 {
@@ -289,6 +289,7 @@ public class PokedexEntryLoader
             @XmlAnyAttribute
             public Map<QName, String> values = Maps.newHashMap();
         }
+
         // Evolution stuff
         @XmlElement(name = "Evolution")
         public List<Evolution>   evolutions     = Lists.newArrayList();

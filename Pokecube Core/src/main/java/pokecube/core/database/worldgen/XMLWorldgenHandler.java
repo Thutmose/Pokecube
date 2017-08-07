@@ -26,6 +26,7 @@ import com.google.gson.stream.JsonWriter;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.database.PokedexEntryLoader;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.world.gen.WorldGenMultiTemplate;
 import pokecube.core.world.gen.WorldGenTemplates;
@@ -34,6 +35,8 @@ import pokecube.core.world.gen.template.PokecubeTemplates;
 
 public class XMLWorldgenHandler
 {
+    public static File DEFAULT;
+
     @XmlRootElement(name = "Structures")
     public static class XMLStructures
     {
@@ -76,8 +79,10 @@ public class XMLWorldgenHandler
     }
 
     public static XMLStructures defaults = new XMLStructures();
-    static
+
+    static void init()
     {
+        defaults.structures.clear();
         XMLStructure ruin_1 = new XMLStructure();
         ruin_1.name = "ruin_1";
         ruin_1.chance = 0.002f;
@@ -210,8 +215,20 @@ public class XMLWorldgenHandler
 
     }
 
+    public static void reloadWorldgen()
+    {
+        PokecubeTemplates.clear();
+        init(DEFAULT);
+        for (String s : PokecubeMod.core.getConfig().extraWorldgenDatabases)
+        {
+            XMLWorldgenHandler.loadStructures(s);
+        }
+        XMLWorldgenHandler.processStructures();
+    }
+
     public static void init(File file)
     {
+        init();
         if (!file.exists())
         {
             Gson gson = new GsonBuilder().registerTypeAdapter(QName.class, new TypeAdapter<QName>()
@@ -242,6 +259,8 @@ public class XMLWorldgenHandler
         }
         else
         {
+            defaults.structures.clear();
+            defaults.multiStructures.clear();
             FileInputStream stream;
             try
             {

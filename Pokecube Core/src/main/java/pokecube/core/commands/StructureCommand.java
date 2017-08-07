@@ -12,6 +12,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.database.worldgen.XMLWorldgenHandler;
 import pokecube.core.database.SpawnBiomeMatcher;
 import pokecube.core.world.gen.WorldGenMultiTemplate;
 import pokecube.core.world.gen.WorldGenMultiTemplate.Template;
@@ -36,13 +37,20 @@ public class StructureCommand extends CommandBase
     @Override
     public String getCommandUsage(ICommandSender sender)
     {
-        return "/pokebuild <structure> <optional|here>";
+        return "/pokebuild <structure||!reload> <optional|direction>";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender cSender, String[] args) throws CommandException
     {
         String structure = args[0];
+        if (structure.equals("!reload"))
+        {
+            XMLWorldgenHandler.reloadWorldgen();
+            CommandTools.sendMessage(cSender, "Reloaded Structures");
+            return;
+        }
+
         EnumFacing dir = EnumFacing.HORIZONTALS[new Random().nextInt(EnumFacing.HORIZONTALS.length)];
         int offset = 0;
 

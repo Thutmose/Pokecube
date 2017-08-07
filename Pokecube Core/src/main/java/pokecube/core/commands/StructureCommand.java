@@ -28,13 +28,13 @@ public class StructureCommand extends CommandBase
     }
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokebuild";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokebuild <structure> <optional|here>";
     }
@@ -67,8 +67,8 @@ public class StructureCommand extends CommandBase
             BlockPos pos = cSender.getPosition();
             Chunk chunk = world.getChunkFromBlockCoords(pos);
 
-            int chunkX = chunk.xPosition;
-            int chunkZ = chunk.zPosition;
+            int chunkX = chunk.x;
+            int chunkZ = chunk.z;
 
             if (generator instanceof TemplateGen)
             {

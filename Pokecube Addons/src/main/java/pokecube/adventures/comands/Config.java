@@ -155,6 +155,8 @@ public class Config extends ConfigBase
     public String[]                    extraTradeDatabases   = {};
     @Configure(category = client)
     public boolean                     journeymapRepels      = true;
+    @Configure(category = client)
+    public boolean                     jeiModels             = false;
 
     public Config()
     {

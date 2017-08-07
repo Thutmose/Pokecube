@@ -22,11 +22,11 @@ import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
+import pokecube.adventures.comands.Config;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 public class PokedexEntryIngredientRenderer implements IIngredientRenderer<PokedexEntry>
 {
@@ -40,15 +40,9 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
     {
         if (entry == null) return;
 
-        if (manualRender.contains(entry))
+        if (Config.instance.jeiModels || manualRender.contains(entry))
         {
-            IPokemob pokemob = EventsHandlerClient.renderMobs.get(entry);
-            if (pokemob == null)
-            {
-                pokemob = CapabilityPokemob.getPokemobFor(PokecubeMod.core.createPokemob(entry, minecraft.theWorld));
-                if (pokemob == null) return;
-                EventsHandlerClient.renderMobs.put(entry, pokemob);
-            }
+            IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
             GL11.glPushMatrix();
             GL11.glTranslated(x + 8, y + 17, 10);
             double scale = 1.1;

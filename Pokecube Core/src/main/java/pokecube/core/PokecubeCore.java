@@ -69,6 +69,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
+import pokecube.core.database.worldgen.XMLWorldgenHandler;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
@@ -245,6 +246,7 @@ public class PokecubeCore extends PokecubeMod
         helper = new Mod_Pokecube_Helper();
         CombatTypeLoader.loadTypes();
         BerryManager.addBerry("null", 0, 0, 0, 0, 0, 0);
+        checkConfigFiles();
     }
 
     @Override
@@ -795,4 +797,15 @@ public class PokecubeCore extends PokecubeMod
         EntityPokemobBase.averagePokemobTick = 0;
     }
 
+    public static void checkConfigFiles()
+    {
+        File file = new File("./config/pokecube.cfg");
+        String seperator = System.getProperty("file.separator");
+        String folder = file.getAbsolutePath();
+        String name = file.getName();
+        PokecubeTemplates.TEMPLATES = folder.replace(name, "pokecube" + seperator + "structures" + seperator + "");
+        PokecubeTemplates.initFiles();
+        XMLWorldgenHandler.init(new File(PokecubeTemplates.TEMPLATES, "worldgen.json"));
+        return;
+    }
 }

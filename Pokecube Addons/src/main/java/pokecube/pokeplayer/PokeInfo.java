@@ -11,6 +11,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
@@ -114,7 +115,7 @@ public class PokeInfo extends PlayerData
         if (player.capabilities.isCreativeMode)
         {
             poke.setHealth(poke.getMaxHealth());
-            pokemob.setHungerTime(0);
+            pokemob.setHungerTime(-PokecubeCore.core.getConfig().pokemobLifeSpan / 4);
         }
         float health = poke.getHealth();
         EntityTools.copyEntityTransforms(poke, player);

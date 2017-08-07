@@ -7,6 +7,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -52,7 +53,7 @@ public class KillCommand extends CommandBase
 
             }
         }
-
+        boolean items = !all && id == -1 && args.length > 0 && args[0].equals("!items");
         World world = cSender.getEntityWorld();
         List<Entity> entities = new ArrayList<Entity>(world.loadedEntityList);
         int count = 0;
@@ -74,7 +75,16 @@ public class KillCommand extends CommandBase
                     count++;
                 }
             }
-            if (o instanceof EntityPokemobEgg) o.setDead();
+            if (o instanceof EntityPokemobEgg)
+            {
+                count++;
+                o.setDead();
+            }
+            else if (items && o instanceof EntityItem)
+            {
+                count++;
+                o.setDead();
+            }
         }
         cSender.addChatMessage(new TextComponentString("Killed " + count));
     }

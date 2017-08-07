@@ -263,7 +263,7 @@ public class PAEventsHandler
     @SubscribeEvent
     public void onConstruct(EntityConstructing event)
     {
-        if (!((event.getEntity() instanceof INpc) && (event.getEntity() instanceof EntityLiving))) return;
+        if (!(event.getEntity() instanceof INpc)) return;
         if (!Config.instance.npcsAreTrainers && !(event.getEntity() instanceof EntityTrainer)) return;
         initDataManager(event.getEntity());
     }

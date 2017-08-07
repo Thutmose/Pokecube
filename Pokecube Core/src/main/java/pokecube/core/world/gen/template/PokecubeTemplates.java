@@ -112,4 +112,9 @@ public class PokecubeTemplates
         if (t != null) templates.put(name, new PokecubeTemplate(t, name));
     }
 
+    public static void clear()
+    {
+        templates.clear();
+    }
+
 }

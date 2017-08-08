@@ -514,10 +514,10 @@ public class CapabilityHasPokemobs
         @Override
         public TypeTrainer getType()
         {
-            if (!user.isServerWorld())
+            if (user.getEntityWorld().isRemote)
             {
                 String t = user.getDataManager().get(holder.TYPE);
-                return t.isEmpty() ? null : TypeTrainer.getTrainer(t);
+                return t.isEmpty() ? type : TypeTrainer.getTrainer(t);
             }
             return type;
         }
@@ -669,7 +669,7 @@ public class CapabilityHasPokemobs
         public void setType(TypeTrainer type)
         {
             this.type = type;
-            if (user.isServerWorld()) user.getDataManager().set(holder.TYPE, type == null ? "" : type.name);
+            if (!user.getEntityWorld().isRemote) user.getDataManager().set(holder.TYPE, type == null ? "" : type.name);
         }
 
         @Override

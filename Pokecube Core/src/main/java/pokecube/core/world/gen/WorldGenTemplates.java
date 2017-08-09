@@ -52,8 +52,8 @@ public class WorldGenTemplates implements IWorldGenerator
             if (building == null && chance < random.nextFloat()) return;
             if (origin == null)
             {
-                int rX = random.nextInt(20) % 16;
-                int rZ = random.nextInt(20) % 16;
+                int rX = random.nextInt(20) % 16 + chunkX * 16;
+                int rZ = random.nextInt(20) % 16 + chunkZ * 16;
                 origin = new BlockPos(rX, 255, rZ);
                 dir = EnumFacing.HORIZONTALS[random.nextInt(EnumFacing.HORIZONTALS.length)];
             }
@@ -77,11 +77,7 @@ public class WorldGenTemplates implements IWorldGenerator
         protected void buildTemplate(Random random, BlockPos offset, int chunkX, int chunkZ, World world,
                 StructureBoundingBox chunkBox)
         {
-            int i = chunkX << 4;
-            int j = chunkZ << 4;
             StructureBoundingBox buildingBox = building.getBoundingBox();
-            if (building == null) return;
-            chunkBox = new StructureBoundingBox(i, 0, j, i + 15, 255, j + 15);
             building.addComponentParts(world, random, chunkBox);
             if (isDone(buildingBox, chunkBox))
             {
@@ -127,6 +123,17 @@ public class WorldGenTemplates implements IWorldGenerator
 
     public static class TemplateGenStartBuilding extends TemplateGen
     {
+        static TemplateGenStartBuilding instance = new TemplateGenStartBuilding();
+        boolean                         done     = false;
+
+        public static void clear()
+        {
+            instance.building = null;
+            instance.done = false;
+            instance.origin = null;
+            instance.dir = null;
+        }
+
         private static SpawnBiomeMatcher matcher()
         {
             SpawnRule rules = new SpawnRule();
@@ -140,18 +147,43 @@ public class WorldGenTemplates implements IWorldGenerator
             super(PokecubeTemplates.POKECENTER, matcher(), 1, -2);
         }
 
-        @Override
-        protected void getTemplate(EnumFacing dir, BlockPos offset, int chunkX, int chunkZ, World world,
+        protected void buildTemplate(Random random, BlockPos offset, int chunkX, int chunkZ, World world,
                 StructureBoundingBox chunkBox)
         {
-            building = null;
-            if (!PokecubeMod.core.getConfig().doSpawnBuilding
+            StructureBoundingBox buildingBox = building.getBoundingBox();
+            building.addComponentParts(world, random, chunkBox);
+            if (isDone(buildingBox, chunkBox))
+            {
+                origin = null;
+                dir = null;
+                done = true;
+                for (int k = 0; k < 4; k++)
+                    cornersDone[k] = false;
+                return;
+            }
+        }
+
+        protected void build(BlockPos offset, EnumFacing dir, Random random, int chunkX, int chunkZ, World world)
+        {
+            if (done || !PokecubeMod.core.getConfig().doSpawnBuilding
                     || world.provider.getDimension() != PokecubeMod.core.getConfig().spawnDimension)
                 return;
             int x = world.getSpawnPoint().getX() / 16;
             int z = world.getSpawnPoint().getZ() / 16;
-            if (x != chunkX || z != chunkZ) return;
-            super.getTemplate(dir, offset, chunkX, chunkZ, world, chunkBox);
+            int rX = 4 + x * 16;
+            int rZ = 4 + z * 16;
+            offset = new BlockPos(rX, 255, rZ);
+            int i = chunkX << 4;
+            int j = chunkZ << 4;
+            StructureBoundingBox chunkBox = new StructureBoundingBox(i, 0, j, i + 15, 255, j + 15);
+            if (building == null)
+            {
+                getTemplate(dir, offset, chunkX, chunkZ, world, chunkBox);
+            }
+            if (building != null)
+            {
+                buildTemplate(random, offset, chunkX, chunkZ, world, chunkBox);
+            }
         }
     }
 
@@ -160,7 +192,7 @@ public class WorldGenTemplates implements IWorldGenerator
 
     static
     {
-        templates.add(new TemplateGenStartBuilding());
+        templates.add(TemplateGenStartBuilding.instance);
     }
 
     @Override

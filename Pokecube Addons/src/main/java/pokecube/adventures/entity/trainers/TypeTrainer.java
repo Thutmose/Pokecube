@@ -14,7 +14,9 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IResource;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
@@ -27,6 +29,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.EntityHasTrades;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import pokecube.core.PokecubeItems;
@@ -99,7 +102,8 @@ public class TypeTrainer
                 if (max < min) max = min;
                 CompatWrapper.setStackSize(sell, min + new Random().nextInt(1 + max - min));
             }
-            // TODO Find out where the mess with client side so the 65 isn't needed.
+            // TODO Find out where the mess with client side so the 65 isn't
+            // needed.
             MerchantRecipe ret = new MerchantRecipe(buy1, buy2, sell, 0, 65);
             return ret;
         }
@@ -108,9 +112,23 @@ public class TypeTrainer
     public static interface ITypeMapper
     {
         /** Mapping of EntityLivingBase to a TypeTrainer. EntityTrainers set
-         * this on spawn, so it isn't needed for them. */
-        default TypeTrainer getType(EntityLivingBase mob)
+         * this on spawn, so it isn't needed for them. <br>
+         * <br>
+         * if forSpawn, it means this is being initialized, otherwise it is
+         * during the check for whether this mob should have trainers. */
+        default TypeTrainer getType(EntityLivingBase mob, boolean forSpawn)
         {
+            if (!forSpawn)
+            {
+                if (mob instanceof EntityTrainer) return merchant;
+                if (Config.instance.npcsAreTrainers && mob instanceof INpc) return merchant;
+                for (Class<? extends Entity> clazz : Config.instance.customTrainers)
+                {
+                    if (clazz.isInstance(mob)) return merchant;
+                }
+                return null;
+            }
+
             if (mob instanceof EntityVillager)
             {
                 EntityVillager villager = (EntityVillager) mob;
@@ -139,6 +157,12 @@ public class TypeTrainer
     public static HashMap<String, TypeTrainer>   typeMap       = new HashMap<String, TypeTrainer>();
     public static ArrayList<String>              maleNames     = new ArrayList<String>();
     public static ArrayList<String>              femaleNames   = new ArrayList<String>();
+
+    public static TypeTrainer                    merchant      = new TypeTrainer("Merchant");
+    static
+    {
+        merchant.tradeTemplate = "merchant";
+    }
 
     public static void addTrainer(String name, TypeTrainer type)
     {

@@ -756,6 +756,7 @@ public class PokecubeCore extends PokecubeMod
         events.meteorprocessor.clear();
         BerryGenManager.berryLocations.clear();
         PokecubeDimensionManager.getInstance().onServerStop(event);
+        WorldGenTemplates.TemplateGenStartBuilding.clear();
     }
 
     @Override

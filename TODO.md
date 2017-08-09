@@ -2,6 +2,7 @@ Current known bugs and general TODO list:
 
 # Pokecube Related
 
+* Look into imprinting and capturing mobs right as they imprint.
 * See what things can/should be moved over to using IAtributes.
 * Rock Smash pulverizer compatiblity?
 * Check Ruins for 1.10.2

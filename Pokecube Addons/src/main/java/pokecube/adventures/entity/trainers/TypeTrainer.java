@@ -99,7 +99,8 @@ public class TypeTrainer
                 if (max < min) max = min;
                 CompatWrapper.setStackSize(sell, min + new Random().nextInt(1 + max - min));
             }
-            MerchantRecipe ret = new MerchantRecipe(buy1, buy2, sell);
+            // TODO Find out where the mess with client side so the 65 isn't needed.
+            MerchantRecipe ret = new MerchantRecipe(buy1, buy2, sell, 0, 65);
             return ret;
         }
     }

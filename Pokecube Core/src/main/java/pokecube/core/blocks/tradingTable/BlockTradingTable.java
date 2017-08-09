@@ -93,7 +93,7 @@ public class BlockTradingTable extends BlockRotatable implements ITileEntityProv
                 }
                 if (PokecubeManager.isFilled(item))
                 {
-                    ItemTossEvent toss = new ItemTossEvent(entity_item, PokecubeMod.getFakePlayer());
+                    ItemTossEvent toss = new ItemTossEvent(entity_item, PokecubeMod.getFakePlayer(world));
                     MinecraftForge.EVENT_BUS.post(toss);
                     boolean toPC = toss.isCanceled();
                     if (toPC)

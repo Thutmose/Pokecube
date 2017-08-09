@@ -209,7 +209,9 @@ public class PAEventsHandler
     @SubscribeEvent
     public void attachCapabilities(AttachCapabilitiesEvent<Entity> event)
     {
-        if (!((event.getObject() instanceof INpc) && (event.getObject() instanceof EntityLiving))) return;
+        if (!(event.getObject() instanceof EntityLivingBase)
+                || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getObject(), false) == null)
+            return;
         if (!Config.instance.npcsAreTrainers && !(event.getObject() instanceof EntityTrainer)) return;
         if (event.getCapabilities().containsKey(POKEMOBSCAP)
                 || event.getObject().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
@@ -245,7 +247,7 @@ public class PAEventsHandler
                     npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
                     stale.add(npc);
                     IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
-                    TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc);
+                    TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
                     if (newType == null) continue;
                     mobs.setType(newType);
                     int level = SpawnHandler.getSpawnLevel(npc.getEntityWorld(), Vector3.getNewVector().set(npc),

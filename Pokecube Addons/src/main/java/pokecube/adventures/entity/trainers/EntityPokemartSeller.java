@@ -15,15 +15,9 @@ import thut.api.maths.Vector3;
 
 public class EntityPokemartSeller extends EntityTrainer
 {
-    static TypeTrainer merchant = new TypeTrainer("Merchant");
-    static
-    {
-        merchant.tradeTemplate = "merchant";
-    }
-
     public EntityPokemartSeller(World par1World)
     {
-        super(par1World, merchant, 100);
+        super(par1World, TypeTrainer.merchant, 100);
         this.aiStates.setAIState(IHasNPCAIStates.PERMFRIENDLY, true);
         pokemobsCap.friendlyCooldown = Integer.MAX_VALUE;
     }

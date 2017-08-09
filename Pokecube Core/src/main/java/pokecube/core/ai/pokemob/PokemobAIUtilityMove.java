@@ -7,7 +7,6 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import thut.api.maths.Vector3;
 
@@ -26,11 +25,11 @@ public class PokemobAIUtilityMove extends EntityAIBase
     double             speed;
     Vector3            v = Vector3.getNewVector(), v1 = Vector3.getNewVector();
 
-    public PokemobAIUtilityMove(EntityLiving pokemob)
+    public PokemobAIUtilityMove(IPokemob pokemob)
     {
-        this.pokemon = CapabilityPokemob.getPokemobFor(pokemob);
-        this.entity = pokemob;
-        this.world = pokemob.getEntityWorld();
+        this.pokemon = pokemob;
+        this.entity = pokemob.getEntity();
+        this.world = this.entity.getEntityWorld();
         this.setMutexBits(3);
         speed = pokemon.getMovementSpeed();
     }

@@ -45,6 +45,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
 
         if (!(air || water))
         {
+            pokemob.setDirectionPitch(0);
             super.onUpdateMoveHelper();
             return;
         }

@@ -26,7 +26,6 @@ import pokecube.core.interfaces.IBerryFruitBlock;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.utils.ChunkCoordinate;
 import pokecube.core.utils.TimePeriod;
@@ -77,12 +76,12 @@ public class AIHungry extends AIBase
     Vector3            v1      = Vector3.getNewVector();
     Random             rand;
 
-    public AIHungry(final EntityLiving entity, final EntityItem berry_, double distance)
+    public AIHungry(final IPokemob pokemob, final EntityItem berry_, double distance)
     {
-        this.entity = entity;
+        this.entity = pokemob.getEntity();
         berry = berry_;
         this.distance = distance;
-        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
+        this.pokemob = pokemob;
         this.moveSpeed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 0.75;
     }
 

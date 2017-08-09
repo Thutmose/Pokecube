@@ -855,6 +855,7 @@ public class EventsHandler
                         continue;
                     }
                     pokemob.setEntity(mob);
+                    pokemob.initAI();
                     stale.add(mob);
                 }
                 needsAI.removeAll(stale);

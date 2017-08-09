@@ -1,6 +1,5 @@
 package pokecube.core.ai.thread.logicRunnables;
 
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -20,9 +19,9 @@ public class LogicFloatFlySwim extends LogicBase
     PokedexEntry entry;
     Vector3      v = Vector3.getNewVector();
 
-    public LogicFloatFlySwim(EntityAnimal entity)
+    public LogicFloatFlySwim(IPokemob entity)
     {
-        super(CapabilityPokemob.getPokemobFor(entity));
+        super(entity);
         entry = pokemob.getPokedexEntry();
     }
 

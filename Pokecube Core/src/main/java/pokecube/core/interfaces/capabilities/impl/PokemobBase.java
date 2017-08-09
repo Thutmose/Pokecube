@@ -245,6 +245,7 @@ public abstract class PokemobBase implements IPokemob
         {
             this.params = getParameters(entity.getClass());
             this.dataManager = params.register(entity.getDataManager(), entity);
+            this.aiStuff = new AIStuff(entity);
         }
         rand = entity.getRNG();
     }

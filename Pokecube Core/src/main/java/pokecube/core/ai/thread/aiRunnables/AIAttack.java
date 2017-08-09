@@ -54,10 +54,10 @@ public class AIAttack extends AIBase implements IAICombat
 
     boolean                   running     = false;
 
-    public AIAttack(EntityLiving par1EntityLiving)
+    public AIAttack(IPokemob entity)
     {
-        this.attacker = par1EntityLiving;
-        this.pokemob = CapabilityPokemob.getPokemobFor(attacker);
+        this.attacker = entity.getEntity();
+        this.pokemob = entity;
         this.movementSpeed = attacker.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
         this.setMutex(3);
     }

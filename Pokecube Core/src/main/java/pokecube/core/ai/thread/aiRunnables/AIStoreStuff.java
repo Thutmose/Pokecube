@@ -14,7 +14,6 @@ import net.minecraft.world.World;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -54,10 +53,10 @@ public class AIStoreStuff extends AIBase
     int                     searchInventoryCooldown = 0;
     int                     doStorageCooldown       = 0;
 
-    public AIStoreStuff(EntityLiving entity)
+    public AIStoreStuff(IPokemob entity)
     {
-        this.entity = entity;
-        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
+        this.entity = entity.getEntity();
+        this.pokemob = entity;
     }
 
     private Vector3 checkDir(World world, EnumFacing dir, BlockPos centre)

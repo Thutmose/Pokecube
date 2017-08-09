@@ -102,10 +102,10 @@ public class AIGatherStuff extends AIBase
     Vector3            v         = Vector3.getNewVector();
     Vector3            v1        = Vector3.getNewVector();
 
-    public AIGatherStuff(EntityLiving entity, double distance, AIStoreStuff storage)
+    public AIGatherStuff(IPokemob entity, double distance, AIStoreStuff storage)
     {
-        this.entity = entity;
-        this.pokemob = CapabilityPokemob.getPokemobFor(entity);
+        this.entity = entity.getEntity();
+        this.pokemob = entity;
         this.distance = distance;
         this.storage = storage;
         this.setMutex(1);

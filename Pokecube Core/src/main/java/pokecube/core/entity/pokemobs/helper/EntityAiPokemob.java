@@ -29,42 +29,15 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.ai.pokemob.PokemobAIHurt;
 import pokecube.core.ai.pokemob.PokemobAILook;
-import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
-import pokecube.core.ai.pokemob.PokemobSitShoulder;
-import pokecube.core.ai.thread.aiRunnables.AIAttack;
-import pokecube.core.ai.thread.aiRunnables.AICombatMovement;
-import pokecube.core.ai.thread.aiRunnables.AIFindTarget;
-import pokecube.core.ai.thread.aiRunnables.AIFollowOwner;
-import pokecube.core.ai.thread.aiRunnables.AIGatherStuff;
-import pokecube.core.ai.thread.aiRunnables.AIGuardEgg;
-import pokecube.core.ai.thread.aiRunnables.AIHungry;
-import pokecube.core.ai.thread.aiRunnables.AIIdle;
-import pokecube.core.ai.thread.aiRunnables.AIMate;
-import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
-import pokecube.core.ai.thread.logicRunnables.LogicCollision;
-import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
-import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
-import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
-import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
-import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
-import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.AISaveHandler;
-import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobJumpHelper;
-import pokecube.core.ai.utils.PokemobMoveHelper;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.entity.pokemobs.EntityPokemob;
-import pokecube.core.events.InitAIEvent;
-import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
@@ -231,10 +204,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     protected void initAI(PokedexEntry entry)
     {
-        pokemobCap.navi = new PokeNavigator(this, getEntityWorld());
-        pokemobCap.mover = new PokemobMoveHelper(this);
         jumpHelper = new PokemobJumpHelper(this);
-        pokemobCap.aiStuff = new AIStuff(this);
 
         float moveSpeed = 0.5f;
         float speedFactor = (float) (1 + Math.sqrt(entry.getStatVIT()) / (100F));
@@ -245,49 +215,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(moveSpeed);
 
         // Add in the vanilla like AI methods.
-        pokemobCap.guardAI = new GuardAI(this, this.getCapability(EventsHandler.GUARDAI_CAP, null));
-        this.tasks.addTask(5, pokemobCap.guardAI);
-        this.tasks.addTask(5, pokemobCap.utilMoveAI = new PokemobAIUtilityMove(this));
         this.tasks.addTask(8, new PokemobAILook(this, EntityPlayer.class, 8.0F, 1f));
-        if (PokecubeCore.core.getConfig().pokemobsOnShoulder)
-            this.tasks.addTask(8, new PokemobSitShoulder((EntityPokemob) this));
-        this.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
-
-        // Add in the various logic AIs that are needed on both client and
-        // server.
-        pokemobCap.aiStuff.addAILogic(new LogicInLiquid(pokemobCap));
-        pokemobCap.aiStuff.addAILogic(new LogicCollision(pokemobCap));
-        pokemobCap.aiStuff.addAILogic(new LogicMovesUpdates(this));
-        pokemobCap.aiStuff.addAILogic(new LogicInMaterials(this));
-        pokemobCap.aiStuff.addAILogic(new LogicFloatFlySwim(this));
-        pokemobCap.aiStuff.addAILogic(new LogicMiscUpdate(this));
-
-        // Controller is done separately for ease of locating it for controls.
-        pokemobCap.aiStuff.addAILogic(pokemobCap.controller = new LogicMountedControl(pokemobCap));
-
-        if (getEntityWorld().isRemote) return;
-
-        // Add in the Custom type of AI tasks.
-        pokemobCap.aiStuff.addAITask(new AIAttack(this).setPriority(200));
-        pokemobCap.aiStuff.addAITask(new AICombatMovement(this).setPriority(250));
-        if (!entry.isStationary)
-        {
-            pokemobCap.aiStuff
-                    .addAITask(new AIFollowOwner(this, 2 + this.width + this.length, 2 + this.width + this.length)
-                            .setPriority(400));
-        }
-        pokemobCap.aiStuff.addAITask(new AIGuardEgg(this).setPriority(250));
-        pokemobCap.aiStuff.addAITask(new AIMate(this).setPriority(300));
-        pokemobCap.aiStuff.addAITask(new AIHungry(this, new EntityItem(getEntityWorld()), 16).setPriority(300));
-        AIStoreStuff ai = new AIStoreStuff(this);
-        pokemobCap.aiStuff.addAITask(ai.setPriority(350));
-        pokemobCap.aiStuff.addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
-        pokemobCap.aiStuff.addAITask(new AIIdle(this).setPriority(500));
-        pokemobCap.aiStuff.addAITask(new AIFindTarget(this).setPriority(400));
-
-        // Send notification event of AI initilization, incase anyone wants to
-        // affect it.
-        MinecraftForge.EVENT_BUS.post(new InitAIEvent(this));
     }
 
     @Override

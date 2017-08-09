@@ -5,12 +5,11 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 
 /** This IAIRunnable results in the mother of an egg always staying within 4
@@ -20,15 +19,15 @@ import pokecube.core.items.pokemobeggs.EntityPokemobEgg;
 public class AIGuardEgg extends AIBase
 {
     IPokemob         pokemob;
-    EntityAnimal     entity;
+    EntityLiving     entity;
     EntityPokemobEgg egg            = null;
     int              cooldown       = 0;
     int              spawnBabyDelay = 0;
 
-    public AIGuardEgg(EntityAnimal par1EntityAnimal)
+    public AIGuardEgg(IPokemob entity2)
     {
-        entity = par1EntityAnimal;
-        pokemob = CapabilityPokemob.getPokemobFor(entity);
+        entity = entity2.getEntity();
+        pokemob = entity2;
     }
 
     @Override

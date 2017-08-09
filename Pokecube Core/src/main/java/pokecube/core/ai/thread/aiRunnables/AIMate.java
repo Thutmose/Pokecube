@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -26,14 +27,14 @@ import thut.api.maths.Vector3;
 public class AIMate extends AIBase
 {
     final IPokemob     pokemob;
-    final EntityAnimal entity;
+    final EntityLiving entity;
     int                cooldown       = 0;
     int                spawnBabyDelay = 0;
 
-    public AIMate(EntityAnimal par1EntityAnimal)
+    public AIMate(IPokemob entity2)
     {
-        entity = par1EntityAnimal;
-        pokemob = CapabilityPokemob.getPokemobFor(par1EntityAnimal);
+        entity = entity2.getEntity();
+        pokemob = entity2;
     }
 
     @Override

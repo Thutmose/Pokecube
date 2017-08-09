@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.Random;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -17,7 +16,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
@@ -40,9 +38,9 @@ public class LogicMiscUpdate extends LogicBase
     private boolean      checkedEvol       = false;
     Vector3              v                 = Vector3.getNewVector();
 
-    public LogicMiscUpdate(EntityAnimal entity)
+    public LogicMiscUpdate(IPokemob entity)
     {
-        super(CapabilityPokemob.getPokemobFor(entity));
+        super(entity);
         entry = pokemob.getPokedexEntry();
     }
 

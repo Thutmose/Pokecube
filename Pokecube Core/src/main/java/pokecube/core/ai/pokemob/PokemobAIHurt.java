@@ -48,14 +48,14 @@ public class PokemobAIHurt extends EntityAIBase
 
     private int              lastSeenTime;
 
-    public PokemobAIHurt(EntityCreature entity, boolean callForHelp)
+    public PokemobAIHurt(IPokemob entity, boolean callForHelp)
     {
-        this.taskOwner = entity;
+        this.taskOwner = (EntityCreature) entity.getEntity();
         this.shouldCheckSight = true;
         this.nearbyOnly = true;
         this.entityCallsForHelp = callForHelp;
         this.setMutexBits(1);
-        pokemob = CapabilityPokemob.getPokemobFor(entity);
+        pokemob = entity;
     }
 
     /** Checks to see if this entity can find a short path to the given

@@ -291,7 +291,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 {
                     ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                     ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack, 0F),
-                            PokecubeMod.getFakePlayer());
+                            PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
                     MinecraftForge.EVENT_BUS.post(toss);
                     if (!toss.isCanceled())
                     {
@@ -306,7 +306,7 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                     if (!event.isCanceled())
                     {
                         ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack, 0F),
-                                PokecubeMod.getFakePlayer());
+                                PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
                         MinecraftForge.EVENT_BUS.post(toss);
                         if (!toss.isCanceled())
                         {

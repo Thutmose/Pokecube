@@ -31,7 +31,6 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.ai.trainers.AITrainerFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.EntityTrainerBase;
@@ -202,7 +201,6 @@ public class EntityTrainer extends EntityTrainerBase
     protected void initAI(Vector3 location, boolean stationary)
     {
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new AITrainerFindTarget(this, EntityPlayer.class));
         this.tasks.addTask(1, new EntityAIMoveTowardsTarget(this, 0.6, 10));
         this.tasks.addTask(4, new EntityAIOpenDoor(this, true));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 0.6D));

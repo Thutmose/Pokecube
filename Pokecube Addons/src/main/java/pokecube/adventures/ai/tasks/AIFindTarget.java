@@ -1,50 +1,55 @@
-package pokecube.adventures.ai.trainers;
+package pokecube.adventures.ai.tasks;
 
 import java.util.List;
 
 import com.google.common.base.Predicate;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
-import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
 import thut.api.maths.Vector3;
 
-public class AITrainerFindTarget extends EntityAIBase
+public class AIFindTarget extends AITrainerBase
 {
-    World                             world;
 
     // The entity (normally a player) that is the target of this trainer.
     Class<? extends EntityLivingBase> targetClass;
-    final EntityLivingBase            entity;
-    final IHasNPCAIStates             aiStates;
-    final IHasPokemobs                trainer;
 
-    public AITrainerFindTarget(EntityLivingBase trainer, Class<? extends EntityLivingBase> targetClass)
+    public AIFindTarget(EntityLivingBase trainer, Class<? extends EntityLivingBase> targetClass)
     {
-        this.entity = trainer;
-        this.aiStates = CapabilityNPCAIStates.getNPCAIStates(trainer);
-        this.trainer = CapabilityHasPokemobs.getHasPokemobs(trainer);
-        this.world = trainer.getEntityWorld();
-        this.setMutexBits(0);
+        super(trainer);
         this.targetClass = targetClass;
     }
 
     @Override
+    public void doMainThreadTick(World world)
+    {
+        super.doMainThreadTick(world);
+        trainer.lowerCooldowns();
+        if (shouldExecute()) updateTask();
+    }
+
     public boolean shouldExecute()
     {
         // Dead trainers can't fight.
         if (!entity.isEntityAlive()) return false;
         // Trainers on cooldown shouldn't fight, neither should friendly ones
-        if (trainer.getCooldown() > entity.getEntityWorld().getTotalWorldTime() || !trainer.isAgressive()) return false;
+        if (trainer.getCooldown() > entity.getEntityWorld().getTotalWorldTime() || !trainer.isAgressive())
+        {
+            if (trainer.getTarget() != null)
+            { // Check if target is invalid.
+                if (trainer.getTarget() != null && trainer.getTarget().isDead)
+                {
+                    trainer.setTarget(null);
+                    trainer.resetPokemob();
+                }
+            }
+            return false;
+        }
         return true;
     }
 
-    @Override
     public void updateTask()
     { // Predicated to return true for invalid targets
         Predicate<EntityLivingBase> matcher = new Predicate<EntityLivingBase>()
@@ -72,7 +77,7 @@ public class AITrainerFindTarget extends EntityAIBase
         int range = trainer.getAgressDistance() + 1;
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
-                here.getAABB().grow(range, range, range));
+                here.getAABB().expand(range, range, range));
 
         int sight = trainer.getAgressDistance();
         for (Object o : targets)
@@ -91,8 +96,8 @@ public class AITrainerFindTarget extends EntityAIBase
         {
             // If trainer was in battle (any of these 3) reset trainer before
             // returning.
-            if (trainer.getOutMob() != null || aiStates.getAIState(IHasNPCAIStates.THROWING)
-                    || aiStates.getAIState(IHasNPCAIStates.INBATTLE))
+            if (trainer.getOutMob() != null || aiTracker.getAIState(IHasNPCAIStates.THROWING)
+                    || aiTracker.getAIState(IHasNPCAIStates.INBATTLE))
             {
                 trainer.resetPokemob();
             }

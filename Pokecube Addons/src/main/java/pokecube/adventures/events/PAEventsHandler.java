@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.INpc;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -265,7 +264,9 @@ public class PAEventsHandler
     @SubscribeEvent
     public void onConstruct(EntityConstructing event)
     {
-        if (!(event.getEntity() instanceof INpc)) return;
+        if (!(event.getEntity() instanceof EntityLivingBase)
+                || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getEntity(), false) == null)
+            return;
         if (!Config.instance.npcsAreTrainers && !(event.getEntity() instanceof EntityTrainer)) return;
         initDataManager(event.getEntity());
     }

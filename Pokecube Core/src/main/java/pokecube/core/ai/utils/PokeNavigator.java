@@ -2,7 +2,6 @@ package pokecube.core.ai.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.init.Blocks;
@@ -50,13 +49,13 @@ public class PokeNavigator extends PathNavigate
 
     int                              sticks          = 0;
 
-    public PokeNavigator(EntityLiving entity, World world)
+    public PokeNavigator(IPokemob pokemob, World world)
     {
-        super(entity, world);
-        this.theEntity = entity;
+        super(pokemob.getEntity(), world);
+        this.theEntity = pokemob.getEntity();
         this.worldObj = world;
-        this.pathSearchRange = entity.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
-        pokemob = CapabilityPokemob.getPokemobFor(entity);
+        this.pathSearchRange = pokemob.getEntity().getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE);
+        this.pokemob = pokemob;
         canSwim = true;
         canDive = pokemob.swims();
         pathfinder = new Paths(world);

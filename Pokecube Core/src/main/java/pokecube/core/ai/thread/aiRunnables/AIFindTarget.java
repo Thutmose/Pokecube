@@ -74,10 +74,10 @@ public class AIFindTarget extends AIBase implements IAICombat
                                                                }
                                                            };
 
-    public AIFindTarget(EntityLivingBase mob)
+    public AIFindTarget(IPokemob mob)
     {
-        this.pokemob = CapabilityPokemob.getPokemobFor(mob);
-        this.entity = (EntityLiving) mob;
+        this.pokemob = mob;
+        this.entity = mob.getEntity();
     }
 
     /** Returns the closest vulnerable player within the given radius, or null

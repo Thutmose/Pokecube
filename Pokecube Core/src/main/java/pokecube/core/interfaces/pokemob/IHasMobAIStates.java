@@ -17,4 +17,6 @@ public interface IHasMobAIStates extends IMoveConstants, IAIMob
     int getTotalAIState();
 
     void setTotalAIState(int state);
+    
+    void initAI();
 }

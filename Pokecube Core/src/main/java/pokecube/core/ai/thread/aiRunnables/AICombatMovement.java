@@ -30,10 +30,10 @@ public class AICombatMovement extends AIBase
     Vector3            centre;
     double             movementSpeed;
 
-    public AICombatMovement(EntityLiving par1EntityLiving)
+    public AICombatMovement(IPokemob entity)
     {
-        this.attacker = par1EntityLiving;
-        this.pokemob = CapabilityPokemob.getPokemobFor(attacker);
+        this.attacker = entity.getEntity();
+        this.pokemob = entity;
         this.movementSpeed = attacker.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()
                 * 0.8;
         centre = null;

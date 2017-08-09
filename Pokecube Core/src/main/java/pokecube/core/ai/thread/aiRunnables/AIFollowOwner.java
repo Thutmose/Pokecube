@@ -6,7 +6,6 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.maths.Vector3;
 
 /** This attempts to make the mob follow the owner around in the world. It
@@ -27,12 +26,12 @@ public class AIFollowOwner extends AIBase
     Vector3                    v        = Vector3.getNewVector();
     Vector3                    v1       = Vector3.getNewVector();
 
-    public AIFollowOwner(EntityLiving entity, float min, float max)
+    public AIFollowOwner(IPokemob entity, float min, float max)
     {
-        this.thePet = entity;
+        this.thePet = entity.getEntity();
         this.minDist = min;
         this.maxDist = max;
-        pokemob = CapabilityPokemob.getPokemobFor(entity);
+        pokemob = entity;
         this.speed = 0.6;
         if (pokemob.getPokemonOwner() != null) ownerPos.set(pokemob.getPokemonOwner());
     }

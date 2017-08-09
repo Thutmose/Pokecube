@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -18,10 +17,10 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
+import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.ItemPokemobUseable;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
@@ -38,9 +37,9 @@ public class LogicMovesUpdates extends LogicBase
     final PokedexEntry entry;
     Vector3            v = Vector3.getNewVector();
 
-    public LogicMovesUpdates(EntityAnimal entity)
+    public LogicMovesUpdates(IPokemob entity)
     {
-        super(CapabilityPokemob.getPokemobFor(entity));
+        super(entity);
         entry = pokemob.getPokedexEntry();
     }
 

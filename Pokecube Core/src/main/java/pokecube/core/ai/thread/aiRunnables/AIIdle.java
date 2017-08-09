@@ -11,7 +11,6 @@ import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
@@ -31,11 +30,11 @@ public class AIIdle extends AIBase
     Vector3                    v         = Vector3.getNewVector();
     Vector3                    v1        = Vector3.getNewVector();
 
-    public AIIdle(EntityLiving entity)
+    public AIIdle(IPokemob pokemob)
     {
-        this.entity = entity;
+        this.entity = pokemob.getEntity();
         this.setMutex(2);
-        mob = CapabilityPokemob.getPokemobFor(entity);
+        mob = pokemob;
         entry = mob.getPokedexEntry();
         this.speed = entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
     }

@@ -22,7 +22,6 @@ public class EntityTools
         to.dimension = from.dimension;
         to.prevRotationPitch = from.prevRotationPitch;
         to.prevRotationYaw = from.prevRotationYaw;
-        to.prevRenderYawOffset = from.prevRenderYawOffset;
         to.prevRotationYawHead = from.prevRotationYawHead;
         to.onGround = from.onGround;
         to.prevLimbSwingAmount = from.prevLimbSwingAmount;

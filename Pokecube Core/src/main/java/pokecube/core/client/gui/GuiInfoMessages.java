@@ -139,6 +139,18 @@ public class GuiInfoMessages
         int size = toUse.size() - 1;
         num = Math.min(num, size + 1);
         int shift = 0;
+
+        if (PokecubeMod.core.getConfig().messagesAlwaysShow)
+        {
+            toUse = Lists.newArrayList(toUse);
+            num = 6;
+            while (toUse.size() < num)
+            {
+                toUse.add("");
+            }
+            size = toUse.size() - 1;
+            num = Math.min(num, size + 1);
+        }
         for (int l = 0; l < num && shift < num; l++)
         {
             int index = (l + offset);

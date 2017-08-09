@@ -1,21 +1,15 @@
-package pokecube.adventures.ai.trainers;
+package pokecube.adventures.ai.tasks;
 
 import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.MessageState;
-import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
-import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.IHasPokemobs;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates.IHasNPCAIStates;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages;
-import pokecube.adventures.entity.helper.capabilities.CapabilityNPCMessages.IHasMessages;
 import pokecube.core.events.handlers.PCEventsHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
@@ -26,33 +20,19 @@ import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
-public class AITrainerBattle extends EntityAIBase
+public class AIBattle extends AITrainerBase
 {
-    World                  world;
-    // The trainer Entity
-    final EntityLivingBase entity;
-    final IHasPokemobs     trainer;
-    final IHasNPCAIStates  aiTracker;
-    final IHasMessages     messages;
-    final boolean          valid;
-    int                    noSeeTicks = 0;
-
-    public AITrainerBattle(EntityLivingBase trainer)
+    public AIBattle(EntityLivingBase trainer)
     {
-        this.entity = trainer;
-        this.world = trainer.getEntityWorld();
-        this.aiTracker = CapabilityNPCAIStates.getNPCAIStates(trainer);
-        this.trainer = CapabilityHasPokemobs.getHasPokemobs(trainer);
-        this.messages = CapabilityNPCMessages.getMessages(trainer);
-        valid = trainer != null && aiTracker != null && messages != null;
+        super(trainer);
     }
 
     @Override
-    public boolean shouldExecute()
+    public void doMainThreadTick(World world)
     {
-        if (!valid) return false;
-        trainer.lowerCooldowns();
-        return trainer.getTarget() != null;
+        super.doMainThreadTick(world);
+        if (trainer.getTarget() != null) updateTask();
+        else if (trainer.getOutID() != null) resetTask();
     }
 
     private boolean checkPokemobTarget()
@@ -165,7 +145,6 @@ public class AITrainerBattle extends EntityAIBase
     }
 
     /** Resets the task */
-    @Override
     public void resetTask()
     {
         trainer.resetPokemob();
@@ -196,14 +175,7 @@ public class AITrainerBattle extends EntityAIBase
         outMob.setMoveIndex(index);
     }
 
-    /** Execute a one shot task or start executing a continuous task */
-    @Override
-    public void startExecuting()
-    {
-    }
-
     /** Updates the task */
-    @Override
     public void updateTask()
     {
         if (trainer.getTarget() == null) return;
@@ -238,5 +210,4 @@ public class AITrainerBattle extends EntityAIBase
             doAggression();
         }
     }
-
 }

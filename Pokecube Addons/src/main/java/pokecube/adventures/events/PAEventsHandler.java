@@ -21,15 +21,18 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityEvent.EntityConstructing;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.PokecubeAdv;
-import pokecube.adventures.ai.trainers.AITrainerBattle;
-import pokecube.adventures.ai.trainers.AITrainerFindTarget;
+import pokecube.adventures.ai.helper.AIStuffHolder;
+import pokecube.adventures.ai.tasks.AIBattle;
+import pokecube.adventures.ai.tasks.AIFindTarget;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs;
 import pokecube.adventures.entity.helper.capabilities.CapabilityHasPokemobs.DefaultPokemobs;
@@ -51,6 +54,7 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.api.entity.ai.IAIMob;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainManager;
 import thut.lib.CompatWrapper;
@@ -61,6 +65,7 @@ public class PAEventsHandler
     final ResourceLocation AICAP       = new ResourceLocation(PokecubeAdv.ID, "ai");
     final ResourceLocation MESSAGECAP  = new ResourceLocation(PokecubeAdv.ID, "messages");
     final ResourceLocation REWARDSCAP  = new ResourceLocation(PokecubeAdv.ID, "rewards");
+    final ResourceLocation AISTUFFCAP  = new ResourceLocation(PokecubeAdv.ID, "aiStuff");
 
     public static void randomizeTrainerTeam(EntityTrainer trainer)
     {
@@ -208,15 +213,15 @@ public class PAEventsHandler
     @SubscribeEvent
     public void attachCapabilities(AttachCapabilitiesEvent<Entity> event)
     {
-        if (!(event.getObject() instanceof EntityLivingBase)
+        if (!(event.getObject() instanceof EntityLiving)
                 || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getObject(), false) == null)
             return;
-        if (!Config.instance.npcsAreTrainers && !(event.getObject() instanceof EntityTrainer)) return;
         if (event.getCapabilities().containsKey(POKEMOBSCAP)
                 || event.getObject().hasCapability(CapabilityHasPokemobs.HASPOKEMOBS_CAP, null))
             return;
         DefaultPokemobs mobs = new DefaultPokemobs();
         DefaultRewards rewards = new DefaultRewards();
+        AIStuffHolder aiHolder = new AIStuffHolder((EntityLiving) event.getObject());
         rewards.getRewards().add(new ItemStack(Items.EMERALD));
         DefaultAIStates aiStates = new DefaultAIStates();
         DefaultMessager messages = new DefaultMessager();
@@ -225,15 +230,16 @@ public class PAEventsHandler
         event.addCapability(AICAP, aiStates);
         event.addCapability(MESSAGECAP, messages);
         event.addCapability(REWARDSCAP, rewards);
+        event.addCapability(AISTUFFCAP, aiHolder);
         if (!event.getObject().getEntityWorld().isRemote) needsAI.add((EntityLiving) event.getObject());
     }
 
     private List<EntityLiving> needsAI = Lists.newArrayList();
 
     @SubscribeEvent
-    public void onTick(LivingUpdateEvent event)
+    public void onTick(ServerTickEvent event)
     {
-        if (!needsAI.isEmpty() && !event.getEntity().getEntityWorld().isRemote)
+        if (!needsAI.isEmpty() && event.side == Side.SERVER && event.phase == Phase.END)
         {
             synchronized (needsAI)
             {
@@ -242,8 +248,11 @@ public class PAEventsHandler
                 for (EntityLiving npc : toProcess)
                 {
                     if (npc.ticksExisted == 0) continue;
-                    npc.tasks.addTask(0, new AITrainerBattle(npc));
-                    npc.tasks.addTask(2, new AITrainerFindTarget(npc, EntityZombie.class));
+                    IAIMob mob = npc.getCapability(IAIMob.THUTMOBAI, null);
+                    mob.getAI().addAITask(new AIBattle(npc).setPriority(0));
+                    mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
+                    if (npc instanceof EntityTrainer)
+                        mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));
                     stale.add(npc);
                     IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(npc);
                     TypeTrainer newType = TypeTrainer.mobTypeMapper.getType(npc, true);
@@ -267,7 +276,6 @@ public class PAEventsHandler
         if (!(event.getEntity() instanceof EntityLivingBase)
                 || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getEntity(), false) == null)
             return;
-        if (!Config.instance.npcsAreTrainers && !(event.getEntity() instanceof EntityTrainer)) return;
         initDataManager(event.getEntity());
     }
 

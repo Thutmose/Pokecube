@@ -442,7 +442,6 @@ public class EntityTrainer extends EntityTrainerBase
     @Override
     protected void trade(MerchantRecipe recipe)
     {
-        System.out.println("Test:" + recipe);
         ItemStack poke1 = recipe.getItemToBuy();
         ItemStack poke2 = recipe.getItemToSell();
         if (!(PokecubeManager.isFilled(poke1) && PokecubeManager.isFilled(poke2))) { return; }

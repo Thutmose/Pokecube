@@ -29,7 +29,6 @@ import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.events.MoveUse;
 import pokecube.core.events.MoveUse.MoveWorldAction;
@@ -46,6 +45,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 public class MoveEventsHandler

@@ -25,7 +25,6 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.PokecubeCore;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.database.moves.MoveEntry.Category;
 import pokecube.core.events.MoveUse;
@@ -45,6 +44,7 @@ import pokecube.core.utils.PokeType;
 import thut.api.boom.ExplosionCustom;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
+import thut.core.common.commands.CommandTools;
 
 public class MovesUtils implements IMoveConstants
 {

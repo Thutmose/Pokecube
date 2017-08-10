@@ -11,6 +11,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
+import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IPokemob;
 
 /** This manages the ridden controls of the pokemob. The booleans are set on the
@@ -36,14 +37,19 @@ public class LogicMountedControl extends LogicBase
     {
         super.doServerTick(world);
         if (!entity.isBeingRidden()) return;
+        Config config = PokecubeCore.instance.getConfig();
         boolean move = false;
         entity.rotationYaw = pokemob.getHeading();
         boolean shouldControl = entity.onGround || pokemob.floats();
         boolean verticalControl = false;
+        boolean waterSpeed = false;
+        boolean airSpeed = !entity.onGround;
         if (pokemob.canUseFly())
             shouldControl = verticalControl = PokecubeCore.core.getConfig().flyEnabled || shouldControl;
-        if ((pokemob.canUseSurf() || pokemob.canUseDive()) && entity.isInWater())
+        if ((pokemob.canUseSurf() || pokemob.canUseDive()) && (waterSpeed = entity.isInWater()))
             shouldControl = verticalControl = PokecubeCore.core.getConfig().surfEnabled || shouldControl;
+
+        if (waterSpeed) airSpeed = false;
 
         if (pokemob.getPokedexEntry().shouldDive)
         {
@@ -71,6 +77,11 @@ public class LogicMountedControl extends LogicBase
         {
             move = true;
             float f = moveSpeed / 2;
+
+            if (airSpeed) f *= config.flySpeedFactor;
+            else if (waterSpeed) f *= config.surfSpeedFactor;
+            else f *= config.groundSpeedFactor;
+
             if (shouldControl)
             {
                 if (!entity.onGround) f *= 2;

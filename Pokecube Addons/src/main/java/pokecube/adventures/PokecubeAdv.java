@@ -63,44 +63,45 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.core.common.commands.CommandConfig;
 import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
         modid = PokecubeAdv.ID, name = "Pokecube Adventures", version = PokecubeAdv.version, dependencies = PokecubeAdv.DEPSTRING, acceptableRemoteVersions = PokecubeAdv.MINVERSION, guiFactory = "pokecube.adventures.client.gui.config.ModGuiFactory", updateJSON = PokecubeAdv.UPDATEURL, acceptedMinecraftVersions = PokecubeAdv.MCVERSIONS) // @formatter:on
 public class PokecubeAdv
 {
-    public static final String          ID                 = "pokecube_adventures";
-    public static final String          version            = "@VERSION";
-    public final static String          MCVERSIONS         = "@MCVERSION";
-    public final static String          MINVERSION         = "@MINVERSION";
-    public final static String          DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;"
+    public static final String ID                 = "pokecube_adventures";
+    public static final String version            = "@VERSION";
+    public final static String MCVERSIONS         = "@MCVERSION";
+    public final static String MINVERSION         = "@MINVERSION";
+    public final static String DEPSTRING          = "required-after:pokecube@@POKECUBEVERSION;"
             + "after:thut_wearables;" + "after:thutessentials;" + "after:waila;" + "after:Waila;" + "after:reccomplex;"
             + "after:advancedrocketry;" + "after:JEI;" + "after:jeresources;" + "after:thut_bling;"
             + "after:theoneprobe;" + "after:tesla;" + "after:Tesla;" + "after:lostcities;"
             + "after:minefactoryreloaded";
 
-    public final static String          UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
-    public static final String          TRAINERTEXTUREPATH = ID + ":textures/trainer/";
+    public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
+    public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
 
-    public static String                CUSTOMTRAINERFILE;
+    public static String       CUSTOMTRAINERFILE;
 
-    public static int                   GUITRAINER_ID      = 2;
-    public static int                   GUIBAG_ID          = 3;
-    public static int                   GUICLONER_ID       = 4;
-    public static int                   GUIBIOMESETTER_ID  = 5;
-    public static int                   GUIAFA_ID          = 6;
-    public static int                   GUISPLICER_ID      = 7;
-    public static int                   GUIEXTRACTOR_ID    = 8;
+    public static int          GUITRAINER_ID      = 2;
+    public static int          GUIBAG_ID          = 3;
+    public static int          GUICLONER_ID       = 4;
+    public static int          GUIBIOMESETTER_ID  = 5;
+    public static int          GUIAFA_ID          = 6;
+    public static int          GUISPLICER_ID      = 7;
+    public static int          GUIEXTRACTOR_ID    = 8;
 
-    public static boolean               tesla              = false;
+    public static boolean      tesla              = false;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
-    public static CommonProxy           proxy;
+    public static CommonProxy  proxy;
 
     @Instance(ID)
-    public static PokecubeAdv           instance;
+    public static PokecubeAdv  instance;
 
-    public static Config                conf;
+    public static Config       conf;
 
     public static void setTrainerConfig(FMLPreInitializationEvent evt)
     {
@@ -219,6 +220,7 @@ public class PokecubeAdv
     public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
+        event.registerServerCommand(new CommandConfig("pokeadvsettings", Config.instance));
         TypeTrainer.initSpawns();
     }
 

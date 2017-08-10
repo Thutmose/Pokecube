@@ -12,7 +12,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveConstants;
@@ -26,6 +25,7 @@ import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.moves.templates.Move_Ongoing;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 /** This applies ongoing moves, applies status effects, and manages sounds when

@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
@@ -15,6 +14,7 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.TreeRemover;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 
 public class ActionCut implements IMoveAction
 {

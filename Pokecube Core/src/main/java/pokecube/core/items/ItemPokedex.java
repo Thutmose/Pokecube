@@ -17,7 +17,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.healtable.BlockHealTable;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.events.handlers.SpawnHandler;
@@ -30,6 +29,7 @@ import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
 import thut.api.terrain.TerrainSegment;
+import thut.core.common.commands.CommandTools;
 
 /** @author Manchou */
 public class ItemPokedex extends Item

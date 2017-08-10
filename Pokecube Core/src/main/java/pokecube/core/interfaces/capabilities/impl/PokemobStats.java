@@ -90,7 +90,7 @@ public abstract class PokemobStats extends PokemobGenes
                     {
                         levelUp(newLvl);
                         IPokemob evo = this.evolve(true, false, held);
-                        ret = evo;
+                        if (evo != null) ret = evo;
                     }
                     ret.levelUp(newLvl);
                     if (getEntity().addedToChunk && ret.getPokemonOwner() instanceof EntityPlayer

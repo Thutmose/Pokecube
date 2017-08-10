@@ -10,7 +10,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.moves.MoveEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -24,6 +23,7 @@ import pokecube.core.network.pokemobs.PacketSyncMoveUse;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 
 public abstract class PokemobMoves extends PokemobSexed
 {

@@ -267,7 +267,7 @@ public class LogicMiscUpdate extends LogicBase
         }
         if (!checkedEvol && pokemob.traded())
         {
-            pokemob.evolve(true, false);
+            pokemob.evolve(true, false, pokemob.getHeldItem());
             checkedEvol = true;
             return;
         }

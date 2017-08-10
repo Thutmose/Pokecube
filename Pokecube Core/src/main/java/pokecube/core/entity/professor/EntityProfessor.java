@@ -22,7 +22,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import pokecube.core.PokecubeCore;
 import pokecube.core.ai.utils.GuardAI;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.events.handlers.EventsHandler;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.PokecubeMod;
@@ -33,6 +32,7 @@ import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
+import thut.core.common.commands.CommandTools;
 
 public class EntityProfessor extends EntityAgeable implements IEntityAdditionalSpawnData, INpc
 {

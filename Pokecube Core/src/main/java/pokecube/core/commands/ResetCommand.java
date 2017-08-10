@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.commands.CommandTools;
 
 public class ResetCommand extends CommandBase
 {

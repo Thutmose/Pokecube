@@ -19,6 +19,7 @@ import net.minecraft.world.WorldServer;
 import pokecube.core.PokecubeItems;
 import pokecube.core.items.ItemTM;
 import pokecube.core.moves.MovesUtils;
+import thut.core.common.commands.CommandTools;
 
 public class TMCommand extends CommandBase
 {

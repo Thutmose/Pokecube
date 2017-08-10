@@ -243,6 +243,15 @@ public class Config extends ConfigBase
     public boolean                       pokemobsOnShoulder           = true;
     @Configure(category = mobAI)
     public int                           fishHookBaitRange            = 16;
+    @Configure(category = mobAI)
+    @SyncConfig
+    public float                         flySpeedFactor               = 1;
+    @Configure(category = mobAI)
+    @SyncConfig
+    public float                         surfSpeedFactor              = 1;
+    @Configure(category = mobAI)
+    @SyncConfig
+    public float                         groundSpeedFactor            = 1;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};

@@ -16,6 +16,7 @@ import pokecube.core.database.Database;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import thut.core.common.commands.CommandTools;
 
 public class GiftCommand extends CommandBase
 {

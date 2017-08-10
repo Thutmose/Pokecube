@@ -17,7 +17,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
@@ -35,6 +34,7 @@ import pokecube.core.utils.TagNames;
 import pokecube.core.utils.Tools;
 import thut.api.entity.genetics.IMobGenetics;
 import thut.api.network.PacketHandler;
+import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 public interface ICanEvolve extends IHasEntry, IHasOwner
@@ -255,12 +255,24 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
      *
      * @param delayed
      *            true if we want to display the evolution animation
-     * @return the evolution or null if the evolution failed */
+     * @return the evolution or this if the evolution failed */
     default IPokemob evolve(boolean delayed, boolean init)
     {
-        return evolve(delayed, init, getEntity().getHeldItemMainhand());
+        EntityLivingBase thisEntity = getEntity();
+        IPokemob thisMob = CapabilityPokemob.getPokemobFor(thisEntity);
+        return evolve(delayed, init, thisMob.getHeldItem());
     }
 
+    /** Evolve the pokemob.
+     *
+     * @param delayed
+     *            true if we want to display the evolution animation
+     * @param init
+     *            true if this is called during initialization of the mob
+     * @param stack
+     *            the itemstack to check for evolution.
+     * @return the evolution or null if the evolution failed, or this if the
+     *         evolution succeeded, but delayed. */
     default IPokemob evolve(boolean delayed, boolean init, ItemStack stack)
     {
         EntityLivingBase thisEntity = getEntity();

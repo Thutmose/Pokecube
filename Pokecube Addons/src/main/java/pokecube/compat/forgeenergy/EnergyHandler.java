@@ -48,7 +48,6 @@ public class EnergyHandler
             if (living != null)
             {
                 IEnergyStorage producer = living.getCapability(CapabilityEnergy.ENERGY, null);
-                System.out.println(living + " " + producer);
                 if (producer != null)
                 {
                     double dSq = Math.max(1, living.getDistanceSq(tile.getPos().getX() + 0.5,

@@ -28,6 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.commands.CommandTools;
 import pokecube.core.interfaces.IPokecube;
@@ -378,5 +379,53 @@ public class Pokecube extends Item implements IPokecube
         int id = PokecubeItems.getCubeId(cube);
         if (id == 99) { return capturable.test(hit); }
         return CapabilityPokemob.getPokemobFor(hit) != null;
+    }
+
+    /** Determines if this Item has a special entity for when they are in the
+     * world. Is called when a EntityItem is spawned in the world, if true and
+     * Item#createCustomEntity returns non null, the EntityItem will be
+     * destroyed and the new Entity will be added to the world.
+     *
+     * @param stack
+     *            The current item stack
+     * @return True of the item has a custom entity, If true,
+     *         Item#createCustomEntity will be called */
+    @Override
+    public boolean hasCustomEntity(ItemStack stack)
+    {
+        return false && PokecubeManager.isFilled(stack);
+    }
+
+    /** This function should return a new entity to replace the dropped item.
+     * Returning null here will not kill the EntityItem and will leave it to
+     * function normally. Called when the item it placed in a world.
+     *
+     * @param world
+     *            The world object
+     * @param location
+     *            The EntityItem object, useful for getting the position of the
+     *            entity
+     * @param itemstack
+     *            The current item stack
+     * @return A new Entity object to spawn or null */
+    @Override
+    public Entity createEntity(World world, Entity oldItem, ItemStack itemstack)
+    {
+        if (false && hasCustomEntity(itemstack))
+        {
+            FakePlayer player = PokecubeMod.getFakePlayer(world);
+            EntityPokecube cube = new EntityPokecube(world, player, itemstack);
+            cube.motionX = cube.motionY = cube.motionZ = 0;
+            cube.posX = oldItem.posX;
+            cube.posY = oldItem.posY;
+            cube.posZ = oldItem.posZ;
+            oldItem.setDead();
+            cube.isLoot = true;
+            System.out.println(cube);
+            System.out.println(oldItem);
+            System.out.println(cube.noClip + " " + cube.ticksExisted + " " + cube.isDead);
+            return cube;
+        }
+        return null;
     }
 }

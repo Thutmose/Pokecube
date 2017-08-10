@@ -173,6 +173,7 @@ public class PokecubeManager
         }
         itemStack = itemStack.copy();
         itemStack.setItemDamage(damage);
+        CompatWrapper.setStackSize(itemStack, 1);
         if (!itemStack.hasTagCompound()) itemStack.setTagCompound(new NBTTagCompound());
         String itemName = pokemob.getPokemonDisplayName().getFormattedText();
         Entity poke = pokemob.getEntity();

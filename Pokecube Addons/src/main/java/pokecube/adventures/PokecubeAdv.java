@@ -56,6 +56,7 @@ import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeCore;
 import pokecube.core.events.PostPostInit;
 import pokecube.core.interfaces.PokecubeMod;
+import thut.core.common.commands.CommandConfig;
 import thut.lib.CompatWrapper;
 
 @Mod( // @formatter:off
@@ -81,28 +82,28 @@ public class PokecubeAdv
             + "after:reccomplex;"
             + "after:minefactoryreloaded";
 
-    public final static String          UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
-    public static final String          TRAINERTEXTUREPATH = ID + ":textures/trainer/";
+    public final static String UPDATEURL          = "https://gist.githubusercontent.com/Thutmose/4d7320c36696cd39b336/raw/revival.json";
+    public static final String TRAINERTEXTUREPATH = ID + ":textures/trainer/";
 
-    public static String                CUSTOMTRAINERFILE;
+    public static String       CUSTOMTRAINERFILE;
 
-    public static int                   GUITRAINER_ID      = 2;
-    public static int                   GUIBAG_ID          = 3;
-    public static int                   GUICLONER_ID       = 4;
-    public static int                   GUIBIOMESETTER_ID  = 5;
-    public static int                   GUIAFA_ID          = 6;
-    public static int                   GUISPLICER_ID      = 7;
-    public static int                   GUIEXTRACTOR_ID    = 8;
+    public static int          GUITRAINER_ID      = 2;
+    public static int          GUIBAG_ID          = 3;
+    public static int          GUICLONER_ID       = 4;
+    public static int          GUIBIOMESETTER_ID  = 5;
+    public static int          GUIAFA_ID          = 6;
+    public static int          GUISPLICER_ID      = 7;
+    public static int          GUIEXTRACTOR_ID    = 8;
 
-    public static boolean               tesla              = false;
+    public static boolean      tesla              = false;
 
     @SidedProxy(clientSide = "pokecube.adventures.client.ClientProxy", serverSide = "pokecube.adventures.CommonProxy")
-    public static CommonProxy           proxy;
+    public static CommonProxy  proxy;
 
     @Instance(ID)
-    public static PokecubeAdv           instance;
+    public static PokecubeAdv  instance;
 
-    public static Config                conf;
+    public static Config       conf;
 
     public static void setTrainerConfig(FMLPreInitializationEvent evt)
     {
@@ -228,6 +229,7 @@ public class PokecubeAdv
     public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
+        event.registerServerCommand(new CommandConfig("pokeadvsettings", Config.instance));
         TypeTrainer.initSpawns();
     }
 

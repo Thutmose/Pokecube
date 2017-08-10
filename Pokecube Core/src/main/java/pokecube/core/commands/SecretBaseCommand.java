@@ -19,6 +19,7 @@ import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
+import thut.core.common.commands.CommandTools;
 
 public class SecretBaseCommand extends CommandBase
 {

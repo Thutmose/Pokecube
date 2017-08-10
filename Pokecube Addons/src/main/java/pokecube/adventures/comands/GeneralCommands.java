@@ -18,8 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import pokecube.core.commands.CommandTools;
-import scala.actors.threadpool.Arrays;
+import thut.core.common.commands.CommandTools;
 import thut.core.common.config.Configure;
 
 public class GeneralCommands extends CommandBase
@@ -28,7 +27,6 @@ public class GeneralCommands extends CommandBase
 
     static
     {
-        options.add("settings");
         options.add("killtrainers");
     }
 
@@ -46,12 +44,6 @@ public class GeneralCommands extends CommandBase
         this.aliases.add("pokeAdv");
         this.aliases.add("pokeadv");
         populateFields();
-    }
-
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender)
-    {
-        return true;
     }
 
     @Override
@@ -80,89 +72,6 @@ public class GeneralCommands extends CommandBase
             }
         }
         boolean isOp = CommandTools.isOp(sender);
-
-        if (args[0].equalsIgnoreCase("settings"))
-        {
-            if (args.length == 0)
-            {
-                text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid arguments, missing option";
-                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.sendMessage(message);
-                return;
-            }
-            boolean check = args.length <= 2;
-            Field field = fieldMap.get(args[1]);
-
-            if (field == null)
-            {
-                text = TextFormatting.RED + "" + TextFormatting.ITALIC
-                        + "Invalid arguments, invalid option, use TAB to see valid choices";
-                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.sendMessage(message);
-                return;
-            }
-            try
-            {
-                Object o = field.get(Config.instance);
-                if (check)
-                {
-                    text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " is set to: "
-                            + TextFormatting.GOLD;
-                    if (o instanceof String[] || o instanceof int[])
-                    {
-                        text += Arrays.toString((Object[]) o);
-                    }
-                    else
-                    {
-                        text += o;
-                    }
-                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.sendMessage(message);
-                    return;
-                }
-                if (!isOp)
-                {
-                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Insufficient Permissions";
-                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.sendMessage(message);
-                    return;
-                }
-                try
-                {
-                    Config.instance.updateField(field, args[2]);
-                }
-                catch (Exception e)
-                {
-                    text = TextFormatting.RED + "" + TextFormatting.ITALIC + "Invalid option for " + args[1];
-                    message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                    sender.sendMessage(message);
-                    return;
-                }
-                o = field.get(Config.instance);
-                text += TextFormatting.GREEN + args[1] + TextFormatting.WHITE + " set to: " + TextFormatting.GOLD;
-                if (o instanceof String[] || o instanceof int[])
-                {
-                    text += Arrays.toString((Object[]) o);
-                }
-                else
-                {
-                    text += o;
-                }
-                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.sendMessage(message);
-                return;
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                text = TextFormatting.RED + "" + TextFormatting.ITALIC
-                        + "Error while checking config field, please report this as a bug.";
-                message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
-                sender.sendMessage(message);
-                return;
-            }
-        }
-
         if (args[0].equalsIgnoreCase("killtrainers"))
         {
             if (args.length == 1) { return; }

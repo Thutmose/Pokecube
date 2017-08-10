@@ -63,7 +63,6 @@ import pokecube.core.commands.MeteorCommand;
 import pokecube.core.commands.RecallCommand;
 import pokecube.core.commands.ResetCommand;
 import pokecube.core.commands.SecretBaseCommand;
-import pokecube.core.commands.SettingsCommand;
 import pokecube.core.commands.StructureCommand;
 import pokecube.core.commands.TMCommand;
 import pokecube.core.database.CombatTypeLoader;
@@ -115,6 +114,7 @@ import pokecube.core.world.gen.village.handlers.PokeCentreCreationHandler;
 import pokecube.core.world.gen.village.handlers.PokeMartCreationHandler;
 import thut.api.maths.Vector3;
 import thut.api.terrain.TerrainSegment;
+import thut.core.common.commands.CommandConfig;
 import thut.core.common.handlers.PlayerDataHandler;
 import thut.lib.CompatWrapper;
 
@@ -736,7 +736,7 @@ public class PokecubeCore extends PokecubeMod
     public void serverLoad(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new Commands());
-        event.registerServerCommand(new SettingsCommand());
+        event.registerServerCommand(new CommandConfig("pokesettings", getConfig()));
         event.registerServerCommand(new MakeCommand());
         event.registerServerCommand(new GiftCommand());
         event.registerServerCommand(new TMCommand());

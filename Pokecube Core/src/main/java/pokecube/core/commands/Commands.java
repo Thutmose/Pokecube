@@ -27,6 +27,7 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.utils.PokecubeSerializer;
+import thut.core.common.commands.CommandTools;
 
 public class Commands extends CommandBase
 {

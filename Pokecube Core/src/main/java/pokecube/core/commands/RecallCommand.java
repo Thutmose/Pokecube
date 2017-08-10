@@ -16,6 +16,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.core.common.commands.CommandTools;
 
 public class RecallCommand extends CommandBase
 {

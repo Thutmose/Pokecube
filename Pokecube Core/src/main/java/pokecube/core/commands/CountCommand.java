@@ -22,6 +22,7 @@ import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import thut.core.common.commands.CommandTools;
 
 public class CountCommand extends CommandBase
 {

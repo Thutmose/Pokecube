@@ -33,6 +33,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.Tools;
 import thut.api.entity.IMobColourable;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 
 public class MakeCommand extends CommandBase
 {

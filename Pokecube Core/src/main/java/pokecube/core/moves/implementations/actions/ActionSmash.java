@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
@@ -24,6 +23,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 public class ActionSmash implements IMoveAction

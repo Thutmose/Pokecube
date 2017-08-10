@@ -7,7 +7,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import pokecube.core.commands.CommandTools;
 import pokecube.core.database.abilities.Ability;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveAction;
@@ -17,6 +16,7 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
+import thut.core.common.commands.CommandTools;
 
 public class ActionDig implements IMoveAction
 {

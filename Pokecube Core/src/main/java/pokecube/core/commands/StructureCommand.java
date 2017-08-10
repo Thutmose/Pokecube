@@ -19,6 +19,7 @@ import pokecube.core.world.gen.WorldGenMultiTemplate.Template;
 import pokecube.core.world.gen.WorldGenTemplates;
 import pokecube.core.world.gen.WorldGenTemplates.TemplateGen;
 import pokecube.core.world.gen.template.PokecubeTemplates;
+import thut.core.common.commands.CommandTools;
 
 public class StructureCommand extends CommandBase
 {

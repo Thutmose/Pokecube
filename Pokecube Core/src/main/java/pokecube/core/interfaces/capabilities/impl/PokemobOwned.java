@@ -3,11 +3,11 @@ package pokecube.core.interfaces.capabilities.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -289,40 +289,32 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             }
             else if (getPokemonOwnerID() != null)
             {
-                try
+                ItemStack itemstack = PokecubeManager.pokemobToItem(this);
+                EntityItem item = new EntityItem(getEntity().getEntityWorld(), 0, 0, 0, itemstack);
+                if (owner == null)
                 {
-                    if (owner == null)
+                    ItemTossEvent toss = new ItemTossEvent(item,
+                            PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
+                    MinecraftForge.EVENT_BUS.post(toss);
+                    if (!toss.isCanceled())
                     {
-                        ItemStack itemstack = PokecubeManager.pokemobToItem(this);
-                        ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack.copy(), 0F),
+                        onToss(null, itemstack.copy());
+                    }
+                }
+                else
+                {
+                    PCEvent event = new PCEvent(itemstack.copy(), getPokemonOwner());
+                    MinecraftForge.EVENT_BUS.post(event);
+                    if (!event.isCanceled())
+                    {
+                        ItemTossEvent toss = new ItemTossEvent(item,
                                 PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
                         MinecraftForge.EVENT_BUS.post(toss);
                         if (!toss.isCanceled())
                         {
-                            onToss(null, itemstack.copy());
+                            onToss((EntityLivingBase) owner, itemstack.copy());
                         }
                     }
-                    else
-                    {
-                        ItemStack itemstack = PokecubeManager.pokemobToItem(this);
-                        PCEvent event = new PCEvent(itemstack.copy(), getPokemonOwner());
-                        MinecraftForge.EVENT_BUS.post(event);
-                        if (!event.isCanceled())
-                        {
-                            ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack.copy(), 0F),
-                                    PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
-                            MinecraftForge.EVENT_BUS.post(toss);
-                            if (!toss.isCanceled())
-                            {
-                                onToss((EntityLivingBase) owner, itemstack.copy());
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    PokecubeMod.log(Level.WARNING, "Something went bad sending cube to PC!", e);
-                    onToss(null, PokecubeManager.pokemobToItem(this));
                 }
             }
             getEntity().capturedDrops.clear();

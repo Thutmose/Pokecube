@@ -268,6 +268,8 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
                 Entity caught = EntityList.createEntityByIDFromName(
                         new ResourceLocation(getItem().getTagCompound().getString(TagNames.MOBID)).toString(),
                         getEntityWorld());
+                if (caught == null) return false;
+
                 caught.readFromNBT(getItem().getTagCompound().getCompoundTag(TagNames.OTHERMOB));
 
                 if (shootingEntity instanceof EntityPlayer && !(shootingEntity instanceof FakePlayer))
@@ -450,7 +452,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             this.entityDropItem(getItem(), 0.5f);
             this.setDead();
         }
-        if(entity1==null) return null;
+        if (entity1 == null) return null;
         return entity1.getEntity();
     }
 }

@@ -450,6 +450,7 @@ public class EntityPokecubeBase extends EntityLiving implements IEntityAdditiona
             this.entityDropItem(getItem(), 0.5f);
             this.setDead();
         }
+        if(entity1==null) return null;
         return entity1.getEntity();
     }
 }

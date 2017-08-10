@@ -8,6 +8,7 @@ import com.google.common.base.Optional;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
@@ -287,10 +288,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             }
             else if (getPokemonOwnerID() != null)
             {
+                ItemStack itemstack = PokecubeManager.pokemobToItem(this);
+                EntityItem item = new EntityItem(getEntity().getEntityWorld(), 0, 0, 0, itemstack);
                 if (owner == null)
                 {
-                    ItemStack itemstack = PokecubeManager.pokemobToItem(this);
-                    ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack.copy(), 0F),
+                    ItemTossEvent toss = new ItemTossEvent(item,
                             PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
                     MinecraftForge.EVENT_BUS.post(toss);
                     if (!toss.isCanceled())
@@ -300,12 +302,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
                 }
                 else
                 {
-                    ItemStack itemstack = PokecubeManager.pokemobToItem(this);
                     PCEvent event = new PCEvent(itemstack.copy(), getPokemonOwner());
                     MinecraftForge.EVENT_BUS.post(event);
                     if (!event.isCanceled())
                     {
-                        ItemTossEvent toss = new ItemTossEvent(getEntity().entityDropItem(itemstack.copy(), 0F),
+                        ItemTossEvent toss = new ItemTossEvent(item,
                                 PokecubeMod.getFakePlayer(getEntity().getEntityWorld()));
                         MinecraftForge.EVENT_BUS.post(toss);
                         if (!toss.isCanceled())

@@ -749,7 +749,6 @@ public class PokecubeCore extends PokecubeMod
         event.registerServerCommand(new ResetCommand());
         event.registerServerCommand(new StructureCommand());
         PokecubeTemplates.serverInit(event.getServer());
-        SpawnHandler.clear();
         registerSpawns();
         try
         {
@@ -768,6 +767,7 @@ public class PokecubeCore extends PokecubeMod
         BerryGenManager.berryLocations.clear();
         PokecubeDimensionManager.getInstance().onServerStop(event);
         WorldGenTemplates.TemplateGenStartBuilding.clear();
+        SpawnHandler.clear();
     }
 
     @Override

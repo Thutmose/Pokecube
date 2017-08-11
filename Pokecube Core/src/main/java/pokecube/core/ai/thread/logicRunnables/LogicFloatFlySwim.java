@@ -16,13 +16,11 @@ import thut.api.maths.Vector3;
  * destinations. */
 public class LogicFloatFlySwim extends LogicBase
 {
-    PokedexEntry entry;
-    Vector3      v = Vector3.getNewVector();
+    Vector3 here = Vector3.getNewVector();
 
     public LogicFloatFlySwim(IPokemob entity)
     {
         super(entity);
-        entry = pokemob.getPokedexEntry();
     }
 
     @Override
@@ -30,11 +28,6 @@ public class LogicFloatFlySwim extends LogicBase
     {
         super.doServerTick(world);
         if (!shouldRun()) return;
-        entry = pokemob.getPokedexEntry();
-        IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
-        if (transformed != null) entry = transformed.getPokedexEntry();
-
-        Vector3 here = Vector3.getNewVector();
         here.set(entity);
         doFloatFly(here);
         doSwim(here);

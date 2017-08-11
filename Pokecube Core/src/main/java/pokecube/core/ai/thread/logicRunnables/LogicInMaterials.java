@@ -2,7 +2,6 @@ package pokecube.core.ai.thread.logicRunnables;
 
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.moves.TerrainDamageSource;
@@ -14,13 +13,11 @@ import thut.api.maths.Vector3;
  * materials. */
 public class LogicInMaterials extends LogicBase
 {
-    final PokedexEntry entry;
-    Vector3            v = Vector3.getNewVector();
+    Vector3 v = Vector3.getNewVector();
 
     public LogicInMaterials(IPokemob entity)
     {
         super(entity);
-        entry = pokemob.getPokedexEntry();
     }
 
     @Override

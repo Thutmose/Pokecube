@@ -1515,7 +1515,7 @@ public class PokedexEntry
 
     public boolean isType(PokeType type)
     {
-        return type1 == type || type2 == type;
+        return (type1 != null && type1 == type) || (type2 != null && type2 == type);
     }
 
     /** to be called after the new stack is applied as held item.

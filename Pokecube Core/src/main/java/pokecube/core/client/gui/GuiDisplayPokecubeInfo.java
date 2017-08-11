@@ -198,6 +198,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     protected void draw(RenderGameOverlayEvent.Post event)
     {
+        MinecraftForge.EVENT_BUS.post(new GuiEvent.RenderMoveMessages(event.getType()));
         if (indexPokemob > getPokemobsToDisplay().length)
         {
             refreshCounter = 0;
@@ -681,7 +682,7 @@ public class GuiDisplayPokecubeInfo extends Gui
         {
             if ((minecraft.currentScreen == null || GuiArranger.toggle)
                     && !((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && event.getType() == ElementType.HOTBAR)
+                    && event.getType() == ElementType.HOTBAR || event.getType() == ElementType.CHAT)
             {
                 draw(event);
             }

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.material.Material;
@@ -12,7 +13,9 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.MinecraftForge;
 import pokecube.core.database.PokedexEntryLoader.SpawnRule;
+import pokecube.core.events.SpawnCheckEvent;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeDatabase;
 import thut.api.terrain.BiomeType;
@@ -39,13 +42,13 @@ public class SpawnBiomeMatcher
 
     public static class SpawnCheck
     {
-        final boolean   day;
-        final Material  material;
-        final float     light;
-        final Biome     biome;
-        final BiomeType type;
-        final World     world;
-        final Vector3   location;
+        public final boolean   day;
+        public final Material  material;
+        public final float     light;
+        public final Biome     biome;
+        public final BiomeType type;
+        public final World     world;
+        public final Vector3   location;
 
         public SpawnCheck(Vector3 location, World world)
         {
@@ -65,26 +68,28 @@ public class SpawnBiomeMatcher
         }
     }
 
-    public Set<Biome>             validBiomes        = Sets.newHashSet();
-    public Set<BiomeType>         validSubBiomes     = Sets.newHashSet();
-    public Set<Biome>             blackListBiomes    = Sets.newHashSet();
-    public Set<BiomeType>         blackListSubBiomes = Sets.newHashSet();
+    public Set<Biome>                 validBiomes          = Sets.newHashSet();
+    public Set<BiomeType>             validSubBiomes       = Sets.newHashSet();
+    public Set<Biome>                 blackListBiomes      = Sets.newHashSet();
+    public Set<BiomeType>             blackListSubBiomes   = Sets.newHashSet();
 
     /** If the spawnRule has an anyType key, make a child for each type in it,
      * then check if any of the children are valid. */
-    public Set<SpawnBiomeMatcher> children           = Sets.newHashSet();
+    public Set<SpawnBiomeMatcher>     children             = Sets.newHashSet();
 
-    float                         minLight           = 0;
-    float                         maxLight           = 1;
-    boolean                       day                = true;
-    boolean                       night              = true;
-    boolean                       air                = true;
-    boolean                       water              = false;
+    public Set<Predicate<SpawnCheck>> additionalConditions = Sets.newHashSet();
 
-    public final SpawnRule        spawnRule;
+    float                             minLight             = 0;
+    float                             maxLight             = 1;
+    boolean                           day                  = true;
+    boolean                           night                = true;
+    boolean                           air                  = true;
+    boolean                           water                = false;
 
-    boolean                       parsed             = false;
-    boolean                       valid              = true;
+    public final SpawnRule            spawnRule;
+
+    boolean                           parsed               = false;
+    boolean                           valid                = true;
 
     public SpawnBiomeMatcher(SpawnRule rules)
     {
@@ -102,6 +107,7 @@ public class SpawnBiomeMatcher
                 children.add(new SpawnBiomeMatcher(newRule));
             }
         }
+        MinecraftForge.EVENT_BUS.post(new SpawnCheckEvent.Init(this));
     }
 
     private void preParseSubBiomes()
@@ -345,7 +351,13 @@ public class SpawnBiomeMatcher
         boolean biome = biomeMatches(checker);
         if (!biome) return false;
         boolean loc = conditionsMatch(checker);
-        return loc;
+        if (!loc) return false;
+        boolean subCondition = true;
+        for (Predicate<SpawnCheck> c : additionalConditions)
+        {
+            subCondition &= c.apply(checker);
+        }
+        return subCondition && !MinecraftForge.EVENT_BUS.post(new SpawnCheckEvent.Check(this, checker));
     }
 
     private boolean conditionsMatch(SpawnCheck checker)

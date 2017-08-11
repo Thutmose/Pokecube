@@ -2,11 +2,10 @@ package pokecube.core.blocks.repel;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ITickable;
 import pokecube.core.events.handlers.SpawnHandler;
 
 /** @author Manchou */
-public class TileEntityRepel extends TileEntity implements ITickable
+public class TileEntityRepel extends TileEntity
 {
     public byte distance = 10;
     boolean     enabled  = true;
@@ -17,7 +16,7 @@ public class TileEntityRepel extends TileEntity implements ITickable
 
     public boolean addForbiddenSpawningCoord()
     {
-        if (getWorld().isRemote) return false;
+        if (getWorld() == null || getWorld().isRemote || !enabled) return false;
         return SpawnHandler.addForbiddenSpawningCoord(pos, getWorld().provider.getDimension(), distance);
     }
 
@@ -35,36 +34,23 @@ public class TileEntityRepel extends TileEntity implements ITickable
         super.readFromNBT(nbt);
         distance = nbt.getByte("distance");
         enabled = nbt.getBoolean("enabled");
+        System.out.println("read");
     }
 
     @Override
     public void onLoad()
     {
-        removeForbiddenSpawningCoord();
-        if (enabled) addForbiddenSpawningCoord();
+        if (enabled)
+        {
+            removeForbiddenSpawningCoord();
+            addForbiddenSpawningCoord();
+        }
     }
 
     public boolean removeForbiddenSpawningCoord()
     {
-        if (getWorld().isRemote) return false;
+        if (getWorld() == null || getWorld().isRemote) return false;
         return SpawnHandler.removeForbiddenSpawningCoord(pos, getWorld().provider.getDimension());
-    }
-
-    @Override
-    public void update()
-    {
-        if (getWorld().isRemote) return;
-        int power = getWorld().getStrongPower(getPos());
-        if (power != 0 && enabled)
-        {
-            enabled = false;
-            removeForbiddenSpawningCoord();
-        }
-        else if (power == 0 && !enabled)
-        {
-            enabled = true;
-            addForbiddenSpawningCoord();
-        }
     }
 
     @Override
@@ -72,7 +58,6 @@ public class TileEntityRepel extends TileEntity implements ITickable
     {
         super.validate();
         addForbiddenSpawningCoord();
-        enabled = true;
     }
 
     /** Writes a tile entity to NBT.

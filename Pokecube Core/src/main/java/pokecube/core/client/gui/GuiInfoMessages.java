@@ -14,18 +14,19 @@ import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
+import pokecube.core.client.GuiEvent.RenderMoveMessages;
 import pokecube.core.interfaces.PokecubeMod;
 
 public class GuiInfoMessages
 {
-    private static GuiInfoMessages instance;
+    public static GuiInfoMessages instance;
 
     public static void addMessage(ITextComponent message)
     {
@@ -60,7 +61,8 @@ public class GuiInfoMessages
     }
 
     @SideOnly(Side.CLIENT)
-    public void draw(RenderGameOverlayEvent.Post event)
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void draw(RenderMoveMessages event)
     {
         Minecraft minecraft = Minecraft.getMinecraft();
         if (event.getType() == ElementType.CHAT && !(minecraft.currentScreen instanceof GuiChat)) return;
@@ -139,18 +141,6 @@ public class GuiInfoMessages
         int size = toUse.size() - 1;
         num = Math.min(num, size + 1);
         int shift = 0;
-
-        if (PokecubeMod.core.getConfig().messagesAlwaysShow)
-        {
-            toUse = Lists.newArrayList(toUse);
-            num = 6;
-            while (toUse.size() < num)
-            {
-                toUse.add("");
-            }
-            size = toUse.size() - 1;
-            num = Math.min(num, size + 1);
-        }
         for (int l = 0; l < num && shift < num; l++)
         {
             int index = (l + offset);
@@ -170,23 +160,5 @@ public class GuiInfoMessages
             shift++;
         }
         GL11.glPopMatrix();
-    }
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent
-    public void onRenderHotbar(RenderGameOverlayEvent.Post event)
-    {
-        try
-        {
-            if (!((Minecraft) PokecubeCore.getMinecraftInstance()).gameSettings.hideGUI
-                    && (event.getType() == ElementType.HOTBAR || event.getType() == ElementType.CHAT))
-            {
-                draw(event);
-            }
-        }
-        catch (Exception e)
-        {
-
-        }
     }
 }

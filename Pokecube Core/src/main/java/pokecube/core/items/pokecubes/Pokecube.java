@@ -28,7 +28,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.interfaces.IPokemob;
@@ -393,7 +392,7 @@ public class Pokecube extends Item implements IPokecube
     @Override
     public boolean hasCustomEntity(ItemStack stack)
     {
-        return false && PokecubeManager.isFilled(stack);
+        return PokecubeManager.isFilled(stack);
     }
 
     /** This function should return a new entity to replace the dropped item.
@@ -411,19 +410,16 @@ public class Pokecube extends Item implements IPokecube
     @Override
     public Entity createEntity(World world, Entity oldItem, ItemStack itemstack)
     {
-        if (false && hasCustomEntity(itemstack))
+        if (hasCustomEntity(itemstack))
         {
             FakePlayer player = PokecubeMod.getFakePlayer(world);
             EntityPokecube cube = new EntityPokecube(world, player, itemstack);
             cube.motionX = cube.motionY = cube.motionZ = 0;
-            cube.posX = oldItem.posX;
-            cube.posY = oldItem.posY;
-            cube.posZ = oldItem.posZ;
-            oldItem.setDead();
-            cube.isLoot = true;
-            System.out.println(cube);
-            System.out.println(oldItem);
-            System.out.println(cube.noClip + " " + cube.ticksExisted + " " + cube.isDead);
+            cube.shootingEntity = null;
+            cube.shooter = null;
+            Vector3.getNewVector().set(oldItem).moveEntity(cube);
+            cube.tilt = -2;
+            cube.targetLocation.clear();
             return cube;
         }
         return null;

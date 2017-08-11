@@ -28,7 +28,6 @@ import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
 import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
 import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
 import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
-import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
 import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
@@ -194,9 +193,6 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         this.getAI().addAILogic(new LogicInMaterials(this));
         this.getAI().addAILogic(new LogicFloatFlySwim(this));
         this.getAI().addAILogic(new LogicMiscUpdate(this));
-
-        // Controller is done separately for ease of locating it for controls.
-        this.getAI().addAILogic(controller = new LogicMountedControl(this));
 
         // None of the AI below should ever run on the client.
         if (entity.getEntityWorld().isRemote) return;

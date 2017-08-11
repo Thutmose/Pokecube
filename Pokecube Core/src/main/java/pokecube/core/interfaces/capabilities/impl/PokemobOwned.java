@@ -387,6 +387,11 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         {
             setOriginalOwnerUUID(e.getUniqueID());
         }
+        //////
+        //
+        // 1.12 should fire tamed trigger here.
+        //
+        //////
     }
 
     @Override

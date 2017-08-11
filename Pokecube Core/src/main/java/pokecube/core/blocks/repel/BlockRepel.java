@@ -96,16 +96,15 @@ public class BlockRepel extends Block implements ITileEntityProvider
         TileEntity tile = worldIn.getTileEntity(pos);
         if (tile == null || !(tile instanceof TileEntityRepel)) return;
         TileEntityRepel repel = (TileEntityRepel) tile;
-        boolean toggled;
         if (power != 0)
         {
             repel.enabled = false;
-            toggled = repel.removeForbiddenSpawningCoord();
+            repel.removeForbiddenSpawningCoord();
         }
         else
         {
             repel.enabled = true;
-            toggled = repel.addForbiddenSpawningCoord();
+            repel.addForbiddenSpawningCoord();
         }
     }
 }

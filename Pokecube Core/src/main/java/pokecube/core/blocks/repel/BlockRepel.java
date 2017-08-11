@@ -91,7 +91,7 @@ public class BlockRepel extends Block implements ITileEntityProvider
      * when redstone power is updated, cactus blocks popping off due to a
      * neighboring solid block, etc. */
     @Override
-    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn, BlockPos fromPos)
     {
         int power = worldIn.isBlockIndirectlyGettingPowered(pos);
         TileEntity tile = worldIn.getTileEntity(pos);

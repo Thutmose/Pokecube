@@ -12,7 +12,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import pokecube.core.database.PokedexEntry;
 import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
@@ -34,13 +33,11 @@ import thut.lib.CompatWrapper;
  * activating the held item (like berries) if it should be used. */
 public class LogicMovesUpdates extends LogicBase
 {
-    final PokedexEntry entry;
-    Vector3            v = Vector3.getNewVector();
+    Vector3 v = Vector3.getNewVector();
 
     public LogicMovesUpdates(IPokemob entity)
     {
         super(entity);
-        entry = pokemob.getPokedexEntry();
     }
 
     private void doExplosionChecks()

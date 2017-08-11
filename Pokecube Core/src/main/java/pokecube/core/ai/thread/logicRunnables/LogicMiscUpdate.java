@@ -41,7 +41,6 @@ public class LogicMiscUpdate extends LogicBase
     public LogicMiscUpdate(IPokemob entity)
     {
         super(entity);
-        entry = pokemob.getPokedexEntry();
     }
 
     @Override

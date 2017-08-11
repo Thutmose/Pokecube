@@ -7,7 +7,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import pokecube.core.entity.pokemobs.EntityPokemob;
 import pokecube.core.interfaces.IPokemob;
-import thut.api.TickHandler;
 import thut.api.maths.Matrix3;
 import thut.api.maths.Vector3;
 
@@ -24,20 +23,20 @@ public class LogicCollision extends LogicBase
     public LogicCollision(IPokemob pokemob_)
     {
         super(pokemob_);
-        collider = (EntityPokemob) pokemob.getEntity();
+        if (entity instanceof EntityPokemob) collider = (EntityPokemob) entity;
+        else collider = null;
     }
 
     @Override
     public void doLogic()
     {
-        world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null) return;
     }
 
     @Override
     public void doServerTick(World world)
     {
         super.doServerTick(world);
+        if (collider == null) return;
         Vector3 vec = Vector3.getNewVector();
         Vector3 vec2 = Vector3.getNewVector();
         List<AxisAlignedBB> aabbs;

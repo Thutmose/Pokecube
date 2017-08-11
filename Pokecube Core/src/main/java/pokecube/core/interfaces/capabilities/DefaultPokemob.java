@@ -23,12 +23,6 @@ import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
-import pokecube.core.ai.thread.logicRunnables.LogicCollision;
-import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
-import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
-import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
-import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
-import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobMoveHelper;
@@ -184,15 +178,6 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         entity.tasks.addTask(5, this.guardAI);
         entity.tasks.addTask(5, this.utilMoveAI = new PokemobAIUtilityMove(this));
         if (entity instanceof EntityCreature) entity.targetTasks.addTask(3, new PokemobAIHurt(this, entry.isSocial));
-
-        // Add in the various logic AIs that are needed on both client and
-        // server.
-        this.getAI().addAILogic(new LogicInLiquid(this));
-        this.getAI().addAILogic(new LogicCollision(this));
-        this.getAI().addAILogic(new LogicMovesUpdates(this));
-        this.getAI().addAILogic(new LogicInMaterials(this));
-        this.getAI().addAILogic(new LogicFloatFlySwim(this));
-        this.getAI().addAILogic(new LogicMiscUpdate(this));
 
         // None of the AI below should ever run on the client.
         if (entity.getEntityWorld().isRemote) return;

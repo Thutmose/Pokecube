@@ -18,7 +18,13 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import pokecube.core.ai.pokemob.PokemobAIUtilityMove;
+import pokecube.core.ai.thread.logicRunnables.LogicCollision;
+import pokecube.core.ai.thread.logicRunnables.LogicFloatFlySwim;
+import pokecube.core.ai.thread.logicRunnables.LogicInLiquid;
+import pokecube.core.ai.thread.logicRunnables.LogicInMaterials;
+import pokecube.core.ai.thread.logicRunnables.LogicMiscUpdate;
 import pokecube.core.ai.thread.logicRunnables.LogicMountedControl;
+import pokecube.core.ai.thread.logicRunnables.LogicMovesUpdates;
 import pokecube.core.ai.utils.AISaveHandler.PokemobAI;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
@@ -246,8 +252,18 @@ public abstract class PokemobBase implements IPokemob
             this.params = getParameters(entity.getClass());
             this.dataManager = params.register(entity.getDataManager(), entity);
             this.aiStuff = new AIStuff(entity);
-            // Controller is done separately for ease of locating it for controls.
+            // Controller is done separately for ease of locating it for
+            // controls.
             this.getAI().addAILogic(controller = new LogicMountedControl(this));
+
+            // Add in the various logic AIs that are needed on both client and
+            // server, so it is done here instead of in initAI.
+            this.getAI().addAILogic(new LogicInLiquid(this));
+            this.getAI().addAILogic(new LogicCollision(this));
+            this.getAI().addAILogic(new LogicMovesUpdates(this));
+            this.getAI().addAILogic(new LogicInMaterials(this));
+            this.getAI().addAILogic(new LogicFloatFlySwim(this));
+            this.getAI().addAILogic(new LogicMiscUpdate(this));
         }
         rand = entity.getRNG();
     }

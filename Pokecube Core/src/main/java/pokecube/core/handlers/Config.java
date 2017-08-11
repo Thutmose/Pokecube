@@ -430,8 +430,6 @@ public class Config extends ConfigBase
     @Configure(category = client)
     public float                         messageSize                  = 1;
     @Configure(category = client)
-    public boolean                       messagesAlwaysShow           = false;
-    @Configure(category = client)
     public boolean                       guiDown                      = true;
     @Configure(category = client)
     public boolean                       guiAutoScale                 = false;

@@ -107,6 +107,5 @@ public class BlockRepel extends Block implements ITileEntityProvider
             repel.enabled = true;
             toggled = repel.addForbiddenSpawningCoord();
         }
-        System.out.println(repel.enabled + " " + toggled);
     }
 }

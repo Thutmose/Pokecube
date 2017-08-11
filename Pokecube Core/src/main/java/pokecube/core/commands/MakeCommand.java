@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import com.google.common.collect.Lists;
 
@@ -124,7 +123,6 @@ public class MakeCommand extends CommandBase
                         }
                         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
                         Vector3 offset = Vector3.getNewVector().set(0, 1, 0);
-                        UUID owner = null;
                         String ownerName = setToArgs(args, pokemob, index, offset);
                         if (ownerName != null && !ownerName.isEmpty())
                         {
@@ -134,18 +132,14 @@ public class MakeCommand extends CommandBase
                         if (player != null)
                         {
                             offset = offset.add(temp.set(player.getLookVec()));
-                            owner = player.getUniqueID();
-                        }
-                        if (owner != null)
-                        {
-                            pokemob.setPokemonOwner(owner);
+                            pokemob.setPokemonOwner(player);
                             pokemob.setPokemonAIState(IMoveConstants.TAMED, true);
                         }
                         temp.set(sender.getPosition()).addTo(offset);
-                        temp.moveEntity((Entity) mob);
+                        temp.moveEntity(mob);
                         pokemob.specificSpawnInit();
-                        GeneticsManager.initMob((Entity) mob);
-                        ((Entity) mob).getEntityWorld().spawnEntityInWorld((Entity) mob);
+                        GeneticsManager.initMob(mob);
+                        mob.getEntityWorld().spawnEntityInWorld(mob);
                         text = TextFormatting.GREEN + "Spawned " + pokemob.getPokemonDisplayName().getFormattedText();
                         message = ITextComponent.Serializer.jsonToComponent("[\"" + text + "\"]");
                         sender.addChatMessage(message);

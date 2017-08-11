@@ -85,4 +85,29 @@ public class BlockRepel extends Block implements ITileEntityProvider
     {
         return 1;
     }
+
+    /** Called when a neighboring block was changed and marks that this state
+     * should perform any checks during a neighbor change. Cases may include
+     * when redstone power is updated, cactus blocks popping off due to a
+     * neighboring solid block, etc. */
+    @Override
+    public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn)
+    {
+        int power = worldIn.isBlockIndirectlyGettingPowered(pos);
+        TileEntity tile = worldIn.getTileEntity(pos);
+        if (tile == null || !(tile instanceof TileEntityRepel)) return;
+        TileEntityRepel repel = (TileEntityRepel) tile;
+        boolean toggled;
+        if (power != 0)
+        {
+            repel.enabled = false;
+            toggled = repel.removeForbiddenSpawningCoord();
+        }
+        else
+        {
+            repel.enabled = true;
+            toggled = repel.addForbiddenSpawningCoord();
+        }
+        System.out.println(repel.enabled + " " + toggled);
+    }
 }

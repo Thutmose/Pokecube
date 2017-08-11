@@ -43,6 +43,11 @@ public class PokedexEntryIngredientRenderer implements IIngredientRenderer<Poked
         if (Config.instance.jeiModels || manualRender.contains(entry))
         {
             IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
+            if (pokemob == null)
+            {
+                System.err.println("Error rendering " + entry);
+                return;
+            }
             GL11.glPushMatrix();
             GL11.glTranslated(x + 8, y + 17, 10);
             double scale = 1.1;

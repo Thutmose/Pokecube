@@ -34,7 +34,6 @@ public class TileEntityRepel extends TileEntity
         super.readFromNBT(nbt);
         distance = nbt.getByte("distance");
         enabled = nbt.getBoolean("enabled");
-        System.out.println("read");
     }
 
     @Override

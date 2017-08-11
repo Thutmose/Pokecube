@@ -674,7 +674,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     }
 
     @SideOnly(Side.CLIENT)
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderHotbar(RenderGameOverlayEvent.Post event)
     {
         try

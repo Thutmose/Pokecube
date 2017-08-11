@@ -583,7 +583,7 @@ public class PokecubeSerializer
         {
             entity.setForSpawn(Tools.levelToXp(entity.getExperienceMode(), 5));
             entity.getEntity().setHealth(entity.getEntity().getMaxHealth());
-            entity.setPokemonOwner(owner.getUniqueID());
+            entity.setPokemonOwner(owner);
             entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
             ItemStack item = PokecubeManager.pokemobToItem(entity);
             entity.getEntity().isDead = true;

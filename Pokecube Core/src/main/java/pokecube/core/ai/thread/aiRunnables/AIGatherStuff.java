@@ -201,12 +201,12 @@ public class AIGatherStuff extends AIBase
                 {
                     stuffLoc.set(stuff);
                     Path path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
-                    addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+                    addEntityPath(entity, path, speed);
                 }
                 else
                 {
                     Path path = entity.getNavigator().getPathToXYZ(stuffLoc.x, stuffLoc.y, stuffLoc.z);
-                    addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+                    addEntityPath(entity, path, speed);
                 }
             }
         }
@@ -262,7 +262,7 @@ public class AIGatherStuff extends AIBase
                     }
                 }
                 stuffLoc.clear();
-                addEntityPath(entity.getEntityId(), entity.dimension, null, 0);
+                addEntityPath(entity, null, 0);
             }
         }
     }

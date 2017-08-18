@@ -117,7 +117,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (running)
         {
             running = false;
-            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
+            addEntityPath(attacker, null, movementSpeed);
         }
     }
 
@@ -136,7 +136,7 @@ public class AIAttack extends AIBase implements IAICombat
                     && !attacker.isBeingRidden())
             {
                 path = this.attacker.getNavigator().getPathToEntityLiving(entityTarget);
-                addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
+                addEntityPath(attacker, path, movementSpeed);
             }
             targetLoc.set(entityTarget);
             this.chaseTime = 0;
@@ -197,7 +197,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
             addTargetInfo(attacker.getEntityId(), -1, attacker.dimension);
             pokemob.setPokemonAIState(IMoveConstants.ANGRY, false);
-            addEntityPath(attacker.getEntityId(), attacker.dimension, null, movementSpeed);
+            addEntityPath(attacker, null, movementSpeed);
             return;
         }
 
@@ -420,7 +420,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (!targetLoc.isEmpty() && shouldPath)
         {
             path = this.attacker.getNavigator().getPathToXYZ(targetLoc.x, targetLoc.y, targetLoc.z);
-            if (path != null) addEntityPath(attacker.getEntityId(), attacker.dimension, path, movementSpeed);
+            if (path != null) addEntityPath(attacker, path, movementSpeed);
         }
     }
 

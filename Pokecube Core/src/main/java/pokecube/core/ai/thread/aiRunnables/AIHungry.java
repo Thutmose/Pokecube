@@ -127,7 +127,7 @@ public class AIHungry extends AIBase
                     if (v.isVisible(world, v1.set(hook)))
                     {
                         Path path = entity.getNavigator().getPathToEntityLiving(hook);
-                        addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                        addEntityPath(entity, path, moveSpeed);
                         addTargetInfo(entity, hook);
                         if (entity.getDistanceSqToEntity(hook) < 2)
                         {
@@ -186,7 +186,7 @@ public class AIHungry extends AIBase
                 pokemob.setPokemonAIState(IMoveConstants.IDLE, true);
                 Path path = this.entity.getNavigator().getPathToPos(pokemob.getHome());
                 if (path != null && path.getCurrentPathLength() > 32) path = null;
-                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                addEntityPath(entity, path, moveSpeed);
                 pokemob.setPokemonAIState(IMoveConstants.IDLE, false);
             }
             else if (entity.getAttackTarget() == null && entity.getNavigator().noPath())
@@ -255,13 +255,13 @@ public class AIHungry extends AIBase
             if (shouldChangePath
                     && (path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z)) == null)
             {
-                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                addEntityPath(entity, path, moveSpeed);
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
                 berry.setItem(fruit);
                 pokemob.noEat(berry);
                 foodLoc.clear();
             }
-            else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+            else addEntityPath(entity, path, moveSpeed);
         }
     }
 
@@ -287,7 +287,7 @@ public class AIHungry extends AIBase
                 }
             }
             foodLoc.clear();
-            addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+            addEntityPath(entity, null, moveSpeed);
         }
         else if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
@@ -330,9 +330,9 @@ public class AIHungry extends AIBase
                 berry.setItem(new ItemStack(b.getBlock()));
                 pokemob.noEat(berry);
                 foodLoc.clear();
-                addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                addEntityPath(entity, null, moveSpeed);
             }
-            else addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+            else addEntityPath(entity, path, moveSpeed);
         }
     }
 
@@ -361,7 +361,7 @@ public class AIHungry extends AIBase
             berry.setItem(new ItemStack(b.getBlock()));
             pokemob.eat(berry);
             foodLoc.clear();
-            addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+            addEntityPath(entity, null, moveSpeed);
         }
         else if (entity.ticksExisted % 20 == rand.nextInt(20))
         {
@@ -391,7 +391,7 @@ public class AIHungry extends AIBase
             {
                 path = entity.getNavigator().getPathToXYZ(foodLoc.x, foodLoc.y, foodLoc.z);
                 pathed = path != null;
-                addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                addEntityPath(entity, path, moveSpeed);
             }
 
             if (shouldChangePath && !pathed)
@@ -404,11 +404,11 @@ public class AIHungry extends AIBase
                 {
                     path = entity.getNavigator().getPathToXYZ(pokemob.getHome().getX(), pokemob.getHome().getY(),
                             pokemob.getHome().getZ());
-                    addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                    addEntityPath(entity, path, moveSpeed);
                 }
                 else
                 {
-                    addEntityPath(entity.getEntityId(), entity.dimension, null, moveSpeed);
+                    addEntityPath(entity, null, moveSpeed);
                 }
             }
         }
@@ -541,7 +541,7 @@ public class AIHungry extends AIBase
                         setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
 
                         Path path = entity.getNavigator().getPathToXYZ(temp.x, temp.y, temp.z);
-                        addEntityPath(entity.getEntityId(), entity.dimension, path, moveSpeed);
+                        addEntityPath(entity, path, moveSpeed);
                         pokemob.eat(berry);
                         return;
                     }

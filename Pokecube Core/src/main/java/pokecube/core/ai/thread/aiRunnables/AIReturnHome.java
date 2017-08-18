@@ -41,7 +41,7 @@ public class AIReturnHome extends AIBase
     public void run()
     {
         Path path = entity.getNavigator().getPathToPos(mob.getHome());
-        if (path != null) addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+        if (path != null) addEntityPath(entity, path, speed);
     }
 
     @Override

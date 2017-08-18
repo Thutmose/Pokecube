@@ -341,7 +341,8 @@ public class RenderHealth
                 mc.fontRendererObj.drawString(gender,
                         (int) (size / (s * s1) * 2) - 2 - mc.fontRendererObj.getStringWidth(gender), h - 1, colour);
                 if (config.enableDebugInfo && mc.gameSettings.showDebugInfo)
-                    mc.fontRendererObj.drawString("ID: \"" + entityID + "\"", 0, h + 16, 0xFFFFFFFF);
+                    mc.fontRendererObj.drawString("ID: \"" + entityID + "\"" + "(" + entity.getEntityId() + ")", 0,
+                            h + 16, 0xFFFFFFFF);
                 GlStateManager.popMatrix();
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

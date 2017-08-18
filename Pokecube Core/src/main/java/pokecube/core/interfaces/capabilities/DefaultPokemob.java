@@ -23,6 +23,7 @@ import pokecube.core.ai.thread.aiRunnables.AIHungry;
 import pokecube.core.ai.thread.aiRunnables.AIIdle;
 import pokecube.core.ai.thread.aiRunnables.AIMate;
 import pokecube.core.ai.thread.aiRunnables.AIStoreStuff;
+import pokecube.core.ai.thread.aiRunnables.AIBase.PathManager;
 import pokecube.core.ai.utils.GuardAI;
 import pokecube.core.ai.utils.PokeNavigator;
 import pokecube.core.ai.utils.PokemobMoveHelper;
@@ -182,23 +183,28 @@ public class DefaultPokemob extends PokemobSaves implements ICapabilitySerializa
         // None of the AI below should ever run on the client.
         if (entity.getEntityWorld().isRemote) return;
 
+        // Generate a PathManager to use to ensure AI doesn't clear paths for
+        // more important runnables.
+        PathManager manager = new PathManager();
+
         // Add in the Custom type of AI tasks.
-        this.getAI().addAITask(new AIAttack(this).setPriority(200));
-        this.getAI().addAITask(new AICombatMovement(this).setPriority(250));
+        this.getAI().addAITask(new AIAttack(this).setPathManager(manager).setPriority(200));
+        this.getAI().addAITask(new AICombatMovement(this).setPathManager(manager).setPriority(250));
         if (!entry.isStationary)
         {
             this.getAI()
                     .addAITask(new AIFollowOwner(this, 2 + entity.width + this.length, 2 + entity.width + this.length)
-                            .setPriority(400));
+                            .setPathManager(manager).setPriority(400));
         }
-        this.getAI().addAITask(new AIGuardEgg(this).setPriority(250));
-        this.getAI().addAITask(new AIMate(this).setPriority(300));
-        this.getAI().addAITask(new AIHungry(this, new EntityItem(entity.getEntityWorld()), 16).setPriority(300));
+        this.getAI().addAITask(new AIGuardEgg(this).setPathManager(manager).setPriority(250));
+        this.getAI().addAITask(new AIMate(this).setPathManager(manager).setPriority(300));
+        this.getAI().addAITask(new AIHungry(this, new EntityItem(entity.getEntityWorld()), 16).setPathManager(manager)
+                .setPriority(300));
         AIStoreStuff ai = new AIStoreStuff(this);
-        this.getAI().addAITask(ai.setPriority(350));
-        this.getAI().addAITask(new AIGatherStuff(this, 32, ai).setPriority(400));
-        this.getAI().addAITask(new AIIdle(this).setPriority(500));
-        this.getAI().addAITask(new AIFindTarget(this).setPriority(400));
+        this.getAI().addAITask(ai.setPathManager(manager).setPriority(350));
+        this.getAI().addAITask(new AIGatherStuff(this, 32, ai).setPathManager(manager).setPriority(400));
+        this.getAI().addAITask(new AIIdle(this).setPathManager(manager).setPriority(500));
+        this.getAI().addAITask(new AIFindTarget(this).setPathManager(manager).setPriority(400));
 
         // Send notification event of AI initilization, incase anyone wants to
         // affect it.

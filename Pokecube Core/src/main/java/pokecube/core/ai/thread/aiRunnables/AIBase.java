@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -22,8 +20,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.IPokemob.Stats;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
@@ -276,6 +274,26 @@ public abstract class AIBase implements IAIRunnable
         }
     }
 
+    public static class PathManager
+    {
+        protected boolean  set = false;
+        protected PathInfo path;
+
+        protected void reset()
+        {
+            path = null;
+            set = false;
+        }
+
+        protected boolean addEntityPath(Entity entity, Path path, double speed)
+        {
+            if (set) return false;
+            this.path = new PathInfo(entity.getEntityId(), entity.dimension, path, speed);
+            set = true;
+            return set;
+        }
+    }
+
     /** Sorts pokemobs by move order. */
     public static final Comparator<IPokemob> pokemobComparator = new Comparator<IPokemob>()
                                                                {
@@ -298,20 +316,47 @@ public abstract class AIBase implements IAIRunnable
 
     protected Vector<IRunnable>              moves             = new Vector<IRunnable>();
 
-    protected void addEntityPath(Entity entity, Path path, double speed)
+    private PathManager                      pathManager;
+
+    /** Set the pathmanager for this mob. This is only really needed if the
+     * AIBase is intended to manage prioritized pathfinding.
+     * 
+     * @param manager
+     * @return */
+    public AIBase setPathManager(PathManager manager)
     {
-        toRun.add(new PathInfo(entity.getEntityId(), entity.dimension, path, speed));
+        this.pathManager = manager;
+        return this;
     }
 
-    /** threadsafe path determination.
+    /** Returns the path manager. This is final, as to ensure that a pathmanager
+     * has infact been set before continuing to run.
      * 
-     * @param id
-     * @param dim
-     * @param path
-     * @param speed */
-    protected void addEntityPath(int id, int dim, Path path, double speed)
+     * @return */
+    public final PathManager getPathManager()
     {
-        toRun.add(new PathInfo(id, dim, path, speed));
+        // This shouldn't be the case, please use setPathManager after
+        // constructing the AIBase, if you are intending to use pathing.
+        if (pathManager == null) pathManager = new PathManager();
+        return pathManager;
+    }
+
+    /** Threadsafe path setting. This also enforces that only the highest
+     * priority path is set, if you do not want to enforce this, manually add a
+     * PathInfo to the toRun vector.
+     * 
+     * @param entity
+     * @param path
+     * @param speed
+     * @return */
+    protected boolean addEntityPath(Entity entity, Path path, double speed)
+    {
+        boolean set = getPathManager().addEntityPath(entity, path, speed);
+        if (set)
+        {
+            toRun.add(getPathManager().path);
+        }
+        return set;
     }
 
     /** Thread safe attack setting */
@@ -350,7 +395,7 @@ public abstract class AIBase implements IAIRunnable
     @Override
     public void doMainThreadTick(World world)
     {
-        ArrayList<IRunnable> runs = Lists.newArrayList();
+        ArrayList<IRunnable> runs = new ArrayList<IRunnable>(toRun.size());
         runs.addAll(toRun);
         for (IRunnable run : runs)
         {
@@ -360,7 +405,13 @@ public abstract class AIBase implements IAIRunnable
                 toRun.remove(run);
             }
         }
-        runs = Lists.newArrayList();
+        // Ensure path manager has infact been set.
+        getPathManager();
+        synchronized (pathManager)
+        {
+            pathManager.reset();
+        }
+        runs = new ArrayList<IRunnable>(moves.size());
         runs.addAll(moves);
         for (IRunnable run : runs)
         {

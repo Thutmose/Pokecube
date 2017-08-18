@@ -128,7 +128,7 @@ public class AIIdle extends AIBase
         mob.setPokemonAIState(IMoveConstants.IDLE, true);
         Path path = this.entity.getNavigator().getPathToXYZ(this.x, this.y, this.z);
         if (path != null && path.getCurrentPathLength() > maxLength) path = null;
-        addEntityPath(entity.getEntityId(), entity.dimension, path, speed);
+        addEntityPath(entity, path, speed);
         mob.setPokemonAIState(IMoveConstants.IDLE, false);
     }
 
@@ -144,7 +144,7 @@ public class AIIdle extends AIBase
             return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
-            addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
+            addEntityPath(entity, null, speed);
             current = null;
         }
         if (current != null && entity.getAttackTarget() == null)
@@ -156,7 +156,7 @@ public class AIIdle extends AIBase
             diff = Math.max(2, diff);
             if (v.distToSq(v1) < diff)
             {
-                addEntityPath(entity.getEntityId(), entity.dimension, null, speed);
+                addEntityPath(entity, null, speed);
                 return false;
             }
             return false;

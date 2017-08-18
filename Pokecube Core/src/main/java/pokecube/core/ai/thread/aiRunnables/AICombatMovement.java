@@ -219,7 +219,8 @@ public class AICombatMovement extends AIBase
         {
             System.out.println(dir);
         }
-        if (!attacker.onGround && dir.y > 1 && dir.y < 3) dir.y *= 2;
+        double dy = Math.abs(dir.y);
+        if (!attacker.onGround && dy > pokemob.getSize() * pokemob.getPokedexEntry().height && dy < 3) dir.y *= 2;
         dir.addVelocities(attacker);
         toRun.add(new PlaySound(attacker.dimension, Vector3.getNewVector().set(attacker), getLeapSound(),
                 SoundCategory.HOSTILE, 1, 1));

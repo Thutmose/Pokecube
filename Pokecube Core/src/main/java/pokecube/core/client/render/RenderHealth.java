@@ -347,7 +347,8 @@ public class RenderHealth
                 mc.fontRenderer.drawString(gender,
                         (int) (size / (s * s1) * 2) - 2 - mc.fontRenderer.getStringWidth(gender), h - 1, colour);
                 if (PokecubeMod.core.getConfig().enableDebugInfo && mc.gameSettings.showDebugInfo)
-                    mc.fontRenderer.drawString("ID: \"" + entityID + "\"", 0, h + 16, 0xFFFFFFFF);
+                    mc.fontRenderer.drawString("ID: \"" + entityID + "\"" + "(" + entity.getEntityId() + ")", 0, h + 16,
+                            0xFFFFFFFF);
                 GlStateManager.popMatrix();
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -441,7 +442,8 @@ public class RenderHealth
                 lookVector.z * finalDistance);
 
         Entity lookedEntity = null;
-        List<Entity> entitiesInBoundingBox = e.getEntityWorld().getEntitiesWithinAABBExcludingEntity(e, e.getEntityBoundingBox()
+        List<Entity> entitiesInBoundingBox = e.getEntityWorld().getEntitiesWithinAABBExcludingEntity(e, e
+                .getEntityBoundingBox()
                 .expand(lookVector.x * finalDistance, lookVector.y * finalDistance, lookVector.z * finalDistance)
                 .grow(1F, 1F, 1F));
         double minDistance = distance;

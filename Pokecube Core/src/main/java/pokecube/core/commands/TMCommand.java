@@ -34,13 +34,6 @@ public class TMCommand extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        boolean op = CommandTools.isOp(sender);
-        if (!op)
-        {
-            CommandTools.sendNoPermissions(sender);
-            return;
-        }
-        
         EntityPlayerMP[] targets = null;
         for (int i = 1; i < args.length; i++)
         {

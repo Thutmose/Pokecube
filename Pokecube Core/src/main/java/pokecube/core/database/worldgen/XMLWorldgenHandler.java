@@ -182,6 +182,7 @@ public class XMLWorldgenHandler
             {
                 WorldGenTemplates.templates.add(gen);
                 gen = new WorldGenMultiTemplate();
+                gen.chance = struct.chance;
                 gen.syncGround = struct.syncGround;
                 for (XMLStructure struct2 : struct.structures)
                 {

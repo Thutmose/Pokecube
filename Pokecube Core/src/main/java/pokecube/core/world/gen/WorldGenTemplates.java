@@ -27,7 +27,7 @@ public class WorldGenTemplates implements IWorldGenerator
 {
     public static class TemplateGen implements IWorldGenerator
     {
-        protected final float          chance;
+        public float                   chance;
         public final String            template;
         public final int               offset;
         public final SpawnBiomeMatcher spawnRule;

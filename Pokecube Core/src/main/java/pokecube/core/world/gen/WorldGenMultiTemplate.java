@@ -33,6 +33,7 @@ public class WorldGenMultiTemplate implements IWorldGenerator
 
     public List<Template> subTemplates = Lists.newArrayList();
     public boolean        syncGround   = false;
+    public float          chance       = 1;
     public BlockPos       origin;
     public EnumFacing     dir;
 
@@ -40,8 +41,10 @@ public class WorldGenMultiTemplate implements IWorldGenerator
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator,
             IChunkProvider chunkProvider)
     {
+
         if (origin == null)
         {
+            if (random.nextFloat() < chance) return;
             int rX = random.nextInt(20);
             int rZ = random.nextInt(20);
             int x = ((rX) % 16) + chunkX * 16;

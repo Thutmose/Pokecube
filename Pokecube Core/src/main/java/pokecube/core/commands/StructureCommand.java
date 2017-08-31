@@ -99,12 +99,23 @@ public class StructureCommand extends CommandBase
                 }
                 gen.dir = dir;
                 gen.origin = pos;
+                gen.chance = 1;
             }
             for (int x = chunkX - 3; x <= chunkX + 3; x++)
                 for (int z = chunkZ - 3; z <= chunkZ + 3; z++)
                 {
                     generator.generate(world.rand, x, z, world, world.getChunkProvider().chunkGenerator,
                             world.getChunkProvider());
+                    if (generator instanceof TemplateGen)
+                    {
+                        TemplateGen gen = (TemplateGen) generator;
+                        gen.chance = 0;
+                    }
+                    if (generator instanceof WorldGenMultiTemplate)
+                    {
+                        WorldGenMultiTemplate gen = (WorldGenMultiTemplate) generator;
+                        gen.chance = 0;
+                    }
                 }
         }
         else throw new CommandException("No Structure of that name found in config/pokecube/structures!");

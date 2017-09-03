@@ -1218,6 +1218,9 @@ public class PokedexEntry
     public String getTrimmedName()
     {
         String name = this.name;
+        // Deal with colons, can't have those in file paths.
+        name = name.replace(":", "");
+        // Deal with a . at the end, cant have that either.
         if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
         return name;
     }

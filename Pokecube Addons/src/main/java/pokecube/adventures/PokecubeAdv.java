@@ -26,6 +26,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.achievements.AchievementDefeatLeader;
 import pokecube.adventures.achievements.AchievementDefeatTrainer;
 import pokecube.adventures.achievements.AchievementGetBadge;
+import pokecube.adventures.comands.BattleCommand;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
@@ -227,6 +228,7 @@ public class PokecubeAdv
     public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
+        event.registerServerCommand(new BattleCommand());
         event.registerServerCommand(new CommandConfig("pokeadvsettings", Config.instance));
         TypeTrainer.initSpawns();
     }

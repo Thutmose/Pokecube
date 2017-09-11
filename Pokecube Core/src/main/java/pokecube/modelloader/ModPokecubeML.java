@@ -184,6 +184,8 @@ public class ModPokecubeML implements IMobProvider
         sort(addedPokemon);
         for (String s : addedPokemon)
         {
+            // TODO replace this with a regex to replace illegal chars.
+            s = s.replace(":", "");
             if (PokecubeMod.debug) PokecubeMod.log("reg: " + s);
             registerMob(s.toLowerCase(Locale.ENGLISH));
         }

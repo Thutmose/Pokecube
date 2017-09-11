@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.adventures.advancements.Triggers;
+import pokecube.adventures.comands.BattleCommand;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.comands.GeneralCommands;
 import pokecube.adventures.entity.helper.capabilities.CapabilityNPCAIStates;
@@ -229,6 +230,7 @@ public class PokecubeAdv
     public void serverStarting(FMLServerStartingEvent event)
     {
         event.registerServerCommand(new GeneralCommands());
+        event.registerServerCommand(new BattleCommand());
         event.registerServerCommand(new CommandConfig("pokeadvsettings", Config.instance));
         TypeTrainer.initSpawns();
     }

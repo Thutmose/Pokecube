@@ -81,6 +81,8 @@ public abstract class PokemobBase implements IPokemob
         params.DIRECTIONPITCHDW = EntityDataManager.<Float> createKey(clazz, DataSerializers.FLOAT);
         params.TRANSFORMEDTODW = EntityDataManager.<Integer> createKey(clazz, DataSerializers.VARINT);
         params.HELDITEM = EntityDataManager.<Optional<ItemStack>> createKey(clazz, DataSerializers.OPTIONAL_ITEM_STACK);
+        params.TYPE1DW = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
+        params.TYPE2DW = EntityDataManager.<String> createKey(clazz, DataSerializers.STRING);
         return params;
     }
 
@@ -104,6 +106,8 @@ public abstract class PokemobBase implements IPokemob
         public DataParameter<Integer>             STATUSTIMERDW;
         public DataParameter<Byte>                MOVEINDEXDW;
         public DataParameter<Integer>             SPECIALINFO;
+        public DataParameter<String>              TYPE1DW;
+        public DataParameter<String>              TYPE2DW;
 
         public PokemobDataManager register(EntityDataManager dataManager, EntityLiving entity)
         {
@@ -111,6 +115,8 @@ public abstract class PokemobBase implements IPokemob
             // // for sheared status
             dataManager.register(NICKNAMEDW, "");// nickname
             dataManager.register(HAPPYDW, new Integer(0));// Happiness
+            dataManager.register(TYPE1DW, "");// overriden type1
+            dataManager.register(TYPE2DW, "");// overriden type2
 
             // From EntityAiPokemob
             dataManager.register(DIRECTIONPITCHDW, Float.valueOf(0));
@@ -149,6 +155,8 @@ public abstract class PokemobBase implements IPokemob
             manager.manualSyncSet.add(MOVEINDEXDW);
             manager.manualSyncSet.add(ATTACKCOOLDOWN);
             manager.manualSyncSet.add(HUNGERDW);
+            manager.manualSyncSet.add(TYPE1DW);
+            manager.manualSyncSet.add(TYPE2DW);
             return manager;
         }
     }

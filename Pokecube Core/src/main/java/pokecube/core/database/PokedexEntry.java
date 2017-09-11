@@ -1627,6 +1627,8 @@ public class PokedexEntry
     public void setSound(String sound)
     {
         if (sound.endsWith(".")) sound = sound.substring(0, sound.length() - 1);
+        // TODO regex replacements for things.
+        if (sound.contains(":")) sound = sound.replace(":", "");
         this.sound = new ResourceLocation(getModId() + ":" + sound);
     }
 

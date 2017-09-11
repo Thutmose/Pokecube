@@ -16,13 +16,13 @@ public class BattleCommand extends CommandBase
 {
 
     @Override
-    public String getCommandName()
+    public String getName()
     {
         return "pokebattle";
     }
 
     @Override
-    public String getCommandUsage(ICommandSender sender)
+    public String getUsage(ICommandSender sender)
     {
         return "/pokebattle <player>";
     }

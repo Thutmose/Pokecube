@@ -17,6 +17,7 @@ import pokecube.core.events.LevelUpEvent;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.network.pokemobs.PacketNickname;
 import pokecube.core.network.pokemobs.PacketSyncExp;
+import pokecube.core.utils.PokeType;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Matrix3;
 import thut.lib.CompatWrapper;
@@ -141,6 +142,45 @@ public abstract class PokemobStats extends PokemobGenes
                 dataManager.set(params.NICKNAMEDW, nickname);
             }
         }
+    }
+
+    /** Returns 1st type.
+     * 
+     * @see PokeType
+     * @return the byte type */
+    @Override
+    public PokeType getType1()
+    {
+        PokeType type = PokeType.getType(getDataManager().get(params.TYPE1DW));
+        return type != unknown ? type : getPokedexEntry().getType1();
+    }
+
+    /** Returns 2nd type.
+     * 
+     * @see PokeType
+     * @return the byte type */
+    @Override
+    public PokeType getType2()
+    {
+        PokeType type = PokeType.getType(getDataManager().get(params.TYPE2DW));
+        return type != unknown ? type : getPokedexEntry().getType2();
+    }
+
+    @Override
+    public void setType1(PokeType type1)
+    {
+        if (type1 == getType1()) return;
+        System.out.println(type1 + " " + getType1()+" "+getDataManager().get(params.TYPE1DW));
+        String name = type1 == null || type1 == unknown ? "" : type1.name;
+        this.getDataManager().set(params.TYPE1DW, name);
+    }
+
+    @Override
+    public void setType2(PokeType type2)
+    {
+        if (type2 == getType2()) return;
+        String name = type2 == null || type2 == unknown ? "" : type2.name;
+        this.getDataManager().set(params.TYPE2DW, name);
     }
 
     @Override

@@ -51,9 +51,9 @@ import pokecube.core.database.stats.StatsCollector;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
@@ -640,23 +640,21 @@ public class GuiPokedex extends GuiScreen
         {
             drawPage4(xOffset, yOffset);
         }
-
-        if (pokedexEntry != null)
+        int nb = pokedexEntry != null ? pokedexEntry.getPokedexNb() : 0;
+        PokeType type1 = pokemob != null && pokedexEntry == pokemob.getPokedexEntry() ? pokemob.getType1()
+                : pokedexEntry != null ? pokedexEntry.getType1() : PokeType.unknown;
+        PokeType type2 = pokemob != null && pokedexEntry == pokemob.getPokedexEntry() ? pokemob.getType2()
+                : pokedexEntry != null ? pokedexEntry.getType2() : PokeType.unknown;
+        drawCenteredString(fontRendererObj, "#" + nb, xOffset - 28, yOffset + 02, 0xffffff);
+        try
         {
-            drawCenteredString(fontRendererObj, "#" + pokedexEntry.getPokedexNb(), xOffset - 28, yOffset + 02,
-                    0xffffff);
-            try
-            {
-                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType1()), xOffset - 88,
-                        yOffset + 137, pokedexEntry.getType1().colour);
-                drawCenteredString(fontRendererObj, getTranslatedName(pokedexEntry.getType2()), xOffset - 44,
-                        yOffset + 137, pokedexEntry.getType2().colour);
-            }
-            catch (Exception e)
-            {
-                // System.out.println(pokedexEntry);
-                // e.printStackTrace();
-            }
+            drawCenteredString(fontRendererObj, getTranslatedName(type1), xOffset - 88, yOffset + 137, type1.colour);
+            drawCenteredString(fontRendererObj, getTranslatedName(type2), xOffset - 44, yOffset + 137, type2.colour);
+        }
+        catch (Exception e)
+        {
+            // System.out.println(pokedexEntry);
+            // e.printStackTrace();
         }
         GL11.glPopMatrix();
     }

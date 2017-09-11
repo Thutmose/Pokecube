@@ -1129,7 +1129,7 @@ public class PokedexEntry
 
     public Ability getHiddenAbility(IPokemob pokemob)
     {
-        if (abilitiesHidden.isEmpty()) return null;
+        if (abilitiesHidden.isEmpty()) return getAbility(0, pokemob);
         else if (abilitiesHidden.size() == 1) return AbilityManager.getAbility(abilitiesHidden.get(0));
         else if (abilitiesHidden.size() == 2) return pokemob.getSexe() == IPokemob.MALE
                 ? AbilityManager.getAbility(abilitiesHidden.get(0)) : AbilityManager.getAbility(abilitiesHidden.get(1));
@@ -1218,6 +1218,9 @@ public class PokedexEntry
     public String getTrimmedName()
     {
         String name = this.name;
+        // Deal with colons, can't have those in file paths.
+        name = name.replace(":", "");
+        // Deal with a . at the end, cant have that either.
         if (name.endsWith(".")) name = name.substring(0, name.length() - 1);
         return name;
     }

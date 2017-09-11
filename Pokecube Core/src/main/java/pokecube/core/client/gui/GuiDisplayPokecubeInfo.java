@@ -405,7 +405,7 @@ public class GuiDisplayPokecubeInfo extends Gui
                     GL11.glPopMatrix();
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                     GL11.glPushMatrix();
-                    Color moveColor = new Color(move.move.type.colour);
+                    Color moveColor = new Color(move.getType(originalPokemob).colour);
                     GL11.glColor4f(moveColor.getRed() / 255f, moveColor.getGreen() / 255f, moveColor.getBlue() / 255f,
                             1.0F);
                     fontRenderer.drawString(MovesUtils.getMoveName(move.getName()).getFormattedText(),

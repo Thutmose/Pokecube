@@ -4,13 +4,10 @@
 package pokecube.core.entity.pokemobs.helper;
 
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
@@ -19,7 +16,6 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.potion.Potion;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +39,6 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
-import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import thut.api.entity.ai.AIThreadManager;
@@ -509,77 +504,6 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     }
 
     @Override
-    public void onDeath(DamageSource damageSource)
-    {
-        if (ForgeHooks.onLivingDeath(this, damageSource)) return;
-        Entity entity = damageSource.getTrueSource();
-        EntityLivingBase entitylivingbase = this.getAttackingEntity();
-
-        if (this.scoreValue >= 0 && entitylivingbase != null)
-        {
-            entitylivingbase.awardKillScore(this, this.scoreValue, damageSource);
-        }
-        if (entity != null)
-        {
-            if (damageSource instanceof PokemobDamageSource)
-            {
-                ((PokemobDamageSource) damageSource).getImmediateSource().onKillEntity(this);
-            }
-            else entity.onKillEntity(this);
-        }
-        else if (getAttackTarget() != null)
-        {
-            getAttackTarget().onKillEntity(this);
-        }
-        this.dead = true;
-        this.getCombatTracker().reset();
-
-        if (!this.getEntityWorld().isRemote)
-        {
-            int i = 0;
-
-            if (entity instanceof EntityPlayer)
-            {
-                i = EnchantmentHelper.getLootingModifier((EntityLivingBase) entity);
-            }
-
-            captureDrops = true;
-            capturedDrops.clear();
-
-            boolean shadowDrop = (pokemobCap.isShadow() && pokemobCap.getLevel() < 40);
-
-            if (this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot") && !shadowDrop)
-            {
-                this.dropFewItems(this.recentlyHit > 0, i);
-                this.dropEquipment(this.recentlyHit > 0, i);
-
-                if (recentlyHit > 0 && !pokemobCap.getPokemonAIState(IPokemob.TAMED))
-                {
-                    int i1 = this.getExperiencePoints(this.attackingPlayer);
-                    i1 = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i1);
-                    while (i1 > 0)
-                    {
-                        int j = EntityXPOrb.getXPSplit(i1);
-                        i1 -= j;
-                        this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
-                    }
-                }
-            }
-            captureDrops = false;
-            if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, damageSource, capturedDrops, i,
-                    recentlyHit > 0))
-            {
-                for (EntityItem item : capturedDrops)
-                {
-                    world.spawnEntity(item);
-                }
-            }
-        }
-
-        this.world.setEntityState(this, (byte) 3);
-    }
-
-    @Override
     protected void onDeathUpdate()
     {
         if (!PokecubeCore.isOnClientSide() && pokemobCap.getPokemonAIState(IMoveConstants.TAMED))
@@ -815,5 +739,14 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
     {
         // TODO Auto-generated method stub
 
+    }
+
+    /**
+     * Entity won't drop items or experience points if this returns false
+     */
+    @Override
+    protected boolean canDropLoot()
+    {
+        return !pokemobCap.getPokemonAIState(IPokemob.TAMED);
     }
 }

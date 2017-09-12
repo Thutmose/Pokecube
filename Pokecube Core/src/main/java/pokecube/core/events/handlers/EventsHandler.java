@@ -101,6 +101,7 @@ import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
 import pokecube.core.items.pokecubes.EntityPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
+import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.packets.PacketChoose;
 import pokecube.core.network.packets.PacketDataSync;
@@ -771,16 +772,11 @@ public class EventsHandler
     @SubscribeEvent
     public void livingDeath(LivingDeathEvent evt)
     {
-        // IPokemob pokemob =
-        // CapabilityPokemob.getPokemobFor(evt.getEntityLiving());
-        // if (evt.getEntity().worldObj.isRemote || pokemob != null) return;
-        // pokemob =
-        // CapabilityPokemob.getPokemobFor(evt.getEntityLiving().getLastAttacker());
-        // if (pokemob != null && evt.getSource().getEntity() !=
-        // evt.getEntityLiving().getLastAttacker())
-        // {//TODO see if this was needed?
-        // evt.getEntityLiving().getLastAttacker().onKillEntity(evt.getEntityLiving());
-        // }
+        DamageSource damageSource = evt.getSource();
+        if (damageSource instanceof PokemobDamageSource)
+        {
+            ((PokemobDamageSource) damageSource).getImmediateSource().onKillEntity(evt.getEntityLiving());
+        }
     }
 
     @SubscribeEvent

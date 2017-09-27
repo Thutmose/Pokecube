@@ -81,7 +81,7 @@
     <Recipe map="GIG,IPI,GGG">//Nestcube
         <Output n="1" id="pokecube:nestcube"/>
         <Input id="pokecube:premiercube" key="P"/>
-        <Input id="minecraft:tallgrass" key="G"/>
+        <Input id="minecraft:tallgrass" d="32767" key="G"/>
         <Input id="minecraft:gold_ingot" d="32767" key="I"/>
     </Recipe>
     <Recipe map="WWW,IPI,WWW">//Divecube

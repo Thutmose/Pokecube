@@ -24,7 +24,7 @@ public interface ILostChunkGenerator {
      */
     int getRealHeight(int level);
 
-    ILostCityAssetRegistry<ILostCityBuilding> getBuildings();
-    ILostCityAssetRegistry<ILostCityMultiBuilding> getMultiBuildings();
-    ILostCityAssetRegistry<ILostCityCityStyle> getCityStyles();
+//    ILostCityAssetRegistry<ILostCityBuilding> getBuildings();
+//    ILostCityAssetRegistry<ILostCityMultiBuilding> getMultiBuildings();
+//    ILostCityAssetRegistry<ILostCityCityStyle> getCityStyles();
 }

@@ -145,30 +145,30 @@ public class JEICompat implements IModPlugin
         subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
         {
             @Override
-            public String getSubtypeInfo(ItemStack itemStack)
+            public String apply(ItemStack itemStack)
             {
                 if (itemStack.hasTagCompound()) return itemStack.getTagCompound().getString("pokemon");
-                return null;
+                return NONE;
             }
         });
         item = PokecubeItems.held;
         subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
         {
             @Override
-            public String getSubtypeInfo(ItemStack itemStack)
+            public String apply(ItemStack itemStack)
             {
                 if (itemStack.hasTagCompound()) return itemStack.getTagCompound().getString("type");
-                return null;
+                return NONE;
             }
         });
         item = PokecubeItems.fossil;
         subtypeRegistry.registerSubtypeInterpreter(item, new ISubtypeInterpreter()
         {
             @Override
-            public String getSubtypeInfo(ItemStack itemStack)
+            public String apply(ItemStack itemStack)
             {
                 if (itemStack.hasTagCompound()) return itemStack.getTagCompound().getString("pokemon");
-                return null;
+                return NONE;
             }
         });
     }

@@ -15,8 +15,8 @@ public interface ILostChunkInfo {
      * If this chunk hosts the center of a city then this will retrieve the city information
      * of that city.
      */
-    @Nullable
-    ILostCityInfo getCityInfo();
+//    @Nullable
+//    ILostCityInfo getCityInfo();
 
     /**
      * Return the name of the building if there is a building here (name from asset registry)

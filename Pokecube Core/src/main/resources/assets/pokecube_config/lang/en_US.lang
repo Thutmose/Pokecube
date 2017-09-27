@@ -21,8 +21,8 @@ pokecube.config.pcHoldsOnlyPokecubes.tooltip=Can PC hold only pokecubes and eggs
 #AI
 pokecube.config.ai=Pokemob AI Options
 pokecube.config.ai.tooltip=Pokemob AI Options
-pokecube.config.contactAttackDistance.tooltip=Global Scaling factor for Pokemob sizes.
-pokecube.config.rangedAttackDistance.tooltip=Global Scaling factor for Pokemob sizes.
+pokecube.config.contactAttackDistance.tooltip=Distance considered "In Range" for contact attacks, 0 means contact is required.
+pokecube.config.rangedAttackDistance.tooltip=Distance considered "In Range" for ranged attacks, 0 means contact is required.
 pokecube.config.mateMultiplier.tooltip=Scaling factor on breeding rate, setting this higher makes breeding occur faster.
 pokecube.config.breedingDelay.tooltip=Default approximate delay in ticks between breeding, average value is about half this plus 600.
 pokecube.config.blastStrength.tooltip=Scaling factor on explosion strength.

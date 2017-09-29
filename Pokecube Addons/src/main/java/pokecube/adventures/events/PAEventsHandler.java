@@ -76,9 +76,9 @@ public class PAEventsHandler
             EntityTrainer t = (EntityTrainer) trainer;
             t.name = "";
             t.populateBuyingList(null);
-            t.initTrainer(mobs.getType(), maxXp);
+            if (mobs.getType() != null) t.initTrainer(mobs.getType(), maxXp);
         }
-        else
+        else if (mobs.getType() != null)
         {
             mobs.setType(mobs.getType());
             byte genders = mobs.getType().genders;

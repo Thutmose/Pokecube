@@ -67,14 +67,26 @@ public class PAEventsHandler
     final ResourceLocation REWARDSCAP  = new ResourceLocation(PokecubeAdv.ID, "rewards");
     final ResourceLocation AISTUFFCAP  = new ResourceLocation(PokecubeAdv.ID, "aiStuff");
 
-    public static void randomizeTrainerTeam(EntityTrainer trainer)
+    public static void randomizeTrainerTeam(Entity trainer, IHasPokemobs mobs)
     {
         Vector3 loc = Vector3.getNewVector().set(trainer);
         int maxXp = SpawnHandler.getSpawnXp(trainer.getEntityWorld(), loc, Database.getEntry(1));
-        trainer.name = "";
-        trainer.initTrainer(trainer.pokemobsCap.getType(), maxXp);
-        trainer.populateBuyingList(null);
-        System.out.println("Randomized " + trainer.name);
+        if (trainer instanceof EntityTrainer)
+        {
+            EntityTrainer t = (EntityTrainer) trainer;
+            t.name = "";
+            t.populateBuyingList(null);
+            if (mobs.getType() != null) t.initTrainer(mobs.getType(), maxXp);
+        }
+        else if (mobs.getType() != null)
+        {
+            mobs.setType(mobs.getType());
+            byte genders = mobs.getType().genders;
+            if (genders == 1) mobs.setGender((byte) 1);
+            if (genders == 2) mobs.setGender((byte) 2);
+            if (genders == 3) mobs.setGender((byte) (Math.random() < 0.5 ? 1 : 2));
+            TypeTrainer.getRandomTeam(mobs, (EntityLivingBase) trainer, maxXp, trainer.getEntityWorld());
+        }
     }
 
     @SubscribeEvent
@@ -116,11 +128,16 @@ public class PAEventsHandler
     @SubscribeEvent
     public void StructureSpawn(StructureEvent.SpawnEntity event)
     {
-        if (!(event.getEntity() instanceof EntityTrainer)) return;
-        EntityTrainer trainer = (EntityTrainer) event.getEntity();
-        if (trainer.getShouldRandomize())
+        IHasPokemobs mobs = CapabilityHasPokemobs.getHasPokemobs(event.getEntity());
+        if (mobs == null) return;
+        boolean randomize = event.getEntity().getEntityData().getBoolean("randomizeTeam");
+        if (event.getEntity() instanceof EntityTrainer)
         {
-            randomizeTrainerTeam(trainer);
+            randomize = ((EntityTrainer) event.getEntity()).getShouldRandomize();
+        }
+        if (randomize)
+        {
+            randomizeTrainerTeam(event.getEntity(), mobs);
         }
     }
 

@@ -19,6 +19,7 @@ public class EntityPokemartSeller extends EntityTrainer
     {
         super(par1World, TypeTrainer.merchant, 100);
         this.aiStates.setAIState(IHasNPCAIStates.PERMFRIENDLY, true);
+        pokemobsCap.setType(TypeTrainer.merchant);
         pokemobsCap.friendlyCooldown = Integer.MAX_VALUE;
     }
 

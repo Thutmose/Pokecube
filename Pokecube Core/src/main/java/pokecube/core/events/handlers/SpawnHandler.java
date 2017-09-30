@@ -345,7 +345,7 @@ public final class SpawnHandler
 
     public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon, int variance, int baseLevel)
     {
-        int spawnLevel = 1;
+        int spawnLevel = baseLevel;
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
         if (variance == -1)

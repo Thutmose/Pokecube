@@ -422,6 +422,15 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
         int maxXP = getEntity().getEntityData().getInteger("spawnExp");
         if (!getEntity().getEntityData().hasKey("spawnExp"))
         {
+            if (!getEntity().getEntityData().getBoolean("initSpawn"))
+            {
+                pokemob.setHeldItem(pokemob.wildHeldItem());
+                setSpecialInfo(pokemob.getPokedexEntry().defaultSpecial);
+                if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth(pokemob.getLevel());
+                pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
+                return pokemob;
+            }
+            getEntity().getEntityData().removeTag("initSpawn");
             Vector3 spawnPoint = Vector3.getNewVector().set(getEntity());
             maxXP = SpawnHandler.getSpawnXp(getEntity().getEntityWorld(), spawnPoint, pokemob.getPokedexEntry());
             SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), spawnPoint,
@@ -430,8 +439,8 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
             MinecraftForge.EVENT_BUS.post(event);
             int level = event.getLevel();
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
-            Thread.dumpStack();
         }
+        getEntity().getEntityData().removeTag("spawnExp");
         pokemob = pokemob.setForSpawn(maxXP);
         pokemob.setHeldItem(pokemob.wildHeldItem());
         setSpecialInfo(pokemob.getPokedexEntry().defaultSpecial);

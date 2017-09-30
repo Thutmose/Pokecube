@@ -332,6 +332,8 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
     @Nullable
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata)
     {
+
+        getEntityData().setBoolean("initSpawn", true);
         IPokemob pokemob = pokemobCap.specificSpawnInit();
         SpawnEvent.Post evt = new SpawnEvent.Post(pokemob.getPokedexEntry(), Vector3.getNewVector().set(this),
                 getEntityWorld(), pokemob);

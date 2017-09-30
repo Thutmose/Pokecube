@@ -276,7 +276,7 @@ public class TypeTrainer
         List<TypeTrainer> toRemove = new ArrayList<TypeTrainer>();
         for (TypeTrainer t : typeMap.values())
         {
-            if (t.pokemon.size() == 0)
+            if (t.pokemon.size() == 0 && t != merchant)
             {
                 toRemove.add(t);
             }

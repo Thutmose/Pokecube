@@ -679,7 +679,7 @@ public interface IPokemob
 
     /** Called when the mob spawns naturally. Used to set held item for
      * example. */
-    void specificSpawnInit();
+    IPokemob specificSpawnInit();
 
     /** Returns the held item this pokemob should have when found wild.
      * 

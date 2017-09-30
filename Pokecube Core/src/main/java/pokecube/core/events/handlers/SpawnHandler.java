@@ -195,12 +195,13 @@ public final class SpawnHandler
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityliving);
         if (pokemob != null)
         {
+
             long time = System.nanoTime();
             int maxXP = 10;
             int level = 1;
             if (expFunction && overrideLevel == -1)
             {
-                maxXP = getSpawnXp(world, spawnPoint, pokemob.getPokedexEntry());
+                maxXP = getSpawnXp(world, spawnPoint, pokemob.getPokedexEntry(), variance, overrideLevel);
                 SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), spawnPoint, world,
                         Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), maxXP), variance);
                 MinecraftForge.EVENT_BUS.post(event);
@@ -208,7 +209,8 @@ public final class SpawnHandler
             }
             else if (overrideLevel == -1)
             {
-                level = getSpawnLevel(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry());
+                level = getSpawnLevel(world, Vector3.getNewVector().set(posX, posY, posZ), pokemob.getPokedexEntry(),
+                        variance, overrideLevel);
             }
             else
             {
@@ -218,8 +220,8 @@ public final class SpawnHandler
                 level = event.getLevel();
             }
             maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
-            pokemob = pokemob.setForSpawn(maxXP);
-            pokemob.specificSpawnInit();
+            pokemob.getEntity().getEntityData().setInteger("spawnExp", maxXP);
+            pokemob = pokemob.specificSpawnInit();
             double dt = (System.nanoTime() - time) / 10e3D;
             if (PokecubeMod.debug && dt > 100)
             {
@@ -341,26 +343,73 @@ public final class SpawnHandler
         return (int) Math.abs(toUse.getValue());
     }
 
-    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
+    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon, int variance, int baseLevel)
     {
         int spawnLevel = 1;
         TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
         int b = t.getBiome(location);
-        int variance = 0;
-        if (subBiomeLevels.containsKey(b))
+        if (variance == -1)
         {
-            Integer[] range = subBiomeLevels.get(b);
-            spawnLevel = range[0];
-            variance = range[1] - range[0];
+            if (subBiomeLevels.containsKey(b))
+            {
+                Integer[] range = subBiomeLevels.get(b);
+                variance = range[1] - range[0];
+            }
+            else
+            {
+                variance = PokecubeMod.core.getConfig().levelVariance;
+            }
         }
-        else
+        if (spawnLevel == -1)
         {
-            spawnLevel = parse(world, location);
-            variance = PokecubeMod.core.getConfig().levelVariance;
+            if (subBiomeLevels.containsKey(b))
+            {
+                Integer[] range = subBiomeLevels.get(b);
+                spawnLevel = range[0];
+            }
+            else
+            {
+                spawnLevel = parse(world, location);
+            }
         }
+        if (variance < 1) variance = 1;
+        spawnLevel = spawnLevel + world.rand.nextInt(variance);
         SpawnEvent.Level event = new SpawnEvent.Level(pokemon, location, world, spawnLevel, variance);
         MinecraftForge.EVENT_BUS.post(event);
         return event.getLevel();
+    }
+
+    public static int getSpawnLevel(World world, Vector3 location, PokedexEntry pokemon)
+    {
+        return getSpawnLevel(world, location, pokemon, -1, -1);
+    }
+
+    public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon, int variance, int baseLevel)
+    {
+        int maxXp = 10;
+        if (!expFunction) { return Tools.levelToXp(pokemon.getEvolutionMode(),
+                getSpawnLevel(world, location, pokemon, variance, baseLevel)); }
+
+        // TODO properly implement base level and variance overriding
+
+        TerrainSegment t = TerrainManager.getInstance().getTerrian(world, location);
+        int b = t.getBiome(location);
+        if (subBiomeLevels.containsKey(b))
+        {
+            Integer[] range = subBiomeLevels.get(b);
+            int dl = range[1] - range[0];
+            if (dl > 0) dl = new Random().nextInt(dl) + 1;
+            int level = range[0] + dl;
+            maxXp = Math.max(10, Tools.levelToXp(pokemon.getEvolutionMode(), level));
+            return maxXp;
+        }
+        maxXp = parse(world, location);
+        maxXp = Math.max(maxXp, 10);
+        int level = Tools.xpToLevel(pokemon.getEvolutionMode(), maxXp);
+        variance = variance == -1 ? PokecubeMod.core.getConfig().levelVariance : variance;
+        level = level + new Random().nextInt(Math.max(1, variance));
+        level = Math.max(1, level);
+        return Tools.levelToXp(pokemon.getEvolutionMode(), level);
     }
 
     public static int getSpawnXp(World world, Vector3 location, PokedexEntry pokemon)

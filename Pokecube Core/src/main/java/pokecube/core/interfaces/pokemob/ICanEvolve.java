@@ -309,7 +309,6 @@ public interface ICanEvolve extends IHasEntry, IHasOwner
                     evo.setHeldItem(CompatWrapper.nullStack);
                 }
                 // Init things like moves.
-                evo.specificSpawnInit();
                 evo.getMoveStats().oldLevel = data.level - 1;
                 evo.levelUp(evo.getLevel());
 

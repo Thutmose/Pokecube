@@ -104,6 +104,7 @@ public class PacketBag implements IMessage, IMessageHandler<PacketBag, IMessage>
             InventoryBag bag = InventoryBag.getBag(player);
             int num = message.data.getInteger("N");
             InventoryBag.PAGECOUNT = message.data.getInteger("S");
+            ContainerBag.HOLDALL = message.data.getBoolean("A");
             bag.boxes = new String[num];
             for (int i = 0; i < bag.boxes.length; i++)
             {

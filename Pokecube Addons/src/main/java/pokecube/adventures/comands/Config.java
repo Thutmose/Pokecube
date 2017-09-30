@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
+import pokecube.adventures.items.bags.ContainerBag;
 import pokecube.adventures.items.bags.InventoryBag;
 import pokecube.adventures.utils.DBLoader;
 import pokecube.core.PokecubeItems;
@@ -187,6 +188,7 @@ public class Config extends ConfigBase
         TileEntityTradingTable.theftEnabled = theft;
         TrainerSpawnHandler.trainerBox = trainerBox;
         DBLoader.FORCECOPY = forceDatabase;
+        ContainerBag.HOLDALL = bagHoldAll;
         InventoryBag.PAGECOUNT = bagPageCount;
         for (String s : extraTradeDatabases)
         {

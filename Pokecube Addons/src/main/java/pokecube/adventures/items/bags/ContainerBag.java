@@ -13,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.adventures.comands.Config;
 import pokecube.adventures.network.packets.PacketBag;
 import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokemobUseable;
@@ -25,10 +24,10 @@ import thut.lib.CompatWrapper;
 @ChestContainer(isLargeChest = true, showButtons = false)
 public class ContainerBag extends Container
 {
-
-    public static int STACKLIMIT = 64;
-    public static int yOffset;
-    public static int xOffset;
+    public static boolean HOLDALL    = false;
+    public static int     STACKLIMIT = 64;
+    public static int     yOffset;
+    public static int     xOffset;
 
     /** Returns true if the item is a filled pokecube.
      *
@@ -37,7 +36,7 @@ public class ContainerBag extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     public static boolean isItemValid(ItemStack itemstack)
     {
-        if (Config.instance.bagHoldAll) return true;
+        if (HOLDALL) return true;
         boolean valid = PokecubeItems.isValidHeldItem(itemstack) || itemstack.getItem() instanceof IPokemobUseable;
         valid |= PokecubeItems.getFossilEntry(itemstack) != null;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()
@@ -61,6 +60,7 @@ public class ContainerBag extends Container
             PacketBag packet = new PacketBag(PacketBag.ONOPEN);
             packet.data.setInteger("N", invBag.boxes.length);
             packet.data.setInteger("S", InventoryBag.PAGECOUNT);
+            packet.data.setBoolean("A", HOLDALL);
             for (int i = 0; i < invBag.boxes.length; i++)
             {
                 packet.data.setString("N" + i, invBag.boxes[i]);

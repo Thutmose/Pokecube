@@ -60,6 +60,7 @@ public class ContainerBag extends Container
         {
             PacketBag packet = new PacketBag(PacketBag.ONOPEN);
             packet.data.setInteger("N", invBag.boxes.length);
+            packet.data.setInteger("S", InventoryBag.PAGECOUNT);
             for (int i = 0; i < invBag.boxes.length; i++)
             {
                 packet.data.setString("N" + i, invBag.boxes[i]);

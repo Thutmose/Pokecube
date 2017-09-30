@@ -30,6 +30,8 @@ import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.events.MoveMessageEvent;
 import pokecube.core.events.PCEvent;
 import pokecube.core.events.RecallEvent;
+import pokecube.core.events.SpawnEvent;
+import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -40,6 +42,8 @@ import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobMessage;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.TagNames;
+import pokecube.core.utils.Tools;
+import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
 
 public abstract class PokemobOwned extends PokemobAI implements IInventoryChangedListener
@@ -409,11 +413,28 @@ public abstract class PokemobOwned extends PokemobAI implements IInventoryChange
     }
 
     @Override
-    public void specificSpawnInit()
+    public IPokemob specificSpawnInit()
     {
-        this.setHeldItem(this.wildHeldItem());
-        setSpecialInfo(getPokedexEntry().defaultSpecial);
-        this.updateHealth(getLevel());
+        IPokemob pokemob = this;
+        int maxXP = getEntity().getEntityData().getInteger("spawnExp");
+        if (!getEntity().getEntityData().hasKey("spawnExp"))
+        {
+            Vector3 spawnPoint = Vector3.getNewVector().set(getEntity());
+            maxXP = SpawnHandler.getSpawnXp(getEntity().getEntityWorld(), spawnPoint, pokemob.getPokedexEntry());
+            SpawnEvent.Level event = new SpawnEvent.Level(pokemob.getPokedexEntry(), spawnPoint,
+                    getEntity().getEntityWorld(), Tools.xpToLevel(pokemob.getPokedexEntry().getEvolutionMode(), -1),
+                    PokecubeMod.core.getConfig().levelVariance);
+            MinecraftForge.EVENT_BUS.post(event);
+            int level = event.getLevel();
+            maxXP = Tools.levelToXp(pokemob.getPokedexEntry().getEvolutionMode(), level);
+            Thread.dumpStack();
+        }
+        pokemob = pokemob.setForSpawn(maxXP);
+        pokemob.setHeldItem(pokemob.wildHeldItem());
+        setSpecialInfo(pokemob.getPokedexEntry().defaultSpecial);
+        if (pokemob instanceof PokemobOwned) ((PokemobOwned) pokemob).updateHealth(pokemob.getLevel());
+        pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
+        return pokemob;
     }
 
     @Override

@@ -26,6 +26,7 @@ public class EntityPokemartSeller extends EntityTrainer
     @Override
     public void populateBuyingList(EntityPlayer player)
     {
+        pokemobsCap.setType(TypeTrainer.merchant);
         tradeList = new MerchantRecipeList();
         if (shouldrefresh) itemList = null;
         shouldrefresh = false;

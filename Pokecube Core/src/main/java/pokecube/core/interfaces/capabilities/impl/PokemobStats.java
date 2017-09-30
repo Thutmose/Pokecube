@@ -233,12 +233,4 @@ public abstract class PokemobStats extends PokemobGenes
         mainBox = new Matrix3(a, b, c);
     }
 
-    @Override
-    public void specificSpawnInit()
-    {
-        this.setHeldItem(this.wildHeldItem());
-        setSpecialInfo(getPokedexEntry().defaultSpecial);
-        getEntity().setHealth(getEntity().getMaxHealth());
-    }
-
 }

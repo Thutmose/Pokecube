@@ -2,11 +2,13 @@ package pokecube.core.client.gui;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
@@ -36,6 +38,8 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.utils.EntityTools;
 import thut.api.entity.IHungrymob;
+import thut.api.entity.genetics.Alleles;
+import thut.api.entity.genetics.IMobGenetics;
 
 public class GuiPokemob extends GuiContainer
 {
@@ -202,9 +206,19 @@ public class GuiPokemob extends GuiContainer
             EntityLiving entity = pokemob.getEntity();
             IPokemob cached = EventsHandlerClient.getRenderMob(pokemob.getPokedexEntry(),
                     PokecubeCore.proxy.getWorld());
+            IMobGenetics source = entity.getCapability(IMobGenetics.GENETICS_CAP, null);
+            IMobGenetics dest = null;
+            Map<ResourceLocation, Alleles> back = Maps.newHashMap();
             if (cached != null)
             {
+                dest = cached.getEntity().getCapability(IMobGenetics.GENETICS_CAP, null);
+                if (source != null && dest != null)
+                {
+                    back.putAll(dest.getAlleles());
+                    dest.getAlleles().putAll(source.getAlleles());
+                }
                 cached.readPokemobData(pokemob.writePokemobData());
+                cached.onGenesChanged();
                 EntityTools.copyEntityTransforms(cached.getEntity(), entity);
                 entity = cached.getEntity();
                 pokemob = cached;
@@ -241,6 +255,10 @@ public class GuiPokemob extends GuiContainer
             GlStateManager.disableTexture2D();
             GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            if (dest != null && back != null)
+            {
+                dest.getAlleles().putAll(back);
+            }
 
         }
         catch (Throwable e)

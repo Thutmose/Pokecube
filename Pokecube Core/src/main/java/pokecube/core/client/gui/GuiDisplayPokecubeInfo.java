@@ -41,7 +41,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.GuiEvent;
 import pokecube.core.client.Resources;
-import pokecube.core.events.handlers.EventsHandlerClient;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
@@ -52,7 +51,6 @@ import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.EntityTools;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
@@ -239,14 +237,11 @@ public class GuiDisplayPokecubeInfo extends Gui
                 PokecubeMod.core.getConfig().guiSize);
         int w = 0;// trans[0];
         int h = 0;// trans[1];
-        IPokemob renderPokemob = getCurrentPokemob();
-        IPokemob originalPokemob = renderPokemob;
-        if (renderPokemob != null)
+        IPokemob originalPokemob = getCurrentPokemob();
+        if (originalPokemob != null)
         {
-            EntityLiving entity = renderPokemob.getEntity();
-            String displayName = renderPokemob.getPokemonDisplayName().getFormattedText();
-            renderPokemob = EventsHandlerClient.getRenderMob(renderPokemob.getPokedexEntry(), entity.getEntityWorld());
-            EntityTools.copyEntityTransforms(renderPokemob.getEntity(), entity);
+            EntityLiving entity = originalPokemob.getEntity();
+            String displayName = originalPokemob.getPokemonDisplayName().getFormattedText();
             int currentMoveIndex = originalPokemob.getMoveIndex();
             GlStateManager.enableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             // Render HP
@@ -421,7 +416,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             this.drawTexturedModalRect(mobOffsetX + w, mobOffsetY + h, 0, 0, 42, 42);
             GlStateManager.disableBlendProfile(GlStateManager.Profile.PLAYER_SKIN);
             GL11.glColor4f(1, 1, 1, 1);
-            GuiPokemob.renderMob(renderPokemob, -30, -25, 0, 0, 0, 0, 0, 0.75f);
+            GuiPokemob.renderMob(originalPokemob, -30, -25, 0, 0, 0, 0, 0, 0.75f);
         }
         GL11.glPopMatrix();
     }

@@ -112,7 +112,7 @@ public class InventoryBag implements IInventory
                     load.boxes[k] = boxes.getString("name" + k);
                 }
             }
-
+            if (load.getPage() >= PAGECOUNT) load.setPage(0);
             load.contents.clear();
             for (int k = 0; k < load.getSizeInventory(); k++)
             {

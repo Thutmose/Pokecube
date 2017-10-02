@@ -292,10 +292,9 @@ public class EventsHandler
                     if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getCachedUniqueIdString())))
                     {
-                        ItemStack cube = mob.getEntityItem();
-                        ItemTossEvent evt = new ItemTossEvent(
-                                new EntityItem(mob.getEntityWorld(), mob.posX, mob.posY, mob.posZ, cube), player);
-                        MinecraftForge.EVENT_BUS.post(evt);
+                        EntityLivingBase out = mob.sendOut();
+                        IPokemob poke = CapabilityPokemob.getPokemobFor(out);
+                        if (poke != null) poke.returnToPokecube();
                     }
                 }
             }

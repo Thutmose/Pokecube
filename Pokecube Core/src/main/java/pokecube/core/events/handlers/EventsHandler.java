@@ -50,7 +50,6 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -295,10 +294,9 @@ public class EventsHandler
                     if (name != null && (name.equalsIgnoreCase(player.getName())
                             || name.equals(player.getCachedUniqueIdString())))
                     {
-                        ItemStack cube = mob.getItem();
-                        ItemTossEvent evt = new ItemTossEvent(
-                                new EntityItem(mob.getEntityWorld(), mob.posX, mob.posY, mob.posZ, cube), player);
-                        MinecraftForge.EVENT_BUS.post(evt);
+                        EntityLivingBase out = mob.sendOut();
+                        IPokemob poke = CapabilityPokemob.getPokemobFor(out);
+                        if (poke != null) poke.returnToPokecube();
                     }
                 }
             }

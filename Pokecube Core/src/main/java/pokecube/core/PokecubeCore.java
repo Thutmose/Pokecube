@@ -655,7 +655,7 @@ public class PokecubeCore extends PokecubeMod
         {
             pokedexmap = new HashMap();
         }
-        String name = entry.getName();
+        String name = entry.getName().replace(":", "");
         if (clazz != null)
         {
             try

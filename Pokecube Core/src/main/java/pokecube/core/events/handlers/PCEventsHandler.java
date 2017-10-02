@@ -214,6 +214,20 @@ public class PCEventsHandler
         }
     }
 
+    /** If player tosses a pokecube item, it will be send to PC instead.
+     * 
+     * @param evt */
+    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = false)
+    public void PCEvent(pokecube.core.events.PCEvent evt)
+    {
+        if (evt.owner == null || evt.owner.getEntityWorld().isRemote) return;
+        if (PokecubeManager.isFilled(evt.toPC))
+        {
+            InventoryPC.addPokecubeToPC(evt.toPC, evt.owner.getEntityWorld());
+            evt.setCanceled(true);
+        }
+    }
+
     /** Attempts to send the pokecube to the PC whenever the entityitem it is in
      * expires. This prevents losing pokemobs if the cube is somehow left in the
      * world.

@@ -136,6 +136,11 @@ public class AdvancedRocketryCompat
     {
         setSpawnsFile(event);
         Database.addSpawnData(CUSTOMSPAWNSFILE);
+    }
+
+    @SubscribeEvent
+    public void postpost(PostPostInit event)
+    {
         BiomeType.getBiome("Moon", true);
         try
         {
@@ -156,11 +161,6 @@ public class AdvancedRocketryCompat
         {
             e.printStackTrace();
         }
-    }
-
-    @SubscribeEvent
-    public void postpost(PostPostInit event)
-    {
         Set<String> mobs = Sets.newHashSet();// TODO make this load from a file.
         mobs.add("clefairy");
         mobs.add("clefable");

@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL12;
 
 import com.google.common.collect.Lists;
 
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -31,6 +32,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,6 +50,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
+import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketPokemobAttack;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
@@ -101,6 +104,23 @@ public class GuiDisplayPokecubeInfo extends Gui
         scaleFactor2 *= scaled;
         if (apply) GL11.glScaled(scaleFactor2 / scaleFactor, scaleFactor2 / scaleFactor, scaleFactor2 / scaleFactor);
         return scaleFactor2;
+    }
+
+    public static void sendMoveIndexPacket(IPokemob pokemob, int moveIndex)
+    {
+        try
+        {
+            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
+            buffer.writeByte(MessageServer.MOVEINDEX);
+            buffer.writeInt(pokemob.getEntity().getEntityId());
+            buffer.writeByte((byte) moveIndex);
+            MessageServer packet = new MessageServer(buffer);
+            PokecubePacketHandler.sendToServer(packet);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public static int[] applyTransform(String ref, int[] shift, int[] dims, float scale)
@@ -658,7 +678,7 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
             if (index >= 5) index = 0;
             if (index >= max) index = 5;
-            pokemob.setMoveIndex(index);
+            sendMoveIndexPacket(pokemob, index);
         }
     }
 
@@ -837,8 +857,9 @@ public class GuiDisplayPokecubeInfo extends Gui
                 index -= j;
             }
 
-            if (index % 5 >= 0) pokemob.setMoveIndex(index % 5);
-            else pokemob.setMoveIndex(5);
+            if (index % 5 >= 0) index = index % 5;
+            else index = 5;
+            sendMoveIndexPacket(pokemob, index);
         }
     }
 
@@ -863,7 +884,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         if (pokemob != null)
         {
             int index = num;
-            if (index % 4 >= 0) pokemob.setMoveIndex(index % 4);
+            if (index % 4 >= 0) index = index % 4;
+            sendMoveIndexPacket(pokemob, index);
         }
     }
 }

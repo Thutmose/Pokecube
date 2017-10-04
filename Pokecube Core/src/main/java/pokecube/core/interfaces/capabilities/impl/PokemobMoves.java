@@ -3,11 +3,9 @@ package pokecube.core.interfaces.capabilities.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
@@ -18,9 +16,7 @@ import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketSyncMoveUse;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.utils.PokeType;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
@@ -209,35 +205,22 @@ public abstract class PokemobMoves extends PokemobSexed
     @Override
     public void setMoveIndex(int moveIndex)
     {
-        if (moveIndex == getMoveIndex() || getPokemonAIState(NOMOVESWAP)) return;
-        if (getMove(moveIndex) == null)
-        {
-            setMoveIndex(5);
-        }
-        moveInfo.ROLLOUTCOUNTER = 0;
-        moveInfo.FURYCUTTERCOUNTER = 0;
-        moveInfo.BLOCKCOUNTER = 0;
-        moveInfo.blocked = false;
-        moveInfo.blockTimer = 0;
-
         if (PokecubeCore.isOnClientSide())
         {
-            try
-            {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-                buffer.writeByte(MessageServer.MOVEINDEX);
-                buffer.writeInt(getEntity().getEntityId());
-                buffer.writeByte((byte) moveIndex);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-            }
-            catch (Exception ex)
-            {
-                ex.printStackTrace();
-            }
+            // Do nothing, packet should be handled by gui handler, not us.
         }
         else
         {
+            if (moveIndex == getMoveIndex() || getPokemonAIState(NOMOVESWAP)) return;
+            if (getMove(moveIndex) == null)
+            {
+                setMoveIndex(5);
+            }
+            moveInfo.ROLLOUTCOUNTER = 0;
+            moveInfo.FURYCUTTERCOUNTER = 0;
+            moveInfo.BLOCKCOUNTER = 0;
+            moveInfo.blocked = false;
+            moveInfo.blockTimer = 0;
             dataManager.set(params.MOVEINDEXDW, (byte) moveIndex);
         }
     }

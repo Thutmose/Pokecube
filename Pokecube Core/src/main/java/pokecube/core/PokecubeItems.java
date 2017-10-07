@@ -117,8 +117,8 @@ public class PokecubeItems extends Items
             .setUnlocalizedName("pokecenter").setCreativeTab(creativeTabPokecubeBlocks);
     public static Block                            repelBlock     = new BlockRepel();
     public static Block                            tableBlock     = new BlockPokecubeTable();
-    public static Block                            nest           = new BlockNest()
-            .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks).setUnlocalizedName("pokemobnest");
+    public static Block                            nest           = new BlockNest().setUnlocalizedName("pokemobnest");
+          //  .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
     public static Block                            pc             = (new BlockPC()).setUnlocalizedName("pc");
 
     public static Block                            tradingtable   = (new BlockTradingTable())

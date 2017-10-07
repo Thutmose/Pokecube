@@ -179,6 +179,14 @@ public class AIBattle extends AITrainerBase
     public void updateTask()
     {
         if (trainer.getTarget() == null) return;
+        // Check if trainer has any pokemobs, if not, cancel agression, no
+        // reward.
+        if (!CompatWrapper.isValid(trainer.getPokemob(0)))
+        {
+            trainer.setTarget(null);
+            return;
+        }
+
         // Check if in range, if too far, target has run away, so forget about
         // it.
         double distance = entity.getDistanceSqToEntity(trainer.getTarget());

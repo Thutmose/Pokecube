@@ -285,7 +285,7 @@ public class MovesParser
         if (par) move.statusChange += IMoveConstants.STATUS_PAR;
         if (frz) move.statusChange += IMoveConstants.STATUS_FRZ;
         if (slp) move.statusChange += IMoveConstants.STATUS_SLP;
-        if (poison) move.statusChange += poison2 ? IMoveConstants.STATUS_PSN2 : IMoveConstants.STATUS_BRN;
+        if (poison) move.statusChange += poison2 ? IMoveConstants.STATUS_PSN2 : IMoveConstants.STATUS_PSN;
         String chance = entry.effectRate.replace(" %", "");
         int rate = getRate(chance);
         move.statusChance = rate / 100f;

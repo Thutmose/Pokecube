@@ -490,6 +490,13 @@ public class CapabilityHasPokemobs
         @Override
         public void setTarget(EntityLivingBase target)
         {
+            if (!CompatWrapper.isValid(getPokemob(0)))
+            {
+                target = null;
+                aiStates.setAIState(IHasNPCAIStates.THROWING, false);
+                aiStates.setAIState(IHasNPCAIStates.INBATTLE, false);
+                return;
+            }
             if (target != null && target != this.target && attackCooldown <= 0)
             {
                 attackCooldown = Config.instance.trainerBattleDelay;

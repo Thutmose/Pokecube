@@ -7,7 +7,6 @@ import java.util.UUID;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -68,7 +67,7 @@ public class GiftCommand extends CommandBase
                     mob.setOriginalOwnerUUID(new UUID(12345, 54321));
                     mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(13)));
                     mob.setPokemonOwner(player);
-                    mob.setHp(((EntityLiving) mob).getMaxHealth());
+                    mob.setHp(mob.getEntity().getMaxHealth());
                     mob.returnToPokecube();
                     CommandTools.sendMessage(sender, "pokecube.command.gift");
                     player.getEntityData().setString("code:" + code, code);

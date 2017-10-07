@@ -19,7 +19,7 @@ public interface IHasStats extends IHasEntry
      *            the Effort Values to add */
     default void addEVs(byte[] evsToAdd)
     {
-        byte[] evs = getEVs();
+        byte[] evs = getEVs().clone();
         for (int i = 0; i < 6; i++)
         {
             if (evs[i] + 128 + evsToAdd[i] <= 255 && evs[i] + 128 + evsToAdd[i] >= 0)

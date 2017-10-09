@@ -5,7 +5,6 @@ import java.util.Random;
 
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -405,35 +404,53 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     }
 
     @Override
-    protected void renderModel(T entity, float walktime, float walkspeed, float time, float rotationYaw,
-            float rotationPitch, float partialTicks)
+    public void doRender(T entity, double x, double y, double z, float yaw, float partialTick)
     {
         IPokemob mob = CapabilityPokemob.getPokemobFor(entity);
         if (mob == null) return;
         GL11.glPushMatrix();
-        preRenderCallback(entity, partialTicks);
+        preRenderCallback(entity, partialTick);
+        this.renderLivingAt(entity, x, y, z);
+        GL11.glPushMatrix();
         int ticks = entity.ticksExisted;
-        if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTicks <= 1))
+        if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTick <= 1))
         {
             float max = 5;// ;
             float s = (ticks) / max;
             GL11.glScalef(s, s, s);
         }
-        if ((time <= 1))
+        if ((partialTick <= 1))
         {
-            renderEvolution(mob, partialTicks);
-            renderExitCube(mob, partialTicks);
+            renderEvolution(mob, partialTick);
+            renderExitCube(mob, partialTick);
         }
-        if (time > 1)
+        GL11.glPopMatrix();
+        float f = this.interpolateRotation(entity.prevRenderYawOffset, entity.renderYawOffset, partialTick);
+        float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
+        float f2 = f1 - f;
+        float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
+        float f8 = this.handleRotationFloat(entity, partialTick);
+        this.applyRotations(entity, f8, f, partialTick);
+        
+        //This section here is what was prepareScale
+        float f4 = 0.0625F;
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+        GlStateManager.translate(0.0F, -1.501F, 0.0F);
+        
+        float f5 = 0.0F;
+        float f6 = 0.0F;
+
+        this.mainModel.setLivingAnimations(entity, f6, f5, partialTick);
+        this.mainModel.setRotationAngles(f6, f5, f8, f2, f7, f4, entity);
+
+        if (mob.getStatus() == IMoveConstants.STATUS_SLP || mob.getPokemonAIState(IMoveConstants.SLEEPING))
         {
-            long t = Minecraft.getMinecraft().world.getWorldTime() % 1000;
-            super.renderModel(entity, t / 3f, 0.6f, t, rotationYaw, rotationPitch, partialTicks);
+            f6 = f5 = 0;
+            f2 = -40;
+            f7 = 19;
         }
-        else if (mob.getStatus() == IMoveConstants.STATUS_SLP || mob.getPokemonAIState(IMoveConstants.SLEEPING))
-        {
-            super.renderModel(entity, 0, 0, 0, -40, 19, partialTicks);
-        }
-        else super.renderModel(entity, walktime, walkspeed, time, rotationYaw, rotationPitch, partialTicks);
+        this.renderModel(entity, f6, f5, f8, f2, f7, f4);
         this.postRenderCallback();
         GL11.glPopMatrix();
 

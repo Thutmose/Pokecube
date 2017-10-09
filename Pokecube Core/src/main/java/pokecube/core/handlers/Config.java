@@ -200,6 +200,7 @@ public class Config extends ConfigBase
     /** Do explosions occur and cause damage */
     public boolean                       explosions                   = true;
     @Configure(category = mobAI)
+    @SyncConfig
     public int                           attackCooldown               = 20;
     @Configure(category = mobAI)
     public int                           chaseDistance                = 32;

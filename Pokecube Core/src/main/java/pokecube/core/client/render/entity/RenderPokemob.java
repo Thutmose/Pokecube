@@ -410,6 +410,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         if (mob == null) return;
         GL11.glPushMatrix();
         preRenderCallback(entity, partialTick);
+        this.renderLivingAt(entity, x, y, z);
         GL11.glPushMatrix();
         int ticks = entity.ticksExisted;
         if (mob.getPokemonAIState(IMoveConstants.EXITINGCUBE) && ticks <= 5 && !(partialTick <= 1))
@@ -428,7 +429,6 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         float f1 = this.interpolateRotation(entity.prevRotationYawHead, entity.rotationYawHead, partialTick);
         float f2 = f1 - f;
         float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTick;
-        this.renderLivingAt(entity, x, y, z);
         float f8 = this.handleRotationFloat(entity, partialTick);
         this.rotateCorpse(entity, f8, f, partialTick);
         

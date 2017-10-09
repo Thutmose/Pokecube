@@ -347,15 +347,16 @@ public class AIAttack extends AIBase implements IAICombat
             }
         }
         // If delay taking too long, ensure to set for repating, and to set
-        // target, incase things have got stuck.
-        if (delayTime < -20)
-        {
-            shouldPath = true;
-            applyDelay(pokemob, move.name, distanced);
-            addTargetInfo(attacker, entityTarget);
-            pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
-            targetLoc.set(entityTarget);
-        }
+        // target, incase things have got stuck. TODO replace this with other
+        // variable.
+        // if (delayTime < -20)
+        // {
+        // shouldPath = true;
+        // applyDelay(pokemob, move.name, distanced);
+        // addTargetInfo(attacker, entityTarget);
+        // pokemob.setPokemonAIState(IMoveConstants.ANGRY, true);
+        // targetLoc.set(entityTarget);
+        // }
         boolean delay = false;
         // Check if the attack should, applying a new delay if this is the
         // case..
@@ -363,7 +364,7 @@ public class AIAttack extends AIBase implements IAICombat
         {
             if (canSee || self)
             {
-                if (delayTime <= 0)
+                if (delayTime <= 0 && (attacker.addedToChunk))
                 {
                     applyDelay(pokemob, move.name, distanced);
                     delay = canUseMove;
@@ -412,11 +413,13 @@ public class AIAttack extends AIBase implements IAICombat
             float f = (float) targetLoc.distToEntity(attacker);
             Vector3 loc = targetLoc.copy();
             if (attacker.addedToChunk)
+            {
                 addMoveInfo(attacker.getEntityId(), entityTarget.getEntityId(), attacker.dimension, loc, f);
-            shouldPath = false;
-            setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
-            targetLoc.clear();
-            applyDelay(pokemob, move.name, distanced);
+                shouldPath = false;
+                setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
+                targetLoc.clear();
+                applyDelay(pokemob, move.name, distanced);
+            }
         }
         // If there is a target location, and it should path to it, queue a path
         // for the mob.

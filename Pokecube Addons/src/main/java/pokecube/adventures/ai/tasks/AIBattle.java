@@ -31,6 +31,7 @@ public class AIBattle extends AITrainerBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
+        trainer.lowerCooldowns();
         if (trainer.getTarget() != null) updateTask();
         else if (trainer.getOutID() != null) resetTask();
     }

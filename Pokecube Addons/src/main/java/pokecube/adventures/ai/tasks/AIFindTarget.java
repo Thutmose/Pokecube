@@ -26,7 +26,6 @@ public class AIFindTarget extends AITrainerBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        trainer.lowerCooldowns();
         if (shouldExecute()) updateTask();
     }
 

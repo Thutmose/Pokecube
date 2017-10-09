@@ -365,7 +365,7 @@ public class EntityPokecube extends EntityPokecubeBase
         if (targetEntity != null)
         {
             target.set(targetEntity);
-            if (target.distToEntity(this) < 2)
+            if (targetEntity.getDistanceSqToEntity(this) < 9)
             {
                 this.collideWithEntity(targetEntity);
             }

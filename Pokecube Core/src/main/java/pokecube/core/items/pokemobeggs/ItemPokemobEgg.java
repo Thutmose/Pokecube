@@ -40,6 +40,7 @@ import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene;
 import pokecube.core.entity.pokemobs.genetics.genes.SpeciesGene.SpeciesInfo;
 import pokecube.core.events.EggEvent;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -173,7 +174,7 @@ public class ItemPokemobEgg extends Item
         {
             mob.setPokemonOwner(owner);
             mob.setPokemonAIState(IMoveConstants.TAMED, true);
-            mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+            mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
             mob.setHeldItem(CompatWrapper.nullStack);
         }
     }

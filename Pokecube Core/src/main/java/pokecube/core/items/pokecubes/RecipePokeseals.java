@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.utils.TagNames;
 import thut.lib.CompatWrapper;
 import thut.lib.IDefaultRecipe;
@@ -60,7 +61,7 @@ public class RecipePokeseals implements IDefaultRecipe
 
             if (CompatWrapper.isValid(itemstack))
             {
-                if (itemstack.getItem() == PokecubeItems.getEmptyCube(-2)
+                if (itemstack.getItem() == PokecubeItems.getEmptyCube(PokecubeBehavior.POKESEAL)
                         && PokecubeManager.isFilled(itemstack) == false)
                 {
                     ++cube;
@@ -111,7 +112,7 @@ public class RecipePokeseals implements IDefaultRecipe
 
         if (cube == 1 && addons > 0)
         {
-            toCraft = new ItemStack(PokecubeItems.getEmptyCube(-2), 1);
+            toCraft = new ItemStack(PokecubeItems.getEmptyCube(PokecubeBehavior.POKESEAL), 1);
             nbttagcompound = new NBTTagCompound();
             nbttagcompound1 = new NBTTagCompound();
             byte b0 = 0;

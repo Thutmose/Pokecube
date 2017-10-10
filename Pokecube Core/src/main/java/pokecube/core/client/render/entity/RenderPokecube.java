@@ -78,7 +78,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
         }
     }
 
-    public static HashMap<Integer, Render<Entity>> pokecubeRenderers = new HashMap<Integer, Render<Entity>>();
+    public static HashMap<ResourceLocation, Render<Entity>> pokecubeRenderers = new HashMap<ResourceLocation, Render<Entity>>();
 
     public RenderPokecube(RenderManager renderManager)
     {
@@ -94,7 +94,7 @@ public class RenderPokecube<T extends EntityLiving> extends RenderLiving<T>
         long world = pokecube.getEntityWorld().getTotalWorldTime();
         if (time > world) return;
 
-        int num = PokecubeItems.getCubeId(pokecube.getEntityItem());
+        ResourceLocation num = PokecubeItems.getCubeId(pokecube.getEntityItem());
         if (pokecubeRenderers.containsKey(num))
         {
             pokecubeRenderers.get(num).doRender(entity, x, y, z, f, f1);

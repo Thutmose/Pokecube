@@ -14,7 +14,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IPokecube;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import thut.lib.CompatWrapper;
@@ -28,8 +27,7 @@ public class ContainerTradingTable extends Container
      * @return true if the id is a filled pokecube one, false otherwise */
     protected static boolean isItemValid(ItemStack itemstack)
     {
-        return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound()
-                && PokecubeItems.getCubeId(itemstack) == 14)
+        return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound())
                 || (itemstack.getItem() == Items.EMERALD && CompatWrapper.getStackSize(itemstack) == 64)
                 || (itemstack.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON) && CompatWrapper.getStackSize(itemstack) == 1)
                 || (itemstack.getItem() instanceof IPokecube && CompatWrapper.getStackSize(itemstack) == 1);

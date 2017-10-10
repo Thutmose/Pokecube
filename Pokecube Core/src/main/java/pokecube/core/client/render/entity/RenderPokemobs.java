@@ -191,20 +191,7 @@ public class RenderPokemobs extends RenderPokemob
     @Override
     protected ResourceLocation getPokemobTexture(IPokemob entity)
     {
-        IPokemob mob = entity;
-        IPokemob transformed = CapabilityPokemob.getPokemobFor(mob.getTransformedTo());
-        if (transformed != null)
-        {
-            int num = mob.getPokedexNb();
-
-            if (num == 132)
-            {
-                int rngval = entity.getRNGValue();
-                if (rngval % 20 == 0) { return super.getPokemobTexture(mob); }
-            }
-            mob = transformed;
-        }
-        return super.getPokemobTexture(mob);
+        return super.getPokemobTexture(entity);
     }
 
     public Render getRenderer(PokedexEntry entry)

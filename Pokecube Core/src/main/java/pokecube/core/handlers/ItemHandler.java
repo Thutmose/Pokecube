@@ -30,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.IForgeRegistry;
@@ -318,29 +319,26 @@ public class ItemHandler extends Mod_Pokecube_Helper
         RegisterPokecubes event = new RegisterPokecubes();
         MinecraftForge.EVENT_BUS.post(event);
 
-        // Register any cube types from event.
-        for (Integer i : event.cubePrefixes.keySet())
+        // Register any cube behaviours and cubes from event.
+        for (PokecubeBehavior i : event.behaviors)
         {
-            String name = event.cubePrefixes.get(i);
+            PokecubeBehavior.addCubeBehavior(i);
+            String name = i.getRegistryName().getResourcePath();
             Pokecube cube = new Pokecube();
             cube.setUnlocalizedName(name + "cube").setCreativeTab(creativeTabPokecubes);
             register(cube.setRegistryName(PokecubeMod.ID, name + "cube"), registry);
             if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
                 registerItemTexture(cube, 0, new ModelResourceLocation("pokecube:" + name + "cube", "inventory"));
-            PokecubeItems.addCube(i, new Object[] { cube });
-        }
-        // Register any cube behaviours from event.
-        for (Integer i : event.behaviors.keySet())
-        {
-            PokecubeBehavior.addCubeBehavior(i, event.behaviors.get(i));
+            PokecubeItems.addCube(i.getRegistryName(), new Object[] { cube });
         }
 
         Pokecube pokeseal = new Pokecube();
         pokeseal.setUnlocalizedName("pokeseal").setCreativeTab(creativeTabPokecubes);
+        PokecubeBehavior.POKESEAL = new ResourceLocation("pokecube:seal");
         register(pokeseal.setRegistryName(PokecubeMod.ID, "pokeseal"), registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             registerItemTexture(pokeseal, 0, new ModelResourceLocation("pokecube:pokeseal", "inventory"));
-        PokecubeItems.addCube(-2, new Object[] { pokeseal });
+        PokecubeItems.addCube(PokecubeBehavior.POKESEAL, new Object[] { pokeseal });
 
     }
 

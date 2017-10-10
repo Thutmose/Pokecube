@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.StatisticsManager;
 import net.minecraft.stats.StatisticsManagerServer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
@@ -32,7 +33,7 @@ public abstract class CommonProxy
 
     }
 
-    public void registerPokecubeRenderer(int cubeId, Render renderer, Object mod)
+    public void registerPokecubeRenderer(ResourceLocation cubeId, Render renderer, Object mod)
     {
     }
 

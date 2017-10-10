@@ -1,14 +1,15 @@
 package pokecube.core.interfaces;
 
-import java.util.HashMap;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IForgeRegistry;
+import net.minecraftforge.fml.common.registry.RegistryBuilder;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Post;
 import pokecube.core.events.CaptureEvent.Pre;
@@ -17,16 +18,24 @@ import thut.api.maths.Vector3;
 
 public interface IPokecube
 {
+    public static IForgeRegistry<PokecubeBehavior> BEHAVIORS = new RegistryBuilder<PokecubeBehavior>()
+            .setIDRange(0, Short.MAX_VALUE).setType(PokecubeBehavior.class)
+            .setName(new ResourceLocation(PokecubeMod.ID, "pokecubes")).create();
 
     public static abstract class PokecubeBehavior
+            extends net.minecraftforge.fml.common.registry.IForgeRegistryEntry.Impl<PokecubeBehavior>
     {
+        // Whoever registers the default pokecube should set this.
+        public static ResourceLocation DEFAULTCUBE = null;
+        public static ResourceLocation POKESEAL    = null;
+
         /** Adds it to the list of behaviours to run when a pokecube is used.
          * 
          * @param cubeId
          * @param behavior */
-        public static void addCubeBehavior(int cubeId, PokecubeBehavior behavior)
+        public static void addCubeBehavior(PokecubeBehavior behavior)
         {
-            map.put(cubeId, behavior);
+            BEHAVIORS.register(behavior);
         }
 
         public abstract void onPostCapture(CaptureEvent.Post evt);
@@ -45,6 +54,24 @@ public interface IPokecube
          * @param pokecubeId
          * @return */
         public abstract double getCaptureModifier(IPokemob mob);
+
+        /** Additional flat bonus to capture rate, this is mostly used for
+         * HeavyCube's flat adjustment rate.
+         * 
+         * @param mob
+         * @return */
+        public int getAdditionalBonus(IPokemob mob)
+        {
+            return 0;
+        }
+
+        /** Allows modifications of updates for the pokemob.
+         * 
+         * @param mob */
+        public void onUpdate(IPokemob mob)
+        {
+
+        }
     }
 
     /** helper class so extensions don't need to include blank onPostCapture and
@@ -80,19 +107,15 @@ public interface IPokecube
 
     }
 
-    /** These are used for custom behavior which can be modified during the
-     * various capture events. */
-    public static HashMap<Integer, PokecubeBehavior> map = new HashMap<Integer, PokecubeBehavior>();
-
     /** this is the capture strength of the cube, 0 is never capture, 255 is
      * always capture.
      * 
      * @param mob
      * @param pokecubeId
      * @return */
-    double getCaptureModifier(IPokemob mob, int pokecubeId);
+    double getCaptureModifier(IPokemob mob, ResourceLocation pokecubeId);
 
-    default double getCaptureModifier(EntityLivingBase mob, int pokecubeId)
+    default double getCaptureModifier(EntityLivingBase mob, ResourceLocation pokecubeId)
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         return (pokemob != null) ? getCaptureModifier(pokemob, pokecubeId) : 0;

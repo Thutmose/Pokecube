@@ -478,7 +478,7 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
             info.entry = info.entry.getForGender(info.value);
         }
         SpeciesInfo info = genesSpecies.getExpressed().getValue();
-        return info.entry;
+        return info.entry.getForGender(getSexe());
     }
 
     @Override

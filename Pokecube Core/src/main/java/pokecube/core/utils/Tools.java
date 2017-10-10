@@ -154,6 +154,11 @@ public class Tools
 
     public static int computeCatchRate(IPokemob pokemob, double cubeBonus)
     {
+        return computeCatchRate(pokemob, cubeBonus, 0);
+    }
+
+    public static int computeCatchRate(IPokemob pokemob, double cubeBonus, int cubeBonus2)
+    {
         float HPmax = pokemob.getEntity().getMaxHealth();
         Random rand = new Random();
         float HP = pokemob.getEntity().getHealth();
@@ -169,7 +174,7 @@ public class Tools
         }
         int catchRate = pokemob.getCatchRate();
 
-        double a = getCatchRate(HPmax, HP, catchRate, cubeBonus, statusBonus);
+        double a = getCatchRate(HPmax, HP, catchRate, cubeBonus, statusBonus) + cubeBonus2;
 
         if (a > 255) { return 5; }
         double b = 1048560 / Math.sqrt(Math.sqrt(16711680 / a));
@@ -198,15 +203,18 @@ public class Tools
         return n;
     }
 
-    public static int computeCatchRate(IPokemob pokemob, int pokecubeId)
+    public static int computeCatchRate(IPokemob pokemob, ResourceLocation pokecubeId)
     {
         double cubeBonus = 0;
+        int additionalBonus = 0;
         Item cube = PokecubeItems.getFilledCube(pokecubeId);
         if (cube instanceof IPokecube)
         {
             cubeBonus = ((IPokecube) cube).getCaptureModifier(pokemob, pokecubeId);
         }
-        return computeCatchRate(pokemob, cubeBonus);
+        if (IPokecube.BEHAVIORS.containsKey(pokecubeId))
+            additionalBonus = IPokecube.BEHAVIORS.getValue(pokecubeId).getAdditionalBonus(pokemob);
+        return computeCatchRate(pokemob, cubeBonus, additionalBonus);
     }
 
     public static int countPokemon(Vector3 location, World world, double distance, PokedexEntry entry)

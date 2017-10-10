@@ -34,6 +34,7 @@ import pokecube.core.blocks.healtable.TileHealTable;
 import pokecube.core.database.Database;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.playerdata.PokecubePlayerData;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -584,7 +585,7 @@ public class PokecubeSerializer
             entity.setForSpawn(Tools.levelToXp(entity.getExperienceMode(), 5));
             entity.getEntity().setHealth(entity.getEntity().getMaxHealth());
             entity.setPokemonOwner(owner);
-            entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+            entity.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
             ItemStack item = PokecubeManager.pokemobToItem(entity);
             entity.getEntity().isDead = true;
             return item;

@@ -1,8 +1,8 @@
 package pokecube.core.events.onload;
 
-import java.util.Map;
+import java.util.List;
 
-import com.google.common.collect.Maps;
+import com.google.common.collect.Lists;
 
 import net.minecraftforge.fml.common.eventhandler.Event;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
@@ -11,8 +11,7 @@ import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
  * you want to register here. The name of the cube will be <prefix_>cube */
 public class RegisterPokecubes extends Event
 {
-    public Map<Integer, String>           cubePrefixes = Maps.newHashMap();
-    public Map<Integer, PokecubeBehavior> behaviors    = Maps.newHashMap();
+    public List<PokecubeBehavior> behaviors = Lists.newArrayList();
 
     public RegisterPokecubes()
     {

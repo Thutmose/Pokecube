@@ -19,6 +19,7 @@ import pokecube.core.achievements.AchievementHatch;
 import pokecube.core.achievements.AchievementKill;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import thut.core.common.handlers.PlayerDataHandler.PlayerData;
 
 /** Player capture/hatch/kill stats */
@@ -243,7 +244,7 @@ public class PokecubePlayerStats extends PlayerData
         }
         if (!killAchievements.containsKey(e))
         {
-            AchievementKill kill = new AchievementKill(e, x, y, PokecubeItems.getEmptyCube(0), null);
+            AchievementKill kill = new AchievementKill(e, x, y, PokecubeItems.getEmptyCube(PokecubeBehavior.DEFAULTCUBE), null);
             kill.registerStat();
             achievementPageKill.getAchievements().add(kill);
             killAchievements.put(e, kill);
@@ -257,7 +258,7 @@ public class PokecubePlayerStats extends PlayerData
         int y = -2 + (e.getPokedexNb() % 16) * 2 - 1;
         PokedexEntry actual = e.getBaseForme() != null ? e.getBaseForme() : e;
         Achievement hatch = actual != e ? registerHatchAchieve(actual)
-                : new AchievementHatch(actual, x, y, PokecubeItems.getEmptyCube(0), null);
+                : new AchievementHatch(actual, x, y, PokecubeItems.getEmptyCube(PokecubeBehavior.DEFAULTCUBE), null);
         if (e != actual) hatchAchievements.put(e, hatch);
         if (!hatchAchievements.containsKey(actual))
         {
@@ -287,7 +288,7 @@ public class PokecubePlayerStats extends PlayerData
         }
         PokedexEntry actual = e.getBaseForme() != null ? e.getBaseForme() : e;
         Achievement catc = actual != e ? registerCatchAchieve(actual)
-                : new AchievementCatch(actual, x, y, PokecubeItems.getEmptyCube(0), parent);
+                : new AchievementCatch(actual, x, y, PokecubeItems.getEmptyCube(PokecubeBehavior.DEFAULTCUBE), parent);
         if (e != actual) catchAchievements.put(e, catc);
         if (!catchAchievements.containsKey(actual))
         {

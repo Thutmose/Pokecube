@@ -135,7 +135,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     public static KeyBinding         mobDown;
     public static KeyBinding         arrangeGui;
 
-    private HashMap<Integer, Object> cubeRenders = new HashMap<Integer, Object>();
+    private HashMap<ResourceLocation, Object> cubeRenders = new HashMap<ResourceLocation, Object>();
 
     public ClientProxyPokecube()
     {
@@ -481,7 +481,7 @@ public class ClientProxyPokecube extends CommonProxyPokecube
     }
 
     @Override
-    public void registerPokecubeRenderer(int cubeId, Render renderer, Object mod)
+    public void registerPokecubeRenderer(ResourceLocation cubeId, Render renderer, Object mod)
     {
         if (!RenderPokecube.pokecubeRenderers.containsKey(cubeId))
         {

@@ -6,11 +6,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -169,7 +171,7 @@ public class PokecubeManager
         int damage = Tools.serialize(pokemob.getEntity().getMaxHealth(), pokemob.getEntity().getHealth());
         if (!CompatWrapper.isValid(itemStack))
         {
-            itemStack = new ItemStack(PokecubeItems.getFilledCube(0), 1, damage);
+            itemStack = new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE), 1, damage);
         }
         itemStack = itemStack.copy();
         itemStack.setItemDamage(damage);
@@ -198,27 +200,30 @@ public class PokecubeManager
     {
         int color = 0xEEEEEE;
 
-        int id = PokecubeItems.getCubeId(itemStack);
+        ResourceLocation id = PokecubeItems.getCubeId(itemStack);
 
         if (itemStack.getItem() == PokecubeItems.pokemobEgg)
         {
             color = 0x78C848;
         }
-        else if (id == 0)
+        else if (id != null)
         {
-            color = 0xEE0000;
-        }
-        else if (id == 1)
-        {
-            color = 0x0B90CE;
-        }
-        else if (id == 2)
-        {
-            color = 0xDCA937;
-        }
-        else if (id == 3)
-        {
-            color = 0x332F6A;
+            if (id.getResourcePath().equals("poke"))
+            {
+                color = 0xEE0000;
+            }
+            else if (id.getResourcePath().equals("great"))
+            {
+                color = 0x0B90CE;
+            }
+            else if (id.getResourcePath().equals("ultra"))
+            {
+                color = 0xDCA937;
+            }
+            else if (id.getResourcePath().equals("master"))
+            {
+                color = 0x332F6A;
+            }
         }
 
         NBTTagCompound var3 = itemStack.getTagCompound();

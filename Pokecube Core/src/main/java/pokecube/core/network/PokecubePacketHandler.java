@@ -32,6 +32,7 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
 import pokecube.core.interfaces.IHealer;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -406,7 +407,7 @@ public class PokecubePacketHandler
                 {
                     pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
                     pokemob.setPokemonOwner(owner.getUniqueID());
-                    pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+                    pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
                     pokemob.setExp(Tools.levelToXp(pokemob.getExperienceMode(), 5), true);
                     if (shiny) pokemob.setShiny(true);
                     PokedexEntry entry2;

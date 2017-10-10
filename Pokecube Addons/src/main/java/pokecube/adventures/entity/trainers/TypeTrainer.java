@@ -37,6 +37,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.SpawnBiomeMatcher;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -248,7 +249,7 @@ public class TypeTrainer
             pokemob.getEntity().setHealth(pokemob.getEntity().getMaxHealth());
             pokemob = pokemob.setPokedexEntry(entry);
             pokemob.setPokemonOwner(trainer);
-            pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(0)));
+            pokemob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE)));
             int exp = Tools.levelToXp(pokemob.getExperienceMode(), level);
             pokemob = pokemob.setForSpawn(exp);
             ItemStack item = PokecubeManager.pokemobToItem(pokemob);

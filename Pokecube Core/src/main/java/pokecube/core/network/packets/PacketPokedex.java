@@ -298,7 +298,8 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 }
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
             }
-            return;
+            if (message.message == REQUEST)
+                return;
         }
         if (message.message == REMOVE)
         {

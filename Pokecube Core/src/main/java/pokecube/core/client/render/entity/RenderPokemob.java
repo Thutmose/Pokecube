@@ -378,8 +378,20 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
     protected ResourceLocation getPokemobTexture(IPokemob entity)
     {
         if (entity == null) return null;
-        ResourceLocation texture = entity.getTexture();
-        return texture;
+        IPokemob mob = entity;
+        IPokemob transformed = CapabilityPokemob.getPokemobFor(mob.getTransformedTo());
+        if (transformed != null)
+        {
+            int num = mob.getPokedexNb();
+
+            if (num == 132)
+            {
+                int rngval = entity.getRNGValue();
+                if (rngval % 20 == 0) { return mob.getTexture(); }
+            }
+            mob = transformed;
+        }
+        return mob.getTexture();
     }
 
     protected void postRenderCallback()
@@ -437,7 +449,7 @@ public class RenderPokemob<T extends EntityLiving> extends RenderPokemobInfos<T>
         GlStateManager.enableRescaleNormal();
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
         GlStateManager.translate(0.0F, -1.501F, 0.0F);
-        
+
         float f5 = 0.0F;
         float f6 = 0.0F;
 

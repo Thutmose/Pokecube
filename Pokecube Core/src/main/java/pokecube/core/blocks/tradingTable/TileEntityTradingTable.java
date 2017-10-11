@@ -25,6 +25,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
@@ -504,10 +505,10 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
             ItemStack first = aFilled ? a : b;
             ItemStack second = aFilled ? b : a;
             ItemStack stack;
-            int id = PokecubeItems.getCubeId(second);
+            ResourceLocation id = PokecubeItems.getCubeId(second);
 
             // Pokeseal is id 2, send this to pokeseal recipe to process.
-            if (id == -2)
+            if (id!=null && id.getResourcePath().equals("seal"))
             {
                 stack = RecipePokeseals.process(first, second);
             }

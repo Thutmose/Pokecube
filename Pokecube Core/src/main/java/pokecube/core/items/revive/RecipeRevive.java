@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.utils.TagNames;
@@ -47,7 +48,7 @@ public class RecipeRevive implements IDefaultRecipe
                 n++;
                 if (stack.hasTagCompound() && PokecubeManager.isFilled(stack)) other = stack;
                 if (stack.isItemEqual(PokecubeItems.getStack("Revive"))) revive = true;
-                if (stack.getItem() == PokecubeItems.getEmptyCube(-2)) seal = stack;
+                if (stack.getItem() == PokecubeItems.getEmptyCube(PokecubeBehavior.POKESEAL)) seal = stack;
             }
         }
         revive = revive && CompatWrapper.isValid(other);

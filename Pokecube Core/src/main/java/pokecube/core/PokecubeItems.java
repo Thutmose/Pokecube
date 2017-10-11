@@ -42,6 +42,7 @@ import pokecube.core.blocks.tradingTable.BlockTradingTable;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.handlers.HeldItemHandler;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemFossil;
 import pokecube.core.items.ItemHeldItems;
@@ -59,74 +60,74 @@ import thut.lib.CompatWrapper;
 
 public class PokecubeItems extends Items
 {
-    private static HashMap<String, ItemStack>      itemstacks     = new HashMap<String, ItemStack>();
-    private static HashMap<String, Item>           items          = new HashMap<String, Item>();
+    private static HashMap<String, ItemStack>        itemstacks     = new HashMap<String, ItemStack>();
+    private static HashMap<String, Item>             items          = new HashMap<String, Item>();
 
-    private static HashMap<String, Block>          blocks         = new HashMap<String, Block>();
+    private static HashMap<String, Block>            blocks         = new HashMap<String, Block>();
 
-    private static HashMap<Integer, Item[]>        pokecubes      = new HashMap<Integer, Item[]>();
+    private static HashMap<ResourceLocation, Item[]> pokecubes      = new HashMap<ResourceLocation, Item[]>();
 
     /** Items that are allowed to be held by pokemobs */
-    public static HashSet<ItemStack>               heldItems      = new HashSet<ItemStack>();
+    public static HashSet<ItemStack>                 heldItems      = new HashSet<ItemStack>();
 
-    private static HashSet<Block>                  allBlocks      = new HashSet<Block>();
+    private static HashSet<Block>                    allBlocks      = new HashSet<Block>();
 
     /** Items which will be considered for evolution by pokemobs */
-    public static HashSet<ItemStack>               evoItems       = new HashSet<ItemStack>();
+    public static HashSet<ItemStack>                 evoItems       = new HashSet<ItemStack>();
 
     /** contains pokecubes that should be rendered using the default renderer */
-    private static Set<Integer>                    cubeIds        = new HashSet<>();
+    private static Set<ResourceLocation>             cubeIds        = new HashSet<>();
 
     /** Items to be considered for re-animation, mapped to the pokedex number to
      * reanimate to. */
-    public static HashMap<ItemStack, PokedexEntry> fossils        = new HashMap<ItemStack, PokedexEntry>();
+    public static HashMap<ItemStack, PokedexEntry>   fossils        = new HashMap<ItemStack, PokedexEntry>();
     /** Various meteor related drops, the map is the rate of each drop */
-    private static List<ItemStack>                 meteorDrops    = new ArrayList<ItemStack>();
+    private static List<ItemStack>                   meteorDrops    = new ArrayList<ItemStack>();
 
-    public static HashMap<ItemStack, Integer>      meteorDropMap  = new HashMap<ItemStack, Integer>();
+    public static HashMap<ItemStack, Integer>        meteorDropMap  = new HashMap<ItemStack, Integer>();
     /** to be used if mob spawners are to get a replacement. */
-    private static List<ItemStack>                 spawnerDrops   = new ArrayList<ItemStack>();
+    private static List<ItemStack>                   spawnerDrops   = new ArrayList<ItemStack>();
 
-    public static HashMap<ItemStack, Integer>      spawnerDropMap = new HashMap<ItemStack, Integer>();
+    public static HashMap<ItemStack, Integer>        spawnerDropMap = new HashMap<ItemStack, Integer>();
 
-    public static Vector<Long>                     times          = new Vector<Long>();
+    public static Vector<Long>                       times          = new Vector<Long>();
 
     /** List of grass blocks for pokemobs to eat. */
-    public static HashSet<Block>                   grasses        = new HashSet<Block>();
+    public static HashSet<Block>                     grasses        = new HashSet<Block>();
 
-    public static Item                             held           = new ItemHeldItems().setRegistryName(PokecubeMod.ID,
-            "held");
-    public static Item                             luckyEgg       = new ItemLuckyEgg().setUnlocalizedName("luckyegg")
+    public static Item                               held           = new ItemHeldItems()
+            .setRegistryName(PokecubeMod.ID, "held");
+    public static Item                               luckyEgg       = new ItemLuckyEgg().setUnlocalizedName("luckyegg")
             .setCreativeTab(creativeTabPokecube);
-    public static Item                             pokemobEgg     = new ItemPokemobEgg()
+    public static Item                               pokemobEgg     = new ItemPokemobEgg()
             .setUnlocalizedName("pokemobegg");
-    public static Item                             pokedex        = (new ItemPokedex()).setUnlocalizedName("pokedex");
-    public static Item                             berryJuice;
-    public static Item                             berries        = new ItemBerry()
+    public static Item                               pokedex        = (new ItemPokedex()).setUnlocalizedName("pokedex");
+    public static Item                               berryJuice;
+    public static Item                               berries        = new ItemBerry()
             .setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry");
-    public static Item                             megastone      = (new ItemMegastone())
+    public static Item                               megastone      = (new ItemMegastone())
             .setUnlocalizedName("megastone");
-    public static Item                             megaring       = (new ItemMegawearable())
+    public static Item                               megaring       = (new ItemMegawearable())
             .setUnlocalizedName("megaring");
-    public static Item                             fossil         = new ItemFossil().setRegistryName(PokecubeMod.ID,
+    public static Item                               fossil         = new ItemFossil().setRegistryName(PokecubeMod.ID,
             "fossil");
 
-    public static Item                             revive         = (new ItemRevive()).setUnlocalizedName("revive");
-    public static Item                             tm             = (new ItemTM()).setUnlocalizedName("tm");
-    public static Block                            pokecenter     = (new BlockHealTable())
+    public static Item                               revive         = (new ItemRevive()).setUnlocalizedName("revive");
+    public static Item                               tm             = (new ItemTM()).setUnlocalizedName("tm");
+    public static Block                              pokecenter     = (new BlockHealTable())
             .setUnlocalizedName("pokecenter").setCreativeTab(creativeTabPokecubeBlocks);
-    public static Block                            repelBlock     = new BlockRepel();
-    public static Block                            tableBlock     = new BlockPokecubeTable();
-    public static Block                            nest           = new BlockNest().setUnlocalizedName("pokemobnest");
-          //  .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
-    public static Block                            pc             = (new BlockPC()).setUnlocalizedName("pc");
+    public static Block                              repelBlock     = new BlockRepel();
+    public static Block                              tableBlock     = new BlockPokecubeTable();
+    public static Block                              nest           = new BlockNest().setUnlocalizedName("pokemobnest");
+    // .setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
+    public static Block                              pc             = (new BlockPC()).setUnlocalizedName("pc");
 
-    public static Block                            tradingtable   = (new BlockTradingTable())
+    public static Block                              tradingtable   = (new BlockTradingTable())
             .setUnlocalizedName("tradingtable");
-    public static Block                            fossilStone    = (new BlockFossilStone()).setHardness(3F)
+    public static Block                              fossilStone    = (new BlockFossilStone()).setHardness(3F)
             .setResistance(4F).setUnlocalizedName("fossilstone").setRegistryName(PokecubeMod.ID, "fossilstone");
 
-    public static boolean                          resetTimeTags  = false;
+    public static boolean                            resetTimeTags  = false;
 
     /** Registers a pokecube id, the Object[] is an array with the item or block
      * assosicated with the unfilled and filled cubes. example: Object cubes =
@@ -136,7 +137,7 @@ public class PokecubeItems extends Items
      * 
      * @param id
      * @param cubes */
-    public static void addCube(int id, Object[] cubes)
+    public static void addCube(ResourceLocation id, Object[] cubes)
     {
         addCube(id, cubes, true);
     }
@@ -149,7 +150,7 @@ public class PokecubeItems extends Items
      * 
      * @param id
      * @param cubes */
-    public static void addCube(int id, Object[] cubes, boolean defaultRenderer)
+    public static void addCube(ResourceLocation id, Object[] cubes, boolean defaultRenderer)
     {
         if (pokecubes.containsKey(id))
         {
@@ -292,12 +293,12 @@ public class PokecubeItems extends Items
         return blocks.get(name.toLowerCase(java.util.Locale.ENGLISH).trim());
     }
 
-    public static int getCubeId(Block item)
+    public static ResourceLocation getCubeId(Block item)
     {
         return getCubeId(new ItemStack(item));
     }
 
-    public static int getCubeId(Item item)
+    public static ResourceLocation getCubeId(Item item)
     {
         return getCubeId(new ItemStack(item));
     }
@@ -307,20 +308,20 @@ public class PokecubeItems extends Items
      * 
      * @param stack
      * @return */
-    public static int getCubeId(ItemStack stack)
+    public static ResourceLocation getCubeId(ItemStack stack)
     {
-        if (CompatWrapper.isValid(stack)) for (Integer i : pokecubes.keySet())
+        if (CompatWrapper.isValid(stack)) for (ResourceLocation i : pokecubes.keySet())
         {
             Item[] cubes = pokecubes.get(i);
             for (Item cube : cubes)
                 if (cube == stack.getItem()) return i;
         }
-        return -1;
+        return null;
     }
 
     /** defaults are: 0 - pokecube 1 - greatcube 2 - ultracube 3 - mastercube if
      * you request a non-registerd id, it returns pokecube. */
-    public static Item getEmptyCube(int id)
+    public static Item getEmptyCube(ResourceLocation id)
     {
         Item ret = null;
 
@@ -330,7 +331,7 @@ public class PokecubeItems extends Items
         {
             try
             {
-                ret = pokecubes.get(0)[0];
+                ret = pokecubes.get(PokecubeBehavior.DEFAULTCUBE)[0];
             }
             catch (Exception e)
             {
@@ -349,7 +350,7 @@ public class PokecubeItems extends Items
 
     /** defaults are: 0 - pokecube 1 - greatcube 2 - ultracube 3 - mastercube if
      * you request a non-registerd id, it returns pokecube. */
-    public static Item getFilledCube(int id)
+    public static Item getFilledCube(ResourceLocation id)
     {
         Item ret = null;
 
@@ -357,8 +358,8 @@ public class PokecubeItems extends Items
 
         if (ret == null)
         {
-            ret = pokecubes.get(0)[1];
-            if (id != -1) System.err.println("Could not find filled cube for id " + id);
+            ret = pokecubes.get(PokecubeBehavior.DEFAULTCUBE)[1];
+            if (id != null) System.err.println("Could not find filled cube for id " + id);
         }
 
         return ret;

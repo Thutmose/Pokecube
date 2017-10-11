@@ -2,6 +2,7 @@ package pokecube.core.events.handlers;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.world.WorldEvent.Unload;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -58,10 +59,10 @@ public class StatsHandler
                 return;
             }
         }
-        int id = PokecubeItems.getCubeId(evt.filledCube);
-        if (IPokecube.map.containsKey(id))
+        ResourceLocation id = PokecubeItems.getCubeId(evt.filledCube);
+        if (IPokecube.BEHAVIORS.containsKey(id))
         {
-            PokecubeBehavior cube = IPokecube.map.get(id);
+            PokecubeBehavior cube = IPokecube.BEHAVIORS.getValue(id);
             cube.onPreCapture(evt);
         }
     }
@@ -70,10 +71,10 @@ public class StatsHandler
     public void recordCapture(CaptureEvent.Post evt)
     {
 
-        int id = PokecubeItems.getCubeId(evt.filledCube);
-        if (IPokecube.map.containsKey(id))
+        ResourceLocation id = PokecubeItems.getCubeId(evt.filledCube);
+        if (IPokecube.BEHAVIORS.containsKey(id))
         {
-            PokecubeBehavior cube = IPokecube.map.get(id);
+            PokecubeBehavior cube = IPokecube.BEHAVIORS.getValue(id);
             cube.onPostCapture(evt);
         }
         if (evt.caught.isShadow() || evt.isCanceled()) return;

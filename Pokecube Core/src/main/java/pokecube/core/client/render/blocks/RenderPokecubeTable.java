@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 //import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import pokecube.core.PokecubeItems;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.utils.PokecubeSerializer;
 
 
@@ -39,7 +40,7 @@ public class RenderPokecubeTable extends TileEntitySpecialRenderer {
             
             if(!starter)
             {
-                ItemStack item = new ItemStack(PokecubeItems.getFilledCube(0));
+                ItemStack item = new ItemStack(PokecubeItems.getFilledCube(PokecubeBehavior.DEFAULTCUBE));
                 Minecraft.getMinecraft().getItemRenderer().renderItem(player, item, TransformType.NONE);
             }
             

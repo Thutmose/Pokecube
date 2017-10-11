@@ -6,12 +6,15 @@ import java.util.Random;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import pokecube.core.PokecubeItems;
 import pokecube.core.blocks.nests.TileEntityNest;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IPokecube;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemob.Stats;
@@ -55,19 +58,25 @@ public class LogicMiscUpdate extends LogicBase
             ((IShearable) entity).isShearable(null, entity.getEntityWorld(), entity.getPosition());
         }
 
-        // Check that AI states are correct
-        if (!world.isRemote) checkAIStates();
-
-        // Check evolution
-        if (!world.isRemote) checkEvolution();
-
-        // Check and tick inventory
-        if (!world.isRemote) checkInventory(world);
-
-        // Randomly increase happiness for being outside of pokecube.
-        if (Math.random() > 0.999 && pokemob.getPokemonAIState(IMoveConstants.TAMED))
+        if (!world.isRemote)
         {
-            HappinessType.applyHappiness(pokemob, HappinessType.TIME);
+            // Check that AI states are correct
+            checkAIStates();
+            // Check evolution
+            checkEvolution();
+            // Check and tick inventory
+            checkInventory(world);
+
+            // Randomly increase happiness for being outside of pokecube.
+            if (Math.random() > 0.999 && pokemob.getPokemonAIState(IMoveConstants.TAMED))
+            {
+                HappinessType.applyHappiness(pokemob, HappinessType.TIME);
+            }
+
+            ItemStack pokecube = pokemob.getPokecube();
+            ResourceLocation id = PokecubeItems.getCubeId(pokecube);
+            PokecubeBehavior behaviour = IPokecube.BEHAVIORS.getValue(id);
+            if(behaviour != null) behaviour.onUpdate(pokemob);
         }
 
         for (int i = 0; i < 5; i++)

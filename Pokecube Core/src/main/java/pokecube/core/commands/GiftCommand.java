@@ -10,8 +10,10 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.Database;
+import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -19,7 +21,9 @@ import thut.core.common.commands.CommandTools;
 
 public class GiftCommand extends CommandBase
 {
-    private List<String> aliases;
+    public static ResourceLocation CHERISHCUBE;
+
+    private List<String>           aliases;
 
     public GiftCommand()
     {
@@ -65,7 +69,8 @@ public class GiftCommand extends CommandBase
                             PokecubeMod.core.createPokemob(Database.getEntry(name), sender.getEntityWorld()));
                     MakeCommand.setToArgs(gift, mob, 1, null);
                     mob.setOriginalOwnerUUID(new UUID(12345, 54321));
-                    mob.setPokecube(new ItemStack(PokecubeItems.getFilledCube(13)));
+                    mob.setPokecube(new ItemStack(PokecubeItems
+                            .getFilledCube(CHERISHCUBE != null ? CHERISHCUBE : PokecubeBehavior.DEFAULTCUBE)));
                     mob.setPokemonOwner(player);
                     mob.setHp(mob.getEntity().getMaxHealth());
                     mob.returnToPokecube();

@@ -24,6 +24,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -177,16 +178,16 @@ public class Pokecube extends Item implements IPokecube
     }
 
     @Override
-    public double getCaptureModifier(IPokemob mob, int id)
+    public double getCaptureModifier(IPokemob mob, ResourceLocation id)
     {
-        if (IPokecube.map.containsKey(id)) return IPokecube.map.get(id).getCaptureModifier(mob);
+        if (IPokecube.BEHAVIORS.containsKey(id)) return IPokecube.BEHAVIORS.getValue(id).getCaptureModifier(mob);
         return 0;
     }
 
     @Override
-    public double getCaptureModifier(EntityLivingBase mob, int pokecubeId)
+    public double getCaptureModifier(EntityLivingBase mob, ResourceLocation pokecubeId)
     {
-        if (pokecubeId == 99) return 1;
+        if (pokecubeId.getResourcePath().equals("snag")) return 1;
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         return (pokemob != null) ? getCaptureModifier(pokemob, pokecubeId) : 0;
     }
@@ -303,8 +304,8 @@ public class Pokecube extends Item implements IPokecube
     public boolean throwPokecube(World world, EntityLivingBase thrower, ItemStack cube, Vector3 direction, float power)
     {
         EntityPokecube entity = null;
-        int id = PokecubeItems.getCubeId(cube.getItem());
-        if (id < 0) return false;
+        ResourceLocation id = PokecubeItems.getCubeId(cube.getItem());
+        if (id == null || !IPokecube.BEHAVIORS.containsKey(id)) return false;
         ItemStack stack = CompatWrapper.copy(cube);
         CompatWrapper.setStackSize(stack, 1);
         entity = new EntityPokecube(world, thrower, stack);
@@ -334,8 +335,8 @@ public class Pokecube extends Item implements IPokecube
             Entity target)
     {
         EntityPokecube entity = null;
-        int id = PokecubeItems.getCubeId(cube.getItem());
-        if (id < 0) return false;
+        ResourceLocation id = PokecubeItems.getCubeId(cube.getItem());
+        if (id == null || !IPokecube.BEHAVIORS.containsKey(id)) return false;
         ItemStack stack = CompatWrapper.copy(cube);
         CompatWrapper.setStackSize(stack, 1);
         entity = new EntityPokecube(world, thrower, stack);
@@ -375,8 +376,8 @@ public class Pokecube extends Item implements IPokecube
     @Override
     public boolean canCapture(EntityLiving hit, ItemStack cube)
     {
-        int id = PokecubeItems.getCubeId(cube);
-        if (id == 99) { return capturable.test(hit); }
+        ResourceLocation id = PokecubeItems.getCubeId(cube);
+        if (id != null && id.getResourcePath().equals("snag")) { return capturable.test(hit); }
         return CapabilityPokemob.getPokemobFor(hit) != null;
     }
 

@@ -63,8 +63,16 @@ public class XMLRecipeHandler
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
             IRecipe toAdd = null;
             ResourceLocation group = new ResourceLocation(PokecubeMod.ID, "loaded");
-            if (recipe.shapeless)
-                toAdd = new ShapelessOreRecipe(group, output, IngredientHandler.shapelessInputs(inputs.toArray()));
+            if (recipe.shapeless) try
+            {
+                toAdd = new ShapelessOreRecipe(group, IngredientHandler.shapelessInputs(inputs.toArray()), output);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                System.err.println("Error with Recipe for " + output);
+                if (output != null && output.hasTagCompound()) System.err.println(output.getTagCompound());
+            }
             else toAdd = new ShapedOreRecipe(group, output, IngredientHandler.parseShaped(inputs.toArray()));
             GameData.register_impl(toAdd.setRegistryName(new ResourceLocation("pokecube", "autoloaded" + (num++))));
         }

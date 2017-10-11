@@ -30,6 +30,8 @@ public class XMLRecipeHandler
     public static Set<String>                recipeFiles   = Sets.newHashSet();
     public static Map<String, IRecipeParser> recipeParsers = Maps.newHashMap();
 
+    private static final QName               OREDICT       = new QName("oreDict");
+
     public static class DefaultParser implements IRecipeParser
     {
         @Override
@@ -39,7 +41,8 @@ public class XMLRecipeHandler
             List<Object> inputs = Lists.newArrayList();
             if (recipe.shapeless) for (XMLRecipeInput xml : recipe.inputs)
             {
-                inputs.add(getStack(xml));
+                if (xml.values.containsKey(OREDICT)) inputs.add(xml.values.get(OREDICT));
+                else inputs.add(getStack(xml));
             }
             else
             {
@@ -50,7 +53,8 @@ public class XMLRecipeHandler
                 {
                     Character ch = xml.key.charAt(0);
                     inputs.add(ch);
-                    inputs.add(getStack(xml));
+                    if (xml.values.containsKey(OREDICT)) inputs.add(xml.values.get(OREDICT));
+                    else inputs.add(getStack(xml));
                 }
             }
             boolean failed = output == null;
@@ -59,8 +63,9 @@ public class XMLRecipeHandler
             if (failed) { throw new NullPointerException("output: " + output + " inputs: " + inputs); }
             IRecipe toAdd = null;
             ResourceLocation group = new ResourceLocation(PokecubeMod.ID, "loaded");
-            if (recipe.shapeless) toAdd = new ShapelessOreRecipe(group, output, inputs.toArray());
-            else toAdd = new ShapedOreRecipe(group, output, inputs.toArray());
+            if (recipe.shapeless)
+                toAdd = new ShapelessOreRecipe(group, output, IngredientHandler.shapelessInputs(inputs.toArray()));
+            else toAdd = new ShapedOreRecipe(group, output, IngredientHandler.parseShaped(inputs.toArray()));
             GameData.register_impl(toAdd.setRegistryName(new ResourceLocation("pokecube", "autoloaded" + (num++))));
         }
 

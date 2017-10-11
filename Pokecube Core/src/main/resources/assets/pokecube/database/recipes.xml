@@ -26,7 +26,7 @@
         <Input id="minecraft:leather" key="L"/>
     </Recipe>
     <Recipe map="GGG,RBR,III">//Pokeseal
-        <Output n="2" id="pokecube:pokeseal"/>
+        <Output n="6" id="pokecube:pokeseal"/>
         <Input id="minecraft:dye" d="1" key="R"/>
         <Input id="minecraft:stone_button" key="B"/>
         <Input id="minecraft:glass" key="G"/>

@@ -427,14 +427,31 @@ public class GuiPokedex extends GuiScreen
                 if (var.length > 1)
                 {
                     numbers = var[1];
-                    numbers = numbers.substring(0, Math.min(5, numbers.length()));
-                    if (numbers.equals(" 0.00"))
+                    float value;
+                    try
                     {
-                        numbers = ">0.01%";
+                        value = Float.parseFloat(numbers);
+                        if (value < 0.001)
+                        {
+                            numbers = ">0.01%";
+                        }
+                        else
+                        {
+                            numbers = numbers.substring(0, Math.min(5, numbers.length()));
+                            numbers = numbers + "%";
+                        }
                     }
-                    else
+                    catch (NumberFormatException e)
                     {
-                        numbers = numbers + "%";
+                        numbers = numbers.substring(0, Math.min(5, numbers.length()));
+                        if (numbers.equals(" 0.00"))
+                        {
+                            numbers = ">0.01%";
+                        }
+                        else
+                        {
+                            numbers = numbers + "%";
+                        }
                     }
                 }
                 drawString(fontRenderer, I18n.format(name), xOffset + 18, yO + n * 10, 0xFF0000);

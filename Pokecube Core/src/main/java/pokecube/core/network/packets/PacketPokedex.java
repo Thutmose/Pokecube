@@ -167,7 +167,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         {
             player = ctx.getServerHandler().playerEntity;
         }
-        if (message.message == REQUEST)
+        if (message.message == REQUEST || (ctx.side == Side.SERVER && message.message >= 0))
         {
             if (ctx.side == Side.CLIENT)
             {
@@ -224,8 +224,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                         rates.put(e, val);
                     }
                     int biome = TerrainManager.getInstance().getTerrainForEntity(player).getBiome(pos);
-                    packet.data.setString("0",
-                            "" + biome);
+                    packet.data.setString("0", "" + biome);
                     packet.data.setString("1", BiomeDatabase.getReadableNameFromType(biome));
                     for (int i = 0; i < names.size(); i++)
                     {
@@ -246,53 +245,55 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                         }
                     }
                     SpawnData data = entry.getSpawnData();
-                    if (data == null) return;
-                    boolean hasBiomes = false;
-                    Map<SpawnBiomeMatcher, SpawnEntry> matchers = data.matchers;
-                    for (SpawnBiomeMatcher matcher : matchers.keySet())
+                    if (data != null)
                     {
-                        String biomeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.BIOMES);
-                        String typeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.TYPES);
-                        if (biomeString != null) hasBiomes = true;
-                        else if (typeString != null)
+                        boolean hasBiomes = false;
+                        Map<SpawnBiomeMatcher, SpawnEntry> matchers = data.matchers;
+                        for (SpawnBiomeMatcher matcher : matchers.keySet())
                         {
-                            String[] args = typeString.split(",");
-                            BiomeType subBiome = null;
-                            for (String s : args)
+                            String biomeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.BIOMES);
+                            String typeString = matcher.spawnRule.values.get(SpawnBiomeMatcher.TYPES);
+                            if (biomeString != null) hasBiomes = true;
+                            else if (typeString != null)
                             {
-                                for (BiomeType b : BiomeType.values())
+                                String[] args = typeString.split(",");
+                                BiomeType subBiome = null;
+                                for (String s : args)
                                 {
-                                    if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                                    for (BiomeType b : BiomeType.values())
                                     {
-                                        subBiome = b;
-                                        break;
+                                        if (b.name.replaceAll(" ", "").equalsIgnoreCase(s))
+                                        {
+                                            subBiome = b;
+                                            break;
+                                        }
                                     }
+                                    if (subBiome == null) hasBiomes = true;
+                                    subBiome = null;
+                                    if (hasBiomes) break;
                                 }
-                                if (subBiome == null) hasBiomes = true;
-                                subBiome = null;
-                                if (hasBiomes) break;
+                            }
+                            if (hasBiomes) break;
+                        }
+                        if (hasBiomes) for (ResourceLocation key : Biome.REGISTRY.getKeys())
+                        {
+                            Biome b = Biome.REGISTRY.getObject(key);
+                            if (b != null)
+                            {
+                                if (data.isValid(b)) biomes.add(b.getBiomeName());
                             }
                         }
-                        if (hasBiomes) break;
-                    }
-                    if (hasBiomes) for (ResourceLocation key : Biome.REGISTRY.getKeys())
-                    {
-                        Biome b = Biome.REGISTRY.getObject(key);
-                        if (b != null)
+                        for (BiomeType b : BiomeType.values())
                         {
-                            if (data.isValid(b)) biomes.add(b.getBiomeName());
+                            if (data.isValid(b))
+                            {
+                                biomes.add(b.readableName);
+                            }
                         }
-                    }
-                    for (BiomeType b : BiomeType.values())
-                    {
-                        if (data.isValid(b))
+                        for (int i = 0; i < biomes.size(); i++)
                         {
-                            biomes.add(b.readableName);
+                            packet.data.setString("" + i, biomes.get(i));
                         }
-                    }
-                    for (int i = 0; i < biomes.size(); i++)
-                    {
-                        packet.data.setString("" + i, biomes.get(i));
                     }
                 }
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);

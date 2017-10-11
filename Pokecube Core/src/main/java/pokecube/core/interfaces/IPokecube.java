@@ -8,8 +8,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.IForgeRegistry;
-import net.minecraftforge.fml.common.registry.RegistryBuilder;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryBuilder;
 import pokecube.core.events.CaptureEvent;
 import pokecube.core.events.CaptureEvent.Post;
 import pokecube.core.events.CaptureEvent.Pre;
@@ -23,7 +24,7 @@ public interface IPokecube
             .setName(new ResourceLocation(PokecubeMod.ID, "pokecubes")).create();
 
     public static abstract class PokecubeBehavior
-            extends net.minecraftforge.fml.common.registry.IForgeRegistryEntry.Impl<PokecubeBehavior>
+            extends IForgeRegistryEntry.Impl<PokecubeBehavior>
     {
         // Whoever registers the default pokecube should set this.
         public static ResourceLocation DEFAULTCUBE = null;

@@ -3,6 +3,7 @@
  */
 package pokecube.core.entity.pokemobs.helper;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
@@ -322,7 +323,9 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     if (this.onGround)
                     {
-                        f6 = this.world.getBlockState(blockpos$pooledmutableblockpos).getBlock().slipperiness * 0.91F;
+                        IBlockState state = this.world.getBlockState(blockpos$pooledmutableblockpos);
+                        f6 = state.getBlock().getSlipperiness(state, world, blockpos$pooledmutableblockpos, this)
+                                * 0.91F;
                     }
 
                     float f7 = 0.16277136F / (f6 * f6 * f6);
@@ -342,8 +345,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
                     if (this.onGround)
                     {
-                        f6 = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX,
-                                this.getEntityBoundingBox().minY - 1.0D, this.posZ)).getBlock().slipperiness * 0.91F;
+                        IBlockState state = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX,
+                                this.getEntityBoundingBox().minY - 1.0D, this.posZ));
+                        f6 = state.getBlock().getSlipperiness(state, world, blockpos$pooledmutableblockpos, this)
+                                * 0.91F;
                     }
 
                     if (this.isOnLadder())
@@ -741,9 +746,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
 
     }
 
-    /**
-     * Entity won't drop items or experience points if this returns false
-     */
+    /** Entity won't drop items or experience points if this returns false */
     @Override
     protected boolean canDropLoot()
     {

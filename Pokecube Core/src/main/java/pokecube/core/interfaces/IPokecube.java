@@ -73,26 +73,6 @@ public interface IPokecube
         {
 
         }
-
-        /** Wrapper method for 1.12 compatiblity.
-         * 
-         * @param name
-         * @return */
-        public PokecubeBehavior setName(ResourceLocation name)
-        {
-            super.setRegistryName(name);
-            return this;
-        }
-
-        /** Wrapper method for 1.12 compatiblity.
-         * 
-         * @param name
-         * @return */
-        public PokecubeBehavior setName(String id, String path)
-        {
-            super.setRegistryName(id, path);
-            return this;
-        }
     }
 
     /** helper class so extensions don't need to include blank onPostCapture and

@@ -136,7 +136,7 @@ public class ModPokecubeML implements IMobProvider
     {
         for (PokedexEntry p : Pokedex.getInstance().getRegisteredEntries())
         {
-            p.setSound("mobs." + p.getName());
+            p.setSound("mobs." + p.getTrimmedName());
             p.getSoundEvent();
             p.updateMoves();
         }

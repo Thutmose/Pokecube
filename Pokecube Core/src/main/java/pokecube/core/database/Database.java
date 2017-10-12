@@ -455,7 +455,10 @@ public class Database
         for (PokedexEntry e : allFormes)
         {
             if (e.getModId() == null) continue;
-            if (e.sound == null) e.setSound("mobs." + e.getBaseName());
+            if (e.sound == null)
+            {
+                e.setSound("mobs." + e.getBaseForme().getTrimmedName());
+            }
             e.event = new SoundEvent(e.sound);
             if (SoundEvent.REGISTRY.containsKey(e.sound)) continue;
             ReflectionHelper.setPrivateValue(IForgeRegistryEntry.Impl.class, e.event, e.sound, "registryName");

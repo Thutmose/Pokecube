@@ -476,11 +476,12 @@ public class EventsHandler
             EnumHand hand = evt.getHand();
             ItemStack held = player.getHeldItem(hand);
             EntityLiving entity = pokemob.getEntity();
-            if (hand != EnumHand.MAIN_HAND) return;
             PokedexEntry entry = pokemob.getPokedexEntry();
             ItemStack key = new ItemStack(Items.SHEARS, 1, Short.MAX_VALUE);
             // Check shearable interaction.
             if (entry.interact(key) && CompatWrapper.isValid(held) && Tools.isSameStack(key, held)) { return; }
+            evt.setCanceled(true);
+            if (hand != EnumHand.MAIN_HAND) return;
             // Check Pokedex Entry defined Interaction for player.
             if (entry.interact(player, pokemob, true))
             {

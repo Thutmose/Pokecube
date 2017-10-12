@@ -159,8 +159,7 @@ public class IngredientHandler
         {
             if (input == null) return false;
             if (input.isEmpty()) return stack.isEmpty();
-            return stack.getItem() == input.getItem() && stack.getItemDamage() == input.getItemDamage()
-                    && ItemStack.areItemStackShareTagsEqual(stack, input);
+            return super.apply(input) && ItemStack.areItemStackShareTagsEqual(stack, input);
         }
     }
 }

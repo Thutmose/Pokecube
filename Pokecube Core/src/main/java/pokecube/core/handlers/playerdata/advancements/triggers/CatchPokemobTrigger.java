@@ -48,8 +48,8 @@ public class CatchPokemobTrigger implements ICriterionTrigger<CatchPokemobTrigge
             boolean numCheck = true;
             if (lenient)
             {
-                entry = entry.getBaseForme();
-                testEntry = testEntry.getBaseForme();
+                entry = entry.base ? entry : entry.getBaseForme();
+                testEntry = testEntry.base ? testEntry : testEntry.getBaseForme();
             }
             if (number != -1)
             {

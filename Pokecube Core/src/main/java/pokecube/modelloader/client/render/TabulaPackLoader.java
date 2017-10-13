@@ -551,7 +551,7 @@ public class TabulaPackLoader extends AnimationLoader
         for (PokedexEntry entry : modelMap.keySet())
         {
             TabulaModelSet set = modelMap.get(entry);
-            if (!set.foundExtra)
+            if (!set.foundExtra && !entry.base)
             {
                 PokedexEntry base = entry.getBaseForme();
                 TabulaModelSet baseSet = modelMap.get(base);

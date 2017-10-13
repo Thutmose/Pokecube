@@ -997,13 +997,13 @@ public class PokedexEntry
         if (number == 2) return getHiddenAbility(pokemob);
         return null;
     }
-
     public PokedexEntry getBaseForme()
     {
         if (baseForme == null && !base)
         {
             baseForme = Database.getEntry(getPokedexNb());
         }
+        if (baseForme == this) baseForme = null;
         return baseForme;
     }
 
@@ -1012,7 +1012,15 @@ public class PokedexEntry
      * @return the base forme name. */
     public String getBaseName()
     {
-        if (baseName == null) baseName = name;
+        if (baseName == null)
+        {
+            if (getBaseForme() != null && getBaseForme() != this)
+            {
+                baseName = getBaseForme().getBaseName();
+            }
+            else baseName = name;
+            if (getBaseForme() == this) PokecubeMod.log("Error with " + this);
+        }
         return baseName;
     }
 

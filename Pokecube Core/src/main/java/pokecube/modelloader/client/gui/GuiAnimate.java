@@ -252,11 +252,12 @@ public class GuiAnimate extends GuiScreen
         }
         String form = mob;
         PokedexEntry e1 = Database.getEntry(form);
-        if (pokemob.getPokedexEntry().hasForm(form))
+        PokedexEntry e0 = pokemob.getPokedexEntry();
+        if (e0.hasForm(form))
         {
             pokemob.setPokedexEntry(e1);
         }
-        else if (pokemob.getPokedexEntry().getBaseForme().hasForm(form))
+        else if (!e0.base && e0.getBaseForme().hasForm(form))
         {
             pokemob.setPokedexEntry(e1);
         }

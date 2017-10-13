@@ -26,6 +26,7 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.PokecubeMod;
 import pokecube.modelloader.IMobProvider;
 import pokecube.modelloader.ModPokecubeML;
 import pokecube.modelloader.common.Config;
@@ -203,8 +204,10 @@ public class AnimationLoader
             }
             catch (Exception e3)
             {
-                animation = new ResourceLocation(anim.replace(entry.getTrimmedName().toLowerCase(Locale.ENGLISH),
-                        entry.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
+                if (entry.getBaseForme() != null)
+                    animation = new ResourceLocation(anim.replace(entry.getTrimmedName().toLowerCase(Locale.ENGLISH),
+                            entry.getBaseForme().getTrimmedName().toLowerCase(Locale.ENGLISH)));
+                else PokecubeMod.log("Error with locating animation data for " + entry);
             }
             if (model != null)
             {

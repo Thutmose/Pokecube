@@ -456,13 +456,13 @@ public class Database
             if (!e.base)
             {
                 PokedexEntry e1 = e.getBaseForme();
-                if (e1.sound == null) e1.setSound("mobs." + e1.getBaseForme().getTrimmedName());
+                if (e1.sound == null) e1.setSound("mobs." + e1.getTrimmedName());
                 if (e1.event != null)
                 {
                     if (e1.event != null)
                     {
                         e.event = e1.event;
-                        e.setSound("mobs." + e1.getBaseForme().getTrimmedName());
+                        e.setSound("mobs." + e1.getTrimmedName());
                     }
                     continue;
                 }
@@ -480,12 +480,12 @@ public class Database
                 e1.event.setRegistryName(e1.sound);
                 Loader.instance().setActiveModContainer(mc);
                 e.event = e1.event;
-                e.setSound("mobs." + e1.getBaseForme().getTrimmedName());
+                e.setSound("mobs." + e1.getTrimmedName());
                 if (SoundEvent.REGISTRY.containsKey(e1.sound)) continue;
                 if (!SoundEvent.REGISTRY.containsKey(e1.sound)) GameData.register_impl(e1.event);
                 continue;
             }
-            if (e.sound == null) e.setSound("mobs." + e.getBaseForme().getTrimmedName());
+            if (e.sound == null) e.setSound("mobs." + e.getTrimmedName());
             e.event = new SoundEvent(e.sound);
             // Fix the annoying warning about wrong mod container...
             ModContainer mc = Loader.instance().activeModContainer();

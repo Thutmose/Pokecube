@@ -457,7 +457,8 @@ public class Database
             if (e.getModId() == null) continue;
             if (e.sound == null)
             {
-                e.setSound("mobs." + e.getBaseForme().getTrimmedName());
+                if (e.base) e.setSound("mobs." + e.getTrimmedName());
+                else e.setSound("mobs." + e.getBaseForme().getTrimmedName());
             }
             e.event = new SoundEvent(e.sound);
             if (SoundEvent.REGISTRY.containsKey(e.sound)) continue;

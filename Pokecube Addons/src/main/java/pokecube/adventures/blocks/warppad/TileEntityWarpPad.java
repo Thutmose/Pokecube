@@ -26,7 +26,7 @@ import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 
-@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers") })
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent
 {
     public static double MAXRANGE = 64;
@@ -49,7 +49,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
     }
 
     @Callback(doc = "Returns the current 4-vector destination")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getDestination(Context context, Arguments args) throws Exception
     {
         if (link != null) { return new Object[] { link.x, link.y, link.z, link.w }; }
@@ -168,7 +168,7 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
     }
 
     @Callback(doc = "function(x:number, y:number, z:number, w:number) - Sets the 4-vector destination, w is the dimension")
-    @Optional.Method(modid = "OpenComputers") // TODO OC
+    @Optional.Method(modid = "opencomputers") // TODO OC
     public Object[] setDestination(Context context, Arguments args) throws Exception
     {
         if (args.isDouble(0) && args.isDouble(1) && args.isDouble(2) && args.isDouble(3))

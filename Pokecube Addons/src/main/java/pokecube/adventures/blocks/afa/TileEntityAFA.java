@@ -44,8 +44,8 @@ import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
 import thut.lib.CompatWrapper;
 
-@Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "opencomputers"),
+        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers") })
 public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITickable, SimpleComponent, SidedComponent
 {
     public static JEP parser;
@@ -144,7 +144,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     @Callback(doc = "Returns the current loaded ability")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getAbility(Context context, Arguments args) throws Exception
     {
         if (ability != null)
@@ -168,7 +168,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     @Callback(doc = "Returns the amount of stored energy")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getEnergy(Context context, Arguments args)
     {
         return new Object[] { energy };
@@ -211,7 +211,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     @Callback(doc = "Returns the current set range")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getRange(Context context, Arguments args)
     {
         return new Object[] { distance };
@@ -400,7 +400,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     @Callback(doc = "function(scale:number, dx:number, dy:number, dz:number)- Sets the parameters for the hologram.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setHoloState(Context context, Arguments args)
     {
         scale = args.checkInteger(0);
@@ -422,7 +422,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
     }
 
     @Callback(doc = "function(range:number) - sets the radius of affect")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setRange(Context context, Arguments args)
     {
         distance = args.checkInteger(0);

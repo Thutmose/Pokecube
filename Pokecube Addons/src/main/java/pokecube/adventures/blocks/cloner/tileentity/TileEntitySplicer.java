@@ -30,7 +30,7 @@ import thut.api.entity.genetics.Alleles;
 import thut.api.entity.genetics.Gene;
 import thut.api.entity.genetics.IMobGenetics;
 
-@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers") })
 public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
 {
     public TileEntitySplicer()
@@ -83,7 +83,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getSourceInfo(Context context, Arguments args) throws Exception
     {
         IMobGenetics genes = ClonerHelper.getGenes(getStackInSlot(2));
@@ -104,7 +104,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getDestInfo(Context context, Arguments args) throws Exception
     {
         IMobGenetics genes = ClonerHelper.getGenes(getStackInSlot(0));
@@ -125,7 +125,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getSelectorInfo(Context context, Arguments args) throws Exception
     {
         ItemStack selector = getStackInSlot(1);
@@ -149,7 +149,7 @@ public class TileEntitySplicer extends TileClonerBase implements SimpleComponent
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setSelector(Context context, Arguments args) throws Exception
     {
         ItemStack selector = getStackInSlot(1);

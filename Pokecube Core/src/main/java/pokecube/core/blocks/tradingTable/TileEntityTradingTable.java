@@ -55,7 +55,7 @@ import thut.api.maths.Vector3;
 import thut.core.common.blocks.DefaultInventory;
 import thut.lib.CompatWrapper;
 
-@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
+@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")
 public class TileEntityTradingTable extends TileEntityOwnable implements DefaultInventory, SimpleComponent
 {
     public static boolean                     theftEnabled = false;
@@ -89,7 +89,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] applyMove(Context context, Arguments args) throws Exception
     {
         if (hasPC() && pc.isBound())
@@ -265,7 +265,7 @@ public class TileEntityTradingTable extends TileEntityOwnable implements Default
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getMovesList(Context context, Arguments args) throws Exception
     {
         if (hasPC() && pc.isBound())

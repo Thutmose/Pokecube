@@ -26,7 +26,7 @@ import pokecube.core.network.packets.PacketPC;
 import thut.api.network.PacketHandler;
 import thut.lib.CompatWrapper;
 
-@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
+@Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers")
 public class TileEntityPC extends TileEntityOwnable implements IInventory, SimpleComponent
 {
     private boolean     bound     = false;
@@ -88,7 +88,7 @@ public class TileEntityPC extends TileEntityOwnable implements IInventory, Simpl
     }
 
     @Callback(doc = "Returns the items in the PC")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getItemList(Context context, Arguments args) throws Exception
     {
         if (isBound())

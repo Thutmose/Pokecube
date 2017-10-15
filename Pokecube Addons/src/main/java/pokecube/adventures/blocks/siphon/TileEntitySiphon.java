@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.Optional.InterfaceList;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.core.database.PokedexEntry;
 
-@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers") })
 public class TileEntitySiphon extends TileEntity implements ITickable, SimpleComponent
 {
     AxisAlignedBB     box;
@@ -73,7 +73,7 @@ public class TileEntitySiphon extends TileEntity implements ITickable, SimpleCom
     }
 
     @Callback
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getPower(Context context, Arguments args)
     {
         return new Object[] { currentOutput };

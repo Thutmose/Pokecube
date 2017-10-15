@@ -277,7 +277,7 @@ public class Config extends ConfigBase
             "minecraft:netherrack", "minecraft:sandstone type=sandstone", "minecraft:red_sandstone type=red_sandstone",
             "minecraft:cobblestone" };
     @Configure(category = world, needsMcRestart = true)
-    public String[]                      blocksOre                    = { ".*:.*_ore", ".*:ore*" };
+    public String[]                      blocksOre                    = { ".*:.*_ore", ".*:ore*", ".*:ore" };
     @Configure(category = world, needsMcRestart = true)
     public String[]                      blocksGround                 = { "minecraft:sand", "minecraft:gravel",
             "minecraft:stained_hardened_clay", "minecraft:hardened_clay", "minecraft:dirt", "minecraft:grass" };

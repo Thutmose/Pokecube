@@ -378,7 +378,7 @@ public class AIAttack extends AIBase implements IAICombat
             setPokemobAIState(pokemob, IMoveConstants.EXECUTINGMOVE, false);
         }
         // Every so often refresh the selected target, to prevent forgetting it.
-        if (!delay && delayTime % 5 == 0)
+        if (!delay && delayTime % 20 == 0)
         {
             addTargetInfo(attacker, entityTarget);
         }

@@ -76,7 +76,7 @@ public class LogicMiscUpdate extends LogicBase
             ItemStack pokecube = pokemob.getPokecube();
             ResourceLocation id = PokecubeItems.getCubeId(pokecube);
             PokecubeBehavior behaviour = IPokecube.BEHAVIORS.getValue(id);
-            if(behaviour != null) behaviour.onUpdate(pokemob);
+            if (behaviour != null) behaviour.onUpdate(pokemob);
         }
 
         for (int i = 0; i < 5; i++)
@@ -350,7 +350,7 @@ public class LogicMiscUpdate extends LogicBase
         for (int i = 0; i < pokemob.getPokemobInventory().getSizeInventory(); i++)
         {
             ItemStack stack;
-            if ((stack = pokemob.getPokemobInventory().getStackInSlot(i)) != CompatWrapper.nullStack)
+            if (CompatWrapper.isValid(stack = pokemob.getPokemobInventory().getStackInSlot(i)))
             {
                 stack.getItem().onUpdate(stack, world, entity, i, false);
             }

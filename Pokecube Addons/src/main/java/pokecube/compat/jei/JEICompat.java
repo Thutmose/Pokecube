@@ -41,6 +41,8 @@ import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.PokedexEntry.EvolutionData;
 import pokecube.core.database.PokedexEntry.InteractionLogic;
+import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
+import thut.lib.CompatWrapper;
 
 @JEIPlugin
 public class JEICompat implements IModPlugin
@@ -104,18 +106,18 @@ public class JEICompat implements IModPlugin
                 try
                 {
                     InteractionLogic logic = (InteractionLogic) interactionLogic.get(e);
-                    for (ItemStack stack : logic.formes.keySet())
+                    for (Interaction action : logic.actions.values())
                     {
-                        PokedexEntry form = logic.formes.get(stack);
-                        PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, stack, null, form, logic);
-                        pokemobInteractRecipes.add(recipe);
-                    }
-                    for (ItemStack stack : logic.stacks.keySet())
-                    {
-                        List<ItemStack> output = logic.stacks.get(stack);
-                        for (ItemStack result : output)
+                        PokedexEntry form = action.forme;
+                        if (form != null)
                         {
-                            PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, stack, result, null, logic);
+                            PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, action,
+                                    CompatWrapper.nullStack);
+                            pokemobInteractRecipes.add(recipe);
+                        }
+                        for (ItemStack stack : action.stacks)
+                        {
+                            PokemobInteractRecipe recipe = new PokemobInteractRecipe(e, action, stack);
                             pokemobInteractRecipes.add(recipe);
                         }
                     }
@@ -209,7 +211,7 @@ public class JEICompat implements IModPlugin
                 try
                 {
                     InteractionLogic logic = (InteractionLogic) interactionLogic.get(e);
-                    if (!logic.stacks.isEmpty() || !logic.formes.isEmpty())
+                    if (!logic.actions.isEmpty())
                     {
                         relevant.add(e);
                     }

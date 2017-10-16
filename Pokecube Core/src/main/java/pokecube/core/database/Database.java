@@ -722,15 +722,15 @@ public class Database
                 PokecubeMod.log(e + " Has no Mob Type");
             }
             if (e.type2 == null) e.type2 = PokeType.unknown;
-            if (e.interactionLogic.stacks.isEmpty())
+            if (e.interactionLogic.actions.isEmpty())
             {
                 if (e.getBaseForme() != null)
                 {
-                    if (e.getBaseForme().interactionLogic.stacks.isEmpty())
+                    if (e.getBaseForme().interactionLogic.actions.isEmpty())
                     {
                         InteractionLogic.initForEntry(e);
                     }
-                    e.interactionLogic.stacks = e.getBaseForme().interactionLogic.stacks;
+                    e.interactionLogic.actions = e.getBaseForme().interactionLogic.actions;
                 }
                 else
                 {

@@ -6,25 +6,24 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import pokecube.core.database.PokedexEntry;
-import pokecube.core.database.PokedexEntry.InteractionLogic;
+import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
 import thut.lib.CompatWrapper;
 import thut.lib.IDefaultRecipe;
 
 public class PokemobInteractRecipe implements IDefaultRecipe
 {
-    final PokedexEntry     entry;
-    final ItemStack        key;
-    final ItemStack        outputStack;
-    final PokedexEntry     outputForme;
-    final InteractionLogic logic;
+    final PokedexEntry entry;
+    final ItemStack    key;
+    final ItemStack    outputStack;
+    final PokedexEntry outputForme;
+    final Interaction  logic;
 
-    public PokemobInteractRecipe(PokedexEntry entry, ItemStack key, ItemStack outputStack, PokedexEntry outputForme,
-            InteractionLogic logic)
+    public PokemobInteractRecipe(PokedexEntry entry, Interaction logic, ItemStack outputStack)
     {
         this.entry = entry;
-        this.key = key;
+        this.key = logic.key;
         this.logic = logic;
-        this.outputForme = outputForme;
+        this.outputForme = logic.forme;
         this.outputStack = outputStack;
     }
 

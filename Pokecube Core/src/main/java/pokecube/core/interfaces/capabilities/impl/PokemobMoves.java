@@ -49,6 +49,12 @@ public abstract class PokemobMoves extends PokemobSexed
             ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.flinch", "red",
                     getPokemonDisplayName());
             displayMessageToOwner(mess);
+            IPokemob targetMob = CapabilityPokemob.getPokemobFor(getEntity().getAttackTarget());
+            if (targetMob != null)
+            {
+                mess = CommandTools.makeTranslatedMessage("pokemob.status.flinch", "green", getPokemonDisplayName());
+                targetMob.displayMessageToOwner(mess);
+            }
             removeChanges(CHANGE_FLINCH);
             return;
         }
@@ -60,11 +66,28 @@ public abstract class PokemobMoves extends PokemobSexed
                 removeChanges(CHANGE_CONFUSED);
                 ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.confuse.remove", "green",
                         getPokemonDisplayName());
+                IPokemob targetMob = CapabilityPokemob.getPokemobFor(getEntity().getAttackTarget());
+                if (targetMob != null)
+                {
+                    mess = CommandTools.makeTranslatedMessage("pokemob.status.confuse.remove", "red",
+                            getPokemonDisplayName());
+                    targetMob.displayMessageToOwner(mess);
+                }
                 displayMessageToOwner(mess);
             }
             else if (Math.random() > 0.5)
             {
                 MovesUtils.doAttack("pokemob.status.confusion", this, getEntity());
+                ITextComponent mess = CommandTools.makeTranslatedMessage("pokemob.status.confusion", "red",
+                        getPokemonDisplayName());
+                IPokemob targetMob = CapabilityPokemob.getPokemobFor(getEntity().getAttackTarget());
+                if (targetMob != null)
+                {
+                    mess = CommandTools.makeTranslatedMessage("pokemob.status.confusion", "green",
+                            getPokemonDisplayName());
+                    targetMob.displayMessageToOwner(mess);
+                }
+                displayMessageToOwner(mess);
                 return;
             }
         }

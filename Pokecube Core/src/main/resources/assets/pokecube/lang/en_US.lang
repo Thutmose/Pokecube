@@ -34,6 +34,7 @@ entity.cube.name=Pokécube
 
 pokemob.status.curse=%1$s was hurt by the curse
 pokemob.status.flinch=%1$s flinched
+pokemob.status.confuse.add=%1$s is confused
 pokemob.status.confuse.remove=%1$s is no longer confused
 pokemob.status.confusion=%1$s hurt itself in confusion
 pokemob.status.infatuate=%1$s is immobilized by love

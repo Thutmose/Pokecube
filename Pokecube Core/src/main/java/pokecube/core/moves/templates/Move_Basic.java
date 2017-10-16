@@ -34,9 +34,9 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.Stats;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.PokemobDamageSource;
 import pokecube.core.moves.animations.AnimationMultiAnimations;
@@ -191,6 +191,8 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             if (subTargets.contains(attacker)) subTargets.remove(attacker);
             targets.addAll(subTargets);
         }
+        while (targets.contains(null))
+            targets.remove(null);
         if ((move.attackCategory & CATEGORY_SELF) != 0)
         {
             targets.clear();
@@ -562,7 +564,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
                 MovesUtils.displayStatusMessages(attacker, attacked, statusChange, true);
             else MovesUtils.displayEfficiencyMessages(attacker, attacked, -2, 0);
         }
-        if (efficiency > 0 && changeAddition != CHANGE_NONE) MovesUtils.addChange(attacked, changeAddition);
+        if (efficiency > 0 && changeAddition != CHANGE_NONE) MovesUtils.addChange(attacked, attacker, changeAddition);
 
         if (packet.getMove().getPWR(attacker, attacked) > 0)
             MovesUtils.displayEfficiencyMessages(attacker, attacked, efficiency, criticalRatio);

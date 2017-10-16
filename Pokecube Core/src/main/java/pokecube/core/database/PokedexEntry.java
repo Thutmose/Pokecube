@@ -13,13 +13,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -54,7 +52,6 @@ import pokecube.core.moves.PokemobTerrainEffects;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.TimePeriod;
 import pokecube.core.utils.Tools;
-import thut.api.entity.IHungrymob;
 import thut.api.maths.Cruncher;
 import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
@@ -240,6 +237,21 @@ public class PokedexEntry
 
     public static class InteractionLogic
     {
+        public static class Interaction
+        {
+            public final ItemStack key;
+            public PokedexEntry    forme;
+            public List<ItemStack> stacks   = Lists.newArrayList();
+            public boolean         male     = true;
+            public boolean         female   = true;
+            public int             cooldown = 100;
+
+            public Interaction(ItemStack key)
+            {
+                this.key = key;
+            }
+        }
+
         static HashMap<PokeType, List<Interact>> defaults = new HashMap<>();
 
         public static void initDefaults()
@@ -304,12 +316,14 @@ public class PokedexEntry
                     values.put(name, key.tag);
                 }
                 ItemStack keyStack = Tools.getStack(values);
-                if (!interact.female) entry.interactionLogic.noFemaleAllowed.add(keyStack);
-                if (!interact.male) entry.interactionLogic.noMaleAllowed.add(keyStack);
+                Interaction interaction = new Interaction(keyStack);
+                interaction.male = interact.male;
+                interaction.female = interact.female;
+                entry.interactionLogic.actions.put(keyStack, interaction);
                 if (isForme)
                 {
                     PokedexEntry forme = Database.getEntry(action.values.get(new QName("forme")));
-                    if (forme != null) entry.interactionLogic.formes.put(keyStack, forme);
+                    if (forme != null) interaction.forme = forme;
                 }
                 else
                 {
@@ -325,18 +339,13 @@ public class PokedexEntry
                         ItemStack stack = Tools.getStack(values);
                         if (stack != CompatWrapper.nullStack) stacks.add(stack);
                     }
-                    entry.interactionLogic.stacks.put(keyStack, stacks);
-                    entry.interactionLogic.stacksMap.put(keyStack, interact);
+                    interaction.stacks = stacks;
                 }
                 DispenseBehaviourInteract.registerBehavior(keyStack);
             }
         }
 
-        public HashMap<ItemStack, PokedexEntry>    formes          = new HashMap<>();
-        public HashMap<ItemStack, List<ItemStack>> stacks          = new HashMap<ItemStack, List<ItemStack>>();
-        public HashMap<ItemStack, Interact>        stacksMap       = Maps.newHashMap();
-        public Set<ItemStack>                      noMaleAllowed   = Sets.newHashSet();
-        public Set<ItemStack>                      noFemaleAllowed = Sets.newHashSet();
+        public HashMap<ItemStack, Interaction> actions = Maps.newHashMap();
 
         boolean canInteract(ItemStack key)
         {
@@ -345,18 +354,18 @@ public class PokedexEntry
 
         private ItemStack getFormeKey(ItemStack held)
         {
-            if (held != null) for (ItemStack stack : formes.keySet())
+            if (held != null) for (ItemStack stack : actions.keySet())
             {
-                if (Tools.isSameStack(stack, held)) { return stack; }
+                if (Tools.isSameStack(stack, held) && actions.get(stack).forme != null) { return stack; }
             }
             return CompatWrapper.nullStack;
         }
 
         private ItemStack getStackKey(ItemStack held)
         {
-            if (held != null) for (ItemStack stack : stacks.keySet())
+            if (held != null) for (ItemStack stack : actions.keySet())
             {
-                if (Tools.isSameStack(stack, held)) { return stack; }
+                if (Tools.isSameStack(stack, held) && !actions.get(stack).stacks.isEmpty()) { return stack; }
             }
             return CompatWrapper.nullStack;
         }
@@ -367,38 +376,29 @@ public class PokedexEntry
             NBTTagCompound data = entity.getEntityData();
             ItemStack held = player.getHeldItemMainhand();
             ItemStack stack = getStackKey(held);
-
             if (!CompatWrapper.isValid(stack))
             {
                 stack = getFormeKey(held);
-                if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
-                if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
-                if (!doInteract) return CompatWrapper.isValid(stack);
-                if (CompatWrapper.isValid(stack))
-                {
-                    PokedexEntry forme = formes.get(stack);
-                    pokemob.setPokedexEntry(forme);
-                    return true;
-                }
-                return false;
+                if (!CompatWrapper.isValid(stack)) return false;
+                if (!doInteract) return true;
+                Interaction action = actions.get(stack);
+                PokedexEntry forme = action.forme;
+                pokemob.setPokedexEntry(forme);
+                return true;
             }
-            Interact interact = stacksMap.get(stack);
+            Interaction action = actions.get(stack);
             if (data.hasKey("lastInteract"))
             {
                 long time = data.getLong("lastInteract");
                 long diff = entity.getEntityWorld().getTotalWorldTime() - time;
-                if (diff < 0) { return false; }
+                if (diff < action.cooldown) { return false; }
             }
-            if (noMaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.MALE) return false;
-            if (noFemaleAllowed.contains(stack) && pokemob.getSexe() == IPokemob.FEMALE) return false;
+            if (action.stacks.isEmpty()) return false;
+            if (!action.male && pokemob.getSexe() == IPokemob.MALE) return false;
+            if (!action.female && pokemob.getSexe() == IPokemob.FEMALE) return false;
             if (!doInteract) return true;
-            int diff = interact.delay + interact.variance > 0 ? new Random().nextInt(interact.variance) : 0;
-            diff *= PokecubeMod.core.getConfig().interactDelayScale;
-            data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime() + diff);
-            IHungrymob hungrymob = ((IHungrymob) pokemob);
-            hungrymob.setHungerTime((int) (hungrymob.getHungerTime()
-                    + interact.baseHunger * PokecubeMod.core.getConfig().interactHungerScale));
-            List<ItemStack> results = stacks.get(stack);
+            data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime());
+            List<ItemStack> results = action.stacks;
             int index = player.getRNG().nextInt(results.size());
             ItemStack result = results.get(index).copy();
             if (CompatWrapper.increment(held, -1) == 0)
@@ -418,7 +418,7 @@ public class PokedexEntry
 
         List<ItemStack> interact(ItemStack key)
         {
-            return stacks.get(getStackKey(key));
+            return actions.get(getStackKey(key)).stacks;
         }
     }
 
@@ -1007,6 +1007,7 @@ public class PokedexEntry
         if (number == 2) return getHiddenAbility(pokemob);
         return null;
     }
+
     public PokedexEntry getBaseForme()
     {
         if (baseForme == null && !base)

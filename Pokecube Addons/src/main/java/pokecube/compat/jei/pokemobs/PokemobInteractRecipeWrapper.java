@@ -46,12 +46,12 @@ public class PokemobInteractRecipeWrapper implements IRecipeWrapper
         List<String> tooltips = Lists.newArrayList();
         Rectangle arrow = new Rectangle(44, 18, 32, 17);
         if (!arrow.contains(mouseX, mouseY)) return tooltips;
-        if (recipe.logic.noFemaleAllowed.contains(recipe.key))
+        if (!recipe.logic.female)
         {
             String gender = I18n.format("gui.jei.pokemob.gender." + "female");
             tooltips.add(I18n.format("gui.jei.pokemob.nogender", gender));
         }
-        if (recipe.logic.noMaleAllowed.contains(recipe.key))
+        if (!recipe.logic.male)
         {
             String gender = I18n.format("gui.jei.pokemob.gender." + "male");
             tooltips.add(I18n.format("gui.jei.pokemob.nogender", gender));

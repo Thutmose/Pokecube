@@ -281,13 +281,18 @@ public class MovesParser
         boolean slp = effect.contains("induce sleep") || effect.contains("induces sleep")
                 || effect.contains("may sleep");
         boolean poison2 = effect.contains("induce severe poison") || effect.contains("induces severe poison");
+        boolean confuse = effect.contains("confus");
+        boolean flinch = effect.contains("flinch");
         if (burn) move.statusChange += IMoveConstants.STATUS_BRN;
         if (par) move.statusChange += IMoveConstants.STATUS_PAR;
         if (frz) move.statusChange += IMoveConstants.STATUS_FRZ;
         if (slp) move.statusChange += IMoveConstants.STATUS_SLP;
         if (poison) move.statusChange += poison2 ? IMoveConstants.STATUS_PSN2 : IMoveConstants.STATUS_PSN;
+        if (confuse) move.change += IMoveConstants.CHANGE_CONFUSED;
+        if (flinch) move.change += IMoveConstants.CHANGE_FLINCH;
         String chance = entry.effectRate.replace(" %", "");
         int rate = getRate(chance);
+        if (confuse || flinch) move.chanceChance = rate / 100f;
         move.statusChance = rate / 100f;
     }
 

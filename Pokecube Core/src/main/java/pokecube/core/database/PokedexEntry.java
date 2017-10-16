@@ -245,6 +245,8 @@ public class PokedexEntry
             public boolean         male     = true;
             public boolean         female   = true;
             public int             cooldown = 100;
+            public int             variance = 1;
+            public int             hunger   = 100;
 
             public Interaction(ItemStack key)
             {
@@ -319,6 +321,9 @@ public class PokedexEntry
                 Interaction interaction = new Interaction(keyStack);
                 interaction.male = interact.male;
                 interaction.female = interact.female;
+                interaction.cooldown = interact.cooldown;
+                interaction.variance = Math.max(1, interact.variance);
+                interaction.hunger = interact.baseHunger;
                 entry.interactionLogic.actions.put(keyStack, interaction);
                 if (isForme)
                 {
@@ -391,13 +396,15 @@ public class PokedexEntry
             {
                 long time = data.getLong("lastInteract");
                 long diff = entity.getEntityWorld().getTotalWorldTime() - time;
-                if (diff < action.cooldown) { return false; }
+                if (diff < action.cooldown + new Random(time).nextInt(action.variance)) { return false; }
             }
             if (action.stacks.isEmpty()) return false;
             if (!action.male && pokemob.getSexe() == IPokemob.MALE) return false;
             if (!action.female && pokemob.getSexe() == IPokemob.FEMALE) return false;
             if (!doInteract) return true;
             data.setLong("lastInteract", entity.getEntityWorld().getTotalWorldTime());
+            int time = pokemob.getHungerTime();
+            pokemob.setHungerTime(time + action.hunger);
             List<ItemStack> results = action.stacks;
             int index = player.getRNG().nextInt(results.size());
             ItemStack result = results.get(index).copy();

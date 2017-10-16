@@ -65,12 +65,35 @@ public class MovesUtils implements IMoveConstants
         rechargeMoves.add("roaroftime");
     }
 
-    public static void addChange(Entity target, byte change)
+    public static void addChange(Entity target, IPokemob attacker, byte change)
     {
         IPokemob attacked = CapabilityPokemob.getPokemobFor(target);
         if (attacked != null)
         {
-            attacked.addChange(change);
+            boolean effect = attacked.addChange(change);
+            if (change == IMoveConstants.CHANGE_CONFUSED)
+            {
+                if (effect)
+                {
+                    ITextComponent text;
+                    String message = "pokemob.status.confuse.add";
+                    text = CommandTools.makeTranslatedMessage(message, "green", attacked.getPokemonDisplayName());
+                    if (attacked != attacker) attacker.displayMessageToOwner(text);
+                    text = CommandTools.makeTranslatedMessage(message, "red", attacked.getPokemonDisplayName());
+                    attacked.displayMessageToOwner(text);
+                    attacked.getEntity().playSound(SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, 1, 1);
+                }
+                else
+                {
+                    ITextComponent text;
+                    String message = "pokemob.move.stat.fail";
+                    text = CommandTools.makeTranslatedMessage(message, "red", attacked.getPokemonDisplayName());
+                    if (attacked != attacker) attacker.displayMessageToOwner(text);
+                    text = CommandTools.makeTranslatedMessage(message, "green", attacked.getPokemonDisplayName());
+                    attacked.displayMessageToOwner(text);
+                    attacked.getEntity().playSound(SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, 1, 1);
+                }
+            }
         }
         else if (target instanceof EntityLivingBase)
         {

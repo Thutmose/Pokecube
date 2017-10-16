@@ -91,16 +91,21 @@ public class AIHungry extends AIBase
         super.doMainThreadTick(world);
 
         int hungerTime = pokemob.getHungerTime();
-        sleepy = true;
-        for (TimePeriod p : pokemob.getPokedexEntry().activeTimes())
+        v.set(entity);
+        sleepy = pokemob.getEntity().getAttackTarget() == null;
+        if (sleepy) for (TimePeriod p : pokemob.getPokedexEntry().activeTimes())
         {
             if (p != null && p.contains(entity.getEntityWorld().getWorldTime()))
             {
                 sleepy = false;
                 break;
             }
+        } // Don't run hunger AI stuff when in combat.
+        else
+        {
+            pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
+            return;
         }
-        v.set(entity);
         ChunkCoordinate c = new ChunkCoordinate(v, entity.dimension);
         int deathTime = PokecubeMod.core.getConfig().pokemobLifeSpan;
         if (!pokemob.neverHungry() && pokemob.getHungerCooldown() < 0)
@@ -170,6 +175,12 @@ public class AIHungry extends AIBase
                 else pokemob.displayMessageToOwner(
                         new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
                 boolean tameCheck = !pokemob.isPlayerOwned() || pokemob.getPokemonAIState(IMoveConstants.STAYING);
+                if (entity.getEntityData().hasKey("lastInteract"))
+                {
+                    long time = entity.getEntityData().getLong("lastInteract");
+                    long diff = entity.getEntityWorld().getTotalWorldTime() - time;
+                    if (diff < PokecubeCore.core.getConfig().pokemobLifeSpan) tameCheck = false;
+                }
                 if (tameCheck)
                 {
                     toRun.add(new GenBerries(pokemob));

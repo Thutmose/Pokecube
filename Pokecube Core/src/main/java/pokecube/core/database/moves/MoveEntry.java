@@ -68,7 +68,7 @@ public class MoveEntry implements IMoveConstants
     public byte                    statusChange;
     public float                   statusChance;
     public byte                    change                   = CHANGE_NONE;
-    public int                     chanceChance             = 0;
+    public float                   chanceChance             = 0;
     public int[]                   attackerStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };
     public int                     attackerStatModProb      = 100;
     public int[]                   attackedStatModification = { 0, 0, 0, 0, 0, 0, 0, 0 };

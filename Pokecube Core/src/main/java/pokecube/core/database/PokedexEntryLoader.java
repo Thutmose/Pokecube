@@ -170,7 +170,7 @@ public class PokedexEntryLoader
         @XmlAttribute
         public Boolean female     = true;
         @XmlAttribute
-        public Integer delay      = 50;
+        public Integer cooldown   = 50;
         @XmlAttribute
         public Integer variance   = 100;
         @XmlAttribute

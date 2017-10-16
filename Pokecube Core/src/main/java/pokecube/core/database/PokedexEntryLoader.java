@@ -166,9 +166,15 @@ public class PokedexEntryLoader
     public static class Interact
     {
         @XmlAttribute
-        public Boolean male   = true;
+        public Boolean male       = true;
         @XmlAttribute
-        public Boolean female = true;
+        public Boolean female     = true;
+        @XmlAttribute
+        public Integer cooldown   = 50;
+        @XmlAttribute
+        public Integer variance   = 100;
+        @XmlAttribute
+        public Integer baseHunger = 100;
         @XmlElement(name = "Key")
         public Key     key;
         @XmlElement(name = "Action")

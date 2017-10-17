@@ -50,13 +50,14 @@ public class WearablesCompat
             // rings use own model, so only 1 layer here, ring model handles own
             // textures.
             @SideOnly(Side.CLIENT)
-            private ModelRing ring = new ModelRing();
+            private ModelRing ring;
 
             @SideOnly(Side.CLIENT)
             @Override
             public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
             {
                 if (slot != EnumWearable.FINGER) return;
+                if (ring == null) ring = new ModelRing();
                 ring.stack = stack;
                 ring.render(wearer, 0, 0, partialTicks, 0, 0, 0.0625f);
             }

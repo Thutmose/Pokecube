@@ -55,17 +55,19 @@ public class ContainerHealTable extends Container implements IHealer
 
     protected void bindPlayerInventory(InventoryPlayer player_inventory)
     {
+        // Player Hotbar
+        for (int i = 0; i < 9; i++)
+        {
+            addSlotToContainer(new Slot(player_inventory, i, 8 + i * 18, 142));
+        }
+
+        //Player Inventory
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 9; j++)
             {
                 addSlotToContainer(new Slot(player_inventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
             }
-        }
-
-        for (int i = 0; i < 9; i++)
-        {
-            addSlotToContainer(new Slot(player_inventory, i, 8 + i * 18, 142));
         }
     }
 

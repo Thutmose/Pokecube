@@ -29,7 +29,8 @@ public class ContainerTradingTable extends Container
     {
         return (!PokecubeManager.isFilled(itemstack) && itemstack.hasTagCompound())
                 || (itemstack.getItem() == Items.EMERALD && CompatWrapper.getStackSize(itemstack) == 64)
-                || (itemstack.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON) && CompatWrapper.getStackSize(itemstack) == 1)
+                || (itemstack.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON)
+                        && CompatWrapper.getStackSize(itemstack) == 1)
                 || (itemstack.getItem() instanceof IPokecube && CompatWrapper.getStackSize(itemstack) == 1);
     }
 
@@ -54,14 +55,14 @@ public class ContainerTradingTable extends Container
 
     private void bindPlayerInventory(InventoryPlayer playerInventory)
     {
+        // Action Bar
+        for (int x = 0; x < 9; x++)
+            addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 142));
+
         // Inventory
         for (int y = 0; y < 3; y++)
             for (int x = 0; x < 9; x++)
                 addSlotToContainer(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 84 + y * 18));
-
-        // Action Bar
-        for (int x = 0; x < 9; x++)
-            addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 142));
     }
 
     @Override

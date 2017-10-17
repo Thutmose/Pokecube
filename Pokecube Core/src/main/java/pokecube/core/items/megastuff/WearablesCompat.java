@@ -1,9 +1,12 @@
 package pokecube.core.items.megastuff;
 
 import java.awt.Color;
+import java.util.Map;
 import java.util.Set;
 
 import org.lwjgl.opengl.GL11;
+
+import com.google.common.collect.Maps;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -28,9 +31,154 @@ import pokecube.core.items.megastuff.MegaCapability.RingChecker;
 import thut.core.client.render.model.IExtendedModelPart;
 import thut.core.client.render.x3d.X3dModel;
 import thut.lib.CompatWrapper;
+import thut.wearables.EnumWearable;
 
 public class WearablesCompat
 {
+    public abstract static class WearablesRenderer
+    {
+        @SideOnly(Side.CLIENT)
+        public abstract void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
+                float partialTicks);
+    }
+
+    public static Map<String, WearablesRenderer> renderers = Maps.newHashMap();
+
+    static
+    {
+        renderers.put("megaring", new WearablesRenderer()
+        {
+            // rings use own model, so only 1 layer here, ring model handles own
+            // textures.
+            @SideOnly(Side.CLIENT)
+            private ModelRing ring = new ModelRing();
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+            {
+                if (slot != EnumWearable.FINGER) return;
+                ring.stack = stack;
+                ring.render(wearer, 0, 0, partialTicks, 0, 0, 0.0625f);
+            }
+        });
+        renderers.put("megabelt", new WearablesRenderer()
+        {
+            // 2 layers of belt rendering for the different colours.
+            @SideOnly(Side.CLIENT)
+            private X3dModel         belt;
+
+            // Textures for each belt layer.
+            private ResourceLocation keystone;
+            private ResourceLocation belt_2;
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+            {
+                if (slot != EnumWearable.WAIST) return;
+                if (belt == null)
+                {
+                    belt = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/megabelt.x3d"));
+                    keystone = new ResourceLocation(PokecubeCore.ID, "textures/worn/keystone.png");
+                    belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/megabelt_2.png");
+                }
+                int brightness = wearer.getBrightnessForRender(partialTicks);
+                int[] col = new int[] { 255, 255, 255, 255, brightness };
+                GL11.glPushMatrix();
+                float dx = 0, dy = .55f, dz = -0.f;
+                GL11.glTranslatef(dx, dy, dz);
+                float s = 1.1f;
+                if (!CompatWrapper.isValid(wearer.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
+                {
+                    s = 0.95f;
+                }
+                GL11.glScalef(s, s, s);
+                GL11.glRotatef(90, 1, 0, 0);
+                GL11.glRotatef(180, 0, 1, 0);
+                Minecraft.getMinecraft().renderEngine.bindTexture(keystone);
+                GL11.glRotatef(90, 1, 0, 0);
+                belt.renderOnly("stone");
+                GL11.glPopMatrix();
+
+                GL11.glPushMatrix();
+                GL11.glTranslatef(dx, dy, dz);
+                GL11.glScalef(s, s, s);
+                GL11.glRotatef(90, 1, 0, 0);
+                GL11.glRotatef(180, 0, 1, 0);
+                Minecraft.getMinecraft().renderEngine.bindTexture(belt_2);
+                EnumDyeColor ret = EnumDyeColor.GRAY;
+                if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+                {
+                    int damage = stack.getTagCompound().getInteger("dyeColour");
+                    ret = EnumDyeColor.byDyeDamage(damage);
+                }
+                Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+                col[0] = colour.getRed();
+                col[2] = colour.getGreen();
+                col[1] = colour.getBlue();
+                belt.getParts().get("belt").setRGBAB(col);
+                belt.renderOnly("belt");
+                GL11.glPopMatrix();
+            }
+        });
+        renderers.put("megahat", new WearablesRenderer()
+        {
+            // 2 layers of hat rendering for the different colours.
+            @SideOnly(Side.CLIENT)
+            X3dModel                 hat;
+
+            // Textures for each hat layer.
+            private ResourceLocation hat_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat.png");
+            private ResourceLocation hat_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat2.png");
+
+            @SideOnly(Side.CLIENT)
+            @Override
+            public void renderWearable(EnumWearable slot, EntityLivingBase wearer, ItemStack stack, float partialTicks)
+            {
+                if (slot != EnumWearable.HAT) return;
+
+                if (hat == null)
+                {
+                    hat = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
+                }
+
+                Minecraft minecraft = Minecraft.getMinecraft();
+                GlStateManager.pushMatrix();
+                float s = 0.285f;
+                GL11.glScaled(s, -s, -s);
+                int brightness = wearer.getBrightnessForRender(partialTicks);
+                int[] col = new int[] { 255, 255, 255, 255, brightness };
+                minecraft.renderEngine.bindTexture(hat_1);
+                for (IExtendedModelPart part1 : hat.getParts().values())
+                {
+                    part1.setRGBAB(col);
+                }
+                hat.renderAll();
+                GlStateManager.popMatrix();
+                GlStateManager.pushMatrix();
+                GL11.glScaled(s * 0.995f, -s * 0.995f, -s * 0.995f);
+                minecraft.renderEngine.bindTexture(hat_2);
+                EnumDyeColor ret = EnumDyeColor.RED;
+                if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
+                {
+                    int damage = stack.getTagCompound().getInteger("dyeColour");
+                    ret = EnumDyeColor.byDyeDamage(damage);
+                }
+                Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
+                col[0] = colour.getRed();
+                col[2] = colour.getGreen();
+                col[1] = colour.getBlue();
+                for (IExtendedModelPart part : hat.getParts().values())
+                {
+                    part.setRGBAB(col);
+                }
+                hat.renderAll();
+                GL11.glColor3f(1, 1, 1);
+                GlStateManager.popMatrix();
+            }
+        });
+    }
 
     public WearablesCompat()
     {
@@ -71,6 +219,12 @@ public class WearablesCompat
 
     public static class WearableMega implements thut.wearables.IActiveWearable, ICapabilityProvider
     {
+        String getVariant(ItemStack stack)
+        {
+            if (CompatWrapper.isValid(stack) && stack.hasTagCompound()) return stack.getTagCompound().getString("type");
+            return "";
+        }
+
         @Override
         public thut.wearables.EnumWearable getSlot(ItemStack stack)
         {
@@ -78,141 +232,13 @@ public class WearablesCompat
             return thut.wearables.EnumWearable.valueOf(ItemMegawearable.wearables.get(name));
         }
 
-        // 2 layers of belt rendering for the different colours.
-        @SideOnly(Side.CLIENT)
-        private X3dModel         belt;
-
-        // 2 layers of hat rendering for the different colours.
-        @SideOnly(Side.CLIENT)
-        X3dModel                 hat;
-
-        // rings use own model, so only 1 layer here, ring model handles own
-        // textures.
-        @SideOnly(Side.CLIENT)
-        private ModelRing        ring;
-
-        // Textures for each belt layer.
-        private ResourceLocation belt_1 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt1.png");
-        private ResourceLocation belt_2 = new ResourceLocation(PokecubeCore.ID, "textures/worn/belt2.png");
-
-        // Textures for each hat layer.
-        private ResourceLocation hat_1  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat.png");
-        private ResourceLocation hat_2  = new ResourceLocation(PokecubeCore.ID, "textures/worn/hat2.png");
-
         @SideOnly(Side.CLIENT)
         @Override
         public void renderWearable(thut.wearables.EnumWearable slot, EntityLivingBase wearer, ItemStack stack,
                 float partialTicks)
         {
-            if (belt == null)
-            {
-                belt = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/belt.x3d"));
-                hat = new X3dModel(new ResourceLocation(PokecubeCore.ID, "models/worn/hat.x3d"));
-                ring = new ModelRing();
-            }
-            int brightness = wearer.getBrightnessForRender(partialTicks);
-            int[] col = new int[] { 255, 255, 255, 255, brightness };
-            switch (slot)
-            {
-            case WAIST:
-                GL11.glPushMatrix();
-                float dx = 0, dy = -.0f, dz = -0.6f;
-                GL11.glRotated(90, 1, 0, 0);
-                GL11.glRotated(180, 0, 0, 1);
-                GL11.glTranslatef(dx, dy, dz);
-                float s = 0.525f;
-                if (!CompatWrapper.isValid(wearer.getItemStackFromSlot(EntityEquipmentSlot.LEGS)))
-                {
-                    s = 0.465f;
-                }
-                GL11.glScalef(s, s, s);
-                Minecraft.getMinecraft().renderEngine.bindTexture(belt_1);
-                for (IExtendedModelPart part1 : belt.getParts().values())
-                {
-                    part1.setRGBAB(col);
-                }
-                belt.renderAll();
-                GL11.glPopMatrix();
-                // Second pass with colour.
-                GL11.glPushMatrix();
-                GL11.glRotated(90, 1, 0, 0);
-                GL11.glRotated(180, 0, 0, 1);
-                GL11.glTranslatef(dx, dy, dz);
-                GL11.glScalef(s, s, s);
-                Minecraft.getMinecraft().renderEngine.bindTexture(belt_2);
-                EnumDyeColor ret = EnumDyeColor.GRAY;
-                if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
-                {
-                    int damage = stack.getTagCompound().getInteger("dyeColour");
-                    ret = EnumDyeColor.byDyeDamage(damage);
-                }
-                Color colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
-                col[0] = colour.getRed();
-                col[2] = colour.getGreen();
-                col[1] = colour.getBlue();
-                for (IExtendedModelPart part : belt.getParts().values())
-                {
-                    part.setRGBAB(col);
-                }
-                belt.renderAll();
-                GL11.glColor3f(1, 1, 1);
-                GL11.glPopMatrix();
-                break;
-            case ANKLE:
-                break;
-            case BACK:
-                break;
-            case EAR:
-                break;
-            case EYE:
-                break;
-            case FINGER:
-                ring.stack = stack;
-                // TODO see if the rotation angles matter, if so, send them
-                // too...
-                ring.render(wearer, 0, 0, partialTicks, 0, 0, 0.0625f);
-                break;
-            case HAT:
-                Minecraft minecraft = Minecraft.getMinecraft();
-                GlStateManager.pushMatrix();
-                s = 0.285f;
-                GL11.glScaled(s, -s, -s);
-                minecraft.renderEngine.bindTexture(hat_1);
-                for (IExtendedModelPart part1 : hat.getParts().values())
-                {
-                    part1.setRGBAB(col);
-                }
-                hat.renderAll();
-                GlStateManager.popMatrix();
-                GlStateManager.pushMatrix();
-                GL11.glScaled(s * 0.995f, -s * 0.995f, -s * 0.995f);
-                minecraft.renderEngine.bindTexture(hat_2);
-                ret = EnumDyeColor.RED;
-                brightness = wearer.getBrightnessForRender(partialTicks);
-                if (stack.hasTagCompound() && stack.getTagCompound().hasKey("dyeColour"))
-                {
-                    int damage = stack.getTagCompound().getInteger("dyeColour");
-                    ret = EnumDyeColor.byDyeDamage(damage);
-                }
-                colour = new Color(ret.getMapColor().colorValue + 0xFF000000);
-                col[0] = colour.getRed();
-                col[2] = colour.getGreen();
-                col[1] = colour.getBlue();
-                for (IExtendedModelPart part : hat.getParts().values())
-                {
-                    part.setRGBAB(col);
-                }
-                hat.renderAll();
-                GL11.glColor3f(1, 1, 1);
-                GlStateManager.popMatrix();
-                break;
-            case NECK:
-                break;
-            case WRIST:
-                break;
-            default:
-                break;
-            }
+            WearablesRenderer renderer = renderers.get(getVariant(stack));
+            if (renderer != null) renderer.renderWearable(slot, wearer, stack, partialTicks);
         }
 
         @Override

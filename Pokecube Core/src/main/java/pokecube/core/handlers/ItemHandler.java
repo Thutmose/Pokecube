@@ -28,6 +28,7 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +59,6 @@ import pokecube.core.events.onload.RegisterPokecubes;
 import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.ItemHeldItems;
-import pokecube.core.items.ItemPokemobUseableFood;
 import pokecube.core.items.berries.BerryManager;
 import pokecube.core.items.megastuff.ItemMegawearable;
 import pokecube.core.items.pokecubes.DispenserBehaviorPokecube;
@@ -361,7 +361,7 @@ public class ItemHandler extends Mod_Pokecube_Helper
             PokecubeItems.addToHoldables(s);
         }
 
-        berryJuice = (new ItemPokemobUseableFood(6, 0.6f, false)).setUnlocalizedName("berryjuice");
+        berryJuice = (new ItemFood(6, 0.6f, false)).setUnlocalizedName("berryjuice");
         berryJuice.setCreativeTab(creativeTabPokecube);
         register(berryJuice.setRegistryName(PokecubeMod.ID, "berryjuice"), registry);
         PokecubeItems.addToHoldables("berryjuice");

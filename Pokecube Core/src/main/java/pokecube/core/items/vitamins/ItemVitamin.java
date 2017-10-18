@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -16,10 +16,9 @@ import pokecube.core.PokecubeItems;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
-import pokecube.core.items.ItemPokemobUseable;
 import pokecube.core.utils.Tools;
 
-public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
+public class ItemVitamin extends Item implements IMoveConstants
 {
     public static List<String> vitamins = Lists.newArrayList();
 
@@ -79,13 +78,6 @@ public class ItemVitamin extends ItemPokemobUseable implements IMoveConstants
         super();
         this.setHasSubtypes(true);
         instance = this;
-    }
-
-    @Override
-    public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
-    {
-        return feedToPokemob(stack, mob);
-
     }
 
     @Override

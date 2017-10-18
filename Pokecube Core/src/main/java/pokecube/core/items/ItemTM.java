@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
@@ -18,7 +19,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.utils.Tools;
 
-public class ItemTM extends ItemPokemobUseable
+public class ItemTM extends Item
 {
 
     public static void addMoveToStack(String move, ItemStack stack)
@@ -126,22 +127,13 @@ public class ItemTM extends ItemPokemobUseable
         return false;
     }
 
-    public ItemTM()
-    {
-        super();
-        this.setMaxStackSize(64);
-        this.setMaxDamage(0);
-        this.setHasSubtypes(true);
-    }
-
-    @Override
-    public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
+    public static boolean applyEffect(EntityLivingBase mob, ItemStack stack)
     {
         if (mob.getEntityWorld().isRemote) return true;
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+        int num = stack.getItemDamage();
         if (stack.hasTagCompound())
         {
-            int num = stack.getItemDamage();
             // Check if is TM or valid candy
             if (num != 20 || PokecubeItems.isValid(stack)) { return feedToPokemob(stack, mob); }
             // If invalid candy, drop level since it is bad candy
@@ -155,7 +147,6 @@ public class ItemTM extends ItemPokemobUseable
         }
         else
         {
-            int num = stack.getItemDamage();
             // If invalid candy, drop level since it is bad candy
             if (num == 20)
             {
@@ -166,6 +157,14 @@ public class ItemTM extends ItemPokemobUseable
             }
         }
         return false;
+    }
+
+    public ItemTM()
+    {
+        super();
+        this.setMaxStackSize(64);
+        this.setMaxDamage(0);
+        this.setHasSubtypes(true);
     }
 
     /** If this function returns true (or the item is damageable), the

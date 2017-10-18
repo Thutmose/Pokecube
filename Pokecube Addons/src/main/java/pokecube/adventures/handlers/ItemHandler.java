@@ -49,8 +49,8 @@ public class ItemHandler
 
     public static void registerItems(Object registry)
     {
-        Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share").setRegistryName(PokecubeAdv.ID,
-                "exp_share");
+        Item expshare = (new ItemExpShare()).setUnlocalizedName("exp_share").setRegistryName(PokecubeAdv.ID, "exp_share");
+        expshare.setHasSubtypes(true);
         expshare.setCreativeTab(creativeTabPokecube);
         register(expshare, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)

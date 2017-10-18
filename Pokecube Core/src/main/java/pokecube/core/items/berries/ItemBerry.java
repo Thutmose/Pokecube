@@ -8,8 +8,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -30,14 +28,11 @@ import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.entity.pokemobs.ContainerPokemob;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.HappinessType;
-import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
-import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 
 /** @author Oracion
  * @author Manchou */
-public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, IPlantable
+public class ItemBerry extends Item implements IMoveConstants, IPlantable
 {
     public ItemBerry()
     {
@@ -108,22 +103,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
         }
     }
 
-    @Override
-    public boolean applyEffect(EntityLivingBase mob, ItemStack stack)
-    {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
-        boolean applied = BerryManager.berryEffect(pokemob, stack);
-        int[] flavours = BerryManager.berryFlavours.get(stack.getItemDamage());
-        if (applied && flavours != null)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                pokemob.setFlavourAmount(i, pokemob.getFlavourAmount(i) + flavours[i]);
-            }
-        }
-        return applied;
-    }
-
     @SideOnly(Side.CLIENT)
     @Override
     /** returns a list of items with the same ID, but different meta (eg: dye
@@ -144,18 +123,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
     public String getUnlocalizedName(ItemStack stack)
     {
         return "item." + BerryManager.berryNames.get(stack.getItemDamage()) + "Berry";
-    }
-
-    @Override
-    public boolean itemUse(ItemStack stack, Entity user, EntityPlayer player)
-    {
-        if (user instanceof EntityLivingBase)
-        {
-            EntityLivingBase mob = (EntityLivingBase) user;
-            if (player != null) return useByPlayerOnPokemob(mob, stack);
-            return useByPokemob(mob, stack);
-        }
-        return false;
     }
 
     // 1.11
@@ -181,43 +148,6 @@ public class ItemBerry extends Item implements IMoveConstants, IPokemobUseable, 
             stack.splitStack(1);
         }
         return EnumActionResult.SUCCESS;
-    }
-
-    @Override
-    public boolean useByPlayerOnPokemob(EntityLivingBase mob, ItemStack stack)
-    {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
-        if (stack.getItemDamage() == 7)
-        {
-            float health = mob.getHealth();
-            float maxHealth = mob.getMaxHealth();
-
-            if (health == maxHealth || health <= 0) return false;
-
-            if (health + 10 < maxHealth) mob.setHealth(health + 10);
-            else mob.setHealth(maxHealth);
-            HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
-            return true;
-        }
-        if (stack.getItemDamage() == 7 || stack.getItemDamage() == 60)
-        {
-            float health = mob.getHealth();
-            float maxHealth = mob.getMaxHealth();
-
-            if (health == maxHealth) return false;
-
-            if (health + maxHealth / 4 < maxHealth) mob.setHealth(health + maxHealth / 4);
-            else mob.setHealth(maxHealth);
-            HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
-            return true;
-        }
-        return applyEffect(mob, stack);
-    }
-
-    @Override
-    public boolean useByPokemob(EntityLivingBase mob, ItemStack stack)
-    {
-        return applyEffect(mob, stack);
     }
 
     @Override

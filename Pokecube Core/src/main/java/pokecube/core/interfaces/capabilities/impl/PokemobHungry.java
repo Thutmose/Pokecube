@@ -30,9 +30,10 @@ public abstract class PokemobHungry extends PokemobMoves
         if (e instanceof EntityItem)
         {
             ItemStack item = ((EntityItem) e).getItem();
-            if (item.getItem() instanceof IPokemobUseable)
+            IPokemobUseable usable = IPokemobUseable.getUsableFor(item);
+            if (usable != null)
             {
-                ((IPokemobUseable) item.getItem()).applyEffect(getEntity(), item);
+                usable.onUse(this, item, getEntity());
             }
             if (Tools.isSameStack(item, PokecubeItems.getStack("leppaberry")))
             {

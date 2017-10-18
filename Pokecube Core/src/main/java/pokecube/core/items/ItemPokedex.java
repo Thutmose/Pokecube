@@ -4,6 +4,7 @@
 package pokecube.core.items;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -21,10 +22,15 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.handlers.PokecubePlayerDataHandler;
+import pokecube.core.handlers.playerdata.PokecubePlayerStats;
+import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.network.packets.PacketSyncTerrain;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
@@ -130,16 +136,17 @@ public class ItemPokedex extends Item
 
     private void showGui(EntityPlayer player)
     {
-        if (PokecubeCore.isOnClientSide())
-        {
-            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
-        }
-        else
+        if (!PokecubeCore.isOnClientSide())
         {
             TerrainSegment s = TerrainManager.getInstance().getTerrainForEntity(player);
             PacketSyncTerrain.sendTerrain(player, s.chunkX, s.chunkY, s.chunkZ, s);
             PacketPokedex.sendSecretBaseInfoPacket(player);
             PacketDataSync.sendInitPacket(player, "pokecube-stats");
+            player.openGui(PokecubeCore.instance, Config.GUIPOKEDEX_ID, player.getEntityWorld(), 0, 0, 0);
+            Entity entityHit = Tools.getPointedEntity(player, 16);
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entityHit);
+            if (pokemob != null) PokecubePlayerDataHandler.getInstance().getPlayerData(player)
+                    .getData(PokecubePlayerStats.class).inspect(player, pokemob);
         }
     }
 

@@ -196,7 +196,7 @@ public class GuiAnimate extends GuiScreen
         {
             IPokemob pokemob = EventsHandlerClient.getRenderMob(entry, PokecubeCore.proxy.getWorld());
             if (pokemob == null) return;
-            forme.setText(pokemob.getPokedexEntry().getName());
+            forme.setText(entry.getName());
             info.setText("" + pokemob.getSpecialInfo());
             if (button.id == 13)
             {
@@ -253,7 +253,7 @@ public class GuiAnimate extends GuiScreen
         String form = mob;
         PokedexEntry e1 = Database.getEntry(form);
         PokedexEntry e0 = pokemob.getPokedexEntry();
-        if (e0.hasForm(form))
+        if (e0.getPokedexNb() == e1.getPokedexNb())
         {
             pokemob.setPokedexEntry(e1);
         }

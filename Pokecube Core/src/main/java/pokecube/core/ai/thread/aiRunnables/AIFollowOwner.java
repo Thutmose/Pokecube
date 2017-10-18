@@ -32,7 +32,7 @@ public class AIFollowOwner extends AIBase
         this.minDist = min;
         this.maxDist = max;
         pokemob = entity;
-        this.speed = 0.6;
+        this.speed = 1;
         if (pokemob.getPokemonOwner() != null) ownerPos.set(pokemob.getPokemonOwner());
     }
 

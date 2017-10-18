@@ -305,6 +305,10 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
         boolean isAbleToFly = entry.floats() || entry.flys();
         boolean isWaterMob = entry.swims();
 
+        if (isAbleToFly && !(getAIState(IPokemob.SLEEPING, aiState) || getAIState(IPokemob.SITTING, aiState)))
+            this.setNoGravity(true);
+        else this.setNoGravity(false);
+
         if (!(isAbleToFly || (isWaterMob && isInWater())))
         {
             super.travel(strafe, up, forward);
@@ -383,9 +387,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
                         if (!this.world.isRemote || this.world.isBlockLoaded(blockpos$pooledmutableblockpos)
                                 && this.world.getChunkFromBlockCoords(blockpos$pooledmutableblockpos).isLoaded())
                         {
-                            if (!this.hasNoGravity()
-                                    && (!isAbleToFly || this.getAIState(IMoveConstants.SITTING, aiState)
-                                            || this.getAIState(IMoveConstants.SLEEPING, aiState)))
+                            if (!this.hasNoGravity())
                             {
                                 this.motionY -= 0.08D;
                             }

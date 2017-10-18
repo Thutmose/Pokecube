@@ -93,6 +93,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.capabilities.DefaultPokemob;
 import pokecube.core.interfaces.capabilities.impl.PokemobGenes;
 import pokecube.core.items.ItemPokedex;
+import pokecube.core.items.UsableItemEffects;
 import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.items.megastuff.IMegaCapability;
 import pokecube.core.items.megastuff.MegaCapability;
@@ -344,6 +345,8 @@ public class EventsHandler
             {
             }
         }, MegaCapability.class);
+        CapabilityManager.INSTANCE.register(IPokemobUseable.class, new IPokemobUseable.Storage(),
+                IPokemobUseable.class);
         MinecraftForge.EVENT_BUS.register(new StatsHandler());
         MinecraftForge.EVENT_BUS.register(new GeneticsManager());
         MinecraftForge.EVENT_BUS.register(this);
@@ -481,7 +484,8 @@ public class EventsHandler
             // Check shearable interaction.
             if (CompatWrapper.isValid(held) && Tools.isSameStack(key, held) && entry.interact(key)) { return; }
             evt.setCanceled(true);
-        //    evt.setCancellationResult(EnumActionResult.SUCCESS); //TODO uncomment this for 1.11.2 and 1.12
+            // evt.setCancellationResult(EnumActionResult.SUCCESS); //TODO
+            // uncomment this for 1.11.2 and 1.12
             if (hand != EnumHand.MAIN_HAND) return;
             // Check Pokedex Entry defined Interaction for player.
             if (entry.interact(player, pokemob, true))
@@ -615,13 +619,13 @@ public class EventsHandler
                         return;
                     }
                     // Otherwise check if useable item.
-                    if (held.getItem() instanceof IPokemobUseable)
+                    IPokemobUseable usable = IPokemobUseable.getUsableFor(held);
+                    if (usable != null)
                     {
-                        boolean used = ((IPokemobUseable) held.getItem()).itemUse(held, entity, player);
-                        pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
+                        boolean used = usable.onUse(pokemob, held, player);
                         if (used)
                         {
-                            held.splitStack(1);
+                            pokemob.setPokemonAIState(IMoveConstants.NOITEMUSE, true);
                             evt.setCanceled(true);
                             return;
                         }
@@ -832,6 +836,7 @@ public class EventsHandler
     {
         event.addCapability(new ResourceLocation("pokecube:megawearable"),
                 new MegaCapability(((AttachCapabilitiesEvent.Item) event).getItemStack()));
+        UsableItemEffects.registerCapabilities(event);
     }
 
     private List<EntityLiving> needsAI = Lists.newArrayList();

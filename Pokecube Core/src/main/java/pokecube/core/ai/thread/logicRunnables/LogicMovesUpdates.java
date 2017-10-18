@@ -5,10 +5,8 @@ import java.util.Random;
 import java.util.Set;
 
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,12 +14,8 @@ import pokecube.core.events.StatusEffectEvent;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.HappinessType;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.PokecubeMod;
-import pokecube.core.items.ItemPokemobUseable;
-import pokecube.core.items.berries.BerryManager;
-import pokecube.core.items.berries.ItemBerry;
 import pokecube.core.moves.templates.Move_Ongoing;
 import thut.api.maths.Vector3;
 import thut.core.common.commands.CommandTools;
@@ -96,16 +90,11 @@ public class LogicMovesUpdates extends LogicBase
         {
             pokemob.getAbility().onUpdate(pokemob);
         }
-        if (!entity.isDead && CompatWrapper.isValid(pokemob.getHeldItem())
-                && pokemob.getHeldItem().getItem() instanceof ItemPokemobUseable)
+        IPokemobUseable usable = IPokemobUseable.getUsableFor(pokemob.getHeldItem());
+        if (!entity.isDead && usable != null)
         {
-            boolean used = ((IPokemobUseable) pokemob.getHeldItem().getItem()).itemUse(pokemob.getHeldItem(), entity,
-                    null);
-            if (used)
-            {
-                ItemStack stack = pokemob.getHeldItem().splitStack(1);
-                entity.setHeldItem(EnumHand.MAIN_HAND, stack);
-            }
+            usable.onTick(pokemob, pokemob.getHeldItem());
+            if (!CompatWrapper.isValid(pokemob.getHeldItem())) pokemob.setHeldItem(CompatWrapper.nullStack);
         }
     }
 
@@ -149,24 +138,6 @@ public class LogicMovesUpdates extends LogicBase
 
         if (timer > 0) pokemob.setStatusTimer((short) (timer - 1));
         byte status = pokemob.getStatus();
-
-        ItemStack held = pokemob.getHeldItem();
-        if (held != null && held.getItem() instanceof ItemBerry)
-        {
-            if (BerryManager.berryEffect(pokemob, held))
-            {
-                int[] flavours = BerryManager.berryFlavours.get(held.getItemDamage());
-                if (flavours != null)
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        pokemob.setFlavourAmount(i, pokemob.getFlavourAmount(i) + flavours[i]);
-                    }
-                }
-                HappinessType.applyHappiness(pokemob, HappinessType.BERRY);
-                pokemob.setHeldItem(CompatWrapper.nullStack);
-            }
-        }
 
         int statusTimer = Math.max(1, PokecubeMod.core.getConfig().attackCooldown);
 

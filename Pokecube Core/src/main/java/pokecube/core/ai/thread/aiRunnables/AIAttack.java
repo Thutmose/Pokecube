@@ -51,6 +51,7 @@ public class AIAttack extends AIBase implements IAICombat
 
     protected int             chaseTime;
     protected int             delayTime   = -1;
+    protected boolean         canSee      = false;
 
     boolean                   running     = false;
 
@@ -103,9 +104,16 @@ public class AIAttack extends AIBase implements IAICombat
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
+        canSee = false;
         if (running)
         {
             attacker.getEntityData().setLong("lastAttackTick", attacker.getEntityWorld().getTotalWorldTime());
+            if (entityTarget != null)
+            {
+                double dist = this.attacker.getDistanceSq(this.entityTarget.posX, this.entityTarget.posY,
+                        this.entityTarget.posZ);
+                canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
+            }
         }
         delayTime = pokemob.getAttackCooldown();
         pokemob.setAttackCooldown(--delayTime > 0 ? delayTime : 0);
@@ -213,7 +221,6 @@ public class AIAttack extends AIBase implements IAICombat
         Move_Base move = null;
         double dist = this.attacker.getDistanceSq(this.entityTarget.posX, this.entityTarget.posY,
                 this.entityTarget.posZ);
-        boolean canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
 
         move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
 
@@ -333,6 +340,13 @@ public class AIAttack extends AIBase implements IAICombat
         if (!canSee)
         {
             chaseTime++;
+            if (!pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
+            {
+                targetLoc.set(entityTarget).addTo(0, entityTarget.height / 2, 0);
+            }
+            // Try to path to target if you can't see it, regardless of what
+            // move you have selected.
+            shouldPath = true;
         }
         else
         {

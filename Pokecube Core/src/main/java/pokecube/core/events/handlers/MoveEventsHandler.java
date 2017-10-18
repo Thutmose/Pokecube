@@ -38,6 +38,7 @@ import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
@@ -387,6 +388,15 @@ public class MoveEventsHandler
         IPokemob target = CapabilityPokemob.getPokemobFor(attacked);
         IPokemob applied = user ? attacker : target;
         IPokemob other = user ? target : attacker;
+
+        IPokemobUseable attackerheld = IPokemobUseable.getUsableFor(attacker.getHeldItem());
+        if (attackerheld != null) attackerheld.onMoveTick(attacker, attacker.getHeldItem(), move);
+        if (target != null)
+        {
+            IPokemobUseable targetheld = IPokemobUseable.getUsableFor(target.getHeldItem());
+            if (targetheld != null) targetheld.onMoveTick(attacker, target.getHeldItem(), move);
+        }
+
         if (applied == null) return;
         if (!user)
         {

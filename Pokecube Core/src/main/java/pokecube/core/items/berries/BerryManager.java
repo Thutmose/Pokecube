@@ -11,7 +11,6 @@ import com.google.common.base.Optional;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import pokecube.core.PokecubeItems;
@@ -22,12 +21,12 @@ import pokecube.core.blocks.berries.BlockBerryWood;
 import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.handlers.ItemHandler;
 import pokecube.core.interfaces.IMoveConstants;
-import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.IPokemob.HappinessType;
+import pokecube.core.items.UsableItemEffects;
+import pokecube.core.items.UsableItemEffects.BerryUsable.BerryEffect;
 
 /** @author Oracion
  * @author Manchou */
-public class BerryManager implements IMoveConstants
+public class BerryManager
 {
     public static final IProperty<String> type          = new IProperty<String>()
                                                         {
@@ -75,118 +74,23 @@ public class BerryManager implements IMoveConstants
      * for the indecies of the array */
     public static Map<Integer, int[]>     berryFlavours = new HashMap<Integer, int[]>();
 
-    public static void addBerry(String name, int id, int spicy, int dry, int sweet, int bitter, int sour)
+    public static void addBerry(String name, int id, int spicy, int dry, int sweet, int bitter, int sour,
+            BerryEffect effect)
     {
         berryNames.put(id, name);
         berryFlavours.put(id, new int[] { spicy, dry, sweet, bitter, sour });
         PokecubeItems.addSpecificItemStack(name + "berry", new ItemStack(PokecubeItems.berries, 1, id));
         PokecubeItems.addSpecificItemStack(name, new ItemStack(PokecubeItems.berries, 1, id));
         PokecubeItems.addToHoldables(name);
+        if (effect != null)
+        {
+            UsableItemEffects.BerryUsable.effects.put(id, effect);
+        }
     }
 
-    public static boolean berryEffect(IPokemob pokemob, ItemStack berry)
+    public static void addBerry(String name, int id, int spicy, int dry, int sweet, int bitter, int sour)
     {
-
-        byte status = pokemob.getStatus();
-        if (!berryNames.containsKey(berry.getItemDamage())) return false;
-        int berryId = berry.getItemDamage();
-        if (berryId == 21)
-        {
-            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
-            byte[] evs = pokemob.getEVs();
-            evs[0] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[0]) - 10);
-            pokemob.setEVs(evs);
-            return true;
-        }
-        if (berryId == 22)
-        {
-            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
-            byte[] evs = pokemob.getEVs();
-            evs[1] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[1]) - 10);
-            pokemob.setEVs(evs);
-            return true;
-        }
-        if (berryId == 23)
-        {
-            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
-            byte[] evs = pokemob.getEVs();
-            evs[2] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[2]) - 10);
-            pokemob.setEVs(evs);
-            return true;
-        }
-        if (berryId == 24)
-        {
-            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
-            byte[] evs = pokemob.getEVs();
-            evs[3] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[3]) - 10);
-            pokemob.setEVs(evs);
-            return true;
-        }
-        if (berryId == 25)
-        {
-            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
-            byte[] evs = pokemob.getEVs();
-            evs[4] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[4]) - 10);
-            pokemob.setEVs(evs);
-            return true;
-        }
-        if (berryId == 26)
-        {
-            HappinessType.applyHappiness(pokemob, HappinessType.EVBERRY);
-            byte[] evs = pokemob.getEVs();
-            evs[5] = (byte) Math.max(Byte.MIN_VALUE, ((int) evs[5]) - 10);
-            pokemob.setEVs(evs);
-            return true;
-        }
-
-        if (status == STATUS_PAR && berryId == 1)
-        {
-            pokemob.healStatus();
-            return true;
-        }
-        if (status == STATUS_SLP && berryId == 2)
-        {
-            pokemob.healStatus();
-            return true;
-        }
-        if ((status == STATUS_PSN || status == STATUS_PSN2) && berryId == 3)
-        {
-            pokemob.healStatus();
-            return true;
-        }
-        if (status == STATUS_BRN && berryId == 4)
-        {
-            pokemob.healStatus();
-            return true;
-        }
-        if (status == STATUS_FRZ && berryId == 5)
-        {
-            pokemob.healStatus();
-            return true;
-        }
-        if (status != STATUS_NON && berryId == 9)
-        {
-            pokemob.healStatus();
-            return true;
-        }
-        EntityLivingBase entity = pokemob.getEntity();
-        float HP = entity.getHealth();
-        float HPmax = entity.getMaxHealth();
-        if (HP < HPmax / 3f)
-        {
-            if (berryId == 7)
-            {
-                entity.heal(10);
-                return true;
-            }
-            else if (berryId == 10 || berryId == 60)
-            {
-                entity.heal(HPmax / 4f);
-                return true;
-            }
-        }
-
-        return false;
+        addBerry(name, id, spicy, dry, sweet, bitter, sour, null);
     }
 
     public static Block getBerryCrop(String name)

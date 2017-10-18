@@ -14,6 +14,7 @@ import java.util.Set;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import io.netty.buffer.Unpooled;
@@ -723,7 +724,17 @@ public class GuiDisplayPokecubeInfo extends Gui
 
         EntityPlayer player = minecraft.player;
         Entity attacker = getCurrentPokemob().getEntity();
-        Entity target = Tools.getPointedEntity(player, 32);
+        Predicate<Entity> selector = new Predicate<Entity>()
+        {
+            @Override
+            public boolean apply(Entity input)
+            {
+                IPokemob pokemob = CapabilityPokemob.getPokemobFor(input);
+                if (pokemob == null) return true;
+                return pokemob.getOwner() != getCurrentPokemob().getOwner();
+            }
+        };
+        Entity target = Tools.getPointedEntity(player, 32, selector);
         boolean teleport = false;
         Vector3 targetLocation = Tools.getPointedLocation(player, 32);
 

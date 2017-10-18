@@ -325,24 +325,27 @@ public class Tools
         return level;
     }
 
-    public static Entity getPointedEntity(Entity entity, double distance)
+    public static Entity getPointedEntity(Entity entity, double distance, Predicate<Entity> selector)
     {
         Vec3d vec3 = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         double d0 = distance;
         Vec3d vec31 = entity.getLook(0);
         Vec3d vec32 = vec3.addVector(vec31.x * d0, vec31.y * d0, vec31.z * d0);
         Entity pointedEntity = null;
+
+        Predicate<Entity> predicate = Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
+        {
+            @Override
+            public boolean apply(Entity entity)
+            {
+                return entity.canBeCollidedWith();
+            }
+        });
+        if (selector != null) predicate = Predicates.and(predicate, selector);
         float f = 0.5F;
         List<Entity> list = entity.getEntityWorld().getEntitiesInAABBexcluding(entity,
                 entity.getEntityBoundingBox().expand(vec31.x * d0, vec31.y * d0, vec31.z * d0).grow(f, f, f),
-                Predicates.and(EntitySelectors.NOT_SPECTATING, new Predicate<Entity>()
-                {
-                    @Override
-                    public boolean apply(Entity entity)
-                    {
-                        return entity.canBeCollidedWith();
-                    }
-                }));
+                predicate);
         double d2 = distance;
 
         for (int j = 0; j < list.size(); ++j)
@@ -382,6 +385,11 @@ public class Tools
             }
         }
         return pointedEntity;
+    }
+
+    public static Entity getPointedEntity(Entity entity, double distance)
+    {
+        return getPointedEntity(entity, distance, null);
     }
 
     public static Vector3 getPointedLocation(Entity entity, double distance)

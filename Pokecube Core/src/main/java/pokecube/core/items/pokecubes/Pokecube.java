@@ -239,7 +239,17 @@ public class Pokecube extends Item implements IPokecube
         if (entityLiving instanceof EntityPlayer && !worldIn.isRemote)
         {
             EntityPlayer player = (EntityPlayer) entityLiving;
-            Entity target = Tools.getPointedEntity(player, 32);
+            com.google.common.base.Predicate<Entity> selector = new com.google.common.base.Predicate<Entity>()
+            {
+                @Override
+                public boolean apply(Entity input)
+                {
+                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(input);
+                    if (pokemob == null) return true;
+                    return pokemob.getOwner() != player;
+                }
+            };
+            Entity target = Tools.getPointedEntity(player, 32, selector);
             Vector3 direction = Vector3.getNewVector().set(player.getLook(0));
             Vector3 targetLocation = Tools.getPointedLocation(player, 32);
 

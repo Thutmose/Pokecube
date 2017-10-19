@@ -351,9 +351,11 @@ public abstract class AIBase implements IAIRunnable
      * @return */
     protected boolean addEntityPath(Entity entity, Path path, double speed)
     {
-        boolean set = getPathManager().addEntityPath(entity, path, speed);
+        boolean set = getPathManager().addEntityPath(entity, path, speed) && getPathManager().path != null;
         if (set)
         {
+            IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+            if (pokemob != null) pokemob.setPokemonAIState(IPokemob.PATHING, path != null);
             toRun.add(getPathManager().path);
         }
         return set;
@@ -399,6 +401,7 @@ public abstract class AIBase implements IAIRunnable
         runs.addAll(toRun);
         for (IRunnable run : runs)
         {
+            if (run == null) continue;
             boolean ran = run.run(world);
             if (ran)
             {

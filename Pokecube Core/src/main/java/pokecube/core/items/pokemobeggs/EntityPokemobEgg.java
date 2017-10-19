@@ -28,11 +28,12 @@ import thut.lib.CompatWrapper;
 /** @author Manchou */
 public class EntityPokemobEgg extends EntityLiving
 {
-    int        delayBeforeCanPickup = 0;
-    int        age                  = 0;
-    int        lastIncubate         = 0;
-    public int hatch                = 0;
-    Vector3    here                 = Vector3.getNewVector();
+    int               delayBeforeCanPickup = 0;
+    int               age                  = 0;
+    int               lastIncubate         = 0;
+    public int        hatch                = 0;
+    Vector3           here                 = Vector3.getNewVector();
+    private ItemStack eggCache             = null;
 
     /** Do not call this, this is here only for vanilla reasons
      * 
@@ -122,6 +123,19 @@ public class EntityPokemobEgg extends EntityLiving
                     .fromString(getHeldItemMainhand().getTagCompound().getString("motherId")); }
         }
         return null;
+    }
+
+    @Override
+    public void setHeldItem(EnumHand hand, ItemStack stack)
+    {
+        super.setHeldItem(hand, stack);
+        eggCache = stack;
+    }
+
+    public ItemStack getHeldItemMainhand()
+    {
+        if (eggCache == null) return eggCache = super.getHeldItemMainhand();
+        return eggCache;
     }
 
     /** Called when a user uses the creative pick block button on this entity.

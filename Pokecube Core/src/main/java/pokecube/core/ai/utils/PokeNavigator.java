@@ -179,7 +179,7 @@ public class PokeNavigator extends PathNavigate
         }
         this.canFly = entry.flys() || entry.floats();
         this.canDive = entry.swims();
-        Path current = getPath();
+        Path current = noPath() ? null : getPath();
         if (current != null && !pokemob.getPokemonAIState(IMoveConstants.ANGRY))
         {
             Vector3 p = v.set(current.getFinalPathPoint());

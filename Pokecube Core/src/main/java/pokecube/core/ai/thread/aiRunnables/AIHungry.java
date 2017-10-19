@@ -219,6 +219,76 @@ public class AIHungry extends AIBase
             pokemob.setPokemonAIState(IMoveConstants.SLEEPING, false);
         }
 
+        // Run these on the main thread, so the world access stuff isn't
+        // problematic.
+        eat:
+        if (pokemob.getPokemonAIState(IMoveConstants.HUNTING))
+        {
+            if (pokemob.isPhototroph())
+            {
+                if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
+                {
+                    pokemob.setHungerTime(pokemob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    break eat;
+                }
+            }
+            if (pokemob.isLithotroph())
+            {
+                IBlockState state = v.offset(EnumFacing.DOWN).getBlockState(world);
+                Block b = state.getBlock();
+                if (!PokecubeTerrainChecker.isRock(state))
+                {
+                    Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
+                            PokecubeMod.core.getConfig().getRocks());
+                    if (temp != null)
+                    {
+                        block = true;
+                        foodLoc.set(temp);
+                    }
+                    if (!foodLoc.isEmpty()) break eat;
+                }
+                else
+                {
+                    if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
+                    {
+                        v.set(entity).offsetBy(EnumFacing.DOWN);
+                        if (b == Blocks.COBBLESTONE)
+                        {
+                            TickHandler.addBlockChange(v, entity.dimension, Blocks.GRAVEL);
+                        }
+                        else if (b == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
+                        {
+                            TickHandler.addBlockChange(v, entity.dimension, Blocks.AIR);
+                        }
+                        else if (state.getMaterial() == Material.ROCK)
+                        {
+                            TickHandler.addBlockChange(v, entity.dimension, Blocks.COBBLESTONE);
+                        }
+                    }
+                    berry.setItem(new ItemStack(b));
+                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    pokemob.eat(berry);
+                    break eat;
+                }
+            }
+            if (pokemob.isElectrotroph())
+            {
+                int num = v.blockCount(world, Blocks.REDSTONE_BLOCK, 8);
+                System.out.println("test " + num);
+                if (num < 1)
+                {
+
+                }
+                else
+                {
+                    pokemob.setHungerTime(pokemob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
+                    setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
+                    break eat;
+                }
+            }
+        }
+
         // cap hunger.
         hungerTime = pokemob.getHungerTime();
         int hunger = Math.max(hungerTime, -deathTime / 4);
@@ -393,8 +463,7 @@ public class AIHungry extends AIBase
             {
                 p = v.set(this.entity.getNavigator().getPath().getFinalPathPoint());
                 m = v1.set(foodLoc);
-                if (p.distToSq(m) <= 16) shouldChangePath = true;
-
+                if (p.distToSq(m) >= 16) shouldChangePath = false;
             }
             boolean pathed = false;
             Path path = null;
@@ -404,7 +473,6 @@ public class AIHungry extends AIBase
                 pathed = path != null;
                 addEntityPath(entity, path, moveSpeed);
             }
-
             if (shouldChangePath && !pathed)
             {
                 setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
@@ -428,68 +496,6 @@ public class AIHungry extends AIBase
     protected void findFood()
     {
         v.set(entity).addTo(0, entity.getEyeHeight(), 0);
-        if (pokemob.isPhototroph())
-        {
-            if (entity.getEntityWorld().provider.isDaytime() && v.canSeeSky(world))
-            {
-                pokemob.setHungerTime(pokemob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                return;
-            }
-        }
-        if (pokemob.isLithotroph())
-        {
-            IBlockState state = v.offset(EnumFacing.DOWN).getBlockState(world);
-            Block b = state.getBlock();
-            if (!PokecubeTerrainChecker.isRock(state))
-            {
-                Vector3 temp = v.findClosestVisibleObject(world, true, (int) distance,
-                        PokecubeMod.core.getConfig().getRocks());
-                if (temp != null)
-                {
-                    block = true;
-                    foodLoc.set(temp);
-                }
-                if (!foodLoc.isEmpty()) return;
-            }
-            else
-            {
-                if (PokecubeMod.core.getConfig().pokemobsEatRocks && Math.random() > 0.0075)
-                {
-                    v.set(entity).offsetBy(EnumFacing.DOWN);
-                    if (b == Blocks.COBBLESTONE)
-                    {
-                        TickHandler.addBlockChange(v, entity.dimension, Blocks.GRAVEL);
-                    }
-                    else if (b == Blocks.GRAVEL && PokecubeMod.core.getConfig().pokemobsEatGravel)
-                    {
-                        TickHandler.addBlockChange(v, entity.dimension, Blocks.AIR);
-                    }
-                    else if (state.getMaterial() == Material.ROCK)
-                    {
-                        TickHandler.addBlockChange(v, entity.dimension, Blocks.COBBLESTONE);
-                    }
-                }
-                berry.setItem(new ItemStack(b));
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                pokemob.eat(berry);
-                return;
-            }
-        }
-        if (pokemob.isElectrotroph())
-        {
-            int num = v.blockCount(world, Blocks.REDSTONE_BLOCK, 8);
-            if (num < 1)
-            {
-
-            }
-            else
-            {
-                pokemob.setHungerTime(pokemob.getHungerTime() - PokecubeMod.core.getConfig().pokemobLifeSpan / 4);
-                setPokemobAIState(pokemob, IMoveConstants.HUNTING, false);
-                return;
-            }
-        }
         if (pokemob.getPokedexEntry().swims())
         {// grow in 1.12
             AxisAlignedBB bb = v.set(entity).addTo(0, entity.getEyeHeight(), 0).getAABB()
@@ -661,7 +667,11 @@ public class AIHungry extends AIBase
             double d = foodLoc.addTo(0.5, 0.5, 0.5).distToEntity(entity);
             foodLoc.addTo(-0.5, -0.5, -0.5);
             IBlockState b = foodLoc.getBlockState(world);
-            if (b == null) return;
+            if (b == null)
+            {
+                foodLoc.clear();
+                return;
+            }
             if (b.getBlock() instanceof IBerryFruitBlock)
             {
                 eatBerry(b, d);
@@ -680,7 +690,7 @@ public class AIHungry extends AIBase
     @Override
     public boolean shouldRun()
     {
-        world = TickHandler.getInstance().getWorldCache(entity.dimension);
+        world = entity.getEntityWorld();
         boolean ownedSleepCheck = pokemob.getPokemonAIState(IMoveConstants.TAMED)
                 && !(pokemob.getPokemonAIState(IMoveConstants.STAYING));
         if (ownedSleepCheck)

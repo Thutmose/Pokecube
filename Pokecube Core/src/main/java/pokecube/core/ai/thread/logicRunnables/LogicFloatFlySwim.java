@@ -35,7 +35,7 @@ public class LogicFloatFlySwim extends LogicBase
 
     public boolean shouldRun()
     {
-        return !entity.isBeingRidden();
+        return !entity.isBeingRidden() && entity.getNavigator().noPath();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class LogicFloatFlySwim extends LogicBase
             {
                 entity.motionY += 0.005;
             }
-            else entity.motionY -= 0.005;
+            else entity.motionY -= 0.01;
             if (down == null || pokemob.getPokemonAIState(IMoveConstants.SITTING))
             {
                 entity.motionY -= 0.02;

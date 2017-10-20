@@ -15,9 +15,11 @@ import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryDefaulted;
 import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.interfaces.PokecubeMod;
@@ -62,14 +64,18 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
         player.posZ = source.getZ();
 
         Vector3 loc = Vector3.getNewVector().set(source.getBlockPos().offset(dir));
-        AxisAlignedBB box = loc.getAABB().grow(1.5);
+        AxisAlignedBB box = loc.getAABB().grow(2);
         List<EntityLiving> mobs = source.getWorld().getEntitiesWithinAABB(EntityLiving.class, box);
         Collections.shuffle(mobs);
         if (!mobs.isEmpty())
         {
             player.inventory.clear();
             player.setHeldItem(EnumHand.MAIN_HAND, stack);
-            boolean interacted = mobs.get(0).processInitialInteract(player, EnumHand.MAIN_HAND);
+
+            EnumActionResult cancelResult = net.minecraftforge.common.ForgeHooks.onInteractEntityAt(player, mobs.get(0),
+                    new Vec3d(0, 0, 0), EnumHand.MAIN_HAND);
+
+            boolean interacted = cancelResult != null || mobs.get(0).processInitialInteract(player, EnumHand.MAIN_HAND);
             boolean result = false;
             if (!interacted)
             {
@@ -81,10 +87,12 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
                     if (stack3 != stack)
                     {
                         result = true;
-                        // This should result in the object just being dropped.
+                        // This should result in the object just being
+                        // dropped.
                         DISPENSE_BEHAVIOR_REGISTRY.getObject(null).dispense(source, stack3);
                     }
                 }
+
             player.inventory.clear();
             if (result) return stack;
         }

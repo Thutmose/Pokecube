@@ -275,7 +275,6 @@ public class AIHungry extends AIBase
             if (pokemob.isElectrotroph())
             {
                 int num = v.blockCount(world, Blocks.REDSTONE_BLOCK, 8);
-                System.out.println("test " + num);
                 if (num < 1)
                 {
 

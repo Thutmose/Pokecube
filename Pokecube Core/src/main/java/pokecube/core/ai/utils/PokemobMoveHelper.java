@@ -53,27 +53,6 @@ public class PokemobMoveHelper extends EntityMoveHelper
             return;
         }
 
-        pokemob.setDirectionPitch(0);
-        entity.setMoveVertical(0);
-        boolean shouldGoDown = false;
-        boolean shouldGoUp = false;
-        PathPoint p = null;
-        if (!entity.getNavigator().noPath() && !entity.getNavigator().getPath().isFinished())
-        {
-            p = entity.getNavigator().getPath()
-                    .getPathPointFromIndex(entity.getNavigator().getPath().getCurrentPathIndex());
-            shouldGoDown = p.y < entity.posY - entity.stepHeight;
-            shouldGoUp = p.y > entity.posY + entity.stepHeight;
-            if (air || water)
-            {
-                shouldGoUp = p.y > entity.posY - entity.stepHeight;
-                shouldGoDown = !shouldGoUp;
-            }
-        }
-        if ((pokemob.getPokemonAIState(IPokemob.SLEEPING)
-                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0) && air)
-            shouldGoDown = true;
-
         this.action = EntityMoveHelper.Action.WAIT;
         double d0 = this.posX - this.entity.posX;
         double d1 = this.posZ - this.entity.posZ;
@@ -81,9 +60,36 @@ public class PokemobMoveHelper extends EntityMoveHelper
         double d3 = d0 * d0 + d2 * d2 + d1 * d1;
         double d4 = d0 * d0 + d1 * d1;
 
-        if (d3 < 2.500000277905201E-7D)
+        pokemob.setDirectionPitch(0);
+        entity.setMoveVertical(0);
+        boolean shouldGoDown = false;
+        boolean shouldGoUp = false;
+        PathPoint p = null;
+        if (!entity.getNavigator().noPath() && Math.abs(d2) > 0.05)
+        {
+            p = entity.getNavigator().getPath()
+                    .getPathPointFromIndex(entity.getNavigator().getPath().getCurrentPathIndex());
+            shouldGoDown = p.y < entity.posY - entity.stepHeight;
+            shouldGoUp = p.y > entity.posY + entity.stepHeight;
+            if (air || water)
+            {
+                shouldGoUp = p.y > entity.posY;
+                shouldGoDown = !shouldGoUp;
+            }
+        }
+        if ((pokemob.getPokemonAIState(IPokemob.SLEEPING)
+                || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0) && air)
+            shouldGoDown = true;
+        float length = pokemob.getPokedexEntry().length * pokemob.getSize();
+        boolean skipped = d3 < (entity.width * entity.width + length * length) / 4;
+        if (d3 < 2.500000277905201E-7D || skipped)
         {
             this.entity.setMoveForward(0.0F);
+            if (skipped && !entity.getNavigator().noPath())
+            {
+                entity.getNavigator().getPath()
+                        .setCurrentPathIndex(entity.getNavigator().getPath().getCurrentPathIndex() + 1);
+            }
             return;
         }
         boolean upLadder = d2 > 0 && entity.isOnLadder();
@@ -93,10 +99,10 @@ public class PokemobMoveHelper extends EntityMoveHelper
         }
 
         float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
-        this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 90.0F);
-        this.entity.setAIMoveSpeed((float) (this.speed
-                * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
-
+        this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 180.0F);
+        float v = (float) (this.speed
+                * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+        this.entity.setAIMoveSpeed(v);
         if (shouldGoDown || shouldGoUp)
         {
             entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);

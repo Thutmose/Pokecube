@@ -20,6 +20,7 @@ public class AIFollowOwner extends AIBase
     private double             speed;
     private PathNavigate       petPathfinder;
     private int                cooldown;
+    private boolean            pathing  = false;
     float                      maxDist;
     float                      minDist;
     Vector3                    ownerPos = Vector3.getNewVector();
@@ -41,7 +42,7 @@ public class AIFollowOwner extends AIBase
     {
         ownerPos.set(theOwner);
         this.theOwner = null;
-        pokemob.setPokemonAIState(IMoveConstants.PATHING, false);
+        pathing = false;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class AIFollowOwner extends AIBase
             theOwner = (EntityLivingBase) pokemob.getOwner();
             this.cooldown = 0;
             ownerPos.set(theOwner);
-            pokemob.setPokemonAIState(IMoveConstants.PATHING, true);
+            pathing = true;
         }
         if (Vector3.isVisibleEntityFromEntity(thePet, theOwner))
         {
@@ -97,18 +98,17 @@ public class AIFollowOwner extends AIBase
         {
             return false;
         }
-        else if (pokemob.getPokemonAIState(IMoveConstants.PATHING)
-                && this.thePet.getDistanceSqToEntity(entitylivingbase) > this.maxDist * this.maxDist)
-        {
-            return true;
-        }
         else if (pokemob.getPokemonAIState(IMoveConstants.SITTING))
         {
             return false;
         }
-        else if (pokemob != null && pokemob.getPokemonAIState(IMoveConstants.STAYING))
+        else if (pokemob.getPokemonAIState(IMoveConstants.STAYING))
         {
             return false;
+        }
+        else if (pathing && this.thePet.getDistanceSqToEntity(entitylivingbase) > this.maxDist * this.maxDist)
+        {
+            return true;
         }
         else if (thePet.getAttackTarget() != null || pokemob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE))
         {

@@ -194,21 +194,20 @@ public class AICombatMovement extends AIBase
         double dist = d0 * d0 + d2 * d2;
         float diff = attacker.width + target.width;
         diff = diff * diff;
-        if (!(dist >= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false))
+        if (!(dist <= diff && dist <= 16.0D ? (this.attacker.getRNG().nextInt(5) == 0) : false))
         {
             // TODO see if need to path to target
             return;
         }
-        pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
 
         if (!(pokemob.getPokedexEntry().flys() || pokemob.getPokedexEntry().floats()) && !attacker.onGround) return;
-
+        pokemob.setPokemonAIState(IMoveConstants.LEAPING, false);
         Vector3 targetLoc = Vector3.getNewVector().set(target);
         Vector3 leaperLoc = Vector3.getNewVector().set(attacker);
         Vector3 dir = targetLoc.subtract(leaperLoc);
         double d = dir.mag();
         dir.norm();
-        dir.scalarMultBy(d * 0.2f);
+        if (d > 5) dir.scalarMultBy(d * 0.2f);
         if (dir.magSq() < 1) dir.norm();
         if (dir.isNaN())
         {

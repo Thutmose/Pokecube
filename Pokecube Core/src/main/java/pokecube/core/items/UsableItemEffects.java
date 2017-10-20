@@ -35,7 +35,9 @@ public class UsableItemEffects
         public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
             if (user != pokemob.getEntity() && user != pokemob.getOwner()) return false;
-            return ItemTM.applyEffect(pokemob.getEntity(), stack);
+            boolean used = ItemTM.applyEffect(pokemob.getEntity(), stack);
+            if (used) stack.splitStack(1);
+            return used;
         }
 
         @Override
@@ -66,7 +68,9 @@ public class UsableItemEffects
         public boolean onUse(IPokemob pokemob, ItemStack stack, EntityLivingBase user)
         {
             if (user != pokemob.getEntity() && user != pokemob.getOwner()) return false;
-            return ItemVitamin.feedToPokemob(stack, pokemob.getEntity());
+            boolean used = ItemVitamin.feedToPokemob(stack, pokemob.getEntity());
+            if (used) stack.splitStack(1);
+            return used;
         }
 
         @Override

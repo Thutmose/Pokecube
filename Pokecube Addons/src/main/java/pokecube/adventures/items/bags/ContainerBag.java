@@ -37,7 +37,7 @@ public class ContainerBag extends Container
     public static boolean isItemValid(ItemStack itemstack)
     {
         if (HOLDALL) return true;
-        boolean valid = PokecubeItems.isValidHeldItem(itemstack) || itemstack.getItem() instanceof IPokemobUseable;
+        boolean valid = PokecubeItems.isValidHeldItem(itemstack) || IPokemobUseable.getUsableFor(itemstack) != null;
         valid |= PokecubeItems.getFossilEntry(itemstack) != null;
         boolean cube = PokecubeItems.getEmptyCube(itemstack) == itemstack.getItem()
                 && !PokecubeManager.isFilled(itemstack);

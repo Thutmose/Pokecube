@@ -24,14 +24,7 @@ public class ActionHydropump implements IMoveAction
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
         if (user.getPokemonAIState(IMoveConstants.ANGRY)) return false;
-        if (user.getPokemonOwner() instanceof EntityPlayer)
-        {
-            EntityPlayer player = (EntityPlayer) user.getPokemonOwner();
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
-                    location.getBlockState(player.getEntityWorld()), player);
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (evt.isCanceled()) return false;
-        }
+        if (!MoveEventsHandler.canEffectBlock(user, location)) return false;
         MoveEventsHandler.doDefaultWater(user, MovesUtils.getMoveFromName(getMoveName()), location);
         Vector3 source = Vector3.getNewVector().set(user.getEntity());
         double dist = source.distanceTo(location);

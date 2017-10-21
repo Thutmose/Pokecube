@@ -12,6 +12,7 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,6 +24,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -54,6 +56,39 @@ public class MoveEventsHandler
     public static int WATERSTRONG    = 100;
     public static int FIRESTRONG     = 100;
     public static int ELECTRICSTRONG = 100;
+
+    /** This method should be called before any block setting by any move
+     * effects.
+     * 
+     * @param user
+     * @param location
+     * @return */
+    public static boolean canEffectBlock(IPokemob user, Vector3 location)
+    {
+        EntityLivingBase owner = user.getPokemonOwner();
+        boolean repel = SpawnHandler.checkNoSpawnerInArea(user.getEntity().getEntityWorld(), location.intX(),
+                location.intY(), location.intZ());
+        if (!(owner instanceof EntityPlayer))
+        {
+            owner = PokecubeMod.getFakePlayer(user.getEntity().getEntityWorld());
+        }
+        if (!repel)
+        {
+            if (!user.getPokemonAIState(IPokemob.ANGRY)) CommandTools.sendError(owner, "pokemob.action.denyrepel");
+            return false;
+        }
+        EntityPlayer player = (EntityPlayer) owner;
+        BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
+                location.getBlockState(player.getEntityWorld()), player);
+        MinecraftForge.EVENT_BUS.post(evt);
+        if (evt.isCanceled())
+        {
+            TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.noperms");
+            if (!user.getPokemonAIState(IPokemob.ANGRY)) owner.sendMessage(message);
+            return false;
+        }
+        return true;
+    }
 
     public static boolean attemptSmelt(IPokemob attacker, Vector3 location)
     {
@@ -129,6 +164,14 @@ public class MoveEventsHandler
                 && state.getBlock().getFlammability(world, location.getPos(), EnumFacing.UP) != 0)
         {
             prevBlock.setBlock(world, Blocks.FIRE);
+        }
+        else if (location.getBlock(world) == Blocks.SNOW_LAYER)
+        {
+            location.setAir(world);
+        }
+        else if (prevBlock.getBlock(world) == Blocks.SNOW_LAYER)
+        {
+            prevBlock.setAir(world);
         }
         if (move.getPWR() < FIRESTRONG) { return attemptSmelt(attacker, location); }
         Block block = state.getBlock();
@@ -266,14 +309,7 @@ public class MoveEventsHandler
         @Override
         public boolean applyEffect(IPokemob attacker, Vector3 location)
         {
-            if (attacker.getPokemonOwner() instanceof EntityPlayer)
-            {
-                EntityPlayer player = (EntityPlayer) attacker.getPokemonOwner();
-                BreakEvent evt2 = new BreakEvent(player.getEntityWorld(), location.getPos(),
-                        location.getBlockState(player.getEntityWorld()), player);
-                MinecraftForge.EVENT_BUS.post(evt2);
-                if (evt2.isCanceled()) return false;
-            }
+            if (!MoveEventsHandler.canEffectBlock(attacker, location)) return false;
             if (move.getType(attacker) == PokeType.getType("water")) return doDefaultWater(attacker, move, location);
             if (move.getType(attacker) == PokeType.getType("ice")
                     && (move.move.attackCategory & IMoveConstants.CATEGORY_DISTANCE) > 0

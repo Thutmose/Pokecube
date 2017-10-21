@@ -2,19 +2,14 @@ package pokecube.core.moves.implementations.actions;
 
 import java.util.Random;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
-import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.TreeRemover;
 import thut.api.maths.Vector3;
-import thut.core.common.commands.CommandTools;
 
 public class ActionCut implements IMoveAction
 {
@@ -30,22 +25,7 @@ public class ActionCut implements IMoveAction
         int count = 10;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
-        EntityLivingBase owner = user.getPokemonOwner();
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(user.getEntity().getEntityWorld(), location.intX(),
-                location.intY(), location.intZ());
-        if (owner != null && owner instanceof EntityPlayer)
-        {
-            if (!repel)
-            {
-                CommandTools.sendError(owner, "pokemob.action.denyrepel");
-                return false;
-            }
-            EntityPlayer player = (EntityPlayer) owner;
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
-                    location.getBlockState(player.getEntityWorld()), player);
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (evt.isCanceled()) return false;
-        }
+        if (!MoveEventsHandler.canEffectBlock(user, location)) return false;
         TreeRemover remover = new TreeRemover(user.getEntity().getEntityWorld(), location);
         int cut = remover.cut(true);
         if (cut == 0)

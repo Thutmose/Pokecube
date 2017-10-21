@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Pokedex;
 import pokecube.core.database.moves.MoveEntry;
+import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAnimation;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -120,7 +121,7 @@ public class Move_Explode extends Move_Basic
         if (!evt.isCanceled())
         {
             mob.setHealth(0);// kill the mob.
-            if (PokecubeMod.core.getConfig().explosions)
+            if (PokecubeMod.core.getConfig().explosions && MoveEventsHandler.canEffectBlock(pokemob, v.set(mob)))
             {
                 ((ExplosionCustom) boom).doExplosion();
             }

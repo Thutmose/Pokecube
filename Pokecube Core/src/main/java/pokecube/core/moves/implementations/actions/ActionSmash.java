@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
 import pokecube.core.PokecubeCore;
-import pokecube.core.events.handlers.SpawnHandler;
+import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -23,7 +23,6 @@ import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.moves.templates.Move_Basic;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.maths.Vector3;
-import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 public class ActionSmash implements IMoveAction
@@ -40,22 +39,7 @@ public class ActionSmash implements IMoveAction
         int count = 10;
         int level = user.getLevel();
         int hungerValue = PokecubeMod.core.getConfig().pokemobLifeSpan / 4;
-        EntityLivingBase owner = user.getPokemonOwner();
-        boolean repel = SpawnHandler.checkNoSpawnerInArea(user.getEntity().getEntityWorld(), location.intX(),
-                location.intY(), location.intZ());
-        if (owner != null && owner instanceof EntityPlayer)
-        {
-            if (!repel)
-            {
-                CommandTools.sendError(owner, "pokemob.action.denyrepel");
-                return false;
-            }
-            EntityPlayer player = (EntityPlayer) owner;
-            BreakEvent evt = new BreakEvent(player.getEntityWorld(), location.getPos(),
-                    location.getBlockState(player.getEntityWorld()), player);
-            MinecraftForge.EVENT_BUS.post(evt);
-            if (evt.isCanceled()) return false;
-        }
+        if (!MoveEventsHandler.canEffectBlock(user, location)) return false;
         level = Math.min(99, level);
         count = (int) Math.max(0, Math.ceil(smashRock(user, location, true) * Math.pow((100 - level) / 100d, 3)))
                 * hungerValue;

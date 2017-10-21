@@ -9,8 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.BlockEvent.BreakEvent;
+import pokecube.core.events.handlers.MoveEventsHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -31,6 +30,7 @@ public class ActionSecretPower implements IMoveAction
     {
         if (attacker.getPokemonAIState(IMoveConstants.ANGRY)) return false;
         if (!(attacker.getPokemonOwner() instanceof EntityPlayerMP)) return false;
+        if (!MoveEventsHandler.canEffectBlock(attacker, location)) return false;
         long time = attacker.getEntity().getEntityData().getLong("lastAttackTick");
         if (time + (20 * 3) > attacker.getEntity().getEntityWorld().getTotalWorldTime()) return false;
         EntityPlayerMP owner = (EntityPlayerMP) attacker.getPokemonOwner();
@@ -38,15 +38,6 @@ public class ActionSecretPower implements IMoveAction
         if (!(PokecubeTerrainChecker.isTerrain(state) || PokecubeTerrainChecker.isWood(state)))
         {
             TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.wrongloc");
-            owner.sendMessage(message);
-            return false;
-        }
-        BreakEvent evt = new BreakEvent(owner.getEntityWorld(), location.getPos(),
-                location.getBlockState(owner.getEntityWorld()), owner);
-        MinecraftForge.EVENT_BUS.post(evt);
-        if (evt.isCanceled())
-        {
-            TextComponentTranslation message = new TextComponentTranslation("pokemob.createbase.deny.noperms");
             owner.sendMessage(message);
             return false;
         }

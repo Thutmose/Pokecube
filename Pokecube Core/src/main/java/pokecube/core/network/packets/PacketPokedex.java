@@ -24,6 +24,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.database.Database;
@@ -280,7 +281,11 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                             Biome b = Biome.REGISTRY.getObject(key);
                             if (b != null)
                             {
-                                if (data.isValid(b)) biomes.add(b.getBiomeName());
+                                if (data.isValid(b))
+                                {
+                                    biomes.add(ReflectionHelper.getPrivateValue(Biome.class, b, "biomeName",
+                                            "field_76791_y", "y"));
+                                }
                             }
                         }
                         for (BiomeType b : BiomeType.values())
@@ -298,8 +303,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 }
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
             }
-            if (message.message == REQUEST)
-                return;
+            if (message.message == REQUEST) return;
         }
         if (message.message == REMOVE)
         {

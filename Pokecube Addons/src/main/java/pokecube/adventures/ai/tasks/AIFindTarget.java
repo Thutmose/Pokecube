@@ -76,7 +76,7 @@ public class AIFindTarget extends AITrainerBase
         int range = trainer.getAgressDistance() + 1;
         EntityLivingBase target = null;
         List<? extends EntityLivingBase> targets = world.getEntitiesWithinAABB(targetClass,
-                here.getAABB().expand(range, range, range));
+                here.getAABB().grow(range, range, range));
 
         int sight = trainer.getAgressDistance();
         for (Object o : targets)

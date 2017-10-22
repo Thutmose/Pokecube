@@ -66,7 +66,8 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                     getMoveStats().newMoves.clear();
                     NBTTagList newMoves = (NBTTagList) movesTag.getTag(NEWMOVES);
                     for (int i = 0; i < newMoves.tagCount(); i++)
-                        getMoveStats().newMoves.add(newMoves.getStringTagAt(i));
+                        if (!getMoveStats().newMoves.contains(newMoves.getStringTagAt(i)))
+                            getMoveStats().newMoves.add(newMoves.getStringTagAt(i));
                 }
                 catch (Exception e)
                 {

@@ -44,7 +44,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
     public void writeSpawnData(ByteBuf buffer)
     {
         NBTTagCompound tag = new NBTTagCompound();
-        this.writeEntityToNBT(tag);
+        this.writeToNBT(tag);
         new PacketBuffer(buffer).writeCompoundTag(tag);
     }
 
@@ -54,7 +54,7 @@ public abstract class EntityHasTrades extends EntityAgeable implements IMerchant
         try
         {
             NBTTagCompound tag = new PacketBuffer(additionalData).readCompoundTag();
-            this.readEntityFromNBT(tag);
+            this.readFromNBT(tag);
         }
         catch (IOException e)
         {

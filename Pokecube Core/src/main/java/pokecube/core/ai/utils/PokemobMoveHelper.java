@@ -5,6 +5,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.MathHelper;
+import pokecube.core.PokecubeCore;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -102,7 +103,8 @@ public class PokemobMoveHelper extends EntityMoveHelper
         this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 180.0F);
         float v = (float) (this.speed
                 * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-        this.entity.setAIMoveSpeed(v);
+        if ((air && !entity.onGround && !entity.isInWater())) v *= PokecubeCore.core.getConfig().flyPathingSpeedFactor;
+        else if (water) v *= PokecubeCore.core.getConfig().swimPathingSpeedFactor;
         if (shouldGoDown || shouldGoUp)
         {
             entity.rotationPitch = -(float) (Math.atan((float) (d2 / Math.sqrt(d4))) * 180 / Math.PI);
@@ -110,6 +112,7 @@ public class PokemobMoveHelper extends EntityMoveHelper
             float up = -MathHelper.sin(entity.rotationPitch * (float) Math.PI / 180.0F);
             entity.setMoveVertical(up);
         }
+        this.entity.setAIMoveSpeed(v);
         if (d2 > (double) this.entity.stepHeight && d0 * d0 + d1 * d1 < (double) Math.max(1.0F, this.entity.width))
         {
             this.entity.getJumpHelper().setJumping();

@@ -266,7 +266,7 @@ public class PAEventsHandler
                 {
                     if (npc.ticksExisted == 0) continue;
                     IAIMob mob = npc.getCapability(IAIMob.THUTMOBAI, null);
-                    mob.getAI().addAITask(new AIBattle(npc).setPriority(0));
+                    mob.getAI().addAITask(new AIBattle(npc, !(npc instanceof EntityTrainer)).setPriority(0));
                     mob.getAI().addAITask(new AIFindTarget(npc, EntityZombie.class).setPriority(20));
                     if (npc instanceof EntityTrainer)
                         mob.getAI().addAITask(new AIFindTarget(npc, EntityPlayer.class).setPriority(10));

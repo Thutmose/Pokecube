@@ -17,9 +17,8 @@ public class EVsGene extends GeneByteArr
         for (int i = 0; i < 6; i++)
             value[i] = Byte.MIN_VALUE;
     }
-
-    @Override
-    public Gene interpolate(Gene other)
+    
+    public Gene fakeInterpolate(Gene other)
     {
         EVsGene newGene = new EVsGene();
         byte[] ret = newGene.value;
@@ -38,6 +37,14 @@ public class EVsGene extends GeneByteArr
             byte iv = (byte) ((mi + fi) / 2);
             ret[i] = iv;
         }
+        return newGene;
+    }
+
+    @Override
+    public Gene interpolate(Gene other)
+    {
+        // Don't actually interpolate the EVs.
+        EVsGene newGene = new EVsGene();
         return newGene;
     }
 

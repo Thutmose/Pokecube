@@ -253,6 +253,10 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     @SyncConfig
     public float                         groundSpeedFactor            = 1;
+    @SyncConfig
+    public float                         flyPathingSpeedFactor        = 1.25f;
+    @SyncConfig
+    public float                         swimPathingSpeedFactor       = 1.25f;
 
     public SoundEvent[]                  dodges                       = {};
     public SoundEvent[]                  leaps                        = {};

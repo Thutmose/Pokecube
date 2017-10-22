@@ -3,8 +3,10 @@ package pokecube.adventures.ai.tasks;
 import java.util.List;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
@@ -22,9 +24,18 @@ import thut.lib.CompatWrapper;
 
 public class AIBattle extends AITrainerBase
 {
+    private boolean  canPath   = true;
+    private BlockPos battleLoc = null;
+
     public AIBattle(EntityLivingBase trainer)
     {
         super(trainer);
+    }
+
+    public AIBattle(EntityLivingBase trainer, boolean canPath)
+    {
+        super(trainer);
+        this.canPath = canPath;
     }
 
     @Override
@@ -149,6 +160,7 @@ public class AIBattle extends AITrainerBase
     public void resetTask()
     {
         trainer.resetPokemob();
+        battleLoc = null;
     }
 
     /** Searches for pokemobs most damaging move against the target, and sets it
@@ -186,6 +198,14 @@ public class AIBattle extends AITrainerBase
         {
             trainer.setTarget(null);
             return;
+        }
+
+        // Stop trainer from pathing if it shouldn't do so during battle
+        if (!canPath && entity instanceof EntityLiving)
+        {
+            if (battleLoc == null) battleLoc = entity.getPosition();
+            ((EntityLiving) entity).getNavigator()
+                    .setPath(((EntityLiving) entity).getNavigator().getPathToPos(battleLoc), 0.75);
         }
 
         // Check if in range, if too far, target has run away, so forget about

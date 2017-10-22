@@ -34,6 +34,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
@@ -490,7 +491,7 @@ public class EventsHandler
             // Check shearable interaction.
             if (CompatWrapper.isValid(held) && Tools.isSameStack(key, held) && entry.interact(key)) { return; }
             evt.setCanceled(true);
-            // evt.setCancellationResult(EnumActionResult.SUCCESS); //TODO
+            evt.setCancellationResult(EnumActionResult.SUCCESS);
             // uncomment this for 1.11.2 and 1.12
             if (hand != EnumHand.MAIN_HAND) return;
             // Check Pokedex Entry defined Interaction for player.

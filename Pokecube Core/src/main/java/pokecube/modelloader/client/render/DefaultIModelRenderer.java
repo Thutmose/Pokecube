@@ -2,10 +2,8 @@ package pokecube.modelloader.client.render;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
@@ -31,11 +29,6 @@ public class DefaultIModelRenderer<T extends EntityLiving> extends AbstractModel
     public Vector5                      rotations      = new Vector5();
 
     public ModelWrapper                 model;
-    /** A set of names of shearable parts. */
-    public Set<String>                  shearableParts = Sets.newHashSet();
-
-    /** A set of namess of dyeable parts. */
-    public Set<String>                  dyeableParts   = Sets.newHashSet();
 
     ResourceLocation                    texture;
 

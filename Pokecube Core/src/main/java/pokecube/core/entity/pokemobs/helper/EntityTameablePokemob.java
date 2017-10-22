@@ -31,6 +31,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import pokecube.core.PokecubeItems;
+import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
@@ -148,8 +149,10 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         if (pokemobCap.getPokedexEntry().interact(key))
         {
             long last = getEntityData().getLong("lastSheared");
+            Interaction action = pokemobCap.getPokedexEntry().interactionLogic.actions.get(key);
 
-            if (last < getEntityWorld().getTotalWorldTime() - 800 && !getEntityWorld().isRemote)
+            if (last < getEntityWorld().getTotalWorldTime() - action.cooldown + rand.nextInt(1 + action.variance)
+                    && !getEntityWorld().isRemote)
             {
                 setSheared(false);
             }
@@ -177,21 +180,15 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         {
             ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
             setSheared(true);
-
             getEntityData().setLong("lastSheared", getEntityWorld().getTotalWorldTime());
-
-            int i = 1 + rand.nextInt(3);
             List<ItemStack> list = pokemobCap.getPokedexEntry().getInteractResult(key);
-
-            for (int j = 0; j < i; j++)
+            int time = pokemobCap.getHungerTime();
+            pokemobCap.setHungerTime(time + pokemobCap.getPokedexEntry().interactionLogic.actions.get(key).hunger);
+            for (ItemStack stack : list)
             {
-                for (ItemStack stack : list)
-                {
-                    ItemStack toAdd = stack.copy();
-                    if (pokemobCap.getPokedexEntry().dyeable)
-                        toAdd.setItemDamage(15 - pokemobCap.getSpecialInfo() & 15);
-                    ret.add(toAdd);
-                }
+                ItemStack toAdd = stack.copy();
+                if (pokemobCap.getPokedexEntry().dyeable) toAdd.setItemDamage(15 - pokemobCap.getSpecialInfo() & 15);
+                ret.add(toAdd);
             }
             this.playSound(SoundEvents.ENTITY_SHEEP_SHEAR, 1.0F, 1.0F);
             return ret;

@@ -277,7 +277,7 @@ public class AnimationLoader
             Vector5 rotation = null;
             Vector3 scale = null;
             TextureHelper texturer = null;
-            AnimationRandomizer animator = null;
+            PokemobAnimationChanger animator = null;
             Set<String> headNames = Sets.newHashSet();
             Set<String> shear = Sets.newHashSet();
             Set<String> dye = Sets.newHashSet();
@@ -384,7 +384,7 @@ public class AnimationLoader
                     }
                     else if (part.getNodeName().equals("subAnims"))
                     {
-                        animator = new AnimationRandomizer(part);
+                        animator = new PokemobAnimationChanger(new AnimationRandomizer(part));
                     }
                 }
 
@@ -400,10 +400,6 @@ public class AnimationLoader
                 loaded.scale.set(scale);
                 loaded.rotations = rotation;
                 loaded.model.getHeadParts().addAll(headNames);
-                loaded.shearableParts.addAll(shear);
-                loaded.dyeableParts.addAll(dye);
-                loaded.setTexturer(texturer);
-                loaded.setAnimationChanger(animator);
                 for (Animation anim : tblAnims)
                 {
                     if (anim != null)
@@ -445,12 +441,18 @@ public class AnimationLoader
                         AnimationBuilder.merge(from, to);
                     }
                 }
-                if (animator != null)
+                if (animator == null)
                 {
-                    Set<Animation> anims = Sets.newHashSet();
-                    anims.addAll(loaded.animations.values());
-                    animator.init(anims);
+                    animator = new PokemobAnimationChanger();
                 }
+                animator.dyeables.addAll(dye);
+                animator.shearables.addAll(shear);
+                Set<Animation> anims = Sets.newHashSet();
+                anims.addAll(loaded.animations.values());
+                animator.init(anims);
+
+                loaded.setTexturer(texturer);
+                loaded.setAnimationChanger(animator);
 
                 if (loaded.model.imodel.getHeadInfo() != null)
                 {

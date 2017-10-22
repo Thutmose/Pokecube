@@ -681,7 +681,7 @@ public class PokedexEntry
     public Map<ItemStack, Float>                held             = Maps.newHashMap();
     /** Interactions with items from when player right clicks. */
     @CopyToGender
-    protected InteractionLogic                  interactionLogic = new InteractionLogic();
+    public InteractionLogic                     interactionLogic = new InteractionLogic();
     protected boolean                           isFemaleForme    = false;
     protected boolean                           isMaleForme      = false;
     @CopyToGender

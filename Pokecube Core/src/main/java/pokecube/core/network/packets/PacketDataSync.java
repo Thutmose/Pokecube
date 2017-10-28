@@ -3,6 +3,7 @@ package pokecube.core.network.packets;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.google.common.collect.Lists;
 
@@ -213,7 +214,7 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
                 }
                 catch (Exception e)
                 {
-                    e.printStackTrace();
+                    PokecubeMod.log(Level.WARNING, "Error with config Sync: " + message.data.getCompoundTag("C"), e);
                 }
             }
             else
@@ -233,10 +234,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound longs = tag.getCompoundTag("L");
             for (String s : longs.getKeySet())
             {
-                long l = longs.getLong(s);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l + "");
+                try
+                {
+                    long l = longs.getLong(s);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l + "");
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("I"))
@@ -244,10 +252,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound ints = tag.getCompoundTag("I");
             for (String s : ints.getKeySet())
             {
-                int l = ints.getInteger(s);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l + "");
+                try
+                {
+                    int l = ints.getInteger(s);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l + "");
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("B"))
@@ -255,10 +270,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound bools = tag.getCompoundTag("B");
             for (String s : bools.getKeySet())
             {
-                boolean l = bools.getByte(s) != 0;
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l + "");
+                try
+                {
+                    boolean l = bools.getByte(s) != 0;
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l + "");
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("F"))
@@ -266,10 +288,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound floats = tag.getCompoundTag("F");
             for (String s : floats.getKeySet())
             {
-                float l = floats.getFloat(s);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l + "");
+                try
+                {
+                    float l = floats.getFloat(s);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l + "");
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("D"))
@@ -277,10 +306,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound doubles = tag.getCompoundTag("D");
             for (String s : doubles.getKeySet())
             {
-                double l = doubles.getDouble(s);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l + "");
+                try
+                {
+                    double l = doubles.getDouble(s);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l + "");
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("S"))
@@ -288,10 +324,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound strings = tag.getCompoundTag("S");
             for (String s : strings.getKeySet())
             {
-                String l = strings.getString(s);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l + "");
+                try
+                {
+                    String l = strings.getString(s);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l + "");
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("A"))
@@ -299,10 +342,17 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound intarrs = tag.getCompoundTag("A");
             for (String s : intarrs.getKeySet())
             {
-                int[] l = intarrs.getIntArray(s);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, l);
+                try
+                {
+                    int[] l = intarrs.getIntArray(s);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, l);
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
         if (tag.hasKey("R"))
@@ -310,14 +360,21 @@ public class PacketDataSync implements IMessage, IMessageHandler<PacketDataSync,
             NBTTagCompound stringarrs = tag.getCompoundTag("R");
             for (String s : stringarrs.getKeySet())
             {
-                NBTTagList list = (NBTTagList) stringarrs.getTag(s);
-                List<String> vars = Lists.newArrayList();
-                for (int i = 0; i < list.tagCount(); i++)
-                    vars.add(list.getStringTagAt(i));
-                String[] arr = vars.toArray(new String[0]);
-                f = defaults.getClass().getDeclaredField(s);
-                f.setAccessible(true);
-                defaults.updateField(f, arr);
+                try
+                {
+                    NBTTagList list = (NBTTagList) stringarrs.getTag(s);
+                    List<String> vars = Lists.newArrayList();
+                    for (int i = 0; i < list.tagCount(); i++)
+                        vars.add(list.getStringTagAt(i));
+                    String[] arr = vars.toArray(new String[0]);
+                    f = defaults.getClass().getDeclaredField(s);
+                    f.setAccessible(true);
+                    defaults.updateField(f, arr);
+                }
+                catch (Exception e)
+                {
+                    PokecubeMod.log(Level.WARNING, s, e);
+                }
             }
         }
     }

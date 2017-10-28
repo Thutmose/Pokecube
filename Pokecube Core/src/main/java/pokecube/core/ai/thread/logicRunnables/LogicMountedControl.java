@@ -51,6 +51,21 @@ public class LogicMountedControl extends LogicBase
 
         if (waterSpeed) airSpeed = false;
 
+        Entity controller = null;
+        Entity owner = pokemob.getOwner();
+        if (controller != owner)
+        {
+            for (Entity e : entity.getRecursivePassengers())
+            {
+                if (e == owner)
+                {
+                    controller = e;
+                    break;
+                }
+            }
+        }
+        if (controller == null) return;
+
         if (pokemob.getPokedexEntry().shouldDive)
         {
             PotionEffect vision = new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 300, 1, true,
@@ -144,7 +159,7 @@ public class LogicMountedControl extends LogicBase
         }
         else if (!entity.getPassengers().isEmpty())
         {
-            pokemob.setHeading(entity.getPassengers().get(0).rotationYaw);
+            pokemob.setHeading(controller.rotationYaw);
             float f = moveSpeed / 2;
             if (leftInputDown)
             {

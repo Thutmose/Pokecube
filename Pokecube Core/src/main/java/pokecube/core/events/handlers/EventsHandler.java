@@ -82,6 +82,7 @@ import pokecube.core.database.Pokedex;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager;
 import pokecube.core.entity.pokemobs.genetics.GeneticsManager.GeneticsProvider;
+import pokecube.core.entity.pokemobs.helper.EntityMountablePokemob;
 import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.handlers.Config;
@@ -587,6 +588,13 @@ public class EventsHandler
                 return;
             }
 
+            boolean saddleCheck = pokemob.getPokemonAIState(IMoveConstants.SADDLED) && !player.isSneaking()
+                    && !PokecubeCore.isOnClientSide()
+                    && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
+                    && handleHmAndSaddle(player, pokemob)
+                    && (isOwner || (pokemob.getEntity() instanceof EntityMountablePokemob
+                            && ((EntityMountablePokemob) pokemob.getEntity()).canFitPassenger(player)));
+
             // Owner only interactions.
             if (isOwner)
             {
@@ -664,27 +672,23 @@ public class EventsHandler
                         return;
                     }
                 }
-
-                // Check saddle for riding.
-                if (pokemob.getPokemonAIState(IMoveConstants.SADDLED) && !player.isSneaking()
-                        && !PokecubeCore.isOnClientSide()
-                        && (!CompatWrapper.isValid(held) || held.getItem() instanceof ItemPokedex)
-                        && handleHmAndSaddle(player, pokemob))
-                {
-                    entity.setJumping(false);
-                    evt.setCanceled(true);
-                    return;
-                }
-
                 // Open Gui
                 pokemob.getPokemobInventory().setCustomName(entity.getDisplayName().getFormattedText());
-                if (!PokecubeCore.isOnClientSide())
+                if (!PokecubeCore.isOnClientSide() && !saddleCheck)
                 {
                     player.openGui(PokecubeMod.core, Config.GUIPOKEMOB_ID, entity.getEntityWorld(),
                             entity.getEntityId(), 0, 0);
                     evt.setCanceled(true);
                     return;
                 }
+            }
+
+            // Check saddle for riding.
+            if (saddleCheck)
+            {
+                entity.setJumping(false);
+                evt.setCanceled(true);
+                return;
             }
         }
     }
@@ -847,38 +851,6 @@ public class EventsHandler
 
     private List<EntityLiving> needsAI = Lists.newArrayList();
 
-    @SubscribeEvent
-    public void onTick(LivingUpdateEvent event)
-    {
-        if (!needsAI.isEmpty() && !event.getEntity().getEntityWorld().isRemote)
-        {
-            synchronized (needsAI)
-            {
-                List<EntityLiving> stale = Lists.newArrayList();
-                List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
-                for (EntityLiving mob : toProcess)
-                {
-                    if (mob.isDead)
-                    {
-                        stale.add(mob);
-                        continue;
-                    }
-                    if (mob.ticksExisted == 0) continue;
-                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
-                    if (pokemob == null)
-                    {
-                        stale.add(mob);
-                        continue;
-                    }
-                    pokemob.setEntity(mob);
-                    pokemob.initAI();
-                    stale.add(mob);
-                }
-                needsAI.removeAll(stale);
-            }
-        }
-    }
-
     @SuppressWarnings("unchecked")
     @SubscribeEvent
     public void onEntityCapabilityAttach(AttachCapabilitiesEvent<Entity> event)
@@ -960,6 +932,33 @@ public class EventsHandler
         if (evt.phase == Phase.END && evt.side != Side.CLIENT && !Database.spawnables.isEmpty())
         {
             PokecubeCore.instance.spawner.tick(evt.world);
+        }
+        if (evt.phase == Phase.END && evt.side != Side.CLIENT && !needsAI.isEmpty())
+        {
+            synchronized (needsAI)
+            {
+                List<EntityLiving> stale = Lists.newArrayList();
+                List<EntityLiving> toProcess = Lists.newArrayList(needsAI);
+                for (EntityLiving mob : toProcess)
+                {
+                    if (mob.isDead)
+                    {
+                        stale.add(mob);
+                        continue;
+                    }
+                    if (mob.ticksExisted == 0) continue;
+                    IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
+                    if (pokemob == null)
+                    {
+                        stale.add(mob);
+                        continue;
+                    }
+                    pokemob.setEntity(mob);
+                    pokemob.initAI();
+                    stale.add(mob);
+                }
+                needsAI.removeAll(stale);
+            }
         }
     }
 

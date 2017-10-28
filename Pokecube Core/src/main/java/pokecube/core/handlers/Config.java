@@ -244,6 +244,8 @@ public class Config extends ConfigBase
     public boolean                       pokemobsOnShoulder           = true;
     @Configure(category = mobAI)
     public int                           fishHookBaitRange            = 16;
+
+    // ridden Speed multipliers
     @Configure(category = mobAI)
     @SyncConfig
     public float                         flySpeedFactor               = 1;
@@ -253,9 +255,11 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     @SyncConfig
     public float                         groundSpeedFactor            = 1;
-    @SyncConfig
+
+    // Used by pathfinder's movehelper for scaling speed in air and water.
+    @Configure(category = mobAI)
     public float                         flyPathingSpeedFactor        = 1.25f;
-    @SyncConfig
+    @Configure(category = mobAI)
     public float                         swimPathingSpeedFactor       = 1.25f;
 
     public SoundEvent[]                  dodges                       = {};

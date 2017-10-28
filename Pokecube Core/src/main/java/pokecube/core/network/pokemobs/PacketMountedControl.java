@@ -87,6 +87,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(mob);
         if (pokemob != null && pokemob.getController() != null)
         {
+            if (pokemob.getOwner() != player) return;
             LogicMountedControl controller = pokemob.getController();
             controller.forwardInputDown = (message.message & FORWARD) > 0;
             controller.backInputDown = (message.message & BACK) > 0;

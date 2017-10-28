@@ -357,6 +357,15 @@ public class PokedexEntry
             return getStackKey(key) != CompatWrapper.nullStack;
         }
 
+        public ItemStack getKey(ItemStack held)
+        {
+            if (held != null) for (ItemStack stack : actions.keySet())
+            {
+                if (Tools.isSameStack(stack, held)) { return stack; }
+            }
+            return CompatWrapper.nullStack;
+        }
+
         private ItemStack getFormeKey(ItemStack held)
         {
             if (held != null) for (ItemStack stack : actions.keySet())

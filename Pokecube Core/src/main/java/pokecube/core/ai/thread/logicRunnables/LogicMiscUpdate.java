@@ -39,6 +39,7 @@ public class LogicMiscUpdate extends LogicBase
     private boolean      reset             = false;
     private boolean      initHome          = false;
     private boolean      checkedEvol       = false;
+    private int          pathTimer         = 0;
     Vector3              v                 = Vector3.getNewVector();
 
     public LogicMiscUpdate(IPokemob entity)
@@ -342,6 +343,11 @@ public class LogicMiscUpdate extends LogicBase
         if (pokemob.getPokemonAIState(IMoveConstants.SITTING) && !entity.getNavigator().noPath())
         {
             entity.getNavigator().clearPathEntity();
+        }
+        if (pokemob.getPokemonAIState(IMoveConstants.PATHING) && entity.getNavigator().noPath() && pathTimer++ > 10)
+        {
+            pokemob.setPokemonAIState(IMoveConstants.PATHING, false);
+            pathTimer = 0;
         }
     }
 

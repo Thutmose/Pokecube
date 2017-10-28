@@ -149,9 +149,9 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         if (pokemobCap.getPokedexEntry().interact(key))
         {
             long last = getEntityData().getLong("lastSheared");
-            Interaction action = pokemobCap.getPokedexEntry().interactionLogic.actions.get(key);
-
-            if (last < getEntityWorld().getTotalWorldTime() - action.cooldown + rand.nextInt(1 + action.variance)
+            Interaction action = pokemobCap.getPokedexEntry().interactionLogic.actions
+                    .get(pokemobCap.getPokedexEntry().interactionLogic.getKey(key));
+            if (last < getEntityWorld().getTotalWorldTime() - (action.cooldown + rand.nextInt(1 + action.variance))
                     && !getEntityWorld().isRemote)
             {
                 setSheared(false);
@@ -182,8 +182,10 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
             setSheared(true);
             getEntityData().setLong("lastSheared", getEntityWorld().getTotalWorldTime());
             List<ItemStack> list = pokemobCap.getPokedexEntry().getInteractResult(key);
+            Interaction action = pokemobCap.getPokedexEntry().interactionLogic.actions
+                    .get(pokemobCap.getPokedexEntry().interactionLogic.getKey(key));
             int time = pokemobCap.getHungerTime();
-            pokemobCap.setHungerTime(time + pokemobCap.getPokedexEntry().interactionLogic.actions.get(key).hunger);
+            pokemobCap.setHungerTime(time + action.hunger);
             for (ItemStack stack : list)
             {
                 ItemStack toAdd = stack.copy();

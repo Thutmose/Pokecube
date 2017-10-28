@@ -340,11 +340,11 @@ public class AdvancedRocketryCompat
             PokedexEntry entry = pokemob.getPokedexEntry();
             if (entry == megaray && event.getEntityLiving().isBeingRidden())
             {
-                boolean goUp = event.getEntity().posY > Configuration.orbit;
+                boolean goUp = event.getEntity().posY > Configuration.orbit/2;
                 boolean goDown = event.getEntity().posY < 0;
                 if (!(goUp || goDown)) return;
                 Vector3 pos = Vector3.getNewVector().set(event.getEntity());
-                pos.y = Configuration.orbit - 100;
+                pos.y = Configuration.orbit/2 - 100;
                 boolean aroundStation = false;
                 ISpaceObject station = AdvancedRocketryAPI.spaceObjectManager
                         .getSpaceStationFromBlockCoords(event.getEntity().getPosition());

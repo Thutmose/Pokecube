@@ -72,8 +72,7 @@ public class AIGatherStuff extends AIBase
             {
                 EntityPlayer player = PokecubeCore.getFakePlayer(world);
                 player.setHeldItem(EnumHand.MAIN_HAND, seeds);
-                seeds.getItem().onItemUse(player, world, pos.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 1,
-                        0.5f);
+                seeds.getItem().onItemUse(player, world, pos.down(), EnumHand.MAIN_HAND, EnumFacing.UP, 0.5f, 1, 0.5f);
                 Entity mob = world.getEntityByID(entityID);
                 IPokemob pokemob;
                 if (CompatWrapper.isValid(seeds) && ((pokemob = CapabilityPokemob.getPokemobFor(mob)) != null))
@@ -92,15 +91,15 @@ public class AIGatherStuff extends AIBase
     final EntityLiving entity;
     final double       distance;
     IPokemob           pokemob;
-    boolean            block     = false;
-    EntityItem         stuff     = null;
-    Vector3            stuffLoc  = Vector3.getNewVector();
-    final boolean[]    states    = { false, false };
-    final int[]        cooldowns = { 0, 0 };
+    boolean            block           = false;
+    EntityItem         stuff           = null;
+    Vector3            stuffLoc        = Vector3.getNewVector();
+    boolean            hasRoom         = true;
+    int                collectCooldown = 0;
     final AIStoreStuff storage;
-    Vector3            seeking   = Vector3.getNewVector();
-    Vector3            v         = Vector3.getNewVector();
-    Vector3            v1        = Vector3.getNewVector();
+    Vector3            seeking         = Vector3.getNewVector();
+    Vector3            v               = Vector3.getNewVector();
+    Vector3            v1              = Vector3.getNewVector();
 
     public AIGatherStuff(IPokemob entity, double distance, AIStoreStuff storage)
     {
@@ -117,7 +116,7 @@ public class AIGatherStuff extends AIBase
         super.doMainThreadTick(world);
         synchronized (stuffLoc)
         {
-            if (cooldowns[0]-- < 0 && !stuffLoc.isEmpty())
+            if (collectCooldown-- < 0 && !stuffLoc.isEmpty())
             {
                 if (stuff != null)
                 {
@@ -186,7 +185,7 @@ public class AIGatherStuff extends AIBase
 
         if (stuffLoc.isEmpty())
         {
-            cooldowns[0] = COOLDOWN;
+            collectCooldown = COOLDOWN;
         }
     }
 
@@ -298,18 +297,19 @@ public class AIGatherStuff extends AIBase
                 : PokecubeMod.core.getConfig().wildGatherDelay;
         Random rand = new Random(pokemob.getRNGValue());
         if (pokemob.getHome() == null || entity.ticksExisted % rate != rand.nextInt(rate)) return false;
-        if (cooldowns[0] < -2000)
+        if (collectCooldown < -2000)
         {
-            cooldowns[0] = COOLDOWN;
+            collectCooldown = COOLDOWN;
         }
         if (stuffLoc.distToEntity(entity) > 32) stuffLoc.clear();
-        if (cooldowns[0] > 0) return false;
+        if (collectCooldown > 0) return false;
         IInventory inventory = pokemob.getPokemobInventory();
-        for (int i = 3; i < inventory.getSizeInventory() && !states[1]; i++)
+        for (int i = 3; i < inventory.getSizeInventory(); i++)
         {
-            states[0] = !CompatWrapper.isValid(inventory.getStackInSlot(i));
+            hasRoom = !CompatWrapper.isValid(inventory.getStackInSlot(i));
+            if (hasRoom) return true;
         }
-        return states[0];
+        return false;
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.

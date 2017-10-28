@@ -1,5 +1,6 @@
 package pokecube.core.interfaces.capabilities.impl;
 
+import java.lang.reflect.Field;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -7,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.NonPersistantAI;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.utils.TagNames;
 import thut.lib.CompatWrapper;
@@ -116,6 +119,22 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         if (!aiTag.hasNoTags())
         {
             dataManager.set(params.AIACTIONSTATESDW, aiTag.getInteger(AISTATE));
+            for (Field f : IMoveConstants.class.getFields())
+            {
+                NonPersistantAI annot = f.getAnnotation(NonPersistantAI.class);
+                if (annot != null)
+                {
+                    try
+                    {
+                        int state = f.getInt(null);
+                        setPokemonAIState(state, false);
+                    }
+                    catch (IllegalArgumentException | IllegalAccessException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
             setHungerTime(aiTag.getInteger(HUNGER));
             int[] home = aiTag.getIntArray(HOME);
             if (home.length == 4)

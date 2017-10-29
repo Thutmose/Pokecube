@@ -16,6 +16,7 @@ import thut.lib.CompatWrapper;
 
 public abstract class PokemobSaves extends PokemobOwned implements TagNames
 {
+    private NBTTagCompound extraData = new NBTTagCompound();
 
     @Override
     public void readPokemobData(NBTTagCompound tag)
@@ -148,6 +149,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             this.setRNGValue(miscTag.getInteger(RNGVAL));
             this.uid = miscTag.getInteger(UID);
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
+            this.extraData = miscTag.getCompoundTag(EXTRATAG);
         }
     }
 
@@ -235,6 +237,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         miscTag.setInteger(RNGVAL, getRNGValue());
         miscTag.setInteger(UID, uid);
         miscTag.setBoolean(WASSHADOW, wasShadow);
+        miscTag.setTag(EXTRATAG, getExtraData());
 
         // Set tags to the pokemob tag.
         pokemobTag.setTag(OWNERSHIPTAG, ownerShipTag);
@@ -246,6 +249,12 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         pokemobTag.setTag(AITAG, aiTag);
         pokemobTag.setTag(MISCTAG, miscTag);
         return pokemobTag;
+    }
+
+    @Override
+    public NBTTagCompound getExtraData()
+    {
+        return extraData;
     }
 
 }

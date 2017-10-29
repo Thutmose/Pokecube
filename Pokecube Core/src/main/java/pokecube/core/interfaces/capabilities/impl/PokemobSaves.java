@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import com.google.common.base.Optional;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -18,6 +16,7 @@ import thut.lib.CompatWrapper;
 
 public abstract class PokemobSaves extends PokemobOwned implements TagNames
 {
+    private NBTTagCompound extraData = new NBTTagCompound();
 
     @Override
     public void readPokemobData(NBTTagCompound tag)
@@ -71,7 +70,8 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                     getMoveStats().newMoves.clear();
                     NBTTagList newMoves = (NBTTagList) movesTag.getTag(NEWMOVES);
                     for (int i = 0; i < newMoves.tagCount(); i++)
-                        getMoveStats().newMoves.add(newMoves.getStringTagAt(i));
+                        if (!getMoveStats().newMoves.contains(newMoves.getStringTagAt(i)))
+                            getMoveStats().newMoves.add(newMoves.getStringTagAt(i));
                 }
                 catch (Exception e)
                 {
@@ -93,14 +93,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
                 {
                     this.getPokemobInventory().setInventorySlotContents(j, CompatWrapper.fromTag(nbttagcompound1));
                 }
-                if (CompatWrapper.isValid(this.getPokemobInventory().getStackInSlot(1)))
-                {
-                    dataManager.set(params.HELDITEM, Optional.of(this.getPokemobInventory().getStackInSlot(1)));
-                }
-                else
-                {
-                    dataManager.set(params.HELDITEM, Optional.<ItemStack> absent());
-                }
+                dataManager.set(params.HELDITEM, this.getPokemobInventory().getStackInSlot(1));
             }
             handleArmourAndSaddle();
         }
@@ -156,6 +149,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             this.setRNGValue(miscTag.getInteger(RNGVAL));
             this.uid = miscTag.getInteger(UID);
             this.wasShadow = miscTag.getBoolean(WASSHADOW);
+            this.extraData = miscTag.getCompoundTag(EXTRATAG);
         }
     }
 
@@ -243,6 +237,7 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         miscTag.setInteger(RNGVAL, getRNGValue());
         miscTag.setInteger(UID, uid);
         miscTag.setBoolean(WASSHADOW, wasShadow);
+        miscTag.setTag(EXTRATAG, getExtraData());
 
         // Set tags to the pokemob tag.
         pokemobTag.setTag(OWNERSHIPTAG, ownerShipTag);
@@ -254,6 +249,12 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         pokemobTag.setTag(AITAG, aiTag);
         pokemobTag.setTag(MISCTAG, miscTag);
         return pokemobTag;
+    }
+
+    @Override
+    public NBTTagCompound getExtraData()
+    {
+        return extraData;
     }
 
 }

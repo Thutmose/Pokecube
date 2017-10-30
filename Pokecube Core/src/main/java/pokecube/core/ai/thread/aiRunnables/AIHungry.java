@@ -21,6 +21,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import pokecube.core.PokecubeCore;
 import pokecube.core.blocks.berries.BerryGenManager;
 import pokecube.core.interfaces.IBerryFruitBlock;
@@ -56,7 +57,8 @@ public class AIHungry extends AIBase
             ItemStack stack = BerryGenManager.getRandomBerryForBiome(world, pokemob.getEntity().getPosition());
             if (stack != null)
             {
-                ItemStackTools.addItemStackToInventory(stack, pokemob.getPokemobInventory(), 2);
+                ItemStackTools.addItemStackToInventory(stack, (IItemHandlerModifiable) pokemob.getPokemobInventory(),
+                        2);
                 pokemob.eat(new EntityItem(world, 0, 0, 0, stack));
             }
             return true;

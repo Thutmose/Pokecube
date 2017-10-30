@@ -5,12 +5,13 @@ import com.google.common.base.Predicate;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
@@ -41,7 +42,9 @@ public class AIStoreStuff extends AIBase
                                                                         .getBlock()).createNewTileEntity(null,
                                                                                 state.getBlock()
                                                                                         .getMetaFromState(state));
-                                                                return tile instanceof IInventory;
+                                                                return tile != null && tile.getCapability(
+                                                                        CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                                                                        EnumFacing.UP) instanceof IItemHandlerModifiable;
                                                             }
                                                             return false;
                                                         }
@@ -62,17 +65,21 @@ public class AIStoreStuff extends AIBase
     private Vector3 checkDir(World world, EnumFacing dir, BlockPos centre)
     {
         if (centre == null) return null;
+        TileEntity tile = null;
         if (dir == null)
         {
-            if (world.getTileEntity(centre) instanceof IInventory) return Vector3.getNewVector().set(centre);
-            else return null;
+            tile = world.getTileEntity(centre);
         }
         else
         {
             centre = centre.offset(dir);
-            if (world.getTileEntity(centre) instanceof IInventory) return Vector3.getNewVector().set(centre);
-            else return null;
+            tile = world.getTileEntity(centre);
         }
+        if (tile == null) return null;
+        if (tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                EnumFacing.UP) instanceof IItemHandlerModifiable)
+            return Vector3.getNewVector().set(centre);
+        return null;
     }
 
     @Override
@@ -80,7 +87,6 @@ public class AIStoreStuff extends AIBase
     {
         super.doMainThreadTick(world);
         if (tameCheck()) return;
-        IInventory inventory = pokemob.getPokemobInventory();
         if (searchInventoryCooldown-- < 0)
         {
             searchInventoryCooldown = COOLDOWN;
@@ -96,14 +102,15 @@ public class AIStoreStuff extends AIBase
             if (inventoryLocation == null) searchInventoryCooldown = 50 * COOLDOWN;
         }
         if (inventoryLocation == null || entity.getDistanceSq(pokemob.getHome()) > 16) return;
+        IItemHandlerModifiable itemhandler = pokemob.getPokemobInventory();
         ItemStack stack;
         ItemStack stack1;
-        boolean hasBerry = CompatWrapper.isValid(stack = stack1 = inventory.getStackInSlot(2))
+        boolean hasBerry = CompatWrapper.isValid(stack = stack1 = itemhandler.getStackInSlot(2))
                 && stack.getItem() instanceof ItemBerry;
         boolean freeSlot = false;
-        for (int i = 3; i < inventory.getSizeInventory() && !freeSlot; i++)
+        for (int i = 3; i < itemhandler.getSlots() && !freeSlot; i++)
         {
-            freeSlot = !CompatWrapper.isValid(stack = inventory.getStackInSlot(i));
+            freeSlot = !CompatWrapper.isValid(stack = itemhandler.getStackInSlot(i));
         }
         boolean cooldown = doStorageCooldown-- > 0;
         boolean needs = freeSlot && hasBerry;
@@ -111,8 +118,8 @@ public class AIStoreStuff extends AIBase
         this.world = world;
         if (!hasBerry)
         {
-            IInventory inv = getBerryInventory();
-            if (inv != null) for (int i = 0; i < inv.getSizeInventory(); i++)
+            IItemHandlerModifiable inv = getBerryInventory();
+            if (inv != null) for (int i = 0; i < inv.getSlots(); i++)
             {
                 stack = inv.getStackInSlot(i);
                 // If it wants a berry, search for a berry item, and take that.
@@ -120,8 +127,8 @@ public class AIStoreStuff extends AIBase
                 {
                     if (stack.getItem() instanceof ItemBerry)
                     {
-                        inv.setInventorySlotContents(i, stack1);
-                        inventory.setInventorySlotContents(2, stack);
+                        inv.setStackInSlot(i, stack1);
+                        itemhandler.setStackInSlot(2, stack);
                         hasBerry = true;
                         break;
                     }
@@ -130,7 +137,7 @@ public class AIStoreStuff extends AIBase
         }
         if (!freeSlot)
         {
-            IInventory inv = getStorageInventory();
+            IItemHandlerModifiable inv = getStorageInventory();
             if (inv != null)
             {
                 // First sort your inventory such that if you have multiple
@@ -140,9 +147,9 @@ public class AIStoreStuff extends AIBase
                     int weight = Integer.MIN_VALUE;
                     int index = -1;
                     Nature nature = pokemob.getNature();
-                    for (int i = 2; i < inventory.getSizeInventory(); i++)
+                    for (int i = 2; i < itemhandler.getSlots(); i++)
                     {
-                        stack = inventory.getStackInSlot(i);
+                        stack = itemhandler.getStackInSlot(i);
                         // If it wants a berry, search for a berry item, and
                         // take that.
                         if (CompatWrapper.isValid(stack))
@@ -162,21 +169,21 @@ public class AIStoreStuff extends AIBase
                     // Swap favourite berry stack to first item.
                     if (index != -1)
                     {
-                        ItemStack stack2 = inventory.getStackInSlot(index);
-                        stack = inventory.getStackInSlot(2);
-                        inventory.setInventorySlotContents(2, stack2);
-                        inventory.setInventorySlotContents(index, stack);
+                        ItemStack stack2 = itemhandler.getStackInSlot(index);
+                        stack = itemhandler.getStackInSlot(2);
+                        itemhandler.setStackInSlot(2, stack2);
+                        itemhandler.setStackInSlot(index, stack);
                     }
                 }
 
-                for (int i = 3; i < inventory.getSizeInventory(); i++)
+                for (int i = 3; i < itemhandler.getSlots(); i++)
                 {
-                    stack = inventory.getStackInSlot(i);
+                    stack = itemhandler.getStackInSlot(i);
                     // If it has full inventory, deposit all but the berry
                     // stack.
-                    if (ItemStackTools.addItemStackToInventory(inventory.getStackInSlot(i), inv, 0))
+                    if (ItemStackTools.addItemStackToInventory(itemhandler.getStackInSlot(i), inv, 0))
                     {
-                        inventory.setInventorySlotContents(i, CompatWrapper.nullStack);
+                        itemhandler.setStackInSlot(i, CompatWrapper.nullStack);
                         freeSlot = true;
                     }
                 }
@@ -185,13 +192,12 @@ public class AIStoreStuff extends AIBase
         doStorageCooldown = COOLDOWN;
     }
 
-    private IInventory getBerryInventory()
+    private IItemHandlerModifiable getBerryInventory()
     {
-        TileEntity tile = inventoryLocation.getTileEntity(world);
-        if (tile instanceof IInventory)
+        IItemHandlerModifiable inv = getForSide(null);
+        if (inv != null)
         {
-            IInventory inv = (IInventory) tile;
-            int size = Math.min(MAXSIZE, inv.getSizeInventory());
+            int size = Math.min(MAXSIZE, inv.getSlots());
             for (int i = 0; i < size; i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -200,10 +206,10 @@ public class AIStoreStuff extends AIBase
         }
         for (EnumFacing side : EnumFacing.HORIZONTALS)
         {
-            IInventory inv = getForSide(side);
+            inv = getForSide(side);
             if (inv != null)
             {
-                int size = Math.min(MAXSIZE, inv.getSizeInventory());
+                int size = Math.min(MAXSIZE, inv.getSlots());
                 for (int i = 0; i < size; i++)
                 {
                     ItemStack stack = inv.getStackInSlot(i);
@@ -211,10 +217,10 @@ public class AIStoreStuff extends AIBase
                 }
             }
         }
-        IInventory inv = getForSide(EnumFacing.UP);
+        inv = getForSide(EnumFacing.UP);
         if (inv != null)
         {
-            int size = Math.min(MAXSIZE, inv.getSizeInventory());
+            int size = Math.min(MAXSIZE, inv.getSlots());
             for (int i = 0; i < size; i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -224,7 +230,7 @@ public class AIStoreStuff extends AIBase
         inv = getForSide(EnumFacing.DOWN);
         if (inv != null)
         {
-            int size = Math.min(MAXSIZE, inv.getSizeInventory());
+            int size = Math.min(MAXSIZE, inv.getSlots());
             for (int i = 0; i < size; i++)
             {
                 ItemStack stack = inv.getStackInSlot(i);
@@ -234,23 +240,19 @@ public class AIStoreStuff extends AIBase
         return null;
     }
 
-    private IInventory getStorageInventory()
+    private IItemHandlerModifiable getStorageInventory()
     {
-        TileEntity tile = inventoryLocation.getTileEntity(world);
-        if (tile instanceof IInventory)
-        {
-            IInventory inv = (IInventory) tile;
-            if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
-        }
+        IItemHandlerModifiable inv = getForSide(null);
+        if (inv != null && ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
         for (EnumFacing side : EnumFacing.HORIZONTALS)
         {
-            IInventory inv = getForSide(side);
+            inv = getForSide(side);
             if (inv != null)
             {
                 if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
             }
         }
-        IInventory inv = getForSide(EnumFacing.UP);
+        inv = getForSide(EnumFacing.UP);
         if (inv != null)
         {
             if (ItemStackTools.getFirstEmptyStack(inv, 0) >= 0) return inv;
@@ -263,10 +265,14 @@ public class AIStoreStuff extends AIBase
         return null;
     }
 
-    private IInventory getForSide(EnumFacing side)
+    private IItemHandlerModifiable getForSide(EnumFacing side)
     {
-        TileEntity tile = inventoryLocation.getTileEntity(world, side);
-        if (tile instanceof IInventory) return (IInventory) tile;
+        TileEntity tile = side != null ? inventoryLocation.getTileEntity(world, side)
+                : inventoryLocation.getTileEntity(world);
+        if (tile != null && tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                EnumFacing.UP) instanceof IItemHandlerModifiable)
+            return (IItemHandlerModifiable) tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
+                    EnumFacing.UP);
         return null;
     }
 

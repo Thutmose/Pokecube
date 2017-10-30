@@ -61,13 +61,12 @@ public class ItemTarget extends CompatItem
         EntityPlayer playerIn = event.getEntityPlayer();
         Entity target = event.getTarget();
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(target);
-        if (stack.getItemDamage() == 1 && pokemob != null)
+        if (stack.getItemDamage() == 1 && pokemob != null && pokemob.isPlayerOwned())
         {
             if (stack.hasTagCompound() && playerIn == pokemob.getPokemonOwner())
             {
                 Vector4 pos = new Vector4(stack.getTagCompound().getCompoundTag("link"));
-                pokemob.setHome(MathHelper.floor(pos.x), MathHelper.floor(pos.y - 1),
-                        MathHelper.floor(pos.z), 16);
+                pokemob.setHome(MathHelper.floor(pos.x), MathHelper.floor(pos.y), MathHelper.floor(pos.z), 16);
                 // TODO localize this message.
                 playerIn.sendMessage(new TextComponentString("Set Home to " + pos));
                 event.setCanceled(true);

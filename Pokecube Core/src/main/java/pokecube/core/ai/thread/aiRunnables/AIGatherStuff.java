@@ -23,6 +23,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -77,7 +78,8 @@ public class AIGatherStuff extends AIBase
                 IPokemob pokemob;
                 if (CompatWrapper.isValid(seeds) && ((pokemob = CapabilityPokemob.getPokemobFor(mob)) != null))
                 {
-                    if (!ItemStackTools.addItemStackToInventory(seeds, pokemob.getPokemobInventory(), 2))
+                    if (!ItemStackTools.addItemStackToInventory(seeds,
+                            (IItemHandlerModifiable) pokemob.getPokemobInventory(), 2))
                     {
                         mob.entityDropItem(seeds, 0);
                     }
@@ -124,7 +126,8 @@ public class AIGatherStuff extends AIBase
                     close = Math.max(close, 2);
                     if (stuff.getDistanceToEntity(entity) < close)
                     {
-                        ItemStackTools.addItemStackToInventory(stuff.getItem(), pokemob.getPokemobInventory(), 2);
+                        ItemStackTools.addItemStackToInventory(stuff.getItem(),
+                                (IItemHandlerModifiable) pokemob.getPokemobInventory(), 2);
                         stuff.setDead();
                         reset();
                     }

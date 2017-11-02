@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
 import pokecube.core.PokecubeItems;
+import thut.lib.CompatWrapper;
 
 public class RecipeBrewBerries implements IBrewingRecipe
 {
@@ -12,8 +13,8 @@ public class RecipeBrewBerries implements IBrewingRecipe
     @Override
     public ItemStack getOutput(ItemStack input, ItemStack ingredient)
     {
-        // TODO pokebloc things here.
-        return PokecubeItems.getStack("revive");
+        if (isIngredient(ingredient)) return PokecubeItems.getStack("revive");
+        return CompatWrapper.nullStack;
     }
 
     @Override

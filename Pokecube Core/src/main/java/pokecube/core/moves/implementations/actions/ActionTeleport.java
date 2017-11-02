@@ -71,7 +71,8 @@ public class ActionTeleport implements IMoveAction
     @Override
     public boolean applyEffect(IPokemob user, Vector3 location)
     {
-        boolean angry = user.getPokemonAIState(IMoveConstants.ANGRY) || !user.getPokemonAIState(IMoveConstants.TAMED)
+        boolean angry = (user.getPokemonAIState(IMoveConstants.ANGRY) || user.getEntity().getAttackTarget() != null)
+                || !user.getPokemonAIState(IMoveConstants.TAMED)
                 || !(user.getPokemonAIState(IPokemob.TAMED) && !user.getPokemonAIState(IPokemob.STAYING));
         if (!angry && user.getPokemonOwner() instanceof EntityPlayer && user.getEntity().isServerWorld())
         {

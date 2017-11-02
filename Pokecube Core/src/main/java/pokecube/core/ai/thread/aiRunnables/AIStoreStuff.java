@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
@@ -102,7 +103,7 @@ public class AIStoreStuff extends AIBase
             if (inventoryLocation == null) searchInventoryCooldown = 50 * COOLDOWN;
         }
         if (inventoryLocation == null || entity.getDistanceSq(pokemob.getHome()) > 16) return;
-        IItemHandlerModifiable itemhandler = pokemob.getPokemobInventory();
+        IItemHandlerModifiable itemhandler = new InvWrapper(pokemob.getPokemobInventory());
         ItemStack stack;
         ItemStack stack1;
         boolean hasBerry = CompatWrapper.isValid(stack = stack1 = itemhandler.getStackInSlot(2))

@@ -87,11 +87,11 @@ public class AdvancedRocketryCompat
 
             List<String> spawns = Lists.newArrayList();
             spawns.add("    <Spawn name=\"Lunatone\" overwrite=\"false\" "
-                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"moon\"/>");
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" biomes=\"moon\"/>");
             spawns.add("    <Spawn name=\"Solrock\" overwrite=\"false\" "
-                    + "rate=\"0.01\" min=\"1\" max=\"2\" types=\"moon\"/>");
+                    + "rate=\"0.01\" min=\"1\" max=\"2\" biomes=\"moon\"/>");
             spawns.add("    <Spawn name=\"Clefairy\" overwrite=\"false\" "
-                    + "rate=\"0.2\" min=\"4\" max=\"8\" types=\"moon\"/>");
+                    + "rate=\"0.2\" min=\"4\" max=\"8\" biomes=\"moon\"/>");
             fwriter = new FileWriter(CUSTOMSPAWNSFILE);
             out = new PrintWriter(fwriter);
             out.println("<?xml version=\"1.0\"?>");
@@ -117,13 +117,6 @@ public class AdvancedRocketryCompat
     Set<PokedexEntry>    vacuumBreathers = Sets.newHashSet();
     List<PokedexEntry>   moonmon         = Lists.newArrayList();
     PokedexEntry         megaray;
-
-    @Optional.Method(modid = "advancedRocketry")
-    @CompatClass(takesEvent = true, phase = Phase.PRE)
-    public static void ARCompatOld(FMLPreInitializationEvent evt)
-    {
-        MinecraftForge.EVENT_BUS.register(new pokecube.compat.advancedrocketry.AdvancedRocketryCompat(evt));
-    }
 
     @Optional.Method(modid = "advancedrocketry")
     @CompatClass(takesEvent = true, phase = Phase.PRE)
@@ -169,6 +162,7 @@ public class AdvancedRocketryCompat
         mobs.add("deoxys");
         mobs.add("beldum");
         mobs.add("rayquaza");
+        mobs.add("minior");
         mobs.add("rayquazamega");
         megaray = Database.getEntry("rayquazamega");
         for (String s : mobs)

@@ -19,7 +19,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.PokecubeMod;
@@ -94,8 +93,7 @@ public abstract class AIBase implements IAIRunnable
             IPokemob pokemob = CapabilityPokemob.getPokemobFor(e);
             if (e == null || pokemob == null) return false;
             if (slot > 0) pokemob.getPokemobInventory().setInventorySlotContents(slot, stack);
-            else if (!ItemStackTools.addItemStackToInventory(stack,
-                    (IItemHandlerModifiable) pokemob.getPokemobInventory(), minSlot))
+            else if (!ItemStackTools.addItemStackToInventory(stack, pokemob.getPokemobInventory(), minSlot))
             {
                 e.entityDropItem(stack, 0);
             }

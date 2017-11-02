@@ -82,7 +82,8 @@ public class PokemobMoveHelper extends EntityMoveHelper
                 || (pokemob.getStatus() & (IPokemob.STATUS_SLP + IPokemob.STATUS_FRZ)) > 0) && air)
             shouldGoDown = true;
         float length = pokemob.getPokedexEntry().length * pokemob.getSize();
-        boolean skipped = d3 < (entity.width * entity.width + length * length);
+        float dSize = Math.max(0.25f, entity.width * entity.width + length * length);
+        boolean skipped = d3 < dSize;
         if (d3 < 2.500000277905201E-7D || skipped)
         {
             this.entity.setMoveForward(0.0F);

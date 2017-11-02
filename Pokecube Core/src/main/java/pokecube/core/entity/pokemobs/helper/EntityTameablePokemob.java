@@ -30,6 +30,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import pokecube.core.PokecubeItems;
 import pokecube.core.database.PokedexEntry.InteractionLogic.Interaction;
 import pokecube.core.interfaces.IMoveConstants;
@@ -224,11 +225,14 @@ public abstract class EntityTameablePokemob extends EntityAnimal implements IInv
         return pokemobCap.getOwner();
     }
 
+    private InvWrapper inventory;
+
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing)
     {
-        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) return (T) pokemobCap.getPokemobInventory();
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) (inventory == null ? inventory = new InvWrapper(pokemobCap.getPokemobInventory()) : inventory);
         return super.getCapability(capability, facing);
     }
 

@@ -1,6 +1,7 @@
 package pokecube.core.ai.thread.aiRunnables;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
@@ -14,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -424,6 +426,35 @@ public abstract class AIBase implements IAIRunnable
                 moves.remove(run);
             }
         }
+    }
+
+    protected List<EntityPlayer> getPlayersWithinDistance(Entity source, float distance)
+    {
+        Vector<Object> entities = AIThreadManager.worldPlayers.get(source.dimension);
+        List<EntityPlayer> list = new ArrayList<EntityPlayer>();
+        double dsq = distance * distance;
+        if (entities != null)
+        {
+            List<?> temp = new ArrayList<Object>(entities);
+            for (Object o : temp)
+            {
+                if (source.getDistanceSqToEntity((Entity) o) < dsq)
+                {
+                    list.add((EntityPlayer) o);
+                }
+            }
+        }
+        final BlockPos pos = source.getPosition();
+        Collections.sort(list, new Comparator<EntityPlayer>()
+        {
+
+            @Override
+            public int compare(EntityPlayer o1, EntityPlayer o2)
+            {
+                return (int) (o1.getDistanceSq(pos) - o2.getDistanceSq(pos));
+            }
+        });
+        return list;
     }
 
     protected List<Object> getEntitiesWithinDistance(Entity source, float distance, Class<?>... targetClass)

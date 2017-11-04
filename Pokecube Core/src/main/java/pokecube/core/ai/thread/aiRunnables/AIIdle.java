@@ -1,12 +1,13 @@
 package pokecube.core.ai.thread.aiRunnables;
 
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
@@ -56,21 +57,22 @@ public class AIIdle extends AIBase
         {
             mob.setPokemonAIState(IMoveConstants.SITTING, false);
         }
-        else if (Math.random() > 0.95 && !tamed)
+        else if (Math.random() > 0.75)
         {
-            boolean down = true;
-            Vector3 loc = Vector3.findNextSolidBlock(world, v.set(mob.getEntity()), Vector3.secondAxisNeg, v.y);
-            if (loc != null && loc.offsetBy(EnumFacing.UP).getBlockMaterial(world).isLiquid())
-            {
-                down = false;
-            }
-            else if (loc == null)
-            {
-                down = false;
-            }
-            if (down) mob.setPokemonAIState(IMoveConstants.SITTING, true);
+            v.set(x, y, z);
+            v.set(Vector3.getNextSurfacePoint(world, v, Vector3.secondAxisNeg, v.y));
+            if (v != null) y = v.y;
         }
-        else if (Math.random() > 0.75) doGroundIdle();
+        List<EntityPlayer> players = getPlayersWithinDistance(entity, Integer.MAX_VALUE);
+        if (!players.isEmpty())
+        {
+            EntityPlayer player = players.get(0);
+            double diff = Math.abs(player.posY - y);
+            if (diff > 5)
+            {
+                y = player.posY + 5 * (1 - Math.random());
+            }
+        }
     }
 
     private void doGroundIdle()
@@ -100,6 +102,7 @@ public class AIIdle extends AIBase
     @Override
     public void run()
     {
+        //TODO some AI for mobs to sit/stand
         if (entry.flys())
         {
             doFlyingIdle();

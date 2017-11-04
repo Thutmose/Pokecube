@@ -138,6 +138,11 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     @SyncConfig
     public int                           cullDistance                 = 96;
+    @SyncConfig
+    public boolean                       despawn                      = true;
+    /** distance for culling */
+    @Configure(category = mobAI)
+    public int                           despawnTimer                 = 2000;
     @Configure(category = mobAI)
     /** Will lithovores eat gravel */
     public boolean                       pokemobsEatGravel            = false;

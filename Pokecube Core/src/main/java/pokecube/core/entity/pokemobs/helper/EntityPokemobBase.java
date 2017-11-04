@@ -81,6 +81,25 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         return false;
     }
 
+    private boolean cullCheck()
+    {
+        boolean player = true;
+        despawntimer--;
+        if (PokecubeMod.core.getConfig().despawn)
+        {
+            player = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().cullDistance, this);
+            if (despawntimer < 0)
+            {
+                despawntimer = PokecubeMod.core.getConfig().despawnTimer;
+            }
+            else if (despawntimer == 0) { return true; }
+        }
+        player = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().cullDistance, getEntityWorld().getHeight(),
+                this);
+        if (PokecubeMod.core.getConfig().cull && !player) return true;
+        return false;
+    }
+
     @Override
     protected boolean canDespawn()
     {
@@ -88,21 +107,9 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         boolean checks = pokemobCap.getPokemonAIState(IMoveConstants.TAMED) || pokemobCap.getPokemonOwner() != null
                 || pokemobCap.getPokemonAIState(IMoveConstants.ANGRY) || getAttackTarget() != null
                 || this.hasCustomName() || isNoDespawnRequired();
-        despawntimer--;
         if (checks) return false;
 
-        boolean player = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().cullDistance, this);
-        boolean cull = PokecubeMod.core.getConfig().cull && !player;
-        if (cull && despawntimer < 0)
-        {
-            despawntimer = 80;
-            cull = false;
-        }
-        else if (cull && despawntimer > 0)
-        {
-            cull = false;
-        }
-        return canDespawn || cull;
+        return canDespawn || cullCheck();
     }
 
     @Override

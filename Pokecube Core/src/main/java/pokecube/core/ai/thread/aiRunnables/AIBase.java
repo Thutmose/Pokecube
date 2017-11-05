@@ -352,7 +352,7 @@ public abstract class AIBase implements IAIRunnable
     protected boolean addEntityPath(Entity entity, Path path, double speed)
     {
         boolean set = getPathManager().addEntityPath(entity, path, speed);
-        if (set)
+        if (set && getPathManager().path != null)
         {
             toRun.add(getPathManager().path);
         }
@@ -399,7 +399,7 @@ public abstract class AIBase implements IAIRunnable
         runs.addAll(toRun);
         for (IRunnable run : runs)
         {
-            boolean ran = run.run(world);
+            boolean ran = run == null || run.run(world);
             if (ran)
             {
                 toRun.remove(run);

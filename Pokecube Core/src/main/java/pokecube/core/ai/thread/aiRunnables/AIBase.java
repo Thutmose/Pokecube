@@ -403,8 +403,7 @@ public abstract class AIBase implements IAIRunnable
         runs.addAll(toRun);
         for (IRunnable run : runs)
         {
-            if (run == null) continue;
-            boolean ran = run.run(world);
+            boolean ran = run == null || run.run(world);
             if (ran)
             {
                 toRun.remove(run);

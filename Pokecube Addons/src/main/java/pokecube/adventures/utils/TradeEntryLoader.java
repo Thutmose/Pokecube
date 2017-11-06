@@ -3,6 +3,7 @@ package pokecube.adventures.utils;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -244,6 +245,7 @@ public class TradeEntryLoader
         else if (custom.equals("allTMs"))
         {
             ArrayList<String> moves = Lists.newArrayList(MovesUtils.moves.keySet());
+            Collections.sort(moves);
             for (int i = 0; i < moves.size(); i++)
             {
                 int index = i;

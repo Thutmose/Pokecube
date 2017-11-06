@@ -231,6 +231,7 @@ public class Compat
         new UpdateNotifier();
     }
 
+    @EventHandler
     public void init(FMLInitializationEvent evt)
     {
         doPhase(Phase.INIT, evt);

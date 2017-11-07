@@ -89,7 +89,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
         if (PokecubeMod.core.getConfig().despawn)
         {
             player = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().cullDistance, this);
-            if (despawntimer < 0)
+            if (despawntimer < 0 || player)
             {
                 despawntimer = PokecubeMod.core.getConfig().despawnTimer;
             }

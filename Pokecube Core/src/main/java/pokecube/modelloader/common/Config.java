@@ -16,20 +16,23 @@ public class Config extends ConfigBase
     public static Config      instance;
 
     @Configure(category = "loading")
-    public String[]           priorityOrder = { "pokecube_ml", "pokecube_mobs" };
+    public String[]           priorityOrder             = { "pokecube_ml", "pokecube_mobs" };
 
     @Configure(category = "loading")
-    public String[]           modelPriority = { "x3d" };
+    public String[]           modelPriority             = { "x3d" };
 
     @Configure(category = "loading")
-    public boolean            preload       = false;
+    public boolean            preload                   = false;
 
     @Configure(category = "loading")
-    public String[]           preloadedMobs = {};
+    public String[]           preloadedMobs             = {};
+
+    @Configure(category = "loading")
+    public boolean            checkResourcePacksForMobs = true;
 
     public Comparator<String> modIdComparator;
     public Comparator<String> extensionComparator;
-    public Set<String>        toPreload     = Sets.newHashSet();
+    public Set<String>        toPreload                 = Sets.newHashSet();
 
     public Config()
     {
@@ -85,5 +88,6 @@ public class Config extends ConfigBase
         for (String s : preloadedMobs)
             toPreload.add(s);
         ModPokecubeML.preload = preload;
+        ModPokecubeML.checkResourcesForModels = checkResourcePacksForMobs;
     }
 }

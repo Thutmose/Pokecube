@@ -1,7 +1,6 @@
 package pokecube.modelloader.common;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -120,7 +119,7 @@ public class ExtraDatabase
 
     static HashMap<String, XMLPokedexEntry> entries = Maps.newHashMap();
 
-    public static void addXMLEntry(String modId, String mobName, ArrayList<String> xml)
+    public static void addXMLEntry(String modId, String mobName, List<String> xml)
     {
         String val = "";
         for (String s : xml)

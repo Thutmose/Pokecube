@@ -138,6 +138,7 @@ public class Config extends ConfigBase
     @Configure(category = mobAI)
     @SyncConfig
     public int                           cullDistance                 = 96;
+    @Configure(category = mobAI)
     @SyncConfig
     public boolean                       despawn                      = true;
     /** distance for culling */

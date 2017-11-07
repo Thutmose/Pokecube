@@ -165,7 +165,6 @@ public class ModPokecubeML implements IMobProvider
                 PokecubeMod.log(e.getName());
             }
         }
-        proxy.providesModels(ID, this, addedPokemon.toArray(new String[0]));
         for (String s : addedPokemon)
         {
             loadMob(s.toLowerCase(Locale.ENGLISH));
@@ -215,11 +214,10 @@ public class ModPokecubeML implements IMobProvider
     {
         if (textureProviders.containsKey(mob) && !textureProviders.get(mob).equals(ID)) return;
 
-        ArrayList<String> list = Lists.newArrayList();
         ResourceLocation xml = new ResourceLocation(ModPokecubeML.ID, getModelDirectory(null) + mob + ".xml");
         try
         {
-            proxy.fileAsList(this, xml, list);
+            List<String> list = proxy.fileAsList(ID, xml);
             if (!list.isEmpty())
             {
                 ExtraDatabase.addXMLEntry(ID, mob, list);

@@ -2,7 +2,9 @@ package pokecube.modelloader;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -10,6 +12,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,14 +21,23 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonSyntaxException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -36,6 +49,7 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.modelloader.CommonProxy.CachedLocs.CachedLoc;
 import pokecube.modelloader.common.Config;
 import pokecube.modelloader.common.ExtraDatabase;
 import thut.core.client.render.model.ModelFactory;
@@ -77,9 +91,107 @@ public class CommonProxy implements IGuiHandler
         }
     }
 
+    static class CachedLocs
+    {
+        String                    modid;
+        boolean                   has[];
+        Map<String, List<String>> xmls = Maps.newHashMap();
+        Set<CachedLoc>            locs = Sets.newHashSet();
+
+        public CachedLocs(String modid)
+        {
+            this.modid = modid;
+        }
+
+        public void save()
+        {
+            File cacheFile = new File(CACHEPATH + modid + ".json");
+            String output = prettyGson.toJson(this);
+            try
+            {
+                PokecubeMod.log("Saving " + cacheFile);
+                cacheFile.getParentFile().mkdirs();
+                FileWriter writer = new FileWriter(cacheFile);
+                writer.append(output);
+                writer.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+
+        public boolean valid()
+        {
+            for (CachedLoc loc : locs)
+                if (!loc.stillValid()) return false;
+            return true;
+        }
+
+        static class CachedLoc
+        {
+            String checksum;
+            String file;
+
+            public CachedLoc(String file)
+            {
+                this.file = file;
+                try
+                {
+                    this.checksum = computeChecksum(file);
+                }
+                catch (NoSuchAlgorithmException | IOException e)
+                {
+                    
+                    throw new RuntimeException("Error with file? " + file + " " + e);
+                }
+            }
+
+            private String computeChecksum(String file2) throws NoSuchAlgorithmException, IOException
+            {
+                MessageDigest digest = MessageDigest.getInstance("SHA1");
+                InputStream stream = FileUtils.openInputStream(new File(file2));
+                digest.update(IOUtils.toByteArray(stream));
+                return new String(digest.digest());
+            }
+
+            public boolean stillValid()
+            {
+                try
+                {
+                    String newChecksum = computeChecksum(file);
+                    return newChecksum.equals(checksum);
+                }
+                catch (NoSuchAlgorithmException | IOException e)
+                {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean equals(Object other)
+            {
+                if (other instanceof CachedLoc) { return other.toString().equals(toString()); }
+                return false;
+            }
+
+            @Override
+            public String toString()
+            {
+                return file;
+            }
+        }
+    }
+
+    private static final Gson                        gson           = new Gson();
+    private static final Gson                        prettyGson     = new GsonBuilder().setPrettyPrinting().create();
+    private static final String                      CACHEPATH      = ModPokecubeML.ID + File.separator;
+
     public static HashMap<String, Object>            modelProviders = Maps.newHashMap();
     public static HashMap<String, IMobProvider>      mobProviders   = Maps.newHashMap();
     public static HashMap<String, ArrayList<String>> modModels      = Maps.newHashMap();
+    private static Map<String, CachedLocs>           fileCache      = Maps.newHashMap();
 
     private static final char                        DOT            = '.';
 
@@ -98,7 +210,7 @@ public class CommonProxy implements IGuiHandler
         else if (location instanceof ZippedLoc) locs.jarlocs.add((ZippedLoc) location);
     }
 
-    private void checkInFolder(File resourceDir, boolean[] ret, ResourceLocation[] files)
+    private void checkInFolder(File resourceDir, boolean[] ret, ResourceLocation[] files, Set<String> fileNames)
     {
         if (!resourceDir.exists() || files.length == 0) return;
         int n = 0;
@@ -128,6 +240,7 @@ public class CommonProxy implements IGuiHandler
             {
                 try
                 {
+                    fileNames.add(folder.toString());
                     ZipFile zip = new ZipFile(folder);
                     Enumeration<? extends ZipEntry> entries = zip.entries();
                     while (entries.hasMoreElements())
@@ -164,6 +277,7 @@ public class CommonProxy implements IGuiHandler
             {
                 try
                 {
+                    fileNames.add(resourceDir.toString());
                     ZipFile zip = new ZipFile(resourceDir);
                     Enumeration<? extends ZipEntry> entries = zip.entries();
                     while (entries.hasMoreElements())
@@ -197,10 +311,15 @@ public class CommonProxy implements IGuiHandler
         }
     }
 
-    void fileAsList(Object mod, ResourceLocation file, ArrayList<String> toFill) throws Exception
+    List<String> fileAsList(Object mod, ResourceLocation file) throws Exception
     {
+        CachedLocs cached = getCached((String) mod);
+        if (cached.xmls.containsKey(file.toString())) { return cached.xmls.get(file.toString()); }
+        PokecubeMod.log("File for "+file+" not in cache, Searching for it manually.");
+        ArrayList<String> toFill = Lists.newArrayList();
         String name = file.toString();
         XMLLocs locations = xmlFiles.get(name);
+        outer:
         if (locations != null)
         {
             // TODO sort this to allow prioritizing resources.
@@ -216,7 +335,7 @@ public class CommonProxy implements IGuiHandler
                         toFill.add(line);
                     }
                     br.close();
-                    return;
+                    break outer;
                 }
             }
             for (ZippedLoc f : locations.jarlocs)
@@ -239,16 +358,19 @@ public class CommonProxy implements IGuiHandler
                     e.printStackTrace();
                 }
 
-                return;
+                break outer;
             }
         }
+        cached.xmls.put(file.toString(), toFill);
+        return toFill;
     }
 
-    private void filesExist(Object mod, boolean[] ret, ResourceLocation[] file) throws UnsupportedEncodingException
+    private void filesExist(Object mod, boolean[] ret, ResourceLocation[] file, Set<String> files)
+            throws UnsupportedEncodingException
     {
         File resourceDir = new File(ModPokecubeML.configDir.getParent(), "resourcepacks");
         // Check Resource Packs
-        checkInFolder(resourceDir, ret, file);
+        if (ModPokecubeML.checkResourcesForModels) checkInFolder(resourceDir, ret, file, files);
 
         // Check jars.
         String scannedPackage = mod.getClass().getPackage().getName();
@@ -265,7 +387,7 @@ public class CommonProxy implements IGuiHandler
             FMLLog.log.debug("Checking in " + resourceDir + " " + mod);
         }
         else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
-        checkInFolder(resourceDir, ret, file);
+        checkInFolder(resourceDir, ret, file, files);
     }
 
     @Override
@@ -346,6 +468,8 @@ public class CommonProxy implements IGuiHandler
             IMobProvider mod = mobProviders.get(modId);
             boolean[] hasArr = providesModels(modId, mod, entryArr);
             ProgressBar bar2 = ProgressManager.push("Pokemob", hasArr.length);
+            long time1 = 0;
+            long time2 = 0;
             for (int i = 0; i < hasArr.length; i++)
             {
                 if (!hasArr[i] || has[i])
@@ -358,12 +482,13 @@ public class CommonProxy implements IGuiHandler
                 bar2.step(entry);
                 toAdd.add(entry);
                 ModPokecubeML.textureProviders.put(entry, modId);
-                ArrayList<String> list = Lists.newArrayList();
                 ResourceLocation xml = new ResourceLocation(modId, mod.getModelDirectory(pokeentry) + entry + ".xml");
                 pokeentry.texturePath = mod.getTextureDirectory(pokeentry);
+                Long time = System.nanoTime();
                 try
                 {
-                    fileAsList(mod, xml, list);
+                    List<String> list = fileAsList(modId, xml);
+                    time2 += (System.nanoTime() - time);
                     if (!list.isEmpty())
                     {
                         ExtraDatabase.addXMLEntry(modId, entry, list);
@@ -371,9 +496,12 @@ public class CommonProxy implements IGuiHandler
                 }
                 catch (Exception e)
                 {
-
+                    PokecubeMod.log(Level.WARNING, "Error with finding XML for "+entry, e);
                 }
+                time1 += (System.nanoTime() - time);
             }
+            PokecubeMod.log("Time for "+modId+": "+(time1/1000d)+" "+(time2/1000d));
+            getCached(modId, true).save();
             ProgressManager.pop(bar2);
         }
         ProgressManager.pop(bar);
@@ -393,28 +521,79 @@ public class CommonProxy implements IGuiHandler
         modelProviders.put(ModPokecubeML.ID, ModPokecubeML.instance);
     }
 
+    public CachedLocs getCached(String modid, boolean create)
+    {
+        CachedLocs cache = fileCache.get(modid);
+        if (cache == null || (create && !cache.valid()))
+        {
+            cache = loadOrCreateCache(modid);
+            if (create || cache.valid())
+            {
+                fileCache.put(modid, cache);
+            }
+            else
+            {
+                fileCache.remove(modid);
+                cache = null;
+            }
+        }
+        return cache;
+    }
+
+    private CachedLocs loadOrCreateCache(String modid)
+    {
+        File cacheFile = new File(CACHEPATH + modid + ".json");
+        if (cacheFile.exists())
+        {
+            try
+            {
+                FileReader reader = new FileReader(cacheFile);
+                return gson.fromJson(reader, CachedLocs.class);
+            }
+            catch (JsonSyntaxException | JsonIOException | FileNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return new CachedLocs(modid);
+    }
+
+    private CachedLocs getCached(String modid)
+    {
+        return getCached(modid, false);
+    }
+
     boolean[] providesModels(String modid, Object mod, String... entry)
     {
+        CachedLocs cached = getCached(modid, true);
+        if (cached.has != null) { return cached.has; }
         ResourceLocation[] tex;
         boolean[] ret = new boolean[entry.length];
+        Set<String> files = Sets.newHashSet();
         try
         {
             tex = toLocations(modid, ".xml", entry);
-            filesExist(mod, ret, tex);
+            filesExist(mod, ret, tex, files);
             List<String> extensions = Lists.newArrayList(ModelFactory.getValidExtensions());
             Collections.sort(extensions, Config.instance.extensionComparator);
             for (String ext : extensions)
             {
                 tex = toLocations(modid, "." + ext, entry);
-                filesExist(mod, ret, tex);
+                filesExist(mod, ret, tex, files);
             }
             tex = toLocations(modid, ".tbl", entry);
-            filesExist(mod, ret, tex);
+            filesExist(mod, ret, tex, files);
         }
         catch (UnsupportedEncodingException e)
         {
             e.printStackTrace();
         }
+        cached.has = ret.clone();
+        for (String file : files)
+        {
+            cached.locs.add(new CachedLoc(file));
+        }
+        cached.save();
         return ret;
     }
 

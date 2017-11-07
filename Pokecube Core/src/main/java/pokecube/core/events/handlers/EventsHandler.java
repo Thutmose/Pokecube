@@ -480,7 +480,18 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent.EntityInteractSpecific evt)
     {
-        IPokemob pokemob = CapabilityPokemob.getPokemobFor(evt.getTarget());
+        processInteract(evt, evt.getTarget());
+    }
+
+    @SubscribeEvent
+    public void interactEvent(PlayerInteractEvent.EntityInteract evt)
+    {
+        processInteract(evt, evt.getTarget());
+    }
+
+    public void processInteract(PlayerInteractEvent evt, Entity target)
+    {
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(target);
         if (pokemob != null && !evt.getWorld().isRemote)
         {
             EntityPlayer player = evt.getEntityPlayer();
@@ -518,7 +529,7 @@ public class EventsHandler
                 }
                 Vector3 look = Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(1);
                 look.y = 0.2;
-                look.addVelocities(evt.getTarget());
+                look.addVelocities(target);
                 return;
             }
             // Debug thing to maximize happiness

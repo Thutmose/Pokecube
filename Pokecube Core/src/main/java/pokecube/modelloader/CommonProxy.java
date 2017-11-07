@@ -123,6 +123,7 @@ public class CommonProxy implements IGuiHandler
 
         public boolean valid()
         {
+            if (locs.isEmpty()) return false;
             for (CachedLoc loc : locs)
                 if (!loc.stillValid()) return false;
             return true;
@@ -142,7 +143,7 @@ public class CommonProxy implements IGuiHandler
                 }
                 catch (NoSuchAlgorithmException | IOException e)
                 {
-                    
+
                     throw new RuntimeException("Error with file? " + file + " " + e);
                 }
             }
@@ -315,7 +316,7 @@ public class CommonProxy implements IGuiHandler
     {
         CachedLocs cached = getCached((String) mod);
         if (cached.xmls.containsKey(file.toString())) { return cached.xmls.get(file.toString()); }
-        PokecubeMod.log("File for "+file+" not in cache, Searching for it manually.");
+        PokecubeMod.log("File for " + file + " not in cache, Searching for it manually.");
         ArrayList<String> toFill = Lists.newArrayList();
         String name = file.toString();
         XMLLocs locations = xmlFiles.get(name);
@@ -468,8 +469,6 @@ public class CommonProxy implements IGuiHandler
             IMobProvider mod = mobProviders.get(modId);
             boolean[] hasArr = providesModels(modId, mod, entryArr);
             ProgressBar bar2 = ProgressManager.push("Pokemob", hasArr.length);
-            long time1 = 0;
-            long time2 = 0;
             for (int i = 0; i < hasArr.length; i++)
             {
                 if (!hasArr[i] || has[i])
@@ -484,11 +483,9 @@ public class CommonProxy implements IGuiHandler
                 ModPokecubeML.textureProviders.put(entry, modId);
                 ResourceLocation xml = new ResourceLocation(modId, mod.getModelDirectory(pokeentry) + entry + ".xml");
                 pokeentry.texturePath = mod.getTextureDirectory(pokeentry);
-                Long time = System.nanoTime();
                 try
                 {
                     List<String> list = fileAsList(modId, xml);
-                    time2 += (System.nanoTime() - time);
                     if (!list.isEmpty())
                     {
                         ExtraDatabase.addXMLEntry(modId, entry, list);
@@ -496,11 +493,9 @@ public class CommonProxy implements IGuiHandler
                 }
                 catch (Exception e)
                 {
-                    PokecubeMod.log(Level.WARNING, "Error with finding XML for "+entry, e);
+                    PokecubeMod.log(Level.WARNING, "Error with finding XML for " + entry, e);
                 }
-                time1 += (System.nanoTime() - time);
             }
-            PokecubeMod.log("Time for "+modId+": "+(time1/1000d)+" "+(time2/1000d));
             getCached(modId, true).save();
             ProgressManager.pop(bar2);
         }
@@ -548,7 +543,8 @@ public class CommonProxy implements IGuiHandler
             try
             {
                 FileReader reader = new FileReader(cacheFile);
-                return gson.fromJson(reader, CachedLocs.class);
+                CachedLocs cache = gson.fromJson(reader, CachedLocs.class);
+                if (cache.valid()) return cache;
             }
             catch (JsonSyntaxException | JsonIOException | FileNotFoundException e)
             {

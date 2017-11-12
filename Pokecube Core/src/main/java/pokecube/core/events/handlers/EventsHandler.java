@@ -472,13 +472,27 @@ public class EventsHandler
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent.EntityInteractSpecific evt)
     {
+        String ID = "LastSuccessInteractEvent";
+        long time = evt.getTarget().getEntityData().getLong(ID);
+        if (time == evt.getTarget().getEntityWorld().getTotalWorldTime()) return;
         processInteract(evt, evt.getTarget());
+        if (evt.isCanceled())
+        {
+            evt.getTarget().getEntityData().setLong(ID, evt.getTarget().getEntityWorld().getTotalWorldTime());
+        }
     }
 
     @SubscribeEvent
     public void interactEvent(PlayerInteractEvent.EntityInteract evt)
     {
+        String ID = "LastSuccessInteractEvent";
+        long time = evt.getTarget().getEntityData().getLong(ID);
+        if (time == evt.getTarget().getEntityWorld().getTotalWorldTime()) return;
         processInteract(evt, evt.getTarget());
+        if (evt.isCanceled())
+        {
+            evt.getTarget().getEntityData().setLong(ID, evt.getTarget().getEntityWorld().getTotalWorldTime());
+        }
     }
 
     public void processInteract(PlayerInteractEvent evt, Entity target)

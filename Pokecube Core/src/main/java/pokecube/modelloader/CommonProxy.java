@@ -42,7 +42,6 @@ import com.google.gson.JsonSyntaxException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -162,6 +161,10 @@ public class CommonProxy implements IGuiHandler
                 {
                     String newChecksum = computeChecksum(file);
                     return newChecksum.equals(checksum);
+                }
+                catch (FileNotFoundException noFile)
+                {
+                    return false;
                 }
                 catch (NoSuchAlgorithmException | IOException e)
                 {
@@ -385,7 +388,7 @@ public class CommonProxy implements IGuiHandler
             name = name.replace("file:", "");
             name = name.replaceAll("(.jar)(.*)", ".jar");
             resourceDir = new File(name);
-            FMLLog.log.debug("Checking in " + resourceDir + " " + mod);
+            PokecubeMod.log(Level.INFO, "Checking in " + resourceDir + " " + mod);
         }
         else resourceDir = new File(ModPokecubeML.configDir.getParent(), "mods");
         checkInFolder(resourceDir, ret, file, files);

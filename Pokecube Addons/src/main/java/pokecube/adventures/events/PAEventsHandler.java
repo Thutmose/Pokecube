@@ -230,7 +230,7 @@ public class PAEventsHandler
     @SubscribeEvent
     public void attachCapabilities(AttachCapabilitiesEvent<Entity> event)
     {
-        if (!(event.getObject() instanceof EntityLiving)
+        if (!(event.getObject() instanceof EntityLiving) || event.getObject().getEntityWorld() == null
                 || TypeTrainer.mobTypeMapper.getType((EntityLivingBase) event.getObject(), false) == null)
             return;
         if (event.getCapabilities().containsKey(POKEMOBSCAP)

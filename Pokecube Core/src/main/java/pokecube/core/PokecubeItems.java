@@ -104,7 +104,8 @@ public class PokecubeItems extends Items
     public static Item                               pokedex        = (new ItemPokedex()).setUnlocalizedName("pokedex");
     public static Item                               berryJuice;
     public static Item                               berries        = new ItemBerry()
-            .setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry");
+            .setCreativeTab(PokecubeMod.creativeTabPokecubeBerries).setUnlocalizedName("berry")
+            .setRegistryName(PokecubeMod.ID, "berry");
     public static Item                               megastone      = (new ItemMegastone())
             .setUnlocalizedName("megastone");
     public static Item                               megaring       = (new ItemMegawearable())

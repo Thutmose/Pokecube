@@ -74,6 +74,8 @@ public class DispenseBehaviourInteract implements IBehaviorDispenseItem
 
             EnumActionResult cancelResult = net.minecraftforge.common.ForgeHooks.onInteractEntityAt(player, mobs.get(0),
                     new Vec3d(0, 0, 0), EnumHand.MAIN_HAND);
+            if (cancelResult == null) cancelResult = net.minecraftforge.common.ForgeHooks.onInteractEntity(player,
+                    mobs.get(0), EnumHand.MAIN_HAND);
 
             boolean interacted = cancelResult != null || mobs.get(0).processInitialInteract(player, EnumHand.MAIN_HAND);
             boolean result = false;

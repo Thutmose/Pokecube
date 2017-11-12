@@ -315,8 +315,8 @@ public class ItemHandler extends Mod_Pokecube_Helper
     public static void registerItems(IForgeRegistry<Item> iForgeRegistry)
     {
         addPokecubes(iForgeRegistry);
-        addStones(iForgeRegistry);
         addBerryItems(iForgeRegistry);
+        addStones(iForgeRegistry);
         addVitamins(iForgeRegistry);
         addFossilItems(iForgeRegistry);
         addMiscItems(iForgeRegistry);

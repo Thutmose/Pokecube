@@ -109,7 +109,6 @@ public class ItemHandler extends Mod_Pokecube_Helper
 
     private static void addBerryItems(Object registry)
     {
-        berries.setRegistryName(PokecubeMod.ID, "berry");
         register(berries, registry);
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
         {

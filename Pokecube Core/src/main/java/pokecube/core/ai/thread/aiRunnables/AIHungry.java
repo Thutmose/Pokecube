@@ -168,13 +168,6 @@ public class AIHungry extends AIBase
             }
             if (!ate)
             {
-                float ratio = (float) ((hungerTime - hurtTime) / deathTime);
-                boolean dead = entity.getMaxHealth() * ratio > entity.getHealth();
-                entity.attackEntityFrom(DamageSource.STARVE, entity.getMaxHealth() * ratio);
-                if (!dead) pokemob.displayMessageToOwner(
-                        new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
-                else pokemob.displayMessageToOwner(
-                        new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
                 boolean tameCheck = !pokemob.isPlayerOwned() || pokemob.getPokemonAIState(IMoveConstants.STAYING);
                 if (entity.getEntityData().hasKey("lastInteract"))
                 {
@@ -185,6 +178,16 @@ public class AIHungry extends AIBase
                 if (tameCheck)
                 {
                     toRun.add(new GenBerries(pokemob));
+                }
+                else
+                {
+                    float ratio = (float) ((hungerTime - hurtTime) / deathTime);
+                    boolean dead = entity.getMaxHealth() * ratio > entity.getHealth();
+                    entity.attackEntityFrom(DamageSource.STARVE, entity.getMaxHealth() * ratio);
+                    if (!dead) pokemob.displayMessageToOwner(
+                            new TextComponentTranslation("pokemob.hungry.hurt", pokemob.getPokemonDisplayName()));
+                    else pokemob.displayMessageToOwner(
+                            new TextComponentTranslation("pokemob.hungry.dead", pokemob.getPokemonDisplayName()));
                 }
             }
         }

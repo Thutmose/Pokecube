@@ -8,7 +8,9 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
@@ -22,7 +24,6 @@ import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler;
 import blusunrize.immersiveengineering.api.tool.BelljarHandler.DefaultPlantHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockStem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -32,7 +33,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -41,6 +41,8 @@ import net.minecraftforge.fml.common.Optional.Method;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import pokecube.core.blocks.berries.BlockBerryCrop;
+import pokecube.core.blocks.berries.TileEntityBerries;
 import pokecube.core.database.PokedexEntryLoader.Drop;
 import pokecube.core.database.recipes.IRecipeParser;
 import pokecube.core.database.recipes.XMLRecipeHandler;
@@ -346,7 +348,8 @@ public class IECompat
 
     private static class BerryClocheHandler extends DefaultPlantHandler
     {
-        private HashSet<ComparableItemStack> validSeeds = new HashSet<>();
+        private HashSet<ComparableItemStack>      validSeeds = new HashSet<>();
+        private Map<ComparableItemStack, Boolean> treeMap    = Maps.newHashMap();
 
         @Override
         protected HashSet<ComparableItemStack> getSeedSet()
@@ -375,42 +378,80 @@ public class IECompat
         {
             ComparableItemStack comp = new ComparableItemStack(seed, false);
             IBlockState[] renderStates = seedRenderMap.get(comp);
-            if (renderStates.length > 0 && renderStates[0] != null && renderStates[0].getBlock() instanceof BlockStem)
+            if (treeMap.get(comp))
             {
+                if (!super.isCorrectSoil(seed, soil)) return true;
                 GlStateManager.rotate(-90, 0, 1, 0);
-                BlockStem stem = (BlockStem) renderStates[0].getBlock();
-                IBlockState state = stem.getDefaultState().withProperty(BlockStem.AGE,
-                        (int) (growth >= .5 ? 7 : 2 * growth * 7));
-                if (growth >= .5) state = state.withProperty(BlockStem.FACING, EnumFacing.NORTH);
+
+                IBlockState state = Blocks.LEAVES.getDefaultState();
                 IBakedModel model = blockRenderer.getModelForState(state);
-                GlStateManager.translate(.25f, .0625f, 0);
+
+                // Render leaves in top section of belljar
+                GlStateManager.translate(.0f, .0625f, 0f);
                 GlStateManager.pushMatrix();
+                float scale = 0.75f;
+                GlStateManager.translate((1 - scale) / 2, 0.75, -(1 - scale) / 2);
+                GlStateManager.scale(scale, scale, scale);
                 blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
                 GlStateManager.popMatrix();
-                if (growth >= .5)
+
+                // Render berry
+                state = seedOutputMap.get(new ComparableItemStack(seed, false));
+                if (state != null)
                 {
-                    state = seedOutputMap.get(new ComparableItemStack(seed, false));
-                    if (state != null)
+                    model = blockRenderer.getModelForState(state);
+                    GlStateManager.pushMatrix();
+                    scale = (growth);
+                    GlStateManager.translate(0.5 - scale / 2, -0.25 + (1 - scale), -.5 + scale / 2);
+                    GlStateManager.scale(scale, scale, scale);
+                    blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
+                    GlStateManager.popMatrix();
+                }
+            }
+            else
+            {
+                if (renderStates.length > 0 && renderStates[0] != null
+                        && renderStates[0].getBlock() instanceof BlockBerryCrop)
+                {
+                    float jarScale = 0.75f;
+                    // Render growing stem
+                    GlStateManager.rotate(-90, 0, 1, 0);
+                    IBlockState state = renderStates[0].withProperty(BlockBerryCrop.AGE,
+                            (int) (growth >= .5 ? 7 : 2 * growth * 7));
+                    IBakedModel model = blockRenderer.getModelForState(state);
+                    GlStateManager.translate((1 - jarScale) / 2, 0, -(1 - jarScale) / 2);
+                    GlStateManager.scale(jarScale, jarScale, jarScale);
+                    GlStateManager.pushMatrix();
+                    blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
+                    GlStateManager.popMatrix();
+
+                    // Render berry
+                    if (growth >= .5)
                     {
-                        model = blockRenderer.getModelForState(state);
-                        GlStateManager.pushMatrix();
-                        float scale = (growth - .5f) * .5f;
-                        GlStateManager.translate(-scale / 2, .5 - scale, -.5 + scale / 2);
-                        GlStateManager.scale(scale, scale, scale);
-                        blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
-                        GlStateManager.popMatrix();
+                        state = seedOutputMap.get(new ComparableItemStack(seed, false));
+                        if (state != null)
+                        {
+                            model = blockRenderer.getModelForState(state);
+                            GlStateManager.pushMatrix();
+                            float scale = (growth);
+                            GlStateManager.translate(0.5 - scale / 2, 1, -.5 + scale / 2);
+                            GlStateManager.scale(scale, scale, scale);
+                            blockRenderer.getBlockModelRenderer().renderModelBrightness(model, state, 1, true);
+                            GlStateManager.popMatrix();
+                        }
                     }
                 }
             }
             return true;
         }
 
-        public void register(ItemStack seed, ItemStack[] output, IBlockState seedRender, Object soil,
+        public void register(boolean tree, ItemStack seed, ItemStack[] output, IBlockState seedRender, Object soil,
                 IBlockState... cropRender)
         {
             // Call super to register the soil.
             super.register(seed, output, soil, cropRender);
             ComparableItemStack comp = new ComparableItemStack(seed, false);
+            treeMap.put(comp, tree);
             seedOutputMap.put(comp, seedRender);
             seedRenderMap.put(comp, cropRender);
         }
@@ -436,13 +477,16 @@ public class IECompat
     {
         BerryClocheHandler clocheHandler = new BerryClocheHandler();
         BelljarHandler.registerHandler(clocheHandler);
-        for (String name : BerryManager.berryNames.values())
+        for (Integer id : BerryManager.berryNames.keySet())
         {
+            String name = BerryManager.berryNames.get(id);
             ItemStack berry = BerryManager.getBerryItem(name);
             Block berryCrop = BerryManager.berryCrop;
             Block berryFruit = BerryManager.berryFruit;
-            clocheHandler.register(berry.copy(), new ItemStack[] { berry.copy() },
-                    berryFruit.getDefaultState().withProperty(BerryManager.type, name), new ItemStack(Blocks.DIRT),
+            boolean tree = TileEntityBerries.trees.containsKey(id);
+            Object soil = tree ? ApiUtils.createIngredientStack("treeLeaves") : new ItemStack(Blocks.DIRT);
+            clocheHandler.register(tree, berry.copy(), new ItemStack[] { berry.copy() },
+                    berryFruit.getDefaultState().withProperty(BerryManager.type, name), soil,
                     berryCrop.getDefaultState().withProperty(BerryManager.type, name));
         }
     }

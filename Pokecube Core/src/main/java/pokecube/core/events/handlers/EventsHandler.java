@@ -12,6 +12,7 @@ import com.google.common.collect.Maps;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -355,11 +356,28 @@ public class EventsHandler
         new SpawnEventsHandler();
         new AIEventHandler();
     }
-    
+
     @SubscribeEvent
     public void breakSpeedCheck(PlayerEvent.BreakSpeed evt)
     {
-        
+        Entity ridden = evt.getEntityLiving().getRidingEntity();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(ridden);
+        if (pokemob != null)
+        {
+            boolean aqua = evt.getEntityPlayer().isInWater();
+            if(aqua)
+            {
+                aqua = !EnchantmentHelper.getAquaAffinityModifier(evt.getEntityPlayer());
+            }
+            if (aqua)
+            {
+                evt.setNewSpeed(evt.getOriginalSpeed() / 0.04f);
+            }
+            else
+            {
+                evt.setNewSpeed(evt.getOriginalSpeed() / 0.2f);
+            }
+        }
     }
 
     @SubscribeEvent

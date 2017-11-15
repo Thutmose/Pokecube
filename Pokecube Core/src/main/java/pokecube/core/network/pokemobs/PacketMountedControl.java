@@ -25,6 +25,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
 
     int                       entityId;
     byte                      message;
+    float                     throttle;
 
     public static void sendControlPacket(Entity pokemob, LogicMountedControl controller)
     {
@@ -37,6 +38,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
         if (controller.upInputDown) packet.message += UP;
         if (controller.downInputDown) packet.message += DOWN;
         if (controller.followOwnerLook) packet.message += SYNCLOOK;
+        packet.throttle = (float) controller.throttle;
         PokecubeMod.packetPipeline.sendToServer(packet);
     }
 
@@ -63,6 +65,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
     {
         entityId = buf.readInt();
         message = buf.readByte();
+        throttle = buf.readFloat();
     }
 
     @Override
@@ -70,6 +73,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
     {
         buf.writeInt(entityId);
         buf.writeByte(message);
+        buf.writeFloat(throttle);
     }
 
     void processMessage(MessageContext ctx, PacketMountedControl message)
@@ -95,6 +99,7 @@ public class PacketMountedControl implements IMessage, IMessageHandler<PacketMou
             controller.upInputDown = (message.message & UP) > 0;
             controller.downInputDown = (message.message & DOWN) > 0;
             controller.followOwnerLook = (message.message & SYNCLOOK) > 0;
+            controller.throttle = message.throttle;
         }
     }
 }

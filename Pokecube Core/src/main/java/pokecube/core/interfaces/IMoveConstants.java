@@ -118,9 +118,10 @@ public interface IMoveConstants extends IMoveNames
     /** Indeicates that there is a new utility move to use. */
     @NonPersistantAI
     static final int NEWEXECUTEMOVE       = 1 << 8;
-    /** Pokemon is held by the player. */
+    /** Pokemon cannot have item used on it */
     static final int NOITEMUSE            = 1 << 9;
-    /** Pokemon is on the player's shoulder */
+    @NonPersistantAI
+    /** Pokemon is forbidden from swapping move */
     static final int NOMOVESWAP           = 1 << 10;
     /** Pokemon is idle. */
     @NonPersistantAI
@@ -146,7 +147,7 @@ public interface IMoveConstants extends IMoveNames
     static final int MATING               = 1 << 18;
     /** does the pokemob have a new move to learn */
     static final int LEARNINGMOVE         = 1 << 19;
-    // /** is the pokemob pathing to owner */
+    // /** is the pokemob currently pathing somewhere */
     @NonPersistantAI
     static final int PATHING              = 1 << 20;
     /** is the pokemob jumping */
@@ -171,5 +172,8 @@ public interface IMoveConstants extends IMoveNames
     static final int USEDZMOVE            = 1 << 28;
     /** should capture be denied for this pokemob. */
     static final int DENYCAPTURE          = 1 << 29;
+    /** is the pokemob's movement being controlled. */
+    @NonPersistantAI
+    static final int CONTROLLED          = 1 << 30;
 
 }

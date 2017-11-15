@@ -55,6 +55,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.StartTracking;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.world.BlockEvent.BreakEvent;
@@ -353,6 +354,12 @@ public class EventsHandler
         meteorprocessor = new MeteorAreaSetter();
         new SpawnEventsHandler();
         new AIEventHandler();
+    }
+    
+    @SubscribeEvent
+    public void breakSpeedCheck(PlayerEvent.BreakSpeed evt)
+    {
+        
     }
 
     @SubscribeEvent

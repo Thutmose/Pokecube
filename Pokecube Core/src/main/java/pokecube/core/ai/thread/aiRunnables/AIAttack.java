@@ -141,7 +141,7 @@ public class AIAttack extends AIBase implements IAICombat
         if (!running)
         {
             if (!(attack == null || ((attack.getAttackCategory() & IMoveConstants.CATEGORY_SELF) != 0))
-                    && !attacker.isBeingRidden())
+                    && !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED))
             {
                 path = this.attacker.getNavigator().getPathToEntityLiving(entityTarget);
                 addEntityPath(attacker, path, movementSpeed);

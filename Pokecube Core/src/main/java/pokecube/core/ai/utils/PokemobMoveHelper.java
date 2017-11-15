@@ -3,10 +3,13 @@ package pokecube.core.ai.utils;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.MathHelper;
 import pokecube.core.database.PokedexEntry;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import thut.api.maths.Vector3;
 
 /** Overriden to properly support mobs that move in 3D, such as flying or
  * swimming ones, as well as the make it so if a mob has transformed, it uses
@@ -34,6 +37,11 @@ public class PokemobMoveHelper extends EntityMoveHelper
     public void onUpdateMoveHelper()
     {
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(entity);
+        if (pokemob.getPokemonAIState(IMoveConstants.CONTROLLED))
+        {
+            entity.getNavigator().clearPathEntity();
+            return;
+        }
         PokedexEntry entry = pokemob.getPokedexEntry();
         IPokemob transformed = CapabilityPokemob.getPokemobFor(pokemob.getTransformedTo());
         if (transformed != null)
@@ -70,7 +78,22 @@ public class PokemobMoveHelper extends EntityMoveHelper
             }
             double diff = pokemob.getSize() * entry.length / 2;
             diff *= diff;
-            if (d4 > diff && (d2 < 0 || d2 <= entity.stepHeight))
+
+            boolean end = d4 < diff;
+            if (end && !entity.getNavigator().noPath())
+            {
+                int index = entity.getNavigator().currentPath.getCurrentPathIndex();
+                int endIndex = entity.getNavigator().currentPath.getCurrentPathLength();
+                if (index < endIndex - 1)
+                {
+                    PathPoint here = entity.getNavigator().currentPath.getPathPointFromIndex(index);
+                    PathPoint next = entity.getNavigator().currentPath.getPathPointFromIndex(index + 1);
+                    Vector3 v1 = Vector3.getNewVector().set(here).addTo(0.5, 0.5, 0.5);
+                    Vector3 v2 = Vector3.getNewVector().set(next).addTo(0.5, 0.5, 0.5);
+                    end = !v1.isVisible(entity.getEntityWorld(), v2);
+                }
+            }
+            if (!end && (d2 < 0 || d2 <= entity.stepHeight))
             {
                 float f9 = (float) (MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
                 this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, 90.0F);

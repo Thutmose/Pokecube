@@ -5,6 +5,7 @@ package pokecube.core.entity.pokemobs.helper;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 import com.google.common.collect.Lists;
@@ -19,10 +20,10 @@ import thut.api.entity.IMultiplePassengerEntity;
  * @author Manchou */
 public abstract class EntityMountablePokemob extends EntityEvolvablePokemob implements IMultiplePassengerEntity
 {
-    private int       mountCounter = 0;
-    protected double  yOffset;
+    private int      mountCounter = 0;
+    protected double yOffset;
 
-    public int        counterMount = 0;
+    public int       counterMount = 0;
 
     public EntityMountablePokemob(World world)
     {
@@ -119,6 +120,23 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
         seat.y *= this.height;
         seat.z *= dz;
         return seat;
+    }
+
+    @Override
+    public boolean canPassengerSteer()
+    {
+        // We return false here, as we handle our own steering/control.
+        // Otherwise vanilla makes this not move properly.
+        return false;
+    }
+
+    @Override
+    @Nullable
+    public Entity getControllingPassenger()
+    {
+        Entity first = null;
+        if (this.isBeingRidden() && (first = getPassengers().get(0)) == getOwner()) { return first; }
+        return null;
     }
 
     @Override

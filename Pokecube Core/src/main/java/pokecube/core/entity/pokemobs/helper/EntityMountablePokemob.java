@@ -6,6 +6,7 @@ package pokecube.core.entity.pokemobs.helper;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 import com.google.common.collect.Lists;
@@ -124,6 +125,22 @@ public abstract class EntityMountablePokemob extends EntityEvolvablePokemob impl
         return ret;
     }
 
+    public boolean canPassengerSteer()
+    {
+        // We return false here, as we handle our own steering/control.
+        // Otherwise vanilla makes this not move properly.
+        return false;
+    }
+
+    @Override
+    @Nullable
+    public Entity getControllingPassenger()
+    {
+        Entity first = null;
+        if (this.isBeingRidden() && (first = getPassengers().get(0)) == getOwner()) { return first; }
+        return null;
+    }
+    
     @Override
     public Entity getPassenger(Vector3f seatl)
     {

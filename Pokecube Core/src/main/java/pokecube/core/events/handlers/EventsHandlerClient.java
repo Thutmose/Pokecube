@@ -270,6 +270,17 @@ public class EventsHandlerClient
                 controller.upInputDown = up;
                 controller.downInputDown = down;
                 controller.followOwnerLook = PokecubeMod.core.getConfig().riddenMobsTurnWithLook;
+                
+                if(GameSettings.isKeyDown(ClientProxyPokecube.throttleDown))
+                {
+                    controller.throttle -= 0.05;
+                    controller.throttle = Math.max(controller.throttle, 0.01);
+                }
+                else if(GameSettings.isKeyDown(ClientProxyPokecube.throttleUp))
+                {
+                    controller.throttle += 0.05;
+                    controller.throttle = Math.min(controller.throttle, 1);
+                }
                 PacketMountedControl.sendControlPacket(e, controller);
             }
         }

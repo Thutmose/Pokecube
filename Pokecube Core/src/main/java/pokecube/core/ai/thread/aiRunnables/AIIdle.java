@@ -143,7 +143,7 @@ public class AIIdle extends AIBase
 
         if (world == null || mob.getPokedexEntry().isStationary || mob.getPokemonAIState(IMoveConstants.EXECUTINGMOVE)
                 || entity.getAttackTarget() != null || mob.getPokemonAIState(IMoveConstants.PATHING)
-                || entity.isBeingRidden())
+                || mob.getPokemonAIState(IMoveConstants.CONTROLLED))
             return false;
         if ((current = entity.getNavigator().getPath()) != null && entity.getNavigator().noPath())
         {
@@ -171,7 +171,7 @@ public class AIIdle extends AIBase
                 && !mob.getPokemonAIState(IMoveConstants.STAYING))
             return false;
         if (mob.getPokemonAIState(IPokemob.SLEEPING) || (mob.getStatus() & IPokemob.STATUS_SLP) > 0) return false;
-        else if (this.entity.isBeingRidden() || current != null)
+        else if (mob.getPokemonAIState(IMoveConstants.CONTROLLED) || current != null)
         {
             return false;
         }

@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -187,6 +188,8 @@ public class Database
         missingno.stats[3] = 6;
         missingno.stats[4] = 6;
         missingno.stats[5] = 29;
+        missingno.addMoves(Lists.newArrayList(), Maps.newHashMap());
+        missingno.addMove("skyattack");
     }
 
     /** These are used for config added databasea <br>

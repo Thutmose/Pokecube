@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import pokecube.core.PokecubeCore;
 import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 
 /** This manages the ridden controls of the pokemob. The booleans are set on the
@@ -26,6 +27,7 @@ public class LogicMountedControl extends LogicBase
     public boolean upInputDown      = false;
     public boolean downInputDown    = false;
     public boolean followOwnerLook  = false;
+    public double  throttle         = 0.5;
 
     public LogicMountedControl(IPokemob pokemob_)
     {
@@ -36,7 +38,9 @@ public class LogicMountedControl extends LogicBase
     public void doServerTick(World world)
     {
         super.doServerTick(world);
-        if (!entity.isBeingRidden()) return;
+        Entity rider = entity.getControllingPassenger();
+        pokemob.setPokemonAIState(IMoveConstants.CONTROLLED, rider != null);
+        if (rider == null) return;
         Config config = PokecubeCore.instance.getConfig();
         boolean move = false;
         entity.rotationYaw = pokemob.getHeading();
@@ -51,21 +55,7 @@ public class LogicMountedControl extends LogicBase
 
         if (waterSpeed) airSpeed = false;
 
-        Entity controller = null;
-        Entity owner = pokemob.getOwner();
-        if (controller != owner)
-        {
-            for (Entity e : entity.getRecursivePassengers())
-            {
-                if (e == owner)
-                {
-                    controller = e;
-                    break;
-                }
-            }
-        }
-        if (controller == null) return;
-
+        Entity controller = rider;
         if (pokemob.getPokedexEntry().shouldDive)
         {
             PotionEffect vision = new PotionEffect(Potion.getPotionFromResourceLocation("night_vision"), 300, 1, true,
@@ -85,9 +75,8 @@ public class LogicMountedControl extends LogicBase
                 }
             }
         }
-        float moveSpeed = 0.25f;
         float speedFactor = (float) (1 + Math.sqrt(pokemob.getPokedexEntry().getStatVIT()) / (10F));
-        moveSpeed *= speedFactor;
+        float moveSpeed = (float) (0.25f * throttle * speedFactor);
         if (forwardInputDown)
         {
             move = true;
@@ -128,18 +117,18 @@ public class LogicMountedControl extends LogicBase
             }
             else if (verticalControl)
             {
-                entity.motionY += 0.1;
+                entity.motionY += 0.1 * throttle;
             }
             else if (entity.isInLava() || entity.isInWater())
             {
-                entity.motionY += 0.05;
+                entity.motionY += 0.05 * throttle;
             }
         }
         if (downInputDown)
         {
             if (verticalControl && !entity.onGround)
             {
-                entity.motionY -= 0.1;
+                entity.motionY -= 0.1 * throttle;
             }
         }
         else if (!verticalControl && !entity.onGround)

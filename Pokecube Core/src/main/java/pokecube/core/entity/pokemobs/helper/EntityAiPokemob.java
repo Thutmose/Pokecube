@@ -269,7 +269,7 @@ public abstract class EntityAiPokemob extends EntityMountablePokemob
             {
                 this.motionY += (this.getActivePotionEffect(jump).getAmplifier() + 1) * 0.1F;
             }
-            if (isBeingRidden())
+            if (pokemobCap.getPokemonAIState(IMoveConstants.CONTROLLED))
             {
                 motionY += 0.3;
             }

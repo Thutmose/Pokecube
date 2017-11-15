@@ -35,7 +35,7 @@ public class LogicFloatFlySwim extends LogicBase
 
     public boolean shouldRun()
     {
-        return !entity.isBeingRidden() && entity.getNavigator().noPath();
+        return !pokemob.getPokemonAIState(IMoveConstants.CONTROLLED) && entity.getNavigator().noPath();
     }
 
     @Override

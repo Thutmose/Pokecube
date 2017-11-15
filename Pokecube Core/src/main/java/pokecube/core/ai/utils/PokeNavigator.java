@@ -66,7 +66,7 @@ public class PokeNavigator extends PathNavigate
     public boolean canNavigate()
     {
         if (pokemob.getPokemonAIState(IPokemob.SLEEPING) || pokemob.getStatus() == IPokemob.STATUS_SLP
-                || pokemob.getStatus() == IPokemob.STATUS_FRZ || entity.isBeingRidden())
+                || pokemob.getStatus() == IPokemob.STATUS_FRZ || pokemob.getPokemonAIState(IMoveConstants.CONTROLLED))
             return false;
         if (pokemob.getPokemonAIState(IPokemob.SITTING)) return false;
         return this.entity.onGround || this.canSwim && this.isInLiquid() || this.canFly;
@@ -203,7 +203,33 @@ public class PokeNavigator extends PathNavigate
     @Override
     public boolean isDirectPathBetweenPoints(Vec3d start, Vec3d end, int sizeX, int sizeY, int sizeZ)
     {
-        return false;
+        Vector3 v1 = Vector3.getNewVector().set(start);
+        Vector3 v2 = Vector3.getNewVector().set(end);
+        boolean ground = !canFly;
+        if (ground && ((int) start.y) != ((int) end.y)) { return false; }
+        double dx = sizeX / 2d;
+        double dy = sizeY;
+        double dz = sizeZ / 2d;
+
+        v1.set(start).addTo(0, 0, 0);
+        v2.set(end).addTo(0, 0, 0);
+        if (!v1.isVisible(world, v2)) return false;
+        v1.set(start).addTo(0, dy, 0);
+        v2.set(end).addTo(0, dy, 0);
+        if (!v1.isVisible(world, v2)) return false;
+
+        v1.set(start).addTo(dx, 0, 0);
+        v2.set(end).addTo(dx, 0, 0);
+        if (!v1.isVisible(world, v2)) return false;
+        v1.set(start).addTo(-dx, 0, 0);
+        v2.set(end).addTo(-dx, 0, 0);
+        if (!v1.isVisible(world, v2)) return false;
+        v1.set(start).addTo(0, 0, dz);
+        v2.set(end).addTo(0, 0, dz);
+        if (!v1.isVisible(world, v2)) return false;
+        v1.set(start).addTo(0, 0, -dz);
+        v2.set(end).addTo(0, 0, -dz);
+        return true;
     }
 
     /** Returns true if the entity is in water or lava, false otherwise */

@@ -26,6 +26,7 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.api.TickHandler;
@@ -289,6 +290,7 @@ public class AIGatherStuff extends AIBase
     @Override
     public boolean shouldRun()
     {
+        if(!pokemob.isRoutineEnabled(AIRoutine.GATHER)) return false;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
         boolean wildCheck = !PokecubeMod.core.getConfig().wildGather
                 && !pokemob.getPokemonAIState(IMoveConstants.TAMED);

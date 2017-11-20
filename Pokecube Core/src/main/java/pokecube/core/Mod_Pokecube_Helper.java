@@ -7,6 +7,7 @@ import static pokecube.core.handlers.Config.GUIDISPLAYTELEPORTINFO_ID;
 import static pokecube.core.handlers.Config.GUIPC_ID;
 import static pokecube.core.handlers.Config.GUIPOKECENTER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEDEX_ID;
+import static pokecube.core.handlers.Config.GUIPOKEMOBAI_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOBSPAWNER_ID;
 import static pokecube.core.handlers.Config.GUIPOKEMOB_ID;
 import static pokecube.core.handlers.Config.GUITMTABLE_ID;
@@ -111,7 +112,8 @@ public class Mod_Pokecube_Helper
 
     public void initAllBlocks()
     {
-        allBlocks.clear();//GameData.getWrapper(Block.class).iterator(); in 1.12
+        allBlocks.clear();// GameData.getWrapper(Block.class).iterator(); in
+                          // 1.12
         Iterator<Block> iter = GameData.getBlockRegistry().iterator();
         while (iter.hasNext())
         {
@@ -139,6 +141,7 @@ public class Mod_Pokecube_Helper
         GUIDISPLAYTELEPORTINFO_ID = 18;
         GUIPOKEMOB_ID = 19;
         GUITMTABLE_ID = 20;
+        GUIPOKEMOBAI_ID = 21;
 
         Config config = PokecubeCore.core.getConfig();
 

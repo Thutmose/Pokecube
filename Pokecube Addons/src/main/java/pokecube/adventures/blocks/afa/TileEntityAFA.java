@@ -68,7 +68,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
 
     protected boolean addedToNetwork = false;
 
-    private static void initParser()
+    public static void initParser(String function, String functionS)
     {
         parser = new JEP();
         parser.initFunTab(); // clear the contents of the function table
@@ -79,7 +79,7 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
                              // table
         parser.addVariable("d", 0);
         parser.addVariable("l", 0);
-        parser.parseExpression(PokecubeAdv.conf.afaCostFunction);
+        parser.parseExpression(function);
 
         parserS = new JEP();
         parserS.initFunTab(); // clear the contents of the function table
@@ -89,13 +89,12 @@ public class TileEntityAFA extends TileEntityOwnable implements IInventory, ITic
         parserS.addComplex(); // among other things adds i to the symbol
                               // table
         parserS.addVariable("d", 0);
-        parserS.parseExpression(PokecubeAdv.conf.afaCostFunctionShiny);
+        parserS.parseExpression(functionS);
     }
 
     public TileEntityAFA()
     {
         super();
-        initParser();
     }
 
     @Override

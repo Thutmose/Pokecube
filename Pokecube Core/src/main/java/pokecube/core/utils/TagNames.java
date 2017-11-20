@@ -110,6 +110,7 @@ public interface TagNames
     public static final String FLAVOURSTAG  = "flavours";
     public static final String POKECUBE     = "pokecube";
     public static final String AISTATE      = "aiState";
+    public static final String AIROUTINES   = "aiRoutines";
     public static final String HUNGER       = "hunger";
     public static final String HOME         = "home";
     public static final String ITEMS        = "items";

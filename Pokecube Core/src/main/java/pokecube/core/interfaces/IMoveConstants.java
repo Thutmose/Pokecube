@@ -175,5 +175,13 @@ public interface IMoveConstants extends IMoveNames
     /** is the pokemob's movement being controlled. */
     @NonPersistantAI
     static final int CONTROLLED          = 1 << 30;
-
+    
+    public static enum AIRoutine
+    {
+        GATHER,
+        STORE,
+        WANDER,
+        MATE,
+        FOLLOW;
+    }
 }

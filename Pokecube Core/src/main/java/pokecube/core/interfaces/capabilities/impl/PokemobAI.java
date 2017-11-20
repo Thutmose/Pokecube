@@ -1,9 +1,10 @@
 package pokecube.core.interfaces.capabilities.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
-
+import com.google.common.collect.Maps;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
@@ -21,6 +22,8 @@ import thut.lib.CompatWrapper;
 
 public abstract class PokemobAI extends PokemobEvolves
 {
+    private Map<AIRoutine, Boolean> enabledStates = Maps.newHashMap();
+
     @Override
     public float getDirectionPitch()
     {
@@ -232,6 +235,19 @@ public abstract class PokemobAI extends PokemobEvolves
                 pokeballId.getTagCompound().removeTag("Pokemob");
         }
         pokecube = pokeballId;
+    }
+
+    @Override
+    public boolean isRoutineEnabled(AIRoutine routine)
+    {
+        if (enabledStates.containsKey(routine)) return enabledStates.get(routine);
+        return true;
+    }
+
+    @Override
+    public void setRoutineState(AIRoutine routine, boolean enabled)
+    {
+        enabledStates.put(routine, enabled);
     }
 
 }

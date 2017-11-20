@@ -16,85 +16,94 @@ public class ContainerPokemob extends Container
 {
     private IInventory pokemobInv;
     private IPokemob   pokemob;
+    private boolean    hasSlots = true;
 
     public ContainerPokemob(IInventory playerInv, final IInventory pokeInv, final IPokemob e)
     {
+        this(playerInv, pokeInv, e, true);
+    }
+
+    public ContainerPokemob(IInventory playerInv, final IInventory pokeInv, final IPokemob e, boolean slots)
+    {
         this.pokemobInv = pokeInv;
         this.pokemob = e;
+        this.hasSlots = slots;
         byte b0 = 3;
         pokeInv.openInventory(null);
         int i = (b0 - 4) * 18;
-        this.addSlotToContainer(new Slot(pokeInv, 0, 8, 18)
-        {
-            /** Check if the stack is a valid item for this slot. Always true
-             * beside for the armor slots. */
-            @Override
-            public boolean isItemValid(ItemStack stack)
-            {
-                return super.isItemValid(stack) && stack.getItem() == Items.SADDLE;
-            }
-        });
-        this.addSlotToContainer(new Slot(pokeInv, 1, 8, 36)
-        {
-
-            /** Returns the maximum stack size for a given slot (usually the
-             * same as getInventoryStackLimit(), but 1 in the case of armor
-             * slots) */
-            @Override
-            public int getSlotStackLimit()
-            {
-                return 1;
-            }
-
-            /** Check if the stack is a valid item for this slot. Always true
-             * beside for the armor slots. */
-            @Override
-            public boolean isItemValid(ItemStack stack)
-            {
-                return PokecubeItems.isValidHeldItem(stack);
-            }
-
-            @Override
-            public ItemStack func_190901_a(EntityPlayer playerIn, ItemStack stack)
-            {
-                ItemStack old = getStack();
-                if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-                {
-                    e.getPokedexEntry().onHeldItemChange(stack, old, e);
-                }
-                return super.func_190901_a(playerIn, stack);
-            }
-
-            /** Helper method to put a stack in the slot. */
-            @Override
-            public void putStack(ItemStack stack)
-            {
-                // ItemStack old = getStack();
-                super.putStack(stack);
-                if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-                {
-                    e.setHeldItem(stack);
-                    // e.getPokedexEntry().onHeldItemChange(old, stack, e);
-                }
-            }
-        });
         int j;
         int k;
-
-        for (j = 0; j < 1; ++j)
+        if (slots)
         {
-            for (k = 0; k < 5; ++k)
+            this.addSlotToContainer(new Slot(pokeInv, 0, 8, 18)
             {
-                this.addSlotToContainer(new Slot(pokeInv, 2 + k + j * 5, 80 + k * 18, 18 + j * 18)
+                /** Check if the stack is a valid item for this slot. Always true
+                 * beside for the armor slots. */
+                @Override
+                public boolean isItemValid(ItemStack stack)
                 {
-                    /** Check if the stack is a valid item for this slot. Always
-                     * true beside for the armor slots. */
-                    @Override
-                    public boolean isItemValid(ItemStack stack)
+                    return super.isItemValid(stack) && stack.getItem() == Items.SADDLE;
+                }
+            });
+            this.addSlotToContainer(new Slot(pokeInv, 1, 8, 36)
+            {
+
+                /** Returns the maximum stack size for a given slot (usually the
+                 * same as getInventoryStackLimit(), but 1 in the case of armor
+                 * slots) */
+                @Override
+                public int getSlotStackLimit()
+                {
+                    return 1;
+                }
+
+                /** Check if the stack is a valid item for this slot. Always true
+                 * beside for the armor slots. */
+                @Override
+                public boolean isItemValid(ItemStack stack)
+                {
+                    return PokecubeItems.isValidHeldItem(stack);
+                }
+
+                @Override
+                public ItemStack func_190901_a(EntityPlayer playerIn, ItemStack stack)
+                {
+                    ItemStack old = getStack();
+                    if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
                     {
-                        return true;// PokecubeItems.isValidHeldItem(stack);
+                        e.getPokedexEntry().onHeldItemChange(stack, old, e);
                     }
-                });
+                    return super.func_190901_a(playerIn, stack);
+                }
+
+                /** Helper method to put a stack in the slot. */
+                @Override
+                public void putStack(ItemStack stack)
+                {
+                    // ItemStack old = getStack();
+                    super.putStack(stack);
+                    if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+                    {
+                        e.setHeldItem(stack);
+                        // e.getPokedexEntry().onHeldItemChange(old, stack, e);
+                    }
+                }
+            });
+            for (j = 0; j < 1; ++j)
+            {
+                for (k = 0; k < 5; ++k)
+                {
+                    this.addSlotToContainer(new Slot(pokeInv, 2 + k + j * 5, 80 + k * 18, 18 + j * 18)
+                    {
+                        /** Check if the stack is a valid item for this slot.
+                         * Always true beside for the armor slots. */
+                        @Override
+                        public boolean isItemValid(ItemStack stack)
+                        {
+                            return true;// PokecubeItems.isValidHeldItem(stack);
+                        }
+                    });
+                }
             }
         }
 
@@ -135,15 +144,14 @@ public class ContainerPokemob extends Container
         ItemStack itemstack = CompatWrapper.nullStack;
         Slot slot = this.inventorySlots.get(p_82846_2_);
 
-        if (slot != null && slot.getHasStack())
+        if (hasSlots && slot != null && slot.getHasStack())
         {
             ItemStack itemstack1 = slot.getStack();
             itemstack = itemstack1.copy();
-
-            if (p_82846_2_ < this.pokemobInv.getSizeInventory())
+            int size = this.pokemobInv.getSizeInventory();
+            if (p_82846_2_ < size)
             {
-                if (!this.mergeItemStack(itemstack1, this.pokemobInv.getSizeInventory(), this.inventorySlots.size(),
-                        true)) { return CompatWrapper.nullStack; }
+                if (!this.mergeItemStack(itemstack1, size, size, true)) { return CompatWrapper.nullStack; }
             }
             else if (this.getSlot(1).isItemValid(itemstack1) && !this.getSlot(1).getHasStack())
             {
@@ -153,8 +161,7 @@ public class ContainerPokemob extends Container
             {
                 if (!this.mergeItemStack(itemstack1, 0, 1, false)) { return CompatWrapper.nullStack; }
             }
-            else if (this.pokemobInv.getSizeInventory() <= 2 || !this.mergeItemStack(itemstack1, 2,
-                    this.pokemobInv.getSizeInventory(), false)) { return CompatWrapper.nullStack; }
+            else if (size <= 2 || !this.mergeItemStack(itemstack1, 2, size, false)) { return CompatWrapper.nullStack; }
 
             if (!CompatWrapper.isValid(itemstack1))
             {

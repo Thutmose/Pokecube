@@ -11,6 +11,7 @@ import net.minecraft.world.IBlockAccess;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import thut.api.TickHandler;
 import thut.api.maths.Vector3;
 
@@ -135,6 +136,7 @@ public class AIIdle extends AIBase
     @Override
     public boolean shouldRun()
     {
+        if(!mob.isRoutineEnabled(AIRoutine.WANDER)) return false;
         Path current = null;
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
 

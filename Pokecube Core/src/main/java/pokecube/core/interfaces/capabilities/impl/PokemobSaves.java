@@ -142,6 +142,20 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
             {
                 setHome(home[0], home[1], home[2], home[3]);
             }
+            NBTTagCompound routines = aiTag.getCompoundTag(AIROUTINES);
+            for (String s : routines.getKeySet())
+            {
+                // try/catch block incase addons add more routines to the enum.
+                try
+                {
+                    AIRoutine routine = AIRoutine.valueOf(s);
+                    setRoutineState(routine, routines.getBoolean(s));
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
         }
         // Read Misc other
         if (!miscTag.hasNoTags())
@@ -231,6 +245,12 @@ public abstract class PokemobSaves extends PokemobOwned implements TagNames
         aiTag.setInteger(HUNGER, getHungerTime());
         if (getHome() != null) aiTag.setIntArray(HOME,
                 new int[] { getHome().getX(), getHome().getY(), getHome().getZ(), (int) getHomeDistance() });
+        NBTTagCompound aiRoutineTag = new NBTTagCompound();
+        for (AIRoutine routine : AIRoutine.values())
+        {
+            aiRoutineTag.setBoolean(routine.toString(), isRoutineEnabled(routine));
+        }
+        aiTag.setTag(AIROUTINES, aiRoutineTag);
 
         // Misc other
         NBTTagCompound miscTag = new NBTTagCompound();

@@ -17,6 +17,16 @@ public interface IHasMobAIStates extends IMoveConstants, IAIMob
     int getTotalAIState();
 
     void setTotalAIState(int state);
-    
+
     void initAI();
+
+    /** This should default to true.
+     * 
+     * @param routine
+     * @return */
+    boolean isRoutineEnabled(AIRoutine routine);
+
+    /** @param routine
+     * @param enabled */
+    void setRoutineState(AIRoutine routine, boolean enabled);
 }

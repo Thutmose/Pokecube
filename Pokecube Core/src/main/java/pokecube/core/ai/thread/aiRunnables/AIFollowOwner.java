@@ -6,6 +6,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import thut.api.maths.Vector3;
 
 /** This attempts to make the mob follow the owner around in the world. It
@@ -92,6 +93,7 @@ public class AIFollowOwner extends AIBase
     @Override
     public boolean shouldRun()
     {
+        if(!pokemob.isRoutineEnabled(AIRoutine.FOLLOW)) return false;
         EntityLivingBase entitylivingbase = (EntityLivingBase) pokemob.getOwner();
         this.petPathfinder = thePet.getNavigator();
         if (entitylivingbase == null)

@@ -26,6 +26,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
+import pokecube.core.client.gui.pokemob.GuiPokemobAI;
 import pokecube.core.client.render.entity.RenderAdvancedPokemobModel;
 import pokecube.core.client.render.entity.RenderPokemobs;
 import pokecube.core.database.Database;
@@ -196,8 +197,6 @@ public class GuiPokemob extends GuiContainer
         }
     }
 
-    private static final ResourceLocation pokemobGuiTextures = Resources.GUI_POKEMOB;
-
     public static void renderMob(IPokemob pokemob, int width, int height, int xSize, int ySize, float xRenderAngle,
             float yRenderAngle, float zRenderAngle, float scale)
     {
@@ -280,6 +279,7 @@ public class GuiPokemob extends GuiContainer
     public GuiPokemob(IInventory playerInv, IPokemob pokemob)
     {
         super(new ContainerPokemob(playerInv, pokemob.getPokemobInventory(), pokemob));
+        pokemob.getPokemobInventory().setCustomName(pokemob.getPokemonDisplayName().getFormattedText());
         this.playerInventory = playerInv;
         this.pokeInventory = pokemob.getPokemobInventory();
         this.pokemob = pokemob;
@@ -290,8 +290,15 @@ public class GuiPokemob extends GuiContainer
     @Override
     protected void actionPerformed(GuiButton guibutton)
     {
-        PacketPokemobGui packet = new PacketPokemobGui((byte) guibutton.id, entity.getEntityId());
-        PokecubeMod.packetPipeline.sendToServer(packet);
+        if (guibutton instanceof PokemobButton)
+        {
+            PacketPokemobGui packet = new PacketPokemobGui((byte) guibutton.id, entity.getEntityId());
+            PokecubeMod.packetPipeline.sendToServer(packet);
+        }
+        else if (guibutton.id == 3)
+        {
+            Minecraft.getMinecraft().displayGuiScreen(new GuiPokemobAI(playerInventory, pokemob, this));
+        }
     }
 
     @Override
@@ -299,7 +306,7 @@ public class GuiPokemob extends GuiContainer
     {
         super.drawDefaultBackground();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(pokemobGuiTextures);
+        this.mc.getTextureManager().bindTexture(Resources.GUI_POKEMOB);
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
@@ -375,6 +382,8 @@ public class GuiPokemob extends GuiContainer
         buttonList.add(new PokemobButton(0, width / 2 - xOffset + 70, height / 2 - yOffset, 20, 20, stay, pokemob));
         buttonList.add(new PokemobButton(1, width / 2 - xOffset + 36, height / 2 - yOffset, 20, 20, guard, pokemob));
         buttonList.add(new PokemobButton(2, width / 2 - xOffset + 2, height / 2 - yOffset, 20, 20, sit, pokemob));
+        yOffset = 77;
+        buttonList.add(new GuiButton(3, width / 2 - xOffset + 60, height / 2 - yOffset, 30, 10, "AI"));
     }
 
     /** Called when the mouse is clicked.

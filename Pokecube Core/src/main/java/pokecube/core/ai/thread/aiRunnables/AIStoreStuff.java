@@ -16,6 +16,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Nature;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.items.berries.ItemBerry;
 import thut.api.maths.Vector3;
 import thut.lib.CompatWrapper;
@@ -87,7 +88,7 @@ public class AIStoreStuff extends AIBase
     public void doMainThreadTick(World world)
     {
         super.doMainThreadTick(world);
-        if (tameCheck()) return;
+        if (tameCheck() || !shouldRun()) return;
         if (searchInventoryCooldown-- < 0)
         {
             searchInventoryCooldown = COOLDOWN;
@@ -290,7 +291,8 @@ public class AIStoreStuff extends AIBase
     @Override
     public boolean shouldRun()
     {
-        return false;
+        if (!pokemob.isRoutineEnabled(AIRoutine.STORE)) return false;
+        return true;
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.

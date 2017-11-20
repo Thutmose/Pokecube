@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -249,7 +250,15 @@ public class PokecubeSerializer
         loadData();
     }
 
-    public void addChunks(World world, BlockPos location)
+    public Ticket getTicket(World world, BlockPos location)
+    {
+        Integer dimension = world.provider.getDimension();
+        HashMap<BlockPos, Ticket> tickets = chunks.get(dimension);
+        if (tickets == null) return null;
+        return tickets.get(location);
+    }
+
+    public void addChunks(World world, BlockPos location, EntityLivingBase placer)
     {
         Integer dimension = world.provider.getDimension();
 
@@ -263,7 +272,13 @@ public class PokecubeSerializer
         {
             if (!found)
             {
-                Ticket ticket = ForgeChunkManager.requestTicket(PokecubeCore.instance, world,
+                Ticket ticket;
+                if (placer instanceof EntityPlayer)
+                {
+                    ticket = ForgeChunkManager.requestPlayerTicket(PokecubeCore.instance,
+                            placer.getCachedUniqueIdString(), world, ForgeChunkManager.Type.NORMAL);
+                }
+                else ticket = ForgeChunkManager.requestTicket(PokecubeCore.instance, world,
                         ForgeChunkManager.Type.NORMAL);
                 NBTTagCompound pos = new NBTTagCompound();
                 pos.setInteger("x", location.getX());

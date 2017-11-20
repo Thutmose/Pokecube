@@ -66,6 +66,7 @@ public class Config extends ConfigBase
     public static int                    GUIPOKEMOBSPAWNER_ID;
     public static int                    GUIPC_ID;
     public static int                    GUIPOKEMOB_ID;
+    public static int                    GUIPOKEMOBAI_ID;
     public static int                    GUITRADINGTABLE_ID;
     public static int                    GUITMTABLE_ID;
 
@@ -187,7 +188,7 @@ public class Config extends ConfigBase
     public double                        pokemobToOtherMobDamageRatio = 1;
     @Configure(category = mobAI)
     /** Scaling factor for damage against NPCs */
-    public double                        pokemobToNPCDamageRatio = 1;
+    public double                        pokemobToNPCDamageRatio      = 1;
     @Configure(category = mobAI)
     /** Warning time before a wild pok�mob attacks a player */
     public int                           pokemobagressticks           = 100;

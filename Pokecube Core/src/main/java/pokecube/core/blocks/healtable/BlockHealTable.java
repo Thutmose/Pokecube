@@ -152,7 +152,7 @@ public class BlockHealTable extends BlockRotatable implements ITileEntityProvide
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
             int meta, EntityLivingBase placer)
     {
-        if (!world.isRemote) PokecubeSerializer.getInstance().addChunks(world, pos);
+        if (!world.isRemote) PokecubeSerializer.getInstance().addChunks(world, pos, placer);
         return this.getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite())
                 .withProperty(FIXED, ((meta & 8) > 0));
     }

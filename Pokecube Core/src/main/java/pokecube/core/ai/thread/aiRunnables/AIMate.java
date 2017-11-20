@@ -15,6 +15,7 @@ import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IMoveNames;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasMobAIStates;
 import pokecube.core.utils.PokeType;
@@ -238,6 +239,7 @@ public class AIMate extends AIBase
     @Override
     public boolean shouldRun()
     {
+        if(!pokemob.isRoutineEnabled(AIRoutine.MATE)) return false;
         if (cooldown > 0) { return false; }
         if (pokemob.getLover() != null) if (pokemob.tryToBreed() && !pokemob.getLover().isDead) return true;
         if (pokemob.getPokemonAIState(IMoveConstants.MATING)) return true;

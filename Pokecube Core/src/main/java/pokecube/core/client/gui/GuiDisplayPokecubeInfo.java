@@ -17,7 +17,6 @@ import org.lwjgl.opengl.GL12;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -33,7 +32,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,13 +48,14 @@ import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.IHasCommands.Command;
+import pokecube.core.interfaces.pokemob.commandhandlers.AttackEntityHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.AttackLocationHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.MoveIndexHandler;
 import pokecube.core.moves.MovesUtils;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.pokemobs.PacketPokemobAttack;
+import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
-import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -109,19 +108,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     public static void sendMoveIndexPacket(IPokemob pokemob, int moveIndex)
     {
-        try
-        {
-            PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(6));
-            buffer.writeByte(MessageServer.MOVEINDEX);
-            buffer.writeInt(pokemob.getEntity().getEntityId());
-            buffer.writeByte((byte) moveIndex);
-            MessageServer packet = new MessageServer(buffer);
-            PokecubePacketHandler.sendToServer(packet);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
+        PacketCommand.sentCommand(pokemob, Command.CHANGEMOVEINDEX, new MoveIndexHandler((byte) moveIndex));
     }
 
     public static int[] applyTransform(String ref, int[] shift, int[] dims, float scale)
@@ -721,9 +708,7 @@ public class GuiDisplayPokecubeInfo extends Gui
     public void pokemobAttack()
     {
         if (getCurrentPokemob() == null) return;
-
         EntityPlayer player = minecraft.player;
-        Entity attacker = getCurrentPokemob().getEntity();
         Predicate<Entity> selector = new Predicate<Entity>()
         {
             @Override
@@ -735,26 +720,17 @@ public class GuiDisplayPokecubeInfo extends Gui
             }
         };
         Entity target = Tools.getPointedEntity(player, 32, selector);
-        boolean teleport = false;
         Vector3 targetLocation = Tools.getPointedLocation(player, 32);
-
         boolean sameOwner = false;
         IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
         if (targetMob != null)
         {
             sameOwner = targetMob.getPokemonOwner() == player;
         }
-
         IPokemob pokemob = getCurrentPokemob();
-
         if (pokemob != null)
         {
             if (pokemob.getMove(pokemob.getMoveIndex()) == null) { return; }
-            boolean attack = false;
-            if (target != null && !minecraft.player.isSneaking() && !sameOwner)
-            {
-                attack = true;
-            }
             if (pokemob.getMove(pokemob.getMoveIndex()).equalsIgnoreCase(IMoveNames.MOVE_TELEPORT))
             {
                 if (!GuiTeleport.instance().getState())
@@ -763,29 +739,16 @@ public class GuiDisplayPokecubeInfo extends Gui
                     return;
                 }
                 GuiTeleport.instance().setState(false);
-
-                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.player.getCachedUniqueIdString());
-
-                if (locations.size() > 0)
-                {
-                    teleport = true;
-                }
-            }
-            else if (!attack)
-            {
-                Move_Base move = MovesUtils.getMoveFromName(pokemob.getMove(pokemob.getMoveIndex()));
-                if (move != null && (target != null || targetLocation != null))
-                {
-                    if (targetLocation != null)
-                    {
-                        targetLocation.addTo(Vector3.getNewVector().set(player.getLookVec()).scalarMultBy(0.5));
-                    }
-                }
             }
         }
-        PacketPokemobAttack.sendAttackUse(attacker, target, targetLocation, teleport);
+        if (target != null && !sameOwner)
+        {
+            PacketCommand.sentCommand(pokemob, Command.ATTACKENTITY, new AttackEntityHandler(target.getEntityId()));
+        }
+        else if (targetLocation != null)
+        {
+            PacketCommand.sentCommand(pokemob, Command.ATTACKLOCATION, new AttackLocationHandler(targetLocation));
+        }
     }
 
     /** Recalls selected pokemob, if none selected, will try to identify a

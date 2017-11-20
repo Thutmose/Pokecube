@@ -39,6 +39,7 @@ import pokecube.core.entity.pokemobs.AnimalChest;
 import pokecube.core.entity.pokemobs.EntityPokemobPart;
 import pokecube.core.events.AttackEvent;
 import pokecube.core.interfaces.pokemob.ICanEvolve;
+import pokecube.core.interfaces.pokemob.IHasCommands;
 import pokecube.core.interfaces.pokemob.IHasMobAIStates;
 import pokecube.core.interfaces.pokemob.IHasMoves;
 import pokecube.core.interfaces.pokemob.IHasOwner;
@@ -52,7 +53,7 @@ import thut.api.pathing.IPathingMob;
 
 /** @author Manchou */
 public interface IPokemob
-        extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob, IBreedingMob, IPathingMob
+        extends IHasMobAIStates, IHasMoves, ICanEvolve, IHasOwner, IHasStats, IHungrymob, IBreedingMob, IPathingMob, IHasCommands
 {
     @CapabilityInject(IPokemob.class)
     public static final Capability<IPokemob> POKEMOB_CAP = null;

@@ -107,7 +107,7 @@ public class PokemobTerrainEffects implements ITerrainEffect
                 if (mob.getStatus() != IMoveConstants.STATUS_NON) mob.healStatus();
             }
         }
-        else if (PokecubeMod.pokemobsDamagePlayers)
+        else if (PokecubeMod.core.getConfig().pokemobsDamagePlayers)
         {
             if (effects[EFFECT_WEATHER_HAIL] > 0)
             {

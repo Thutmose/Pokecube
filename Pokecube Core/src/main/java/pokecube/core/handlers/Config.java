@@ -186,6 +186,9 @@ public class Config extends ConfigBase
     /** Scaling factor for damage against not pokemobs */
     public double                        pokemobToOtherMobDamageRatio = 1;
     @Configure(category = mobAI)
+    /** Scaling factor for damage against NPCs */
+    public double                        pokemobToNPCDamageRatio = 1;
+    @Configure(category = mobAI)
     /** Warning time before a wild pok�mob attacks a player */
     public int                           pokemobagressticks           = 100;
     @Configure(category = mobAI)
@@ -725,10 +728,6 @@ public class Config extends ConfigBase
 
         PokecubeItems.resetTimeTags = resetTags;
         if (resetTags) get(advanced, "resetTags", false).set(false);
-
-        PokecubeMod.pokemobsDamageBlocks = pokemobsDamageBlocks;
-        PokecubeMod.pokemobsDamageOwner = pokemobsDamageOwner;
-        PokecubeMod.pokemobsDamagePlayers = pokemobsDamagePlayers;
 
         Database.FORCECOPY = forceDatabase;
         Database.FORCECOPYRECIPES = forceRecipes;

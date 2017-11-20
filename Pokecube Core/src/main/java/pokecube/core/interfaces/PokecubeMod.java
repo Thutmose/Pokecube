@@ -84,9 +84,6 @@ public abstract class PokecubeMod
 
     // Manchou mobs are default mobs
     public static String                          defaultMod                 = "pokecube_ml";
-    public static boolean                         pokemobsDamageOwner        = false;
-    public static boolean                         pokemobsDamagePlayers      = true;
-    public static boolean                         pokemobsDamageBlocks       = false;
 
     public static double                          MAX_DENSITY                = 1;
     public static Map<String, String>             gifts                      = Maps.newHashMap();

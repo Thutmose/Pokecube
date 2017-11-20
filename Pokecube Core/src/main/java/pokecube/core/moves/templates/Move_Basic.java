@@ -14,6 +14,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.INpc;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -226,7 +227,7 @@ public class Move_Basic extends Move_Base implements IMoveConstants
             if (s.equals(name)) return;
         }
         deny:
-        if (!PokecubeMod.pokemobsDamageBlocks)
+        if (!PokecubeMod.core.getConfig().pokemobsDamageBlocks)
         {
             for (String s : PokecubeCore.core.getConfig().damageBlocksWhitelist)
             {
@@ -490,19 +491,23 @@ public class Move_Basic extends Move_Base implements IMoveConstants
         {
             finalAttackStrength = Math.min(PokecubeMod.core.getConfig().maxOwnedPlayerDamage, finalAttackStrength);
         }
-
-        if (wild && attacked instanceof EntityPlayer)
+        double scaleFactor = 1;
+        if (attacked instanceof EntityPlayer)
         {
-            finalAttackStrength *= PokecubeMod.core.getConfig().wildPlayerDamageRatio;
+            boolean owner = attacked == attacker.getPokemonOwner();
+            if (!owner || PokecubeMod.core.getConfig().pokemobsDamageOwner)
+                scaleFactor = PokecubeMod.core.getConfig().pokemobsDamagePlayers
+                        ? wild ? PokecubeMod.core.getConfig().wildPlayerDamageRatio
+                                : PokecubeMod.core.getConfig().ownedPlayerDamageRatio
+                        : 0;
+            else scaleFactor = 0;
         }
-        else if (!wild && attacked instanceof EntityPlayer)
+        else if (targetPokemob == null)
         {
-            finalAttackStrength *= PokecubeMod.core.getConfig().ownedPlayerDamageRatio;
+            scaleFactor = attacked instanceof INpc ? PokecubeMod.core.getConfig().pokemobToNPCDamageRatio
+                    : PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio;
         }
-        else if (!(targetPokemob != null))
-        {
-            finalAttackStrength *= PokecubeMod.core.getConfig().pokemobToOtherMobDamageRatio;
-        }
+        finalAttackStrength *= scaleFactor;
 
         if (targetPokemob != null)
         {

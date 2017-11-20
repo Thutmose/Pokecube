@@ -304,8 +304,7 @@ public abstract class EntityStatsPokemob extends EntityGeneticsPokemob
             Entity targetOwner = attackedMob.getPokemonOwner();
             pokemobCap.displayMessageToOwner(
                     new TextComponentTranslation("pokemob.action.faint.enemy", attackedMob.getPokemonDisplayName()));
-            if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner
-                    && !PokecubeMod.pokemobsDamagePlayers)
+            if (targetOwner instanceof EntityPlayer && attacker.getPokemonOwner() != targetOwner)
             {
                 setAttackTarget((EntityLivingBase) targetOwner);
             }

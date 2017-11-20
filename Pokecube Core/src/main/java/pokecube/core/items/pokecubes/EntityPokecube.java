@@ -536,7 +536,7 @@ public class EntityPokecube extends EntityPokecubeBase
                     hitten.setPokecube(getItem());
                     setItem(PokecubeManager.pokemobToItem(hitten));
                     PokecubeManager.setTilt(getItem(), tilt);
-                    ((Entity) hitten).setDead();
+                    hitten.getEntity().setDead();
                     Vector3 v = Vector3.getNewVector();
                     v.set(this).addTo(0, hitten.getPokedexEntry().height / 2, 0).moveEntity(this);
                     motionX = 0;

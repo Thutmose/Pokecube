@@ -1,5 +1,7 @@
 package pokecube.adventures.blocks.warppad;
 
+import org.nfunk.jep.JEP;
+
 import io.netty.buffer.Unpooled;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
@@ -29,6 +31,24 @@ import thut.api.maths.Vector4;
 @InterfaceList({ @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers") })
 public class TileEntityWarpPad extends TileEntityOwnable implements SimpleComponent
 {
+    public static JEP parser;
+
+    public static void initParser(String function)
+    {
+        parser = new JEP();
+        parser.initFunTab(); // clear the contents of the function table
+        parser.addStandardFunctions();
+        parser.initSymTab(); // clear the contents of the symbol table
+        parser.addStandardConstants();
+        parser.addComplex(); // among other things adds i to the symbol
+                             // table
+        parser.addVariable("dw", 0);
+        parser.addVariable("dx", 0);
+        parser.addVariable("dy", 0);
+        parser.addVariable("dz", 0);
+        parser.parseExpression(function);
+    }
+
     public static double MAXRANGE = 64;
     public static int    COOLDOWN = 20;
     public Vector4       link;
@@ -101,18 +121,22 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
         if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
-            tele = energy > distSq;// TODO power function config.
-
+            parser.setVarValue("dx", (link.x - here.x));
+            parser.setVarValue("dy", (link.y - here.y));
+            parser.setVarValue("dz", (link.z - here.z));
+            parser.setVarValue("dw", (link.w - getWorld().provider.getDimension()));
+            distSq = parser.getValue();
+            tele = energy > distSq;
             if (!tele)
             {
                 energy = 0;
                 stepper.playSound(SoundEvents.BLOCK_NOTE_BASEDRUM, 1.0F, 1.0F);
-                stepper.getEntityData().setLong("lastWarpPadUse", time);
             }
             else
             {
                 energy -= distSq;
             }
+            stepper.getEntityData().setLong("lastWarpPadUse", time);
         }
         if (tele)
         {
@@ -122,7 +146,6 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
             here.writeToBuff(buff);
             MessageClient packet = new MessageClient(buff);
             PokecubePacketHandler.sendToAllNear(packet, here, stepper.dimension, 20);
-            stepper.getEntityData().setLong("lastWarpPadUse", time);
             TeleDest d = new TeleDest(link);
             Vector3 loc = d.getLoc();
             int dim = d.getDim();

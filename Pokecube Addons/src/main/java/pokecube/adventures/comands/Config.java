@@ -21,6 +21,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.adventures.blocks.afa.TileEntityAFA;
 import pokecube.adventures.blocks.warppad.TileEntityWarpPad;
 import pokecube.adventures.handlers.TrainerSpawnHandler;
 import pokecube.adventures.items.bags.ContainerBag;
@@ -91,6 +92,8 @@ public class Config extends ConfigBase
     public String                       powerFunction         = "a*x/10";
     @Configure(category = machines)
     public boolean                      warpPadEnergy         = true;
+    @Configure(category = machines)
+    public String                       warpPadCostFunction   = "(dx)*(dx) + (dy)*(dy) + (dz)*(dz) + (5*dw)^4";
     @Configure(category = machines)
     public boolean                      theft                 = false;
     @Configure(category = machines)
@@ -211,6 +214,8 @@ public class Config extends ConfigBase
                 PokecubeMod.log("No Class Found: " + s);
             }
         }
+        TileEntityAFA.initParser(afaCostFunction, afaCostFunctionShiny);
+        TileEntityWarpPad.initParser(warpPadCostFunction);
     }
 
     @SubscribeEvent

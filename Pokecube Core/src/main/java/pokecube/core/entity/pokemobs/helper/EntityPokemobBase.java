@@ -487,7 +487,7 @@ public abstract class EntityPokemobBase extends EntityHungryPokemob implements I
                 || pokemobCap.getPokemonAIState(IMoveConstants.GUARDING)
                 || pokemobCap.getPokemonAIState(IMoveConstants.ANGRY) || getAttackTarget() != null))
         {
-            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().aiDisableDistance, this);
+            loaded = Tools.isAnyPlayerInRange(PokecubeMod.core.getConfig().aiDisableDistance, 512, this);
         }
         if (!loaded)
         {

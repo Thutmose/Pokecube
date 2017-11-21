@@ -146,6 +146,8 @@ public class ClientProxy extends CommonProxy
                 new ModelResourceLocation(PokecubeAdv.ID + ":amplifier", "inventory"));
         ModelLoader.setCustomModelResourceLocation(item2, 1,
                 new ModelResourceLocation(PokecubeAdv.ID + ":daycare", "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item2, 2,
+                new ModelResourceLocation(PokecubeAdv.ID + ":commander", "inventory"));
 
         registerItemTexture(Item.getItemFromBlock(warppad), 0,
                 new ModelResourceLocation("pokecube_adventures:warppad", "inventory"));

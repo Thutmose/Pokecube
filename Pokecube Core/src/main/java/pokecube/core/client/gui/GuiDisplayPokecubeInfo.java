@@ -51,6 +51,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackEntityHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackLocationHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.AttackNothingHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveIndexHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketCommand;

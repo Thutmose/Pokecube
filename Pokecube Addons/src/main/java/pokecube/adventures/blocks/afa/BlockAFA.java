@@ -1,6 +1,7 @@
 package pokecube.adventures.blocks.afa;
 
 import java.util.Random;
+import java.util.UUID;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -21,13 +22,15 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import pokecube.adventures.PokecubeAdv;
+import pokecube.core.items.pokecubes.PokecubeManager;
+import thut.core.common.commands.CommandTools;
 import thut.lib.CompatWrapper;
 
 public final class BlockAFA extends Block implements ITileEntityProvider
 {
     public static enum EnumType implements IStringSerializable
     {
-        AFA("amplifier"), DAYCARE("daycare");
+        AFA("amplifier"), DAYCARE("daycare"), COMMANDER("commander");
 
         final String name;
 
@@ -92,7 +95,8 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        if ((meta & 1) > 0) return new TileEntityDaycare();
+        if ((meta & 3) == 1) return new TileEntityDaycare();
+        if ((meta & 3) == 2) return new TileEntityCommander();
         return new TileEntityAFA();
     }
 
@@ -165,6 +169,24 @@ public final class BlockAFA extends Block implements ITileEntityProvider
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
             EnumHand hand, ItemStack heldStack, EnumFacing side, float hitX, float hitY, float hitZ)
     {
+        if (state.getValue(VARIANT) == EnumType.COMMANDER)
+        {
+            UUID id = PokecubeManager.getUUID(heldStack);
+            if (id != null)
+            {
+                TileEntity tile = worldIn.getTileEntity(pos);
+                if (tile instanceof TileEntityCommander)
+                {
+                    ((TileEntityCommander) tile).setPokeID(id);
+                    if (!worldIn.isRemote)
+                    {
+                        CommandTools.sendMessage(playerIn, "UUID Set to: " + id);
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }
         if (hand == EnumHand.MAIN_HAND)
             playerIn.openGui(PokecubeAdv.instance, PokecubeAdv.GUIAFA_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
         return true;

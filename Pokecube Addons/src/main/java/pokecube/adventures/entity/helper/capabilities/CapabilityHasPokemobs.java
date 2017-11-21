@@ -240,6 +240,10 @@ public class CapabilityHasPokemobs
 
         /** 1 = male 2= female */
         void setGender(byte value);
+
+        boolean canMegaEvolve();
+
+        void setCanMegaEvolve(boolean flag);
     }
 
     public static class Storage implements Capability.IStorage<IHasPokemobs>
@@ -266,6 +270,7 @@ public class CapabilityHasPokemobs
             if (instance.getType() != null) nbt.setString("type", instance.getType().name);
             nbt.setLong("nextBattle", instance.getCooldown());
             nbt.setByte("gender", instance.getGender());
+            nbt.setBoolean("megaevolves", instance.canMegaEvolve());
             if (instance instanceof DefaultPokemobs)
             {
                 DefaultPokemobs mobs = (DefaultPokemobs) instance;
@@ -308,6 +313,7 @@ public class CapabilityHasPokemobs
                 instance.setOutID(UUID.fromString(nbt.getString("outPokemob")));
             }
             instance.setNextSlot(nbt.getInteger("nextSlot"));
+            instance.setCanMegaEvolve(nbt.getBoolean("megaevolves"));
             if (nbt.hasKey("gender")) instance.setGender(nbt.getByte("gender"));
             if (instance.getNextSlot() >= 6) instance.setNextSlot(0);
             if (instance instanceof DefaultPokemobs)
@@ -384,6 +390,7 @@ public class CapabilityHasPokemobs
         private TypeTrainer           type;
         private EntityLivingBase      target;
         private UUID                  outID;
+        private boolean               canMegaEvolve    = false;
         private IPokemob              outMob;
         private List<ItemStack>       pokecubes;
 
@@ -726,6 +733,18 @@ public class CapabilityHasPokemobs
         public void setGender(byte value)
         {
             this.gender = value;
+        }
+
+        @Override
+        public boolean canMegaEvolve()
+        {
+            return canMegaEvolve;
+        }
+
+        @Override
+        public void setCanMegaEvolve(boolean flag)
+        {
+            canMegaEvolve = flag;
         }
     }
 }

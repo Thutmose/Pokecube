@@ -188,6 +188,7 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
             entity.readFromNBT(mobNBTTag);
             mob = CapabilityPokemob.getPokemobFor(entity);
             if (mob == null) return null;
+            entry = mob.getPokedexEntry();
             texture = RenderPokemobs.getInstance().getEntityTexturePublic(entity);
             if (mobModelBase == null)
             {
@@ -217,7 +218,6 @@ public class RenderPokemobOnShoulder implements LayerRenderer<EntityPlayer>
                     }
                 }
             }
-
         }
         if (mobModelBase == null) return null;
         if (texture != null) mobRenderer.bindTexture(texture);

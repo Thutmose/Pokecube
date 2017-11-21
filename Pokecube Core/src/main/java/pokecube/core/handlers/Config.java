@@ -480,6 +480,12 @@ public class Config extends ConfigBase
     public String                        nonPokemobExpFunction        = "h*(a+1)";
     @Configure(category = advanced)
     public boolean                       nonPokemobExp                = false;
+    @Configure(category = advanced)
+    public int[]                         teleDimBlackList             = {};
+    @Configure(category = advanced)
+    public int                           telePearlsCostSameDim        = 0;
+    @Configure(category = advanced)
+    public int                           telePearlsCostOtherDim       = 16;
 
     @Configure(category = genetics)
     public String                        epigeneticEVFunction         = GeneticsManager.epigeneticFunction;

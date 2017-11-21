@@ -27,7 +27,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import pokecube.core.PokecubeCore;
 import pokecube.core.PokecubeItems;
-import pokecube.core.client.gui.GuiTeleport;
 import pokecube.core.database.Database;
 import pokecube.core.database.PokedexEntry;
 import pokecube.core.database.abilities.AbilityManager;
@@ -64,9 +63,7 @@ import pokecube.core.network.pokemobs.PacketSyncMoveUse;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer.MessageHandlerServer;
 import pokecube.core.utils.PokecubeSerializer;
-import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.utils.Tools;
-import thut.api.entity.Transporter;
 import thut.api.maths.Vector3;
 
 /** @author Manchou */
@@ -109,12 +106,6 @@ public class PokecubePacketHandler
                                     v.moveEntity(e);
                                 }
                             }
-                            else if (channel == TELEPORTINDEX)
-                            {
-                                PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
-                                        PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
-                                PokecubePacketHandler.sendToServer(packet);
-                            }
                         }
                     };
                     PokecubeCore.proxy.getMainThreadListener().addScheduledTask(toRun);
@@ -137,7 +128,6 @@ public class PokecubePacketHandler
         }
 
         public static final byte MOVEENTITY    = 12;
-        public static final byte TELEPORTINDEX = 13;
 
         PacketBuffer             buffer;;
 
@@ -216,13 +206,6 @@ public class PokecubePacketHandler
                             {
                                 int index = buffer.readByte();
                                 PokecubeSerializer.getInstance().setTeleIndex(player.getCachedUniqueIdString(), index);
-                                TeleDest d = PokecubeSerializer.getInstance()
-                                        .getTeleport(player.getCachedUniqueIdString());
-                                if (d == null) return;
-
-                                Vector3 loc = d.getLoc();
-                                int dim = d.getDim();
-                                Transporter.teleportEntity(player, loc, dim, false);
                             }
                         }
                     };

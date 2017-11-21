@@ -730,6 +730,10 @@ public class GuiDisplayPokecubeInfo extends Gui
         {
             PacketCommand.sentCommand(pokemob, Command.ATTACKLOCATION, new AttackLocationHandler(targetLocation));
         }
+        else
+        {
+            PacketCommand.sentCommand(pokemob, Command.ATTACKNOTHING, new AttackNothingHandler());
+        }
     }
 
     /** Recalls selected pokemob, if none selected, will try to identify a

@@ -52,6 +52,7 @@ import pokecube.core.interfaces.pokemob.commandhandlers.AttackEntityHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackLocationHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackNothingHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveIndexHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.network.pokemobs.PacketPokemobGui;
@@ -721,6 +722,8 @@ public class GuiDisplayPokecubeInfo extends Gui
                     return;
                 }
                 GuiTeleport.instance().setState(false);
+                PacketCommand.sentCommand(pokemob, Command.TELEPORT, new TeleportHandler());
+                return;
             }
         }
         if (target != null && !sameOwner)

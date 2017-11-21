@@ -24,7 +24,8 @@ public interface IHasCommands
     {
         //@formatter:off
         ATTACKENTITY, 
-        ATTACKLOCATION, 
+        ATTACKLOCATION,
+        ATTACKNOTHING,
         CHANGEMOVEINDEX, 
         CHANGEFORM, 
         MOVETO,

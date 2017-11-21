@@ -470,9 +470,16 @@ public abstract class PokemobGenes extends PokemobBase implements IMobColourable
                     }
                 }
                 info.value = Tools.getSexe(info.entry.getSexeRatio(), new Random());
+
+                // Generate the basic genes
                 genesSpecies.getAlleles()[0] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSpecies.getAlleles()[1] = gene.getMutationRate() > rand.nextFloat() ? gene.mutate() : gene;
                 genesSpecies.refreshExpressed();
+
+                // Set the expressed gene to the info made above, this is to
+                // override the gene from merging parents which results in the
+                // child state.
+                genesSpecies.getExpressed().setValue(info);
             }
             SpeciesInfo info = genesSpecies.getExpressed().getValue();
             info.entry = info.entry.getForGender(info.value);

@@ -22,6 +22,7 @@ import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.comands.Config;
 import pokecube.adventures.network.PacketPokeAdv.MessageClient;
 import pokecube.core.blocks.TileEntityOwnable;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import thut.api.entity.Transporter;
@@ -119,6 +120,16 @@ public class TileEntityWarpPad extends TileEntityOwnable implements SimpleCompon
         long lastStepped = stepper.getEntityData().getLong("lastWarpPadUse");
         boolean tele = link != null && !link.isEmpty() && lastStepped + COOLDOWN <= time
                 && (MAXRANGE < 0 || (distSq = here.distToSq(linkPos)) < MAXRANGE * MAXRANGE);
+        if (tele)
+        {
+            Integer dimHere = stepper.dimension;
+            Integer dimThere = (int) link.w;
+            if (TeleportHandler.invalidDests.contains(dimHere) || TeleportHandler.invalidDests.contains(dimThere))
+            {
+                tele = false;
+            }
+        }
+
         if (tele && Config.instance.warpPadEnergy && !noEnergy)
         {
             parser.setVarValue("dx", (link.x - here.x));

@@ -20,6 +20,8 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
 import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
@@ -125,6 +127,9 @@ public class GuiTeleport extends Gui
         if (instance().locations.size() > 0)
             instance().indexLocation = instance().indexLocation % instance().locations.size();
         else instance().indexLocation = 0;
+        PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
+                PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+        PokecubePacketHandler.sendToServer(packet);
     }
 
     @SubscribeEvent
@@ -147,6 +152,9 @@ public class GuiTeleport extends Gui
     {
         instance().indexLocation--;
         if (instance().indexLocation < 0) instance().indexLocation = Math.max(0, instance().locations.size() - 1);
+        PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
+                PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+        PokecubePacketHandler.sendToServer(packet);
     }
 
     public void refresh()

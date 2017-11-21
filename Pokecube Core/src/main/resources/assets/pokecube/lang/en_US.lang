@@ -24,6 +24,9 @@ item.nullBerry.desc=Just a Berry, Pokémobs might eat it.
 
 pkmn.missingno.name=MissingNo.
 
+pokemob.teleport.invalid=§cYou cannot teleport there!
+pokemob.teleport.noitems=§cNeeds %1$s more enderpearls to do that!
+
 death.attack.terrain.sandstorm=%1$s §cdied to the Sandstorm
 death.attack.terrain.hail=%1$s §cdied to Hail
 

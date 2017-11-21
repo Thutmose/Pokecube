@@ -1,5 +1,9 @@
 package pokecube.core.moves.implementations.actions;
 
+import java.util.logging.Level;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -10,8 +14,9 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.IMoveAction;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket;
+import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import thut.api.maths.Vector3;
 
 public class ActionTeleport implements IMoveAction
@@ -78,12 +83,33 @@ public class ActionTeleport implements IMoveAction
         {
             EntityPlayer target = (EntityPlayer) user.getPokemonOwner();
             EventsHandler.recallAllPokemobsExcluding(target, null);
-            PokecubeClientPacket packet = new PokecubeClientPacket(new byte[] { PokecubeClientPacket.TELEPORTINDEX });
-            PokecubePacketHandler.sendToClient(packet, target);
+            try
+            {
+                new TeleportHandler().handleCommand(user);
+            }
+            catch (Exception e)
+            {
+                PokecubeMod.log(Level.SEVERE, "Error Teleporting " + target, e);
+            }
         }
         else if (angry)
         {
             user.setPokemonAIState(IMoveConstants.ANGRY, false);
+            Entity attacked = user.getEntity().getAttackTarget();
+            if (attacked != null)
+            {
+                if (attacked instanceof EntityLiving)
+                {
+                    ((EntityLiving) attacked).setAttackTarget(null);
+                }
+                IPokemob attackedMob = CapabilityPokemob.getPokemobFor(attacked);
+                if (attackedMob != null)
+                {
+                    attackedMob.setPokemonAIState(IMoveConstants.ANGRY, false);
+                    attackedMob.getEntity().setAttackTarget(null);
+                }
+            }
+            user.getEntity().setAttackTarget(null);
             if (user.getPokemonAIState(IMoveConstants.TAMED)) user.returnToPokecube();
             else teleportRandomly(user.getEntity());
         }

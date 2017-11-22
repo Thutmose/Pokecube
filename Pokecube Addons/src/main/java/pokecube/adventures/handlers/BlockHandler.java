@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import pokecube.adventures.PokecubeAdv;
 import pokecube.adventures.blocks.afa.BlockAFA;
 import pokecube.adventures.blocks.afa.TileEntityAFA;
+import pokecube.adventures.blocks.afa.TileEntityCommander;
 import pokecube.adventures.blocks.afa.TileEntityDaycare;
 import pokecube.adventures.blocks.cloner.block.BlockCloner;
 import pokecube.adventures.blocks.cloner.tileentity.TileEntityCloner;
@@ -36,6 +37,7 @@ public class BlockHandler
         CompatWrapper.registerTileEntity(TileEntityGeneExtractor.class, PokecubeAdv.ID + ":extractor");
         CompatWrapper.registerTileEntity(TileEntityAFA.class, PokecubeAdv.ID + ":afa");
         CompatWrapper.registerTileEntity(TileEntityDaycare.class, PokecubeAdv.ID + ":daycare");
+        CompatWrapper.registerTileEntity(TileEntityCommander.class, PokecubeAdv.ID + ":commander");
         CompatWrapper.registerTileEntity(TileEntitySiphon.class, PokecubeAdv.ID + ":pokesiphon");
     }
 
@@ -54,6 +56,7 @@ public class BlockHandler
         afa.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);
         PokecubeItems.register(afa, registry);// ItemBlockAFA.class
         PokecubeItems.addSpecificItemStack("daycare", new ItemStack(afa, 1, 1));
+        PokecubeItems.addSpecificItemStack("commander", new ItemStack(afa, 1, 2));
         PokecubeItems.addSpecificItemStack("afa", new ItemStack(afa, 1, 0));
 
         siphon.setCreativeTab(PokecubeMod.creativeTabPokecubeBlocks);

@@ -2,6 +2,8 @@ package pokecube.core.interfaces.pokemob.commandhandlers;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
@@ -29,7 +31,8 @@ public class AttackEntityHandler implements IMobCommandHandler
     {
         World world = pokemob.getEntity().getEntityWorld();
         Entity target = PokecubeMod.core.getEntityProvider().getEntity(world, targetId, true);
-        if (target == null) throw new IllegalArgumentException("Target Mob cannot be null!");
+        if (target == null || !(target instanceof EntityLivingBase))
+            throw new IllegalArgumentException("Target Mob cannot be null!");
         String moveName = "";
         int currentMove = pokemob.getMoveIndex();
         if (currentMove != 5 && MovesUtils.canUseMove(pokemob))
@@ -39,9 +42,9 @@ public class AttackEntityHandler implements IMobCommandHandler
             ITextComponent mess = new TextComponentTranslation("pokemob.command.attack",
                     pokemob.getPokemonDisplayName(), target.getDisplayName(), new TextComponentTranslation(moveName));
             pokemob.displayMessageToOwner(mess);
-            pokemob.executeMove(target, null, 0);
+            pokemob.getEntity().setAttackTarget((EntityLivingBase) target);
+            if (target instanceof EntityLiving) ((EntityLiving) target).setAttackTarget(pokemob.getEntity());
         }
-        // Initiate combat instead of using move.
     }
 
     @Override

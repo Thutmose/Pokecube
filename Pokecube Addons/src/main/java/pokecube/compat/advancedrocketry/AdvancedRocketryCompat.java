@@ -14,6 +14,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 import net.minecraft.block.material.Material;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -44,13 +46,17 @@ import thut.api.maths.Vector3;
 import thut.api.terrain.BiomeType;
 import thut.lib.CompatClass;
 import thut.lib.CompatClass.Phase;
-import zmaster587.advancedRocketry.api.AdvancedRocketryAPI;
+import thut.lib.CompatWrapper;
 import zmaster587.advancedRocketry.api.Configuration;
 import zmaster587.advancedRocketry.api.IAtmosphere;
 import zmaster587.advancedRocketry.api.event.AtmosphereEvent.AtmosphereTickEvent;
 import zmaster587.advancedRocketry.api.stations.ISpaceObject;
 import zmaster587.advancedRocketry.dimension.DimensionManager;
 import zmaster587.advancedRocketry.dimension.DimensionProperties;
+import zmaster587.advancedRocketry.item.ItemPlanetIdentificationChip;
+import zmaster587.advancedRocketry.item.ItemStationChip;
+import zmaster587.advancedRocketry.stations.SpaceObjectManager;
+import zmaster587.libVulpes.util.Vector3F;
 
 public class AdvancedRocketryCompat
 {
@@ -196,6 +202,7 @@ public class AdvancedRocketryCompat
                     }
                 }
                 if (((boolean) conditionsMatch.invoke(match, checker))) event.setResult(Result.ALLOW);
+                else event.setCanceled(true);
             }
         }
     }
@@ -334,28 +341,72 @@ public class AdvancedRocketryCompat
             PokedexEntry entry = pokemob.getPokedexEntry();
             if (entry == megaray && event.getEntityLiving().isBeingRidden())
             {
-                boolean goUp = event.getEntity().posY > Configuration.orbit/2;
-                boolean goDown = event.getEntity().posY < 0;
+                boolean goUp = event.getEntity().posY > Configuration.orbit / 2
+                        && event.getEntity().dimension != Configuration.spaceDimId;
+                boolean goDown = event.getEntity().posY < 2 || (event.getEntity().posY > Configuration.orbit / 2
+                        && event.getEntity().dimension == Configuration.spaceDimId);
                 if (!(goUp || goDown)) return;
                 Vector3 pos = Vector3.getNewVector().set(event.getEntity());
-                pos.y = Configuration.orbit/2 - 100;
-                boolean aroundStation = false;
-                ISpaceObject station = AdvancedRocketryAPI.spaceObjectManager
-                        .getSpaceStationFromBlockCoords(event.getEntity().getPosition());
-                aroundStation = station != null;
-                int dim = goUp ? Configuration.spaceDimId : 0;
-                if (aroundStation)
+                int targetDim = -1;
+                ItemStack stack = pokemob.getPokemobInventory().getStackInSlot(2);
+                if (CompatWrapper.isValid(stack))
                 {
-                    if (goDown)
+                    Item itemType = stack.getItem();
+                    if (itemType instanceof ItemPlanetIdentificationChip)
                     {
-                        dim = station.getOrbitingPlanetId();
-                        if (dim == -1) dim = 0;
+                        ItemPlanetIdentificationChip item = (ItemPlanetIdentificationChip) itemType;
+                        targetDim = item.getDimensionId(stack);
+                        if (!DimensionManager.getInstance().canTravelTo(targetDim)) targetDim = -1;
+                        if (targetDim != -1)
+                        {
+                            DimensionProperties dest = DimensionManager.getInstance().getDimensionProperties(targetDim);
+                            DimensionProperties source = DimensionManager.getInstance()
+                                    .getDimensionProperties(event.getEntity().dimension);
+                            int destParent = dest.isMoon() ? dest.getParentPlanet() : targetDim;
+                            int sourceParent = source.isMoon() ? source.getParentPlanet() : event.getEntity().dimension;
+                            if (destParent != sourceParent) targetDim = -1;
+                        }
+                    }
+                    else if (itemType instanceof ItemStationChip)
+                    {
+                        if (Configuration.spaceDimId == event.getEntity().dimension)
+                        {
+                            ISpaceObject object = SpaceObjectManager.getSpaceManager()
+                                    .getSpaceStationFromBlockCoords(event.getEntity().getPosition());
+                            if (object != null)
+                            {
+                                targetDim = object.getOrbitingPlanetId();
+                            }
+                            else targetDim = -1;
+                        }
+                        else
+                        {
+                            targetDim = Configuration.spaceDimId;
+                            ISpaceObject object = SpaceObjectManager.getSpaceManager()
+                                    .getSpaceStation(ItemStationChip.getUUID(stack));
+                            if(object!=null)
+                            {
+                                pos.x = object.getSpawnLocation().x;
+                                pos.z = object.getSpawnLocation().z;
+                            }
+                            else
+                            {
+                                Vector3F<Float> vec = ((ItemStationChip) itemType).getTakeoffCoords(stack, targetDim);
+                                if (vec != null)
+                                {
+                                    pos.x = vec.x;
+                                    pos.z = vec.z;
+                                }
+                            }
+                        }
                     }
                 }
-                else
+                pos.y = Configuration.orbit / 2 - 100;
+                int dim = targetDim;
+                if (targetDim == -1)
                 {
                     DimensionProperties props = DimensionManager.getInstance()
-                            .getDimensionProperties(event.getEntity().world.provider.getDimension());
+                            .getDimensionProperties(dim = event.getEntity().world.provider.getDimension());
                     boolean moon = props.isMoon();
                     if (moon && goUp)
                     {
@@ -383,6 +434,16 @@ public class AdvancedRocketryCompat
                                 }
                             }
                             dim = moons.get(whichMoon);
+                        }
+                    }
+                    else if (props.isStation())
+                    {
+                        dim = props.getParentPlanet();
+                        ISpaceObject object = SpaceObjectManager.getSpaceManager()
+                                .getSpaceStationFromBlockCoords(event.getEntity().getPosition());
+                        if (object != null)
+                        {
+                            dim = object.getOrbitingPlanetId();
                         }
                     }
                 }

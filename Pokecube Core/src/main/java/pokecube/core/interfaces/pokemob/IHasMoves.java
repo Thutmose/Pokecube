@@ -19,9 +19,12 @@ import pokecube.core.interfaces.IPokemob.MovePacket;
 import pokecube.core.interfaces.IPokemob.PokemobMoveStats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.IHasCommands.Command;
+import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
 import pokecube.core.network.PokecubePacketHandler;
+import pokecube.core.network.pokemobs.PacketCommand;
 import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
@@ -77,15 +80,8 @@ public interface IHasMoves extends IHasStats
             }
             try
             {
-                PacketBuffer buffer = new PacketBuffer(Unpooled.buffer(11));
-                buffer.writeByte(MessageServer.MOVESWAP);
-                buffer.writeInt(getEntity().getEntityId());
-                buffer.writeByte((byte) moveIndex0);
-                buffer.writeByte((byte) moveIndex1);
-                buffer.writeInt(getMoveStats().num);
-                MessageServer packet = new MessageServer(buffer);
-                PokecubePacketHandler.sendToServer(packet);
-
+                PacketCommand.sendCommand((IPokemob) this, Command.SWAPMOVES,
+                        new SwapMovesHandler((byte) moveIndex0, (byte) moveIndex1));
             }
             catch (Exception ex)
             {

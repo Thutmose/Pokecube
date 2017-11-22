@@ -53,6 +53,8 @@ import pokecube.core.interfaces.pokemob.commandhandlers.AttackEntityHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackLocationHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackNothingHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveIndexHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.MoveToHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketCommand;
@@ -110,7 +112,7 @@ public class GuiDisplayPokecubeInfo extends Gui
 
     public static void sendMoveIndexPacket(IPokemob pokemob, int moveIndex)
     {
-        PacketCommand.sentCommand(pokemob, Command.CHANGEMOVEINDEX, new MoveIndexHandler((byte) moveIndex));
+        PacketCommand.sendCommand(pokemob, Command.CHANGEMOVEINDEX, new MoveIndexHandler((byte) moveIndex));
     }
 
     public static int[] applyTransform(String ref, int[] shift, int[] dims, float scale)
@@ -741,21 +743,21 @@ public class GuiDisplayPokecubeInfo extends Gui
                     return;
                 }
                 GuiTeleport.instance().setState(false);
-                PacketCommand.sentCommand(pokemob, Command.TELEPORT, new TeleportHandler());
+                PacketCommand.sendCommand(pokemob, Command.TELEPORT, new TeleportHandler());
                 return;
             }
         }
         if (target != null && !sameOwner)
         {
-            PacketCommand.sentCommand(pokemob, Command.ATTACKENTITY, new AttackEntityHandler(target.getEntityId()));
+            PacketCommand.sendCommand(pokemob, Command.ATTACKENTITY, new AttackEntityHandler(target.getEntityId()));
         }
         else if (targetLocation != null)
         {
-            PacketCommand.sentCommand(pokemob, Command.ATTACKLOCATION, new AttackLocationHandler(targetLocation));
+            PacketCommand.sendCommand(pokemob, Command.ATTACKLOCATION, new AttackLocationHandler(targetLocation));
         }
         else
         {
-            PacketCommand.sentCommand(pokemob, Command.ATTACKNOTHING, new AttackNothingHandler());
+            PacketCommand.sendCommand(pokemob, Command.ATTACKNOTHING, new AttackNothingHandler());
         }
     }
 
@@ -765,10 +767,10 @@ public class GuiDisplayPokecubeInfo extends Gui
     {
         IPokemob pokemob = getCurrentPokemob();
 
-        if (GuiScreen.isShiftKeyDown() && pokemob != null)
+        if (GuiScreen.isShiftKeyDown() && pokemob != null && pokemob.getOwner() != null)
         {
-            MessageServer message = new MessageServer(MessageServer.COME, pokemob.getEntity().getEntityId());
-            PokecubeMod.packetPipeline.sendToServer(message);
+            PacketCommand.sendCommand((IPokemob) this, Command.MOVETO, new MoveToHandler(
+                    Vector3.getNewVector().set(pokemob.getOwner()), pokemob.getEntity().getAIMoveSpeed()));
             return;
         }
 

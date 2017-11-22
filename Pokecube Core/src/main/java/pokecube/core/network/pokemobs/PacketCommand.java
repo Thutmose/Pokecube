@@ -68,7 +68,7 @@ public class PacketCommand implements IMessage, IMessageHandler<PacketCommand, I
     IMobCommandHandler handler;
     Command            command;
 
-    public static void sentCommand(IPokemob pokemob, Command command, IMobCommandHandler handler)
+    public static void sendCommand(IPokemob pokemob, Command command, IMobCommandHandler handler)
     {
         PacketCommand packet = new PacketCommand();
         packet.entityId = pokemob.getEntity().getEntityId();

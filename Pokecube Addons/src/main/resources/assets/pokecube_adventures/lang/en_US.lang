@@ -37,6 +37,7 @@ tile.cloner.extractor.name=Gene Extractor
 tile.cloner.reanimator.name=Cloning Device
 tile.afa.amplifier.name=Ability Field Amplifier
 tile.afa.daycare.name=Daycare Block
+tile.afa.commander.name=Pokemob Command Block
 tile.pokesiphon.name=Energy Siphon
 
 gui.trainer.stationary=Trainer Wanders

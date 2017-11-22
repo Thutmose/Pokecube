@@ -43,6 +43,6 @@ public class ItemBlockAFA extends ItemBlock
     {
         int i = par1ItemStack.getItemDamage();
 
-        return super.getUnlocalizedName() + "." + (i == 1 ? "daycare" : "amplifier");
+        return super.getUnlocalizedName() + "." + (i == 1 ? "daycare" : i == 2 ? "commander" : "amplifier");
     }
 }

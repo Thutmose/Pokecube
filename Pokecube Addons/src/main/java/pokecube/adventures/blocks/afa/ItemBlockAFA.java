@@ -32,6 +32,7 @@ public class ItemBlockAFA extends ItemBlock
         if (tab != getCreativeTab()) return;
         subItems.add(new ItemStack(this, 1, 0));
         subItems.add(new ItemStack(this, 1, 1));
+        subItems.add(new ItemStack(this, 1, 2));
     }
 
     /** Returns the unlocalized name of this item. This version accepts an

@@ -65,6 +65,20 @@
         <Input id="minecraft:redstone" key="M"/>
         <Input id="minecraft:iron_ingot" key="I"/>
     </Recipe>
+    <Recipe map="III,SRS,SMS">//Daycare
+        <Output n="1" id="pokecube_adventures:afa" d="1"/>
+        <Input id="pokecube:tradingtable" key="R"/>
+        <Input id="minecraft:iron_block" key="S"/>
+        <Input id="minecraft:emerald" key="M"/>
+        <Input id="minecraft:iron_ingot" key="I"/>
+    </Recipe>
+    <Recipe map="III,SRS,SMS">//Controller
+        <Output n="1" id="pokecube_adventures:afa" d="2"/>
+        <Input id="pokecube:tradingtable" key="R"/>
+        <Input id="minecraft:iron_block" key="S"/>
+        <Input id="minecraft:comparator" key="M"/>
+        <Input id="minecraft:iron_ingot" key="I"/>
+    </Recipe>
     <Recipe map="BBB,BRB,BBB">//Siphon
         <Output n="1" id="pokecube_adventures:pokesiphon"/>
         <Input id="pokecube_adventures:afa" key="R"/>

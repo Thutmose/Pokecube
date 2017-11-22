@@ -153,6 +153,11 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     {
         this.command = command;
         Class<? extends IMobCommandHandler> clazz = IHasCommands.COMMANDHANDLERS.get(command);
+        if (args == null)
+        {
+            handler = clazz.newInstance();
+            return;
+        }
         Class<?>[] argTypes = new Class<?>[args.length];
         for (int i = 0; i < args.length; i++)
         {

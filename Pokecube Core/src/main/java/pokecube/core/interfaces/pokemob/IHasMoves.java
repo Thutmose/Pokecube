@@ -2,11 +2,9 @@ package pokecube.core.interfaces.pokemob;
 
 import java.util.HashMap;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,9 +21,7 @@ import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.commandhandlers.SwapMovesHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.moves.templates.Move_Ongoing;
-import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.pokemobs.PacketCommand;
-import pokecube.core.network.pokemobs.PokemobPacketHandler.MessageServer;
 import thut.api.maths.Vector3;
 import thut.api.network.PacketHandler;
 import thut.core.common.commands.CommandTools;

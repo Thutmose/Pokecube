@@ -32,8 +32,8 @@ import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import thut.api.maths.Vector3;
 
-@Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "opencomputers"),
+        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "opencomputers") })
 public class TileEntityCommander extends TileEntityOwnable implements ITickable, SimpleComponent, SidedComponent
 {
     protected boolean          addedToNetwork = false;
@@ -183,7 +183,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function(uuid:string) - Sets the uuid of the pokemob to command.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setPokeID(Context context, Arguments args) throws Exception
     {
         String var = args.checkString(0);
@@ -192,7 +192,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function(command:string, args...) - Sets the command and the arguments for it to run.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setCommand(Context context, Arguments args) throws Exception
     {
         Command command = Command.valueOf(args.checkString(0));
@@ -202,7 +202,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function(command:string, args...) - Sets the command and the arguments for it to run.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] executeCommand(Context context, Arguments args) throws Exception
     {
         sendCommand();
@@ -210,7 +210,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function() - Gets the moves known by the pokemob.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getMoves(Context context, Arguments args) throws Exception
     {
         if (pokeID == null) throw new NullPointerException("No Pokemob set");

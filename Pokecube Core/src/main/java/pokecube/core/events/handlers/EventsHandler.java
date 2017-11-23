@@ -87,6 +87,7 @@ import pokecube.core.entity.pokemobs.helper.EntityPokemobBase;
 import pokecube.core.entity.professor.EntityProfessor;
 import pokecube.core.handlers.Config;
 import pokecube.core.interfaces.IMoveConstants;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.IPokemobUseable;
 import pokecube.core.interfaces.Nature;
@@ -365,7 +366,7 @@ public class EventsHandler
         if (pokemob != null)
         {
             boolean aqua = evt.getEntityPlayer().isInWater();
-            if(aqua)
+            if (aqua)
             {
                 aqua = !EnchantmentHelper.getAquaAffinityModifier(evt.getEntityPlayer());
             }
@@ -840,8 +841,9 @@ public class EventsHandler
             for (IPokemob e : pokemon)
             {
                 double dist = e.getEntity().getDistanceSqToEntity(evt.getEntityLiving());
-                if (dist < closest && !(e.getPokemonAIState(IMoveConstants.STAYING)
-                        && e.getPokemonAIState(IMoveConstants.SITTING)))
+                if (dist < closest
+                        && !(e.getPokemonAIState(IMoveConstants.STAYING) && e.getPokemonAIState(IMoveConstants.SITTING))
+                        && e.isRoutineEnabled(AIRoutine.AGRESSIVE))
                 {
                     closest = dist;
                     newtarget = e;

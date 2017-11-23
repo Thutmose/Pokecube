@@ -12,7 +12,7 @@ public class MoveIndexHandler implements IMobCommandHandler
     {
     }
 
-    public MoveIndexHandler(byte index)
+    public MoveIndexHandler(Byte index)
     {
         this.index = index;
     }

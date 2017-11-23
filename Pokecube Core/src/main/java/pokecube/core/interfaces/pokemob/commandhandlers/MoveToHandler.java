@@ -14,7 +14,7 @@ public class MoveToHandler implements IMobCommandHandler
     {
     }
 
-    public MoveToHandler(Vector3 location, float speed)
+    public MoveToHandler(Vector3 location, Float speed)
     {
         this.location = location.copy();
         this.speed = Math.max(speed, 0);

@@ -32,8 +32,7 @@ import pokecube.core.interfaces.pokemob.IHasCommands.Command;
 import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import thut.api.maths.Vector3;
 
-@Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
-        @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
+@Optional.Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers")
 public class TileEntityCommander extends TileEntityOwnable implements ITickable, SimpleComponent
 {
     protected boolean          addedToNetwork = false;

@@ -15,9 +15,9 @@ import net.minecraft.client.gui.GuiListExtended;
 import net.minecraft.client.gui.GuiListExtended.IGuiListEntry;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
@@ -183,27 +183,22 @@ public class GuiPokemobAI extends GuiContainer
         }
 
         @Override
-        public void setSelected(int i, int j, int k)
-        {
-        }
-
-        @Override
         public void drawEntry(int slotIndex, int x, int y, int listWidth, int slotHeight, int mouseX, int mouseY,
-                boolean isSelected)
+                boolean isSelected, float partialTicks)
         {
             boolean fits = true;
-            wrapped.xPosition = x - 2;
-            wrapped.yPosition = y - 4;
-            fits = wrapped.yPosition >= offsetY;
-            fits = fits && wrapped.yPosition + 10 <= offsetY + 50;
+            wrapped.x = x - 2;
+            wrapped.y = y - 4;
+            fits = wrapped.y >= offsetY;
+            fits = fits && wrapped.y + 10 <= offsetY + 50;
             if (fits)
             {
-                wrapped.drawButton(mc, mouseX, mouseY);
+                wrapped.drawButton(mc, mouseX, mouseY, partialTicks);
                 AIRoutine routine = AIRoutine.values()[slotIndex];
                 boolean state = pokemob.isRoutineEnabled(routine);
-                Gui.drawRect(wrapped.xPosition + 41, wrapped.yPosition + 1, wrapped.xPosition + 80,
-                        wrapped.yPosition + 10, state ? 0xFF00FF00 : 0xFFFF0000);
-                Gui.drawRect(wrapped.xPosition, wrapped.yPosition + 10, wrapped.xPosition + 40, wrapped.yPosition + 11,
+                Gui.drawRect(wrapped.x + 41, wrapped.y + 1, wrapped.x + 80,
+                        wrapped.y + 10, state ? 0xFF00FF00 : 0xFFFF0000);
+                Gui.drawRect(wrapped.x, wrapped.y + 10, wrapped.x + 40, wrapped.y + 11,
                         0xFF000000);
             }
         }
@@ -212,8 +207,8 @@ public class GuiPokemobAI extends GuiContainer
         public boolean mousePressed(int slotIndex, int mouseX, int mouseY, int mouseEvent, int relativeX, int relativeY)
         {
             boolean fits = true;
-            fits = wrapped.yPosition >= offsetY;
-            fits = fits && wrapped.yPosition + 10 <= offsetY + 52;
+            fits = wrapped.y >= offsetY;
+            fits = fits && wrapped.y + 10 <= offsetY + 52;
             if (fits)
             {
                 AIRoutine routine = AIRoutine.values()[slotIndex];
@@ -227,6 +222,12 @@ public class GuiPokemobAI extends GuiContainer
         @Override
         public void mouseReleased(int slotIndex, int x, int y, int mouseEvent, int relativeX, int relativeY)
         {
+        }
+
+        @Override
+        public void updatePosition(int p_192633_1_, int p_192633_2_, int p_192633_3_, float p_192633_4_)
+        {
+            
         }
 
     }
@@ -335,12 +336,12 @@ public class GuiPokemobAI extends GuiContainer
                 GlStateManager.disableLighting();
                 GlStateManager.disableFog();
                 Tessellator tessellator = Tessellator.getInstance();
-                VertexBuffer vertexbuffer = tessellator.getBuffer();
+                BufferBuilder vertexbuffer = tessellator.getBuffer();
                 // Forge: background rendering moved into separate method.
                 // this.drawContainerBackground(tessellator);
                 int k = this.left + this.width / 2 - this.getListWidth() / 2 + 2;
                 int l = this.top + 4 - (int) this.amountScrolled;
-                this.drawSelectionBox(k, l, mouseXIn, mouseYIn);
+                this.drawSelectionBox(k, l, mouseXIn, mouseYIn, partialTicks);
                 GlStateManager.disableDepth();
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA,
@@ -353,7 +354,7 @@ public class GuiPokemobAI extends GuiContainer
                 if (j1 > 0)
                 {
                     int k1 = (this.bottom - this.top) * (this.bottom - this.top) / this.getContentHeight();
-                    k1 = MathHelper.clamp_int(k1, 32, this.bottom - this.top - 8);
+                    k1 = MathHelper.clamp(k1, 32, this.bottom - this.top - 8);
                     int l1 = (int) this.amountScrolled * (this.bottom - this.top - k1) / j1 + this.top;
 
                     if (l1 < this.top)
@@ -456,7 +457,7 @@ public class GuiPokemobAI extends GuiContainer
 
                                 int l1 = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top))
                                         / (float) this.getContentHeight());
-                                l1 = MathHelper.clamp_int(l1, 32, this.bottom - this.top - 8);
+                                l1 = MathHelper.clamp(l1, 32, this.bottom - this.top - 8);
                                 this.scrollMultiplier /= (float) (this.bottom - this.top - l1) / (float) k1;
                             }
                             else

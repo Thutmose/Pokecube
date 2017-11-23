@@ -13,7 +13,7 @@ public class SwapMovesHandler implements IMobCommandHandler
     {
     }
 
-    public SwapMovesHandler(byte indexA, byte indexB)
+    public SwapMovesHandler(Byte indexA, Byte indexB)
     {
         this.indexA = indexA;
         this.indexB = indexB;

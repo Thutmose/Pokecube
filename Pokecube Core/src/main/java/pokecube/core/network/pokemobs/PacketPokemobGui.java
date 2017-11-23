@@ -13,6 +13,7 @@ import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.utils.TimePeriod;
 import thut.api.maths.Vector3;
 
+@Deprecated
 public class PacketPokemobGui implements IMessage, IMessageHandler<PacketPokemobGui, IMessage>
 {
     public static final byte BUTTONTOGGLESTAY  = 0;

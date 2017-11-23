@@ -54,10 +54,10 @@ import pokecube.core.interfaces.pokemob.commandhandlers.AttackLocationHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.AttackNothingHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveIndexHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.MoveToHandler;
+import pokecube.core.interfaces.pokemob.commandhandlers.StanceHandler;
 import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.pokemobs.PacketCommand;
-import pokecube.core.network.pokemobs.PacketPokemobGui;
 import pokecube.core.utils.Tools;
 import thut.api.maths.Vector3;
 
@@ -801,9 +801,8 @@ public class GuiDisplayPokecubeInfo extends Gui
         IPokemob pokemob;
         if ((pokemob = getCurrentPokemob()) != null)
         {
-            PacketPokemobGui packet = new PacketPokemobGui(PacketPokemobGui.BUTTONTOGGLESIT,
-                    pokemob.getEntity().getEntityId());
-            PokecubeMod.packetPipeline.sendToServer(packet);
+            PacketCommand.sendCommand(pokemob, Command.STANCE, new StanceHandler(
+                    !pokemob.getPokemonAIState(IMoveConstants.SITTING), StanceHandler.BUTTONTOGGLESIT));
         }
         else
         {
@@ -815,8 +814,8 @@ public class GuiDisplayPokecubeInfo extends Gui
             IPokemob targetMob = CapabilityPokemob.getPokemobFor(target);
             if (targetMob != null && targetMob.getPokemonOwner() == player)
             {
-                PacketPokemobGui packet = new PacketPokemobGui(PacketPokemobGui.BUTTONTOGGLESIT, target.getEntityId());
-                PokecubeMod.packetPipeline.sendToServer(packet);
+                PacketCommand.sendCommand(targetMob, Command.STANCE, new StanceHandler(
+                        !targetMob.getPokemonAIState(IMoveConstants.SITTING), StanceHandler.BUTTONTOGGLESIT));
             }
         }
     }

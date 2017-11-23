@@ -29,6 +29,7 @@ public interface IHasCommands
         CHANGEMOVEINDEX, 
         CHANGEFORM, 
         MOVETO,
+        STANCE,
         SWAPMOVES,
         TELEPORT;
         //@formatter:on

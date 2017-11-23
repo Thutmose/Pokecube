@@ -268,6 +268,12 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
                 index += 1;
                 ret[i] = arg;
             }
+            else if (type == boolean.class)
+            {
+                boolean arg = args.checkBoolean(index);
+                index += 1;
+                ret[i] = arg;
+            }
             else if (type == String.class)
             {
                 String arg = args.checkString(index);

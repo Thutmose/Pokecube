@@ -12,6 +12,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.FakePlayer;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
@@ -113,6 +114,11 @@ public class AIAttack extends AIBase implements IAICombat
                 double dist = this.attacker.getDistanceSq(this.entityTarget.posX, this.entityTarget.posY,
                         this.entityTarget.posZ);
                 canSee = dist < 1 || Vector3.isVisibleEntityFromEntity(attacker, entityTarget);
+
+                if (CapabilityPokemob.getPokemobFor(entityTarget) == null)
+                {
+                    ForgeHooks.onLivingSetAttackTarget(attacker, entityTarget);
+                }
             }
         }
         delayTime = pokemob.getAttackCooldown();

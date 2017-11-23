@@ -19,6 +19,7 @@ import pokecube.core.handlers.TeamManager;
 import pokecube.core.interfaces.IMoveConstants;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import thut.api.TickHandler;
 import thut.api.entity.ai.AIThreadManager;
@@ -238,7 +239,7 @@ public class AIFindTarget extends AIBase implements IAICombat
     public boolean shouldRun()
     {
         world = TickHandler.getInstance().getWorldCache(entity.dimension);
-        if (world == null) return false;
+        if (world == null || !pokemob.isRoutineEnabled(AIRoutine.AGRESSIVE)) return false;
 
         // Don't look for targets if you are sitting.
         boolean ret = entity.getAttackTarget() == null && entity.getAttackTarget() == null

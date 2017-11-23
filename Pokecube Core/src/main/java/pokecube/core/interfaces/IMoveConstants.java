@@ -182,6 +182,7 @@ public interface IMoveConstants extends IMoveNames
         STORE,
         WANDER,
         MATE,
-        FOLLOW;
+        FOLLOW,
+        AGRESSIVE;
     }
 }

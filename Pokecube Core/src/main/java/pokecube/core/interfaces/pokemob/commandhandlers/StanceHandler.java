@@ -21,7 +21,7 @@ public class StanceHandler implements IMobCommandHandler
     {
     }
 
-    public StanceHandler(boolean state, byte key)
+    public StanceHandler(Boolean state, Byte key)
     {
         this.state = state;
         this.key = key;

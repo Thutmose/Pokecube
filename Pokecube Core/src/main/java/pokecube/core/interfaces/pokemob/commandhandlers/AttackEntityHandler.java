@@ -21,7 +21,7 @@ public class AttackEntityHandler implements IMobCommandHandler
     {
     }
 
-    public AttackEntityHandler(int targetId)
+    public AttackEntityHandler(Integer targetId)
     {
         this.targetId = targetId;
     }

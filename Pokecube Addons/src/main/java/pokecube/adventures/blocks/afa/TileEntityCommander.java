@@ -34,7 +34,7 @@ import thut.api.maths.Vector3;
 
 @Optional.InterfaceList(value = { @Interface(iface = "li.cil.oc.api.network.SidedComponent", modid = "OpenComputers"),
         @Interface(iface = "li.cil.oc.api.network.SimpleComponent", modid = "OpenComputers") })
-public class TileEntityCommander extends TileEntityOwnable implements ITickable, SimpleComponent, SidedComponent
+public class TileEntityCommander extends TileEntityOwnable implements ITickable, SimpleComponent
 {
     protected boolean          addedToNetwork = false;
     private UUID               pokeID         = null;
@@ -44,12 +44,6 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     public TileEntityCommander()
     {
         super();
-    }
-
-    @Override
-    public boolean canConnectNode(EnumFacing side)
-    {
-        return side == EnumFacing.DOWN;
     }
 
     @Override
@@ -112,7 +106,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     public void readFromNBT(NBTTagCompound nbt)
     {
         super.readFromNBT(nbt);
-        if (nbt.hasKey("pokeID")) pokeID = nbt.getUniqueId("pokeID");
+        if (nbt.hasKey("pokeIDMost")) pokeID = nbt.getUniqueId("pokeID");
     }
 
     @Override
@@ -171,11 +165,11 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     {
         World w = getWorld();
         if (!(w instanceof WorldServer)) return;
-        if (handler == null) throw new NullPointerException("No CommandHandler has been set");
-        if (pokeID == null) throw new NullPointerException("No Pokemob Set, please set a UUID first.");
+        if (handler == null) throw new Exception("No CommandHandler has been set");
+        if (pokeID == null) throw new Exception("No Pokemob Set, please set a UUID first.");
         WorldServer world = (WorldServer) w;
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
-        if (pokemob == null) throw new NullPointerException("Pokemob for given ID is not found.");
+        if (pokemob == null) throw new Exception("Pokemob for given ID is not found.");
         try
         {
             handler.handleCommand(pokemob);
@@ -206,7 +200,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
         return new Object[] { true, command };
     }
 
-    @Callback(doc = "function(command:string, args...) - Sets the command and the arguments for it to run.")
+    @Callback(doc = "function() - Executes the set command, setCommand must be called beforehand.")
     @Optional.Method(modid = "OpenComputers")
     public Object[] executeCommand(Context context, Arguments args) throws Exception
     {
@@ -218,10 +212,10 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     @Optional.Method(modid = "OpenComputers")
     public Object[] getMoves(Context context, Arguments args) throws Exception
     {
-        if (pokeID == null) throw new NullPointerException("No Pokemob set");
+        if (pokeID == null) throw new Exception("No Pokemob set");
         WorldServer world = (WorldServer) getWorld();
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
-        if (pokemob == null) throw new NullPointerException("No Pokemob found for set ID");
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
         return pokemob.getMoves();
     }
 
@@ -250,25 +244,25 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
                 index += 3;
                 ret[i] = arg;
             }
-            else if (type == float.class)
+            else if (type == float.class || type == Float.class)
             {
                 float arg = (float) args.checkDouble(index);
                 index += 1;
                 ret[i] = arg;
             }
-            else if (type == byte.class)
+            else if (type == byte.class || type == Byte.class)
             {
                 byte arg = (byte) args.checkInteger(index);
                 index += 1;
                 ret[i] = arg;
             }
-            else if (type == int.class)
+            else if (type == int.class || type == Integer.class)
             {
                 int arg = args.checkInteger(index);
                 index += 1;
                 ret[i] = arg;
             }
-            else if (type == boolean.class)
+            else if (type == boolean.class || type == Boolean.class)
             {
                 boolean arg = args.checkBoolean(index);
                 index += 1;

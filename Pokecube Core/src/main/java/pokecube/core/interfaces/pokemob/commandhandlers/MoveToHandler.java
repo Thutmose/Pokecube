@@ -3,7 +3,6 @@ package pokecube.core.interfaces.pokemob.commandhandlers;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.SharedMonsterAttributes;
 import pokecube.core.interfaces.IPokemob;
-import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.pokemob.IHasCommands.IMobCommandHandler;
 import thut.api.maths.Vector3;
 

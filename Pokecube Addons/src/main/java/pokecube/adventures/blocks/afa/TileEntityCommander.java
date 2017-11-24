@@ -7,12 +7,10 @@ import java.util.logging.Level;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.SidedComponent;
 import li.cil.oc.api.network.SimpleComponent;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
@@ -20,12 +18,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.Optional.Interface;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import pokecube.core.blocks.TileEntityOwnable;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.IMoveConstants.AIRoutine;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
 import pokecube.core.interfaces.pokemob.IHasCommands;
 import pokecube.core.interfaces.pokemob.IHasCommands.Command;
@@ -70,7 +68,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     public SPacketUpdateTileEntity getUpdatePacket()
     {
         NBTTagCompound nbttagcompound = new NBTTagCompound();
-        if (world.isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
+        if (getWorld().isRemote) return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
         this.writeToNBT(nbttagcompound);
         return new SPacketUpdateTileEntity(this.getPos(), 3, nbttagcompound);
     }
@@ -94,7 +92,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt)
     {
-        if (world.isRemote)
+        if (getWorld().isRemote)
         {
             NBTTagCompound nbt = pkt.getNbtCompound();
             readFromNBT(nbt);
@@ -216,6 +214,54 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
         IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
         if (pokemob == null) throw new Exception("No Pokemob found for set ID");
         return pokemob.getMoves();
+    }
+
+    @Callback(doc = "function() - Gets the current move index for the pokemob.")
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getMoveIndex(Context context, Arguments args) throws Exception
+    {
+        if (pokeID == null) throw new Exception("No Pokemob set");
+        WorldServer world = (WorldServer) getWorld();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
+        return new Object[] { pokemob.getMoveIndex() };
+    }
+
+    @Callback(doc = "function(index:number) - Sets the current move index for the pokemob.")
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] setMoveIndex(Context context, Arguments args) throws Exception
+    {
+        if (pokeID == null) throw new Exception("No Pokemob set");
+        WorldServer world = (WorldServer) getWorld();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
+        pokemob.setMoveIndex(args.checkInteger(0));
+        return new Object[] { pokemob.getMoveIndex() };
+    }
+
+    @Callback(doc = "function(routine:string) - Gets the state of the given routine.")
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] getRoutineState(Context context, Arguments args) throws Exception
+    {
+        if (pokeID == null) throw new Exception("No Pokemob set");
+        WorldServer world = (WorldServer) getWorld();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
+        AIRoutine routine = AIRoutine.valueOf(args.checkString(0));
+        return new Object[] { pokemob.isRoutineEnabled(routine) };
+    }
+
+    @Callback(doc = "function(routine:string, state:boolean) - Sets the state of the given routine.")
+    @Optional.Method(modid = "OpenComputers")
+    public Object[] setRoutineState(Context context, Arguments args) throws Exception
+    {
+        if (pokeID == null) throw new Exception("No Pokemob set");
+        WorldServer world = (WorldServer) getWorld();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
+        AIRoutine routine = AIRoutine.valueOf(args.checkString(0));
+        pokemob.setRoutineState(routine, args.checkBoolean(1));
+        return new Object[] { true, pokemob.isRoutineEnabled(routine) };
     }
 
     private Object[] getArgs(Command command, Arguments args) throws Exception

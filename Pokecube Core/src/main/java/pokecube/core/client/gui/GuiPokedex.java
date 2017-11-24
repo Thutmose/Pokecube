@@ -54,10 +54,10 @@ import pokecube.core.interfaces.IPokemob.Stats;
 import pokecube.core.interfaces.Move_Base;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.entity.IMobColourable;
@@ -95,6 +95,7 @@ public class GuiPokedex extends GuiScreen
     private int                                   page               = 0;
     private int                                   index              = 0;
     private boolean                               mode               = false;
+    protected List<TeleDest>                      locations;
 
     int                                           prevX              = 0;
     int                                           prevY              = 0;
@@ -134,6 +135,7 @@ public class GuiPokedex extends GuiScreen
         packet.data.setBoolean("M", mode);
         packet.data.setString("F", pokedexEntry.getName());
         PokecubeMod.packetPipeline.sendToServer(packet);
+        locations = TeleportHandler.getTeleports(entityPlayer.getCachedUniqueIdString());
     }
 
     private boolean canEditPokemob()
@@ -596,10 +598,6 @@ public class GuiPokedex extends GuiScreen
      * @param yOffset */
     private void drawPage4(int xOffset, int yOffset)
     {
-        Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-        List<TeleDest> locations = PokecubeSerializer.getInstance()
-                .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
         if (locations.size() == 0) { return; }
         TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
         if (location != null)
@@ -892,10 +890,6 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
             GuiTeleport.instance().nextMove();
-            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-            List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
             if (locations.size() > 0)
             {
                 TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -908,10 +902,6 @@ public class GuiPokedex extends GuiScreen
             nicknameTextField.setEnabled(true);
             nicknameTextField.setFocused(true);
             GuiTeleport.instance().previousMove();
-            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-            List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
             if (locations.size() > 0)
             {
                 TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -994,10 +984,6 @@ public class GuiPokedex extends GuiScreen
                 }
                 if (page == 4)
                 {
-                    Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                    List<TeleDest> locations = PokecubeSerializer.getInstance()
-                            .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
                     if (locations.size() > 0)
                     {
                         TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -1019,10 +1005,6 @@ public class GuiPokedex extends GuiScreen
 
             if (page == 4)
             {
-                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
                 if (locations.size() > 0)
                 {
                     TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -1175,10 +1157,6 @@ public class GuiPokedex extends GuiScreen
         }
         if (page == 4)
         {
-            Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-            List<TeleDest> locations = PokecubeSerializer.getInstance()
-                    .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
             if (locations.size() > 0)
             {
                 TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -1200,11 +1178,6 @@ public class GuiPokedex extends GuiScreen
                     || par2 == ClientProxyPokecube.previousMove.getKeyCode()))
             {
                 GuiTeleport.instance().nextMove();
-
-                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
                 if (locations.size() > 0)
                 {
                     TeleDest location = locations.get((GuiTeleport.instance().indexLocation) % locations.size());
@@ -1215,11 +1188,6 @@ public class GuiPokedex extends GuiScreen
             }
             else if (par2 == 28 && index == 0 || index == 4)
             {
-
-                Minecraft minecraft = (Minecraft) PokecubeCore.getMinecraftInstance();
-                List<TeleDest> locations = PokecubeSerializer.getInstance()
-                        .getTeleports(minecraft.thePlayer.getCachedUniqueIdString());
-
                 if (locations.size() > 0)
                 {
                     Vector4 location = locations.get((GuiTeleport.instance().indexLocation) % locations.size()).loc;

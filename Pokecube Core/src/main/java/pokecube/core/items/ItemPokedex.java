@@ -21,10 +21,10 @@ import pokecube.core.database.Database;
 import pokecube.core.database.Pokedex;
 import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.handlers.Config;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.packets.PacketDataSync;
 import pokecube.core.network.packets.PacketPokedex;
 import pokecube.core.network.packets.PacketSyncTerrain;
-import pokecube.core.utils.PokecubeSerializer;
 import thut.api.maths.Vector3;
 import thut.api.maths.Vector4;
 import thut.api.terrain.TerrainManager;
@@ -75,9 +75,7 @@ public class ItemPokedex extends Item
         {
             if (worldIn.isRemote) CommandTools.sendMessage(playerIn, "pokedex.setteleport");
             Vector4 loc = new Vector4(playerIn);
-            loc.y++;
-            PokecubeSerializer.getInstance().setTeleport(loc, playerIn.getCachedUniqueIdString());
-            PokecubeSerializer.getInstance().save();
+            TeleportHandler.setTeleport(loc, playerIn.getCachedUniqueIdString());
             if (!worldIn.isRemote)
             {
                 PacketDataSync.sendInitPacket(playerIn, "pokecube-data");

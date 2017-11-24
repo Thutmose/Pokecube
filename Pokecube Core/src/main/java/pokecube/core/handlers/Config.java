@@ -40,6 +40,7 @@ import pokecube.core.events.handlers.SpawnHandler;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.items.pokemobeggs.ItemPokemobEgg;
 import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.world.dimensions.PokecubeDimensionManager;
 import pokecube.core.world.dimensions.secretpower.WorldProviderSecretBase;
 import pokecube.core.world.terrain.PokecubeTerrainChecker;
 import thut.core.common.config.ConfigBase;
@@ -816,6 +817,11 @@ public class Config extends ConfigBase
         if (failed)
         {
             leaps = new SoundEvent[] { SoundEvents.ENTITY_GENERIC_SMALL_FALL };
+        }
+
+        if (PokecubeDimensionManager.SECRET_BASE_TYPE != null)
+        {
+            PokecubeDimensionManager.SECRET_BASE_TYPE.setLoadSpawn(basesLoaded);
         }
     }
 

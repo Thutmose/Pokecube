@@ -231,7 +231,7 @@ public class PokecubeDimensionManager
         id++;
         PokecubeMod.log("Registering Pokecube Secret Base Dimension type at id " + id);
         SECRET_BASE_TYPE = DimensionType.register("pokecube_secretbase", "_pokecube", id, WorldProviderSecretBase.class,
-                false);
+                PokecubeMod.core.getConfig().basesLoaded);
     }
 
     @SubscribeEvent

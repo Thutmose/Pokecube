@@ -187,7 +187,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
         return new Object[] { true, pokeID };
     }
 
-    @Callback(doc = "function(command:string, args...) - Sets the command and the arguments for it to run.")
+    @Callback(doc = "function(command:string, args...) - Sets the command and the arguments for it to run, positions are relative to the controller")
     @Optional.Method(modid = "opencomputers")
     public Object[] setCommand(Context context, Arguments args) throws Exception
     {
@@ -264,6 +264,30 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
         return new Object[] { true, pokemob.isRoutineEnabled(routine) };
     }
 
+    @Callback(doc = "function() - Gets the home location for the pokemob.")
+    @Optional.Method(modid = "opencomputers")
+    public Object[] getHome(Context context, Arguments args) throws Exception
+    {
+        if (pokeID == null) throw new Exception("No Pokemob set");
+        WorldServer world = (WorldServer) getWorld();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
+        return new Object[] { pokemob.getHome() };
+    }
+
+    @Callback(doc = "function(x:number, y:number, z:number, d:homeDistance) - Sets home location, relative to the controller.")
+    @Optional.Method(modid = "opencomputers")
+    public Object[] setHome(Context context, Arguments args) throws Exception
+    {
+        if (pokeID == null) throw new Exception("No Pokemob set");
+        WorldServer world = (WorldServer) getWorld();
+        IPokemob pokemob = CapabilityPokemob.getPokemobFor(world.getEntityFromUuid(pokeID));
+        if (pokemob == null) throw new Exception("No Pokemob found for set ID");
+        pokemob.setHome(args.checkInteger(0) + getPos().getX(), args.checkInteger(1) + getPos().getY(),
+                args.checkInteger(2) + getPos().getZ(), 16);
+        return new Object[] { true };
+    }
+
     private Object[] getArgs(Command command, Arguments args) throws Exception
     {
         Class<? extends IMobCommandHandler> clazz = IHasCommands.COMMANDHANDLERS.get(command);
@@ -285,7 +309,8 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
             if (type == Vector3.class)
             {
                 Vector3 arg = Vector3.getNewVector();
-                arg.set(args.checkDouble(index), args.checkDouble(index + 1), args.checkDouble(index + 2));
+                arg.set(args.checkDouble(index) + getPos().getX(), args.checkDouble(index + 1) + getPos().getY(),
+                        args.checkDouble(index + 2) + getPos().getZ());
                 index += 3;
                 ret[i] = arg;
             }

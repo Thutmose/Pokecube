@@ -35,6 +35,7 @@ import pokecube.core.interfaces.IPokecube.PokecubeBehavior;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
 import pokecube.core.interfaces.capabilities.CapabilityPokemob;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.items.pokecubes.PokecubeManager;
 import pokecube.core.moves.MovesUtils;
 import pokecube.core.network.PokecubePacketHandler.PokecubeClientPacket.PokecubeMessageHandlerClient;
@@ -204,7 +205,7 @@ public class PokecubePacketHandler
                             else if (channel == TELEPORT)
                             {
                                 int index = buffer.readByte();
-                                PokecubeSerializer.getInstance().setTeleIndex(player.getCachedUniqueIdString(), index);
+                                TeleportHandler.setTeleIndex(player.getCachedUniqueIdString(), index);
                             }
                         }
                     };

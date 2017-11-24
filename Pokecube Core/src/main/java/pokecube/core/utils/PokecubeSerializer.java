@@ -339,31 +339,6 @@ public class PokecubeSerializer
         return pokemobsMap.get(uid);
     }
 
-    public int getTeleIndex(String uuid)
-    {
-        return PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .getTeleIndex();
-    }
-
-    public TeleDest getTeleport(String uuid)
-    {
-        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData(PokecubePlayerData.class).getTeleDests();
-        int index = getTeleIndex(uuid);
-        TeleDest d = null;
-        if (list.size() > index)
-        {
-            d = list.get(index);
-        }
-        return d;
-    }
-
-    public List<TeleDest> getTeleports(String uuid)
-    {
-        return PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .getTeleDests();
-    }
-
     public boolean hasStarter(EntityPlayer player)
     {
         return PokecubePlayerDataHandler.getInstance().getPlayerData(player).getData(PokecubePlayerData.class)
@@ -525,71 +500,6 @@ public class PokecubeSerializer
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
     }
 
-    public void setTeleIndex(String uuid, int index)
-    {
-        PokecubePlayerDataHandler.getInstance().getPlayerData(uuid).getData(PokecubePlayerData.class)
-                .setTeleIndex(index);
-    }
-
-    public void setTeleport(String uuid, TeleDest dest)
-    {
-        setTeleport(dest.loc, uuid, dest.getName());
-    }
-
-    public void setTeleport(Vector4 v, String uuid)
-    {
-        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData(PokecubePlayerData.class).getTeleDests();
-        boolean toRemove = false;
-        List<TeleDest> old = new ArrayList<TeleDest>();
-
-        for (TeleDest d : list)
-        {
-            Vector4 v1 = d.loc;
-            if (v1.withinDistance(20, v))
-            {
-                toRemove = true;
-                old.add(d);
-            }
-        }
-        if (toRemove)
-        {
-            for (TeleDest d : old)
-            {
-                list.remove(d);
-            }
-        }
-        TeleDest d = new TeleDest(v);
-        list.add(d);
-    }
-
-    public void setTeleport(Vector4 v, String uuid, String customName)
-    {
-        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData(PokecubePlayerData.class).getTeleDests();
-        boolean toRemove = false;
-        ArrayList<TeleDest> old = new ArrayList<TeleDest>();
-
-        for (TeleDest d : list)
-        {
-            Vector4 v1 = d.loc;
-            if (v1.withinDistance(20, v))
-            {
-                toRemove = true;
-                old.add(d);
-            }
-        }
-        if (toRemove)
-        {
-            for (TeleDest d : old)
-            {
-                list.remove(d);
-            }
-        }
-        TeleDest d = new TeleDest(v).setName(customName);
-        list.add(d);
-    }
-
     public ItemStack starter(int pokedexNb, EntityPlayer owner)
     {
         World worldObj = owner.getEntityWorld();
@@ -608,31 +518,6 @@ public class PokecubeSerializer
         }
 
         return null;
-    }
-
-    public void unsetTeleport(Vector4 v, String uuid)
-    {
-        List<TeleDest> list = PokecubePlayerDataHandler.getInstance().getPlayerData(uuid)
-                .getData(PokecubePlayerData.class).getTeleDests();
-        boolean toRemove = false;
-        ArrayList<TeleDest> old = new ArrayList<TeleDest>();
-
-        for (TeleDest d : list)
-        {
-            Vector4 v1 = d.loc;
-            if (v1.withinDistance(20, v))
-            {
-                toRemove = true;
-                old.add(d);
-            }
-        }
-        if (toRemove)
-        {
-            for (TeleDest d : old)
-            {
-                list.remove(d);
-            }
-        }
     }
 
     public void writeToNBT(NBTTagCompound nbttagcompound)

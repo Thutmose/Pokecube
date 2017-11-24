@@ -20,10 +20,10 @@ import pokecube.core.PokecubeCore;
 import pokecube.core.client.Resources;
 import pokecube.core.interfaces.IPokemob;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.PokecubePacketHandler;
 import pokecube.core.network.PokecubePacketHandler.PokecubeServerPacket;
 import pokecube.core.utils.PokeType;
-import pokecube.core.utils.PokecubeSerializer;
 import pokecube.core.utils.PokecubeSerializer.TeleDest;
 
 public class GuiTeleport extends Gui
@@ -41,8 +41,8 @@ public class GuiTeleport extends Gui
     {
         if (instance == null) create();
 
-        if (instance.locations == null) instance.locations = PokecubeSerializer.getInstance()
-                .getTeleports(instance.minecraft.player.getCachedUniqueIdString());
+        if (instance.locations == null)
+            instance.locations = TeleportHandler.getTeleports(instance.minecraft.player.getCachedUniqueIdString());
 
         return instance;
     }
@@ -81,7 +81,7 @@ public class GuiTeleport extends Gui
         GlStateManager.enableBlend();
         int h = 0;
         int w = 0;
-        locations = PokecubeSerializer.getInstance().getTeleports(minecraft.player.getCachedUniqueIdString());
+        locations = TeleportHandler.getTeleports(minecraft.player.getCachedUniqueIdString());
         int i = 0;
         int xOffset = 0;
         int yOffset = 0;
@@ -127,8 +127,8 @@ public class GuiTeleport extends Gui
         if (instance().locations.size() > 0)
             instance().indexLocation = instance().indexLocation % instance().locations.size();
         else instance().indexLocation = 0;
-        PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
-                PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+        PokecubeServerPacket packet = new PokecubeServerPacket(
+                new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
         PokecubePacketHandler.sendToServer(packet);
     }
 
@@ -152,15 +152,14 @@ public class GuiTeleport extends Gui
     {
         instance().indexLocation--;
         if (instance().indexLocation < 0) instance().indexLocation = Math.max(0, instance().locations.size() - 1);
-        PokecubeServerPacket packet = new PokecubeServerPacket(new byte[] {
-                PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
+        PokecubeServerPacket packet = new PokecubeServerPacket(
+                new byte[] { PokecubeServerPacket.TELEPORT, (byte) GuiTeleport.instance().indexLocation });
         PokecubePacketHandler.sendToServer(packet);
     }
 
     public void refresh()
     {
-        instance.locations = PokecubeSerializer.getInstance()
-                .getTeleports(instance.minecraft.player.getCachedUniqueIdString());
+        instance.locations = TeleportHandler.getTeleports(instance.minecraft.player.getCachedUniqueIdString());
     }
 
     public void setState(boolean state)

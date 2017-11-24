@@ -217,7 +217,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function() - Gets the current move index for the pokemob.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getMoveIndex(Context context, Arguments args) throws Exception
     {
         if (pokeID == null) throw new Exception("No Pokemob set");
@@ -228,7 +228,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function(index:number) - Sets the current move index for the pokemob.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setMoveIndex(Context context, Arguments args) throws Exception
     {
         if (pokeID == null) throw new Exception("No Pokemob set");
@@ -240,7 +240,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function(routine:string) - Gets the state of the given routine.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] getRoutineState(Context context, Arguments args) throws Exception
     {
         if (pokeID == null) throw new Exception("No Pokemob set");
@@ -252,7 +252,7 @@ public class TileEntityCommander extends TileEntityOwnable implements ITickable,
     }
 
     @Callback(doc = "function(routine:string, state:boolean) - Sets the state of the given routine.")
-    @Optional.Method(modid = "OpenComputers")
+    @Optional.Method(modid = "opencomputers")
     public Object[] setRoutineState(Context context, Arguments args) throws Exception
     {
         if (pokeID == null) throw new Exception("No Pokemob set");

@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -438,7 +439,7 @@ public class PokecubeSerializer
             if (!ticket.getModId().equals("pokecube")) continue;
             if (!ticket.getModData().hasKey("pos"))
             {
-                System.out.println("invalid ticket");
+                PokecubeMod.log("invalid ticket, no saved pos");
                 ForgeChunkManager.releaseTicket(ticket);
             }
             else
@@ -448,7 +449,7 @@ public class PokecubeSerializer
                 TileEntity tile = world.getTileEntity(pos);
                 if (tile == null || !(tile instanceof TileHealTable))
                 {
-                    System.out.println("invalid ticket");
+                    PokecubeMod.log("invalid ticket for " + pos);
                     ForgeChunkManager.releaseTicket(ticket);
                 }
                 else ForgeChunkManager.forceChunk(ticket, new ChunkPos(pos.getX() >> 4, pos.getZ() >> 4));
@@ -518,7 +519,7 @@ public class PokecubeSerializer
         }
         catch (Exception e)
         {
-            System.err.println("UUID null");
+            PokecubeMod.log(Level.WARNING, "Error setting has starter state for " + player, e);
         }
         if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());

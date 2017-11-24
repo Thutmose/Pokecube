@@ -55,6 +55,7 @@ public class AIStoreStuff extends AIBase
     final EntityLiving      entity;
     final IPokemob          pokemob;
     Vector3                 inventoryLocation       = null;
+    private BlockPos        lastHome;
     int                     searchInventoryCooldown = 0;
     int                     doStorageCooldown       = 0;
 
@@ -89,8 +90,9 @@ public class AIStoreStuff extends AIBase
     {
         super.doMainThreadTick(world);
         if (tameCheck() || !shouldRun()) return;
-        if (searchInventoryCooldown-- < 0)
+        if (searchInventoryCooldown-- < 0 || !pokemob.getHome().equals(lastHome))
         {
+            lastHome = pokemob.getHome();
             searchInventoryCooldown = COOLDOWN;
             inventoryLocation = checkDir(world, null, pokemob.getHome());
             if (inventoryLocation == null) for (EnumFacing dir : EnumFacing.HORIZONTALS)
@@ -292,7 +294,7 @@ public class AIStoreStuff extends AIBase
     public boolean shouldRun()
     {
         if (!pokemob.isRoutineEnabled(AIRoutine.STORE)) return false;
-        return true;
+        return pokemob.getHome() != null;
     }
 
     /** Only tame pokemobs set to "stay" should run this AI.

@@ -36,8 +36,9 @@ import pokecube.core.handlers.Config;
 import pokecube.core.handlers.PokecubePlayerDataHandler;
 import pokecube.core.handlers.PokedexInspector;
 import pokecube.core.interfaces.PokecubeMod;
+import pokecube.core.interfaces.pokemob.commandhandlers.TeleportHandler;
 import pokecube.core.network.PokecubePacketHandler;
-import pokecube.core.utils.PokecubeSerializer;
+import pokecube.core.utils.PokecubeSerializer.TeleDest;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager;
 import pokecube.core.world.dimensions.secretpower.SecretBaseManager.Coordinate;
 import thut.api.maths.Vector3;
@@ -298,14 +299,13 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
                 }
                 PokecubeMod.packetPipeline.sendTo(packet, (EntityPlayerMP) player);
             }
-            if (message.message == REQUEST)
-                return;
+            if (message.message == REQUEST) return;
         }
         if (message.message == REMOVE)
         {
-            Vector4 location = new Vector4(message.data);
-            PokecubeSerializer.getInstance().unsetTeleport(location, player.getCachedUniqueIdString());
-            player.addChatMessage(new TextComponentString("Removed The location " + location.toIntString()));
+            TeleDest location = new TeleDest(new Vector4(message.data));
+            TeleportHandler.unsetTeleport(location, player.getCachedUniqueIdString());
+            player.addChatMessage(new TextComponentString("Removed The location " + location.loc.toIntString()));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
             PacketDataSync.sendInitPacket(player, "pokecube-data");
             return;
@@ -314,7 +314,7 @@ public class PacketPokedex implements IMessage, IMessageHandler<PacketPokedex, I
         {
             String name = message.data.getString("N");
             Vector4 location = new Vector4(message.data);
-            PokecubeSerializer.getInstance().setTeleport(location, player.getCachedUniqueIdString(), name);
+            TeleportHandler.renameTeleport(location, player.getCachedUniqueIdString(), name);
             player.addChatMessage(
                     new TextComponentString("Set The location " + location.toIntString() + " as " + name));
             PokecubePlayerDataHandler.getInstance().save(player.getCachedUniqueIdString());
